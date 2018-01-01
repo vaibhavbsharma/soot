@@ -122,7 +122,7 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
       // ideally I'd want to find out just how they manage to get this far.
       ArrayType arrayType;
       if (type instanceof ArrayType) arrayType = (ArrayType) type;
-      else arrayType = (ArrayType) type.makeArrayType();
+      else arrayType = type.makeArrayType();
 
       if (arrayType.numDimensions == 1) return arrayType.baseType;
       else return ArrayType.v(arrayType.baseType, arrayType.numDimensions - 1);

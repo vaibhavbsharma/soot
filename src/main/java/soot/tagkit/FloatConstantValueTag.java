@@ -61,7 +61,6 @@ public class FloatConstantValueTag extends ConstantValueTag {
     if (!super.equals(obj)) return false;
     if (getClass() != obj.getClass()) return false;
     FloatConstantValueTag other = (FloatConstantValueTag) obj;
-    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) return false;
-    return true;
+    return Float.floatToIntBits(value) == Float.floatToIntBits(other.value);
   }
 }

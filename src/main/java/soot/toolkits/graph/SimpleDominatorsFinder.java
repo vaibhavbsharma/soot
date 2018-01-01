@@ -77,7 +77,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
     if (getGraph().getHeads().contains(node)) return null;
 
     // avoid the creation of temp-lists
-    FlowSet<N> head = (FlowSet<N>) nodeToDominators.get(node).clone();
+    FlowSet<N> head = nodeToDominators.get(node).clone();
     head.remove(node);
 
     for (N dominator : head) {
@@ -145,13 +145,13 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
    */
   @Override
   protected FlowSet<N> newInitialFlow() {
-    return (FlowSet<N>) fullSet.clone();
+    return fullSet.clone();
   }
 
   /** OUT(Start) contains all head nodes at initialization time. */
   @Override
   protected FlowSet<N> entryInitialFlow() {
-    FlowSet<N> initSet = (FlowSet<N>) emptySet.clone();
+    FlowSet<N> initSet = emptySet.clone();
     for (N h : graph.getHeads()) {
       initSet.add(h);
     }

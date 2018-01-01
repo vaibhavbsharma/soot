@@ -33,12 +33,12 @@ public class AugEvalFunction implements IEvalFunction {
   }
 
   public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
-    return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
+    return Collections.singletonList(eval_(tg, expr, stmt, this.jb));
   }
 
   public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb) {
-    if (expr instanceof ThisRef) return ((ThisRef) expr).getType();
-    else if (expr instanceof ParameterRef) return ((ParameterRef) expr).getType();
+    if (expr instanceof ThisRef) return expr.getType();
+    else if (expr instanceof ParameterRef) return expr.getType();
     else if (expr instanceof Local) {
       Local ex = (Local) expr;
       // changed to prevent null pointer exception in case of phantom classes where a null
@@ -137,7 +137,7 @@ public class AugEvalFunction implements IEvalFunction {
     else if (expr instanceof LengthExpr) return IntType.v();
     else if (expr instanceof InvokeExpr) return ((InvokeExpr) expr).getMethodRef().returnType();
     else if (expr instanceof NewExpr) return ((NewExpr) expr).getBaseType();
-    else if (expr instanceof FieldRef) return ((FieldRef) expr).getType();
+    else if (expr instanceof FieldRef) return expr.getType();
     else if (expr instanceof DoubleConstant) return DoubleType.v();
     else if (expr instanceof FloatConstant) return FloatType.v();
     else if (expr instanceof IntConstant) {

@@ -126,7 +126,7 @@ public class LocalPacker extends BodyTransformer {
 
         Local newLocal;
 
-        if (groupIntToLocal.containsKey(pair)) newLocal = (Local) groupIntToLocal.get(pair);
+        if (groupIntToLocal.containsKey(pair)) newLocal = groupIntToLocal.get(pair);
         else {
           newLocal = (Local) original.clone();
           newLocal.setType((Type) group);
@@ -170,13 +170,13 @@ public class LocalPacker extends BodyTransformer {
         for (ValueBox box : s.getUseBoxes()) {
           if (box.getValue() instanceof Local) {
             Local l = (Local) box.getValue();
-            box.setValue((Local) localToNewLocal.get(l));
+            box.setValue(localToNewLocal.get(l));
           }
         }
         for (ValueBox box : s.getDefBoxes()) {
           if (box.getValue() instanceof Local) {
             Local l = (Local) box.getValue();
-            box.setValue((Local) localToNewLocal.get(l));
+            box.setValue(localToNewLocal.get(l));
           }
         }
       }

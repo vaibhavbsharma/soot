@@ -33,9 +33,9 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
   @SuppressWarnings({"unchecked", "cast"})
   public ASTNode<T> copy() {
     try {
-      ASTNode node = (ASTNode) clone();
+      ASTNode node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -49,10 +49,10 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ASTNode<T> fullCopy() {
-    ASTNode tree = (ASTNode) copy();
+    ASTNode tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -550,7 +550,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:214
    */
   protected ASTNode with(ASTNode node) {
-    ((ASTNode) this).setChild(node, state().replacePos);
+    this.setChild(node, state().replacePos);
     in$Circle(false);
     return node;
   }
@@ -708,7 +708,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
    */
   public ASTNode cloneSubtree() {
     try {
-      ASTNode tree = (ASTNode) clone();
+      ASTNode tree = clone();
       tree.setParent(null); // make dangling
       if (children != null) {
         tree.children = new ASTNode[children.length];
@@ -1013,7 +1013,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
    */
   public void removeChild(int i) {
     if (children != null) {
-      ASTNode child = (ASTNode) children[i];
+      ASTNode child = children[i];
       if (child != null) {
         child.parent = null;
         child.childIndex = -1;
@@ -1024,7 +1024,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
         numChildren--;
         for (int j = i; j < numChildren; ++j) {
           if (children[j] != null) {
-            child = (ASTNode) children[j];
+            child = children[j];
             child.childIndex = j;
           }
         }
@@ -1038,10 +1038,10 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
    * @ast method
    */
   public ASTNode getParent() {
-    if (parent != null && ((ASTNode) parent).is$Final() != is$Final()) {
+    if (parent != null && parent.is$Final() != is$Final()) {
       state().boundariesCrossed++;
     }
-    return (ASTNode) parent;
+    return parent;
   }
   /**
    * @apilevel low-level
@@ -1188,7 +1188,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
 
       @SuppressWarnings("unchecked")
       public T next() {
-        if (hasNext()) return (T) getChild(counter++);
+        if (hasNext()) return getChild(counter++);
         else return null;
       }
 

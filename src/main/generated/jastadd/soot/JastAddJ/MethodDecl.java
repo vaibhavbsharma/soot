@@ -84,9 +84,9 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl copy() {
     try {
-      MethodDecl node = (MethodDecl) clone();
+      MethodDecl node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -101,10 +101,10 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl fullCopy() {
-    MethodDecl tree = (MethodDecl) copy();
+    MethodDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -301,7 +301,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     // hostType().typeName() + " with " + parTypeDecl.typeSignature());
     MethodDecl m =
         new MethodDeclSubstituted(
-            (Modifiers) getModifiers().fullCopy(),
+            getModifiers().fullCopy(),
             getTypeAccess().type().substituteReturnType(parTypeDecl),
             getID(),
             getParameterList().substitute(parTypeDecl),
@@ -349,7 +349,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
               getParameter(i).type().createQualifiedAccess(), getParameter(i).name()));
     List exceptionList = new List();
     for (int i = 0; i < getNumException(); i++)
-      exceptionList.add((Access) getException(i).fullCopy());
+      exceptionList.add(getException(i).fullCopy());
 
     // add synthetic flag to modifiers
     Modifiers modifiers = new Modifiers(new List());
@@ -382,7 +382,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
       argumentList.add(new VarAccess(getParameter(i).name()));
     Access access = new BoundMethodAccess(name(), argumentList, this);
     if (!isStatic()) access = new ThisAccess("this").qualifiesAccess(access);
-    return isVoid() ? (Stmt) new ExprStmt(access) : new ReturnStmt(new Opt(access));
+    return isVoid() ? new ExprStmt(access) : new ReturnStmt(new Opt(access));
   }
 
   /**
@@ -613,7 +613,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
                     erased.type().erasure().createBoundAccess(),
                     erased.name(),
                     parameters,
-                    (List) getExceptionList().fullCopy(),
+                    getExceptionList().fullCopy(),
                     new Opt(new Block(new List().add(stmt))));
             hostType().addBodyDecl(bridge);
           }
@@ -870,7 +870,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration getParameter(int i) {
-    return (ParameterDeclaration) getParameterList().getChild(i);
+    return getParameterList().getChild(i);
   }
 
   /**
@@ -1004,7 +1004,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getException(int i) {
-    return (Access) getExceptionList().getChild(i);
+    return getExceptionList().getChild(i);
   }
 
   /**
@@ -1126,7 +1126,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block getBlock() {
-    return (Block) getBlockOpt().getChild(0);
+    return getBlockOpt().getChild(0);
   }
 
   /**
@@ -1333,8 +1333,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
       return true;
     } else if (isProtected()) {
       if (hostPackage().equals(type.hostPackage())) return true;
-      if (type.withinBodyThatSubclasses(hostType()) != null) return true;
-      return false;
+      return type.withinBodyThatSubclasses(hostType()) != null;
     } else if (isPrivate()) return hostType().topLevelType() == type.topLevelType();
     else return hostPackage().equals(type.hostPackage());
   }
@@ -1631,7 +1630,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   /** @apilevel internal */
   private SimpleSet parameterDeclaration_compute(String name) {
     for (int i = 0; i < getNumParameter(); i++)
-      if (getParameter(i).name().equals(name)) return (ParameterDeclaration) getParameter(i);
+      if (getParameter(i).name().equals(name)) return getParameter(i);
     return SimpleSet.emptySet;
   }
 
@@ -1996,7 +1995,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   public boolean isVariableArity() {
     ASTNode$State state = state();
     try {
-      return getNumParameter() == 0 ? false : getParameter(getNumParameter() - 1).isVariableArity();
+      return getNumParameter() != 0 && getParameter(getNumParameter() - 1).isVariableArity();
     } finally {
     }
   }
@@ -2298,7 +2297,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
     if (caller == getBlockOptNoTransform()) {
-      return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) ? true : isDAbefore(v);
+      return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) || isDAbefore(v);
     } else {
       return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
@@ -2311,7 +2310,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
     if (caller == getBlockOptNoTransform()) {
-      return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) ? false : true;
+      return !v.isFinal() || (!v.isClassVariable() && !v.isInstanceVariable());
     } else {
       return getParent().Define_boolean_isDUbefore(this, caller, v);
     }

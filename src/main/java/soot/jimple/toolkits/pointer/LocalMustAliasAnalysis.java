@@ -117,7 +117,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     this.localsAndFieldRefs = new HashSet<Value>();
 
     // add all locals
-    for (Local l : (Collection<Local>) g.getBody().getLocals()) {
+    for (Local l : g.getBody().getLocals()) {
       if (l.getType() instanceof RefLikeType) this.localsAndFieldRefs.add(l);
     }
 

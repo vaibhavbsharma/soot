@@ -59,9 +59,9 @@ public class MethodAccess extends Access implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public MethodAccess copy() {
     try {
-      MethodAccess node = (MethodAccess) clone();
+      MethodAccess node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -75,10 +75,10 @@ public class MethodAccess extends Access implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MethodAccess fullCopy() {
-    MethodAccess tree = (MethodAccess) copy();
+    MethodAccess tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -603,7 +603,7 @@ public class MethodAccess extends Access implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getArg(int i) {
-    return (Expr) getArgList().getChild(i);
+    return getArgList().getChild(i);
   }
   /**
    * Append an element to the Arg list.
@@ -1393,10 +1393,9 @@ public class MethodAccess extends Access implements Cloneable {
     try {
       MethodDecl m = decl();
       if (m.isPrivate() && m.hostType() != hostType()) return true;
-      if (m.isProtected()
+      return m.isProtected()
           && !m.hostPackage().equals(hostPackage())
-          && !hostType().hasMethod(m.name())) return true;
-      return false;
+          && !hostType().hasMethod(m.name());
     } finally {
     }
   }

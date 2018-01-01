@@ -170,7 +170,7 @@ public class ASTSwitchNode extends ASTLabeledNode {
       if (index instanceof String) b.append("default");
       else {
         b.append("case ");
-        b.append(((Integer) index).toString());
+        b.append(index.toString());
       }
 
       b.append(":");

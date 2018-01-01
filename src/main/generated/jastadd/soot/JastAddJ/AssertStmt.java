@@ -40,9 +40,9 @@ public class AssertStmt extends Stmt implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public AssertStmt copy() {
     try {
-      AssertStmt node = (AssertStmt) clone();
+      AssertStmt node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -56,10 +56,10 @@ public class AssertStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AssertStmt fullCopy() {
-    AssertStmt tree = (AssertStmt) copy();
+    AssertStmt tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -227,7 +227,7 @@ public class AssertStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getExpr() {
-    return (Expr) getExprOpt().getChild(0);
+    return getExprOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Expr child.

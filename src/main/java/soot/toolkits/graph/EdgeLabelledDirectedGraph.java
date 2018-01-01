@@ -17,7 +17,7 @@ public interface EdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
    * @param to in node of the edges to get labels for
    * @return
    */
-  public List<L> getLabelsForEdges(N from, N to);
+  List<L> getLabelsForEdges(N from, N to);
 
   /**
    * Returns a DirectedGraph consisting of all edges with the given label and their nodes. Nodes
@@ -26,7 +26,7 @@ public interface EdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
    * @param label edge label to use as a filter in building the subgraph
    * @return
    */
-  public DirectedGraph<N> getEdgesForLabel(L label);
+  DirectedGraph<N> getEdgesForLabel(L label);
 
   /**
    * @param from
@@ -35,24 +35,24 @@ public interface EdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
    * @return true if the graph contains an edge between the 2 nodes with the given label, false
    *     otherwise
    */
-  public boolean containsEdge(N from, N to, L label);
+  boolean containsEdge(N from, N to, L label);
 
   /**
    * @param from out node for the edges
    * @param to in node for the edges
    * @return true if the graph contains any edges between the 2 nodes, false, otherwise
    */
-  public boolean containsAnyEdge(N from, N to);
+  boolean containsAnyEdge(N from, N to);
 
   /**
    * @param label label for the edges
    * @return true if the graph contains any edges with the given label, false otherwise
    */
-  public boolean containsAnyEdge(L label);
+  boolean containsAnyEdge(L label);
 
   /**
    * @param node node that we want to know if the graph contains
    * @return true if the graph contains the node, false otherwise
    */
-  public boolean containsNode(N node);
+  boolean containsNode(N node);
 }

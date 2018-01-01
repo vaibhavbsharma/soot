@@ -976,15 +976,14 @@ public class SootClass extends AbstractHost implements Numberable {
    * @author xiao
    */
   public boolean isJavaLibraryClass() {
-    if (name.startsWith("java.")
+    return name.startsWith("java.")
         || name.startsWith("sun.")
         || name.startsWith("javax.")
         || name.startsWith("com.sun.")
         || name.startsWith("org.omg.")
         || name.startsWith("org.xml.")
-        || name.startsWith("org.w3c.dom")) return true;
+        || name.startsWith("org.w3c.dom");
 
-    return false;
   }
 
   /**
@@ -1070,7 +1069,7 @@ public class SootClass extends AbstractHost implements Numberable {
       validators = new ClassValidator[] {OuterClassValidator.v(), MethodDeclarationValidator.v()};
     }
     return validators;
-  };
+  }
 
   /**
    * Validates this SootClass for logical errors. Note that this does not validate the method

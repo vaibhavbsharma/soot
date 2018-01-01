@@ -92,7 +92,7 @@ public class JavaAttribute {
 
   private void printAttributeTag(Tag t) {
     if (t instanceof LineNumberTag) {
-      int lnNum = (new Integer(((LineNumberTag) t).toString())).intValue();
+      int lnNum = (new Integer(t.toString())).intValue();
       printJavaLnAttr(lnNum, lnNum);
     } else if (t instanceof JimpleLineNumberTag) {
       JimpleLineNumberTag jlnTag = (JimpleLineNumberTag) t;
@@ -109,7 +109,7 @@ public class JavaAttribute {
           formatForXML(lt.toString()), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName());
 
     } else if (t instanceof StringTag) {
-      printTextAttr(formatForXML(((StringTag) t).toString()));
+      printTextAttr(formatForXML(t.toString()));
     } else if (t instanceof SourcePositionTag) {
       SourcePositionTag pt = (SourcePositionTag) t;
       printSourcePositionAttr(pt.getStartOffset(), pt.getEndOffset());
@@ -226,7 +226,7 @@ public class JavaAttribute {
         // G.v().out.println("t is LineNumberTag");
         return ((SourceLnPosTag) t).startLn();
       } else if (t instanceof LineNumberTag) {
-        return (new Integer(((LineNumberTag) t).toString())).intValue();
+        return (new Integer(t.toString())).intValue();
       }
     }
     return 0;

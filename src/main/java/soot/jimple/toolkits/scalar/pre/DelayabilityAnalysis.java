@@ -121,7 +121,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
 
     {
       /* Perform kill */
-      EquivalentValue equiVal = (EquivalentValue) unitToKillValue.get(u);
+      EquivalentValue equiVal = unitToKillValue.get(u);
       if (equiVal != null) out.remove(equiVal);
     }
   }

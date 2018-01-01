@@ -79,7 +79,7 @@ public class IFDSReachingDefinitions
                     new LinkedHashSet<Pair<Value, Set<DefinitionStmt>>>();
                 res.add(
                     new Pair<Value, Set<DefinitionStmt>>(
-                        assignment.getLeftOp(), Collections.<DefinitionStmt>singleton(assignment)));
+                        assignment.getLeftOp(), Collections.singleton(assignment)));
                 return res;
               }
             }
@@ -183,6 +183,6 @@ public class IFDSReachingDefinitions
 
   public Pair<Value, Set<DefinitionStmt>> createZeroValue() {
     return new Pair<Value, Set<DefinitionStmt>>(
-        new JimpleLocal("<<zero>>", NullType.v()), Collections.<DefinitionStmt>emptySet());
+        new JimpleLocal("<<zero>>", NullType.v()), Collections.emptySet());
   }
 }

@@ -195,9 +195,8 @@ class ExprVisitor implements ExprSwitch {
     // If we're dealing with phantom classes, we might not actually
     // arrive at java.lang.Object. In this case, we should not fail
     // the check
-    if (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object")) return true;
+    return currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object");
 
-    return false; // we arrived at java.lang.Object and did not find a declaration
   }
 
   @Override
@@ -707,11 +706,7 @@ class ExprVisitor implements ExprSwitch {
       // is needed
       return true;
     }
-    if (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT)) {
-      // there is no "upgrade" cast from "smaller than int" to int, so move it
-      return true;
-    }
-    return false;
+    return castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT);
   }
 
   private boolean shouldCastFromInt(PrimitiveType sourceType, PrimitiveType castType) {
@@ -719,11 +714,7 @@ class ExprVisitor implements ExprSwitch {
       // source is already "big" enough
       return false;
     }
-    if (castType == PrimitiveType.INT) {
-      // would lead to an int-to-int cast, so leave it as it is
-      return false;
-    }
-    return true;
+    return castType != PrimitiveType.INT;
   }
 
   private boolean isEqualOrBigger(PrimitiveType type, PrimitiveType relativeTo) {

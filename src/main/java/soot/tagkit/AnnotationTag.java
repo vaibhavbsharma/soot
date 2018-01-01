@@ -139,7 +139,7 @@ public class AnnotationTag implements Tag {
   /** @return an immutable collection of the elements */
   public Collection<AnnotationElem> getElems() {
     return elems == null
-        ? Collections.<AnnotationElem>emptyList()
+        ? Collections.emptyList()
         : Collections.unmodifiableCollection(elems);
   }
 }

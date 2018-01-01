@@ -93,7 +93,7 @@ public class Evaluator {
             || c1 instanceof ClassConstant) {
           boolean equality = c1.equals(c2);
 
-          boolean truth = (op instanceof EqExpr) ? equality : !equality;
+          boolean truth = (op instanceof EqExpr) == equality;
 
           // Yeah, this variable name sucks, but I couldn't resist.
           IntConstant beauty = IntConstant.v(truth ? 1 : 0);

@@ -20,15 +20,15 @@ public interface GenericTypeDecl {
 
   List getTypeParameterList();
 
-  public String fullName();
+  String fullName();
 
-  public String typeName();
+  String typeName();
 
-  public TypeDecl makeGeneric(Signatures.ClassSignature s);
+  TypeDecl makeGeneric(Signatures.ClassSignature s);
 
-  public SimpleSet addTypeVariables(SimpleSet c, String name);
+  SimpleSet addTypeVariables(SimpleSet c, String name);
 
-  public List createArgumentList(ArrayList params);
+  List createArgumentList(ArrayList params);
 
   /**
    * @attribute syn
@@ -37,7 +37,7 @@ public interface GenericTypeDecl {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:158
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean isGenericType();
+  boolean isGenericType();
   /**
    * @attribute syn
    * @aspect Generics
@@ -45,7 +45,7 @@ public interface GenericTypeDecl {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:163
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl rawType();
+  TypeDecl rawType();
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
@@ -53,7 +53,7 @@ public interface GenericTypeDecl {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:708
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupParTypeDecl(ParTypeAccess p);
+  TypeDecl lookupParTypeDecl(ParTypeAccess p);
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
@@ -61,5 +61,5 @@ public interface GenericTypeDecl {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:714
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupParTypeDecl(ArrayList list);
+  TypeDecl lookupParTypeDecl(ArrayList list);
 }

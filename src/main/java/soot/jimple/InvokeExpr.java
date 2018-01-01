@@ -30,21 +30,21 @@ import java.util.*;
 import soot.*;
 
 public interface InvokeExpr extends Expr {
-  public void setMethodRef(SootMethodRef smr);
+  void setMethodRef(SootMethodRef smr);
 
-  public SootMethodRef getMethodRef();
+  SootMethodRef getMethodRef();
 
-  public SootMethod getMethod();
+  SootMethod getMethod();
 
-  public List<Value> getArgs();
+  List<Value> getArgs();
 
-  public Value getArg(int index);
+  Value getArg(int index);
 
-  public int getArgCount();
+  int getArgCount();
 
-  public void setArg(int index, Value arg);
+  void setArg(int index, Value arg);
 
-  public ValueBox getArgBox(int index);
+  ValueBox getArgBox(int index);
 
-  public Type getType();
+  Type getType();
 }

@@ -9,12 +9,12 @@ import soot.jimple.toolkits.thread.AbstractRuntimeThread;
  * May-Happen-in-Parallel info and a list of the program's threads (List of AbstractRuntimeThreads)
  */
 public interface MhpTester {
-  public boolean mayHappenInParallel(SootMethod m1, SootMethod m2); // method level MHP
+  boolean mayHappenInParallel(SootMethod m1, SootMethod m2); // method level MHP
 
-  public boolean mayHappenInParallel(
+  boolean mayHappenInParallel(
       SootMethod m1, Unit u1, SootMethod m2, Unit u2); // stmt level MHP
 
-  public void printMhpSummary();
+  void printMhpSummary();
 
-  public List<AbstractRuntimeThread> getThreads();
+  List<AbstractRuntimeThread> getThreads();
 }

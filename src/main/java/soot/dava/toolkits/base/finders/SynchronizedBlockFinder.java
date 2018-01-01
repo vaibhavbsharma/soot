@@ -948,7 +948,7 @@ public class SynchronizedBlockFinder implements FactFinder {
     }
 
     while (as.get_Stmt() instanceof GotoStmt) {
-      as = (AugmentedStmt) as.bsuccs.get(0);
+      as = as.bsuccs.get(0);
       // if ((as.bsuccs.size() != 1) || ((as != entryPoint) &&
       // (as.cpreds.size() != 1))) {
       // return false;
@@ -989,7 +989,7 @@ public class SynchronizedBlockFinder implements FactFinder {
 
     // if not a caught exception of type throwable we have a problem
     if (!((asnFrom instanceof CaughtExceptionRef)
-        && (((RefType) ((CaughtExceptionRef) asnFrom).getType())
+        && (((RefType) asnFrom.getType())
             .getSootClass()
             .getName()
             .equals(THROWABLE)))) {
@@ -1009,7 +1009,7 @@ public class SynchronizedBlockFinder implements FactFinder {
     esuccs.removeAll(as.bsuccs);
 
     // sucessor of definition stmt
-    as = (AugmentedStmt) as.bsuccs.get(0);
+    as = as.bsuccs.get(0);
     s = as.get_Stmt();
 
     // this COULD be a copy stmt in which case update the throwlocal
@@ -1022,7 +1022,7 @@ public class SynchronizedBlockFinder implements FactFinder {
       throwlocal = ((DefinitionStmt) s).getLeftOp();
 
       // the sucessor of this stmt MIGHT be the exitmonitor stmt
-      as = (AugmentedStmt) as.bsuccs.get(0);
+      as = as.bsuccs.get(0);
       s = as.get_Stmt();
     }
 
@@ -1058,7 +1058,7 @@ public class SynchronizedBlockFinder implements FactFinder {
     }
 
     // next stmt should be a throw stmt
-    as = (AugmentedStmt) as.bsuccs.get(0);
+    as = as.bsuccs.get(0);
     if ((as.bsuccs.size() != 0)
         || (as.cpreds.size() != 1)
         || (verify_ESuccs(as, esuccs) == false)) {
@@ -1068,12 +1068,7 @@ public class SynchronizedBlockFinder implements FactFinder {
 
     s = as.get_Stmt();
 
-    if (!((s instanceof ThrowStmt) && (((ThrowStmt) s).getOp() == throwlocal))) {
-      // System.out.println("here8"+s+" Throw local is:"+throwlocal);
-      return false;
-    }
-
-    return true;
+    return (s instanceof ThrowStmt) && (((ThrowStmt) s).getOp() == throwlocal);
   }
 
   /*

@@ -66,9 +66,8 @@ public class SharedHybridSet extends PointsToSetInternal {
     if (bitVector != null && bitVector.contains(n)) return true;
 
     // Check overflow
-    if (overflow.contains(n)) return true;
+    return overflow.contains(n);
 
-    return false;
   }
 
   public boolean isEmpty() {
@@ -409,7 +408,7 @@ public class SharedHybridSet extends PointsToSetInternal {
     // SharedHybridSet, but I don't know how at the moment.
     if (bitVector != null) {
       for (BitSetIterator it = bitVector.iterator(); it.hasNext(); ) {
-        v.visit((Node) pag.getAllocNodeNumberer().get(it.next()));
+        v.visit(pag.getAllocNodeNumberer().get(it.next()));
       }
     }
     // Iterate through the overflow list
@@ -462,7 +461,7 @@ public class SharedHybridSet extends PointsToSetInternal {
         // Get the next node in the bitset by looking it up in the
         // pointer assignment graph.
         // Ripped from BitPointsToSet.
-        Node n = (Node) (pag.getAllocNodeNumberer().get(it.next()));
+        Node n = pag.getAllocNodeNumberer().get(it.next());
         add(n);
       }
     }

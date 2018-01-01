@@ -78,7 +78,7 @@ public class SETTryNode extends SETNode {
 
   public AugmentedStmt get_EntryStmt() {
     if (entryStmt != null) return entryStmt;
-    else return (AugmentedStmt) (en.get_TryBody()).getFirst();
+    else return (en.get_TryBody()).getFirst();
 
     // return ((SETNode) ((IterableSet) body2childChain.get(
     // en.get_TryBody())).getFirst()).get_EntryStmt();

@@ -23,7 +23,7 @@ public class EncapsulatedMethodAnalysis // extends ForwardFlowAnalysis
       if (s.containsFieldRef()) {
         FieldRef ref = s.getFieldRef();
         if ((ref instanceof StaticFieldRef)
-            && (Type.toMachineType(((StaticFieldRef) ref).getType()) instanceof RefLikeType)) {
+            && (Type.toMachineType(ref.getType()) instanceof RefLikeType)) {
           isMethodPure = false; // kills purity
           isMethodConditionallyPure = false; // kills conditional purity
           return;

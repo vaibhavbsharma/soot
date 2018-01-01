@@ -195,8 +195,7 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
       else subBody = (List) it.next();
 
       if (subBody.contains(child)) {
-        if (subBody.indexOf(child) != subBody.size() - 1) return false;
-        else return true;
+        return subBody.indexOf(child) == subBody.size() - 1;
       }
     }
 

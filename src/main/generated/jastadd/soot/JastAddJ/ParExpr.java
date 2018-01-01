@@ -39,9 +39,9 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public ParExpr copy() {
     try {
-      ParExpr node = (ParExpr) clone();
+      ParExpr node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -55,10 +55,10 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParExpr fullCopy() {
-    ParExpr tree = (ParExpr) copy();
+    ParExpr tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);

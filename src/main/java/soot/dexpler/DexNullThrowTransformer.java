@@ -70,7 +70,7 @@ public class DexNullThrowTransformer extends BodyTransformer {
     SootMethodRef constructorRef =
         Scene.v()
             .makeConstructorRef(
-                tp.getSootClass(), Collections.singletonList((Type) RefType.v("java.lang.String")));
+                tp.getSootClass(), Collections.singletonList(RefType.v("java.lang.String")));
 
     // Create the exception instance
     Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));

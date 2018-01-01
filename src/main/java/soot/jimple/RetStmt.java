@@ -28,9 +28,9 @@ package soot.jimple;
 import soot.*;
 
 public interface RetStmt extends Stmt {
-  public Value getStmtAddress();
+  Value getStmtAddress();
 
-  public ValueBox getStmtAddressBox();
+  ValueBox getStmtAddressBox();
 
-  public void setStmtAddress(Value stmtAddress);
+  void setStmtAddress(Value stmtAddress);
 }

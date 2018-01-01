@@ -34,7 +34,7 @@ import soot.toolkits.graph.UnitGraph;
  * unit in a method.
  */
 public interface LiveLocals {
-  public static final class Factory {
+  final class Factory {
     private Factory() {}
 
     public static LiveLocals newLiveLocals(UnitGraph graph) {
@@ -48,7 +48,7 @@ public interface LiveLocals {
    * @param s the Unit that defines this query.
    * @return a list of Locals that are live before the specified unit in the method.
    */
-  public List<Local> getLiveLocalsBefore(Unit s);
+  List<Local> getLiveLocalsBefore(Unit s);
 
   /**
    * Returns the list of Locals that are live after the specified Unit.
@@ -56,5 +56,5 @@ public interface LiveLocals {
    * @param s the Unit that defines this query.
    * @return a list of Locals that are live after the specified unit in the method.
    */
-  public List<Local> getLiveLocalsAfter(Unit s);
+  List<Local> getLiveLocalsAfter(Unit s);
 }

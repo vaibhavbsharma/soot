@@ -85,14 +85,14 @@ public class ThisInliner extends BodyTransformer {
             Stmt newThis =
                 Jimple.v()
                     .newAssignStmt(
-                        (Local) oldLocalsToNew.get(idStmt.getLeftOp()), origIdStmt.getLeftOp());
+                        oldLocalsToNew.get(idStmt.getLeftOp()), origIdStmt.getLeftOp());
             containerUnits.insertBefore(newThis, invokeStmt);
             oldStmtsToNew.put(inlineeStmt, newThis);
           } else if (idStmt.getRightOp() instanceof CaughtExceptionRef) {
             Stmt newInlinee = (Stmt) inlineeStmt.clone();
             for (ValueBox next : newInlinee.getUseAndDefBoxes()) {
               if (next.getValue() instanceof Local) {
-                next.setValue((Local) oldLocalsToNew.get(next.getValue()));
+                next.setValue(oldLocalsToNew.get(next.getValue()));
               }
             }
 
@@ -102,7 +102,7 @@ public class ThisInliner extends BodyTransformer {
             Stmt newParam =
                 Jimple.v()
                     .newAssignStmt(
-                        (Local) oldLocalsToNew.get(idStmt.getLeftOp()),
+                        oldLocalsToNew.get(idStmt.getLeftOp()),
                         specInvokeExpr.getArg(((ParameterRef) idStmt.getRightOp()).getIndex()));
             containerUnits.insertBefore(newParam, invokeStmt);
             oldStmtsToNew.put(inlineeStmt, newParam);
@@ -112,7 +112,7 @@ public class ThisInliner extends BodyTransformer {
         // handle return void stmts (cannot return anything else
         // from a constructor)
         else if (inlineeStmt instanceof ReturnVoidStmt) {
-          Stmt newRet = Jimple.v().newGotoStmt((Stmt) containerUnits.getSuccOf(invokeStmt));
+          Stmt newRet = Jimple.v().newGotoStmt(containerUnits.getSuccOf(invokeStmt));
           containerUnits.insertBefore(newRet, invokeStmt);
           System.out.println("adding to stmt map: " + inlineeStmt + " and " + newRet);
           oldStmtsToNew.put(inlineeStmt, newRet);
@@ -120,7 +120,7 @@ public class ThisInliner extends BodyTransformer {
           Stmt newInlinee = (Stmt) inlineeStmt.clone();
           for (ValueBox next : newInlinee.getUseAndDefBoxes()) {
             if (next.getValue() instanceof Local) {
-              next.setValue((Local) oldLocalsToNew.get(next.getValue()));
+              next.setValue(oldLocalsToNew.get(next.getValue()));
             }
           }
 
@@ -169,7 +169,7 @@ public class ThisInliner extends BodyTransformer {
       Stmt s = (Stmt) u;
       if (!(s instanceof InvokeStmt)) continue;
 
-      InvokeExpr invokeExpr = ((InvokeStmt) s).getInvokeExpr();
+      InvokeExpr invokeExpr = s.getInvokeExpr();
       if (!(invokeExpr instanceof SpecialInvokeExpr)) continue;
 
       return (InvokeStmt) s;

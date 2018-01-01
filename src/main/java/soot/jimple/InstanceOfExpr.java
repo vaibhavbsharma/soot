@@ -29,17 +29,17 @@ import soot.*;
 import soot.util.*;
 
 public interface InstanceOfExpr extends Expr {
-  public Value getOp();
+  Value getOp();
 
-  public void setOp(Value op);
+  void setOp(Value op);
 
-  public ValueBox getOpBox();
+  ValueBox getOpBox();
 
-  public Type getType();
+  Type getType();
 
-  public Type getCheckType();
+  Type getCheckType();
 
-  public void setCheckType(Type checkType);
+  void setCheckType(Type checkType);
 
-  public void apply(Switch sw);
+  void apply(Switch sw);
 }

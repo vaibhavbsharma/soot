@@ -429,7 +429,7 @@ public class TypeResolver {
               && (((RefType) told).getSootClass().isPhantom()
                   || ((RefType) t_).getSootClass().isPhantom())
               && (stmt.getRightOp() instanceof CaughtExceptionRef))
-            lcas = Collections.<Type>singleton(RefType.v("java.lang.Throwable"));
+            lcas = Collections.singleton(RefType.v("java.lang.Throwable"));
           else lcas = h.lcas(told, t_);
 
           for (Type t : lcas) {

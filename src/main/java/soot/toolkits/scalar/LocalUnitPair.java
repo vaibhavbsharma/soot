@@ -51,11 +51,9 @@ public class LocalUnitPair {
    * @return true if other contains the same objects as this.
    */
   public boolean equals(Object other) {
-    if (other instanceof LocalUnitPair
+    return other instanceof LocalUnitPair
         && ((LocalUnitPair) other).local == this.local
-        && ((LocalUnitPair) other).unit == this.unit) {
-      return true;
-    } else return false;
+        && ((LocalUnitPair) other).unit == this.unit;
   }
 
   public int hashCode() {

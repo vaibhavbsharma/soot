@@ -13,5 +13,5 @@ import soot.util.*;
 public interface BytecodeReader {
 
   CompilationUnit read(InputStream is, String fullName, Program p)
-      throws FileNotFoundException, IOException;
+      throws IOException;
 }

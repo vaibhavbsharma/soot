@@ -37,9 +37,9 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public VariableDecl copy() {
     try {
-      VariableDecl node = (VariableDecl) clone();
+      VariableDecl node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -53,10 +53,10 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public VariableDecl fullCopy() {
-    VariableDecl tree = (VariableDecl) copy();
+    VariableDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -222,7 +222,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Dims getDims(int i) {
-    return (Dims) getDimsList().getChild(i);
+    return getDimsList().getChild(i);
   }
   /**
    * Append an element to the Dims list.
@@ -333,7 +333,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getInit() {
-    return (Expr) getInitOpt().getChild(0);
+    return getInitOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Init child.

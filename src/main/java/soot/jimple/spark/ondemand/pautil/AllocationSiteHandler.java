@@ -51,11 +51,11 @@ public interface AllocationSiteHandler {
    * @param callStack for context-sensitive analysis, the call site; might be null
    * @return true if analysis should be terminated; false otherwise
    */
-  public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack);
+  boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack);
 
-  public void resetState();
+  void resetState();
 
-  public static class PointsToSetHandler implements AllocationSiteHandler {
+  class PointsToSetHandler implements AllocationSiteHandler {
 
     private PointsToSetInternal p2set;
 
@@ -89,7 +89,7 @@ public interface AllocationSiteHandler {
     }
   }
 
-  public static class CastCheckHandler implements AllocationSiteHandler {
+  class CastCheckHandler implements AllocationSiteHandler {
 
     private Type type;
 
@@ -137,7 +137,7 @@ public interface AllocationSiteHandler {
     }
   }
 
-  public static class VirtualCallHandler implements AllocationSiteHandler {
+  class VirtualCallHandler implements AllocationSiteHandler {
 
     public PAG pag;
 
@@ -173,11 +173,8 @@ public interface AllocationSiteHandler {
       if (type instanceof AnySubType) {
         AnySubType any = (AnySubType) type;
         RefType refType = any.getBase();
-        if (pag.getTypeManager().getFastHierarchy().canStoreType(receiverType, refType)
-            || pag.getTypeManager().getFastHierarchy().canStoreType(refType, receiverType)) {
-          return true;
-        }
-        return false;
+        return pag.getTypeManager().getFastHierarchy().canStoreType(receiverType, refType)
+            || pag.getTypeManager().getFastHierarchy().canStoreType(refType, receiverType);
       }
       if (type instanceof ArrayType) {
         // we'll invoke the java.lang.Object method in this
@@ -205,5 +202,5 @@ public interface AllocationSiteHandler {
     }
   }
 
-  public boolean shouldHandle(VarNode dst);
+  boolean shouldHandle(VarNode dst);
 }

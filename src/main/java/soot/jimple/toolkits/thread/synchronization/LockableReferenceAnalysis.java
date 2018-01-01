@@ -499,7 +499,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
         Iterator<Value> usesIt = uses.iterator();
 
         while (usesIt.hasNext() && !lostObjects) {
-          Value use = (Value) usesIt.next();
+          Value use = usesIt.next();
           // if present, ok, if not, add as new group
 
           if (use instanceof InstanceFieldRef) {
@@ -704,7 +704,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
                       : null;
               Value oldindex =
                   (newindex != null)
-                      ? (Value) newindex.getRealLocal()
+                      ? newindex.getRealLocal()
                       : ar.getIndex(); // it's a FJL or a Constant
 
               out.put(rvalue, lvaluevalue);

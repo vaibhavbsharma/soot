@@ -446,8 +446,8 @@ public class SootUtil {
     if (set instanceof HybridPointsToSet) {
       ret = (HybridPointsToSet) set;
     } else if (set instanceof DoublePointsToSet) {
-      assert ((DoublePointsToSet) set).getNewSet().isEmpty();
-      ret = (HybridPointsToSet) ((DoublePointsToSet) set).getOldSet();
+      assert set.getNewSet().isEmpty();
+      ret = (HybridPointsToSet) set.getOldSet();
     }
     return ret;
   }
@@ -525,8 +525,7 @@ public class SootUtil {
   public static boolean isResolvableCall(SootMethod invokedMethod) {
     // TODO make calls through invokespecial resolvable
     if (invokedMethod.isStatic()) return true;
-    if (isConstructor(invokedMethod)) return true;
-    return false;
+    return isConstructor(invokedMethod);
   }
 
   public static Collection<? extends SootMethod> getCallTargets(

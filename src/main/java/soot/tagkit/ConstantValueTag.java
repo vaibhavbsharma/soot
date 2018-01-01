@@ -60,7 +60,6 @@ public abstract class ConstantValueTag implements Tag {
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
     ConstantValueTag other = (ConstantValueTag) obj;
-    if (!Arrays.equals(bytes, other.bytes)) return false;
-    return true;
+    return Arrays.equals(bytes, other.bytes);
   }
 }

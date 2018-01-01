@@ -49,7 +49,7 @@ public class SourceLocator {
   protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
   protected List<ClassProvider> classProviders;
   protected List<String> classPath;
-  private List<String> sourcePath;;
+  private List<String> sourcePath;
 
   private LoadingCache<String, ClassSourceType> pathToSourceType =
       CacheBuilder.newBuilder()

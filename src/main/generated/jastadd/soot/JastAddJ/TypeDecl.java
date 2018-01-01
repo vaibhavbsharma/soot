@@ -495,7 +495,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
       public boolean hasNext() {
         if ((inner == null || !inner.hasNext()) && outer.hasNext())
           inner = ((SimpleSet) outer.next()).iterator();
-        return inner == null ? false : inner.hasNext();
+        return inner != null && inner.hasNext();
       }
 
       public Object next() {
@@ -523,7 +523,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
       public boolean hasNext() {
         if ((inner == null || !inner.hasNext()) && outer.hasNext())
           inner = ((SimpleSet) outer.next()).iterator();
-        return inner != null ? inner.hasNext() : false;
+        return inner != null && inner.hasNext();
       }
 
       public Object next() {
@@ -585,7 +585,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
       public boolean hasNext() {
         if ((inner == null || !inner.hasNext()) && outer.hasNext())
           inner = ((SimpleSet) outer.next()).iterator();
-        return inner != null ? inner.hasNext() : false;
+        return inner != null && inner.hasNext();
       }
 
       public Object next() {
@@ -719,7 +719,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
     // 8.4.6.4 & 9.4.1
     for (Iterator iter1 = localMethodsIterator(); iter1.hasNext(); ) {
       MethodDecl m = (MethodDecl) iter1.next();
-      ASTNode target = m.hostType() == this ? (ASTNode) m : (ASTNode) this;
+      ASTNode target = m.hostType() == this ? m : this;
 
       // for(Iterator i2 = overrides(m).iterator(); i2.hasNext(); ) {
       for (Iterator i2 = ancestorMethods(m.signature()).iterator(); i2.hasNext(); ) {
@@ -1626,7 +1626,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl) getBodyDeclList().getChild(i);
+    return getBodyDeclList().getChild(i);
   }
 
   /**
@@ -1775,7 +1775,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
       TypeDecl type, Expr expr) {
     // System.out.println("@@@ " + fullName() + " assign conversion to " +
     // type.fullName() + ", expr: " + expr);
-    boolean sourceIsConstant = expr != null ? expr.isConstant() : false;
+    boolean sourceIsConstant = expr != null && expr.isConstant();
     // System.out.println("@@@ sourceIsConstant: " + sourceIsConstant);
     if (identityConversionTo(type) || wideningConversionTo(type)) return true;
     // System.out.println("@@@ narrowing conversion needed");
@@ -2217,9 +2217,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
       if (hostPackage().equals(type.hostPackage())) {
         return true;
       }
-      if (type.isNestedType()
-          && type.enclosingType().withinBodyThatSubclasses(enclosingType()) != null) return true;
-      return false;
+      return type.isNestedType()
+          && type.enclosingType().withinBodyThatSubclasses(enclosingType()) != null;
     } else if (isPrivate()) {
       return topLevelType() == type.topLevelType();
     } else return hostPackage().equals(type.hostPackage());
@@ -3474,7 +3473,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode>
       boolean canUnboxThis = !unboxed().isUnknown();
       boolean canUnboxType = !type.unboxed().isUnknown();
       TypeDecl t = !canUnboxThis && canUnboxType ? type.unboxed() : type;
-      boolean sourceIsConstant = expr != null ? expr.isConstant() : false;
+      boolean sourceIsConstant = expr != null && expr.isConstant();
       if (sourceIsConstant
           && (isInt() || isChar() || isShort() || isByte())
           && (t.isByte() || t.isShort() || t.isChar())

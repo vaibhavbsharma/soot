@@ -34,9 +34,9 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public List<T> copy() {
     try {
-      List node = (List) clone();
+      List node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -50,10 +50,10 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<T> fullCopy() {
-    List tree = (List) copy();
+    List tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -79,7 +79,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
         VariableArityParameterDeclaration p = (VariableArityParameterDeclaration) node;
         list.add(
             new VariableArityParameterDeclarationSubstituted(
-                (Modifiers) p.getModifiers().fullCopy(),
+                p.getModifiers().fullCopy(),
                 // use the type acces since VariableArity adds to the dimension
                 p.getTypeAccess().type().substituteParameterType(parTypeDecl),
                 p.getID(),
@@ -88,7 +88,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
         ParameterDeclaration p = (ParameterDeclaration) node;
         list.add(
             new ParameterDeclarationSubstituted(
-                (Modifiers) p.getModifiers().fullCopy(),
+                p.getModifiers().fullCopy(),
                 p.type().substituteParameterType(parTypeDecl),
                 p.getID(),
                 p));

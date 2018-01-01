@@ -59,7 +59,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     for (int i = 0; i < args.size(); i++)
       this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
     for (int i = 0; i < bootstrapArgs.size(); i++)
-      this.bsmArgBoxes[i] = Grimp.v().newExprBox((Value) bootstrapArgs.get(i));
+      this.bsmArgBoxes[i] = Grimp.v().newExprBox(bootstrapArgs.get(i));
   }
 
   public Object clone() {
@@ -100,8 +100,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
           if (!(element.getValue().equivTo(element.getValue()))) return false;
       }
       if (!methodRef.equals(ie.methodRef)) return false;
-      if (!bsmRef.equals(ie.bsmRef)) return false;
-      return true;
+      return bsmRef.equals(ie.bsmRef);
     }
     return false;
   }

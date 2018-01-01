@@ -73,7 +73,7 @@ public class JimpleBody extends StmtBody {
           };
     }
     return validators;
-  };
+  }
 
   /** Construct an empty JimpleBody */
   public JimpleBody(SootMethod m) {

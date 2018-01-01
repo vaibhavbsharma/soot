@@ -88,8 +88,7 @@ public class InitialResolver implements IInitialResolver {
   /** returns true if there is an AST avail for given soot class */
   public boolean hasASTForSootName(String name) {
     if (sootNameToAST == null) return false;
-    if (sootNameToAST.containsKey(name)) return true;
-    return false;
+    return sootNameToAST.containsKey(name);
   }
 
   /** sets AST for given soot class if possible */

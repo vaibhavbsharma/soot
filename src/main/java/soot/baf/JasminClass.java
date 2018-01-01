@@ -254,7 +254,7 @@ public class JasminClass extends AbstractJasminClass {
 
           if (blocks.size() != 0) {
             // set the stack height of the entry points
-            List<Block> entryPoints = ((DirectedGraph<Block>) blockGraph).getHeads();
+            List<Block> entryPoints = blockGraph.getHeads();
             for (Block entryBlock : entryPoints) {
               Integer initialHeight;
               if (handlerUnits.contains(entryBlock.getHead())) {

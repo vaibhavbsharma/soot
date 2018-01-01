@@ -51,10 +51,10 @@ import soot.toolkits.scalar.Pair;
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons {
 
-  public static interface GlobalObjectGetter {
-    public G getG();
+  public interface GlobalObjectGetter {
+    G getG();
 
-    public void reset();
+    void reset();
   }
 
   public static G v() {

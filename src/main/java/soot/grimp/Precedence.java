@@ -26,5 +26,5 @@
 package soot.grimp;
 
 public interface Precedence {
-  public abstract int getPrecedence();
+  int getPrecedence();
 }

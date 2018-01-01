@@ -659,11 +659,8 @@ public class FullSensitiveNode extends IVarAbstraction {
       flowto.put((FullSensitiveNode) qv, gm);
     }
 
-    if (gm.addNewFigure(code, pres) != null) {
-      return true;
-    }
+    return gm.addNewFigure(code, pres) != null;
 
-    return false;
   }
 
   private void do_pts_interval_merge() {

@@ -52,9 +52,9 @@ public class Block extends Stmt implements Cloneable, VariableScope {
   @SuppressWarnings({"unchecked", "cast"})
   public Block copy() {
     try {
-      Block node = (Block) clone();
+      Block node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -68,10 +68,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block fullCopy() {
-    Block tree = (Block) copy();
+    Block tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -200,7 +200,7 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Stmt getStmt(int i) {
-    return (Stmt) getStmtList().getChild(i);
+    return getStmtList().getChild(i);
   }
   /**
    * Append an element to the Stmt list.

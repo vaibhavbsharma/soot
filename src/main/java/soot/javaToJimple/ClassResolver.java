@@ -109,7 +109,7 @@ public class ClassResolver {
         Util.addInnerClassTag(
             sootClass,
             sootClass.getName(),
-            ((soot.RefType) Util.getSootType(superType.outer())).toString(),
+            Util.getSootType(superType.outer()).toString(),
             superType.name(),
             Util.getModifier(superType.flags()));
       }
@@ -412,7 +412,7 @@ public class ClassResolver {
         Util.addInnerClassTag(
             sootClass,
             typeClass.getName(),
-            ((soot.RefType) Util.getSootType(superType.outer())).toString(),
+            Util.getSootType(superType.outer()).toString(),
             superType.name(),
             Util.getModifier(superType.flags()));
       }

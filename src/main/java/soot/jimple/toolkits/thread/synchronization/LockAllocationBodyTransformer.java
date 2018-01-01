@@ -239,7 +239,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
           csr = tn;
           moreLocks = false;
         } else if (tn.group.useLocksets) {
-          Value lock = getLockFor((EquivalentValue) tn.lockset.get(lockNum)); // adds
+          Value lock = getLockFor(tn.lockset.get(lockNum)); // adds
           // local
           // vars
           // and
@@ -277,8 +277,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
             throw new RuntimeException(
                 "Unknown type of lock (" + lock + "): expected FieldRef or Local");
 
-          if (lockNum + 1 >= tn.lockset.size()) moreLocks = false;
-          else moreLocks = true;
+          moreLocks = lockNum + 1 < tn.lockset.size();
 
           if (lockNum > 0) {
             SynchronizedRegion nsr = new SynchronizedRegion();

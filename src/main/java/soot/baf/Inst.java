@@ -28,23 +28,23 @@ package soot.baf;
 import soot.*;
 
 public interface Inst extends Unit {
-  public int getInCount();
+  int getInCount();
 
-  public int getOutCount();
+  int getOutCount();
 
-  public int getNetCount();
+  int getNetCount();
 
-  public int getInMachineCount();
+  int getInMachineCount();
 
-  public int getOutMachineCount();
+  int getOutMachineCount();
 
-  public int getNetMachineCount();
+  int getNetMachineCount();
 
-  public boolean containsInvokeExpr();
+  boolean containsInvokeExpr();
 
-  public boolean containsFieldRef();
+  boolean containsFieldRef();
 
-  public boolean containsArrayRef();
+  boolean containsArrayRef();
 
-  public boolean containsNewExpr();
+  boolean containsNewExpr();
 }

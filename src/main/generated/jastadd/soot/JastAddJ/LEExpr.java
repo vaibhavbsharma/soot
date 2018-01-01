@@ -35,9 +35,9 @@ public class LEExpr extends RelationalExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public LEExpr copy() {
     try {
-      LEExpr node = (LEExpr) clone();
+      LEExpr node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -51,10 +51,10 @@ public class LEExpr extends RelationalExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LEExpr fullCopy() {
-    LEExpr tree = (LEExpr) copy();
+    LEExpr tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);

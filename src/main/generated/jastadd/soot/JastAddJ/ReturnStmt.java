@@ -53,9 +53,9 @@ public class ReturnStmt extends Stmt implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public ReturnStmt copy() {
     try {
-      ReturnStmt node = (ReturnStmt) clone();
+      ReturnStmt node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -69,10 +69,10 @@ public class ReturnStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ReturnStmt fullCopy() {
-    ReturnStmt tree = (ReturnStmt) copy();
+    ReturnStmt tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -241,7 +241,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getResult() {
-    return (Expr) getResultOpt().getChild(0);
+    return getResultOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Result child.

@@ -218,7 +218,6 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     // create an aggregated condition
     Iterator<ASTCondition> condIt = conditions.iterator();
     ASTCondition newCond = null;
-    ;
     while (condIt.hasNext()) {
       ASTCondition next = condIt.next();
       if (newCond == null) newCond = next;
@@ -312,9 +311,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
 
     if (abStmt.is_Break() && abruptLabel.compareTo(innerLabel) == 0 && hasNext) {
       return true;
-    } else if (abStmt.is_Continue() && abruptLabel.compareTo(outerLabel) == 0 && !hasNext) {
-      return true;
-    } else return false;
+    } else return abStmt.is_Continue() && abruptLabel.compareTo(outerLabel) == 0 && !hasNext;
   }
 
   private Stmt isIfNodeWithOneStatement(ASTNode secondLabelsBody) {

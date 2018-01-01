@@ -28,7 +28,7 @@ public class ZipFilePart extends PathPart {
       zipFile = new ZipFile(file);
       // process all entries in the zip file
       for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ) {
-        ZipEntry entry = (ZipEntry) e.nextElement();
+        ZipEntry entry = e.nextElement();
         String pathName = new File(entry.getName()).getParent();
         if (pathName != null) pathName = pathName.replace(File.separatorChar, '.');
         if (!set.contains(pathName)) {

@@ -288,9 +288,7 @@ public class OrAggregatorThree {
     } else if (s1 instanceof ReturnStmt && s2 instanceof ReturnStmt) {
       // takes care of return <var>
       return true;
-    } else if (s1 instanceof ReturnVoidStmt && s2 instanceof ReturnVoidStmt) {
-      // takes care of return;
-      return true;
-    } else return false;
+    } else // takes care of return;
+      return s1 instanceof ReturnVoidStmt && s2 instanceof ReturnVoidStmt;
   }
 }

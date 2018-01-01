@@ -241,7 +241,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     if (PhaseOptions.getBoolean(gOptions, "sl")) {
                       if (!mPass2 || PhaseOptions.getBoolean(gOptions, "sl2")) {
                         // try to eliminate store/load pair
-                        Unit loadUnit = ((UnitValueBoxPair) uses.get(0)).getUnit();
+                        Unit loadUnit = uses.get(0).getUnit();
                         block = mUnitToBlockMap.get(unit);
                         int test = stackIndependent(unit, loadUnit, block, STORE_LOAD_ELIMINATION);
 
@@ -275,8 +275,8 @@ public class LoadStoreOptimizer extends BodyTransformer {
                       if (!mPass2 || PhaseOptions.getBoolean(gOptions, "sll2")) {
                         // try to replace store/load/load trio by a flavor
                         // of the dup unit
-                        Unit firstLoad = ((UnitValueBoxPair) uses.get(0)).getUnit();
-                        Unit secondLoad = ((UnitValueBoxPair) uses.get(1)).getUnit();
+                        Unit firstLoad = uses.get(0).getUnit();
+                        Unit secondLoad = uses.get(1).getUnit();
                         block = mUnitToBlockMap.get(unit);
 
                         Unit temp; // xxx try to optimize this
@@ -660,10 +660,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
 
     /** @return true if aUnit perform a non-local read or write. false otherwise. */
     private boolean isNonLocalReadOrWrite(Unit aUnit) {
-      if ((aUnit instanceof FieldArgInst)
+      return (aUnit instanceof FieldArgInst)
           || (aUnit instanceof ArrayReadInst)
-          || (aUnit instanceof ArrayWriteInst)) return true;
-      else return false;
+          || (aUnit instanceof ArrayWriteInst);
     }
 
     /**
@@ -768,7 +767,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       if (unitToMove == null) return false;
 
       while (current != block.getHead()) { // do not go past basic block limit
-        current = (Unit) mUnits.getPredOf(current);
+        current = mUnits.getPredOf(current);
 
         if (!canMoveUnitOver(current, unitToMove)) return false;
 
@@ -1038,20 +1037,18 @@ public class LoadStoreOptimizer extends BodyTransformer {
         if (!preds.contains(it.next())) return false;
       }
 
-      if (size == preds.size()) return true;
-      else return false;
+      return size == preds.size();
     }
 
     /** @return true if aUnit is a commutative binary operator */
     private boolean isCommutativeBinOp(Unit aUnit) {
       if (aUnit == null) return false;
 
-      if (aUnit instanceof AddInst
+      return aUnit instanceof AddInst
           || aUnit instanceof MulInst
           || aUnit instanceof AndInst
           || aUnit instanceof OrInst
-          || aUnit instanceof XorInst) return true;
-      else return false;
+          || aUnit instanceof XorInst;
     }
 
     void propagateBackwardsIndependentHunk() {

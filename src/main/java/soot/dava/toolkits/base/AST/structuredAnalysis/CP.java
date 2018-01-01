@@ -284,7 +284,7 @@ public class CP extends StructuredAnalysis {
 
     Iterator<CPTuple> it = localsAndFormals.iterator();
     while (it.hasNext()) {
-      CPTuple tempTuple = (CPTuple) it.next().clone();
+      CPTuple tempTuple = it.next().clone();
 
       // just making sure all are set to Top
       if (!tempTuple.isTop()) tempTuple.setTop();
@@ -335,7 +335,7 @@ public class CP extends StructuredAnalysis {
       throw new RuntimeException(
           "processSynchronized  is not implemented for other flowSet types" + input.toString());
     }
-    DavaFlowSet inSet = (DavaFlowSet) input;
+    DavaFlowSet inSet = input;
     return inSet;
   }
 
@@ -382,7 +382,7 @@ public class CP extends StructuredAnalysis {
     // x = expr;
     // confirm that the left side is a local with a primitive type
     Value left = defStmt.getLeftOp();
-    if (!(left instanceof Local && ((Local) left).getType() instanceof PrimType)) return inSet;
+    if (!(left instanceof Local && left.getType() instanceof PrimType)) return inSet;
 
     // left is a primitive primitive local
     CPFlowSet toReturn = (CPFlowSet) cloneFlowSet(inSet);
@@ -630,7 +630,6 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF)
       System.out.println(
           "Processing if node using over-ridden process if method" + input.toString());
-    ;
 
     input = processCondition(node.get_Condition(), input);
 
@@ -668,7 +667,6 @@ public class CP extends StructuredAnalysis {
     DavaFlowSet temp = handleBreak(label, output2, node);
 
     if (DEBUG_IF) System.out.println("Exiting if node" + temp.toString());
-    ;
 
     return temp;
   }
@@ -678,7 +676,6 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF)
       System.out.println(
           "Processing IF-ELSE node using over-ridden process if method" + input.toString());
-    ;
 
     if (!(input instanceof CPFlowSet)) {
       throw new DavaFlowAnalysisException("not a flow set");
@@ -738,7 +735,6 @@ public class CP extends StructuredAnalysis {
     output1 = handleBreak(label, temp, node);
     if (DEBUG_IF) {
       System.out.println("Exiting ifelse node" + output1.toString());
-      ;
     }
 
     return output1;
@@ -866,7 +862,7 @@ public class CP extends StructuredAnalysis {
         // no value of a found but value of b was found <classname, a,b>
         // System.out.println("From INSET: a:"+a+" is not a constant b "+b+" is"
         // );
-        if (!(a instanceof Local && ((Local) a).getType() instanceof PrimType)) {
+        if (!(a instanceof Local && a.getType() instanceof PrimType)) {
           // we only hanlde primitive locals
           return null;
         }
@@ -876,7 +872,7 @@ public class CP extends StructuredAnalysis {
         // no value of b found but value of a was found <classname, b,a>
         // System.out.println("From INSET: a:"+a+" is a constant b "+b+" is not"
         // );
-        if (!(b instanceof Local && ((Local) b).getType() instanceof PrimType)) {
+        if (!(b instanceof Local && b.getType() instanceof PrimType)) {
           // we only hanlde primitive locals
           return null;
         }
@@ -888,7 +884,7 @@ public class CP extends StructuredAnalysis {
       // entering a tuple <className,b,a> maybe
       // System.out.println("a:"+a+" is a constant b:"+b+" is not");
 
-      if (!(b instanceof Local && ((Local) b).getType() instanceof PrimType)) {
+      if (!(b instanceof Local && b.getType() instanceof PrimType)) {
         // we only hanlde primitive locals
         return null;
       }
@@ -901,7 +897,7 @@ public class CP extends StructuredAnalysis {
       // chance of entering a tuple <className,a,b>
       // System.out.println("a:"+a+" is not a constant b:"+b+" is ");
 
-      if (!(a instanceof Local && ((Local) a).getType() instanceof PrimType)) {
+      if (!(a instanceof Local && a.getType() instanceof PrimType)) {
         // we only hanlde primitive locals
         return null;
       }

@@ -71,9 +71,9 @@ public class FieldDeclaration extends MemberDecl
   @SuppressWarnings({"unchecked", "cast"})
   public FieldDeclaration copy() {
     try {
-      FieldDeclaration node = (FieldDeclaration) clone();
+      FieldDeclaration node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -88,10 +88,10 @@ public class FieldDeclaration extends MemberDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public FieldDeclaration fullCopy() {
-    FieldDeclaration tree = (FieldDeclaration) copy();
+    FieldDeclaration tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -400,7 +400,7 @@ public class FieldDeclaration extends MemberDecl
   public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     FieldDeclaration f =
         new FieldDeclarationSubstituted(
-            (Modifiers) getModifiers().fullCopy(),
+            getModifiers().fullCopy(),
             getTypeAccess().type().substituteReturnType(parTypeDecl),
             getID(),
             new Opt(),
@@ -760,7 +760,7 @@ public class FieldDeclaration extends MemberDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getInit() {
-    return (Expr) getInitOpt().getChild(0);
+    return getInitOpt().getChild(0);
   }
 
   /**
@@ -846,8 +846,7 @@ public class FieldDeclaration extends MemberDecl
     if (isPublic()) return true;
     else if (isProtected()) {
       if (hostPackage().equals(type.hostPackage())) return true;
-      if (type.withinBodyThatSubclasses(hostType()) != null) return true;
-      return false;
+      return type.withinBodyThatSubclasses(hostType()) != null;
     } else if (isPrivate()) return hostType().topLevelType() == type.topLevelType();
     else return hostPackage().equals(type.hostPackage());
   }

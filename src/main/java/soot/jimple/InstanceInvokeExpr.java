@@ -29,9 +29,9 @@ import soot.*;
 
 public interface InstanceInvokeExpr extends InvokeExpr {
   /** @return the target (qualifier) of this method invocation expression. */
-  public Value getBase();
+  Value getBase();
 
-  public ValueBox getBaseBox();
+  ValueBox getBaseBox();
 
-  public void setBase(Value base);
+  void setBase(Value base);
 }

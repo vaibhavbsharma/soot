@@ -278,12 +278,12 @@ class Graph implements DirectedGraph<Node> {
 
   /** Returns a list of predecessors for the given node in the graph. */
   public List<Node> getPredsOf(Node s) {
-    return ((Node) s).preds;
+    return s.preds;
   }
 
   /** Returns a list of successors for the given node in the graph. */
   public List<Node> getSuccsOf(Node s) {
-    return ((Node) s).succs;
+    return s.succs;
   }
 
   /** Returns the node count for this graph. */

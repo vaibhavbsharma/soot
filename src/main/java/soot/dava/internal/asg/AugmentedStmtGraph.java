@@ -65,7 +65,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
     }
 
     for (AugmentedStmt oas : other.aug_list) {
-      AugmentedStmt nas = (AugmentedStmt) old2new.get(oas);
+      AugmentedStmt nas = old2new.get(oas);
 
       for (AugmentedStmt aug : oas.bpreds) nas.bpreds.add(old2new.get(aug));
       if (nas.bpreds.isEmpty()) bheads.add(nas);
@@ -221,11 +221,11 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public void calculate_Reachability(AugmentedStmt source, AugmentedStmt dominator) {
-    calculate_Reachability(source, Collections.<AugmentedStmt>emptySet(), dominator);
+    calculate_Reachability(source, Collections.emptySet(), dominator);
   }
 
   public void calculate_Reachability(Collection<AugmentedStmt> sources, AugmentedStmt dominator) {
-    calculate_Reachability(sources, Collections.<AugmentedStmt>emptySet(), dominator);
+    calculate_Reachability(sources, Collections.emptySet(), dominator);
   }
 
   public void calculate_Reachability(AugmentedStmt source) {
@@ -241,7 +241,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public AugmentedStmt get_AugStmt(Stmt s) {
-    AugmentedStmt as = (AugmentedStmt) binding.get(s);
+    AugmentedStmt as = binding.get(s);
     if (as == null)
       throw new RuntimeException("Could not find augmented statement for: " + s.toString());
 
@@ -417,7 +417,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
     }
 
     for (AugmentedStmt newAs : newBody) {
-      AugmentedStmt oldAs = (AugmentedStmt) new2old.get(newAs);
+      AugmentedStmt oldAs = new2old.get(newAs);
 
       mirror_PredsSuccs(oldAs, oldAs.bpreds, newAs.bpreds, old2new);
       mirror_PredsSuccs(oldAs, oldAs.cpreds, newAs.cpreds, old2new);
@@ -437,7 +437,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
     }
 
     for (AugmentedStmt nas : newBody) {
-      AugmentedStmt oas = (AugmentedStmt) new2old.get(nas);
+      AugmentedStmt oas = new2old.get(nas);
 
       Stmt ns = nas.get_Stmt(), os = oas.get_Stmt();
 
@@ -496,13 +496,13 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
       List<AugmentedStmt> newList,
       Map<AugmentedStmt, AugmentedStmt> old2new) {
     for (AugmentedStmt oldAs : oldList) {
-      AugmentedStmt newAs = (AugmentedStmt) old2new.get(oldAs);
+      AugmentedStmt newAs = old2new.get(oldAs);
 
       if (newAs != null) newList.add(newAs);
       else {
         newList.add(oldAs);
 
-        AugmentedStmt clonedAs = (AugmentedStmt) old2new.get(originalAs);
+        AugmentedStmt clonedAs = old2new.get(originalAs);
 
         if (oldList == originalAs.bpreds) oldAs.bsuccs.add(clonedAs);
         else if (oldList == originalAs.cpreds) oldAs.csuccs.add(clonedAs);

@@ -130,7 +130,7 @@ public class Shimple {
 
   /** Returns true if the unit is a Phi node, false otherwise. */
   public static boolean isPhiNode(Unit unit) {
-    return getPhiExpr(unit) == null ? false : true;
+    return getPhiExpr(unit) != null;
   }
 
   /** Returns the corresponding PhiExpr if the unit is a Phi node, null otherwise. */
@@ -149,7 +149,7 @@ public class Shimple {
   }
 
   public static boolean isPiNode(Unit unit) {
-    return getPiExpr(unit) == null ? false : true;
+    return getPiExpr(unit) != null;
   }
 
   public static PiExpr getPiExpr(Unit unit) {
@@ -208,7 +208,7 @@ public class Shimple {
 
     // find fall-through pred
     if (!remove.equals(units.getFirst())) {
-      Unit possiblePred = (Unit) units.getPredOf(remove);
+      Unit possiblePred = units.getPredOf(remove);
       if (possiblePred.fallsThrough()) preds.add(possiblePred);
     }
 
@@ -250,12 +250,12 @@ public class Shimple {
                     + ".");
 
       if (!remove.equals(units.getFirst())) {
-        Unit pred = (Unit) units.getPredOf(remove);
+        Unit pred = units.getPredOf(remove);
         if (debug)
           G.v().out.println("Warning: Falling back to immediate chain predecessor: " + pred + ".");
         preds.add(pred);
       } else if (!remove.equals(units.getLast())) {
-        Unit succ = (Unit) units.getSuccOf(remove);
+        Unit succ = units.getSuccOf(remove);
         if (debug)
           G.v().out.println("Warning: Falling back to immediate chain successor: " + succ + ".");
         preds.add(succ);

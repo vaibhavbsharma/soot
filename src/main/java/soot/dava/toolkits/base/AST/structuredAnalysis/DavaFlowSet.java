@@ -354,8 +354,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   private boolean checkImplicit(DAbruptStmt ab) {
     SETNodeLabel label = ab.getLabel();
     if (label == null) return true;
-    if (label.toString() == null) return true;
-    return false;
+    return label.toString() == null;
   }
 
   /**
@@ -608,9 +607,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
     // check implicitContinues match
     otherMap = other.getImplicitContinues();
-    if (!compareHashMaps(implicitContinues, otherMap)) return false;
-
-    return true;
+    return compareHashMaps(implicitContinues, otherMap);
   }
 
   private boolean compareHashMaps(

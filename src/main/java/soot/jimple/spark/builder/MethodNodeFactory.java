@@ -342,8 +342,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     RefType rt = (RefType) t;
     String s = rt.toString();
     if (s.equals("java.lang.StringBuffer")) return true;
-    if (s.equals("java.lang.StringBuilder")) return true;
-    return false;
+    return s.equals("java.lang.StringBuilder");
   }
 
   @Override

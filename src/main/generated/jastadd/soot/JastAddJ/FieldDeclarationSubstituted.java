@@ -40,9 +40,9 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
   @SuppressWarnings({"unchecked", "cast"})
   public FieldDeclarationSubstituted copy() {
     try {
-      FieldDeclarationSubstituted node = (FieldDeclarationSubstituted) clone();
+      FieldDeclarationSubstituted node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -56,10 +56,10 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
    */
   @SuppressWarnings({"unchecked", "cast"})
   public FieldDeclarationSubstituted fullCopy() {
-    FieldDeclarationSubstituted tree = (FieldDeclarationSubstituted) copy();
+    FieldDeclarationSubstituted tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -242,7 +242,7 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getInit() {
-    return (Expr) getInitOpt().getChild(0);
+    return getInitOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Init child.

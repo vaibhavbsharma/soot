@@ -35,9 +35,9 @@ public class Dims extends ASTNode<ASTNode> implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Dims copy() {
     try {
-      Dims node = (Dims) clone();
+      Dims node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -51,10 +51,10 @@ public class Dims extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Dims fullCopy() {
-    Dims tree = (Dims) copy();
+    Dims tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -126,7 +126,7 @@ public class Dims extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getExpr() {
-    return (Expr) getExprOpt().getChild(0);
+    return getExprOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Expr child.

@@ -67,7 +67,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
     Unit prev = null;
     SpecialInvokeInst sii = null;
     while (it.hasNext()) {
-      Unit u = (Unit) it.next();
+      Unit u = it.next();
       if (u instanceof SpecialInvokeInst) {
         sii = (SpecialInvokeInst) u;
         SootMethodRef smr = sii.getMethodRef();
@@ -103,7 +103,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
           Local bl = ((LoadInst) prev).getLocal();
           Map<Local, Local> locals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
           if (locals != null && locals.containsKey(bl)) {
-            Type t = ((Local) locals.get(bl)).getType();
+            Type t = locals.get(bl).getType();
             if (t instanceof RefType
                 && ((RefType) t).getSootClass().getName().equals(origClass.getName())) {
               units.insertBefore(Baf.v().newDup1Inst(RefType.v()), sii);
@@ -137,7 +137,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
                       .newTrap(
                           ThrowSet.getRandomThrowable(),
                           sii,
-                          (Unit) units.getSuccOf(sii),
+                          units.getSuccOf(sii),
                           handler));
           done = true;
           break;

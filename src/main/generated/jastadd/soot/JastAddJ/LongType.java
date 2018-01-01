@@ -47,9 +47,9 @@ public class LongType extends IntegralType implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public LongType copy() {
     try {
-      LongType node = (LongType) clone();
+      LongType node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -63,10 +63,10 @@ public class LongType extends IntegralType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LongType fullCopy() {
-    LongType tree = (LongType) copy();
+    LongType tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -224,7 +224,7 @@ public class LongType extends IntegralType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
-    return (Access) getSuperClassAccessOpt().getChild(0);
+    return getSuperClassAccessOpt().getChild(0);
   }
   /**
    * Replaces the (optional) SuperClassAccess child.
@@ -299,7 +299,7 @@ public class LongType extends IntegralType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl) getBodyDeclList().getChild(i);
+    return getBodyDeclList().getChild(i);
   }
   /**
    * Append an element to the BodyDecl list.

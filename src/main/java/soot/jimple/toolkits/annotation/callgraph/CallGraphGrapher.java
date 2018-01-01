@@ -76,14 +76,12 @@ public class CallGraphGrapher extends SceneTransformer {
 
   private boolean hasTgtMethods(SootMethod meth) {
     ArrayList<MethInfo> list = getTgtMethods(meth, false);
-    if (!list.isEmpty()) return true;
-    else return false;
+    return !list.isEmpty();
   }
 
   private boolean hasSrcMethods(SootMethod meth) {
     ArrayList<MethInfo> list = getSrcMethods(meth, false);
-    if (list.size() > 1) return true;
-    else return false;
+    return list.size() > 1;
   }
 
   private ArrayList<MethInfo> getSrcMethods(SootMethod method, boolean recurse) {
@@ -162,7 +160,7 @@ public class CallGraphGrapher extends SceneTransformer {
     if (sm != null) {
       return sm;
     } else {
-      return (SootMethod) sc.getMethods().get(0);
+      return sc.getMethods().get(0);
     }
   }
 

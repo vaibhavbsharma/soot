@@ -95,7 +95,7 @@ public class TypeBasedReflectionModelTest {
     SootMethod m =
         new SootMethod(
             "main",
-            Collections.singletonList((Type) ArrayType.v(Scene.v().getType("java.lang.String"), 1)),
+            Collections.singletonList(ArrayType.v(Scene.v().getType("java.lang.String"), 1)),
             VoidType.v(),
             Modifier.PUBLIC | Modifier.STATIC);
     cl.addMethod(m);

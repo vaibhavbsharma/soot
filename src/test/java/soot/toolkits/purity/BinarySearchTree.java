@@ -41,8 +41,7 @@ public class BinarySearchTree {
     if (root == null) return size == 0;
     if (!isTree()) return false;
     if (numNodes(root) != size) return false;
-    if (!isOrdered(root, null, null)) return false;
-    return true;
+    return isOrdered(root, null, null);
   }
 
   boolean isTree() {

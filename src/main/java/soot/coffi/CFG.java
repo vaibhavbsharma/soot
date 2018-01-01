@@ -1208,7 +1208,7 @@ public class CFG {
 
             targetToHandler.put(firstTargetStmt, newTarget);
             if (units.getFirst() != newTarget) {
-              Unit prev = (Unit) units.getPredOf(newTarget);
+              Unit prev = units.getPredOf(newTarget);
               if (prev != null && prev.fallsThrough())
                 units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
             }

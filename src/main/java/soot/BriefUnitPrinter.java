@@ -31,11 +31,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
 
   public void startUnit(Unit u) {
     super.startUnit(u);
-    if (u instanceof Stmt) {
-      baf = false;
-    } else {
-      baf = true;
-    }
+    baf = !(u instanceof Stmt);
   }
 
   public void methodRef(SootMethodRef m) {

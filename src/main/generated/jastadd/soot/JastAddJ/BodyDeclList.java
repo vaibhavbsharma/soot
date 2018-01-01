@@ -55,9 +55,9 @@ public class BodyDeclList extends List implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDeclList copy() {
     try {
-      BodyDeclList node = (BodyDeclList) clone();
+      BodyDeclList node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -71,10 +71,10 @@ public class BodyDeclList extends List implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDeclList fullCopy() {
-    BodyDeclList tree = (BodyDeclList) copy();
+    BodyDeclList tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);

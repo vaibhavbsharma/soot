@@ -134,9 +134,7 @@ public class UnitThrowAnalysisTest {
                         FloatType.v(),
                         true),
                 Arrays.asList(
-                    new Value[] {
-                      floatStaticFieldRef, floatArrayRef,
-                    }));
+                    floatStaticFieldRef, floatArrayRef));
   }
 
   @Test
@@ -307,7 +305,7 @@ public class UnitThrowAnalysisTest {
     expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
     assertTrue(
         ExceptionTestUtility.sameMembers(
-            expectedRep, Collections.<AnySubType>emptySet(), unitAnalysis.mightThrow(s)));
+            expectedRep, Collections.emptySet(), unitAnalysis.mightThrow(s)));
 
     Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
     expectedCatch.add(utility.NULL_POINTER_EXCEPTION);
@@ -555,7 +553,7 @@ public class UnitThrowAnalysisTest {
   @Test
   public void testGIfStmt() {
     IfStmt s =
-        Grimp.v().newIfStmt(Grimp.v().newEqExpr(IntConstant.v(1), IntConstant.v(1)), (Unit) null);
+        Grimp.v().newIfStmt(Grimp.v().newEqExpr(IntConstant.v(1), IntConstant.v(1)), null);
     s.setTarget(s); // A very tight infinite loop.
     assertTrue(
         ExceptionTestUtility.sameMembers(
@@ -590,8 +588,8 @@ public class UnitThrowAnalysisTest {
         Grimp.v()
             .newLookupSwitchStmt(
                 IntConstant.v(1),
-                Arrays.asList(new Value[] {IntConstant.v(1)}),
-                Arrays.asList(new Unit[] {target}),
+                Arrays.asList(IntConstant.v(1)),
+                Arrays.asList(target),
                 target);
     assertTrue(
         ExceptionTestUtility.sameMembers(
@@ -696,7 +694,7 @@ public class UnitThrowAnalysisTest {
         Jimple.v().newAssignStmt(Jimple.v().newLocal("local0", IntType.v()), IntConstant.v(0));
     Stmt s =
         Jimple.v()
-            .newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(new Unit[] {target}), target);
+            .newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(target), target);
     assertTrue(
         ExceptionTestUtility.sameMembers(
             utility.VM_ERRORS, Collections.EMPTY_SET, unitAnalysis.mightThrow(s)));
@@ -710,7 +708,7 @@ public class UnitThrowAnalysisTest {
         Grimp.v().newAssignStmt(Grimp.v().newLocal("local0", IntType.v()), IntConstant.v(0));
     Stmt s =
         Grimp.v()
-            .newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(new Unit[] {target}), target);
+            .newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(target), target);
     assertTrue(
         ExceptionTestUtility.sameMembers(
             utility.VM_ERRORS, Collections.EMPTY_SET, unitAnalysis.mightThrow(s)));

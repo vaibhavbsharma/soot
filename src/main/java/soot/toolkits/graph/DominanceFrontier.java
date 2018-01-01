@@ -27,5 +27,5 @@ import java.util.*;
  * @author Navindra Umanee
  */
 public interface DominanceFrontier<N> {
-  public List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node);
+  List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node);
 }

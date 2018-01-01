@@ -60,8 +60,7 @@ public class FixedMethods {
    */
   private static boolean clientOverwriteable(SootMethod m) {
     SootClass c = m.getDeclaringClass();
-    if (!c.isFinal() && !m.isFinal() && visible(m) && clientCanInstantiate(c)) return true;
-    return false;
+    return !c.isFinal() && !m.isFinal() && visible(m) && clientCanInstantiate(c);
   }
 
   /**

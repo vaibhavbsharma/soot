@@ -234,7 +234,7 @@ public class PAG implements PointsToAnalysis {
     }
     PointsToSetInternal bases = (PointsToSetInternal) s;
     final PointsToSetInternal ret =
-        setFactory.newSet((f instanceof SootField) ? ((SootField) f).getType() : null, this);
+        setFactory.newSet((f instanceof SootField) ? f.getType() : null, this);
     bases.forall(
         new P2SetVisitor() {
           public final void visit(Node n) {

@@ -45,7 +45,7 @@ public class CFGOptionMatcher {
     public String name() {
       return name;
     }
-  };
+  }
 
   private CFGOption[] options;
 

@@ -65,7 +65,7 @@ public class Debugger {
     System.out.println("\r\r" + b.getMethod().getName() + "  " + msg);
     Iterator<Unit> udit = u.snapshotIterator();
     while (udit.hasNext()) {
-      Unit unit = (Unit) udit.next();
+      Unit unit = udit.next();
       Integer numb = numbers.get(unit);
 
       if (numb.intValue() == 149) System.out.println("hi");
@@ -134,7 +134,7 @@ public class Debugger {
     System.out.println("\r\r***********  " + msg);
     Iterator<Unit> udit = u.snapshotIterator();
     while (udit.hasNext()) {
-      Unit unit = (Unit) udit.next();
+      Unit unit = udit.next();
       Integer numb = numbers.get(unit);
 
       if (numb.intValue() == 149) System.out.println("hi");

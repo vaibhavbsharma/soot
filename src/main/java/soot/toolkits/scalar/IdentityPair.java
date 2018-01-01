@@ -59,8 +59,7 @@ public class IdentityPair<T, U> {
     if (getClass() != obj.getClass()) return false;
     final IdentityPair other = (IdentityPair) obj;
     if (o1 != other.o1) return false;
-    if (o2 != other.o2) return false;
-    return true;
+    return o2 == other.o2;
   }
 
   public T getO1() {

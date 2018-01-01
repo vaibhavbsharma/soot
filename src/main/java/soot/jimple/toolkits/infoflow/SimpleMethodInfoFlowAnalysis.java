@@ -112,8 +112,7 @@ public class SimpleMethodInfoFlowAnalysis
         Unit u = unitIt.next();
         flowThrough(fs, u, fs);
       }
-      if (fs.size() > sizebefore) flowSetChanged = true;
-      else flowSetChanged = false;
+      flowSetChanged = fs.size() > sizebefore;
     }
   }
 

@@ -68,7 +68,6 @@ public class IntegerConstantValueTag extends ConstantValueTag {
     if (!super.equals(obj)) return false;
     if (getClass() != obj.getClass()) return false;
     IntegerConstantValueTag other = (IntegerConstantValueTag) obj;
-    if (value != other.value) return false;
-    return true;
+    return value == other.value;
   }
 }

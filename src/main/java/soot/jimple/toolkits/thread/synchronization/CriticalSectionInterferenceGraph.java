@@ -220,8 +220,7 @@ public class CriticalSectionInterferenceGraph {
     if (mhp == null) {
       if (optionLeaveOriginalLocks) return true;
       ReachableMethods rm = Scene.v().getReachableMethods();
-      if (!rm.contains(tn1.method) || !rm.contains(tn2.method)) return false;
-      return true;
+      return rm.contains(tn1.method) && rm.contains(tn2.method);
     }
     return mhp.mayHappenInParallel(tn1.method, tn2.method);
   }

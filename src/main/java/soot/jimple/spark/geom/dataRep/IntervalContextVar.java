@@ -74,8 +74,7 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
   @Override
   public boolean contains(ContextVar cv) {
     IntervalContextVar icv = (IntervalContextVar) cv;
-    if (L <= icv.L && R >= icv.R) return true;
-    return false;
+    return L <= icv.L && R >= icv.R;
   }
 
   @Override
@@ -103,7 +102,6 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
     IntervalContextVar icv = (IntervalContextVar) cv;
 
     if (L <= icv.L && icv.L < R) return true;
-    if (icv.L <= L && L < icv.R) return true;
-    return false;
+    return icv.L <= L && L < icv.R;
   }
 }

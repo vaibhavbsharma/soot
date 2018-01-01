@@ -28,9 +28,9 @@ package soot.jimple;
 import soot.*;
 
 public interface InvokeStmt extends Stmt {
-  public void setInvokeExpr(Value invokeExpr);
+  void setInvokeExpr(Value invokeExpr);
 
-  public InvokeExpr getInvokeExpr();
+  InvokeExpr getInvokeExpr();
 
-  public ValueBox getInvokeExprBox();
+  ValueBox getInvokeExprBox();
 }

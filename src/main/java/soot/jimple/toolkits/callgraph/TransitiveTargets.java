@@ -46,7 +46,7 @@ public class TransitiveTargets {
     Iterator<Edge> it = cg.edgesOutOf(u);
     if (filter != null) it = filter.wrap(it);
     while (it.hasNext()) {
-      Edge e = (Edge) it.next();
+      Edge e = it.next();
       methods.add(e.getTgt());
     }
     return iterator(methods.iterator());
@@ -57,7 +57,7 @@ public class TransitiveTargets {
     Iterator<Edge> it = cg.edgesOutOf(momc);
     if (filter != null) it = filter.wrap(it);
     while (it.hasNext()) {
-      Edge e = (Edge) it.next();
+      Edge e = it.next();
       methods.add(e.getTgt());
     }
     return iterator(methods.iterator());
@@ -81,7 +81,7 @@ public class TransitiveTargets {
       Iterator<Edge> it = cg.edgesOutOf(method);
       if (filter != null) it = filter.wrap(it);
       while (it.hasNext()) {
-        Edge e = (Edge) it.next();
+        Edge e = it.next();
         if (s.add(e.getTgt())) worklist.add(e.getTgt());
       }
     }

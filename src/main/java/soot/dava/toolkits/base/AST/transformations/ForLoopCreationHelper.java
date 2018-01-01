@@ -159,7 +159,7 @@ public class ForLoopCreationHelper {
     List<String> toReturn = new ArrayList<String>();
 
     if (cond instanceof ASTUnaryCondition) {
-      toReturn.add(((ASTUnaryCondition) cond).toString());
+      toReturn.add(cond.toString());
     } else if (cond instanceof ASTBinaryCondition) {
       ConditionExpr condExpr = ((ASTBinaryCondition) cond).getConditionExpr();
       toReturn.add(condExpr.getOp1().toString());
@@ -254,7 +254,7 @@ public class ForLoopCreationHelper {
 
     ASTCondition condition = whileNode.get_Condition();
     List<Object> body = (List<Object>) whileNode.get_SubBodies().get(0);
-    SETNodeLabel label = ((ASTLabeledNode) whileNode).get_Label();
+    SETNodeLabel label = whileNode.get_Label();
 
     /*
      * Check that anything in init is not a first time initialization if it

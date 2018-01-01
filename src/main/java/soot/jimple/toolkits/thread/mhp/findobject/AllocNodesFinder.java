@@ -64,7 +64,7 @@ public class AllocNodesFinder {
           } else if (unit instanceof DefinitionStmt) {
             Value rightOp = ((DefinitionStmt) unit).getRightOp();
             if (rightOp instanceof NewExpr) {
-              Type type = ((NewExpr) rightOp).getType();
+              Type type = rightOp.getType();
               AllocNode allocNode = pag.makeAllocNode(rightOp, type, sm);
               // System.out.println("make alloc node: "+allocNode);
               allocNodes.add(allocNode);
@@ -98,7 +98,7 @@ public class AllocNodesFinder {
 
             Value rightOp = ((DefinitionStmt) unit).getRightOp();
             if (rightOp instanceof NewExpr) {
-              Type type = ((NewExpr) rightOp).getType();
+              Type type = rightOp.getType();
               AllocNode allocNode = pag.makeAllocNode(rightOp, type, sm);
               // System.out.println("make alloc node: "+allocNode);
               allocNodes.add(allocNode);

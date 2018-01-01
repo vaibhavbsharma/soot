@@ -242,7 +242,7 @@ public class CFGViewer extends BodyTransformer {
       }
     }
     String[] sootArgsArray = new String[sootArgs.size()];
-    return (String[]) sootArgs.toArray(sootArgsArray);
+    return sootArgs.toArray(sootArgsArray);
   }
 
   private void initialize(Map<String, String> options) {

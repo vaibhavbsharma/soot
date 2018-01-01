@@ -98,7 +98,6 @@ public class OrAggregatorOne extends DepthFirstAdapter {
     // create an aggregated condition
     Iterator<ASTCondition> condIt = conditions.iterator();
     ASTCondition newCond = null;
-    ;
     while (condIt.hasNext()) {
       ASTCondition next = condIt.next();
       if (newCond == null) newCond = next;

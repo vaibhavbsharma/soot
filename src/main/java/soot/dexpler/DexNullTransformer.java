@@ -124,7 +124,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
               doBreak = true;
               return;
             } else if (r instanceof InvokeExpr) {
-              usedAsObject = isObject(((InvokeExpr) r).getType());
+              usedAsObject = isObject(r.getType());
               doBreak = true;
               return;
             } else if (r instanceof LengthExpr) {
@@ -217,7 +217,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
                 doBreak = true;
                 return;
               } else if (l instanceof ArrayRef) {
-                Type aType = ((ArrayRef) l).getType();
+                Type aType = l.getType();
                 if (aType instanceof UnknownType) {
                   usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject(
                   // findArrayType(g,
@@ -240,11 +240,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
               return;
             } else if (r instanceof ArrayRef) {
               ArrayRef ar = (ArrayRef) r;
-              if (ar.getBase() == l) {
-                usedAsObject = true;
-              } else { // used as index
-                usedAsObject = false;
-              }
+              // used as index
+              usedAsObject = ar.getBase() == l;
               doBreak = true;
               return;
             } else if (r instanceof StringConstant || r instanceof NewExpr) {
@@ -387,8 +384,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 
           private boolean isConstZero(Value rightOp) {
             if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) return true;
-            if (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0) return true;
-            return false;
+            return rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0;
           }
 
           @Override
@@ -479,6 +475,6 @@ public class DexNullTransformer extends AbstractNullTransformer {
       }
     }
 
-    return candidates == null ? Collections.<Local>emptySet() : candidates;
+    return candidates == null ? Collections.emptySet() : candidates;
   }
 }

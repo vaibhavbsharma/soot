@@ -177,7 +177,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
             if (ie instanceof StaticInvokeExpr) {
               while (argsCount < paramCount) {
-                Type pType = (Type) parms.get(argsCount);
+                Type pType = parms.get(argsCount);
                 Local newLocal = Jimple.v().newLocal("newLocal" + localName++, pType);
                 locals.add(newLocal);
                 units.insertBeforeNoRedirect(
@@ -191,7 +191,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
               args.add(((InstanceInvokeExpr) ie).getBase());
 
               while (argsCount < paramCount) {
-                Type pType = (Type) parms.get(argsCount);
+                Type pType = parms.get(argsCount);
                 Local newLocal = Jimple.v().newLocal("newLocal" + localName++, pType);
                 locals.add(newLocal);
                 units.insertBeforeNoRedirect(
@@ -315,7 +315,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
     if (sm.isStatic()) {
       ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
     } else {
-      Local libObj = (Local) args.remove(args.size() - 1);
+      Local libObj = args.remove(args.size() - 1);
       if (origIE instanceof InterfaceInvokeExpr)
         ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
       else if (origIE instanceof SpecialInvokeExpr)

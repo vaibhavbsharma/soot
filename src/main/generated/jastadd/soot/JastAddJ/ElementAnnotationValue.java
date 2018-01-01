@@ -39,9 +39,9 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public ElementAnnotationValue copy() {
     try {
-      ElementAnnotationValue node = (ElementAnnotationValue) clone();
+      ElementAnnotationValue node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -55,10 +55,10 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementAnnotationValue fullCopy() {
-    ElementAnnotationValue tree = (ElementAnnotationValue) copy();
+    ElementAnnotationValue tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);

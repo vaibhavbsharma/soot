@@ -46,8 +46,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
   public boolean equivTo(Object o) {
     if (o instanceof AbstractNewMultiArrayExpr) {
       AbstractNewMultiArrayExpr ae = (AbstractNewMultiArrayExpr) o;
-      if (!baseType.equals(ae.baseType) || sizeBoxes.length != ae.sizeBoxes.length) return false;
-      return true;
+      return baseType.equals(ae.baseType) && sizeBoxes.length == ae.sizeBoxes.length;
     }
     return false;
   }

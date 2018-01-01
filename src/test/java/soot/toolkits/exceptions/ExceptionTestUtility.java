@@ -312,7 +312,6 @@ public class ExceptionTestUtility {
     temp.add(ABSTRACT_METHOD_ERROR);
     temp.add(ILLEGAL_ACCESS_ERROR);
     temp.add(INSTANTIATION_ERROR);
-    ;
     temp.add(NO_SUCH_FIELD_ERROR);
     temp.add(NO_SUCH_METHOD_ERROR);
     THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES = Collections.unmodifiableSet(temp);
@@ -321,7 +320,6 @@ public class ExceptionTestUtility {
     temp.add(ABSTRACT_METHOD_ERROR);
     temp.add(ILLEGAL_ACCESS_ERROR);
     temp.add(INSTANTIATION_ERROR);
-    ;
     temp.add(NO_SUCH_FIELD_ERROR);
     temp.add(NO_SUCH_METHOD_ERROR);
     THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES_PLUS_SUPERTYPES =
@@ -330,44 +328,42 @@ public class ExceptionTestUtility {
     ExceptionHashSet<RefType> tempTest =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  THROWABLE,
-                  EXCEPTION,
-                  RUNTIME_EXCEPTION,
-                  ARITHMETIC_EXCEPTION,
-                  ARRAY_STORE_EXCEPTION,
-                  CLASS_CAST_EXCEPTION,
-                  ILLEGAL_MONITOR_STATE_EXCEPTION,
-                  INDEX_OUT_OF_BOUNDS_EXCEPTION,
-                  ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION,
-                  STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION,
-                  NEGATIVE_ARRAY_SIZE_EXCEPTION,
-                  NULL_POINTER_EXCEPTION,
-                  ERROR,
-                  LINKAGE_ERROR,
-                  CLASS_CIRCULARITY_ERROR,
-                  CLASS_FORMAT_ERROR,
-                  UNSUPPORTED_CLASS_VERSION_ERROR,
-                  EXCEPTION_IN_INITIALIZER_ERROR,
-                  INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  ABSTRACT_METHOD_ERROR,
-                  ILLEGAL_ACCESS_ERROR,
-                  INSTANTIATION_ERROR,
-                  NO_SUCH_FIELD_ERROR,
-                  NO_SUCH_METHOD_ERROR,
-                  NO_CLASS_DEF_FOUND_ERROR,
-                  UNSATISFIED_LINK_ERROR,
-                  VERIFY_ERROR,
-                  THREAD_DEATH,
-                  VIRTUAL_MACHINE_ERROR,
-                  INTERNAL_ERROR,
-                  OUT_OF_MEMORY_ERROR,
-                  STACK_OVERFLOW_ERROR,
-                  UNKNOWN_ERROR,
-                  AWT_ERROR,
-                  UNDECLARED_THROWABLE_EXCEPTION,
-                  UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION,
-                }));
+                THROWABLE,
+                EXCEPTION,
+                RUNTIME_EXCEPTION,
+                ARITHMETIC_EXCEPTION,
+                ARRAY_STORE_EXCEPTION,
+                CLASS_CAST_EXCEPTION,
+                ILLEGAL_MONITOR_STATE_EXCEPTION,
+                INDEX_OUT_OF_BOUNDS_EXCEPTION,
+                ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION,
+                STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION,
+                NEGATIVE_ARRAY_SIZE_EXCEPTION,
+                NULL_POINTER_EXCEPTION,
+                ERROR,
+                LINKAGE_ERROR,
+                CLASS_CIRCULARITY_ERROR,
+                CLASS_FORMAT_ERROR,
+                UNSUPPORTED_CLASS_VERSION_ERROR,
+                EXCEPTION_IN_INITIALIZER_ERROR,
+                INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                ABSTRACT_METHOD_ERROR,
+                ILLEGAL_ACCESS_ERROR,
+                INSTANTIATION_ERROR,
+                NO_SUCH_FIELD_ERROR,
+                NO_SUCH_METHOD_ERROR,
+                NO_CLASS_DEF_FOUND_ERROR,
+                UNSATISFIED_LINK_ERROR,
+                VERIFY_ERROR,
+                THREAD_DEATH,
+                VIRTUAL_MACHINE_ERROR,
+                INTERNAL_ERROR,
+                OUT_OF_MEMORY_ERROR,
+                STACK_OVERFLOW_ERROR,
+                UNKNOWN_ERROR,
+                AWT_ERROR,
+                UNDECLARED_THROWABLE_EXCEPTION,
+                UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION));
     ALL_TEST_THROWABLES = Collections.unmodifiableSet(tempTest);
 
     temp = new ExceptionHashSet<RefLikeType>();

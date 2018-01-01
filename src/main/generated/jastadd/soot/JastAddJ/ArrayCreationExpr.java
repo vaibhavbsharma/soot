@@ -43,9 +43,9 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayCreationExpr copy() {
     try {
-      ArrayCreationExpr node = (ArrayCreationExpr) clone();
+      ArrayCreationExpr node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -59,10 +59,10 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayCreationExpr fullCopy() {
-    ArrayCreationExpr tree = (ArrayCreationExpr) copy();
+    ArrayCreationExpr tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -200,7 +200,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayInit getArrayInit() {
-    return (ArrayInit) getArrayInitOpt().getChild(0);
+    return getArrayInitOpt().getChild(0);
   }
   /**
    * Replaces the (optional) ArrayInit child.

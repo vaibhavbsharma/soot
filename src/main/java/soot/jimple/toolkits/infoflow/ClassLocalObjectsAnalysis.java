@@ -302,7 +302,7 @@ public class ClassLocalObjectsAnalysis {
         // non-static fields
         if (method.isStatic() || !method.isConcrete()) continue;
 
-        ListIterator<SootField> localFieldsIt = ((List<SootField>) localFields).listIterator();
+        ListIterator<SootField> localFieldsIt = localFields.listIterator();
         while (localFieldsIt.hasNext()) {
           SootField localField = localFieldsIt.next();
           List sourcesAndSinks = new ArrayList();
@@ -364,7 +364,7 @@ public class ClassLocalObjectsAnalysis {
         }
 
         ListIterator<SootField> localInnerFieldsIt =
-            ((List<SootField>) localInnerFields).listIterator();
+            localInnerFields.listIterator();
         //				boolean printedMethodHeading = false;
         while (!changed && localInnerFieldsIt.hasNext()) {
           SootField localInnerField = localInnerFieldsIt.next();

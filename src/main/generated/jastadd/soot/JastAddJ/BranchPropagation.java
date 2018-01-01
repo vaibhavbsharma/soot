@@ -12,11 +12,11 @@ import soot.util.*;
 
 /** @ast interface */
 public interface BranchPropagation {
-  public void collectBranches(Collection c);
+  void collectBranches(Collection c);
 
-  public Stmt branchTarget(Stmt branchStmt);
+  Stmt branchTarget(Stmt branchStmt);
 
-  public void collectFinally(Stmt branchStmt, ArrayList list);
+  void collectFinally(Stmt branchStmt, ArrayList list);
 
   /**
    * @attribute syn
@@ -25,7 +25,7 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:32
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection targetContinues();
+  Collection targetContinues();
   /**
    * @attribute syn
    * @aspect BranchTarget
@@ -33,7 +33,7 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:33
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection targetBreaks();
+  Collection targetBreaks();
   /**
    * @attribute syn
    * @aspect BranchTarget
@@ -41,7 +41,7 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:34
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection targetBranches();
+  Collection targetBranches();
   /**
    * @attribute syn
    * @aspect BranchTarget
@@ -49,7 +49,7 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:35
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection escapedBranches();
+  Collection escapedBranches();
   /**
    * @attribute syn
    * @aspect BranchTarget
@@ -57,7 +57,7 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:36
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection branches();
+  Collection branches();
   /**
    * @attribute syn
    * @aspect BranchTarget
@@ -65,7 +65,7 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:39
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean targetOf(ContinueStmt stmt);
+  boolean targetOf(ContinueStmt stmt);
   /**
    * @attribute syn
    * @aspect BranchTarget
@@ -73,5 +73,5 @@ public interface BranchPropagation {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:40
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean targetOf(BreakStmt stmt);
+  boolean targetOf(BreakStmt stmt);
 }

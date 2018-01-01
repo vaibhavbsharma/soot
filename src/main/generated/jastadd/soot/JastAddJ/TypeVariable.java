@@ -87,9 +87,9 @@ public class TypeVariable extends ReferenceType implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public TypeVariable copy() {
     try {
-      TypeVariable node = (TypeVariable) clone();
+      TypeVariable node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -103,10 +103,10 @@ public class TypeVariable extends ReferenceType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeVariable fullCopy() {
-    TypeVariable tree = (TypeVariable) copy();
+    TypeVariable tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -428,7 +428,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl) getBodyDeclList().getChild(i);
+    return getBodyDeclList().getChild(i);
   }
   /**
    * Append an element to the BodyDecl list.
@@ -551,7 +551,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getTypeBound(int i) {
-    return (Access) getTypeBoundList().getChild(i);
+    return getTypeBoundList().getChild(i);
   }
   /**
    * Append an element to the TypeBound list.
@@ -678,7 +678,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
           if (fd.isPublic()) ITj.addBodyDecl(fd);
         } else if (bd instanceof MethodDecl) {
           MethodDecl md = (MethodDecl) bd;
-          if (md.isPublic()) ITj.addBodyDecl((BodyDecl) md.fullCopy());
+          if (md.isPublic()) ITj.addBodyDecl(md.fullCopy());
         }
       }
     }

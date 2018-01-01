@@ -64,7 +64,7 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
     worklist.addAll(bug.getHeads());
 
     while (worklist.size() > 0) {
-      Unit u = (Unit) worklist.remove(0);
+      Unit u = worklist.remove(0);
       if (visited.contains(u)) continue;
 
       visited.add(u);
@@ -86,7 +86,7 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
     for (int i = 0; i < candidates.size(); i++) {
       Unit u = candidates.get(i);
       List<Unit> succs = bug.getSuccsOf(u);
-      BLoadInst clone = (BLoadInst) ((BLoadInst) succs.get(0)).clone();
+      BLoadInst clone = (BLoadInst) succs.get(0).clone();
 
       if (u instanceof IfNonNullInst || u instanceof IfNullInst) {
         if (category(clone.getOpType()) == 2 || Rand.getInt(10) > weight) continue;
@@ -134,14 +134,14 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
 
       // remove old loads after the jump
       for (int j = 0; j < succs.size(); j++) {
-        Unit suc = (Unit) succs.get(j);
+        Unit suc = succs.get(j);
         List<Unit> sucPreds = bug.getPredsOf(suc);
 
         if (sucPreds.size() > 1) {
           if (suc == ((TargetArgInst) u).getTarget())
-            ((TargetArgInst) u).setTarget((Unit) bug.getSuccsOf(suc).get(0));
+            ((TargetArgInst) u).setTarget(bug.getSuccsOf(suc).get(0));
           else {
-            units.insertAfter(Baf.v().newGotoInst((Unit) bug.getSuccsOf(suc).get(0)), u);
+            units.insertAfter(Baf.v().newGotoInst(bug.getSuccsOf(suc).get(0)), u);
           }
         } else {
           units.remove(suc);

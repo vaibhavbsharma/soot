@@ -64,9 +64,9 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
   @SuppressWarnings({"unchecked", "cast"})
   public GenericClassDeclSubstituted copy() {
     try {
-      GenericClassDeclSubstituted node = (GenericClassDeclSubstituted) clone();
+      GenericClassDeclSubstituted node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -80,7 +80,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericClassDeclSubstituted fullCopy() {
-    GenericClassDeclSubstituted tree = (GenericClassDeclSubstituted) copy();
+    GenericClassDeclSubstituted tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         switch (i) {
@@ -88,7 +88,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
             tree.children[i] = new List();
             continue;
         }
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -255,7 +255,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
-    return (Access) getSuperClassAccessOpt().getChild(0);
+    return getSuperClassAccessOpt().getChild(0);
   }
   /**
    * Replaces the (optional) SuperClassAccess child.
@@ -330,7 +330,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getImplements(int i) {
-    return (Access) getImplementsList().getChild(i);
+    return getImplementsList().getChild(i);
   }
   /**
    * Append an element to the Implements list.
@@ -453,7 +453,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeVariable getTypeParameter(int i) {
-    return (TypeVariable) getTypeParameterList().getChild(i);
+    return getTypeParameterList().getChild(i);
   }
   /**
    * Append an element to the TypeParameter list.
@@ -1015,9 +1015,9 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
         _value.visited = new Integer(state.CIRCLE_INDEX);
         state.CHANGE = false;
         new_localTypeDecls_String_value = localTypeDecls_compute(name);
-        if ((new_localTypeDecls_String_value == null && (SimpleSet) _value.value != null)
+        if ((new_localTypeDecls_String_value == null && _value.value != null)
             || (new_localTypeDecls_String_value != null
-                && !new_localTypeDecls_String_value.equals((SimpleSet) _value.value))) {
+                && !new_localTypeDecls_String_value.equals(_value.value))) {
           state.CHANGE = true;
           _value.value = new_localTypeDecls_String_value;
         }
@@ -1039,9 +1039,9 @@ public class GenericClassDeclSubstituted extends GenericClassDecl
       SimpleSet new_localTypeDecls_String_value = localTypeDecls_compute(name);
       if (state.RESET_CYCLE) {
         localTypeDecls_String_values.remove(_parameters);
-      } else if ((new_localTypeDecls_String_value == null && (SimpleSet) _value.value != null)
+      } else if ((new_localTypeDecls_String_value == null && _value.value != null)
           || (new_localTypeDecls_String_value != null
-              && !new_localTypeDecls_String_value.equals((SimpleSet) _value.value))) {
+              && !new_localTypeDecls_String_value.equals(_value.value))) {
         state.CHANGE = true;
         _value.value = new_localTypeDecls_String_value;
       }

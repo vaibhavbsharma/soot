@@ -302,7 +302,7 @@ public class Util {
                             .makeMethodRef(
                                 Scene.v().getSootClass(exceptionType),
                                 "<init>",
-                                Collections.singletonList((Type) RefType.v("java.lang.String")),
+                                Collections.singletonList(RefType.v("java.lang.String")),
                                 VoidType.v(),
                                 false),
                         StringConstant.v(m)));

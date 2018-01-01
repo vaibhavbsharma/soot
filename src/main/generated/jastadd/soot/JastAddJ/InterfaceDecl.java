@@ -77,9 +77,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public InterfaceDecl copy() {
     try {
-      InterfaceDecl node = (InterfaceDecl) clone();
+      InterfaceDecl node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -93,10 +93,10 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public InterfaceDecl fullCopy() {
-    InterfaceDecl tree = (InterfaceDecl) copy();
+    InterfaceDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -266,7 +266,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
   public InterfaceDecl substitutedInterfaceDecl(Parameterization parTypeDecl) {
     InterfaceDecl c =
         new InterfaceDeclSubstituted(
-            (Modifiers) getModifiers().fullCopy(),
+            getModifiers().fullCopy(),
             getID(),
             getSuperInterfaceIdList().substitute(parTypeDecl),
             // ES:  new List(),
@@ -491,7 +491,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperInterfaceId(int i) {
-    return (Access) getSuperInterfaceIdList().getChild(i);
+    return getSuperInterfaceIdList().getChild(i);
   }
   /**
    * Append an element to the SuperInterfaceId list.
@@ -616,7 +616,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl) getBodyDeclList().getChild(i);
+    return getBodyDeclList().getChild(i);
   }
   /**
    * Append an element to the BodyDecl list.

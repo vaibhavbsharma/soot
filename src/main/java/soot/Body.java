@@ -108,7 +108,7 @@ public abstract class Body extends AbstractHost implements Serializable {
           };
     }
     return validators;
-  };
+  }
 
   /**
    * Creates a Body associated to the given method. Used by subclasses during initialization.

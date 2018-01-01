@@ -29,7 +29,7 @@ package soot.baf;
 import soot.*;
 
 public interface FieldArgInst extends Inst {
-  public SootFieldRef getFieldRef();
+  SootFieldRef getFieldRef();
 
-  public SootField getField();
+  SootField getField();
 }

@@ -222,7 +222,7 @@ public class UseChecker extends AbstractStmtSwitch {
 
         if (at == null) at = tgType.makeArrayType();
       }
-      tlhs = ((ArrayType) at).getElementType();
+      tlhs = at.getElementType();
 
       this.handleArrayRef(aref, stmt);
 
@@ -312,7 +312,7 @@ public class UseChecker extends AbstractStmtSwitch {
 
         if (at == null) at = et.makeArrayType();
       }
-      Type trhs = ((ArrayType) at).getElementType();
+      Type trhs = at.getElementType();
 
       this.handleArrayRef(aref, stmt);
 

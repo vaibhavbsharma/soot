@@ -84,7 +84,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     // System.out.println("addIfnotPresent invoked");
     // going through all the elements in the set
     for (int i = 0; i < this.numElements; i++) {
-      CPTuple current = (CPTuple) elements[i];
+      CPTuple current = elements[i];
       if (!(current.getSootClassName().equals(newTuple.getSootClassName()))) {
         // different classNAmes
         continue;
@@ -129,7 +129,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     // System.out.println("addIfnotPresent invoked");
     // going through all the elements in the set
     for (int i = 0; i < this.numElements; i++) {
-      CPTuple current = (CPTuple) elements[i];
+      CPTuple current = elements[i];
       if (!(current.getSootClassName().equals(newTuple.getSootClassName()))) {
         // different classNAmes
         continue;
@@ -375,7 +375,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     StringBuffer b = new StringBuffer();
     b.append("Printing CPFlowSet: ");
     for (int i = 0; i < this.numElements; i++) {
-      b.append("\n" + ((CPTuple) elements[i]).toString());
+      b.append("\n" + elements[i].toString());
     }
     b.append("\n");
     return b.toString();

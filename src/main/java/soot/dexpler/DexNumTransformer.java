@@ -131,7 +131,7 @@ public class DexNumTransformer extends DexTransformer {
                   Type arType = ar.getType();
                   if (arType instanceof UnknownType) {
                     Type t =
-                        findArrayType(localDefs, stmt, 0, Collections.<Unit>emptySet()); // TODO:
+                        findArrayType(localDefs, stmt, 0, Collections.emptySet()); // TODO:
                     // check
                     // where
                     // else
@@ -147,7 +147,7 @@ public class DexNumTransformer extends DexTransformer {
                   usedAsFloatingPoint = isFloatingPointLike(((CastExpr) r).getCastType());
                   doBreak = true;
                 } else if (r instanceof InvokeExpr) {
-                  usedAsFloatingPoint = isFloatingPointLike(((InvokeExpr) r).getType());
+                  usedAsFloatingPoint = isFloatingPointLike(r.getType());
                   doBreak = true;
                 } else if (r instanceof LengthExpr) {
                   usedAsFloatingPoint = false;
@@ -235,7 +235,7 @@ public class DexNumTransformer extends DexTransformer {
                       ArrayRef ar = (ArrayRef) left;
                       Type arType = ar.getType();
                       if (arType instanceof UnknownType) {
-                        arType = findArrayType(localDefs, stmt, 0, Collections.<Unit>emptySet());
+                        arType = findArrayType(localDefs, stmt, 0, Collections.emptySet());
                       }
                       usedAsFloatingPoint = isFloatingPointLike(arType);
                       doBreak = true;
@@ -268,10 +268,7 @@ public class DexNumTransformer extends DexTransformer {
   }
 
   protected boolean examineBinopExpr(Unit u) {
-    if (u.hasTag("FloatOpTag") || u.hasTag("DoubleOpTag")) {
-      return true;
-    }
-    return false;
+    return u.hasTag("FloatOpTag") || u.hasTag("DoubleOpTag");
   }
 
   private boolean isFloatingPointLike(Type t) {

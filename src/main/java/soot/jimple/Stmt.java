@@ -28,23 +28,23 @@ package soot.jimple;
 import soot.*;
 
 public interface Stmt extends Unit {
-  public void toString(UnitPrinter up);
+  void toString(UnitPrinter up);
 
-  public boolean containsInvokeExpr();
+  boolean containsInvokeExpr();
 
-  public InvokeExpr getInvokeExpr();
+  InvokeExpr getInvokeExpr();
 
-  public ValueBox getInvokeExprBox();
+  ValueBox getInvokeExprBox();
 
-  public boolean containsArrayRef();
+  boolean containsArrayRef();
 
-  public ArrayRef getArrayRef();
+  ArrayRef getArrayRef();
 
-  public ValueBox getArrayRefBox();
+  ValueBox getArrayRefBox();
 
-  public boolean containsFieldRef();
+  boolean containsFieldRef();
 
-  public FieldRef getFieldRef();
+  FieldRef getFieldRef();
 
-  public ValueBox getFieldRefBox();
+  ValueBox getFieldRefBox();
 }

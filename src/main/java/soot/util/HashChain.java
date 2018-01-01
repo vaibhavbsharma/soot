@@ -326,7 +326,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
         if (originalPred instanceof GotoStmt) return;
 
         E goto_unit = (E) new JGotoStmt((Unit) point_tgt);
-        insertBefore(goto_unit, (E) toInsert.iterator().next());
+        insertBefore(goto_unit, toInsert.iterator().next());
       }
       return;
     }

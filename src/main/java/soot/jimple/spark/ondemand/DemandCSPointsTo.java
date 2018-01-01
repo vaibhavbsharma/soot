@@ -196,7 +196,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   private boolean refineCallGraph = true;
 
   protected static final ImmutableStack<Integer> EMPTY_CALLSTACK =
-      ImmutableStack.<Integer>emptyStack();
+      ImmutableStack.emptyStack();
 
   /**
    * Make a default analysis. Assumes Spark has already run.
@@ -1022,7 +1022,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
             if (upContext.size() < ImmutableStack.getMaxSize()) {
               newUpContext = pushWithRecursionCheck(upContext, assignEdge);
             }
-            ;
           }
           p.prop(new VarContextAndUp(newVarAndContext.var, newVarAndContext.context, newUpContext));
         }
@@ -1038,7 +1037,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
           }
           return src.getP2Set().contains(alloc);
         }
-      };
+      }
       UpContextEdgeHandler edgeHandler = new UpContextEdgeHandler();
       processIncomingEdges(edgeHandler, worklist);
       nesting--;
@@ -1202,7 +1201,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   protected Set<SootMethod> getCallTargetsForType(
       Type type, NumberedString methodStr, Type receiverType, Set<SootMethod> possibleTargets) {
     if (!pag.getTypeManager().castNeverFails(type, receiverType))
-      return Collections.<SootMethod>emptySet();
+      return Collections.emptySet();
     if (type instanceof AnySubType) {
       AnySubType any = (AnySubType) type;
       RefType refType = any.getBase();
@@ -1210,7 +1209,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
           || pag.getTypeManager().getFastHierarchy().canStoreType(refType, receiverType)) {
         return possibleTargets;
       } else {
-        return Collections.<SootMethod>emptySet();
+        return Collections.emptySet();
       }
     }
     if (type instanceof ArrayType) {
@@ -1222,7 +1221,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     RefType refType = (RefType) type;
     SootMethod targetMethod = null;
     targetMethod = VirtualCalls.v().resolveNonSpecial(refType, methodStr);
-    return Collections.<SootMethod>singleton(targetMethod);
+    return Collections.singleton(targetMethod);
   }
 
   protected Set<VarNode> getFlowsToHelper(AllocAndContext allocAndContext) {
@@ -1572,8 +1571,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   protected boolean refineAlias(
       VarNode v1, VarNode v2, PointsToSetInternal intersection, HeuristicType heuristic) {
     if (refineAliasInternal(v1, v2, intersection, heuristic)) return true;
-    if (refineAliasInternal(v2, v1, intersection, heuristic)) return true;
-    return false;
+    return refineAliasInternal(v2, v1, intersection, heuristic);
   }
 
   protected boolean refineAliasInternal(
@@ -1638,7 +1636,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       return callSiteToResolvedTargets.get(callSiteAndContext);
     }
     if (callGraphStack.contains(callSiteAndContext)) {
-      return Collections.<SootMethod>emptySet();
+      return Collections.emptySet();
     } else {
       callGraphStack.push(callSiteAndContext);
     }
@@ -1663,7 +1661,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
           worklist.push(varAndContext);
         }
       }
-    };
+    }
     final Helper h = new Helper();
     h.prop(new VarAndContext(receiver, origContext));
     while (!worklist.isEmpty()) {

@@ -38,9 +38,9 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public ElementConstantValue copy() {
     try {
-      ElementConstantValue node = (ElementConstantValue) clone();
+      ElementConstantValue node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -54,10 +54,10 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementConstantValue fullCopy() {
-    ElementConstantValue tree = (ElementConstantValue) copy();
+    ElementConstantValue tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -251,9 +251,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
       if ((type.isPrimitive() || type.isString()) && !v.isConstant()) return false;
       if (v.type().isNull()) return false;
       if (type.fullName().equals("java.lang.Class") && !v.isClassAccess()) return false;
-      if (type.isEnumDecl() && (v.varDecl() == null || !(v.varDecl() instanceof EnumConstant)))
-        return false;
-      return true;
+      return !type.isEnumDecl() || (v.varDecl() != null && v.varDecl() instanceof EnumConstant);
     } finally {
     }
   }

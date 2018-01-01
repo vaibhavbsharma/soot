@@ -31,7 +31,6 @@ public class RunMethodsPred implements EdgePredicate {
   public boolean want(Edge e) {
     String tgtSubSignature = e.tgt().getSubSignature();
 
-    if (tgtSubSignature.equals("void run()")) return true;
-    return false;
+    return tgtSubSignature.equals("void run()");
   }
 }

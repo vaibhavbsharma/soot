@@ -259,7 +259,7 @@ public class Scene // extends AbstractHost
     SootMethod mainMethod =
         mainClass.getMethodUnsafe(
             "main",
-            Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
             VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
@@ -1654,7 +1654,7 @@ public class Scene // extends AbstractHost
 
   public boolean isIncluded(SootClass sc) {
     String name = sc.getName();
-    for (String inc : (List<String>) Options.v().include()) {
+    for (String inc : Options.v().include()) {
       if (name.equals(inc)
           || ((inc.endsWith(".*") || inc.endsWith("$*"))
               && name.startsWith(inc.substring(0, inc.length() - 1)))) {
@@ -1728,7 +1728,7 @@ public class Scene // extends AbstractHost
         SootClass c = getSootClass(classIter.next());
         if (c.declaresMethod(
             "main",
-            Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
             VoidType.v())) {
           G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);
@@ -1743,7 +1743,7 @@ public class Scene // extends AbstractHost
         SootClass c = classIter.next();
         if (c.declaresMethod(
             "main",
-            Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
             VoidType.v())) {
           G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);

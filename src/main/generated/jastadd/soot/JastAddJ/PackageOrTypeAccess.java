@@ -36,9 +36,9 @@ public class PackageOrTypeAccess extends Access implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public PackageOrTypeAccess copy() {
     try {
-      PackageOrTypeAccess node = (PackageOrTypeAccess) clone();
+      PackageOrTypeAccess node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -52,10 +52,10 @@ public class PackageOrTypeAccess extends Access implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public PackageOrTypeAccess fullCopy() {
-    PackageOrTypeAccess tree = (PackageOrTypeAccess) copy();
+    PackageOrTypeAccess tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);

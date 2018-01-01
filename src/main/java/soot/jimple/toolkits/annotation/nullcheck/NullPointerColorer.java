@@ -47,7 +47,7 @@ public class NullPointerColorer extends BodyTransformer {
       FlowSet beforeSet = (FlowSet) analysis.getFlowBefore(s);
 
       while (usesIt.hasNext()) {
-        ValueBox vBox = (ValueBox) usesIt.next();
+        ValueBox vBox = usesIt.next();
         addColorTags(vBox, beforeSet, s, analysis);
       }
 
@@ -55,7 +55,7 @@ public class NullPointerColorer extends BodyTransformer {
       FlowSet afterSet = (FlowSet) analysis.getFallFlowAfter(s);
 
       while (defsIt.hasNext()) {
-        ValueBox vBox = (ValueBox) defsIt.next();
+        ValueBox vBox = defsIt.next();
         addColorTags(vBox, afterSet, s, analysis);
       }
     }

@@ -28,5 +28,5 @@ import soot.util.Numberable;
  * @author Ondrej Lhotak
  */
 public interface SparkField extends Numberable {
-  public Type getType();
+  Type getType();
 }

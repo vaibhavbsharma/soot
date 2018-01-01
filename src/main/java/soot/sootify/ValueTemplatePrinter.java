@@ -287,7 +287,7 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 
     p.println("List<Type> parameterTypes = new LinkedList<Type>();");
     int i = 0;
-    for (Type t : (List<Type>) m.getParameterTypes()) {
+    for (Type t : m.getParameterTypes()) {
       ttp.setVariableName("type" + i);
       t.apply(ttp);
       p.println("parameterTypes.add(type" + i + ");");

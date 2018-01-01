@@ -29,9 +29,9 @@ package soot.jimple;
 import soot.*;
 
 public interface FieldRef extends ConcreteRef {
-  public SootFieldRef getFieldRef();
+  SootFieldRef getFieldRef();
 
-  public void setFieldRef(SootFieldRef sfr);
+  void setFieldRef(SootFieldRef sfr);
 
-  public SootField getField();
+  SootField getField();
 }

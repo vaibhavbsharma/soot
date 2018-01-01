@@ -85,12 +85,12 @@ public class ThrowableSetTest {
 
     ExpectedSizeToSets() {
       // The empty set.
-      this.add(Collections.<RefLikeType>emptySet(), Collections.<AnySubType>emptySet());
+      this.add(Collections.emptySet(), Collections.emptySet());
 
       // All Throwables set.
       Set<RefLikeType> temp = new ExceptionHashSet<RefLikeType>();
       temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
-      this.add(temp, Collections.<AnySubType>emptySet());
+      this.add(temp, Collections.emptySet());
 
       // VM errors set.
       temp = new ExceptionHashSet<RefLikeType>();
@@ -99,7 +99,7 @@ public class ThrowableSetTest {
       temp.add(Scene.v().getRefType("java.lang.StackOverflowError"));
       temp.add(Scene.v().getRefType("java.lang.UnknownError"));
       temp.add(Scene.v().getRefType("java.lang.ThreadDeath"));
-      this.add(temp, Collections.<AnySubType>emptySet());
+      this.add(temp, Collections.emptySet());
 
       // Resolve Class errors set.
       Set<RefLikeType> classErrors = new ExceptionHashSet<RefLikeType>();
@@ -110,24 +110,24 @@ public class ThrowableSetTest {
       classErrors.add(Scene.v().getRefType("java.lang.LinkageError"));
       classErrors.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
       classErrors.add(Scene.v().getRefType("java.lang.VerifyError"));
-      this.add(classErrors, Collections.<AnySubType>emptySet());
+      this.add(classErrors, Collections.emptySet());
 
       // Resolve Field errors set.
       temp = new ExceptionHashSet<RefLikeType>(classErrors);
       temp.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
-      this.add(temp, Collections.<AnySubType>emptySet());
+      this.add(temp, Collections.emptySet());
 
       // Resolve method errors set.
       temp = new ExceptionHashSet<RefLikeType>(classErrors);
       temp.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
       temp.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
       temp.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
-      this.add(temp, Collections.<AnySubType>emptySet());
+      this.add(temp, Collections.emptySet());
 
       // Initialization errors set.
       temp = new ExceptionHashSet<RefLikeType>();
       temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
-      this.add(temp, Collections.<AnySubType>emptySet());
+      this.add(temp, Collections.emptySet());
     }
 
     void add(Set<RefLikeType> inclusions, Set<AnySubType> exclusions) {
@@ -322,7 +322,7 @@ public class ThrowableSetTest {
   private ThrowableSet checkAdd(
       ThrowableSet lhs, Object rhs, Set<RefLikeType> expectedResult, ThrowableSet actualResult) {
     // Utility routine used by the next three add()s.
-    return checkAdd(lhs, rhs, expectedResult, Collections.<AnySubType>emptySet(), actualResult);
+    return checkAdd(lhs, rhs, expectedResult, Collections.emptySet(), actualResult);
   }
 
   private ThrowableSet add(
@@ -338,7 +338,7 @@ public class ThrowableSetTest {
 
   private ThrowableSet add(ThrowableSet lhs, ThrowableSet rhs, Set<RefLikeType> expectedResult) {
     // Add rhs to lhs, checking the results.
-    return add(lhs, rhs, expectedResult, Collections.<AnySubType>emptySet());
+    return add(lhs, rhs, expectedResult, Collections.emptySet());
   }
 
   private ThrowableSet add(ThrowableSet lhs, RefType rhs, Set<RefLikeType> expectedResult) {
@@ -387,12 +387,10 @@ public class ThrowableSetTest {
     Set<RefType> catchable =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.UNDECLARED_THROWABLE_EXCEPTION,
-                  util.RUNTIME_EXCEPTION,
-                  util.EXCEPTION,
-                  util.THROWABLE,
-                }));
+                util.UNDECLARED_THROWABLE_EXCEPTION,
+                util.RUNTIME_EXCEPTION,
+                util.EXCEPTION,
+                util.THROWABLE));
     assertEquals(
         "Should be catchable only as UndeclaredThrowableException and its superclasses",
         catchable,
@@ -536,7 +534,7 @@ public class ThrowableSetTest {
     ThrowableSet set1 = mgr.INITIALIZATION_ERRORS;
     expected = new ExceptionHashSet<RefLikeType>();
     expected.add(AnySubType.v(util.ERROR));
-    assertSameMembers(set1, expected, Collections.<AnySubType>emptySet());
+    assertSameMembers(set1, expected, Collections.emptySet());
 
     expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
     expected.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
@@ -570,7 +568,7 @@ public class ThrowableSetTest {
     ThrowableSet set1 = mgr.INITIALIZATION_ERRORS;
     expected = new ExceptionHashSet<RefLikeType>();
     expected.add(AnySubType.v(util.ERROR));
-    assertSameMembers(set1, expected, Collections.<AnySubType>emptySet());
+    assertSameMembers(set1, expected, Collections.emptySet());
 
     expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
     expected.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
@@ -671,9 +669,7 @@ public class ThrowableSetTest {
     Set<RefType> catcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.LINKAGE_ERROR, util.ERROR, util.THROWABLE,
-                }));
+                util.LINKAGE_ERROR, util.ERROR, util.THROWABLE));
 
     assertTrue(set0.catchableAs(util.ERROR));
     ThrowableSet.Pair catchableAs = set0.whichCatchableAs(util.ERROR);
@@ -725,24 +721,22 @@ public class ThrowableSetTest {
     Set<RefType> catcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.ABSTRACT_METHOD_ERROR,
-                  util.ILLEGAL_ACCESS_ERROR,
-                  util.INSTANTIATION_ERROR,
-                  util.NO_SUCH_FIELD_ERROR,
-                  util.NO_SUCH_METHOD_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.ERROR,
-                  util.THROWABLE,
-                }));
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.ABSTRACT_METHOD_ERROR,
+                util.ILLEGAL_ACCESS_ERROR,
+                util.INSTANTIATION_ERROR,
+                util.NO_SUCH_FIELD_ERROR,
+                util.NO_SUCH_METHOD_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.LINKAGE_ERROR,
+                util.ERROR,
+                util.THROWABLE));
 
     assertTrue(set0.catchableAs(util.ERROR));
     ThrowableSet.Pair catchableAs = set0.whichCatchableAs(util.ERROR);
@@ -762,11 +756,11 @@ public class ThrowableSetTest {
     catchableAs = set0.whichCatchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR);
     Set<AnySubType> expectedCaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)}));
+            Arrays.asList(AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)));
     Set<AnySubType> expectedCaughtExcluded = Collections.emptySet();
     Set<AnySubType> expectedUncaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.LINKAGE_ERROR)}));
+            Arrays.asList(AnySubType.v(util.LINKAGE_ERROR)));
     Set<AnySubType> expectedUncaughtExcluded = expectedCaughtIncluded;
     assertSameMembers(
         catchableAs,
@@ -777,32 +771,28 @@ public class ThrowableSetTest {
     catcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.ABSTRACT_METHOD_ERROR,
-                  util.ILLEGAL_ACCESS_ERROR,
-                  util.INSTANTIATION_ERROR,
-                  util.NO_SUCH_FIELD_ERROR,
-                  util.NO_SUCH_METHOD_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.ERROR,
-                  util.THROWABLE,
-                }));
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.ABSTRACT_METHOD_ERROR,
+                util.ILLEGAL_ACCESS_ERROR,
+                util.INSTANTIATION_ERROR,
+                util.NO_SUCH_FIELD_ERROR,
+                util.NO_SUCH_METHOD_ERROR,
+                util.LINKAGE_ERROR,
+                util.ERROR,
+                util.THROWABLE));
     Set<RefType> noncatcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.ERROR,
-                  util.THROWABLE,
-                }));
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.LINKAGE_ERROR,
+                util.ERROR,
+                util.THROWABLE));
     assertEquals(catcherTypes, util.catchableSubset(catchableAs.getCaught()));
     assertEquals(noncatcherTypes, util.catchableSubset(catchableAs.getUncaught()));
 
@@ -810,7 +800,7 @@ public class ThrowableSetTest {
     catchableAs = set0.whichCatchableAs(util.INSTANTIATION_ERROR);
     expectedCaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.INSTANTIATION_ERROR)}));
+            Arrays.asList(AnySubType.v(util.INSTANTIATION_ERROR)));
     expectedCaughtExcluded = Collections.emptySet();
     expectedUncaughtExcluded = expectedCaughtIncluded;
     assertSameMembers(
@@ -822,33 +812,29 @@ public class ThrowableSetTest {
     catcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.INSTANTIATION_ERROR,
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.ERROR,
-                  util.THROWABLE,
-                }));
+                util.INSTANTIATION_ERROR,
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.LINKAGE_ERROR,
+                util.ERROR,
+                util.THROWABLE));
     noncatcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.ABSTRACT_METHOD_ERROR,
-                  util.ILLEGAL_ACCESS_ERROR,
-                  util.NO_SUCH_FIELD_ERROR,
-                  util.NO_SUCH_METHOD_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.ERROR,
-                  util.THROWABLE,
-                }));
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.ABSTRACT_METHOD_ERROR,
+                util.ILLEGAL_ACCESS_ERROR,
+                util.NO_SUCH_FIELD_ERROR,
+                util.NO_SUCH_METHOD_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.LINKAGE_ERROR,
+                util.ERROR,
+                util.THROWABLE));
     assertEquals(catcherTypes, util.catchableSubset(catchableAs.getCaught()));
     assertEquals(noncatcherTypes, util.catchableSubset(catchableAs.getUncaught()));
 
@@ -859,25 +845,23 @@ public class ThrowableSetTest {
     noncatcherTypes =
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.ABSTRACT_METHOD_ERROR,
-                  util.ILLEGAL_ACCESS_ERROR,
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.NO_SUCH_FIELD_ERROR,
-                  util.NO_SUCH_METHOD_ERROR,
-                  util.INSTANTIATION_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.ERROR,
-                  util.THROWABLE,
-                }));
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.ABSTRACT_METHOD_ERROR,
+                util.ILLEGAL_ACCESS_ERROR,
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.NO_SUCH_FIELD_ERROR,
+                util.NO_SUCH_METHOD_ERROR,
+                util.INSTANTIATION_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.LINKAGE_ERROR,
+                util.ERROR,
+                util.THROWABLE));
     assertEquals(Collections.EMPTY_SET, util.catchableSubset(catchableAs.getCaught()));
     assertEquals(noncatcherTypes, util.catchableSubset(catchableAs.getUncaught()));
 
@@ -899,11 +883,11 @@ public class ThrowableSetTest {
     ThrowableSet.Pair catchableAs = set0.whichCatchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR);
     Set<AnySubType> expectedCaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)}));
+            Arrays.asList(AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)));
     Set<AnySubType> expectedCaughtExcluded = Collections.emptySet();
     Set<AnySubType> expectedUncaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.ERROR)}));
+            Arrays.asList(AnySubType.v(util.ERROR)));
     Set<AnySubType> expectedUncaughtExcluded = expectedCaughtIncluded;
     assertTrue(
         ExceptionTestUtility.sameMembers(
@@ -914,17 +898,15 @@ public class ThrowableSetTest {
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.LINKAGE_ERROR,
-                  util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-                  util.ABSTRACT_METHOD_ERROR,
-                  util.INSTANTIATION_ERROR,
-                  util.ILLEGAL_ACCESS_ERROR,
-                  util.NO_SUCH_FIELD_ERROR,
-                  util.NO_SUCH_METHOD_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.LINKAGE_ERROR,
+                util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
+                util.ABSTRACT_METHOD_ERROR,
+                util.INSTANTIATION_ERROR,
+                util.ILLEGAL_ACCESS_ERROR,
+                util.NO_SUCH_FIELD_ERROR,
+                util.NO_SUCH_METHOD_ERROR)),
         util.catchableSubset(catchableAs.getCaught()));
     assertEquals(
         new ExceptionHashSet<RefLikeType>(
@@ -959,25 +941,23 @@ public class ThrowableSetTest {
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.AWT_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.THREAD_DEATH,
-                  util.VIRTUAL_MACHINE_ERROR,
-                  util.INTERNAL_ERROR,
-                  util.OUT_OF_MEMORY_ERROR,
-                  util.STACK_OVERFLOW_ERROR,
-                  util.UNKNOWN_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.AWT_ERROR,
+                util.LINKAGE_ERROR,
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.THREAD_DEATH,
+                util.VIRTUAL_MACHINE_ERROR,
+                util.INTERNAL_ERROR,
+                util.OUT_OF_MEMORY_ERROR,
+                util.STACK_OVERFLOW_ERROR,
+                util.UNKNOWN_ERROR)),
         util.catchableSubset(catchableAs.getCaught()));
     assertEquals(Collections.EMPTY_SET, util.catchableSubset(catchableAs.getUncaught()));
 
@@ -988,25 +968,23 @@ public class ThrowableSetTest {
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.AWT_ERROR,
-                  util.LINKAGE_ERROR,
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.THREAD_DEATH,
-                  util.VIRTUAL_MACHINE_ERROR,
-                  util.INTERNAL_ERROR,
-                  util.OUT_OF_MEMORY_ERROR,
-                  util.STACK_OVERFLOW_ERROR,
-                  util.UNKNOWN_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.AWT_ERROR,
+                util.LINKAGE_ERROR,
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.THREAD_DEATH,
+                util.VIRTUAL_MACHINE_ERROR,
+                util.INTERNAL_ERROR,
+                util.OUT_OF_MEMORY_ERROR,
+                util.STACK_OVERFLOW_ERROR,
+                util.UNKNOWN_ERROR)),
         util.catchableSubset(catchableAs.getCaught()));
     assertEquals(Collections.EMPTY_SET, util.catchableSubset(catchableAs.getUncaught()));
 
@@ -1014,13 +992,13 @@ public class ThrowableSetTest {
     catchableAs = set0.whichCatchableAs(util.LINKAGE_ERROR);
     expectedCaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.LINKAGE_ERROR)}));
+            Arrays.asList(AnySubType.v(util.LINKAGE_ERROR)));
     expectedCaughtExcluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)}));
+            Arrays.asList(AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)));
     expectedUncaughtIncluded =
         new ExceptionHashSet<AnySubType>(
-            Arrays.asList(new AnySubType[] {AnySubType.v(util.ERROR)}));
+            Arrays.asList(AnySubType.v(util.ERROR)));
     expectedUncaughtExcluded = expectedCaughtIncluded;
     assertTrue(
         ExceptionTestUtility.sameMembers(
@@ -1031,33 +1009,29 @@ public class ThrowableSetTest {
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.LINKAGE_ERROR,
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.LINKAGE_ERROR,
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR)),
         util.catchableSubset(catchableAs.getCaught()));
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.AWT_ERROR,
-                  util.THREAD_DEATH,
-                  util.VIRTUAL_MACHINE_ERROR,
-                  util.INTERNAL_ERROR,
-                  util.OUT_OF_MEMORY_ERROR,
-                  util.STACK_OVERFLOW_ERROR,
-                  util.UNKNOWN_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.AWT_ERROR,
+                util.THREAD_DEATH,
+                util.VIRTUAL_MACHINE_ERROR,
+                util.INTERNAL_ERROR,
+                util.OUT_OF_MEMORY_ERROR,
+                util.STACK_OVERFLOW_ERROR,
+                util.UNKNOWN_ERROR)),
         util.catchableSubset(catchableAs.getUncaught()));
 
     assertTrue(!set0.catchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR));
@@ -1068,25 +1042,23 @@ public class ThrowableSetTest {
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.LINKAGE_ERROR,
-                  util.AWT_ERROR,
-                  util.THREAD_DEATH,
-                  util.VIRTUAL_MACHINE_ERROR,
-                  util.INTERNAL_ERROR,
-                  util.OUT_OF_MEMORY_ERROR,
-                  util.STACK_OVERFLOW_ERROR,
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.UNKNOWN_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.LINKAGE_ERROR,
+                util.AWT_ERROR,
+                util.THREAD_DEATH,
+                util.VIRTUAL_MACHINE_ERROR,
+                util.INTERNAL_ERROR,
+                util.OUT_OF_MEMORY_ERROR,
+                util.STACK_OVERFLOW_ERROR,
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.UNKNOWN_ERROR)),
         util.catchableSubset(catchableAs.getUncaught()));
 
     catchableAs = set0.whichCatchableAs(util.ILLEGAL_ACCESS_ERROR);
@@ -1096,25 +1068,23 @@ public class ThrowableSetTest {
     assertEquals(
         new ExceptionHashSet<RefType>(
             Arrays.asList(
-                new RefType[] {
-                  util.THROWABLE,
-                  util.ERROR,
-                  util.LINKAGE_ERROR,
-                  util.AWT_ERROR,
-                  util.THREAD_DEATH,
-                  util.VIRTUAL_MACHINE_ERROR,
-                  util.INTERNAL_ERROR,
-                  util.OUT_OF_MEMORY_ERROR,
-                  util.STACK_OVERFLOW_ERROR,
-                  util.CLASS_CIRCULARITY_ERROR,
-                  util.CLASS_FORMAT_ERROR,
-                  util.UNSUPPORTED_CLASS_VERSION_ERROR,
-                  util.EXCEPTION_IN_INITIALIZER_ERROR,
-                  util.NO_CLASS_DEF_FOUND_ERROR,
-                  util.UNSATISFIED_LINK_ERROR,
-                  util.VERIFY_ERROR,
-                  util.UNKNOWN_ERROR,
-                })),
+                util.THROWABLE,
+                util.ERROR,
+                util.LINKAGE_ERROR,
+                util.AWT_ERROR,
+                util.THREAD_DEATH,
+                util.VIRTUAL_MACHINE_ERROR,
+                util.INTERNAL_ERROR,
+                util.OUT_OF_MEMORY_ERROR,
+                util.STACK_OVERFLOW_ERROR,
+                util.CLASS_CIRCULARITY_ERROR,
+                util.CLASS_FORMAT_ERROR,
+                util.UNSUPPORTED_CLASS_VERSION_ERROR,
+                util.EXCEPTION_IN_INITIALIZER_ERROR,
+                util.NO_CLASS_DEF_FOUND_ERROR,
+                util.UNSATISFIED_LINK_ERROR,
+                util.VERIFY_ERROR,
+                util.UNKNOWN_ERROR)),
         util.catchableSubset(catchableAs.getUncaught()));
 
     if (DUMP_INTERNALS) {

@@ -107,8 +107,7 @@ public abstract class JPegStmt extends AbstractHost
   }
 
   public boolean containUnitGraph() {
-    if (unitGraph == null) return false;
-    else return true;
+    return unitGraph != null;
   }
 
   public Unit getUnit() {
@@ -118,8 +117,7 @@ public abstract class JPegStmt extends AbstractHost
   }
 
   public boolean containUnit() {
-    if (unit == null) return false;
-    else return true;
+    return unit != null;
   }
 
   public String getObject() {

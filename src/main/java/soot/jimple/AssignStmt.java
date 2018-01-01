@@ -28,7 +28,7 @@ package soot.jimple;
 import soot.*;
 
 public interface AssignStmt extends DefinitionStmt {
-  public void setLeftOp(Value variable);
+  void setLeftOp(Value variable);
 
-  public void setRightOp(Value rvalue);
+  void setRightOp(Value rvalue);
 }

@@ -47,9 +47,9 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public OrLogicalExpr copy() {
     try {
-      OrLogicalExpr node = (OrLogicalExpr) clone();
+      OrLogicalExpr node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -63,10 +63,10 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public OrLogicalExpr fullCopy() {
-    OrLogicalExpr tree = (OrLogicalExpr) copy();
+    OrLogicalExpr tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);

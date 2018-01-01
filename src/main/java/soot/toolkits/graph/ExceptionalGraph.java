@@ -50,7 +50,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    * </code>, on the other hand, says that when <code>a</code> fails to execute, execution may
    * proceed to <code>b</code> instead.
    */
-  public interface ExceptionDest<N> {
+  interface ExceptionDest<N> {
 
     /**
      * Returns the trap corresponding to this destination.
@@ -59,7 +59,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
      *     is such a handler within the method, or <code>null</code> if there is no such handler and
      *     the exceptions cause the method to terminate abruptly.
      */
-    public Trap getTrap();
+    Trap getTrap();
 
     /**
      * Returns the exceptions thrown to this destination.
@@ -67,7 +67,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
      * @return a {@link ThrowableSet} representing the exceptions which may be caught by this <code>
      *     ExceptionDest</code>'s trap.
      */
-    public ThrowableSet getThrowables();
+    ThrowableSet getThrowables();
 
     /**
      * Returns the CFG node corresponding to the beginning of the exception handler that catches the
@@ -81,7 +81,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
     // implement, and return an instance of that, rather than
     // an Object.  We chose Object because that's what DirectedGraph
     // deals in.
-    public N getHandlerNode();
+    N getHandlerNode();
   }
 
   /**
@@ -89,7 +89,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    *
    * @return the <code>Body</code> from which this graph was built.
    */
-  public Body getBody();
+  Body getBody();
 
   /**
    * Returns a list of nodes which are predecessors of a given node when only unexceptional control
@@ -99,7 +99,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    * @return a {@link List} of the nodes in this graph from which there is an unexceptional edge to
    *     <code>n</code>.
    */
-  public List<N> getUnexceptionalPredsOf(N n);
+  List<N> getUnexceptionalPredsOf(N n);
 
   /**
    * Returns a list of nodes which are successors of a given node when only unexceptional control
@@ -109,7 +109,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    * @return a {@link List} of nodes in this graph to which there is an unexceptional edge from
    *     <code>n</code>.
    */
-  public List<N> getUnexceptionalSuccsOf(N n);
+  List<N> getUnexceptionalSuccsOf(N n);
 
   /**
    * Returns a list of nodes which are predecessors of a given node when only exceptional control
@@ -119,7 +119,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    * @return a {@link List} of nodes in this graph from which there is an exceptional edge to <code>
    *     n</code>.
    */
-  public List<N> getExceptionalPredsOf(N n);
+  List<N> getExceptionalPredsOf(N n);
 
   /**
    * Returns a list of nodes which are successors of a given node when only exceptional control flow
@@ -129,7 +129,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    * @return a {@link List} of nodes in this graph to which there is an exceptional edge from <code>
    *     n</code>.
    */
-  public List<N> getExceptionalSuccsOf(N n);
+  List<N> getExceptionalSuccsOf(N n);
 
   /**
    * Returns a collection of {@link ExceptionalGraph.ExceptionDest ExceptionDest} objects which
@@ -139,5 +139,5 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    * @return a collection of <code>ExceptionDest</code> objects describing the traps and handlers,
    *     if any, which catch the exceptions which may be thrown by <code>n</code>.
    */
-  public Collection<? extends ExceptionDest<N>> getExceptionDests(N n);
+  Collection<? extends ExceptionDest<N>> getExceptionDests(N n);
 }

@@ -93,8 +93,7 @@ public class FastHierarchy {
     public boolean isSubrange(Interval potentialSubrange) {
       if (potentialSubrange == null) return false;
       if (lower > potentialSubrange.lower) return false;
-      if (upper < potentialSubrange.upper) return false;
-      return true;
+      return upper >= potentialSubrange.upper;
     }
   }
 
@@ -188,7 +187,7 @@ public class FastHierarchy {
    */
   public Set<SootClass> getAllSubinterfaces(SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
-    if (!parent.isInterface()) return Collections.<SootClass>emptySet();
+    if (!parent.isInterface()) return Collections.emptySet();
     if (!interfaceToAllSubinterfaces.containsKey(parent)) {
       interfaceToAllSubinterfaces.put(parent, parent);
       for (SootClass si : interfaceToSubinterfaces.get(parent)) {
@@ -265,8 +264,7 @@ public class FastHierarchy {
       } else if (achild.numDimensions > aparent.numDimensions) {
         if (aparent.baseType.equals(sc.getObjectType())) return true;
         if (aparent.baseType.equals(RefType.v("java.io.Serializable"))) return true;
-        if (aparent.baseType.equals(RefType.v("java.lang.Cloneable"))) return true;
-        return false;
+        return aparent.baseType.equals(RefType.v("java.lang.Cloneable"));
       } else return false;
     } else return false;
   }

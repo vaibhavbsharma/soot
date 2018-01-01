@@ -138,12 +138,12 @@ public class SootMethod extends AbstractHost
 
   /** Constructs a SootMethod with the given name, parameter types and return type. */
   public SootMethod(String name, List<Type> parameterTypes, Type returnType) {
-    this(name, parameterTypes, returnType, 0, Collections.<SootClass>emptyList());
+    this(name, parameterTypes, returnType, 0, Collections.emptyList());
   }
 
   /** Constructs a SootMethod with the given name, parameter types, return type and modifiers. */
   public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
-    this(name, parameterTypes, returnType, modifiers, Collections.<SootClass>emptyList());
+    this(name, parameterTypes, returnType, modifiers, Collections.emptyList());
   }
 
   /**
@@ -303,7 +303,7 @@ public class SootMethod extends AbstractHost
 
   /** Returns a read-only list of the parameter types of this method. */
   public List<Type> getParameterTypes() {
-    return parameterTypes == null ? Collections.<Type>emptyList() : Arrays.asList(parameterTypes);
+    return parameterTypes == null ? Collections.emptyList() : Arrays.asList(parameterTypes);
   }
 
   /** Changes the set of parameter types of this method. */

@@ -39,9 +39,9 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public ElementArrayValue copy() {
     try {
-      ElementArrayValue node = (ElementArrayValue) clone();
+      ElementArrayValue node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -55,10 +55,10 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementArrayValue fullCopy() {
-    ElementArrayValue tree = (ElementArrayValue) copy();
+    ElementArrayValue tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -167,7 +167,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementValue getElementValue(int i) {
-    return (ElementValue) getElementValueList().getChild(i);
+    return getElementValueList().getChild(i);
   }
   /**
    * Append an element to the ElementValue list.

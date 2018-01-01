@@ -317,8 +317,8 @@ public class RectangularArrayFinder extends SceneTransformer {
         /* kick out the possible cast. */
         if ((leftOp instanceof Local) && (rightOp instanceof Local)) {
           if (arrayLocal.contains(leftOp) && arrayLocal.contains(rightOp)) {
-            int leftDims = ((ArrayType) ((Local) leftOp).getType()).numDimensions;
-            int rightDims = ((ArrayType) ((Local) rightOp).getType()).numDimensions;
+            int leftDims = ((ArrayType) leftOp.getType()).numDimensions;
+            int rightDims = ((ArrayType) rightOp.getType()).numDimensions;
 
             to = new MethodLocal(method, (Local) leftOp);
             from = new MethodLocal(method, (Local) rightOp);
@@ -403,8 +403,8 @@ public class RectangularArrayFinder extends SceneTransformer {
         /* For field reference, we can make conservative assumption that all instance fieldRef use the same node.*/
         if ((leftOp instanceof FieldRef) && (rightOp instanceof Local)) {
           if (arrayLocal.contains(rightOp)) {
-            Type ftype = ((FieldRef) leftOp).getType();
-            Type ltype = ((Local) rightOp).getType();
+            Type ftype = leftOp.getType();
+            Type ltype = rightOp.getType();
 
             to = ((FieldRef) leftOp).getField();
             from = new MethodLocal(method, (Local) rightOp);
@@ -419,8 +419,8 @@ public class RectangularArrayFinder extends SceneTransformer {
           }
         } else if ((leftOp instanceof Local) && (rightOp instanceof FieldRef)) {
           if (arrayLocal.contains(leftOp)) {
-            Type ftype = ((FieldRef) rightOp).getType();
-            Type ltype = ((Local) leftOp).getType();
+            Type ftype = rightOp.getType();
+            Type ltype = leftOp.getType();
 
             to = new MethodLocal(method, (Local) leftOp);
             from = ((FieldRef) rightOp).getField();
@@ -690,7 +690,6 @@ public class RectangularArrayFinder extends SceneTransformer {
   }
 
   public boolean isRectangular(Object obj) {
-    if (trueSet.contains(obj)) return true;
-    else return false;
+    return trueSet.contains(obj);
   }
 }

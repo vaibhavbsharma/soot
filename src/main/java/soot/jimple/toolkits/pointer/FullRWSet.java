@@ -50,8 +50,7 @@ public class FullRWSet extends RWSet {
   }
 
   public boolean hasNonEmptyIntersection(RWSet other) {
-    if (other == null) return false;
-    return true;
+    return other != null;
   }
   /** Adds the RWSet other into this set. */
   public boolean union(RWSet other) {
@@ -67,7 +66,6 @@ public class FullRWSet extends RWSet {
   }
 
   public boolean isEquivTo(RWSet other) {
-    if (other instanceof FullRWSet) return true;
-    return false;
+    return other instanceof FullRWSet;
   }
 }

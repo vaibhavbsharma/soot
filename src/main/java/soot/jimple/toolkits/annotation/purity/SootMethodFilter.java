@@ -35,5 +35,5 @@ import soot.*;
  */
 public interface SootMethodFilter {
 
-  public boolean want(SootMethod m);
+  boolean want(SootMethod m);
 }

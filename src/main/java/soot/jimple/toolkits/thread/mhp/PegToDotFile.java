@@ -114,7 +114,7 @@ public class PegToDotFile {
         nodeName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(node)));
       } else {
 
-        Tag tag = (Tag) ((JPegStmt) node).getTags().get(0);
+        Tag tag = ((JPegStmt) node).getTags().get(0);
         nodeName = makeNodeName(getNodeOrder(nodeindex, tag + " " + node));
         if (((JPegStmt) node).getName().equals("start")) {
           startNodeToName.put(node, nodeName);
@@ -130,7 +130,7 @@ public class PegToDotFile {
           succName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(s)));
         } else {
           JPegStmt succ = (JPegStmt) s;
-          Tag succTag = (Tag) succ.getTags().get(0);
+          Tag succTag = succ.getTags().get(0);
           succName = makeNodeName(getNodeOrder(nodeindex, succTag + " " + succ));
         }
 
@@ -173,7 +173,7 @@ public class PegToDotFile {
           } else {
 
             if (((JPegStmt) node).getName().equals("begin")) firstNode = true;
-            Tag tag = (Tag) ((JPegStmt) node).getTags().get(0);
+            Tag tag = ((JPegStmt) node).getTags().get(0);
             nodeName = makeNodeName(getNodeOrder(nodeindex, tag + " " + node));
             if (((JPegStmt) node).getName().equals("start")) {
               startNodeToName.put(node, nodeName);
@@ -201,7 +201,7 @@ public class PegToDotFile {
               threadNodeName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(succ)));
             } else {
               JPegStmt succStmt = (JPegStmt) succ;
-              Tag succTag = (Tag) succStmt.getTags().get(0);
+              Tag succTag = succStmt.getTags().get(0);
               threadNodeName = makeNodeName(getNodeOrder(nodeindex, succTag + " " + succStmt));
             }
 

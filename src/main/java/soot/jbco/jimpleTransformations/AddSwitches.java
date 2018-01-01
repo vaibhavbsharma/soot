@@ -87,7 +87,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
-      Unit unit = (Unit) it.next();
+      Unit unit = it.next();
       if (unit instanceof IdentityStmt || checkTraps(unit, b)) continue;
       // very conservative estimate about where new-<init> ranges are
       if (fa.getFlowAfter(unit).isEmpty() && fa.getFlowBefore(unit).isEmpty()) {
@@ -101,7 +101,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     Unit u = null;
     for (int i = 0; i < zeroheight.size(); i++) {
       idx = Rand.getInt(zeroheight.size() - 1) + 1;
-      u = (Unit) zeroheight.get(idx);
+      u = zeroheight.get(idx);
       if (u.fallsThrough()) break;
       u = null;
     }
@@ -138,7 +138,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
           Jimple.v()
               .newAssignStmt(
                   b1,
-                  Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.<Value>emptyList())),
+                  Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.emptyList())),
           u);
     }
     if (ops[1].getType() instanceof PrimType) {
@@ -155,7 +155,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
           Jimple.v()
               .newAssignStmt(
                   b2,
-                  Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.<Value>emptyList())),
+                  Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.emptyList())),
           u);
     }
 
@@ -171,7 +171,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     Iterator<Unit> tit = targs.iterator();
     while (tit.hasNext()) {
-      Unit nxt = (Unit) tit.next();
+      Unit nxt = tit.next();
       if (Rand.getInt(5) < 4) {
         units.insertBefore(
             Jimple.v()

@@ -28,15 +28,15 @@ package soot.baf;
 import soot.*;
 
 public interface IdentityInst extends Inst, IdentityUnit {
-  public Value getLeftOp();
+  Value getLeftOp();
 
-  public Value getRightOp();
+  Value getRightOp();
 
-  public void setLeftOp(Value variable);
+  void setLeftOp(Value variable);
 
-  public void setRightOp(Value rvalue);
+  void setRightOp(Value rvalue);
 
-  public ValueBox getLeftOpBox();
+  ValueBox getLeftOpBox();
 
-  public ValueBox getRightOpBox();
+  ValueBox getRightOpBox();
 }

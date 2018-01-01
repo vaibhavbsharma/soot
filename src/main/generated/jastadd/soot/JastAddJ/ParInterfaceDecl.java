@@ -105,9 +105,9 @@ public class ParInterfaceDecl extends InterfaceDecl
   @SuppressWarnings({"unchecked", "cast"})
   public ParInterfaceDecl copy() {
     try {
-      ParInterfaceDecl node = (ParInterfaceDecl) clone();
+      ParInterfaceDecl node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -121,7 +121,7 @@ public class ParInterfaceDecl extends InterfaceDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParInterfaceDecl fullCopy() {
-    ParInterfaceDecl tree = (ParInterfaceDecl) copy();
+    ParInterfaceDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         switch (i) {
@@ -130,7 +130,7 @@ public class ParInterfaceDecl extends InterfaceDecl
             tree.children[i] = new List();
             continue;
         }
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -202,7 +202,7 @@ public class ParInterfaceDecl extends InterfaceDecl
   public Access createQualifiedAccess() {
     List typeArgumentList = new List();
     for (int i = 0; i < getNumArgument(); i++) {
-      Access a = (Access) getArgument(i);
+      Access a = getArgument(i);
       if (a instanceof TypeAccess) typeArgumentList.add(a.type().createQualifiedAccess());
       else typeArgumentList.add(a.fullCopy());
     }
@@ -374,7 +374,7 @@ public class ParInterfaceDecl extends InterfaceDecl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getArgument(int i) {
-    return (Access) getArgumentList().getChild(i);
+    return getArgumentList().getChild(i);
   }
   /**
    * Append an element to the Argument list.
@@ -1660,9 +1660,9 @@ public class ParInterfaceDecl extends InterfaceDecl
         _value.visited = new Integer(state.CIRCLE_INDEX);
         state.CHANGE = false;
         new_localTypeDecls_String_value = localTypeDecls_compute(name);
-        if ((new_localTypeDecls_String_value == null && (SimpleSet) _value.value != null)
+        if ((new_localTypeDecls_String_value == null && _value.value != null)
             || (new_localTypeDecls_String_value != null
-                && !new_localTypeDecls_String_value.equals((SimpleSet) _value.value))) {
+                && !new_localTypeDecls_String_value.equals(_value.value))) {
           state.CHANGE = true;
           _value.value = new_localTypeDecls_String_value;
         }
@@ -1684,9 +1684,9 @@ public class ParInterfaceDecl extends InterfaceDecl
       SimpleSet new_localTypeDecls_String_value = localTypeDecls_compute(name);
       if (state.RESET_CYCLE) {
         localTypeDecls_String_values.remove(_parameters);
-      } else if ((new_localTypeDecls_String_value == null && (SimpleSet) _value.value != null)
+      } else if ((new_localTypeDecls_String_value == null && _value.value != null)
           || (new_localTypeDecls_String_value != null
-              && !new_localTypeDecls_String_value.equals((SimpleSet) _value.value))) {
+              && !new_localTypeDecls_String_value.equals(_value.value))) {
         state.CHANGE = true;
         _value.value = new_localTypeDecls_String_value;
       }

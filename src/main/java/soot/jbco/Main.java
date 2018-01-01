@@ -223,7 +223,7 @@ public class Main {
 
     if (rcount > 0) {
       int index = 0;
-      String tmp[] = (String[]) argv.clone();
+      String tmp[] = argv.clone();
       argv = new String[argv.length - rcount];
       for (int i = 0; i < tmp.length; i++) {
         if (!remove[i]) argv[index++] = tmp[i];
@@ -289,7 +289,7 @@ public class Main {
       }
 
       for (Iterator<Transform> phases = wjtp.iterator(); phases.hasNext(); ) {
-        if (((Transform) phases.next()).getPhaseName().indexOf("jbco") > 0) {
+        if (phases.next().getPhaseName().indexOf("jbco") > 0) {
           argv = checkWhole(argv, true);
           break;
         }
@@ -308,7 +308,7 @@ public class Main {
                           ? "Jimple Method Body Transformations:"
                           : "Baf Method Body Transformations:");
           while (phases.hasNext()) {
-            Transform o = (Transform) phases.next();
+            Transform o = phases.next();
             Transformer t = o.getTransformer();
             if (t instanceof IJbcoTransform) {
               G.v().out.println("\t" + ((IJbcoTransform) t).getName() + "  JBCO");
@@ -423,9 +423,9 @@ public class Main {
         Integer intg = null;
         Object o = keys.next();
         if (o instanceof java.util.regex.Pattern) {
-          if (((java.util.regex.Pattern) o).matcher(method).matches()) intg = (Integer) htmp.get(o);
+          if (((java.util.regex.Pattern) o).matcher(method).matches()) intg = htmp.get(o);
         } else if (o instanceof String && method.equals(o)) {
-          intg = (Integer) htmp.get(o);
+          intg = htmp.get(o);
         }
 
         if (intg != null && intg.intValue() < result) result = intg.intValue();

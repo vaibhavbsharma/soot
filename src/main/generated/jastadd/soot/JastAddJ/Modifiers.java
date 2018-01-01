@@ -63,9 +63,9 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Modifiers copy() {
     try {
-      Modifiers node = (Modifiers) clone();
+      Modifiers node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -79,10 +79,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Modifiers fullCopy() {
-    Modifiers tree = (Modifiers) copy();
+    Modifiers tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -345,7 +345,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Modifier getModifier(int i) {
-    return (Modifier) getModifierList().getChild(i);
+    return getModifierList().getChild(i);
   }
   /**
    * Append an element to the Modifier list.

@@ -68,13 +68,12 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   }
 
   public boolean contains(SimpleInterval o) {
-    SimpleInterval osi = (SimpleInterval) o;
-    if (L <= osi.L && R >= osi.R) return true;
-    return false;
+    SimpleInterval osi = o;
+    return L <= osi.L && R >= osi.R;
   }
 
   public boolean merge(SimpleInterval o) {
-    SimpleInterval osi = (SimpleInterval) o;
+    SimpleInterval osi = o;
 
     if (osi.L < L) {
       if (L <= osi.R) {
@@ -93,10 +92,9 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   }
 
   public boolean intersect(SimpleInterval o) {
-    SimpleInterval osi = (SimpleInterval) o;
+    SimpleInterval osi = o;
 
     if (L <= osi.L && osi.L < R) return true;
-    if (osi.L <= L && L < osi.R) return true;
-    return false;
+    return osi.L <= L && L < osi.R;
   }
 }

@@ -171,7 +171,7 @@ public class LockAllocator extends SceneTransformer {
               new SynchronizedRegionFinder(eug, b, optionPrintDebug, optionOpenNesting, tlo);
           Chain<Unit> units = b.getUnits();
           Unit lastUnit = units.getLast();
-          FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
+          FlowSet fs = ta.getFlowBefore(lastUnit);
 
           // add the results to the list of results
           methodToFlowSet.put(method, fs);
@@ -561,7 +561,7 @@ public class LockAllocator extends SceneTransformer {
             tn.group.lockObject = null;
           } else { // Found exactly one lock
             // Use it!
-            tn.lockObject = (Value) tn.lockset.get(0);
+            tn.lockObject = tn.lockset.get(0);
 
             // If it's the best lock we've found in the group yet, use it for display
             if (tn.group.lockObject == null || tn.lockObject instanceof Ref)

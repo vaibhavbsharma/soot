@@ -403,7 +403,7 @@ public class Renamer {
             newName = null;
             break;
           }
-          newName = (String) forLoopNames.get(count);
+          newName = forLoopNames.get(count);
         } while (!isUniqueName(newName));
 
         if (newName != null) {

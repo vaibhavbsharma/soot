@@ -28,11 +28,11 @@ package soot.baf;
 import soot.*;
 
 public interface PrimitiveCastInst extends Inst {
-  public Type getFromType();
+  Type getFromType();
 
-  public void setFromType(Type t);
+  void setFromType(Type t);
 
-  public Type getToType();
+  Type getToType();
 
-  public void setToType(Type t);
+  void setToType(Type t);
 }

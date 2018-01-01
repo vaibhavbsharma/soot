@@ -129,7 +129,7 @@ public class SynchronizerManager {
                 Jimple.v()
                     .newStaticInvokeExpr(
                         getClassFetcherFor(sc).makeRef(),
-                        Arrays.asList(new Value[] {StringConstant.v(sc.getName())}))),
+                        Arrays.asList(StringConstant.v(sc.getName())))),
         target);
     units.insertBefore(
         Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(classCacher.makeRef()), l), target);
@@ -300,7 +300,7 @@ public class SynchronizerManager {
                                       "<java.lang.Class: java.lang.Class"
                                           + " forName(java.lang.String)>")
                                   .makeRef(),
-                              Arrays.asList(new Value[] {l_r0}))));
+                              Arrays.asList(l_r0))));
 
       // insert "return $r2;"
       units.add(Jimple.v().newReturnStmt(l_r2));
@@ -346,7 +346,7 @@ public class SynchronizerManager {
                                   "<java.lang.NoClassDefFoundError: void"
                                       + " <init>(java.lang.String)>")
                               .makeRef(),
-                          Arrays.asList(new Value[] {l_r5}))));
+                          Arrays.asList(l_r5))));
 
       // add .throw $r4;
       units.add(Jimple.v().newThrowStmt(l_r4));

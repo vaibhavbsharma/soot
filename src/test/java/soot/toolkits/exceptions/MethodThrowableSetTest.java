@@ -86,7 +86,7 @@ public class MethodThrowableSetTest {
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -101,7 +101,7 @@ public class MethodThrowableSetTest {
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -117,7 +117,7 @@ public class MethodThrowableSetTest {
     expected.add(testUtility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -130,7 +130,7 @@ public class MethodThrowableSetTest {
     expected.addAll(testUtility.VM_ERRORS);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -146,7 +146,7 @@ public class MethodThrowableSetTest {
     expected.add(AnySubType.v(Scene.v().getSootClass(EXCEPTION_CLASS).getType()));
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -162,7 +162,7 @@ public class MethodThrowableSetTest {
     expected.add(testUtility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -175,7 +175,7 @@ public class MethodThrowableSetTest {
     expected.addAll(testUtility.VM_ERRORS);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -189,6 +189,6 @@ public class MethodThrowableSetTest {
     expected.add(testUtility.ARITHMETIC_EXCEPTION);
 
     Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.<AnySubType>emptySet(), ts));
+        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 }

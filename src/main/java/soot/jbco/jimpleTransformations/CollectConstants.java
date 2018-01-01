@@ -179,7 +179,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
           Scene.v()
               .makeSootMethod(
                   SootMethod.staticInitializerName,
-                  Collections.<Type>emptyList(),
+                  Collections.emptyList(),
                   VoidType.v(),
                   Modifier.STATIC);
       clas.addMethod(m);

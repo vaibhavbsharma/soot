@@ -63,7 +63,6 @@ public class DoubleConstantValueTag extends ConstantValueTag {
     if (!super.equals(obj)) return false;
     if (getClass() != obj.getClass()) return false;
     DoubleConstantValueTag other = (DoubleConstantValueTag) obj;
-    if (Double.doubleToLongBits(value) != Double.doubleToLongBits(other.value)) return false;
-    return true;
+    return Double.doubleToLongBits(value) == Double.doubleToLongBits(other.value);
   }
 }

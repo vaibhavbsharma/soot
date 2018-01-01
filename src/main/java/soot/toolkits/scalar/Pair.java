@@ -67,13 +67,12 @@ public class Pair<T, U> {
 
   /** Decide if this pair represents a method parameter. */
   public boolean isParameter() {
-    if (o1 instanceof SootMethod && o2 instanceof Integer) return true;
-    return false;
+    return o1 instanceof SootMethod && o2 instanceof Integer;
   }
 
   /** Decide if this pair stores the THIS parameter for a method. */
   public boolean isThisParameter() {
-    return (o1 instanceof SootMethod && o2.equals(PointsToAnalysis.THIS_NODE)) ? true : false;
+    return o1 instanceof SootMethod && o2.equals(PointsToAnalysis.THIS_NODE);
   }
 
   public String toString() {

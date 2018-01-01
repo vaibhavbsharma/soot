@@ -12,51 +12,51 @@ import soot.util.*;
 /** @ast interface */
 public interface Variable {
 
-  public String name();
+  String name();
 
-  public TypeDecl type();
+  TypeDecl type();
 
-  public Collection<TypeDecl> throwTypes();
+  Collection<TypeDecl> throwTypes();
 
-  public boolean isParameter();
-
-  // 4.5.3
+  boolean isParameter();
 
   // 4.5.3
-  public boolean isClassVariable();
 
-  public boolean isInstanceVariable();
+  // 4.5.3
+  boolean isClassVariable();
 
-  public boolean isMethodParameter();
+  boolean isInstanceVariable();
 
-  public boolean isConstructorParameter();
+  boolean isMethodParameter();
 
-  public boolean isExceptionHandlerParameter();
+  boolean isConstructorParameter();
 
-  public boolean isLocalVariable();
+  boolean isExceptionHandlerParameter();
+
+  boolean isLocalVariable();
 
   // 4.5.4
 
   // 4.5.4
-  public boolean isFinal();
+  boolean isFinal();
 
-  public boolean isVolatile();
+  boolean isVolatile();
 
-  public boolean isBlank();
+  boolean isBlank();
 
-  public boolean isStatic();
+  boolean isStatic();
 
-  public boolean isSynthetic();
+  boolean isSynthetic();
 
-  public TypeDecl hostType();
+  TypeDecl hostType();
 
-  public Expr getInit();
+  Expr getInit();
 
-  public boolean hasInit();
+  boolean hasInit();
 
-  public Constant constant();
+  Constant constant();
 
-  public Modifiers getModifiers();
+  Modifiers getModifiers();
   /**
    * @attribute syn
    * @aspect SourceDeclarations
@@ -64,5 +64,5 @@ public interface Variable {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1519
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Variable sourceVariableDecl();
+  Variable sourceVariableDecl();
 }

@@ -232,7 +232,7 @@ public class OfflineProcessor {
             } else {
               // Use geom
               for (AllocNode o : rep.get_all_points_to_objects()) {
-                IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
+                IVarAbstraction padf = geomPTA.findInstanceField(o, field);
                 if (padf == null || padf.reachable() == false) continue;
                 off_graph_edge e = add_graph_edge(rhs.id, padf.id);
                 e.base_var = lhs;
@@ -263,7 +263,7 @@ public class OfflineProcessor {
             } else {
               // use geom
               for (AllocNode o : rep.get_all_points_to_objects()) {
-                IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
+                IVarAbstraction padf = geomPTA.findInstanceField(o, field);
                 if (padf == null || padf.reachable() == false) continue;
                 off_graph_edge e = add_graph_edge(padf.id, lhs.id);
                 e.base_var = rhs;
@@ -397,7 +397,7 @@ public class OfflineProcessor {
           } else {
             // Use the geometric points-to result
             for (AllocNode o : pn.get_all_points_to_objects()) {
-              IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
+              IVarAbstraction padf = geomPTA.findInstanceField(o, field);
               if (padf == null || padf.reachable() == false) continue;
               visitedFlag |= padf.willUpdate;
               if (visitedFlag) break;
@@ -458,7 +458,7 @@ public class OfflineProcessor {
           } else {
             // use geomPA
             for (AllocNode o : rep.get_all_points_to_objects()) {
-              IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
+              IVarAbstraction padf = geomPTA.findInstanceField(o, field);
               if (padf == null || padf.reachable() == false) continue;
               add_graph_edge(padf.id, rhs.id);
             }
@@ -483,7 +483,7 @@ public class OfflineProcessor {
           } else {
             // use geomPA
             for (AllocNode o : rep.get_all_points_to_objects()) {
-              IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
+              IVarAbstraction padf = geomPTA.findInstanceField(o, field);
               if (padf == null || padf.reachable() == false) continue;
               add_graph_edge(lhs.id, padf.id);
             }

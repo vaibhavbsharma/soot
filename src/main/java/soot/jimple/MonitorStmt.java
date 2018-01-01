@@ -28,9 +28,9 @@ package soot.jimple;
 import soot.*;
 
 public interface MonitorStmt extends Stmt {
-  public Value getOp();
+  Value getOp();
 
-  public void setOp(Value op);
+  void setOp(Value op);
 
-  public ValueBox getOpBox();
+  ValueBox getOpBox();
 }

@@ -434,7 +434,7 @@ public class Baf {
 
   /** Returns a BafBody constructed from b. */
   public BafBody newBody(Body b) {
-    return new BafBody(b, Collections.<String, String>emptyMap());
+    return new BafBody(b, Collections.emptyMap());
   }
 
   /** Returns a BafBody constructed from b. */

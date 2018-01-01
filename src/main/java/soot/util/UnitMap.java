@@ -126,7 +126,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * a unit (but only once in the beginning).<br>
    * If not overwritten does nothing.
    */
-  protected void init() {};
+  protected void init() {}
 
   /**
    * maps a unit to an object. This method is called for every unit. If the returned object is

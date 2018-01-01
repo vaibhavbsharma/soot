@@ -216,7 +216,6 @@ public class DexAnnotation {
       case 'e': // enum
         AnnotationEnumElem enumElem = (AnnotationEnumElem) e;
         annotationType = Util.getType(enumElem.getTypeName());
-        ;
         break;
 
       case 'L':

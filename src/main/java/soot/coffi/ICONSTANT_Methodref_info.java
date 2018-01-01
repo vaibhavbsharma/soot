@@ -22,7 +22,7 @@ package soot.coffi;
 /** A {@link CONSTANT_Methodref_info} or {@link CONSTANT_InterfaceMethodref_info}. */
 public interface ICONSTANT_Methodref_info {
 
-  public int getClassIndex();
+  int getClassIndex();
 
-  public int getNameAndTypeIndex();
+  int getNameAndTypeIndex();
 }

@@ -51,7 +51,7 @@ public class SequenceFinder implements FactFinder {
       IterableSet sequenceBody = new IterableSet();
 
       while (as.bpreds.size() == 1) {
-        AugmentedStmt pas = (AugmentedStmt) as.bpreds.get(0);
+        AugmentedStmt pas = as.bpreds.get(0);
         if ((body.contains(pas) == false) || (childUnion.contains(pas) == true)) break;
 
         as = pas;
@@ -62,7 +62,7 @@ public class SequenceFinder implements FactFinder {
         childUnion.add(as);
         sequenceBody.addLast(as);
 
-        if (as.bsuccs.isEmpty() == false) as = (AugmentedStmt) as.bsuccs.get(0);
+        if (as.bsuccs.isEmpty() == false) as = as.bsuccs.get(0);
 
         if (as.bpreds.size() != 1) break;
       }

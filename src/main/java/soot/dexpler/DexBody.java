@@ -464,7 +464,7 @@ public class DexBody {
 
     // process bytecode instructions
     final boolean isOdex =
-        dexFile instanceof DexBackedDexFile ? ((DexBackedDexFile) dexFile).isOdexFile() : false;
+        dexFile instanceof DexBackedDexFile && ((DexBackedDexFile) dexFile).isOdexFile();
 
     ClassPath cp = null;
     if (isOdex) {

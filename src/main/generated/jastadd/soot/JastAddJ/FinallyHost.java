@@ -14,11 +14,11 @@ public interface FinallyHost {
   // public Block getFinally();
 
   // public Block getFinally();
-  public boolean isDUafterFinally(Variable v);
+  boolean isDUafterFinally(Variable v);
 
-  public boolean isDAafterFinally(Variable v);
+  boolean isDAafterFinally(Variable v);
 
-  public void emitFinallyCode(Body b);
+  void emitFinallyCode(Body b);
 
   /**
    * @attribute syn
@@ -27,5 +27,5 @@ public interface FinallyHost {
    *     /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:319
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public soot.jimple.Stmt label_finally_block();
+  soot.jimple.Stmt label_finally_block();
 }

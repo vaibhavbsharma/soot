@@ -777,7 +777,7 @@ public class DexPrinter {
           new ImmutableAnnotation(
               AnnotationVisibility.RUNTIME,
               "Ljava/lang/Deprecated;",
-              Collections.<AnnotationElement>emptySet());
+              Collections.emptySet());
       annotations.add(ann);
       skipList.add("Ljava/lang/Deprecated;");
     }

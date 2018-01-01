@@ -30,7 +30,7 @@ import java.util.*;
  * @author Navindra Umanee
  */
 public interface UnitBoxOwner {
-  public List<UnitBox> getUnitBoxes();
+  List<UnitBox> getUnitBoxes();
 
-  public void clearUnitBoxes();
+  void clearUnitBoxes();
 }

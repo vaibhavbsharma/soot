@@ -27,10 +27,6 @@ public class KeyTag implements Tag {
   private String key;
   private String analysisType;
 
-  /*public KeyTag(int r, int g, int b, String k){
-      this(r, g, b, k, "Unknown");
-  }*/
-
   public KeyTag(int r, int g, int b, String k, String type) {
     red = r;
     green = g;
@@ -47,54 +43,40 @@ public class KeyTag implements Tag {
   public KeyTag(int color, String k) {
     switch (color) {
       case ColorTag.RED:
-        {
-          red = 255;
-          green = 0;
-          blue = 0;
-          break;
-        }
+        red = 255;
+        green = 0;
+        blue = 0;
+        break;
       case ColorTag.GREEN:
-        {
-          red = 45;
-          green = 255;
-          blue = 84;
-          break;
-        }
+        red = 45;
+        green = 255;
+        blue = 84;
+        break;
       case ColorTag.YELLOW:
-        {
-          red = 255;
-          green = 248;
-          blue = 35;
-          break;
-        }
+        red = 255;
+        green = 248;
+        blue = 35;
+        break;
       case ColorTag.BLUE:
-        {
-          red = 174;
-          green = 210;
-          blue = 255;
-          break;
-        }
+        red = 174;
+        green = 210;
+        blue = 255;
+        break;
       case ColorTag.ORANGE:
-        {
-          red = 255;
-          green = 163;
-          blue = 0;
-          break;
-        }
+        red = 255;
+        green = 163;
+        blue = 0;
+        break;
       case ColorTag.PURPLE:
-        {
-          red = 159;
-          green = 34;
-          blue = 193;
-          break;
-        }
+        red = 159;
+        green = 34;
+        blue = 193;
+        break;
       default:
-        {
-          red = 220;
-          green = 220;
-          blue = 220;
-          break;
-        }
+        red = 220;
+        green = 220;
+        blue = 220;
+        break;
     }
     key = k;
   }

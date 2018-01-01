@@ -47,9 +47,9 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   @SuppressWarnings({"unchecked", "cast"})
   public ParMethodDecl copy() {
     try {
-      ParMethodDecl node = (ParMethodDecl) clone();
+      ParMethodDecl node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -63,10 +63,10 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParMethodDecl fullCopy() {
-    ParMethodDecl tree = (ParMethodDecl) copy();
+    ParMethodDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -335,7 +335,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration getParameter(int i) {
-    return (ParameterDeclaration) getParameterList().getChild(i);
+    return getParameterList().getChild(i);
   }
   /**
    * Append an element to the Parameter list.
@@ -458,7 +458,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getException(int i) {
-    return (Access) getExceptionList().getChild(i);
+    return getExceptionList().getChild(i);
   }
   /**
    * Append an element to the Exception list.
@@ -570,7 +570,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block getBlock() {
-    return (Block) getBlockOpt().getChild(0);
+    return getBlockOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Block child.
@@ -645,7 +645,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getTypeArgument(int i) {
-    return (Access) getTypeArgumentList().getChild(i);
+    return getTypeArgumentList().getChild(i);
   }
   /**
    * Append an element to the TypeArgument list.

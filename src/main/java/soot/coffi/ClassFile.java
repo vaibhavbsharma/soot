@@ -514,7 +514,7 @@ public class ClassFile {
           CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info(d);
           // If an equivalent CONSTANT_Utf8 already exists, we return
           // the pre-existing one and allow cputf8 to be GC'd.
-          cp = (cp_info) CONSTANT_Utf8_collector.v().add(cputf8);
+          cp = CONSTANT_Utf8_collector.v().add(cputf8);
           if (debug)
             G.v().out.println("Constant pool[" + i + "]: Utf8 = \"" + cputf8.convert() + "\"");
           break;
@@ -573,11 +573,11 @@ public class ClassFile {
       if (s.compareTo(attribute_info.SourceFile) == 0) {
         SourceFile_attribute sa = new SourceFile_attribute();
         sa.sourcefile_index = d.readUnsignedShort();
-        a = (attribute_info) sa;
+        a = sa;
       } else if (s.compareTo(attribute_info.ConstantValue) == 0) {
         ConstantValue_attribute ca = new ConstantValue_attribute();
         ca.constantvalue_index = d.readUnsignedShort();
-        a = (attribute_info) ca;
+        a = ca;
       } else if (s.compareTo(attribute_info.Code) == 0) {
         Code_attribute ca = new Code_attribute();
         ca.max_stack = d.readUnsignedShort();
@@ -600,7 +600,7 @@ public class ClassFile {
         ca.attributes_count = d.readUnsignedShort();
         ca.attributes = new attribute_info[ca.attributes_count];
         readAttributes(d, ca.attributes_count, ca.attributes);
-        a = (attribute_info) ca;
+        a = ca;
 
       } else if (s.compareTo(attribute_info.Exceptions) == 0) {
         Exception_attribute ea = new Exception_attribute();
@@ -611,7 +611,7 @@ public class ClassFile {
           for (k = 0; k < ea.number_of_exceptions; k++)
             ea.exception_index_table[k] = d.readUnsignedShort();
         }
-        a = (attribute_info) ea;
+        a = ea;
       } else if (s.compareTo(attribute_info.LineNumberTable) == 0) {
         LineNumberTable_attribute la = new LineNumberTable_attribute();
         la.line_number_table_length = d.readUnsignedShort();
@@ -624,7 +624,7 @@ public class ClassFile {
           e.line_number = d.readUnsignedShort();
           la.line_number_table[k] = e;
         }
-        a = (attribute_info) la;
+        a = la;
       } else if (s.compareTo(attribute_info.LocalVariableTable) == 0) {
         LocalVariableTable_attribute la = new LocalVariableTable_attribute();
         la.local_variable_table_length = d.readUnsignedShort();
@@ -640,7 +640,7 @@ public class ClassFile {
           e.index = d.readUnsignedShort();
           la.local_variable_table[k] = e;
         }
-        a = (attribute_info) la;
+        a = la;
       } else if (s.compareTo(attribute_info.LocalVariableTypeTable) == 0) {
         LocalVariableTypeTable_attribute la = new LocalVariableTypeTable_attribute();
         la.local_variable_type_table_length = d.readUnsignedShort();
@@ -657,22 +657,22 @@ public class ClassFile {
           e.index = d.readUnsignedShort();
           la.local_variable_type_table[k] = e;
         }
-        a = (attribute_info) la;
+        a = la;
       } else if (s.compareTo(attribute_info.Synthetic) == 0) {
         Synthetic_attribute ia = new Synthetic_attribute();
-        a = (attribute_info) ia;
+        a = ia;
       } else if (s.compareTo(attribute_info.Signature) == 0) {
         Signature_attribute ia = new Signature_attribute();
         ia.signature_index = d.readUnsignedShort();
-        a = (attribute_info) ia;
+        a = ia;
       } else if (s.compareTo(attribute_info.Deprecated) == 0) {
         Deprecated_attribute da = new Deprecated_attribute();
-        a = (attribute_info) da;
+        a = da;
       } else if (s.compareTo(attribute_info.EnclosingMethod) == 0) {
         EnclosingMethod_attribute ea = new EnclosingMethod_attribute();
         ea.class_index = d.readUnsignedShort();
         ea.method_index = d.readUnsignedShort();
-        a = (attribute_info) ea;
+        a = ea;
       } else if (s.compareTo(attribute_info.InnerClasses) == 0) {
         InnerClasses_attribute ia = new InnerClasses_attribute();
         ia.inner_classes_length = d.readUnsignedShort();
@@ -685,7 +685,7 @@ public class ClassFile {
           e.access_flags = d.readUnsignedShort();
           ia.inner_classes[k] = e;
         }
-        a = (attribute_info) ia;
+        a = ia;
       } else if (s.compareTo(attribute_info.RuntimeVisibleAnnotations) == 0) {
         RuntimeVisibleAnnotations_attribute ra = new RuntimeVisibleAnnotations_attribute();
         ra.number_of_annotations = d.readUnsignedShort();
@@ -698,7 +698,7 @@ public class ClassFile {
           ra.annotations[k] = annot;
         }
 
-        a = (attribute_info) ra;
+        a = ra;
       } else if (s.compareTo(attribute_info.RuntimeInvisibleAnnotations) == 0) {
         RuntimeInvisibleAnnotations_attribute ra = new RuntimeInvisibleAnnotations_attribute();
         ra.number_of_annotations = d.readUnsignedShort();
@@ -710,7 +710,7 @@ public class ClassFile {
           annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
           ra.annotations[k] = annot;
         }
-        a = (attribute_info) ra;
+        a = ra;
       } else if (s.compareTo(attribute_info.RuntimeVisibleParameterAnnotations) == 0) {
         RuntimeVisibleParameterAnnotations_attribute ra =
             new RuntimeVisibleParameterAnnotations_attribute();
@@ -730,7 +730,7 @@ public class ClassFile {
           }
           ra.parameter_annotations[x] = pAnnot;
         }
-        a = (attribute_info) ra;
+        a = ra;
       } else if (s.compareTo(attribute_info.RuntimeInvisibleParameterAnnotations) == 0) {
         RuntimeInvisibleParameterAnnotations_attribute ra =
             new RuntimeInvisibleParameterAnnotations_attribute();
@@ -750,12 +750,12 @@ public class ClassFile {
           }
           ra.parameter_annotations[x] = pAnnot;
         }
-        a = (attribute_info) ra;
+        a = ra;
       } else if (s.compareTo(attribute_info.AnnotationDefault) == 0) {
         AnnotationDefault_attribute da = new AnnotationDefault_attribute();
         element_value[] result = readElementValues(1, d, false, 0);
         da.default_value = result[0];
-        a = (attribute_info) da;
+        a = da;
       } else if (s.equals(attribute_info.BootstrapMethods)) {
         BootstrapMethods_attribute bsma = new BootstrapMethods_attribute();
         int count = d.readUnsignedShort();
@@ -781,7 +781,7 @@ public class ClassFile {
           ga.info = new byte[(int) len];
           readAllBytes(ga.info, d);
         }
-        a = (attribute_info) ga;
+        a = ga;
       }
       a.attribute_name = j;
       a.attribute_length = len;
@@ -1633,8 +1633,7 @@ public class ClassFile {
    * @return <i>true</i> if it cannot, <i>false</i> if it might.
    */
   boolean isSterile() {
-    if ((access_flags & ACC_PUBLIC) != 0 && (access_flags & ACC_FINAL) == 0) return false;
-    return true;
+    return (access_flags & ACC_PUBLIC) == 0 || (access_flags & ACC_FINAL) != 0;
   }
 
   /**
@@ -1649,8 +1648,7 @@ public class ClassFile {
     if (i > 0) { // has .class after it
       s = s.substring(0, i); // cut off the .class
     }
-    if (s.compareTo(toString()) == 0) return true;
-    return false;
+    return s.compareTo(toString()) == 0;
   }
 
   /**

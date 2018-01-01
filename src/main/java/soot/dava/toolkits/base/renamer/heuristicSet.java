@@ -108,7 +108,6 @@ public class heuristicSet {
   }
 
   public boolean contains(Local var) {
-    if (set.get(var) != null) return true;
-    else return false;
+    return set.get(var) != null;
   }
 }

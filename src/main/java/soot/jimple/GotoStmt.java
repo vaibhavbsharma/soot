@@ -28,9 +28,9 @@ package soot.jimple;
 import soot.*;
 
 public interface GotoStmt extends Stmt {
-  public Unit getTarget();
+  Unit getTarget();
 
-  public void setTarget(Unit target);
+  void setTarget(Unit target);
 
-  public UnitBox getTargetBox();
+  UnitBox getTargetBox();
 }

@@ -28,7 +28,7 @@ package soot.baf;
 import soot.jimple.*;
 
 public interface PushInst extends Inst {
-  public Constant getConstant();
+  Constant getConstant();
 
-  public void setConstant(Constant c);
+  void setConstant(Constant c);
 }

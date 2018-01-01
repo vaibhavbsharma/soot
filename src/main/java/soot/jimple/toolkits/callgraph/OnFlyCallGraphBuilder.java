@@ -1316,7 +1316,7 @@ public final class OnFlyCallGraphBuilder {
         SootMethodRef cref =
             runtimeExceptionType
                 .getSootClass()
-                .getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String")))
+                .getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String")))
                 .makeRef();
         SpecialInvokeExpr constructorInvokeExpr =
             Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message));
@@ -1331,7 +1331,7 @@ public final class OnFlyCallGraphBuilder {
                       exceptionLocal,
                       Scene.v()
                           .getSootClass("java.lang.Throwable")
-                          .getMethod("printStackTrace", Collections.<Type>emptyList())
+                          .getMethod("printStackTrace", Collections.emptyList())
                           .makeRef());
           InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
           body.getUnits().insertAfter(printStackTraceStmt, initStmt);

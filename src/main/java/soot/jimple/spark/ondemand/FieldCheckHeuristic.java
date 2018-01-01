@@ -27,9 +27,9 @@ public interface FieldCheckHeuristic {
    *
    * @return true if the heuristic will act differently on the next pass
    */
-  public boolean runNewPass();
+  boolean runNewPass();
 
-  public boolean validateMatchesForField(SparkField field);
+  boolean validateMatchesForField(SparkField field);
 
-  public boolean validFromBothEnds(SparkField field);
+  boolean validFromBothEnds(SparkField field);
 }

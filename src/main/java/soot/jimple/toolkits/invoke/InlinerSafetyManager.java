@@ -134,12 +134,7 @@ public class InlinerSafetyManager {
       return false;
     }
 
-    if (!checkAccessRestrictions(container, target, modifierOptions)) {
-      // System.out.println("checkAccessRestrictions failed");
-      return false;
-    }
-
-    return true;
+    return checkAccessRestrictions(container, target, modifierOptions);
   }
 
   /**
@@ -190,11 +185,9 @@ public class InlinerSafetyManager {
 
     // Rule 7: Don't change semantics of program by moving
     //         an invokespecial.
-    if (ie instanceof SpecialInvokeExpr
-        && (specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass())
-            || specialInvokePerformsLookupIn(ie, container.getDeclaringClass()))) return false;
-
-    return true;
+    return !(ie instanceof SpecialInvokeExpr)
+        || (!specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass())
+        && !specialInvokePerformsLookupIn(ie, container.getDeclaringClass()));
   }
 
   /**

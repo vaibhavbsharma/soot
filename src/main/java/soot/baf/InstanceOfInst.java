@@ -28,7 +28,7 @@ package soot.baf;
 import soot.*;
 
 public interface InstanceOfInst extends Inst {
-  public Type getCheckType();
+  Type getCheckType();
 
-  public void setCheckType(Type type);
+  void setCheckType(Type type);
 }

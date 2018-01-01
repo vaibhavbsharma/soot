@@ -62,7 +62,7 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
       Label l1 = new Label();
       Label l2 = new Label();
       Label l3 = new Label();
-      mv.visitTableSwitchInsn(1, 3, l3, new Label[] {l0, l1, l2});
+      mv.visitTableSwitchInsn(1, 3, l3, l0, l1, l2);
       mv.visitLabel(l0);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(

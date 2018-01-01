@@ -87,7 +87,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public List<Type> parameterTypes() {
-    return parameterTypes == null ? Collections.<Type>emptyList() : parameterTypes;
+    return parameterTypes == null ? Collections.emptyList() : parameterTypes;
   }
 
   @Override
@@ -273,7 +273,7 @@ public class SootMethodRefImpl implements SootMethodRef {
         Scene.v()
             .makeConstructorRef(
                 runtimeExceptionType.getSootClass(),
-                Collections.<Type>singletonList(RefType.v("java.lang.String")));
+                Collections.singletonList(RefType.v("java.lang.String")));
     SpecialInvokeExpr constructorInvokeExpr =
         Jimple.v()
             .newSpecialInvokeExpr(

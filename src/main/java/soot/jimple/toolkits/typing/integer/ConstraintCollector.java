@@ -156,7 +156,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
     if (l instanceof ArrayRef) {
       ArrayRef ref = (ArrayRef) l;
-      Type baset = ((Local) ref.getBase()).getType();
+      Type baset = ref.getBase().getType();
       if (baset instanceof ArrayType) {
         ArrayType base = (ArrayType) baset;
         Value index = ref.getIndex();
@@ -172,7 +172,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
         }
       }
     } else if (l instanceof Local) {
-      if (((Local) l).getType() instanceof IntegerType) {
+      if (l.getType() instanceof IntegerType) {
         left = resolver.typeVariable((Local) l);
       }
     } else if (l instanceof InstanceFieldRef) {
@@ -203,7 +203,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
     if (r instanceof ArrayRef) {
       ArrayRef ref = (ArrayRef) r;
-      Type baset = ((Local) ref.getBase()).getType();
+      Type baset = ref.getBase().getType();
       if (!(baset instanceof NullType)) {
         Value index = ref.getIndex();
 
@@ -258,7 +258,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       // ******** LEFT ********
       if (lv instanceof Local) {
-        if (((Local) lv).getType() instanceof IntegerType) {
+        if (lv.getType() instanceof IntegerType) {
           lop = resolver.typeVariable((Local) lv);
         }
       } else if (lv instanceof DoubleConstant) {
@@ -294,7 +294,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       // ******** RIGHT ********
       if (rv instanceof Local) {
-        if (((Local) rv).getType() instanceof IntegerType) {
+        if (rv.getType() instanceof IntegerType) {
           rop = resolver.typeVariable((Local) rv);
         }
       } else if (rv instanceof DoubleConstant) {
@@ -512,7 +512,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
     Value r = stmt.getRightOp();
 
     if (l instanceof Local) {
-      if (((Local) l).getType() instanceof IntegerType) {
+      if (l.getType() instanceof IntegerType) {
         TypeVariable left = resolver.typeVariable((Local) l);
 
         TypeVariable right = resolver.typeVariable(r.getType());
@@ -540,7 +540,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       // ******** LEFT ********
       if (lv instanceof Local) {
-        if (((Local) lv).getType() instanceof IntegerType) {
+        if (lv.getType() instanceof IntegerType) {
           lop = resolver.typeVariable((Local) lv);
         }
       } else if (lv instanceof DoubleConstant) {
@@ -576,7 +576,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       // ******** RIGHT ********
       if (rv instanceof Local) {
-        if (((Local) rv).getType() instanceof IntegerType) {
+        if (rv.getType() instanceof IntegerType) {
           rop = resolver.typeVariable((Local) rv);
         }
       } else if (rv instanceof DoubleConstant) {
@@ -633,7 +633,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
   public void caseReturnStmt(ReturnStmt stmt) {
     if (uses) {
       if (stmt.getOp() instanceof Local) {
-        if (((Local) stmt.getOp()).getType() instanceof IntegerType) {
+        if (stmt.getOp().getType() instanceof IntegerType) {
           resolver
               .typeVariable((Local) stmt.getOp())
               .addParent(resolver.typeVariable(stmtBody.getMethod().getReturnType()));

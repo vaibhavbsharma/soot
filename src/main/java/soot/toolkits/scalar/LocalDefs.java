@@ -37,7 +37,7 @@ import soot.toolkits.scalar.SimpleLocalDefs.FlowAnalysisMode;
  * Provides an interface for querying for the definitions of a Local at a given Unit in a method.
  */
 public interface LocalDefs {
-  public static final class Factory {
+  final class Factory {
     private Factory() {}
 
     /**
@@ -119,7 +119,7 @@ public interface LocalDefs {
    * @return a list of Units where the local is defined in the current method context. If there are
    *     no uses an empty list will returned.
    */
-  public List<Unit> getDefsOfAt(Local l, Unit s);
+  List<Unit> getDefsOfAt(Local l, Unit s);
 
   /**
    * Returns the definition sites for a Local merged over all points in a method.
@@ -130,5 +130,5 @@ public interface LocalDefs {
    * @return a list of Units where the local is defined in the current method context. If there are
    *     no uses an empty list will returned.
    */
-  public List<Unit> getDefsOf(Local l);
+  List<Unit> getDefsOf(Local l);
 }

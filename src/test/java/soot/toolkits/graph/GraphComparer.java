@@ -1005,7 +1005,7 @@ public class GraphComparer {
       Iterator units = ((Block) node).iterator();
       while (units.hasNext()) {
         Unit unit = (Unit) units.next();
-        String targetLabel = (String) printer.labels().get(unit);
+        String targetLabel = printer.labels().get(unit);
         if (targetLabel != null) {
           buffer.append(targetLabel).append(": ");
         }

@@ -132,8 +132,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr
         }
       }
       if (!methodRef.equals(ie.methodRef)) return false;
-      if (!bsmRef.equals(ie.bsmRef)) return false;
-      return true;
+      return bsmRef.equals(ie.bsmRef);
     }
     return false;
   }

@@ -37,9 +37,9 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
   @SuppressWarnings({"unchecked", "cast"})
   public ParSuperConstructorAccess copy() {
     try {
-      ParSuperConstructorAccess node = (ParSuperConstructorAccess) clone();
+      ParSuperConstructorAccess node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -53,10 +53,10 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParSuperConstructorAccess fullCopy() {
-    ParSuperConstructorAccess tree = (ParSuperConstructorAccess) copy();
+    ParSuperConstructorAccess tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -196,7 +196,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getArg(int i) {
-    return (Expr) getArgList().getChild(i);
+    return getArgList().getChild(i);
   }
   /**
    * Append an element to the Arg list.
@@ -318,7 +318,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getTypeArgument(int i) {
-    return (Access) getTypeArgumentList().getChild(i);
+    return getTypeArgumentList().getChild(i);
   }
   /**
    * Append an element to the TypeArgument list.

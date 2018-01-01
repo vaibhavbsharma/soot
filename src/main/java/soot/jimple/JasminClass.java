@@ -168,7 +168,7 @@ public class JasminClass extends AbstractJasminClass {
 
         for (int i = 0; i < paramTypes.size(); i++) {
           paramSlots[i] = localCount;
-          localCount += sizeOfType((Type) paramTypes.get(i));
+          localCount += sizeOfType(paramTypes.get(i));
         }
       }
 
@@ -660,7 +660,7 @@ public class JasminClass extends AbstractJasminClass {
 
     final Value op1 = ((BinopExpr) cond).getOp1();
     final Value op2 = ((BinopExpr) cond).getOp2();
-    final String label = (String) unitToLabel.get(stmt.getTarget());
+    final String label = unitToLabel.get(stmt.getTarget());
 
     // Handle simple subcase where op1 is null
     if (op2 instanceof NullConstant || op1 instanceof NullConstant) {
@@ -1071,7 +1071,7 @@ public class JasminClass extends AbstractJasminClass {
           public void caseInvokeStmt(InvokeStmt s) {
             emitValue(s.getInvokeExpr());
 
-            Type returnType = ((InvokeExpr) s.getInvokeExpr()).getMethodRef().returnType();
+            Type returnType = s.getInvokeExpr().getMethodRef().returnType();
 
             if (!returnType.equals(VoidType.v())) {
               // Need to do some cleanup because this value is not used.

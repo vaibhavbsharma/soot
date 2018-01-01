@@ -109,7 +109,7 @@ public class SynchronizedRegionFinder
     // of any containing transaction
     if (unit instanceof AssignStmt) {
       boolean isPrep = true;
-      Iterator<UnitValueBoxPair> uses = slu.getUsesOf((Unit) unit).iterator();
+      Iterator<UnitValueBoxPair> uses = slu.getUsesOf(unit).iterator();
       if (!uses.hasNext()) isPrep = false;
       while (uses.hasNext()) {
         UnitValueBoxPair use = uses.next();
@@ -323,8 +323,8 @@ public class SynchronizedRegionFinder
 
         Iterator<UnitValueBoxPair> uses = slu.getUsesOf(prepUnit).iterator();
         while (uses.hasNext()) {
-          UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
-          if (use.getUnit() == (Unit) unit) { // if this transaction's monitorenter statement is one
+          UnitValueBoxPair use = uses.next();
+          if (use.getUnit() == unit) { // if this transaction's monitorenter statement is one
             // of the uses of this preparatory unit
             newTn.prepStmt = (Stmt) prepUnit;
           }
@@ -348,7 +348,7 @@ public class SynchronizedRegionFinder
     Iterator<SynchronizedRegionFlowPair> it = sourceSet.iterator();
     while (it.hasNext()) {
       SynchronizedRegionFlowPair tfp = it.next();
-      destSet.add((SynchronizedRegionFlowPair) tfp.clone());
+      destSet.add(tfp.clone());
     }
   }
 }

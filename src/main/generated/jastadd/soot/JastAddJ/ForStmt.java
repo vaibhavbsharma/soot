@@ -72,9 +72,9 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
   @SuppressWarnings({"unchecked", "cast"})
   public ForStmt copy() {
     try {
-      ForStmt node = (ForStmt) clone();
+      ForStmt node = clone();
       node.parent = null;
-      if (children != null) node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " + getClass().getName());
@@ -88,10 +88,10 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ForStmt fullCopy() {
-    ForStmt tree = (ForStmt) copy();
+    ForStmt tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -280,7 +280,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Stmt getInitStmt(int i) {
-    return (Stmt) getInitStmtList().getChild(i);
+    return getInitStmtList().getChild(i);
   }
   /**
    * Append an element to the InitStmt list.
@@ -392,7 +392,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getCondition() {
-    return (Expr) getConditionOpt().getChild(0);
+    return getConditionOpt().getChild(0);
   }
   /**
    * Replaces the (optional) Condition child.
@@ -467,7 +467,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Stmt getUpdateStmt(int i) {
-    return (Stmt) getUpdateStmtList().getChild(i);
+    return getUpdateStmtList().getChild(i);
   }
   /**
    * Append an element to the UpdateStmt list.
@@ -1129,8 +1129,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
       }
     } else if (caller == getStmtNoTransform()) {
       if (hasCondition() && getCondition().isDAafterTrue(v)) return true;
-      if (!hasCondition() && isDAafterInitialization(v)) return true;
-      return false;
+      return !hasCondition() && isDAafterInitialization(v);
     } else if (caller == getConditionOptNoTransform()) {
       return isDAafterInitialization(v);
     } else if (caller == getInitStmtListNoTransform()) {

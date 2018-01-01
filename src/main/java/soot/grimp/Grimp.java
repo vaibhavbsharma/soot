@@ -450,7 +450,7 @@ public class Grimp {
   public Value newExpr(Value value) {
     if (value instanceof Expr) {
       final ExprBox returnedExpr = new ExprBox(IntConstant.v(0));
-      ((Expr) value)
+      value
           .apply(
               new AbstractExprSwitch() {
                 public void caseAddExpr(AddExpr v) {
