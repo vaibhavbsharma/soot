@@ -23,10 +23,6 @@
  */
 package soot.dava;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -54,6 +50,11 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class MethodCallFinder extends DepthFirstAdapter {
   ASTMethodNode underAnalysis;

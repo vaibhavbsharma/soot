@@ -19,10 +19,20 @@
 
 package soot.jimple.spark.internal;
 
-import soot.*;
-import soot.jimple.spark.pag.*;
-import soot.jimple.toolkits.pointer.representations.*;
-import soot.jimple.toolkits.pointer.util.*;
+import soot.G;
+import soot.RefType;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.FieldRefNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.toolkits.pointer.representations.AbstractObject;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.toolkits.scalar.Pair;
 
 public class SparkNativeHelper extends NativeHelper {

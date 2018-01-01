@@ -25,13 +25,6 @@
 
 package soot.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.G;
 import soot.SootMethod;
@@ -39,6 +32,14 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.options.Options;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a CFG where the nodes are {@link Unit} instances and edges represent unexceptional and

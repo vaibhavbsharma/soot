@@ -19,12 +19,28 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.jimple.*;
+import soot.G;
+import soot.dava.internal.AST.ASTCondition;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTLabeledBlockNode;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTOrCondition;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.AST.ASTSynchronizedBlockNode;
+import soot.dava.internal.AST.ASTUnconditionalLoopNode;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DAbruptStmt;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
   Nomair A. Naeem 21-FEB-2005

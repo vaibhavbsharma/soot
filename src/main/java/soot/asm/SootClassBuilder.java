@@ -18,11 +18,6 @@
  */
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
@@ -46,6 +41,12 @@ import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Constructs a Soot class from a visited class.

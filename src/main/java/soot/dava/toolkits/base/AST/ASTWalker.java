@@ -25,8 +25,26 @@
 
 package soot.dava.toolkits.base.AST;
 
-import soot.*;
-import soot.jimple.*;
+import soot.G;
+import soot.Singletons;
+import soot.Value;
+import soot.jimple.ArrayRef;
+import soot.jimple.BinopExpr;
+import soot.jimple.CastExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.Expr;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.Ref;
+import soot.jimple.ReturnStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+import soot.jimple.UnopExpr;
 
 public class ASTWalker {
   public ASTWalker(Singletons.Global g) {}

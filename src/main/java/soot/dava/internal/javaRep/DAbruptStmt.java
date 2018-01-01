@@ -20,9 +20,9 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.dava.internal.SET.*;
-import soot.jimple.internal.*;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.jimple.internal.AbstractStmt;
 
 public class DAbruptStmt extends AbstractStmt {
   private String command;

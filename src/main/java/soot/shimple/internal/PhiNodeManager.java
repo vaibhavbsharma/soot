@@ -19,13 +19,38 @@
 
 package soot.shimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.shimple.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.IdentityUnit;
+import soot.Local;
+import soot.Trap;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AssignStmt;
+import soot.jimple.Jimple;
+import soot.shimple.PhiExpr;
+import soot.shimple.Shimple;
+import soot.shimple.ShimpleBody;
+import soot.shimple.ShimpleFactory;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.DominanceFrontier;
+import soot.toolkits.graph.DominatorNode;
+import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.scalar.GuaranteedDefs;
+import soot.toolkits.scalar.ValueUnitPair;
+import soot.util.Chain;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * @author Navindra Umanee

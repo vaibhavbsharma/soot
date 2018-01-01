@@ -19,11 +19,25 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.SET.*;
+import soot.G;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTLabeledBlockNode;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTSwitchNode;
+import soot.dava.internal.AST.ASTSynchronizedBlockNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.dava.internal.AST.ASTUnconditionalLoopNode;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * CHANGE LOG:

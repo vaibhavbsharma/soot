@@ -25,7 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -39,6 +38,8 @@ import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
+
+import java.util.Map;
 
 /**
  * Transformer for removing unnecessary casts on primitive values. An assignment a = (float) 42 will

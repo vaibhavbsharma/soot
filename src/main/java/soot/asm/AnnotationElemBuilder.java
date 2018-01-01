@@ -18,7 +18,6 @@
  */
 package soot.asm;
 
-import java.util.ArrayList;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -33,6 +32,8 @@ import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
+
+import java.util.ArrayList;
 
 /**
  * Annotation element builder.

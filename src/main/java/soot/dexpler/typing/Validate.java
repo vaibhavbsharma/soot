@@ -1,9 +1,5 @@
 package soot.dexpler.typing;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -34,6 +30,11 @@ import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.UnusedLocalEliminator;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Validate {
 

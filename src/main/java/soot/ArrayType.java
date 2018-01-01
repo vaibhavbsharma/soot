@@ -25,7 +25,7 @@
 
 package soot;
 
-import soot.util.*;
+import soot.util.Switch;
 
 /**
  * A class that models Java's array types. ArrayTypes are parametrized by a Type and and an integer

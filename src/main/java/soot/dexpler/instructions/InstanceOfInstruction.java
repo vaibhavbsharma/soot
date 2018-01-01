@@ -24,8 +24,6 @@
 
 package soot.dexpler.instructions;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
@@ -38,6 +36,9 @@ import soot.dexpler.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InstanceOfInstruction extends DexlibAbstractInstruction {
 

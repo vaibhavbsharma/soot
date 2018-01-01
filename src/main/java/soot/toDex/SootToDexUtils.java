@@ -1,10 +1,5 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.jf.dexlib2.Opcode;
 import soot.ArrayType;
 import soot.BooleanType;
@@ -25,6 +20,12 @@ import soot.Value;
 import soot.VoidType;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Utility class for the conversion from soot to dex. */
 public class SootToDexUtils {

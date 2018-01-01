@@ -1,8 +1,5 @@
 package soot.dexpler;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
@@ -12,6 +9,21 @@ import soot.G;
 import soot.Scene;
 import soot.Singletons;
 import soot.options.Options;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * Class providing dex files from a given source, e.g., jar, apk, dex, folder containing multiple

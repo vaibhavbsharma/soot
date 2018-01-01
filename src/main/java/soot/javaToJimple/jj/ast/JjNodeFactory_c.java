@@ -19,11 +19,29 @@
 
 package soot.javaToJimple.jj.ast;
 
-import java.util.*;
-import polyglot.ast.*;
-import polyglot.ext.jl.ast.*;
+import polyglot.ast.ArrayAccess;
+import polyglot.ast.ArrayAccessAssign;
+import polyglot.ast.ArrayInit;
+import polyglot.ast.Assign;
+import polyglot.ast.Binary;
+import polyglot.ast.Call;
+import polyglot.ast.Cast;
+import polyglot.ast.Expr;
+import polyglot.ast.Field;
+import polyglot.ast.FieldAssign;
+import polyglot.ast.FieldDecl;
+import polyglot.ast.Local;
+import polyglot.ast.LocalAssign;
+import polyglot.ast.LocalDecl;
+import polyglot.ast.NewArray;
+import polyglot.ast.Return;
+import polyglot.ast.TypeNode;
+import polyglot.ast.Unary;
+import polyglot.ext.jl.ast.NodeFactory_c;
 import polyglot.types.Flags;
-import polyglot.util.*;
+import polyglot.util.Position;
+
+import java.util.List;
 
 /** NodeFactory for jj extension. */
 public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {

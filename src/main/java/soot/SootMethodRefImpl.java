@@ -19,10 +19,6 @@
 
 package soot;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
@@ -33,6 +29,11 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StringConstant;
 import soot.options.Options;
 import soot.util.NumberedString;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Representation of a reference to a method as it appears in a class file. Note that the method

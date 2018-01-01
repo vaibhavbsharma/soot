@@ -19,9 +19,18 @@
 
 package soot.jimple.toolkits.annotation.methods;
 
-import java.util.*;
-import soot.*;
-import soot.tagkit.*;
+import soot.G;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.tagkit.ColorTag;
+import soot.tagkit.StringTag;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 /** A scene transformer that adds tags to unused methods. */
 public class UnreachableMethodsTagger extends SceneTransformer {

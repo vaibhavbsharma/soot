@@ -19,8 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.Iterator;
-import java.util.List;
 import soot.G;
 import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -39,6 +37,9 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 import soot.dava.toolkits.base.AST.traversals.LabelToNodeMapper;
 import soot.jimple.Stmt;
+
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * It has been seen that a lot of times there are break statements targeting

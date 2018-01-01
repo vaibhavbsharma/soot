@@ -26,10 +26,16 @@
 
 package soot.grimp.internal;
 
-import java.util.*;
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.SootMethodRef;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.Precedence;
+import soot.grimp.PrecedenceTest;
+import soot.jimple.internal.AbstractSpecialInvokeExpr;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Precedence {
   public GSpecialInvokeExpr(Value base, SootMethodRef methodRef, List args) {

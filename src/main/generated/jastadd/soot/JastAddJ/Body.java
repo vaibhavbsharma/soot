@@ -1,13 +1,22 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
+import beaver.Symbol;
+import soot.ArrayType;
+import soot.Local;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.SootFieldRef;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.Jimple;
+import soot.jimple.NullConstant;
+
 import java.util.ArrayList;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.Arrays;
 
 /** @ast class */
 public class Body extends java.lang.Object {

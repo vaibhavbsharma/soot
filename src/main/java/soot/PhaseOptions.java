@@ -19,7 +19,11 @@
 
 package soot;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /** Manages the phase options of the various soot phases. */
 public class PhaseOptions {

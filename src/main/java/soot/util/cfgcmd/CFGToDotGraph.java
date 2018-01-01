@@ -19,8 +19,10 @@
 
 package soot.util.cfgcmd;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.BriefUnitPrinter;
+import soot.LabeledUnitPrinter;
+import soot.Unit;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
@@ -34,6 +36,13 @@ import soot.util.dot.DotGraphAttribute;
 import soot.util.dot.DotGraphConstants;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /** Class that creates a {@link DotGraph} visualization of a control flow graph. */
 public class CFGToDotGraph {

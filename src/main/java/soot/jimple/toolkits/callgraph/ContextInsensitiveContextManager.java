@@ -19,7 +19,11 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.*;
+import soot.Context;
+import soot.Kind;
+import soot.MethodOrMethodContext;
+import soot.SootMethod;
+import soot.Unit;
 
 /**
  * A context manager which adds no context-sensitivity to the call graph.

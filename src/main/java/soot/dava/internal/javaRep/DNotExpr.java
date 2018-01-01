@@ -24,10 +24,21 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import soot.util.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.ShortType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.UnknownType;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.internal.AbstractUnopExpr;
+import soot.util.Switch;
 
 public class DNotExpr extends AbstractUnopExpr {
   public DNotExpr(Value op) {

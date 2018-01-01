@@ -19,8 +19,11 @@
 
 package soot;
 
-import java.util.*;
-import soot.jimple.*;
+import soot.jimple.Constant;
+import soot.jimple.IdentityRef;
+import soot.jimple.Jimple;
+
+import java.util.HashSet;
 
 /** Partial default UnitPrinter implementation. */
 public abstract class AbstractUnitPrinter implements UnitPrinter {

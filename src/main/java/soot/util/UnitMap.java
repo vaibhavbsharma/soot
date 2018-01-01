@@ -25,9 +25,15 @@
 
 package soot.util;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
+import soot.Body;
+import soot.Unit;
+import soot.toolkits.graph.UnitGraph;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /** Maps each unit to the result of <code>mapTo</code>. */
 public abstract class UnitMap<T> implements Map<Unit, T> {

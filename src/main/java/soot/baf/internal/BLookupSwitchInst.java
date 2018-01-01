@@ -25,11 +25,18 @@
 
 package soot.baf.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.baf.Baf;
+import soot.baf.InstSwitch;
+import soot.baf.LookupSwitchInst;
 import soot.jimple.Constant;
-import soot.util.*;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst {
   UnitBox defaultTargetBox;

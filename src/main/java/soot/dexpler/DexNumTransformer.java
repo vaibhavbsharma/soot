@@ -24,11 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
@@ -55,6 +50,12 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * BodyTransformer to find and change initialization type of Jimple variables. Dalvik bytecode does

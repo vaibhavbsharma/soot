@@ -20,10 +20,11 @@
 package soot.jimple.spark.sets;
 
 import soot.Type;
-import soot.jimple.spark.internal.*;
+import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
-import soot.util.*;
+import soot.util.BitSetIterator;
+import soot.util.BitVector;
 
 /**
  * Implementation of points-to set using a bit vector.

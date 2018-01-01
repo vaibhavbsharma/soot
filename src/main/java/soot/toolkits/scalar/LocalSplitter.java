@@ -25,12 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayDeque;
-import java.util.BitSet;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -45,6 +39,13 @@ import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LocalBitSetPacker;
+
+import java.util.ArrayDeque;
+import java.util.BitSet;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A BodyTransformer that attemps to indentify and separate uses of a local variable that are

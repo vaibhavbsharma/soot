@@ -19,12 +19,30 @@
 
 package soot.dava.toolkits.base.misc;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.G;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JExitMonitorStmt;
-import soot.jimple.toolkits.callgraph.*;
-import soot.util.*;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.CallGraphBuilder;
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.util.Chain;
+import soot.util.IterableSet;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * Nomair A. Naeem 7th April 2006

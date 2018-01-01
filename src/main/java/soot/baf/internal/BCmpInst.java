@@ -25,9 +25,10 @@
 
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.Type;
+import soot.baf.CmpInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
 public class BCmpInst extends AbstractOpTypeInst implements CmpInst {
   public BCmpInst(Type opType) {

@@ -1,6 +1,6 @@
 package soot.jimple.toolkits.thread.mhp.stmt;
 
-import soot.*;
+import soot.SootMethod;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

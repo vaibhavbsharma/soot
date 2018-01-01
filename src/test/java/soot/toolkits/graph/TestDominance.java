@@ -26,9 +26,8 @@ package soot.toolkits.graph;
  *   http://www.gnu.org/licenses/lgpl-2.1.html
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
+import org.junit.Test;
+import soot.toolkits.graph.pdg.MHGDominatorTree;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +37,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Test;
-import soot.toolkits.graph.pdg.MHGDominatorTree;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 
 public class TestDominance {
 

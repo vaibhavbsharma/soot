@@ -20,10 +20,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -44,6 +40,11 @@ import soot.jimple.Stmt;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class DexTransformer extends BodyTransformer {
 

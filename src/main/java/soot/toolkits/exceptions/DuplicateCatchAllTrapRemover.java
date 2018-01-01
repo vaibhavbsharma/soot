@@ -1,12 +1,13 @@
 package soot.toolkits.exceptions;
 
-import java.util.Iterator;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Some compilers generate duplicate traps:

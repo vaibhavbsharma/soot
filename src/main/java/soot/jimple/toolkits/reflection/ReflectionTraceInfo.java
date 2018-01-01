@@ -19,6 +19,16 @@
 
 package soot.jimple.toolkits.reflection;
 
+import soot.Body;
+import soot.G;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.tagkit.Host;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLnPosTag;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,15 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import soot.Body;
-import soot.G;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.Unit;
-import soot.tagkit.Host;
-import soot.tagkit.LineNumberTag;
-import soot.tagkit.SourceLnPosTag;
 
 public class ReflectionTraceInfo {
 

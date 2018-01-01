@@ -18,10 +18,6 @@
  */
 package soot.toolkits.graph.pdg;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 import soot.Body;
 import soot.G;
 import soot.SootClass;
@@ -40,6 +36,11 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.MHGPostDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class computes the set of weak regions for a given method. It is based on the algorithm

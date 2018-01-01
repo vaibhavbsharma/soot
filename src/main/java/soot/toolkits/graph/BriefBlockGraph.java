@@ -25,7 +25,8 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
+import soot.Body;
+import soot.Unit;
 
 /**
  * Represents a CFG for a {@link Body} where the nodes are {@link Block}s and edges are derived from

@@ -24,11 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -66,6 +61,12 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * BodyTransformer to find and change IntConstant(0) to NullConstant where locals are used as

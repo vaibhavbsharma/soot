@@ -25,13 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -41,6 +34,14 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Analysis that implements the LocalUses interface. Uses for a Local defined at a given Unit are

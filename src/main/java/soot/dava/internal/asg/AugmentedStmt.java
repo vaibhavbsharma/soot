@@ -20,11 +20,13 @@
 
 package soot.dava.internal.asg;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.SET.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.G;
+import soot.dava.internal.SET.SETNode;
+import soot.jimple.Stmt;
+import soot.util.IterableSet;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class AugmentedStmt {
   public List<AugmentedStmt> bpreds, bsuccs, cpreds, csuccs;

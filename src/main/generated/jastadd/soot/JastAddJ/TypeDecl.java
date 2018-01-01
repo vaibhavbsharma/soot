@@ -1,13 +1,6 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
@@ -19,6 +12,14 @@ import soot.SootResolver;
 import soot.Type;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @production TypeDecl : {@link ASTNode} ::= <span class="component">{@link Modifiers}</span> <span

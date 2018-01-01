@@ -19,13 +19,39 @@
 
 package soot.shimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.shimple.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.Local;
+import soot.PatchingChain;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AssignStmt;
+import soot.jimple.GotoStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.Jimple;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.TableSwitchStmt;
+import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.shimple.PiExpr;
+import soot.shimple.Shimple;
+import soot.shimple.ShimpleBody;
+import soot.shimple.ShimpleFactory;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.DominanceFrontier;
+import soot.toolkits.graph.DominatorNode;
+import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.graph.ReversibleGraph;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Stack;
 
 /**
  * This class does the real high-level work. It takes a Jimple body or Jimple/Shimple hybrid body

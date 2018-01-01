@@ -19,7 +19,15 @@
 
 package soot.jimple.toolkits.pointer;
 
-import soot.*;
+import soot.Context;
+import soot.G;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.RefType;
+import soot.Singletons;
+import soot.SootField;
+import soot.Type;
 
 /** A very naive pointer analysis that just reports that any points can point to any object. */
 public class DumbPointerAnalysis implements PointsToAnalysis {

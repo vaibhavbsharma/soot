@@ -25,11 +25,22 @@
 
 package soot.jimple.parser;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.parser.node.*;
-import soot.options.*;
+import soot.G;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.SootResolver;
+import soot.Type;
+import soot.jimple.JimpleBody;
+import soot.jimple.parser.node.AFieldMember;
+import soot.jimple.parser.node.AFile;
+import soot.jimple.parser.node.AFullMethodBody;
+import soot.jimple.parser.node.AMethodMember;
+import soot.jimple.parser.node.PModifier;
+import soot.options.Options;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Walks a jimple AST and constructs the method bodies for all the methods of the SootClass

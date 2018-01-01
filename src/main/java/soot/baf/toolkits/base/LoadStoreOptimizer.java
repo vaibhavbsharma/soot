@@ -25,13 +25,55 @@
 
 package soot.baf.toolkits.base;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.Singletons;
+import soot.Trap;
+import soot.Unit;
+import soot.baf.AddInst;
+import soot.baf.AndInst;
+import soot.baf.ArrayReadInst;
+import soot.baf.ArrayWriteInst;
+import soot.baf.Baf;
+import soot.baf.Dup1Inst;
+import soot.baf.DupInst;
+import soot.baf.EnterMonitorInst;
+import soot.baf.ExitMonitorInst;
+import soot.baf.FieldArgInst;
+import soot.baf.FieldGetInst;
+import soot.baf.FieldPutInst;
+import soot.baf.IdentityInst;
+import soot.baf.IncInst;
+import soot.baf.Inst;
+import soot.baf.LoadInst;
+import soot.baf.MethodArgInst;
+import soot.baf.MulInst;
+import soot.baf.NewInst;
+import soot.baf.OrInst;
+import soot.baf.PushInst;
+import soot.baf.StaticGetInst;
+import soot.baf.StaticPutInst;
+import soot.baf.StoreInst;
+import soot.baf.XorInst;
+import soot.options.Options;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.ZonedBlockGraph;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class LoadStoreOptimizer extends BodyTransformer {
   public LoadStoreOptimizer(Singletons.Global g) {}

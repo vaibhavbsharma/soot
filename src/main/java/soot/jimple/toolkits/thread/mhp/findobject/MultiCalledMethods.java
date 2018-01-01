@@ -1,6 +1,5 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
-import java.util.*;
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -8,7 +7,13 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
-import soot.util.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /*
 import soot.tagkit.*;

@@ -1,10 +1,5 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -33,6 +28,12 @@ import soot.jimple.ConditionExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class CP extends StructuredAnalysis {
   /*

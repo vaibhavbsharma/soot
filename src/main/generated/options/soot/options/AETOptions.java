@@ -21,7 +21,7 @@
 
 package soot.options;
 
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Available Expressions Tagger. */
 public class AETOptions {

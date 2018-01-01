@@ -19,8 +19,19 @@
 
 package soot.dava.toolkits.base.misc;
 
-import soot.grimp.internal.*;
-import soot.jimple.*;
+import soot.grimp.internal.GEqExpr;
+import soot.grimp.internal.GGeExpr;
+import soot.grimp.internal.GGtExpr;
+import soot.grimp.internal.GLeExpr;
+import soot.grimp.internal.GLtExpr;
+import soot.grimp.internal.GNeExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
+import soot.jimple.LeExpr;
+import soot.jimple.LtExpr;
+import soot.jimple.NeExpr;
 
 public class ConditionFlipper {
   public static ConditionExpr flip(ConditionExpr ce) {

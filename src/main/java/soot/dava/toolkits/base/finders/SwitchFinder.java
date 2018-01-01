@@ -19,13 +19,26 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.asg.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.G;
+import soot.Singletons;
+import soot.Value;
+import soot.dava.Dava;
+import soot.dava.DavaBody;
+import soot.dava.RetriggerAnalysisException;
+import soot.dava.internal.SET.SETNode;
+import soot.dava.internal.SET.SETSwitchNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.asg.AugmentedStmtGraph;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
+import soot.util.IterableSet;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.TreeSet;
 
 public class SwitchFinder implements FactFinder {
   public SwitchFinder(Singletons.Global g) {}

@@ -25,10 +25,18 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
+import soot.AbstractUnit;
+import soot.Unit;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.ArrayRef;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.FieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.Stmt;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractStmt extends AbstractUnit implements Stmt, ConvertToBaf {

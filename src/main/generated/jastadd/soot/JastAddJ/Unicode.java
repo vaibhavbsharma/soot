@@ -9,7 +9,11 @@
 
 package soot.JastAddJ;
 
-import java.io.*;
+import java.io.FilterReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class Unicode extends FilterReader {
   public Unicode(Reader in) {

@@ -25,7 +25,9 @@
 
 package soot.baf.internal;
 
-import soot.*;
+import soot.RefType;
+import soot.Type;
+import soot.UnitPrinter;
 
 public abstract class AbstractRefTypeInst extends AbstractInst {
   Type opType;

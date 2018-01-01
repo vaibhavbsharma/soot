@@ -20,8 +20,16 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.*;
-import soot.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.IntType;
+import soot.IntegerType;
+import soot.ShortType;
+import soot.Type;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /** @author Ben Bellamy */
 public class AugHierarchy implements IHierarchy {

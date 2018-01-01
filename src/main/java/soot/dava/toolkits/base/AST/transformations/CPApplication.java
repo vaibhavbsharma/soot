@@ -1,8 +1,5 @@
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import soot.Local;
 import soot.SootField;
 import soot.Value;
@@ -26,6 +23,10 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.CPFlowSet;
 import soot.dava.toolkits.base.AST.structuredAnalysis.CPHelper;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /*
 * The traversal utilizes the results of the CP (constant propagation analysis) to substitute uses

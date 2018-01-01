@@ -25,9 +25,11 @@
 
 package soot;
 
-import java.util.*;
-import soot.jimple.*;
-import soot.options.*;
+import soot.jimple.JimpleBody;
+import soot.options.JJOptions;
+import soot.options.Options;
+
+import java.util.Map;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key

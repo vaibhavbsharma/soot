@@ -19,12 +19,32 @@
 
 package soot.jimple.toolkits.annotation.logic;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.tagkit.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.Expr;
+import soot.jimple.GotoStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.NaiveSideEffectTester;
+import soot.jimple.NewExpr;
+import soot.jimple.Stmt;
+import soot.tagkit.ColorTag;
+import soot.tagkit.LoopInvariantTag;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.SmartLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefsPool;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 public class LoopInvariantFinder extends BodyTransformer {
 

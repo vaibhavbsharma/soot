@@ -19,8 +19,13 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents a CFG where the nodes are {@link Block}s and the edges are derived from control flow.

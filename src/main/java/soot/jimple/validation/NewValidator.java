@@ -19,11 +19,6 @@
 
 package soot.jimple.validation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -40,6 +35,12 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A relatively simple validator. It tries to check whether after each new-expression-statement

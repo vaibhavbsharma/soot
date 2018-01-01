@@ -25,12 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -63,6 +57,13 @@ import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
   HashSet<Local> fullSet = new HashSet<Local>();

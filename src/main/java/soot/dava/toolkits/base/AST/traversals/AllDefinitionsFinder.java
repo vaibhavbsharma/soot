@@ -30,9 +30,11 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.jimple.*;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.DefinitionStmt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * DefinitionStmts can occur in either ASTStatementSequenceNode or the for init and for update

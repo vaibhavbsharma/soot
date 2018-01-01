@@ -19,10 +19,11 @@
 
 package soot.javaToJimple;
 
+import soot.Scene;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import soot.Scene;
 
 public class Util {
 

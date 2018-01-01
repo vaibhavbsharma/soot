@@ -19,13 +19,21 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.asg.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.G;
+import soot.Singletons;
+import soot.dava.Dava;
+import soot.dava.DavaBody;
+import soot.dava.RetriggerAnalysisException;
+import soot.dava.internal.SET.SETIfElseNode;
+import soot.dava.internal.SET.SETNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.asg.AugmentedStmtGraph;
+import soot.jimple.IfStmt;
+import soot.jimple.Stmt;
+import soot.util.IterableSet;
+
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class IfFinder implements FactFinder {
   public IfFinder(Singletons.Global g) {}

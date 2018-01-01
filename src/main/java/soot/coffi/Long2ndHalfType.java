@@ -25,7 +25,9 @@
 
 package soot.coffi;
 
-import soot.*;
+import soot.G;
+import soot.Singletons;
+import soot.Type;
 
 public class Long2ndHalfType extends Type {
   public Long2ndHalfType(Singletons.Global g) {}

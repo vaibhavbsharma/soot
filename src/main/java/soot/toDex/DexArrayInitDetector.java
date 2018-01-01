@@ -1,12 +1,5 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
@@ -15,6 +8,14 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.NewArrayExpr;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Detector class that identifies array initializations and packs them into a single instruction:

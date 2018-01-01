@@ -25,10 +25,18 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.*;
-import soot.*;
+import soot.ArrayType;
+import soot.G;
+import soot.RefType;
 import soot.options.Options;
-import soot.util.*;
+import soot.util.BitVector;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Represents a type variable. * */
 class TypeVariable implements Comparable<Object> {

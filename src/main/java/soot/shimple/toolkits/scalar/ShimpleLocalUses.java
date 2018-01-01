@@ -19,10 +19,21 @@
 
 package soot.shimple.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.shimple.*;
-import soot.toolkits.scalar.*;
+import soot.G;
+import soot.Local;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.shimple.ShimpleBody;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements the LocalUses interface for Shimple. ShimpleLocalUses can be used in

@@ -34,13 +34,25 @@
  */
 package soot.dava.internal.javaRep;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
+import soot.AbstractUnit;
+import soot.Local;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.dava.DavaBody;
+import soot.dava.DavaUnitPrinter;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
-import soot.grimp.*;
-import soot.jimple.*;
+import soot.grimp.Grimp;
+import soot.jimple.ArrayRef;
+import soot.jimple.FieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Stmt;
 import soot.util.IterableSet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 

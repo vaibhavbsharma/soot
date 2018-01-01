@@ -25,10 +25,14 @@
 
 package soot.baf.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.Type;
+import soot.baf.Baf;
+import soot.baf.Dup2Inst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BDup2Inst extends BDupInst implements Dup2Inst {
 

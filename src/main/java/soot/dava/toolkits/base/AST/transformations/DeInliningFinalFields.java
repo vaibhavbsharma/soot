@@ -19,16 +19,54 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.jimple.*;
-import soot.tagkit.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.Scene;
+import soot.ShortType;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.ValueBox;
+import soot.dava.DavaBody;
+import soot.dava.internal.AST.ASTAggregatedCondition;
+import soot.dava.internal.AST.ASTBinaryCondition;
+import soot.dava.internal.AST.ASTCondition;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.AST.ASTSwitchNode;
+import soot.dava.internal.AST.ASTSynchronizedBlockNode;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DStaticFieldRef;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.StringConstantValueTag;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /** Maintained by: Nomair A. Naeem */
 

@@ -19,10 +19,13 @@
 
 package soot.jimple.spark.sets;
 
-import java.util.*;
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * HashSet implementation of points-to set.

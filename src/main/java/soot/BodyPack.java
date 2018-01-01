@@ -25,9 +25,10 @@
 
 package soot;
 
-import java.util.*;
-import soot.options.*;
-import soot.toolkits.graph.interaction.*;
+import soot.options.Options;
+import soot.toolkits.graph.interaction.InteractionHandler;
+
+import java.util.Iterator;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key

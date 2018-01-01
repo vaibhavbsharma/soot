@@ -25,8 +25,12 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.*;
-import soot.toolkits.scalar.*;
+import soot.toolkits.scalar.AbstractFlowSet;
+import soot.toolkits.scalar.BoundedFlowSet;
+import soot.toolkits.scalar.FlowSet;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents information for flow analysis, adding a top element to a lattice. A FlowSet is an

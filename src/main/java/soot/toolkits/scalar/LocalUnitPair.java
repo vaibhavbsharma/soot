@@ -25,7 +25,8 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
+import soot.Local;
+import soot.Unit;
 
 /** Utility class used to package a Local and a Unit together. */
 public class LocalUnitPair {

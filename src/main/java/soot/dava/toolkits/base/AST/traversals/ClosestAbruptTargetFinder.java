@@ -27,13 +27,22 @@
  */
 package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.jimple.*;
+import soot.G;
+import soot.Singletons;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
+import soot.dava.internal.AST.ASTLabeledNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTSwitchNode;
+import soot.dava.internal.AST.ASTUnconditionalLoopNode;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.internal.javaRep.DAbruptStmt;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class has been created because we need the immediate target of a implicit break/continue

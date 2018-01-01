@@ -25,7 +25,9 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.IdentityUnit;
+import soot.Value;
+import soot.ValueBox;
 
 public interface IdentityInst extends Inst, IdentityUnit {
   Value getLeftOp();

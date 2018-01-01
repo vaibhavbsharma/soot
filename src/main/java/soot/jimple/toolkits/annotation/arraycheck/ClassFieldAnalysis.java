@@ -25,11 +25,37 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.scalar.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.Modifier;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.IntConstant;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.Stmt;
+import soot.options.Options;
+import soot.toolkits.scalar.LocalDefs;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ClassFieldAnalysis {
   public ClassFieldAnalysis(Singletons.Global g) {}

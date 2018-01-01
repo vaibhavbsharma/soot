@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -57,6 +53,11 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class CopyPropagator extends BodyTransformer {
 

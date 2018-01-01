@@ -25,9 +25,9 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.internal.JAssignStmt;
 
 public class GAssignStmt extends JAssignStmt {
   public GAssignStmt(Value variable, Value rvalue) {

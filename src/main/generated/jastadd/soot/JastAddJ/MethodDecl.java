@@ -1,15 +1,16 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import soot.Scene;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * @production MethodDecl : {@link MemberDecl} ::= <span class="component">{@link Modifiers}</span>

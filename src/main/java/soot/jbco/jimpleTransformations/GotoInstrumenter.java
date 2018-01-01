@@ -19,12 +19,26 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.Trap;
+import soot.Unit;
+import soot.UnitBox;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
-import soot.jimple.*;
-import soot.util.*;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.Jimple;
+import soot.jimple.Stmt;
+import soot.util.Chain;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Michael Batchelder

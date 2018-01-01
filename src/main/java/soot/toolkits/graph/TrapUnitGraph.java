@@ -25,9 +25,16 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Timers;
+import soot.Trap;
+import soot.Unit;
 import soot.options.Options;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a CFG for a {@link Body} instance where the nodes are {@link Unit} instances, and

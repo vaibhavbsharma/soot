@@ -19,9 +19,14 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.*;
-import soot.*;
-import soot.util.queue.*;
+import soot.MethodOrMethodContext;
+import soot.util.queue.ChunkedQueue;
+import soot.util.queue.QueueReader;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Keeps track of the methods transitively reachable from the specified entry points through the

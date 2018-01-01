@@ -26,11 +26,21 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.SideEffectTester;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.FieldRef;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.scalar.ArrayPackedSet;
+import soot.toolkits.scalar.BoundedFlowSet;
+import soot.toolkits.scalar.CollectionFlowUniverse;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Performs an UpSafe-analysis on the given graph. An expression is upsafe, if the computation

@@ -25,8 +25,14 @@
 
 package soot.jimple;
 
-import java.util.*;
-import soot.*;
+import soot.Local;
+import soot.SideEffectTester;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+
+import java.util.Iterator;
 
 /**
  * Provides naive side effect information. Relies on no context information; instead, does the least

@@ -1,10 +1,20 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.SootMethod;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.Chain;
+import soot.util.HashChain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

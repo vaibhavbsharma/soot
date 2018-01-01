@@ -19,11 +19,6 @@
  */
 package soot;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import soot.JastAddJ.BodyDecl;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.ConstructorDecl;
@@ -31,6 +26,12 @@ import soot.JastAddJ.MethodDecl;
 import soot.JastAddJ.Program;
 import soot.JastAddJ.TypeDecl;
 import soot.javaToJimple.IInitialResolver;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An {@link IInitialResolver} for the JastAdd frontend.

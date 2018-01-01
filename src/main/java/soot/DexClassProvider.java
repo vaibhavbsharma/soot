@@ -18,14 +18,20 @@ package soot;
  * Boston, MA 02111-1307, USA.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 import soot.dexpler.DexFileProvider;
 import soot.dexpler.Util;
 import soot.options.Options;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Looks for a dex file which includes the definition of a class. */
 public class DexClassProvider implements ClassProvider {

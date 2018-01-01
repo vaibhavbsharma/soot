@@ -1,9 +1,5 @@
 package soot.sootify;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import soot.PatchingChain;
 import soot.Unit;
 import soot.UnitBox;
@@ -25,6 +21,11 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StmtSwitch;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 class StmtTemplatePrinter implements StmtSwitch {
   private final TemplatePrinter p;

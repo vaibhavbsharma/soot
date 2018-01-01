@@ -25,7 +25,8 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
+import soot.Unit;
+import soot.ValueBox;
 
 /** Utility class used to package a Unit and a ValueBox together. */
 public class UnitValueBoxPair {

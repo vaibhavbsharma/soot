@@ -25,10 +25,17 @@
 
 package soot.baf.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.baf.Baf;
+import soot.baf.InstSwitch;
+import soot.baf.TableSwitchInst;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
   UnitBox defaultTargetBox;

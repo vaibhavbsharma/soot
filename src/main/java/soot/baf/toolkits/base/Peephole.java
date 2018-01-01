@@ -25,7 +25,7 @@
 
 package soot.baf.toolkits.base;
 
-import soot.*;
+import soot.Body;
 
 /**
  * Interface to be implemented by peepholes acting on the Baf IR.

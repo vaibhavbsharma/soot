@@ -25,7 +25,11 @@
 
 package soot.toolkits.scalar;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * gives an injection of Objects to ints. Different instances of <code>ObjectIntMap</code> may map

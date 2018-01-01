@@ -25,11 +25,25 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import soot.util.dot.*;
+import soot.G;
+import soot.Local;
+import soot.RefLikeType;
+import soot.SootMethod;
+import soot.Value;
+import soot.jimple.Stmt;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
+import soot.util.dot.DotGraph;
+import soot.util.dot.DotGraphEdge;
+import soot.util.dot.DotGraphNode;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Purity graphs are mutable structures that are updated in-place. You can safely hash graphs.

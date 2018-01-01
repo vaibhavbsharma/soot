@@ -25,11 +25,16 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.dava.internal.javaRep.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
+import soot.Value;
+import soot.ValueBox;
+import soot.dava.internal.javaRep.DCmpExpr;
+import soot.dava.internal.javaRep.DCmpgExpr;
+import soot.dava.internal.javaRep.DCmplExpr;
+import soot.grimp.Grimp;
+import soot.grimp.Precedence;
+import soot.jimple.DivExpr;
+import soot.jimple.SubExpr;
+import soot.jimple.internal.AbstractIntBinopExpr;
 
 public abstract class AbstractGrimpIntBinopExpr extends AbstractIntBinopExpr implements Precedence {
   public AbstractGrimpIntBinopExpr(Value op1, Value op2) {

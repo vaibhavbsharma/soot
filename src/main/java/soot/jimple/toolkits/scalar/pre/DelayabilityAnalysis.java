@@ -25,10 +25,17 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.Unit;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArrayPackedSet;
+import soot.toolkits.scalar.BoundedFlowSet;
+import soot.toolkits.scalar.CollectionFlowUniverse;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.Map;
 
 /**
  * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the

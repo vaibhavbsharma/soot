@@ -25,7 +25,7 @@
 
 package soot;
 
-import soot.tagkit.*;
+import soot.tagkit.AbstractHost;
 
 /** Reference implementation for ValueBox; just add a canContainValue method. */
 @SuppressWarnings("serial")

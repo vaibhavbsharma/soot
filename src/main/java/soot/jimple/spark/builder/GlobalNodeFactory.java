@@ -19,8 +19,18 @@
 
 package soot.jimple.spark.builder;
 
-import soot.*;
-import soot.jimple.spark.pag.*;
+import soot.AnySubType;
+import soot.ArrayType;
+import soot.PointsToAnalysis;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.ContextVarNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
 import soot.toolkits.scalar.Pair;
 
 /**

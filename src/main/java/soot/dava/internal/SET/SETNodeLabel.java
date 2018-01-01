@@ -19,7 +19,7 @@
 
 package soot.dava.internal.SET;
 
-import soot.*;
+import soot.G;
 
 public class SETNodeLabel {
   private String name;

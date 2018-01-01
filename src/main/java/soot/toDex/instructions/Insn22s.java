@@ -1,11 +1,12 @@
 package soot.toDex.instructions;
 
-import java.util.BitSet;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction22s;
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
+
+import java.util.BitSet;
 
 /**
  * The "22s" instruction format: It needs two 16-bit code units, has two registers and is used for a

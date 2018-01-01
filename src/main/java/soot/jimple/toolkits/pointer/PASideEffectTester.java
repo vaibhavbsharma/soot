@@ -19,9 +19,26 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.G;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.Scene;
+import soot.SideEffectTester;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ArrayRef;
+import soot.jimple.Constant;
+import soot.jimple.Expr;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 //  ArrayRef,
 //  CaughtExceptionRef,

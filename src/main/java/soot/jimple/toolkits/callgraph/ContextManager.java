@@ -19,7 +19,11 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.*;
+import soot.Context;
+import soot.Kind;
+import soot.MethodOrMethodContext;
+import soot.SootMethod;
+import soot.Unit;
 
 /**
  * Interface for context managers, which decide how edges should be added to a context-sensitive

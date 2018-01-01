@@ -24,13 +24,14 @@
  */
 package soot.toolkits.graph;
 
+import soot.G;
+import soot.Singletons;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import soot.G;
-import soot.Singletons;
 
 /**
  * Provide the pseudo topological order of a graph's nodes. It has same functionality as

@@ -25,9 +25,11 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.UnitPrinter;
+import soot.jimple.BreakpointStmt;
+import soot.jimple.Jimple;
+import soot.jimple.StmtSwitch;
+import soot.util.Switch;
 
 public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt {
   public JBreakpointStmt() {}

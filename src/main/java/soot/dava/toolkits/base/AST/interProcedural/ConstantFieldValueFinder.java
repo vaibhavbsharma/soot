@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.AST.interProcedural;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -52,6 +49,10 @@ import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /*
  * Deemed important because of obfuscation techniques which add crazy

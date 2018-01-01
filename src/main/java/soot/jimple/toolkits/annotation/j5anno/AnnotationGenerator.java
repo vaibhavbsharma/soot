@@ -18,14 +18,6 @@
  */
 package soot.jimple.toolkits.annotation.j5anno;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import soot.G;
 import soot.Singletons.Global;
 import soot.SootClass;
@@ -37,6 +29,15 @@ import soot.tagkit.AnnotationTag;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * AnnotationGenerator is a singleton class that wraps up Soot's support for Java 5 annotations in a

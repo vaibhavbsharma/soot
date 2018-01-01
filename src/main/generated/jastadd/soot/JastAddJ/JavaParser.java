@@ -1,12 +1,7 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /** @ast interface */
 public interface JavaParser {

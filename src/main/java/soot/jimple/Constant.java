@@ -25,9 +25,15 @@
 
 package soot.jimple;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.Immediate;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class Constant implements Value, ConvertToBaf, Immediate {

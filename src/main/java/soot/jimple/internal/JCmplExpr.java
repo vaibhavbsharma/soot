@@ -25,10 +25,13 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Type;
+import soot.Value;
+import soot.baf.Baf;
+import soot.jimple.CmplExpr;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.util.Switch;
 
 public class JCmplExpr extends AbstractJimpleIntBinopExpr implements CmplExpr {
   public JCmplExpr(Value op1, Value op2) {

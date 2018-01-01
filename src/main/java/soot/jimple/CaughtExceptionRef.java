@@ -25,8 +25,8 @@
 
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
+import soot.Type;
+import soot.util.Switch;
 
 public interface CaughtExceptionRef extends IdentityRef {
   Type getType();

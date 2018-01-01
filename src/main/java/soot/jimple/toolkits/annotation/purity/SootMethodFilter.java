@@ -25,7 +25,7 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import soot.*;
+import soot.SootMethod;
 
 /**
  * Allows specifying which SootMethod you want to analyse in a AbstractInterproceduralAnalysis.

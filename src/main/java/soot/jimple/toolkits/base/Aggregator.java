@@ -27,11 +27,6 @@
 
 package soot.jimple.toolkits.base;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -57,6 +52,12 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class Aggregator extends BodyTransformer {
   public Aggregator(Singletons.Global g) {}

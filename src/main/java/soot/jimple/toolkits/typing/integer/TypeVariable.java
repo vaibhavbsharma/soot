@@ -25,7 +25,11 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Represents a type variable. * */
 class TypeVariable implements Comparable<Object> {

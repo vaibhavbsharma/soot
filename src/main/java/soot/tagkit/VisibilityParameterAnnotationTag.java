@@ -25,7 +25,7 @@
 
 package soot.tagkit;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Represents the visibility of an annotation attribute attatched to a class, field, method or

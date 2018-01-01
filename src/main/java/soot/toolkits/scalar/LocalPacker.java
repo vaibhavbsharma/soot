@@ -25,11 +25,26 @@
 
 package soot.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.IdentityUnit;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.Singletons;
+import soot.Type;
+import soot.Unit;
+import soot.ValueBox;
+import soot.jimple.GroupIntPair;
+import soot.options.Options;
+import soot.util.DeterministicHashMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A BodyTransformer that attemps to minimize the number of local variables used in Body by

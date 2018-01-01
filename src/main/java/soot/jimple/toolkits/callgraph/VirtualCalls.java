@@ -19,12 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -47,6 +41,13 @@ import soot.util.MultiMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Resolves virtual calls.

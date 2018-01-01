@@ -1,22 +1,5 @@
 package soot;
 
-import static soot.util.backend.ASMBackendUtils.createASMAttribute;
-import static soot.util.backend.ASMBackendUtils.getDefaultValue;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -46,13 +29,30 @@ import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
-import soot.tagkit.OuterClassTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.util.backend.SootASMClassWriter;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static soot.util.backend.ASMBackendUtils.createASMAttribute;
+import static soot.util.backend.ASMBackendUtils.getDefaultValue;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
+import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
 
 /**
  * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the

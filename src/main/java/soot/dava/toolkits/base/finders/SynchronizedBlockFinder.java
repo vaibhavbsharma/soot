@@ -20,14 +20,38 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.asg.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.G;
+import soot.Local;
+import soot.RefType;
+import soot.Singletons;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.dava.Dava;
+import soot.dava.DavaBody;
+import soot.dava.RetriggerAnalysisException;
+import soot.dava.internal.SET.SETNode;
+import soot.dava.internal.SET.SETSynchronizedBlockNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.asg.AugmentedStmtGraph;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.EnterMonitorStmt;
+import soot.jimple.ExitMonitorStmt;
+import soot.jimple.GotoStmt;
+import soot.jimple.MonitorStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
+import soot.util.IterableSet;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class SynchronizedBlockFinder implements FactFinder {
   public SynchronizedBlockFinder(Singletons.Global g) {}

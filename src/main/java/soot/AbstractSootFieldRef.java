@@ -19,8 +19,9 @@
 
 package soot;
 
-import java.util.ArrayDeque;
 import soot.options.Options;
+
+import java.util.ArrayDeque;
 
 /**
  * Representation of a reference to a field as it appears in a class file. Note that the field

@@ -1,8 +1,15 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.*;
-import soot.*;
+import soot.EquivalentValue;
+import soot.MethodOrMethodContext;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 class CriticalSection extends SynchronizedRegion {
   public static int nextIDNum = 1;

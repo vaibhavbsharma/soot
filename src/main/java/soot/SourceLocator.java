@@ -22,6 +22,11 @@ package soot;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import soot.JavaClassProvider.JarException;
+import soot.asm.AsmClassProvider;
+import soot.dexpler.DexFileProvider;
+import soot.options.Options;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,10 +41,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import soot.JavaClassProvider.JarException;
-import soot.asm.AsmClassProvider;
-import soot.dexpler.DexFileProvider;
-import soot.options.Options;
 
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or

@@ -19,6 +19,9 @@
 
 package soot.util.cfgcmd;
 
+import soot.G;
+import soot.Singletons;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -26,8 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import soot.G;
-import soot.Singletons;
 
 /**
  * A {@link ClassLoader} that loads specified classes from a different class path than that given by

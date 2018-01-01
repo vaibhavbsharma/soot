@@ -19,11 +19,15 @@
 
 package soot.shimple;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.Local;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.toolkits.graph.Block;
+import soot.toolkits.scalar.ValueUnitPair;
+import soot.util.Switch;
+
+import java.util.List;
 
 /**
  * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the

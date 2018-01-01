@@ -19,7 +19,7 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * Represents a subset of the edges in a call graph satisfying an EdgePredicate predicate.

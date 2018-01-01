@@ -25,12 +25,27 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.tagkit.*;
-import soot.util.*;
+import soot.ArrayType;
+import soot.Local;
+import soot.NullType;
+import soot.Type;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.UnknownType;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.ArrayRef;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.RefSwitch;
+import soot.tagkit.Tag;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class JArrayRef implements ArrayRef, ConvertToBaf {
   protected ValueBox baseBox;

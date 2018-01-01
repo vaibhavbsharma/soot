@@ -24,13 +24,6 @@
 
 package soot.dexpler.instructions;
 
-import static soot.dexpler.Util.dottedClassName;
-import static soot.dexpler.Util.isFloatLike;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
@@ -53,6 +46,14 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static soot.dexpler.Util.dottedClassName;
+import static soot.dexpler.Util.isFloatLike;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction
     implements DanglingInstruction {

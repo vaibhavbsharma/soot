@@ -18,9 +18,10 @@
  */
 package soot.toolkits.graph.pdg;
 
+import soot.toolkits.graph.Block;
+
 import java.util.ArrayList;
 import java.util.List;
-import soot.toolkits.graph.Block;
 
 /**
  * This class defines a Node in the Program Dependence Graph. There might be a need to store

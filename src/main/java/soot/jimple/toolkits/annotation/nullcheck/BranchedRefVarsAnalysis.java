@@ -19,11 +19,50 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.ArrayType;
+import soot.EquivalentValue;
+import soot.Local;
+import soot.NullType;
+import soot.RefType;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.EqExpr;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.LengthExpr;
+import soot.jimple.MonitorStmt;
+import soot.jimple.NeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.jimple.ThisRef;
+import soot.jimple.ThrowStmt;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArrayFlowUniverse;
+import soot.toolkits.scalar.ArrayPackedSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.FlowUniverse;
+import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
     README FIRST - IMPORTANT IMPLEMENTATION NOTE

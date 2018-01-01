@@ -25,12 +25,32 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.options.*;
+import soot.G;
+import soot.Hierarchy;
+import soot.PackManager;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.JimpleBody;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.ExplicitEdgesPred;
+import soot.jimple.toolkits.callgraph.Filter;
+import soot.jimple.toolkits.callgraph.Targets;
+import soot.jimple.toolkits.callgraph.TopologicalOrderer;
+import soot.options.Options;
 import soot.tagkit.Host;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
 public class StaticInliner extends SceneTransformer {

@@ -19,7 +19,12 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
+import soot.AbstractValueBox;
+import soot.EquivTo;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
 import soot.jimple.Jimple;
 
 /**

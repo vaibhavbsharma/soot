@@ -1,12 +1,42 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.infoflow.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.G;
+import soot.Local;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AnyNewExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.CastExpr;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.IdentityRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Jimple;
+import soot.jimple.ParameterRef;
+import soot.jimple.Ref;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
+import soot.jimple.toolkits.infoflow.FakeJimpleLocal;
+import soot.jimple.toolkits.pointer.CodeBlockRWSet;
+import soot.jimple.toolkits.pointer.RWSet;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.BackwardFlowAnalysis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Finds the set of local variables and/or references that represent all of the relevant objects

@@ -19,10 +19,26 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
+import soot.G;
+import soot.Local;
+import soot.MethodOrMethodContext;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Filter;
+import soot.jimple.toolkits.callgraph.TransitiveTargets;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {

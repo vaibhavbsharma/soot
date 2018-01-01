@@ -19,7 +19,7 @@
 
 package soot;
 
-import soot.jimple.*;
+import soot.jimple.AnyNewExpr;
 
 /**
  * A generic interface to an escape analysis.

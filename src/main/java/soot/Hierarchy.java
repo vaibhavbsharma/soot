@@ -25,6 +25,10 @@
 
 package soot;
 
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.ArraySet;
+import soot.util.Chain;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,9 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import soot.jimple.SpecialInvokeExpr;
-import soot.util.ArraySet;
-import soot.util.Chain;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the

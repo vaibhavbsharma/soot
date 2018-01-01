@@ -25,10 +25,13 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Type;
+import soot.Value;
+import soot.baf.Baf;
+import soot.jimple.AddExpr;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.util.Switch;
 
 public class JAddExpr extends AbstractJimpleFloatBinopExpr implements AddExpr {
   public JAddExpr(Value op1, Value op2) {

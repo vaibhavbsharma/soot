@@ -24,10 +24,6 @@
 
 package soot.dexpler.instructions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import org.jf.dexlib2.iface.instruction.FiveRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.RegisterRangeInstruction;
@@ -39,6 +35,11 @@ import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /** This class represents a wrapper around dexlib instruction. */
 public abstract class DexlibAbstractInstruction {

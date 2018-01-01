@@ -29,12 +29,30 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.*;
 import soot.Unit;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.jimple.*;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTLabeledBlockNode;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.AST.ASTSwitchNode;
+import soot.dava.internal.AST.ASTSynchronizedBlockNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.dava.internal.AST.ASTUnconditionalLoopNode;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.javaRep.DVariableDeclarationStmt;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.InvokeStmt;
+import soot.jimple.ReturnStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+
+import java.util.HashMap;
+import java.util.Stack;
 
 /*
  * This traversal class is responsible to gather information

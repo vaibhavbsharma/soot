@@ -19,11 +19,20 @@
 
 package soot.dava.toolkits.base.misc;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.javaRep.*;
-import soot.jimple.*;
+import soot.G;
+import soot.NullType;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.dava.DavaBody;
+import soot.dava.internal.javaRep.DNewInvokeExpr;
+import soot.jimple.ThrowStmt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ThrowNullConverter {
   public ThrowNullConverter(Singletons.Global g) {}

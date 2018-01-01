@@ -19,8 +19,13 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
-import soot.*;
-import soot.options.*;
+import soot.AnySubType;
+import soot.G;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.Singletons;
+import soot.Type;
+import soot.options.CGOptions;
 
 public class TypeConstants {
   public static TypeConstants v() {

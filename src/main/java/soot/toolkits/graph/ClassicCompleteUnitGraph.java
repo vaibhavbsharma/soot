@@ -19,8 +19,14 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a CFG for a Body instance where the nodes are {@link Unit} instances, and where edges

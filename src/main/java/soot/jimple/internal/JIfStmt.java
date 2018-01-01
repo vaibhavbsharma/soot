@@ -25,11 +25,33 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.AbstractJimpleValueSwitch;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.EqExpr;
+import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
+import soot.jimple.IfStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.LeExpr;
+import soot.jimple.LtExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.StmtSwitch;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class JIfStmt extends AbstractStmt implements IfStmt {
   final ValueBox conditionBox;

@@ -19,11 +19,19 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
-import soot.util.*;
+import soot.G;
+import soot.jimple.spark.pag.AllocDotField;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.FieldRefNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.util.LargeNumberedMap;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Propagates points-to sets using an on-line cycle detection algorithm based on Heintze and

@@ -26,10 +26,17 @@
 
 package soot.jimple;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.SootField;
+import soot.SootFieldRef;
+import soot.Type;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf {
 

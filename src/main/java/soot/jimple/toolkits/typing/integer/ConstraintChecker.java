@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -99,6 +97,9 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.jimple.toolkits.typing.Util;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 class ConstraintChecker extends AbstractStmtSwitch {
   private final TypeResolver resolver;

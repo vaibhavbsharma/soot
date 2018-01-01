@@ -25,8 +25,16 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.jimple.*;
+import soot.Local;
+import soot.Value;
+import soot.jimple.CastExpr;
+import soot.jimple.ClassConstant;
+import soot.jimple.ConcreteRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.StringConstant;
 
 public class ObjExprBox extends ExprBox {
   /* an ExprBox which can only contain object-looking references */

@@ -25,13 +25,45 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.options.*;
-import soot.util.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnStmt;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JArrayRef;
+import soot.jimple.internal.JNewMultiArrayExpr;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Targets;
+import soot.options.Options;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Interprocedural analysis to identify rectangular multi-dimension array locals. It is based on the

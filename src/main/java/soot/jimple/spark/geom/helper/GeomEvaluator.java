@@ -18,19 +18,9 @@
  */
 package soot.jimple.spark.geom.helper;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
-import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
@@ -56,6 +46,16 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * We provide a set of methods to evaluate the quality of geometric points-to analysis. The

@@ -25,9 +25,10 @@
 
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.Type;
+import soot.baf.ArrayReadInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
 public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst {
   public BArrayReadInst(Type opType) {

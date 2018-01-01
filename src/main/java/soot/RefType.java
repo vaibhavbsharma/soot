@@ -25,8 +25,9 @@
 
 package soot;
 
-import java.util.ArrayDeque;
 import soot.util.Switch;
+
+import java.util.ArrayDeque;
 
 /**
  * A class that models Java's reference types. RefTypes are parametrized by a class name. Two

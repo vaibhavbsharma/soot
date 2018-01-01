@@ -19,10 +19,26 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.tagkit.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.RefLikeType;
+import soot.Scene;
+import soot.Singletons;
+import soot.ValueBox;
+import soot.jimple.IdentityStmt;
+import soot.jimple.ParameterRef;
+import soot.jimple.Stmt;
+import soot.tagkit.ColorTag;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 /** Adds colour tags to indicate potential aliasing between method parameters. */
 public class ParameterAliasTagger extends BodyTransformer {

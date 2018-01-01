@@ -19,9 +19,6 @@
 
 package soot.jbco.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import soot.Body;
 import soot.PatchingChain;
 import soot.Trap;
@@ -29,6 +26,10 @@ import soot.Unit;
 import soot.baf.JSRInst;
 import soot.baf.TableSwitchInst;
 import soot.baf.TargetArgInst;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Debugger {
 

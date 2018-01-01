@@ -26,11 +26,20 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.*;
-import soot.util.*;
-import soot.util.dot.*;
+import soot.tagkit.Tag;
+import soot.util.Chain;
+import soot.util.dot.DotGraph;
+import soot.util.dot.DotGraphConstants;
+import soot.util.dot.DotGraphEdge;
+import soot.util.dot.DotGraphNode;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

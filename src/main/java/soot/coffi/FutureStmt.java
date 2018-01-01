@@ -25,8 +25,8 @@
 
 package soot.coffi;
 
-import soot.*;
-import soot.util.*;
+import soot.UnitPrinter;
+import soot.util.Switch;
 
 class FutureStmt extends soot.jimple.internal.AbstractStmt {
   public Object object;

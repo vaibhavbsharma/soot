@@ -18,9 +18,6 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 import soot.Local;
 import soot.PointsToSet;
 import soot.SootMethod;
@@ -36,6 +33,10 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.toolkits.callgraph.Edge;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * A powerful interface for querying points-to results in many ways. It is an extension for SPARK

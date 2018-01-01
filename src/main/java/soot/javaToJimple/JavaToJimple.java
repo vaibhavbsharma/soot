@@ -19,9 +19,21 @@
 
 package soot.javaToJimple;
 
-import java.io.*;
-import java.util.*;
-import polyglot.frontend.*;
+import polyglot.frontend.ExtensionInfo;
+import polyglot.frontend.FileSource;
+import polyglot.frontend.Job;
+import polyglot.frontend.Pass;
+import polyglot.frontend.SourceJob;
+import polyglot.frontend.SourceLoader;
+import polyglot.frontend.VisitorPass;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class JavaToJimple {
 

@@ -19,16 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -94,6 +84,17 @@ import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Models the call graph.

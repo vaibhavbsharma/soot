@@ -25,9 +25,14 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Local;
+import soot.Type;
+import soot.jimple.Jimple;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * provides an easy interface to handle new var-names. New names are automatically added to the

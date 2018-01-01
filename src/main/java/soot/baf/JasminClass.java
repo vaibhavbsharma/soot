@@ -25,11 +25,6 @@
 
 package soot.baf;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import soot.AbstractJasminClass;
 import soot.ArrayType;
 import soot.Body;
@@ -59,7 +54,19 @@ import soot.TypeSwitch;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
-import soot.jimple.*;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.ClassConstant;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IdentityRef;
+import soot.jimple.IntConstant;
+import soot.jimple.JimpleBody;
+import soot.jimple.LongConstant;
+import soot.jimple.MethodHandle;
+import soot.jimple.NullConstant;
+import soot.jimple.ParameterRef;
+import soot.jimple.StringConstant;
+import soot.jimple.ThisRef;
 import soot.options.Options;
 import soot.tagkit.JasminAttribute;
 import soot.tagkit.LineNumberTag;
@@ -67,9 +74,14 @@ import soot.tagkit.Tag;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.BriefBlockGraph;
-import soot.toolkits.graph.DirectedGraph;
 import soot.util.ArraySet;
 import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class JasminClass extends AbstractJasminClass {
 

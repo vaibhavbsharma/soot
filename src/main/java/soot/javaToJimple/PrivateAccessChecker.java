@@ -19,8 +19,9 @@
 
 package soot.javaToJimple;
 
-import java.util.*;
 import polyglot.types.MemberInstance;
+
+import java.util.ArrayList;
 
 public class PrivateAccessChecker extends polyglot.visit.NodeVisitor {
 

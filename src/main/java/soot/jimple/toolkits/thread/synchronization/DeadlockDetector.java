@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Objects;
 import soot.EquivalentValue;
 import soot.G;
 import soot.MethodOrMethodContext;
@@ -23,6 +16,14 @@ import soot.toolkits.graph.HashMutableDirectedGraph;
 import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.MutableEdgeLabelledDirectedGraph;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
 
 public class DeadlockDetector {
 

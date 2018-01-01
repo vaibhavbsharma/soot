@@ -20,14 +20,6 @@
 package soot.toolkits.exceptions;
 
 import com.google.common.cache.CacheBuilder;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import soot.AnySubType;
 import soot.FastHierarchy;
 import soot.G;
@@ -37,6 +29,15 @@ import soot.Scene;
 import soot.Singletons;
 import soot.Unit;
 import soot.options.Options;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A class for representing the set of exceptions that an instruction may throw.

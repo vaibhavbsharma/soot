@@ -19,8 +19,6 @@
 
 package soot.jimple.toolkits.reflection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import soot.CompilationDeathException;
 import soot.G;
 import soot.PackManager;
@@ -34,6 +32,9 @@ import soot.rtlib.tamiflex.OpaquePredicate;
 import soot.rtlib.tamiflex.ReflectiveCalls;
 import soot.rtlib.tamiflex.SootSig;
 import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ReflInliner {
 

@@ -25,11 +25,39 @@
 
 package soot.grimp;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.options.*;
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.PackManager;
+import soot.SootMethod;
+import soot.Trap;
+import soot.Unit;
+import soot.ValueBox;
+import soot.jimple.AbstractStmtSwitch;
+import soot.jimple.AssignStmt;
+import soot.jimple.BreakpointStmt;
+import soot.jimple.EnterMonitorStmt;
+import soot.jimple.ExitMonitorStmt;
+import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InvokeStmt;
+import soot.jimple.JimpleBody;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.NopStmt;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.Stmt;
+import soot.jimple.StmtBody;
+import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThrowStmt;
+import soot.jimple.internal.StmtBox;
+import soot.options.Options;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /** Implementation of the Body class for the Grimp IR. */
 public class GrimpBody extends StmtBody {

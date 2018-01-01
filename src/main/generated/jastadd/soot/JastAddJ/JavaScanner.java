@@ -4,7 +4,6 @@ package soot.JastAddJ;
 
 import beaver.Scanner;
 import beaver.Symbol;
-import java.io.*;
 import soot.JastAddJ.JastAddJavaParser.Terminals;
 
 /**

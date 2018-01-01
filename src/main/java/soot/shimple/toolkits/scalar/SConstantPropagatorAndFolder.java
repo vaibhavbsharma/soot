@@ -19,17 +19,46 @@
 
 package soot.shimple.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.shimple.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.Singletons;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitBoxOwner;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.GotoStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
+import soot.options.Options;
+import soot.shimple.ShimpleBody;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
+import soot.toolkits.scalar.Pair;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A powerful constant propagator and folder based on an algorithm sketched by Cytron et al that

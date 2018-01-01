@@ -25,18 +25,41 @@
  */
 package soot.dava.toolkits.base.finders;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.misc.*;
-import soot.grimp.internal.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.Unit;
+import soot.dava.Dava;
+import soot.dava.DavaBody;
+import soot.dava.RetriggerAnalysisException;
+import soot.dava.internal.SET.SETCycleNode;
+import soot.dava.internal.SET.SETDoWhileNode;
+import soot.dava.internal.SET.SETNode;
+import soot.dava.internal.SET.SETUnconditionalWhileNode;
+import soot.dava.internal.SET.SETWhileNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.asg.AugmentedStmtGraph;
+import soot.dava.internal.javaRep.DIntConstant;
+import soot.dava.toolkits.base.misc.ConditionFlipper;
+import soot.grimp.internal.GAssignStmt;
+import soot.grimp.internal.GTableSwitchStmt;
+import soot.jimple.AssignStmt;
+import soot.jimple.ConditionExpr;
+import soot.jimple.GotoStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
+import soot.jimple.internal.JGotoStmt;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
+import soot.util.IterableSet;
+import soot.util.StationaryArrayList;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CycleFinder implements FactFinder {
   public CycleFinder(Singletons.Global g) {}

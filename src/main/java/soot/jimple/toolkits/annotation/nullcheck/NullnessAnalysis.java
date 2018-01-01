@@ -20,9 +20,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
@@ -53,6 +50,10 @@ import soot.jimple.internal.JNeExpr;
 import soot.shimple.PhiExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * An intraprocedural nullness analysis that computes for each location and each value in a method

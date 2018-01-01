@@ -25,8 +25,11 @@
 
 package soot.coffi;
 
-import java.io.*;
-import soot.*;
+import soot.ArrayType;
+import soot.RefType;
+import soot.Type;
+
+import java.io.PrintStream;
 
 /*
  * A less resource hungry implementation of the TypeStack would just have pointers to

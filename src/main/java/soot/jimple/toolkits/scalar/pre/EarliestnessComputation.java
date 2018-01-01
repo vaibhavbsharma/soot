@@ -25,11 +25,20 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.SideEffectTester;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.FieldRef;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Computes the earliest points for the given expressions.<br>

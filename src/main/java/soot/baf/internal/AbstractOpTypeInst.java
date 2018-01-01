@@ -25,8 +25,13 @@
 
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
+import soot.AbstractJasminClass;
+import soot.ArrayType;
+import soot.NullType;
+import soot.RefType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.baf.Baf;
 
 public abstract class AbstractOpTypeInst extends AbstractInst {
   protected Type opType;

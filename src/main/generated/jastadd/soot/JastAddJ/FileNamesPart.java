@@ -1,15 +1,11 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
 import java.io.File;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 
 /** @ast class */
 public class FileNamesPart extends PathPart {

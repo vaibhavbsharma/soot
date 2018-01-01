@@ -1,15 +1,13 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
+import soot.Local;
+import soot.Scene;
+import soot.Type;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.Iterator;
 
 /**
  * @production ClassInstanceExpr : {@link Access} ::= <span class="component">{@link Access}</span>

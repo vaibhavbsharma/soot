@@ -18,7 +18,6 @@
  */
 package soot.asm;
 
-import java.lang.reflect.Field;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
@@ -29,6 +28,8 @@ import soot.tagkit.AnnotationTag;
 import soot.tagkit.GenericAttribute;
 import soot.tagkit.Host;
 import soot.tagkit.VisibilityAnnotationTag;
+
+import java.lang.reflect.Field;
 
 /**
  * Tag builder.

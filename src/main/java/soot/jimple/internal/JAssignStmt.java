@@ -25,11 +25,34 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Immediate;
+import soot.IntType;
+import soot.Local;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitBoxOwner;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.AbstractJimpleValueSwitch;
+import soot.jimple.AddExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.StmtSwitch;
+import soot.jimple.SubExpr;
+import soot.util.Switch;
+
+import java.util.List;
 
 public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
   @SuppressWarnings("serial")

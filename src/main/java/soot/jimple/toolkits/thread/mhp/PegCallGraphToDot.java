@@ -26,9 +26,16 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.*;
-import soot.toolkits.graph.*;
-import soot.util.dot.*;
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.dot.DotGraph;
+import soot.util.dot.DotGraphConstants;
+import soot.util.dot.DotGraphNode;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

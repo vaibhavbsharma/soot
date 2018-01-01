@@ -1,6 +1,5 @@
 package soot.jimple.validation;
 
-import java.util.List;
 import soot.Body;
 import soot.SootClass;
 import soot.SootMethod;
@@ -14,6 +13,8 @@ import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
+
+import java.util.List;
 
 public enum InvokeValidator implements BodyValidator {
   INSTANCE;

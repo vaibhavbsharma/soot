@@ -19,8 +19,14 @@
 
 package soot;
 
-import java.util.*;
-import soot.tagkit.*;
+import soot.tagkit.ColorTag;
+import soot.tagkit.Host;
+import soot.tagkit.JimpleLineNumberTag;
+import soot.tagkit.PositionTag;
+import soot.tagkit.Tag;
+
+import java.util.Iterator;
+import java.util.Stack;
 
 /** Adds PositionTags to ValueBoxes to identify their position in the output. */
 public class AttributesUnitPrinter {

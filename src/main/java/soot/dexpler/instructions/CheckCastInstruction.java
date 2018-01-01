@@ -24,8 +24,6 @@
 
 package soot.dexpler.instructions;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
@@ -39,6 +37,9 @@ import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 

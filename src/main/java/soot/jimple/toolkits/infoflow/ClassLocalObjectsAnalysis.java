@@ -1,11 +1,40 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.Body;
+import soot.EquivalentValue;
+import soot.G;
+import soot.RefLikeType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.Value;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.ParameterRef;
+import soot.jimple.Ref;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.ReachableMethods;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.MutableDirectedGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.Pair;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 // ClassLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the given scope.

@@ -19,7 +19,12 @@
 
 package soot;
 
-import soot.jimple.*;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityRef;
+import soot.jimple.Jimple;
+import soot.jimple.ParameterRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
 
 /** UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf */
 public class BriefUnitPrinter extends LabeledUnitPrinter {

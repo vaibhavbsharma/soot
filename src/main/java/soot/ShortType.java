@@ -25,7 +25,7 @@
 
 package soot;
 
-import soot.util.*;
+import soot.util.Switch;
 
 /** Soot representation of the Java built-in type 'short'. Implemented as a singleton. */
 @SuppressWarnings("serial")

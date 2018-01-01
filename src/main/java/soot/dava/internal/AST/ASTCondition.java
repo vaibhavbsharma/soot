@@ -19,8 +19,8 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.UnitPrinter;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
 public abstract class ASTCondition {
   public abstract void apply(Analysis a);

@@ -19,11 +19,23 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.jimple.*;
+import soot.BooleanType;
+import soot.Type;
+import soot.Value;
+import soot.dava.internal.AST.ASTBinaryCondition;
+import soot.dava.internal.AST.ASTCondition;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.AST.ASTUnaryCondition;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.javaRep.DIntConstant;
+import soot.dava.internal.javaRep.DNotExpr;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.ConditionExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.NeExpr;
 
 /*
   TO MAKE CODE EFFECIENT BLOCK THE ANALYSIS TO GOING INTO STATEMENTS

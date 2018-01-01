@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.Hierarchy;
 import soot.Local;
@@ -62,6 +57,12 @@ import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /** Provides methods to inline a given invoke site. */
 public class SiteInliner {

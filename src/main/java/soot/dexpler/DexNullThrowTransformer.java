@@ -1,15 +1,11 @@
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
 import soot.SootMethodRef;
-import soot.Type;
 import soot.Unit;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
@@ -19,6 +15,10 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.toolkits.scalar.LocalCreation;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Some Android applications throw null references, e.g.,

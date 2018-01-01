@@ -25,9 +25,10 @@
 
 package soot;
 
-import java.util.*;
 import soot.options.Options;
-import soot.util.*;
+import soot.util.PhaseDumper;
+
+import java.util.Map;
 
 /** Maintains the pair (phaseName, singleton) needed for a transformation. */
 public class Transform implements HasPhaseOptions {

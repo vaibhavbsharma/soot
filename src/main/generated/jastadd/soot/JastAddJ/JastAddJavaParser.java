@@ -1,7 +1,11 @@
 // Generated from soot/JastAddJ/JastAddJavaParser.all
 package soot.JastAddJ;
 
-import beaver.*;
+import beaver.Parser;
+import beaver.ParsingTables;
+import beaver.Scanner;
+import beaver.Symbol;
+
 import java.util.ArrayList;
 
 /**

@@ -1,12 +1,21 @@
 package soot.jimple.toolkits.reflection;
 
-import java.util.Iterator;
-import java.util.Map;
-import soot.*;
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class creates a local for each string constant that is used as a base object to a reflective

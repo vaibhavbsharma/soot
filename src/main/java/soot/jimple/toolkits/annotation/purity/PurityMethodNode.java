@@ -25,8 +25,10 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import java.util.*;
-import soot.*;
+import soot.SootMethod;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Kind of Stmt inside node, but global to the method. Used for synthetic summary of unalysed

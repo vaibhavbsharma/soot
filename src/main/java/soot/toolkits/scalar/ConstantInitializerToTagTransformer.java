@@ -1,13 +1,5 @@
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import soot.ConflictingFieldRefException;
 import soot.G;
 import soot.Scene;
@@ -32,6 +24,15 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * This is the reverse operation of the {@link ConstantValueToInitializerTransformer}. We scan for

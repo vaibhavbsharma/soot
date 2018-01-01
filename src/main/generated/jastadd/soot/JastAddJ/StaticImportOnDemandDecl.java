@@ -1,14 +1,6 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-
 /**
  * 7.5.4 A static-import-on-demand declaration allows all accessible (\ufffd\ufffd6.6) static
  * members declared in the type named by a canonical name to be imported as needed.

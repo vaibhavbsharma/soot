@@ -25,10 +25,32 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Body;
+import soot.Hierarchy;
+import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.Trap;
+import soot.TrapManager;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.Constant;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+import soot.util.Chain;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 /** Utility methods for dealing with traps. */
 public class ThrowManager {

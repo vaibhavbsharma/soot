@@ -1,14 +1,8 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
 import java.util.Collection;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.Collections;
 
 /**
  * @production ImportDecl : {@link ASTNode} ::= <span class="component">{@link Access}</span>;

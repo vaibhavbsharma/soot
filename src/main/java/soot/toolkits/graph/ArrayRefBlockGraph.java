@@ -25,10 +25,14 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
 import soot.baf.Inst;
 import soot.jimple.Stmt;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * A CFG where the nodes are {@link Block} instances, and where {@link Unit}s which include array

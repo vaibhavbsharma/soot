@@ -1,13 +1,7 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
 import java.util.Collection;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.HashMap;
 
 /** @ast interface */
 public interface MemberSubstitutor extends Parameterization {

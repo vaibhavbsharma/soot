@@ -24,18 +24,6 @@
 
 package soot.dexpler;
 
-import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
 import org.jf.dexlib2.analysis.ClassProvider;
@@ -110,6 +98,19 @@ import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
 /**
  * A DexBody contains the code of a DexMethod and is used as a wrapper around JimpleBody in the

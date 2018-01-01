@@ -1,9 +1,27 @@
 package soot.toolkits.astmetrics;
 
-import java.util.*;
-import polyglot.ast.*;
+import polyglot.ast.Block;
+import polyglot.ast.Branch;
+import polyglot.ast.CodeDecl;
+import polyglot.ast.Expr;
+import polyglot.ast.Formal;
+import polyglot.ast.If;
+import polyglot.ast.Initializer;
+import polyglot.ast.Labeled;
+import polyglot.ast.LocalClassDecl;
+import polyglot.ast.Loop;
+import polyglot.ast.Node;
+import polyglot.ast.ProcedureDecl;
+import polyglot.ast.Stmt;
+import polyglot.ast.Switch;
+import polyglot.ast.Synchronized;
+import polyglot.ast.Try;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
 
 public class StmtSumWeightedByDepth extends ASTMetric {
 

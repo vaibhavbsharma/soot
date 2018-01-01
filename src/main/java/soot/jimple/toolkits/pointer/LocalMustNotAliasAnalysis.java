@@ -18,10 +18,6 @@
  */
 package soot.jimple.toolkits.pointer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import soot.Body;
 import soot.Local;
 import soot.RefLikeType;
@@ -35,6 +31,10 @@ import soot.jimple.internal.AbstractNewExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * LocalNotMayAliasAnalysis attempts to determine if two local variables (at two potentially

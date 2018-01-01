@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.Iterator;
-import java.util.List;
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -102,6 +100,9 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+
+import java.util.Iterator;
+import java.util.List;
 
 class ConstraintCollector extends AbstractStmtSwitch {
   private TypeResolver resolver;

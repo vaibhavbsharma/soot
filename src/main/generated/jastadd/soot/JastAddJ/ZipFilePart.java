@@ -1,10 +1,13 @@
 package soot.JastAddJ;
 
-import java.io.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.zip.*;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Loads class files from a zip file (Jar file)

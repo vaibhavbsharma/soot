@@ -1,7 +1,10 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.*;
-import soot.*;
+import soot.G;
+import soot.SceneTransformer;
+import soot.Singletons;
+
+import java.util.Map;
 
 /** */
 public class MhpTransformer extends SceneTransformer {

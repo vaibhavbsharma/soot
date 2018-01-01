@@ -25,9 +25,10 @@
 
 package soot.tagkit;
 
+import soot.Unit;
+
 import java.util.Hashtable;
 import java.util.Map;
-import soot.Unit;
 
 /**
  * This class must be extended by Attributes that can be emitted in Jasmin. The attributes must

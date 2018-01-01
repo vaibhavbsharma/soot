@@ -25,10 +25,16 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.Unit;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArrayPackedSet;
+import soot.toolkits.scalar.BoundedFlowSet;
+import soot.toolkits.scalar.CollectionFlowUniverse;
+import soot.toolkits.scalar.FlowSet;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Performs a Latest-Computation on the given graph. a computation is latest, when we can't delay it

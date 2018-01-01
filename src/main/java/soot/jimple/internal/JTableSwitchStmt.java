@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -40,6 +38,9 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.StmtSwitch;
 import soot.jimple.TableSwitchStmt;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchStmt {
   int lowIndex;

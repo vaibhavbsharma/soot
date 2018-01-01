@@ -19,11 +19,22 @@
 
 package soot.xml;
 
-import java.io.*;
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Unit;
+import soot.ValueBox;
 import soot.jimple.spark.ondemand.genericutil.Predicate;
-import soot.tagkit.*;
+import soot.tagkit.Host;
+import soot.tagkit.JimpleLineNumberTag;
+import soot.tagkit.KeyTag;
+import soot.tagkit.SourceFileTag;
+import soot.tagkit.Tag;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TagCollector {
 

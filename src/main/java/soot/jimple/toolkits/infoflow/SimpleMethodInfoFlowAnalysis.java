@@ -1,11 +1,46 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.G;
+import soot.Local;
+import soot.RefLikeType;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AnyNewExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.CastExpr;
+import soot.jimple.Constant;
+import soot.jimple.IdentityRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.ParameterRef;
+import soot.jimple.Ref;
+import soot.jimple.ReturnStmt;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
+import soot.jimple.UnopExpr;
+import soot.jimple.internal.JCaughtExceptionRef;
+import soot.toolkits.graph.MemoryEfficientGraph;
+import soot.toolkits.graph.MutableDirectedGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.toolkits.scalar.Pair;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 // SimpleMethodInfoFlowAnalysis written by Richard L. Halpert, 2007-02-25
 // Constructs a data flow table for the given method.  Ignores indirect flow.

@@ -25,10 +25,6 @@ import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
@@ -41,6 +37,11 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * Default implementation for the {@link InterproceduralCFG} interface. Includes all statements

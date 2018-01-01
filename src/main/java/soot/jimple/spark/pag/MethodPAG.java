@@ -19,9 +19,6 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.Context;
@@ -42,6 +39,10 @@ import soot.options.CGOptions;
 import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Part of a pointer assignment graph for a single method.

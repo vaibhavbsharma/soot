@@ -25,8 +25,19 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import soot.*;
-import soot.jimple.*;
+import soot.EquivalentValue;
+import soot.Local;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConcreteRef;
+import soot.jimple.Constant;
+import soot.jimple.DivExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.LengthExpr;
+import soot.jimple.RemExpr;
+import soot.jimple.UnopExpr;
 
 /**
  * Allows easy filtering/wrapping of Soot objects. Operations that are done very often are grouped

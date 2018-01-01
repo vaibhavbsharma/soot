@@ -18,10 +18,11 @@ package soot;
  * Boston, MA 02111-1307, USA.
  */
 
-import java.io.File;
 import soot.dexpler.DexResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+
+import java.io.File;
 
 /** Responsible for resolving a single class from a dex source format. */
 public class DexClassSource extends ClassSource {

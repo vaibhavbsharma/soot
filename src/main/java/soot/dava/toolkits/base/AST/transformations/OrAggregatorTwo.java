@@ -19,14 +19,21 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.jimple.*;
+import soot.G;
+import soot.dava.internal.AST.ASTCondition;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTOrCondition;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DAbruptStmt;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
   Nomair A. Naeem 21-FEB-2005

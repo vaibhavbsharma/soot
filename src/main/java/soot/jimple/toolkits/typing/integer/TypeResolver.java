@@ -25,10 +25,28 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import java.io.*;
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.G;
+import soot.IntegerType;
+import soot.Local;
+import soot.PatchingChain;
+import soot.ShortType;
+import soot.Type;
+import soot.Unit;
+import soot.jimple.JimpleBody;
+import soot.jimple.Stmt;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** This class resolves the type of local variables. */
 public class TypeResolver {

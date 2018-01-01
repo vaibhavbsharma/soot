@@ -25,8 +25,9 @@
 
 package soot.jimple;
 
-import java.util.*;
-import soot.*;
+import soot.Unit;
+
+import java.util.List;
 
 public interface ConvertToBaf {
   void convertToBaf(JimpleToBafContext context, List<Unit> out);

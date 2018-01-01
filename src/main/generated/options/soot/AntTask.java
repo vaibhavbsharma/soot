@@ -22,11 +22,12 @@
 
 package soot;
 
-import java.io.*;
-import java.util.*;
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.types.Path;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Soot ant task.

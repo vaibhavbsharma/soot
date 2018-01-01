@@ -1,14 +1,5 @@
 package soot.baf;
 
-import static soot.util.backend.ASMBackendUtils.sizeOfType;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -55,6 +46,16 @@ import soot.jimple.ThisRef;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static soot.util.backend.ASMBackendUtils.sizeOfType;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
 
 /**
  * Concrete ASM based bytecode generation backend for the BAF intermediate representation

@@ -19,12 +19,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
@@ -41,6 +35,13 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JCastExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * An intraprocedural nullness assumption analysis that computes for each location and each value in

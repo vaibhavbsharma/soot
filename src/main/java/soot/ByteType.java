@@ -25,7 +25,7 @@
 
 package soot;
 
-import soot.util.*;
+import soot.util.Switch;
 
 /** Soot representation of the Java built-in type 'byte'. Implemented as a singleton. */
 @SuppressWarnings("serial")

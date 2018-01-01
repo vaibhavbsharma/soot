@@ -19,9 +19,14 @@
 
 package soot.shimple;
 
-import soot.*;
-import soot.shimple.toolkits.graph.*;
-import soot.toolkits.graph.*;
+import soot.shimple.toolkits.graph.GlobalValueNumberer;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.DominanceFrontier;
+import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.graph.DominatorsFinder;
+import soot.toolkits.graph.ReversibleGraph;
+import soot.toolkits.graph.UnitGraph;
 
 /** @author Navindra Umanee */
 public interface ShimpleFactory {

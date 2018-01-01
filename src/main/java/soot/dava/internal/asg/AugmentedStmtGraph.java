@@ -19,15 +19,6 @@
 
 package soot.dava.internal.asg;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Unit;
 import soot.dava.Dava;
 import soot.jimple.IfStmt;
@@ -40,6 +31,16 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.IterableSet;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   private HashMap<Stmt, AugmentedStmt> binding;

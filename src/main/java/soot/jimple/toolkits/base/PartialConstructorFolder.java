@@ -25,12 +25,30 @@
 
 package soot.jimple.toolkits.base;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
+import soot.options.Options;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class PartialConstructorFolder extends BodyTransformer {
   // public JimpleConstructorFolder( Singletons.Global g ) {}

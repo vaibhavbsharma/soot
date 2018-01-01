@@ -19,10 +19,21 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.Singletons;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class SideEffectTagger extends BodyTransformer {
   public SideEffectTagger(Singletons.Global g) {}

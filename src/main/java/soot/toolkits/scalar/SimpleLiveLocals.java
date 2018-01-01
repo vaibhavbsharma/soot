@@ -25,7 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.List;
 import soot.G;
 import soot.Local;
 import soot.Timers;
@@ -34,6 +33,8 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.List;
 
 /** Analysis that provides an implementation of the LiveLocals interface. */
 public class SimpleLiveLocals implements LiveLocals {

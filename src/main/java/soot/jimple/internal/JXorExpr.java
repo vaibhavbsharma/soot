@@ -25,10 +25,13 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Type;
+import soot.Value;
+import soot.baf.Baf;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.XorExpr;
+import soot.util.Switch;
 
 public class JXorExpr extends AbstractJimpleIntLongBinopExpr implements XorExpr {
   public JXorExpr(Value op1, Value op2) {

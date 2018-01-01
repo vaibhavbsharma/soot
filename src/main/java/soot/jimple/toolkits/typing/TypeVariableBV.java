@@ -25,10 +25,15 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.*;
-import soot.*;
+import soot.ArrayType;
+import soot.G;
+import soot.RefType;
 import soot.options.Options;
-import soot.util.*;
+import soot.util.BitSetIterator;
+import soot.util.BitVector;
+
+import java.util.Iterator;
+import java.util.TreeSet;
 
 /**
  * Represents a type variable.

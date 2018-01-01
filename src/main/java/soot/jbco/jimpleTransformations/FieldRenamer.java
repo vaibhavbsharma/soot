@@ -19,11 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
 import soot.Body;
 import soot.BooleanType;
 import soot.G;
@@ -49,6 +44,12 @@ import soot.jbco.util.Rand;
 import soot.jimple.FieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * @author Michael Batchelder

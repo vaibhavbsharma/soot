@@ -18,12 +18,47 @@ package soot.jimple.toolkits.thread.synchronization;
  * Boston, MA 02111-1307, USA.
  */
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.thread.*;
+import soot.Local;
+import soot.MethodOrMethodContext;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Filter;
+import soot.jimple.toolkits.callgraph.TransitiveTargets;
+import soot.jimple.toolkits.pointer.CodeBlockRWSet;
+import soot.jimple.toolkits.pointer.FullObjectSet;
+import soot.jimple.toolkits.pointer.RWSet;
+import soot.jimple.toolkits.pointer.SideEffectAnalysis;
+import soot.jimple.toolkits.pointer.StmtRWSet;
+import soot.jimple.toolkits.thread.EncapsulatedObjectAnalysis;
+import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Generates side-effect information from a PointsToAnalysis. Uses various heuristic rules to filter

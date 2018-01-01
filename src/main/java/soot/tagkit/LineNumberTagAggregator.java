@@ -25,8 +25,12 @@
 
 package soot.tagkit;
 
+import soot.G;
+import soot.IdentityUnit;
+import soot.Singletons;
+import soot.Unit;
+
 import java.util.LinkedList;
-import soot.*;
 
 /** The aggregator for LineNumberTable attribute. */
 public class LineNumberTagAggregator extends FirstTagAggregator {

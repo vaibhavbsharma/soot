@@ -26,8 +26,6 @@
 
 package soot.grimp.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import soot.RefType;
 import soot.SootMethodRef;
 import soot.Type;
@@ -40,6 +38,9 @@ import soot.grimp.NewInvokeExpr;
 import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr, Precedence {
   RefType type;

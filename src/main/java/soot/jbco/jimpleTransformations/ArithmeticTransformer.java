@@ -19,12 +19,34 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
 import soot.BodyTransformer;
-import soot.jbco.*;
-import soot.jbco.util.*;
-import soot.jimple.*;
+import soot.DoubleType;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.PatchingChain;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jbco.IJbcoTransform;
+import soot.jbco.util.Rand;
+import soot.jimple.AssignStmt;
+import soot.jimple.DivExpr;
+import soot.jimple.DoubleConstant;
+import soot.jimple.Expr;
+import soot.jimple.FloatConstant;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.LongConstant;
+import soot.jimple.MulExpr;
+import soot.jimple.NumericConstant;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Batchelder

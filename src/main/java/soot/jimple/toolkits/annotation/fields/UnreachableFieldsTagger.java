@@ -19,10 +19,23 @@
 
 package soot.jimple.toolkits.annotation.fields;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.tagkit.*;
+import soot.Body;
+import soot.G;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.FieldRef;
+import soot.tagkit.ColorTag;
+import soot.tagkit.StringTag;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 /** A scene transformer that adds tags to unused fields. */
 public class UnreachableFieldsTagger extends SceneTransformer {

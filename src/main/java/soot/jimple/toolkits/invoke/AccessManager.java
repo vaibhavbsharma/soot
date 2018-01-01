@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import soot.Body;
 import soot.ClassMember;
 import soot.Hierarchy;
@@ -52,6 +49,10 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /** Methods for checking Java scope and visibiliity requirements. */
 public class AccessManager {

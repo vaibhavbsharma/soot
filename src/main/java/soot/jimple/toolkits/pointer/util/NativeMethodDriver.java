@@ -25,10 +25,53 @@
  */
 package soot.jimple.toolkits.pointer.util;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.toolkits.pointer.nativemethods.*;
-import soot.jimple.toolkits.pointer.representations.*;
+import soot.G;
+import soot.SootMethod;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoFileDescriptorNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoFileInputStreamNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoFileOutputStreamNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoFileSystemNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoObjectInputStreamNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoObjectOutputStreamNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaIoObjectStreamClassNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangClassLoaderNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangClassLoaderNativeLibraryNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangClassNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangDoubleNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangFloatNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangObjectNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangPackageNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangReflectArrayNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangReflectConstructorNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangReflectFieldNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangReflectMethodNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangReflectProxyNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangRuntimeNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangSecurityManagerNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangShutdownNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangStrictMathNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangStringNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangSystemNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangThreadNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaLangThrowableNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaNetInetAddressImplNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaNetInetAddressNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaSecurityAccessControllerNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilJarJarFileNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilResourceBundleNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilTimeZoneNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilZipCRC32Native;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilZipInflaterNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilZipZipEntryNative;
+import soot.jimple.toolkits.pointer.nativemethods.JavaUtilZipZipFileNative;
+import soot.jimple.toolkits.pointer.nativemethods.NativeMethodClass;
+import soot.jimple.toolkits.pointer.nativemethods.NativeMethodNotSupportedException;
+import soot.jimple.toolkits.pointer.nativemethods.SunMiscSignalHandlerNative;
+import soot.jimple.toolkits.pointer.nativemethods.SunMiscSignalNative;
+import soot.jimple.toolkits.pointer.nativemethods.SunMiscUnsafeNative;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+
+import java.util.HashMap;
 
 public class NativeMethodDriver {
   public NativeMethodDriver(NativeHelper helper) {

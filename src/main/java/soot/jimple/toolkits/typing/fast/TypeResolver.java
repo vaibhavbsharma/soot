@@ -20,13 +20,6 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -55,6 +48,14 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
 import soot.toolkits.scalar.LocalDefs;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference' at OOPSLA 08).

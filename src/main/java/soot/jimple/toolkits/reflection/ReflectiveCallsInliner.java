@@ -19,14 +19,6 @@
 
 package soot.jimple.toolkits.reflection;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -84,6 +76,14 @@ import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.HashChain;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ReflectiveCallsInliner extends SceneTransformer {
   // caching currently does not work because it adds fields to Class, Method

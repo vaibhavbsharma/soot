@@ -28,14 +28,6 @@
 
 package soot;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import soot.baf.DoubleWordType;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -72,6 +64,15 @@ import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.toolkits.graph.Block;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractJasminClass {
   protected Map<Unit, String> unitToLabel;

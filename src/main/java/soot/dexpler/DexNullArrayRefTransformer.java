@@ -20,17 +20,12 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
 import soot.SootMethodRef;
-import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
@@ -45,6 +40,11 @@ import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * If Dalvik bytecode contains statements using a base array which is always null, Soot's fast type

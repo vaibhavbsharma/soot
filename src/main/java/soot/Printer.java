@@ -25,12 +25,19 @@
 
 package soot;
 
-import java.io.*;
-import java.util.*;
-import soot.options.*;
-import soot.tagkit.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.options.Options;
+import soot.tagkit.JimpleLineNumberTag;
+import soot.tagkit.Tag;
+import soot.toolkits.graph.UnitGraph;
+import soot.util.Chain;
+import soot.util.DeterministicHashMap;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /** Prints out a class and all its methods. */
 public class Printer {

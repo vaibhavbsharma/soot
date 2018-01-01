@@ -19,9 +19,22 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.Local;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.StringConstant;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 public class UnreachableMethodTransformer extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map options) {

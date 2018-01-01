@@ -25,13 +25,25 @@
 
 package soot.jimple.parser;
 
-import java.io.*;
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.SootResolver;
 import soot.jimple.JimpleBody;
-import soot.jimple.parser.lexer.*;
-import soot.jimple.parser.node.*;
-import soot.jimple.parser.parser.*;
+import soot.jimple.parser.lexer.Lexer;
+import soot.jimple.parser.lexer.LexerException;
+import soot.jimple.parser.node.Start;
+import soot.jimple.parser.parser.Parser;
+import soot.jimple.parser.parser.ParserException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackReader;
+import java.util.HashMap;
+import java.util.Set;
 
 /** This class encapsulates a JimpleAST instance and provides methods to act on it. */
 public class JimpleAST {

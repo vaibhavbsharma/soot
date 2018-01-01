@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import soot.EntryPoints;
 import soot.G;
 import soot.Local;
@@ -40,6 +36,11 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Models the call graph.

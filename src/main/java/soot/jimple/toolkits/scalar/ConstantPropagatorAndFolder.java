@@ -25,12 +25,30 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.RefType;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.CastExpr;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.NullConstant;
+import soot.jimple.NumericConstant;
+import soot.jimple.StringConstant;
+import soot.options.Options;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.Orderer;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.LocalDefs;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Does constant propagation and folding. Constant folding is the compile-time evaluation of

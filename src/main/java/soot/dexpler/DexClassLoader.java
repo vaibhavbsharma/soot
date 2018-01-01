@@ -1,6 +1,5 @@
 package soot.dexpler;
 
-import java.util.Iterator;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
@@ -16,6 +15,8 @@ import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
+
+import java.util.Iterator;
 
 /** Class for loading methods from dex files */
 public class DexClassLoader {

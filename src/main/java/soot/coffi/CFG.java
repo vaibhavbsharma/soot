@@ -25,18 +25,6 @@
 
 package soot.coffi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.Vector;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -89,6 +77,19 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.ArraySet;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * A Control Flow Graph.

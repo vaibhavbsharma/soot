@@ -1,9 +1,5 @@
 package soot.baf.toolkits.base;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -13,6 +9,11 @@ import soot.Unit;
 import soot.baf.PushInst;
 import soot.baf.StoreInst;
 import soot.toolkits.scalar.Pair;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Due to local packing, we may have chains of assignments to the same local.

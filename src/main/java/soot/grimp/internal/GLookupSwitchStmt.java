@@ -25,11 +25,16 @@
 
 package soot.grimp.internal;
 
-import java.util.*;
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.IntConstant;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JLookupSwitchStmt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GLookupSwitchStmt extends JLookupSwitchStmt {
   // This method is necessary to deal with constructor-must-be-first-ism.

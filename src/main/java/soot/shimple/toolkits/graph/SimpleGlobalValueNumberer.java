@@ -19,11 +19,24 @@
 
 package soot.shimple.toolkits.graph;
 
-import java.util.*;
-import soot.*;
-import soot.shimple.*;
+import soot.Body;
+import soot.Local;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.shimple.Shimple;
+import soot.shimple.ShimpleBody;
 import soot.shimple.toolkits.graph.ValueGraph.Node;
-import soot.toolkits.graph.*;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.CompleteBlockGraph;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected BlockGraph cfg;

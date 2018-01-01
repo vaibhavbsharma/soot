@@ -29,11 +29,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.ByteType;
@@ -62,6 +57,12 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.options.JBTROptions;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This transformer assigns types to local variables.

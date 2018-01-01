@@ -25,11 +25,23 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.ArrayType;
+import soot.Type;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.NewMultiArrayExpr;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf {

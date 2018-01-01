@@ -19,13 +19,38 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.PatchingChain;
+import soot.PrimType;
+import soot.ShortType;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.baf.Baf;
+import soot.baf.IdentityInst;
+import soot.baf.IncInst;
+import soot.baf.LoadInst;
+import soot.baf.StoreInst;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
-import soot.jimple.*;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.ParameterRef;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class LocalsToBitField extends BodyTransformer implements IJbcoTransform {
 

@@ -20,11 +20,21 @@
 
 package soot.dava.internal.AST;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.Local;
+import soot.SootClass;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.ASTAnalysis;
+import soot.dava.toolkits.base.AST.TryContentsFinder;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ASTTryNode extends ASTLabeledNode {
   private List<Object> tryBody, catchList;

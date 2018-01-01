@@ -20,9 +20,6 @@
 /** Maintained by: Nomair A. Naeem */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import soot.Local;
 import soot.Value;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -34,6 +31,10 @@ import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for

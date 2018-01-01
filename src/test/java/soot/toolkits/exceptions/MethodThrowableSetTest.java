@@ -1,12 +1,5 @@
 package soot.toolkits.exceptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -18,6 +11,14 @@ import soot.RefLikeType;
 import soot.Scene;
 import soot.SootMethod;
 import soot.options.Options;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MethodThrowableSetTest {
 

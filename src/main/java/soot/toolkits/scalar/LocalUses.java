@@ -25,11 +25,13 @@
 
 package soot.toolkits.scalar;
 
-import static soot.toolkits.scalar.LocalDefs.Factory.newLocalDefs;
-
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.List;
+
+import static soot.toolkits.scalar.LocalDefs.Factory.newLocalDefs;
 
 /** Provides an interface to find the Units that use a Local defined at a given Unit. */
 public interface LocalUses {

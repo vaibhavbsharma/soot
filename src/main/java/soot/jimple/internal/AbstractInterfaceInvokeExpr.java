@@ -26,11 +26,23 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.DoubleType;
+import soot.LongType;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.VoidType;
+import soot.baf.Baf;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.ExprSwitch;
+import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.util.Switch;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvokeExpr

@@ -19,9 +19,15 @@
 
 package soot.jimple.spark.fieldrw;
 
-import java.util.*;
-import soot.*;
-import soot.tagkit.*;
+import soot.Body;
+import soot.G;
+import soot.Singletons;
+import soot.Unit;
+import soot.tagkit.Tag;
+import soot.tagkit.TagAggregator;
+
+import java.util.LinkedList;
+import java.util.Map;
 
 public class FieldTagAggregator extends TagAggregator {
   public FieldTagAggregator(Singletons.Global g) {}

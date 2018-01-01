@@ -19,12 +19,22 @@
 
 package soot.toolkits.astmetrics;
 
-import java.io.*;
-import java.util.*;
-import polyglot.ast.*;
+import polyglot.ast.ClassDecl;
+import polyglot.ast.FieldDecl;
+import polyglot.ast.Formal;
+import polyglot.ast.LocalDecl;
+import polyglot.ast.MethodDecl;
+import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 import soot.G;
-import soot.options.*;
+import soot.options.Options;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Michael Batchelder

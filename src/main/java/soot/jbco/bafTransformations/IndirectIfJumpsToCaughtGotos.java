@@ -19,12 +19,35 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.ByteType;
+import soot.IntType;
+import soot.IntegerType;
+import soot.Local;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.baf.Baf;
+import soot.baf.GotoInst;
+import soot.baf.IdentityInst;
+import soot.baf.JSRInst;
+import soot.baf.TargetArgInst;
+import soot.baf.ThrowInst;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.*;
+import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.Rand;
+import soot.jbco.util.ThrowSet;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * @author Michael Batchelder

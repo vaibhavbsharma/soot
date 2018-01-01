@@ -25,10 +25,6 @@
 
 package soot.tools;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -45,6 +41,11 @@ import soot.util.cfgcmd.CFGGraphType;
 import soot.util.cfgcmd.CFGIntermediateRep;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class for generating dot graph file for a control flow graph

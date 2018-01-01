@@ -19,8 +19,6 @@
 
 package soot.util.cfgcmd;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import soot.Body;
 import soot.G;
 import soot.toolkits.graph.ArrayRefBlockGraph;
@@ -36,6 +34,9 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.toolkits.graph.ZonedBlockGraph;
 import soot.util.dot.DotGraph;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * An enumeration type for representing the varieties of control flow graph available, for use in

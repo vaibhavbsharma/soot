@@ -25,13 +25,6 @@ import heros.InterproceduralCFG;
 import heros.flowfunc.Identity;
 import heros.flowfunc.Kill;
 import heros.flowfunc.KillAll;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Local;
 import soot.NullType;
 import soot.Scene;
@@ -46,6 +39,14 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class IFDSUninitializedVariables
     extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {

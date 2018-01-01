@@ -1,6 +1,5 @@
 package soot.jimple.validation;
 
-import java.util.List;
 import soot.Body;
 import soot.ResolutionFailedException;
 import soot.SootField;
@@ -14,6 +13,8 @@ import soot.util.Chain;
 import soot.validation.BodyValidator;
 import soot.validation.UnitValidationException;
 import soot.validation.ValidationException;
+
+import java.util.List;
 
 public enum FieldRefValidator implements BodyValidator {
   INSTANCE;

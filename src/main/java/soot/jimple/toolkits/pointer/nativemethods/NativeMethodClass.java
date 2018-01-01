@@ -20,9 +20,10 @@
 /** NativeMethodClass defines side-effect simulation of native methods in a class. */
 package soot.jimple.toolkits.pointer.nativemethods;
 
-import soot.*;
-import soot.jimple.toolkits.pointer.representations.*;
-import soot.jimple.toolkits.pointer.util.*;
+import soot.G;
+import soot.SootMethod;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 
 public abstract class NativeMethodClass {
 

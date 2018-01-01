@@ -25,7 +25,12 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 class WeightedDirectedSparseGraph {
   private boolean isUnknown;

@@ -25,11 +25,57 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
+import soot.Body;
+import soot.G;
+import soot.Hierarchy;
+import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AddExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.FieldRef;
+import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
+import soot.jimple.LeExpr;
+import soot.jimple.LengthExpr;
+import soot.jimple.LtExpr;
+import soot.jimple.MulExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.Stmt;
+import soot.jimple.SubExpr;
+import soot.options.Options;
+import soot.toolkits.graph.ArrayRefBlockGraph;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.SlowPseudoTopologicalOrderer;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class ArrayBoundsCheckerAnalysis {
   protected Map<Block, WeightedDirectedSparseGraph> blockToBeforeFlow;

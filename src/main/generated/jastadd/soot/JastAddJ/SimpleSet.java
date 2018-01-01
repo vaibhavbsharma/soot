@@ -1,13 +1,8 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.Iterator;
 
 /** @ast interface */
 public interface SimpleSet {

@@ -24,10 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
@@ -37,6 +33,11 @@ import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * BodyTransformer to inline jumps to return statements. Take the following code: a = b goto label1

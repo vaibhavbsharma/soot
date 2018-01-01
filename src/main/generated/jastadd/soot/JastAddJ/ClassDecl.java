@@ -1,18 +1,18 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
+import soot.MethodSource;
+import soot.Scene;
+import soot.SootClass;
+import soot.coffi.CoffiMethodSource;
+import soot.tagkit.SourceFileTag;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.zip.*;
-import soot.*;
-import soot.coffi.CoffiMethodSource;
-import soot.jimple.*;
-import soot.tagkit.SourceFileTag;
-import soot.util.*;
+import java.util.Iterator;
 
 /**
  * @production ClassDecl : {@link ReferenceType} ::= <span class="component">{@link

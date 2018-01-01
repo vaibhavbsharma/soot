@@ -25,11 +25,22 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.VoidType;
+import soot.baf.Baf;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.StmtSwitch;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JInvokeStmt extends AbstractStmt implements InvokeStmt {
   final ValueBox invokeExprBox;

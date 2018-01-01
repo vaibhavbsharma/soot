@@ -19,10 +19,43 @@
 
 package soot.dava.toolkits.base.AST.analysis;
 
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
-import soot.jimple.*;
+import soot.Type;
+import soot.Value;
+import soot.dava.internal.AST.ASTAndCondition;
+import soot.dava.internal.AST.ASTBinaryCondition;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTLabeledBlockNode;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTOrCondition;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.AST.ASTSwitchNode;
+import soot.dava.internal.AST.ASTSynchronizedBlockNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.dava.internal.AST.ASTUnaryCondition;
+import soot.dava.internal.AST.ASTUnconditionalLoopNode;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.javaRep.DVariableDeclarationStmt;
+import soot.jimple.ArrayRef;
+import soot.jimple.BinopExpr;
+import soot.jimple.CastExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.Expr;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.Ref;
+import soot.jimple.ReturnStmt;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+import soot.jimple.UnopExpr;
 
 public class AnalysisAdapter implements Analysis {
 

@@ -1,14 +1,6 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-
 /**
  * 7.5.3 A single-static-import declaration imports all accessible (\ufffd\ufffd6.6) static members
  * with a given simple name from a type. This makes these static members available under their

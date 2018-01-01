@@ -24,9 +24,6 @@
 
 package soot.dexpler.instructions;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
@@ -55,6 +52,10 @@ import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.Stmt;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FillArrayDataInstruction extends PseudoInstruction {
 

@@ -25,7 +25,7 @@
 
 package soot.jimple;
 
-import soot.*;
+import soot.Local;
 
 public interface JimpleValueSwitch extends ConstantSwitch, ExprSwitch, RefSwitch {
   void caseLocal(Local l);

@@ -19,6 +19,10 @@
 
 package soot;
 
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.ConcurrentHashMultiMap;
+import soot.util.MultiMap;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,9 +31,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import soot.jimple.SpecialInvokeExpr;
-import soot.util.ConcurrentHashMultiMap;
-import soot.util.MultiMap;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the

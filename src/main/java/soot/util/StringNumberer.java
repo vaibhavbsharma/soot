@@ -20,6 +20,7 @@
 package soot.util;
 
 import heros.ThreadSafe;
+
 import java.util.HashMap;
 import java.util.Map;
 

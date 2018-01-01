@@ -25,11 +25,19 @@
 
 package soot.jimple.parser;
 
-import java.util.*;
 import soot.Scene;
-import soot.jimple.parser.analysis.*;
-import soot.jimple.parser.node.*;
-import soot.util.*;
+import soot.jimple.parser.analysis.DepthFirstAdapter;
+import soot.jimple.parser.node.AFullIdentClassName;
+import soot.jimple.parser.node.AFullIdentNonvoidType;
+import soot.jimple.parser.node.AIdentClassName;
+import soot.jimple.parser.node.AIdentNonvoidType;
+import soot.jimple.parser.node.AQuotedClassName;
+import soot.jimple.parser.node.AQuotedNonvoidType;
+import soot.jimple.parser.node.Start;
+import soot.util.StringTools;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /** Walks a jimple AST, extracting all the contained reference type names. */
 class CstPoolExtractor {

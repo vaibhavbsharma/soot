@@ -25,9 +25,12 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Type;
+import soot.Value;
+import soot.jimple.ExprSwitch;
+import soot.jimple.GtExpr;
+import soot.jimple.Jimple;
+import soot.util.Switch;
 
 public class JGtExpr extends AbstractJimpleIntBinopExpr implements GtExpr {
   public JGtExpr(Value op1, Value op2) {

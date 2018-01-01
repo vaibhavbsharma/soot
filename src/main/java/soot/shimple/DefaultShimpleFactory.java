@@ -19,12 +19,26 @@
 
 package soot.shimple;
 
-import soot.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
+import soot.Body;
+import soot.PointsToAnalysis;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.pointer.SideEffectAnalysis;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
-import soot.shimple.toolkits.graph.*;
-import soot.toolkits.graph.*;
+import soot.shimple.toolkits.graph.GlobalValueNumberer;
+import soot.shimple.toolkits.graph.SimpleGlobalValueNumberer;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.BlockGraphConverter;
+import soot.toolkits.graph.CytronDominanceFrontier;
+import soot.toolkits.graph.DominanceFrontier;
+import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.graph.DominatorsFinder;
+import soot.toolkits.graph.ExceptionalBlockGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.HashReversibleGraph;
+import soot.toolkits.graph.ReversibleGraph;
+import soot.toolkits.graph.SimpleDominatorsFinder;
+import soot.toolkits.graph.UnitGraph;
 
 /** @author Navindra Umanee */
 public class DefaultShimpleFactory implements ShimpleFactory {

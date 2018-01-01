@@ -19,9 +19,18 @@
 
 package soot.shimple;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.G;
+import soot.MethodSource;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.options.Options;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Traverses all methods, in all classes from the Scene, and transforms them to Shimple. Typically

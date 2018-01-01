@@ -25,7 +25,7 @@
 
 package soot;
 
-import java.io.*;
+import java.io.Serializable;
 
 /**
  * A box which can contain units.

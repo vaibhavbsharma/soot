@@ -26,12 +26,23 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.SootField;
+import soot.SootFieldRef;
+import soot.Type;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
 import soot.grimp.PrecedenceTest;
-import soot.jimple.*;
-import soot.util.*;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.RefSwitch;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf {

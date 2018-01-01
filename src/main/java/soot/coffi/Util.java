@@ -25,12 +25,6 @@
 
 package soot.coffi;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -85,6 +79,13 @@ import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.SyntheticTag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Util {
   public Util(Singletons.Global g) {}

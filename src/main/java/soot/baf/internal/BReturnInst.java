@@ -25,9 +25,11 @@
 
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.baf.InstSwitch;
+import soot.baf.ReturnInst;
+import soot.util.Switch;
 
 public class BReturnInst extends AbstractOpTypeInst implements ReturnInst {
   public BReturnInst(Type opType) {

@@ -25,7 +25,38 @@
 
 package soot.grimp;
 
-import soot.jimple.*;
+import soot.jimple.AddExpr;
+import soot.jimple.AndExpr;
+import soot.jimple.CastExpr;
+import soot.jimple.CmpExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.CmplExpr;
+import soot.jimple.DivExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.ExprSwitch;
+import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.LeExpr;
+import soot.jimple.LengthExpr;
+import soot.jimple.LtExpr;
+import soot.jimple.MulExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.NegExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.OrExpr;
+import soot.jimple.RemExpr;
+import soot.jimple.ShlExpr;
+import soot.jimple.ShrExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.SubExpr;
+import soot.jimple.UshrExpr;
+import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.XorExpr;
 
 public interface GrimpExprSwitch extends ExprSwitch {
   void caseAddExpr(AddExpr v);

@@ -24,8 +24,9 @@
  */
 package soot.jimple.toolkits.pointer.util;
 
-import soot.*;
-import soot.jimple.toolkits.pointer.representations.*;
+import soot.SootMethod;
+import soot.jimple.toolkits.pointer.representations.AbstractObject;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 
 public abstract class NativeHelper {
 

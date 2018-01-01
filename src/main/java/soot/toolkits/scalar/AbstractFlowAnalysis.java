@@ -25,12 +25,13 @@
 
 package soot.toolkits.scalar;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.interaction.InteractionHandler;
+
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * An abstract class providing a metaframework for carrying out dataflow analysis. This class

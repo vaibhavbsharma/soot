@@ -25,7 +25,7 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.HashMap;
 
 /**
  * A memory efficient version of HashMutableDirectedGraph, in the sense that throw-away objects

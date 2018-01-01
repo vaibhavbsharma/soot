@@ -19,7 +19,7 @@
 
 package soot.jimple.toolkits.pointer;
 
-import soot.tagkit.*;
+import soot.tagkit.Tag;
 
 /** Implements a tag that can be used to tell a VM whether a cast check can be eliminated or not. */
 public class CastCheckTag implements Tag {

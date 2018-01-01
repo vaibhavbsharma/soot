@@ -25,7 +25,15 @@
 
 package soot.jimple.internal;
 
-import soot.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.IntType;
+import soot.LongType;
+import soot.ShortType;
+import soot.Type;
+import soot.UnknownType;
+import soot.Value;
 
 @SuppressWarnings("serial")
 public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {

@@ -25,8 +25,9 @@
 
 package soot.coffi;
 
-import java.util.*;
-import soot.*;
+import soot.G;
+
+import java.util.List;
 
 /**
  * Represents a single method_info object.

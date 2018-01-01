@@ -20,7 +20,6 @@ package soot.jimple.toolkits.ide;
 
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
-import java.util.Map;
 import soot.PackManager;
 import soot.SceneTransformer;
 import soot.SootMethod;
@@ -28,6 +27,8 @@ import soot.Transform;
 import soot.Unit;
 import soot.jimple.toolkits.ide.exampleproblems.IFDSPossibleTypes;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
+
+import java.util.Map;
 
 public class Main {
 

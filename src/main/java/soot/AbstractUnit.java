@@ -25,9 +25,12 @@
 
 package soot;
 
-import java.util.*;
-import soot.tagkit.*;
-import soot.util.*;
+import soot.tagkit.AbstractHost;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /** Provides default implementations for the methods in Unit. */
 @SuppressWarnings("serial")

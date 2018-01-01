@@ -1,14 +1,40 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.G;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.AssignStmt;
+import soot.jimple.EnterMonitorStmt;
+import soot.jimple.ExitMonitorStmt;
+import soot.jimple.GotoStmt;
+import soot.jimple.JimpleBody;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JNopStmt;
-import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.pointer.FullObjectSet;
+import soot.jimple.toolkits.pointer.RWSet;
+import soot.jimple.toolkits.pointer.Union;
+import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.Pair;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Richard L. Halpert Finds Synchronized Regions and creates a set of CriticalSection

@@ -25,9 +25,12 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.UnopExpr;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractUnopExpr implements UnopExpr {

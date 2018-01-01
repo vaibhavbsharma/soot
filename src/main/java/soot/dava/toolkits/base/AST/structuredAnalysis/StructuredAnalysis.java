@@ -35,11 +35,6 @@
  */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Local;
 import soot.Value;
 import soot.dava.internal.AST.ASTAggregatedCondition;
@@ -66,6 +61,12 @@ import soot.jimple.RetStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
  * This class is meant to be extended to write structred analyses.

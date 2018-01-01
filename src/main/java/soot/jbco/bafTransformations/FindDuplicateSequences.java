@@ -19,13 +19,61 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.PatchingChain;
+import soot.PrimType;
+import soot.RefType;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.baf.Baf;
+import soot.baf.DupInst;
+import soot.baf.FieldArgInst;
+import soot.baf.IdentityInst;
+import soot.baf.IncInst;
+import soot.baf.InstanceCastInst;
+import soot.baf.InstanceOfInst;
+import soot.baf.LoadInst;
+import soot.baf.MethodArgInst;
+import soot.baf.NewArrayInst;
+import soot.baf.NewInst;
+import soot.baf.NewMultiArrayInst;
+import soot.baf.NoArgInst;
+import soot.baf.OpTypeArgInst;
+import soot.baf.PopInst;
+import soot.baf.PrimitiveCastInst;
+import soot.baf.PushInst;
+import soot.baf.ReturnInst;
+import soot.baf.SpecialInvokeInst;
+import soot.baf.StoreInst;
+import soot.baf.SwapInst;
+import soot.baf.TargetArgInst;
 import soot.jbco.IJbcoTransform;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.jimple.Constant;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.StringConstant;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * @author Michael Batchelder

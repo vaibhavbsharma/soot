@@ -25,14 +25,33 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.annotation.tags.*;
-import soot.options.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ArrayRef;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.annotation.tags.ArrayCheckTag;
 import soot.options.ABCOptions;
-import soot.tagkit.*;
-import soot.util.*;
+import soot.options.Options;
+import soot.tagkit.ColorTag;
+import soot.tagkit.KeyTag;
+import soot.tagkit.Tag;
+import soot.util.Chain;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ArrayBoundsChecker extends BodyTransformer {
   public ArrayBoundsChecker(Singletons.Global g) {}

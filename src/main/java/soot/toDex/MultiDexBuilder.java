@@ -1,14 +1,15 @@
 package soot.toDex;
 
+import org.jf.dexlib2.Opcodes;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.writer.io.FileDataStore;
+import org.jf.dexlib2.writer.pool.DexPool;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.writer.io.FileDataStore;
-import org.jf.dexlib2.writer.pool.DexPool;
 
 /** @author Manuel Benz created on 26.09.17 */
 public class MultiDexBuilder {

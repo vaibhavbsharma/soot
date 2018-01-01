@@ -25,10 +25,10 @@
 
 package soot;
 
+import soot.options.Options;
+
 import static java.lang.System.gc;
 import static java.lang.System.nanoTime;
-
-import soot.options.*;
 
 /** Utility class providing a timer. Used for profiling various phases of Sootification. */
 public class Timer {

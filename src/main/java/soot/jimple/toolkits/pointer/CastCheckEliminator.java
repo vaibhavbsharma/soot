@@ -19,11 +19,33 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.Local;
+import soot.RefType;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.IntConstant;
+import soot.jimple.NeExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /** A flow analysis that detects redundant cast checks. */
 public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSet> {

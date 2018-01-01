@@ -25,8 +25,12 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * A CFG where the nodes are {@link Block} instances, and where exception boundaries are taken into

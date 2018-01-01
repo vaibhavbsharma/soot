@@ -19,11 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Set;
-import java.util.TreeSet;
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -41,6 +36,12 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Propagates points-to sets along pointer assignment graph using a worklist.

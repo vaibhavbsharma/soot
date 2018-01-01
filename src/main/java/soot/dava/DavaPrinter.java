@@ -20,10 +20,6 @@
 
 package soot.dava;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -44,7 +40,6 @@ import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
 import soot.UnitPrinter;
-import soot.dava.internal.AST.ASTNode;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.options.Options;
 import soot.tagkit.DoubleConstantValueTag;
@@ -55,6 +50,11 @@ import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 import soot.util.IterableSet;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class DavaPrinter {
   public DavaPrinter(Singletons.Global g) {}

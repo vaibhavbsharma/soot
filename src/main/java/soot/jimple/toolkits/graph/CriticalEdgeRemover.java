@@ -25,11 +25,21 @@
 
 package soot.jimple.toolkits.graph;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Singletons;
+import soot.Unit;
+import soot.UnitBox;
+import soot.jimple.Jimple;
+import soot.options.Options;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * removes all critical edges.<br>

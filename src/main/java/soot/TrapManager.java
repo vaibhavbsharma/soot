@@ -25,8 +25,13 @@
 
 package soot;
 
-import java.util.*;
-import soot.util.*;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /** Utility methods for dealing with traps. */
 public class TrapManager {

@@ -25,6 +25,11 @@
 
 package soot.util;
 
+import soot.Unit;
+import soot.UnitBox;
+import soot.jimple.GotoStmt;
+import soot.jimple.internal.JGotoStmt;
+
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
@@ -35,10 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
-import soot.Unit;
-import soot.UnitBox;
-import soot.jimple.GotoStmt;
-import soot.jimple.internal.JGotoStmt;
 
 /** Reference implementation of the Chain interface, using a HashMap as the underlying structure. */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {

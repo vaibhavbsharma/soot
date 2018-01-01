@@ -19,11 +19,26 @@
 
 package soot.dava.toolkits.base.AST;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.AST.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.G;
+import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.Type;
+import soot.Value;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.ThrowStmt;
+import soot.util.IterableSet;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class TryContentsFinder extends ASTAnalysis {
   public TryContentsFinder(Singletons.Global g) {}

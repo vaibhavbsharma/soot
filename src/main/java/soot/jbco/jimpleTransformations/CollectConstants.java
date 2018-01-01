@@ -19,12 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -51,6 +45,13 @@ import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Batchelder

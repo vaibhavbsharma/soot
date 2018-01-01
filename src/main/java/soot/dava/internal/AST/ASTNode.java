@@ -20,10 +20,14 @@
 
 package soot.dava.internal.AST;
 
-import java.util.*;
-import soot.*;
-import soot.dava.toolkits.base.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.AbstractUnit;
+import soot.UnitPrinter;
+import soot.dava.toolkits.base.AST.ASTAnalysis;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class ASTNode extends AbstractUnit {
   public static final String TAB = "    ", NEWLINE = "\n";

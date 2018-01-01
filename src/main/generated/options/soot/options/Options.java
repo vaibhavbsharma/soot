@@ -21,9 +21,13 @@
 
 package soot.options;
 
-import java.util.*;
-import soot.*;
+import soot.G;
 import soot.PackManager;
+import soot.Singletons;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Soot command-line options parser.

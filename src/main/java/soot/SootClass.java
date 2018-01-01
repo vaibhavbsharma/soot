@@ -25,10 +25,6 @@
 
 package soot;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
@@ -42,6 +38,11 @@ import soot.validation.ClassValidator;
 import soot.validation.MethodDeclarationValidator;
 import soot.validation.OuterClassValidator;
 import soot.validation.ValidationException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * Incomplete and inefficient implementation.

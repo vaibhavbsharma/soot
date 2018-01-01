@@ -1,19 +1,34 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import heros.util.SootThreadGroup;
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.G;
+import soot.Kind;
+import soot.PointsToAnalysis;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.Stmt;
 import soot.jimple.spark.ondemand.DemandCSPointsTo;
-import soot.jimple.spark.pag.*;
-import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.thread.AbstractRuntimeThread;
 import soot.jimple.toolkits.thread.mhp.findobject.AllocNodesFinder;
 import soot.jimple.toolkits.thread.mhp.findobject.MultiRunStatementsFinder;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.options.SparkOptions;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.toolkits.graph.CompleteUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.FlowSet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09 Calculates

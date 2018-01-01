@@ -1,7 +1,8 @@
 package soot.JastAddJ;
 
-import java.io.*;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /** @ast class */
 public class PathPart extends java.lang.Object {

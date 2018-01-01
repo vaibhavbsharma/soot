@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.misc;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import soot.G;
 import soot.Modifier;
 import soot.RefType;
@@ -37,6 +34,10 @@ import soot.dava.internal.javaRep.DVirtualInvokeExpr;
 import soot.grimp.internal.GInvokeStmt;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.MonitorStmt;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 public class MonitorConverter {
   public MonitorConverter(Singletons.Global g) {

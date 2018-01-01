@@ -25,16 +25,45 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import soot.*;
-import soot.jimple.*;
+import soot.Local;
+import soot.RefLikeType;
+import soot.SourceLocator;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AnyNewExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.BreakpointStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.Constant;
+import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.MonitorStmt;
+import soot.jimple.NopStmt;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThisRef;
+import soot.jimple.ThrowStmt;
+import soot.jimple.UnopExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Intra-procedural purity-graph analysis.

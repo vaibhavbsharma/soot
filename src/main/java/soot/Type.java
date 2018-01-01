@@ -25,8 +25,11 @@
 
 package soot;
 
-import java.io.*;
-import soot.util.*;
+import soot.util.Numberable;
+import soot.util.Switch;
+import soot.util.Switchable;
+
+import java.io.Serializable;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
 @SuppressWarnings("serial")

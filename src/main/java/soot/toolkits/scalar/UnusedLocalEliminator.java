@@ -25,9 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -38,6 +35,10 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A BodyTransformer that removes all unused local variables from a given Body. Implemented as a

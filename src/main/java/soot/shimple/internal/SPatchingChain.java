@@ -19,11 +19,27 @@
 
 package soot.shimple.internal;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.G;
+import soot.PatchingChain;
+import soot.TrapManager;
+import soot.Unit;
+import soot.UnitBox;
 import soot.options.Options;
-import soot.shimple.*;
-import soot.util.*;
+import soot.shimple.PhiExpr;
+import soot.shimple.Shimple;
+import soot.shimple.ShimpleBody;
+import soot.util.Chain;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Internal Shimple extension of PatchingChain.

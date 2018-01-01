@@ -24,11 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.Local;
 import soot.SootMethodRef;
@@ -63,6 +58,12 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * BodyTransformer to find and change definition of locals used within an if which contains a

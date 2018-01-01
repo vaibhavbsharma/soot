@@ -19,7 +19,10 @@
 
 package soot.util;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * An output stream that wraps an existing output stream, and converts Jasmin code written into a

@@ -19,10 +19,18 @@
 
 package soot.jimple.toolkits.annotation.defs;
 
-import java.util.*;
-import soot.*;
-import soot.tagkit.*;
-import soot.toolkits.scalar.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.tagkit.LinkTag;
+import soot.toolkits.scalar.LocalDefs;
+
+import java.util.Map;
 
 public class ReachingDefsTagger extends BodyTransformer {
 

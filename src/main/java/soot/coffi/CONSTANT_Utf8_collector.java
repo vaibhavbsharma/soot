@@ -25,8 +25,10 @@
 
 package soot.coffi;
 
-import java.util.*;
-import soot.*;
+import soot.G;
+import soot.Singletons;
+
+import java.util.HashMap;
 
 /** Provides sharing for Utf8_info string objects reused in different contexts. */
 public class CONSTANT_Utf8_collector {

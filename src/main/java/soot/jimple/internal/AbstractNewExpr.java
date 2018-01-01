@@ -25,10 +25,17 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.RefType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.NewExpr;
+import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractNewExpr implements NewExpr {

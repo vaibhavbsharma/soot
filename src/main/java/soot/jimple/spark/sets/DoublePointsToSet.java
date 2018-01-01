@@ -19,10 +19,14 @@
 
 package soot.jimple.spark.sets;
 
-import java.util.*;
-import soot.*;
+import soot.G;
+import soot.PointsToSet;
+import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation of points-to set that holds two sets: one for new elements that have not yet been

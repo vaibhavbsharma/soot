@@ -1,8 +1,33 @@
 package soot.jimple.toolkits.thread.mhp;
 
 
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.Hierarchy;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.RefType;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.EnterMonitorStmt;
+import soot.jimple.ExitMonitorStmt;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.MonitorStmt;
+import soot.jimple.NewExpr;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JIdentityStmt;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.thread.mhp.stmt.BeginStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JoinStmt;
@@ -15,18 +40,24 @@ import soot.jimple.toolkits.thread.mhp.stmt.OtherStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.StartStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.WaitStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.WaitingStmt;
-import soot.toolkits.scalar.*;
-import soot.jimple.internal.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.graph.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.util.*;
+import soot.tagkit.StringTag;
+import soot.toolkits.graph.CompleteUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.util.Chain;
+import soot.util.HashChain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 //add for add tag
-import soot.tagkit.*;
 
 
 // *** USE AT YOUR OWN RISK ***

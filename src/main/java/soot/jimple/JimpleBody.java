@@ -25,9 +25,6 @@
 
 package soot.jimple;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -46,6 +43,10 @@ import soot.jimple.validation.TypesValidator;
 import soot.options.Options;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody {

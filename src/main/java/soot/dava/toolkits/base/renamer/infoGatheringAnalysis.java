@@ -19,17 +19,47 @@
 
 package soot.dava.toolkits.base.renamer;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.grimp.*;
-import soot.grimp.internal.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
+import soot.BooleanType;
+import soot.Local;
+import soot.RefType;
+import soot.SootField;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Value;
+import soot.dava.DavaBody;
+import soot.dava.DecompilationException;
+import soot.dava.internal.AST.ASTBinaryCondition;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTSwitchNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.dava.internal.AST.ASTUnaryCondition;
+import soot.dava.internal.AST.ASTWhileNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DIntConstant;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.grimp.NewInvokeExpr;
+import soot.grimp.internal.GAssignStmt;
+import soot.jimple.ArrayRef;
+import soot.jimple.CastExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.EqExpr;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.internal.AbstractInstanceFieldRef;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 public class infoGatheringAnalysis extends DepthFirstAdapter {
 

@@ -19,9 +19,16 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.*;
-import soot.*;
+import soot.EntryPoints;
+import soot.PhaseOptions;
+import soot.RadioScenePack;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.options.CGOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A radio pack implementation for the call graph pack that calls the intra-procedural clinit

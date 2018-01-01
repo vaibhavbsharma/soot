@@ -25,9 +25,14 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.*;
-import soot.*;
-import soot.util.*;
+import soot.MethodOrMethodContext;
+import soot.Scene;
+import soot.SootMethod;
+import soot.util.NumberedSet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TopologicalOrderer {
   CallGraph cg;

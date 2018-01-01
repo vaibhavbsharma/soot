@@ -19,10 +19,19 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
+import soot.G;
+import soot.jimple.spark.pag.AllocDotField;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.FieldRefNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.SparkField;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Propagates points-to sets along pointer assignment graph using a merging of field reference (Red)

@@ -1,19 +1,55 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.infoflow.*;
-import soot.jimple.toolkits.pointer.*;
+import soot.Body;
+import soot.EquivalentValue;
+import soot.G;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.PointsToAnalysis;
+import soot.RefType;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.Ref;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.sets.HashPointsToSet;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.toolkits.callgraph.ReachableMethods;
+import soot.jimple.toolkits.infoflow.ClassInfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.FakeJimpleLocal;
+import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
+import soot.jimple.toolkits.pointer.RWSet;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
 import soot.jimple.toolkits.thread.mhp.SynchObliviousMhpAnalysis;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 public class LockAllocator extends SceneTransformer {
   public LockAllocator(Singletons.Global g) {}

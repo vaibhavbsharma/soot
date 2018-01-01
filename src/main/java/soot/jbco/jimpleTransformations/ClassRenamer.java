@@ -19,11 +19,26 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.*;
-import soot.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.FastHierarchy;
+import soot.G;
+import soot.RefType;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.*;
+import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.Rand;
 import soot.jimple.ClassConstant;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Michael Batchelder

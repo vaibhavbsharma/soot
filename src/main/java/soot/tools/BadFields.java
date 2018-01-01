@@ -19,10 +19,26 @@
 
 package soot.tools;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
+import soot.G;
+import soot.PackManager;
+import soot.PrimType;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Transform;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.FieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class BadFields extends SceneTransformer {
   public static void main(String[] args) {

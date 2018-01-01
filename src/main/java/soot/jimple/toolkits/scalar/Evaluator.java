@@ -25,8 +25,39 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.*;
-import soot.jimple.*;
+import soot.Value;
+import soot.jimple.AddExpr;
+import soot.jimple.AndExpr;
+import soot.jimple.ArithmeticConstant;
+import soot.jimple.BinopExpr;
+import soot.jimple.ClassConstant;
+import soot.jimple.CmpExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.CmplExpr;
+import soot.jimple.Constant;
+import soot.jimple.DivExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
+import soot.jimple.IntConstant;
+import soot.jimple.LeExpr;
+import soot.jimple.LongConstant;
+import soot.jimple.LtExpr;
+import soot.jimple.MulExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.NegExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.NumericConstant;
+import soot.jimple.OrExpr;
+import soot.jimple.RealConstant;
+import soot.jimple.RemExpr;
+import soot.jimple.ShlExpr;
+import soot.jimple.ShrExpr;
+import soot.jimple.StringConstant;
+import soot.jimple.SubExpr;
+import soot.jimple.UnopExpr;
+import soot.jimple.UshrExpr;
+import soot.jimple.XorExpr;
 
 public class Evaluator {
 

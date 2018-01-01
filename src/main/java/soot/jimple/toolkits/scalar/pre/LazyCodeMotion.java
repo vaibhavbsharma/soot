@@ -25,17 +25,38 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.graph.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.EquivalentValue;
+import soot.G;
+import soot.Local;
+import soot.Scene;
+import soot.SideEffectTester;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.Jimple;
+import soot.jimple.NaiveSideEffectTester;
+import soot.jimple.toolkits.graph.CriticalEdgeRemover;
+import soot.jimple.toolkits.graph.LoopConditionUnroller;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
-import soot.jimple.toolkits.scalar.*;
-import soot.options.*;
+import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.options.LCMOptions;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.options.Options;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArrayPackedSet;
+import soot.toolkits.scalar.BoundedFlowSet;
+import soot.toolkits.scalar.CollectionFlowUniverse;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.FlowUniverse;
+import soot.util.Chain;
+import soot.util.UnitMap;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Performs a partial redundancy elimination (= code motion). This is done, by introducing

@@ -25,10 +25,11 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.AddExpr;
+import soot.jimple.ExprSwitch;
+import soot.util.Switch;
 
 public class GAddExpr extends AbstractGrimpFloatBinopExpr implements AddExpr {
   public GAddExpr(Value op1, Value op2) {

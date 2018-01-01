@@ -1,7 +1,11 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.*;
-import soot.util.*;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

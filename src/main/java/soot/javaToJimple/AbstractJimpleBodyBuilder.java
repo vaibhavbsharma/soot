@@ -19,7 +19,7 @@
 
 package soot.javaToJimple;
 
-import java.util.*;
+import java.util.List;
 
 public abstract class AbstractJimpleBodyBuilder {
 

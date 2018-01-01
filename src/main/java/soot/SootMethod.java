@@ -26,12 +26,6 @@
 
 package soot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
@@ -40,6 +34,13 @@ import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
 import soot.util.Numberable;
 import soot.util.NumberedString;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Soot representation of a Java method. Can be declared to belong to a SootClass. Does not contain

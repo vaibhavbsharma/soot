@@ -19,18 +19,50 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.*;
-import soot.*;
-import soot.dava.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.dava.toolkits.base.AST.structuredAnalysis.*;
-import soot.dava.toolkits.base.AST.traversals.*;
-import soot.grimp.internal.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.RefType;
+import soot.ShortType;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.dava.DavaBody;
+import soot.dava.DecompilationException;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DInstanceFieldRef;
+import soot.dava.internal.javaRep.DIntConstant;
+import soot.dava.internal.javaRep.DStaticFieldRef;
+import soot.dava.internal.javaRep.DVariableDeclarationStmt;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.dava.toolkits.base.AST.structuredAnalysis.MustMayInitialize;
+import soot.dava.toolkits.base.AST.traversals.AllVariableUses;
+import soot.grimp.internal.GAssignStmt;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.InvokeExpr;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JimpleLocal;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 /** Maintained by: Nomair A. Naeem */
 

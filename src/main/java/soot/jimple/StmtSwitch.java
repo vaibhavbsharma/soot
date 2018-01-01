@@ -25,7 +25,7 @@
 
 package soot.jimple;
 
-import soot.util.*;
+import soot.util.Switch;
 
 public interface StmtSwitch extends Switch {
   void caseBreakpointStmt(BreakpointStmt stmt);

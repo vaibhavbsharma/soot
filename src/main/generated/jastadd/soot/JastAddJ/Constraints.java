@@ -1,15 +1,11 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 /** @ast class */
 public class Constraints extends java.lang.Object {

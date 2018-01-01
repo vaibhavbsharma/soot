@@ -1,12 +1,5 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
@@ -77,6 +70,14 @@ import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
 import soot.util.Switchable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A visitor that builds a list of instructions from the Jimple statements it visits.<br>

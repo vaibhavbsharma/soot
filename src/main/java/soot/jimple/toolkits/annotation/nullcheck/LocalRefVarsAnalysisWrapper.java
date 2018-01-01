@@ -48,10 +48,19 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.Unit;
+import soot.Value;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.FlowSet;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so

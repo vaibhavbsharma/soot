@@ -1,7 +1,5 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.reference.MethodReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
@@ -74,6 +72,9 @@ import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.Switchable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A visitor that builds a list of instructions from the Jimple expressions it visits.<br>

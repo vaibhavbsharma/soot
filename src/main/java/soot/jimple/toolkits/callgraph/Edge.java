@@ -19,8 +19,17 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.*;
-import soot.jimple.*;
+import soot.Context;
+import soot.Kind;
+import soot.MethodOrMethodContext;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.VirtualInvokeExpr;
 
 /**
  * Represents a single edge in a call graph.

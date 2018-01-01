@@ -25,8 +25,12 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.jimple.*;
+import soot.AbstractValueBox;
+import soot.Local;
+import soot.Value;
+import soot.jimple.ConcreteRef;
+import soot.jimple.Constant;
+import soot.jimple.Expr;
 
 public class ExprBox extends AbstractValueBox {
   public ExprBox(Value value) {

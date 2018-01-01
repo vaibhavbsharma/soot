@@ -6,12 +6,6 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 import soot.Hierarchy;
 import soot.RefType;
 import soot.Scene;
@@ -33,6 +27,13 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
+
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * This class defines a pointer variable for use in the HeapIns encoding based points-to solver.

@@ -25,11 +25,23 @@
 
 package soot.jimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.Local;
+import soot.RefType;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.ParameterRef;
+import soot.jimple.StmtSwitch;
+import soot.jimple.ThisRef;
+import soot.util.Switch;
+
+import java.util.List;
 
 public class JIdentityStmt extends AbstractDefinitionStmt implements IdentityStmt {
   public JIdentityStmt(Value local, Value identityValue) {

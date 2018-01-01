@@ -25,11 +25,6 @@
 
 package soot.util;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import soot.Body;
 import soot.G;
 import soot.Printer;
@@ -42,6 +37,12 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <tt>PhaseDumper</tt> is a debugging aid. It maintains two lists of phases to be debugged. If

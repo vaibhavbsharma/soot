@@ -28,7 +28,11 @@
  */
 package soot.tagkit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents the annotation attribute attached to a class, method, field, method param - they could

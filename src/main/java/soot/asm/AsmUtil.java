@@ -18,9 +18,23 @@
  */
 package soot.asm;
 
+import soot.ArrayType;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.ShortType;
+import soot.SootClass;
+import soot.Type;
+import soot.VoidType;
+
 import java.util.ArrayList;
 import java.util.List;
-import soot.*;
 
 /**
  * Contains static utility methods.

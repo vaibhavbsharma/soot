@@ -25,10 +25,19 @@
 
 package soot.coffi;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
+import soot.Body;
+import soot.G;
+import soot.MethodSource;
+import soot.PackManager;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Timers;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.options.Options;
+
+import java.util.Map;
 
 public class CoffiMethodSource implements MethodSource {
   public ClassFile coffiClass;

@@ -1,14 +1,15 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
+import soot.Scene;
+import soot.SootField;
+import soot.SootFieldRef;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import soot.Scene;
-import soot.SootField;
-import soot.SootFieldRef;
 
 /**
  * @production FieldDeclaration : {@link MemberDecl} ::= <span class="component">{@link

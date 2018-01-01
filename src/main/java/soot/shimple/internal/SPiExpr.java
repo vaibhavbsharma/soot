@@ -19,11 +19,18 @@
 
 package soot.shimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.shimple.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.shimple.PiExpr;
+import soot.shimple.Shimple;
+import soot.toolkits.scalar.ValueUnitPair;
+import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 /** @author Navindra Umanee */
 public class SPiExpr implements PiExpr {

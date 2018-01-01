@@ -19,8 +19,6 @@
 
 package soot.jimple.spark;
 
-import java.util.Date;
-import java.util.Map;
 import soot.G;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -61,6 +59,9 @@ import soot.options.SparkOptions;
 import soot.tagkit.Host;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Main entry point for Spark.

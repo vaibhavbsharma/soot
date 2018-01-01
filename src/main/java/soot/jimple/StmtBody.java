@@ -25,7 +25,8 @@
 
 package soot.jimple;
 
-import soot.*;
+import soot.Body;
+import soot.SootMethod;
 
 /** Abstract base class for Body's on Stmts (Jimple and Grimp). */
 @SuppressWarnings("serial")

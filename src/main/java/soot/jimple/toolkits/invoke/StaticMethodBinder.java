@@ -25,12 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.G;
 import soot.Hierarchy;
@@ -67,6 +61,13 @@ import soot.jimple.toolkits.callgraph.Targets;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.options.SMBOptions;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /** Uses the Scene's currently-active InvokeGraph to statically bind monomorphic call sites. */
 public class StaticMethodBinder extends SceneTransformer {

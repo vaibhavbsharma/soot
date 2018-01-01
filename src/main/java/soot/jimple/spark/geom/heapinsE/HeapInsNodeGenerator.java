@@ -18,7 +18,6 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
-import java.util.Iterator;
 import soot.jimple.spark.geom.dataRep.CgEdge;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.geomE.GeometricManager;
@@ -31,6 +30,8 @@ import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
+
+import java.util.Iterator;
 
 /**
  * Build the initial pointer assignment graph with the HeapIns encoding.

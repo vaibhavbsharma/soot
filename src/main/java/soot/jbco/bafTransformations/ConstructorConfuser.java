@@ -19,12 +19,26 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.Local;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.SootClass;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Unit;
+import soot.baf.Baf;
+import soot.baf.LoadInst;
+import soot.baf.SpecialInvokeInst;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.*;
-import soot.jimple.*;
+import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.Rand;
+import soot.jbco.util.ThrowSet;
+import soot.jimple.NullConstant;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class ConstructorConfuser extends BodyTransformer implements IJbcoTransform {
 

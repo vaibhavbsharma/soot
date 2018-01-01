@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.callgraph;
 
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -24,6 +17,14 @@ import soot.jimple.Stmt;
 import soot.shimple.PhiExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ConstantArrayAnalysis
     extends ForwardFlowAnalysis<Unit, ConstantArrayAnalysis.ArrayState> {

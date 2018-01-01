@@ -25,8 +25,19 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import java.util.*;
-import soot.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.G;
+import soot.IntType;
+import soot.PrimType;
+import soot.RefType;
+import soot.ShortType;
+import soot.Singletons;
+import soot.Type;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class encapsulates the integer type hierarchy.

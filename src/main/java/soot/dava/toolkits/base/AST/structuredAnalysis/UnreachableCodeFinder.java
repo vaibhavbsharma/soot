@@ -22,10 +22,6 @@
 /** CHANGE LOG: */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Local;
 import soot.Value;
 import soot.dava.DecompilationException;
@@ -49,6 +45,11 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
  * Sort of the mark phase of a mark and sweep dead code eliminator.

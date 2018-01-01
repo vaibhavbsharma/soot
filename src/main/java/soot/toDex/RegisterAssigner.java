@@ -1,10 +1,5 @@
 package soot.toDex;
 
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import org.jf.dexlib2.Opcode;
 import soot.jimple.Stmt;
 import soot.toDex.instructions.AddressInsn;
@@ -13,6 +8,12 @@ import soot.toDex.instructions.Insn11n;
 import soot.toDex.instructions.Insn21s;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.TwoRegInsn;
+
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Assigns final register numbers in instructions so that they fit into their format and obey the

@@ -25,8 +25,11 @@
 
 package soot;
 
-import java.util.*;
-import soot.util.*;
+import soot.util.Chain;
+import soot.util.HashChain;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key

@@ -25,9 +25,15 @@
 
 package soot.coffi;
 
-import java.io.*;
-import soot.*;
+import soot.G;
+import soot.Value;
 import soot.jimple.StringConstant;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * A constant pool entry of type CONSTANT_Utf8; note this is <b>not</b> multithread safe. It is,

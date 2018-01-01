@@ -25,12 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -56,6 +50,13 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /** Utility methods for dealing with synchronization. */
 public class SynchronizerManager {

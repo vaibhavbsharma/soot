@@ -19,11 +19,15 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.spark.internal.*;
-import soot.jimple.spark.pag.*;
+import soot.G;
+import soot.jimple.spark.internal.TypeManager;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
+
+import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * Collapses VarNodes (green) forming strongly-connected components in the pointer assignment graph.

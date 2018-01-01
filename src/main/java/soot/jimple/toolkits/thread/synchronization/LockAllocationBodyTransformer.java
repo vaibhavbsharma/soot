@@ -1,11 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -35,6 +29,13 @@ import soot.jimple.toolkits.infoflow.FakeJimpleLocal;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class LockAllocationBodyTransformer extends BodyTransformer {
   private static final LockAllocationBodyTransformer instance = new LockAllocationBodyTransformer();

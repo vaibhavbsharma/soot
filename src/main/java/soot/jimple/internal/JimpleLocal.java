@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.Collections;
-import java.util.List;
 import soot.Local;
 import soot.Scene;
 import soot.Type;
@@ -39,6 +37,9 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.JimpleValueSwitch;
 import soot.util.ArrayNumberer;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class JimpleLocal implements Local, ConvertToBaf {
   protected String name;

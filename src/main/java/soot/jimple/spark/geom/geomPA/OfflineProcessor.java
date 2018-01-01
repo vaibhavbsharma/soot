@@ -18,11 +18,6 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 import soot.SootClass;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
@@ -35,6 +30,12 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
+
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * Implementation of pre-processing algorithms performed prior to the pointer analysis.

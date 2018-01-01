@@ -25,8 +25,10 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
+import soot.AbstractTrap;
+import soot.SootClass;
+import soot.Unit;
+import soot.grimp.Grimp;
 
 public class GTrap extends AbstractTrap {
   public GTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt) {

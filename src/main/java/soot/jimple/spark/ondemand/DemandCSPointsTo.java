@@ -18,15 +18,6 @@
  */
 package soot.jimple.spark.ondemand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.Context;
@@ -68,6 +59,16 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.toolkits.scalar.Pair;
 import soot.util.NumberedString;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Tries to find imprecision in points-to sets from a previously run analysis. Requires that all

@@ -25,9 +25,21 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.Hierarchy;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
+
+import java.util.Iterator;
 
 /** Methods for checking safety requirements for inlining. */
 public class InlinerSafetyManager {

@@ -24,10 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -57,6 +53,11 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalCreation;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Util {
   /**

@@ -19,12 +19,13 @@
 
 package soot;
 
+import soot.util.NumberedString;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import soot.util.NumberedString;
 
 /**
  * Returns the various potential entry points of a Java program.

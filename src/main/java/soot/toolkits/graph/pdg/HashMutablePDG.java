@@ -18,6 +18,15 @@
  */
 package soot.toolkits.graph.pdg;
 
+import soot.Body;
+import soot.SootClass;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.DominatorNode;
+import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
+import soot.toolkits.graph.UnitGraph;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -27,14 +36,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import soot.Body;
-import soot.SootClass;
-import soot.toolkits.graph.Block;
-import soot.toolkits.graph.BlockGraph;
-import soot.toolkits.graph.DominatorNode;
-import soot.toolkits.graph.DominatorTree;
-import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
-import soot.toolkits.graph.UnitGraph;
 
 /**
  * This class implements a Program Dependence Graph as defined in

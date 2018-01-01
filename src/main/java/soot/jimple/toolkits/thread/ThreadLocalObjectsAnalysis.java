@@ -1,10 +1,30 @@
 package soot.jimple.toolkits.thread;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.infoflow.*;
-import soot.jimple.toolkits.thread.mhp.*;
+import soot.EquivalentValue;
+import soot.G;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Value;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Ref;
+import soot.jimple.toolkits.infoflow.CallLocalityContext;
+import soot.jimple.toolkits.infoflow.ClassInfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.ClassLocalObjectsAnalysis;
+import soot.jimple.toolkits.infoflow.InfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.LocalObjectsAnalysis;
+import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
+import soot.jimple.toolkits.infoflow.UseFinder;
+import soot.jimple.toolkits.thread.mhp.MhpTester;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 // ThreadLocalObjectsAnalysis written by Richard L. Halpert, 2007-03-05
 // Runs LocalObjectsAnalysis for the special case where we want to know

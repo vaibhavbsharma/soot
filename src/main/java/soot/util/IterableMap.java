@@ -25,7 +25,14 @@
 
 package soot.util;
 
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class IterableMap implements Map {
   private HashMap<Object, Object> content_map, back_map;

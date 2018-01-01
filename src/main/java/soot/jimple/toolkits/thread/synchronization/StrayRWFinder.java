@@ -1,9 +1,9 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import soot.*;
+import soot.Body;
+import soot.G;
+import soot.Scene;
+import soot.Unit;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.pointer.FullObjectSet;
 import soot.jimple.toolkits.pointer.RWSet;
@@ -14,6 +14,10 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that

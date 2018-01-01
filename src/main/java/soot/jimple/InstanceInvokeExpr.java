@@ -25,7 +25,8 @@
 
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
 public interface InstanceInvokeExpr extends InvokeExpr {
   /** @return the target (qualifier) of this method invocation expression. */

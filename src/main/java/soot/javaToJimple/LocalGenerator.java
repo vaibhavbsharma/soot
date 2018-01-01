@@ -19,10 +19,11 @@
 
 package soot.javaToJimple;
 
-import java.util.HashSet;
-import java.util.Set;
 import soot.Body;
 import soot.Local;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class LocalGenerator {
 

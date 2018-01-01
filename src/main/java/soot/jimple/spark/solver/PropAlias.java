@@ -19,9 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -42,6 +39,10 @@ import soot.util.HashMultiMap;
 import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.queue.QueueReader;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Propagates points-to sets along pointer assignment graph using a relevant aliases.

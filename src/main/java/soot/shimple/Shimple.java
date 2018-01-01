@@ -19,11 +19,6 @@
 
 package soot.shimple;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -41,6 +36,12 @@ import soot.shimple.internal.SPiExpr;
 import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Chain;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains the constructors for the components of the SSA Shimple grammar. Methods are available to

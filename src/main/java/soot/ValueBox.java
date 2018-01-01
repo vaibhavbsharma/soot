@@ -25,8 +25,9 @@
 
 package soot;
 
-import java.io.*;
-import soot.tagkit.*;
+import soot.tagkit.Host;
+
+import java.io.Serializable;
 
 /**
  * A box which can contain values.

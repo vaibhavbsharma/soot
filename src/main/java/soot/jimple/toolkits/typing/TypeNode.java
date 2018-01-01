@@ -25,10 +25,20 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.*;
-import soot.*;
+import soot.ArrayType;
+import soot.G;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
+import soot.SootClass;
+import soot.Type;
 import soot.options.Options;
-import soot.util.*;
+import soot.util.BitVector;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /** Each instance of this class represents one type in the class hierarchy (or basic types). */
 class TypeNode {

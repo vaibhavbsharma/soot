@@ -19,8 +19,14 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
+import soot.FastHierarchy;
+import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.Type;
+
+import java.util.Iterator;
+import java.util.List;
 
 /** Represents a set of (local,type) pairs using a bit-vector. */
 class LocalTypeSet extends java.util.BitSet {

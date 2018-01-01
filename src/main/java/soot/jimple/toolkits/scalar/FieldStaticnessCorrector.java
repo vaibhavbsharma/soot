@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
 import soot.Body;
 import soot.ConflictingFieldRefException;
 import soot.G;
@@ -13,6 +11,9 @@ import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Transformer that checks whether a static field is used like an instance field. If this is the

@@ -1,8 +1,14 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
+import soot.EquivalentValue;
+import soot.G;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Value;
+import soot.toolkits.graph.UnitGraph;
+
+import java.util.Iterator;
+import java.util.List;
 
 // SimpleMethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the scope of the LocalObjectsScopeAnalysis

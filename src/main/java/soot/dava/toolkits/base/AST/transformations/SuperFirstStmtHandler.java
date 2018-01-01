@@ -114,12 +114,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -166,6 +160,13 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class SuperFirstStmtHandler extends DepthFirstAdapter {
 

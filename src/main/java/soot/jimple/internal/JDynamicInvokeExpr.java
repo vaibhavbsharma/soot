@@ -26,8 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.objectweb.asm.Opcodes;
 import soot.SootClass;
 import soot.SootMethod;
@@ -43,6 +41,9 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class JDynamicInvokeExpr extends AbstractInvokeExpr

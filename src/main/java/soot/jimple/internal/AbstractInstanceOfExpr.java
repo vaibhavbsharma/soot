@@ -25,11 +25,18 @@
 
 package soot.jimple.internal;
 
+import soot.BooleanType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ExprSwitch;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.Jimple;
+import soot.util.Switch;
+
 import java.util.ArrayList;
 import java.util.List;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {

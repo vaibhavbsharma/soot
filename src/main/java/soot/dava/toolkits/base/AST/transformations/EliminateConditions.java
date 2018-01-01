@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.AST.ASTCondition;
@@ -43,6 +40,10 @@ import soot.dava.internal.javaRep.DIntConstant;
 import soot.dava.internal.javaRep.DNotExpr;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
  * if (true)   ---> remove conditional copy ifbody to parent

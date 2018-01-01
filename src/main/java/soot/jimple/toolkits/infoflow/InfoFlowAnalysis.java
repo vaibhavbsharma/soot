@@ -1,13 +1,33 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
+import soot.EquivalentValue;
+import soot.G;
+import soot.Local;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Value;
+import soot.jimple.FieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Jimple;
+import soot.jimple.ParameterRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.toolkits.graph.*;
-import soot.util.dot.*;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.HashMutableDirectedGraph;
+import soot.toolkits.graph.MutableDirectedGraph;
+import soot.util.dot.DotGraph;
+import soot.util.dot.DotGraphConstants;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 // InfoFlowAnalysis written by Richard L. Halpert, 2007-02-24
 // Constructs data flow tables for each method of every application class.  Ignores indirect flow.

@@ -19,8 +19,6 @@
 
 package soot.jimple.toolkits.base;
 
-import java.util.HashMap;
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -40,6 +38,9 @@ import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ThisInliner extends BodyTransformer {
 

@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -14,6 +12,9 @@ import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Transformer that checks whether an instance method is used like a static method, and can easily

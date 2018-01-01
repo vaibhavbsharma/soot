@@ -25,15 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -59,6 +50,16 @@ import soot.options.Options;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * This class resolves the type of local variables.

@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.AST.interProcedural;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
@@ -40,6 +37,10 @@ import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.renamer.Renamer;
 import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class InterProceduralAnalyses {
   public static boolean DEBUG = false;

@@ -25,9 +25,23 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.ShortType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.UnknownType;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.NegExpr;
+import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExpr {

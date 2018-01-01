@@ -19,8 +19,16 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
+import soot.G;
+import soot.PointsToSet;
+import soot.SootField;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /** Represents the read or write set of a statement. */
 public class MethodRWSet extends RWSet {

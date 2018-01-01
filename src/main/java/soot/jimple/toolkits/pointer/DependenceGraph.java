@@ -19,8 +19,9 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.tagkit.*;
+import soot.tagkit.Attribute;
+
+import java.util.HashSet;
 
 public class DependenceGraph implements Attribute {
   private static final String NAME = "DependenceGraph";

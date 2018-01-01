@@ -19,11 +19,6 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Try;
@@ -37,6 +32,12 @@ import soot.Value;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 

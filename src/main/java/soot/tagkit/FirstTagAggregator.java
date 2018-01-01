@@ -25,8 +25,9 @@
 
 package soot.tagkit;
 
-import java.util.LinkedList;
 import soot.Unit;
+
+import java.util.LinkedList;
 
 /**
  * A tag aggregator that associates a tag with the <b>first</b> instruction that is tagged with it.

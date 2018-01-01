@@ -19,12 +19,29 @@
 
 package soot.shimple.internal;
 
-import java.util.*;
-import soot.*;
-import soot.shimple.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.G;
+import soot.Local;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.shimple.PhiExpr;
+import soot.shimple.Shimple;
+import soot.shimple.ShimpleExprSwitch;
+import soot.toolkits.graph.Block;
+import soot.toolkits.scalar.ValueUnitPair;
+import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Internal implementation of Phi nodes.

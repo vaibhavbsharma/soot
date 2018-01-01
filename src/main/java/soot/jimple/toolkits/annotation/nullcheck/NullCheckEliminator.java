@@ -19,7 +19,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Immediate;
@@ -35,6 +34,8 @@ import soot.jimple.Stmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
+
+import java.util.Map;
 
 public class NullCheckEliminator extends BodyTransformer {
 

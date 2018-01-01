@@ -25,14 +25,33 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.EquivalentValue;
+import soot.G;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.SideEffectTester;
+import soot.Singletons;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.Jimple;
+import soot.jimple.NaiveSideEffectTester;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
-import soot.options.*;
-import soot.tagkit.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.options.Options;
+import soot.tagkit.StringTag;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.Chain;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Runs an available expressions analysis on a body, then eliminates common subexpressions.

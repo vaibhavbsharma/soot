@@ -19,9 +19,30 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.IntegerType;
+import soot.Local;
+import soot.LongType;
+import soot.PatchingChain;
+import soot.RefLikeType;
+import soot.StmtAddressType;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.baf.DoubleWordType;
+import soot.baf.IdentityInst;
+import soot.baf.IncInst;
+import soot.baf.NopInst;
+import soot.baf.OpTypeArgInst;
+import soot.baf.PushInst;
+import soot.baf.WordType;
 import soot.baf.internal.AbstractOpTypeInst;
 import soot.jbco.IJbcoTransform;
 import soot.jimple.DoubleConstant;
@@ -30,6 +51,11 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.toolkits.scalar.GuaranteedDefs;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Batchelder

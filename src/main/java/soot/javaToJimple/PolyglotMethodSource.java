@@ -19,9 +19,6 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import soot.MethodSource;
@@ -29,6 +26,10 @@ import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class PolyglotMethodSource implements MethodSource {
 

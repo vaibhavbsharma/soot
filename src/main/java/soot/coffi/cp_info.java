@@ -25,8 +25,10 @@
 
 package soot.coffi;
 
+import soot.G;
+import soot.Value;
+
 import java.util.StringTokenizer;
-import soot.*;
 
 /**
  * Base abstract class for constant pool entries; includes some utility methods.

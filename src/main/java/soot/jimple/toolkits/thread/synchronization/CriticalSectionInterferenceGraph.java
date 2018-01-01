@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import soot.Hierarchy;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -13,6 +10,10 @@ import soot.SootClass;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class CriticalSectionInterferenceGraph {
 

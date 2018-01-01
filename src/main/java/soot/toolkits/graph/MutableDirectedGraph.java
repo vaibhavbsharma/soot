@@ -25,7 +25,7 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Defines a DirectedGraph which is modifiable. Provides an interface to add/delete nodes and edges.

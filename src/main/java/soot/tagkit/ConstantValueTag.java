@@ -25,8 +25,9 @@
 
 package soot.tagkit;
 
-import java.util.Arrays;
 import soot.jimple.Constant;
+
+import java.util.Arrays;
 
 public abstract class ConstantValueTag implements Tag {
   protected byte[] bytes; // encoded constant

@@ -25,15 +25,54 @@
 
 package soot.jimple;
 
-import java.util.*;
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import soot.options.*;
+import soot.AbstractJasminClass;
+import soot.ArrayType;
+import soot.Body;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.G;
+import soot.IntType;
+import soot.IntegerType;
+import soot.Local;
+import soot.LongType;
+import soot.Modifier;
+import soot.NullType;
+import soot.RefType;
+import soot.ShortType;
+import soot.SootClass;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.StmtAddressType;
+import soot.Timers;
+import soot.Trap;
+import soot.Type;
+import soot.TypeSwitch;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
+import soot.VoidType;
+import soot.grimp.AbstractGrimpValueSwitch;
+import soot.grimp.NewInvokeExpr;
+import soot.jimple.internal.StmtBox;
+import soot.options.Options;
 import soot.tagkit.LineNumberTag;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.FastColorer;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * TODO This is the right JasminClass

@@ -25,10 +25,20 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
 import soot.jimple.NopStmt;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the control flow graph of a {@link Body} at the basic block level. Each node of the

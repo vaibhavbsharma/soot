@@ -19,9 +19,6 @@
 
 package soot.xml;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
@@ -32,6 +29,10 @@ import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.SourcePositionTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class JavaAttribute {
 

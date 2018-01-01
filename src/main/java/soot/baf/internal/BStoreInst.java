@@ -25,10 +25,17 @@
 
 package soot.baf.internal;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Local;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.baf.InstSwitch;
+import soot.baf.StoreInst;
+import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 

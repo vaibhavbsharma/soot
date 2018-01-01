@@ -1,13 +1,6 @@
 package soot.JastAddJ;
 
-import beaver.*;
-import java.io.*;
 import java.io.FileNotFoundException;
-import java.util.*;
-import java.util.zip.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 
 /** @ast class */
 public class Attributes extends java.lang.Object {

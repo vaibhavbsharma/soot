@@ -1,13 +1,14 @@
 package soot.validation;
 
-import static java.util.Collections.newSetFromMap;
+import soot.Body;
+import soot.Unit;
+import soot.ValueBox;
 
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
-import soot.Body;
-import soot.Unit;
-import soot.ValueBox;
+
+import static java.util.Collections.newSetFromMap;
 
 public enum ValueBoxesValidator implements BodyValidator {
   INSTANCE;

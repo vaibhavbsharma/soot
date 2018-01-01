@@ -21,13 +21,6 @@ package soot.jimple.spark.pag;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Context;
 import soot.FastHierarchy;
 import soot.G;
@@ -82,6 +75,14 @@ import soot.util.HashMultiMap;
 import soot.util.LargeNumberedMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Pointer assignment graph.

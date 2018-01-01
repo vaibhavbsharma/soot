@@ -19,12 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -42,6 +36,13 @@ import soot.jbco.IJbcoTransform;
 import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * @author Michael Batchelder

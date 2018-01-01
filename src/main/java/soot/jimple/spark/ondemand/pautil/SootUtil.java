@@ -18,17 +18,6 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
 import soot.ArrayType;
 import soot.CompilationDeathException;
 import soot.G;
@@ -62,6 +51,18 @@ import soot.options.Options;
 import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 import soot.util.queue.ChunkedQueue;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Utility methods for dealing with Soot.

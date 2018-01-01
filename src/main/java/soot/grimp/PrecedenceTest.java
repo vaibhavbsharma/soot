@@ -25,7 +25,8 @@
 
 package soot.grimp;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
 /**
  * Provides static helper methods to indicate if parenthesization is required.

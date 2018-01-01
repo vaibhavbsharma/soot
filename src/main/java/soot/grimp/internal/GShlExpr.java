@@ -25,10 +25,15 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.IntType;
+import soot.LongType;
+import soot.Type;
+import soot.UnknownType;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.ExprSwitch;
+import soot.jimple.ShlExpr;
+import soot.util.Switch;
 
 public class GShlExpr extends AbstractGrimpIntLongBinopExpr implements ShlExpr {
   public GShlExpr(Value op1, Value op2) {

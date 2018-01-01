@@ -25,12 +25,28 @@
 
 package soot.jimple.toolkits.graph;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.PhaseOptions;
+import soot.Trap;
+import soot.Unit;
+import soot.jimple.GotoStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.Jimple;
+import soot.options.Options;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.BriefBlockGraph;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * "unrolls" the condition of while/for loops.<br>

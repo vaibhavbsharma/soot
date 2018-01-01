@@ -19,12 +19,48 @@
 
 package soot.jbco;
 
-import java.util.*;
+import soot.G;
+import soot.Local;
+import soot.Pack;
+import soot.PackManager;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Transform;
+import soot.Transformer;
+import soot.jbco.bafTransformations.AddJSRs;
+import soot.jbco.bafTransformations.BAFCounter;
+import soot.jbco.bafTransformations.BAFPrintout;
+import soot.jbco.bafTransformations.BafLineNumberer;
+import soot.jbco.bafTransformations.ConstructorConfuser;
+import soot.jbco.bafTransformations.FindDuplicateSequences;
+import soot.jbco.bafTransformations.FixUndefinedLocals;
+import soot.jbco.bafTransformations.IfNullToTryCatch;
+import soot.jbco.bafTransformations.IndirectIfJumpsToCaughtGotos;
+import soot.jbco.bafTransformations.Jimple2BafLocalBuilder;
+import soot.jbco.bafTransformations.LocalsToBitField;
+import soot.jbco.bafTransformations.MoveLoadsAboveIfs;
+import soot.jbco.bafTransformations.RemoveRedundantPushStores;
+import soot.jbco.bafTransformations.TryCatchCombiner;
+import soot.jbco.bafTransformations.UpdateConstantsToFields;
+import soot.jbco.bafTransformations.WrapSwitchesInTrys;
+import soot.jbco.jimpleTransformations.AddSwitches;
+import soot.jbco.jimpleTransformations.ArithmeticTransformer;
+import soot.jbco.jimpleTransformations.BuildIntermediateAppClasses;
+import soot.jbco.jimpleTransformations.ClassRenamer;
+import soot.jbco.jimpleTransformations.CollectConstants;
+import soot.jbco.jimpleTransformations.CollectJimpleLocals;
+import soot.jbco.jimpleTransformations.FieldRenamer;
+import soot.jbco.jimpleTransformations.GotoInstrumenter;
+import soot.jbco.jimpleTransformations.LibraryMethodWrappersBuilder;
+import soot.jbco.jimpleTransformations.MethodRenamer;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import soot.*;
-import soot.jbco.bafTransformations.*;
-import soot.jbco.jimpleTransformations.*;
 
 /**
  * @author Michael Batchelder

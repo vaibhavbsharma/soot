@@ -19,11 +19,14 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.grimp.*;
-import soot.grimp.internal.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.IntType;
+import soot.Type;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.internal.AbstractGrimpIntBinopExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.ExprSwitch;
+import soot.util.Switch;
 
 public class DCmpgExpr extends AbstractGrimpIntBinopExpr implements CmpgExpr {
   public DCmpgExpr(Value op1, Value op2) {

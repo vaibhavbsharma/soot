@@ -20,13 +20,6 @@
 
 package soot.dava;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import soot.Body;
 import soot.G;
 import soot.IntType;
@@ -148,6 +141,14 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.util.IterableSet;
 import soot.util.Switchable;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method

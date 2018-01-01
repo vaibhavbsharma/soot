@@ -19,14 +19,34 @@
 
 package soot.jimple.toolkits.annotation.parity;
 
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.*;
+import soot.IntegerType;
+import soot.Local;
+import soot.LongType;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AddExpr;
+import soot.jimple.ArithmeticConstant;
+import soot.jimple.BinopExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.MulExpr;
+import soot.jimple.SubExpr;
+import soot.options.Options;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.toolkits.scalar.LiveLocals;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.BOTTOM;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.EVEN;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.ODD;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.TOP;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.valueOf;
 
 // STEP 1: What are we computing?
 // SETS OF PAIRS of form (X, T) => Use ArraySparseSet.

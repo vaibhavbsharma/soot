@@ -28,15 +28,36 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.annotation.tags.*;
-import soot.options.*;
-import soot.tagkit.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ArrayRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.LengthExpr;
+import soot.jimple.MonitorStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+import soot.jimple.toolkits.annotation.tags.NullCheckTag;
+import soot.options.Options;
+import soot.tagkit.Tag;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.FlowSet;
+import soot.util.Chain;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 /*
 	ArrayRef

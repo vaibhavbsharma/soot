@@ -25,10 +25,16 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.*;
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.EquivalentValue;
+import soot.Unit;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.scalar.ArrayPackedSet;
+import soot.toolkits.scalar.BackwardFlowAnalysis;
+import soot.toolkits.scalar.BoundedFlowSet;
+import soot.toolkits.scalar.CollectionFlowUniverse;
+import soot.toolkits.scalar.FlowSet;
+
+import java.util.Map;
 
 /**
  * Performs a Not-Isolated-analysis on the given graph, which is basically the same as an

@@ -20,11 +20,6 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.ListIterator;
 import soot.ArrayType;
 import soot.FloatType;
 import soot.IntType;
@@ -35,6 +30,12 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /** @author Ben Bellamy */
 public class BytecodeHierarchy implements IHierarchy {

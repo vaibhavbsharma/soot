@@ -19,16 +19,17 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import soot.AnySubType;
 import soot.Context;
 import soot.G;
 import soot.RefLikeType;
 import soot.Type;
 import soot.toolkits.scalar.Pair;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a simple variable node (Green) in the pointer assignment graph.

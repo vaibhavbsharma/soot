@@ -19,9 +19,16 @@
 
 package soot.options;
 
-import java.util.*;
-import soot.*;
+import soot.HasPhaseOptions;
+import soot.Pack;
+import soot.PackManager;
+import soot.PhaseOptions;
+import soot.Transform;
 import soot.plugins.internal.PluginLoader;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 /**
  * Soot command-line options parser base class.

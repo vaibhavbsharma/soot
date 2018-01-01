@@ -19,9 +19,21 @@
 
 package soot.javaToJimple.toolkits;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Singletons;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.EqExpr;
+import soot.jimple.GotoStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.Stmt;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class CondTransformer extends BodyTransformer {
   public CondTransformer(Singletons.Global g) {}

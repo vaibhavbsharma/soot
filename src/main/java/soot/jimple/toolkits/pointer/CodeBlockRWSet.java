@@ -1,11 +1,17 @@
 package soot.jimple.toolkits.pointer;
 
-import java.util.*;
-import soot.*;
 import soot.PointsToSet;
+import soot.Scene;
 import soot.SootField;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.sets.HashPointsToSet;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class CodeBlockRWSet extends MethodRWSet {
   public int size() {

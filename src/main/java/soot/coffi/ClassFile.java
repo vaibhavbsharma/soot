@@ -25,10 +25,17 @@
 
 package soot.coffi;
 
-import java.io.*;
 import soot.G;
 import soot.Timers;
 import soot.options.Options;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A ClassFile object represents the contents of a <tt>.class</tt> file.

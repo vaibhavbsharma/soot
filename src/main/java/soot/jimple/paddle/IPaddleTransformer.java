@@ -19,7 +19,7 @@
 
 package soot.jimple.paddle;
 
-import soot.*;
+import soot.SceneTransformer;
 
 /**
  * Soot interface to the PaddleTransformer.

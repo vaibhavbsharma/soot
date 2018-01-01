@@ -25,8 +25,10 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import java.util.*;
-import soot.jimple.*;
+import soot.jimple.Stmt;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A node created dynamically and attached to a statement Stmt. Can be either an inside or a load

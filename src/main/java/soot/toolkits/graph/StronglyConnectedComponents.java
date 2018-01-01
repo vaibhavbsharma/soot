@@ -25,10 +25,16 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
-import soot.options.*;
-import soot.util.*;
+import soot.G;
+import soot.options.Options;
+import soot.util.StationaryArrayList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Identifies and provides an interface to query the strongly-connected components of DirectedGraph

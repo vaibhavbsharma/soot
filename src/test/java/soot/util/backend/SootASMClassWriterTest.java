@@ -1,8 +1,5 @@
 package soot.util.backend;
 
-import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +10,11 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.UnknownType;
+
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @PrepareForTest({Scene.class, UnknownType.class, RefType.class})
 @RunWith(PowerMockRunner.class)

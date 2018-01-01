@@ -25,7 +25,9 @@
 
 package soot.coffi;
 
-import soot.*;
+import soot.G;
+import soot.Singletons;
+import soot.Type;
 
 public class UnusuableType extends Type {
   public UnusuableType(Singletons.Global g) {}

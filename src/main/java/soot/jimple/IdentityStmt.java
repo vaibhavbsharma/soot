@@ -25,6 +25,6 @@
 
 package soot.jimple;
 
-import soot.*;
+import soot.IdentityUnit;
 
 public interface IdentityStmt extends DefinitionStmt, IdentityUnit {}

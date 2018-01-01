@@ -20,7 +20,6 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.Iterator;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.IntType;
@@ -88,6 +87,8 @@ import soot.jimple.XorExpr;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
+
+import java.util.Iterator;
 
 /**
  * This checks all uses against the rules in Jimple, except some uses are not checked where the

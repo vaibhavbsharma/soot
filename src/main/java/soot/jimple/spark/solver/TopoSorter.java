@@ -19,8 +19,11 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.*;
-import soot.jimple.spark.pag.*;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
+
+import java.util.HashSet;
 
 /**
  * Performs a pseudo-topological sort on the VarNodes in a PAG.

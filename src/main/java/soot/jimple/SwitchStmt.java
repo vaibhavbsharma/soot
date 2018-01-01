@@ -25,8 +25,12 @@
 
 package soot.jimple;
 
-import java.util.*;
-import soot.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
+
+import java.util.List;
 
 public interface SwitchStmt extends Stmt {
   Unit getDefaultTarget();

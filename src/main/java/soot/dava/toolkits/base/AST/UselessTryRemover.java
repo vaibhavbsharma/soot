@@ -19,9 +19,14 @@
 
 package soot.dava.toolkits.base.AST;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.AST.*;
+import soot.G;
+import soot.Singletons;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTTryNode;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class UselessTryRemover extends ASTAnalysis {
   public UselessTryRemover(Singletons.Global g) {}

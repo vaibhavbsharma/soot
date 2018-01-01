@@ -26,7 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
 import soot.SootMethodRef;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -38,6 +37,8 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.VirtualInvokeExpr;
 import soot.util.Switch;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr

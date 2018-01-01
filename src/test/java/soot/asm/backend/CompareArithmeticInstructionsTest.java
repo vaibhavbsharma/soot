@@ -1,6 +1,8 @@
 package soot.asm.backend;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 /**

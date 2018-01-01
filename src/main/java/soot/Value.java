@@ -25,9 +25,10 @@
 
 package soot;
 
-import java.io.*;
-import java.util.*;
-import soot.util.*;
+import soot.util.Switchable;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Data used as, for instance, arguments to instructions; typical implementations are constants or

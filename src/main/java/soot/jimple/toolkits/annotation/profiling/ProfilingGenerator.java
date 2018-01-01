@@ -25,11 +25,25 @@
 
 package soot.jimple.toolkits.annotation.profiling;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
 import soot.options.ProfilingOptions;
-import soot.util.*;
+import soot.util.Chain;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class ProfilingGenerator extends BodyTransformer {
   public ProfilingGenerator(Singletons.Global g) {}
