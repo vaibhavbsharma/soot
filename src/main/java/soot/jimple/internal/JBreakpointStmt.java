@@ -18,15 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
-
 
 package soot.jimple.internal;
 
@@ -34,32 +29,30 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
-public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
-{
-    public JBreakpointStmt()
-    {
-    }
+public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt {
+  public JBreakpointStmt() {}
 
-    public String toString()
-    {
-        return Jimple.BREAKPOINT;
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.BREAKPOINT);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseBreakpointStmt(this);
-    }
-    
-    public    Object clone() 
-    {
-        return new JBreakpointStmt();
-    }
- 
-    public boolean fallsThrough(){return true;}        
-    public boolean branches(){return false;}
-   
+  public String toString() {
+    return Jimple.BREAKPOINT;
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.BREAKPOINT);
+  }
+
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseBreakpointStmt(this);
+  }
+
+  public Object clone() {
+    return new JBreakpointStmt();
+  }
+
+  public boolean fallsThrough() {
+    return true;
+  }
+
+  public boolean branches() {
+    return false;
+  }
 }

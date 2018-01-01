@@ -23,7 +23,6 @@
  * @author Feng Qian
  * @author <XXX>
  */
-
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.*;
@@ -31,17 +30,19 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilZipCRC32Native extends NativeMethodClass {
-    public JavaUtilZipCRC32Native( NativeHelper helper ) { super(helper); }
+  public JavaUtilZipCRC32Native(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding
+   * methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(
+      SootMethod method,
+      ReferenceVariable thisVar,
+      ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -49,18 +50,16 @@ public class JavaUtilZipCRC32Native extends NativeMethodClass {
     {
       defaultMethod(method, thisVar, returnVar, params);
       return;
-
     }
   }
 
-  /*********************** java.util.zip.CRC32 *********************/
+  /** ********************* java.util.zip.CRC32 ******************** */
   /**
    * NO side effects.
    *
-   *    private static native int update(int, int);
-   *    private static native int updateBytes(int, byte[], int, int);
+   * <p>private static native int update(int, int); private static native int updateBytes(int,
+   * byte[], int, int);
    *
    * @see default(...)
    */
-
 }

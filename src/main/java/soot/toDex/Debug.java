@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,7 +15,7 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.toDex;
@@ -24,20 +24,18 @@ import soot.options.Options;
 
 public class Debug {
   public static boolean TODEX_DEBUG;
-  
-  public static void printDbg (String s, Object...objects) {
+
+  public static void printDbg(String s, Object... objects) {
     TODEX_DEBUG = Options.v().verbose();
     if (TODEX_DEBUG) {
-      for (Object o: objects) {
+      for (Object o : objects) {
         s += o.toString();
       }
-      System.out.println (s);
+      System.out.println(s);
     }
-      
   }
-  
-  public static void printDbg (boolean c, String s, Object...objects) {
-      if (c)
-          printDbg(s, objects);
+
+  public static void printDbg(boolean c, String s, Object... objects) {
+    if (c) printDbg(s, objects);
   }
 }

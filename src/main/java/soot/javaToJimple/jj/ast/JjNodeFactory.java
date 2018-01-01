@@ -22,10 +22,8 @@ package soot.javaToJimple.jj.ast;
 import polyglot.ast.*;
 import polyglot.util.*;
 
-/**
- * NodeFactory for jj extension.
- */
+/** NodeFactory for jj extension. */
 public interface JjNodeFactory extends NodeFactory {
-    // TODO: Declare any factory methods for new AST nodes.
-    public JjComma_c JjComma(Position pos, Expr first, Expr second);
+  // TODO: Declare any factory methods for new AST nodes.
+  public JjComma_c JjComma(Position pos, Expr first, Expr second);
 }

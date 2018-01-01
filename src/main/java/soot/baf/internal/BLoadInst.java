@@ -18,88 +18,70 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
+import java.util.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
-public class BLoadInst extends AbstractOpTypeInst implements LoadInst
-{
-    ValueBox localBox;
-    List useBoxes;
-    
-       
-    public BLoadInst(Type opType, Local local)
-    {
-        super(opType);
-        localBox = new BafLocalBox(local);
-        useBoxes = Collections.singletonList(localBox);
-    }
+public class BLoadInst extends AbstractOpTypeInst implements LoadInst {
+  ValueBox localBox;
+  List useBoxes;
 
-    public int getInCount()
-    {
-        return 0;
-    }
+  public BLoadInst(Type opType, Local local) {
+    super(opType);
+    localBox = new BafLocalBox(local);
+    useBoxes = Collections.singletonList(localBox);
+  }
 
-    public Object clone() 
-    {
-        return new  BLoadInst(getOpType(), getLocal());
-    }
+  public int getInCount() {
+    return 0;
+  }
 
-    public int getInMachineCount()
-    {
-        return 0;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public Object clone() {
+    return new BLoadInst(getOpType(), getLocal());
+  }
 
-    
-       
+  public int getInMachineCount() {
+    return 0;
+  }
 
+  public int getOutCount() {
+    return 1;
+  }
 
-    final public String getName() { return "load"; }
-    final String getParameters()
-    { return " "+ localBox.getValue().toString(); }
-    protected void getParameters( UnitPrinter up ) {
-        up.literal(" ");
-        localBox.toString(up);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseLoadInst(this);
-    }   
- 
-    public void setLocal(Local l)
-    {
-        localBox.setValue(l);
-    }   
-    
-    public Local getLocal()
-    {
-        return (Local) localBox.getValue();
-    }
+  public final String getName() {
+    return "load";
+  }
 
-    public List getUseBoxes() 
-    {
-        return useBoxes;
-    }
+  final String getParameters() {
+    return " " + localBox.getValue().toString();
+  }
 
-    
-    
+  protected void getParameters(UnitPrinter up) {
+    up.literal(" ");
+    localBox.toString(up);
+  }
 
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseLoadInst(this);
+  }
+
+  public void setLocal(Local l) {
+    localBox.setValue(l);
+  }
+
+  public Local getLocal() {
+    return (Local) localBox.getValue();
+  }
+
+  public List getUseBoxes() {
+    return useBoxes;
+  }
 }

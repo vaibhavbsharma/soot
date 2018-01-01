@@ -20,34 +20,30 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.*;
-
 import soot.*;
 import soot.jbco.IJbcoTransform;
 
 /**
  * @author Michael Batchelder
- * 
- *         Created on 7-Feb-2006
+ *     <p>Created on 7-Feb-2006
  */
-public class CollectJimpleLocals extends BodyTransformer implements
-		IJbcoTransform {
+public class CollectJimpleLocals extends BodyTransformer implements IJbcoTransform {
 
-	public void outputSummary() {
-	}
+  public void outputSummary() {}
 
-	public static String dependancies[] = new String[] { "jtp.jbco_jl" };
+  public static String dependancies[] = new String[] {"jtp.jbco_jl"};
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+  public String[] getDependancies() {
+    return dependancies;
+  }
 
-	public static String name = "jtp.jbco_jl";
+  public static String name = "jtp.jbco_jl";
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	protected void internalTransform(Body body, String phaseName, Map<String,String> options) {
-		soot.jbco.Main.methods2JLocals.put(body.getMethod(), new ArrayList<Local>(body.getLocals()));
-	}
+  protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
+    soot.jbco.Main.methods2JLocals.put(body.getMethod(), new ArrayList<Local>(body.getLocals()));
+  }
 }

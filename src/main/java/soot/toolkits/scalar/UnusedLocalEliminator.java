@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -28,7 +28,6 @@ package soot.toolkits.scalar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -41,71 +40,66 @@ import soot.options.Options;
 import soot.util.Chain;
 
 /**
- * A BodyTransformer that removes all unused local variables from a given Body.
- * Implemented as a singleton.
- * 
+ * A BodyTransformer that removes all unused local variables from a given Body. Implemented as a
+ * singleton.
+ *
  * @see BodyTransformer
  * @see Body
  */
 public class UnusedLocalEliminator extends BodyTransformer {
-	public UnusedLocalEliminator(Singletons.Global g) {
-	}
+  public UnusedLocalEliminator(Singletons.Global g) {}
 
-	public static UnusedLocalEliminator v() {
-		return G.v().soot_toolkits_scalar_UnusedLocalEliminator();
-	}
+  public static UnusedLocalEliminator v() {
+    return G.v().soot_toolkits_scalar_UnusedLocalEliminator();
+  }
 
-	@Override
-	protected void internalTransform(Body body, String phaseName, Map<String,String> options) {
-		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName()
-					+ "] Eliminating unused locals...");
+  @Override
+  protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
+    if (Options.v().verbose())
+      G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unused locals...");
 
-		
-		int i = 0;
-		int n = body.getLocals().size();
-		int[] oldNumbers = new int[n];
-		Chain<Local> locals = body.getLocals();
-		for ( Local local :locals ) {
-			oldNumbers[i] = local.getNumber();
-			local.setNumber(i);		
-			i++;
-		}
-		
-		boolean[] usedLocals = new boolean[n];
+    int i = 0;
+    int n = body.getLocals().size();
+    int[] oldNumbers = new int[n];
+    Chain<Local> locals = body.getLocals();
+    for (Local local : locals) {
+      oldNumbers[i] = local.getNumber();
+      local.setNumber(i);
+      i++;
+    }
 
-		// Traverse statements noting all the uses and defs
-		for (Unit s : body.getUnits()) {
-			for (ValueBox vb : s.getUseBoxes()) {
-				Value v = vb.getValue();
-				if (v instanceof Local) {
-					Local l = (Local) v;
-					assert locals.contains(l);
-					usedLocals[l.getNumber()] = true;
-				}
-			}
-			for (ValueBox vb : s.getDefBoxes()) {
-				Value v = vb.getValue();
-				if (v instanceof Local) {
-					Local l = (Local) v;
-					assert locals.contains(l);
-					usedLocals[l.getNumber()] = true;
-				}
-			}
-		}
+    boolean[] usedLocals = new boolean[n];
 
-		// Remove all locals that are unused.
-		List<Local> keep = new ArrayList<Local>(body.getLocalCount());
-		for ( Local local : locals ) {
-			int lno = local.getNumber();
-			local.setNumber(oldNumbers[lno]);
-			if ( usedLocals[lno] ) {
-				keep.add(local);
-			}
-		}
-		body.getLocals().clear();
-		body.getLocals().addAll(keep);
-	}
-	
-	
+    // Traverse statements noting all the uses and defs
+    for (Unit s : body.getUnits()) {
+      for (ValueBox vb : s.getUseBoxes()) {
+        Value v = vb.getValue();
+        if (v instanceof Local) {
+          Local l = (Local) v;
+          assert locals.contains(l);
+          usedLocals[l.getNumber()] = true;
+        }
+      }
+      for (ValueBox vb : s.getDefBoxes()) {
+        Value v = vb.getValue();
+        if (v instanceof Local) {
+          Local l = (Local) v;
+          assert locals.contains(l);
+          usedLocals[l.getNumber()] = true;
+        }
+      }
+    }
+
+    // Remove all locals that are unused.
+    List<Local> keep = new ArrayList<Local>(body.getLocalCount());
+    for (Local local : locals) {
+      int lno = local.getNumber();
+      local.setNumber(oldNumbers[lno]);
+      if (usedLocals[lno]) {
+        keep.add(local);
+      }
+    }
+    body.getLocals().clear();
+    body.getLocals().addAll(keep);
+  }
 }

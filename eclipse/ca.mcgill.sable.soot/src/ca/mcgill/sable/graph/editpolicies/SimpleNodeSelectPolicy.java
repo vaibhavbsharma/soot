@@ -17,39 +17,31 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.graph.editpolicies;
 
-import org.eclipse.gef.editpolicies.*;
+import ca.mcgill.sable.graph.editparts.*;
 import org.eclipse.draw2d.*;
 import org.eclipse.gef.*;
+import org.eclipse.gef.editpolicies.*;
 import org.eclipse.gef.requests.*;
-import ca.mcgill.sable.graph.editparts.*;
-
 
 public class SimpleNodeSelectPolicy extends SelectionEditPolicy {
 
-	
-	public SimpleNodeSelectPolicy() {
-		super();
-	}
+    public SimpleNodeSelectPolicy() {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.editpolicies.SelectionEditPolicy#hideSelection()
-	 */
-	protected void hideSelection() {
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.editpolicies.SelectionEditPolicy#hideSelection()
+     */
+    protected void hideSelection() {}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.editpolicies.SelectionEditPolicy#showSelection()
-	 */
-	protected void showSelection() {
-		((SimpleNodeEditPart)getHost()).setSelected(EditPart.SELECTED);//switchToComplex();
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.editpolicies.SelectionEditPolicy#showSelection()
+     */
+    protected void showSelection() {
+        ((SimpleNodeEditPart) getHost()).setSelected(EditPart.SELECTED); // switchToComplex();
+    }
 
-	public void showTargetFeedback(Request request){
-	
-	}
-	
-
+    public void showTargetFeedback(Request request) {}
 }

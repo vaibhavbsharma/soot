@@ -1,15 +1,14 @@
 public class ByteProblem {
 
-    public static void main(String [] args){
-        new ByteProblem().reffoo();
-    }
-    
-        public final static byte TheConstant = 3;
+  public static void main(String[] args) {
+    new ByteProblem().reffoo();
+  }
 
-            public void foo(byte x) {}
+  public static final byte TheConstant = 3;
 
-                public void reffoo(){
-                            foo(TheConstant);
-                                }
+  public void foo(byte x) {}
+
+  public void reffoo() {
+    foo(TheConstant);
+  }
 }
-

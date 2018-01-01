@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AClassFileType extends PFileType
-{
-    private TClass _theclass_;
+public final class AClassFileType extends PFileType {
+  private TClass _theclass_;
 
-    public AClassFileType()
-    {
-        // Constructor
+  public AClassFileType() {
+    // Constructor
+  }
+
+  public AClassFileType(@SuppressWarnings("hiding") TClass _theclass_) {
+    // Constructor
+    setTheclass(_theclass_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AClassFileType(cloneNode(this._theclass_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAClassFileType(this);
+  }
+
+  public TClass getTheclass() {
+    return this._theclass_;
+  }
+
+  public void setTheclass(TClass node) {
+    if (this._theclass_ != null) {
+      this._theclass_.parent(null);
     }
 
-    public AClassFileType(
-        @SuppressWarnings("hiding") TClass _theclass_)
-    {
-        // Constructor
-        setTheclass(_theclass_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AClassFileType(
-            cloneNode(this._theclass_));
+    this._theclass_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._theclass_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._theclass_ == child) {
+      this._theclass_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAClassFileType(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._theclass_ == oldChild) {
+      setTheclass((TClass) newChild);
+      return;
     }
 
-    public TClass getTheclass()
-    {
-        return this._theclass_;
-    }
-
-    public void setTheclass(TClass node)
-    {
-        if(this._theclass_ != null)
-        {
-            this._theclass_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._theclass_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._theclass_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._theclass_ == child)
-        {
-            this._theclass_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._theclass_ == oldChild)
-        {
-            setTheclass((TClass) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

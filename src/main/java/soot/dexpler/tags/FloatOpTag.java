@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,23 +15,21 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler.tags;
 
-
 import soot.tagkit.Tag;
 
 public class FloatOpTag implements Tag {
-	public String getName() {
-		return "FloatOpTag";
-	}
+  public String getName() {
+    return "FloatOpTag";
+  }
 
-	public byte[] getValue () {
-		byte[] b = new byte[1];
-		b[0] = 0;
-		return b;
-	}
-
+  public byte[] getValue() {
+    byte[] b = new byte[1];
+    b[0] = 0;
+    return b;
+  }
 }

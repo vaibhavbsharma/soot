@@ -18,73 +18,71 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
+
 import java.util.*;
 
-/** Represents the visibility of an annotation attribute attatched 
- * to a class, field, method or method param (only one of these each)
- * has one or more annotations
- * for Java 1.5.
+/**
+ * Represents the visibility of an annotation attribute attatched to a class, field, method or
+ * method param (only one of these each) has one or more annotations for Java 1.5.
  */
+public class VisibilityParameterAnnotationTag implements Tag {
 
-public class VisibilityParameterAnnotationTag implements  Tag
-{
-    
-    private int num_params;
-    private int kind;
-    private ArrayList<VisibilityAnnotationTag> visibilityAnnotations;
-    
-    public VisibilityParameterAnnotationTag(int num, int kind){
-        this.num_params = num;
-        this.kind = kind;
-    }
-    
-    // should also print here number of annotations and perhaps the annotations themselves
-    public String toString() {
-        StringBuffer sb = new StringBuffer("Visibility Param Annotation: num params: "+num_params+" kind: "+kind);
-        if (visibilityAnnotations != null){
-            for (VisibilityAnnotationTag tag : visibilityAnnotations) {
-            	sb.append("\n");
-            	if (tag != null)
-	                sb.append(tag.toString());
-            }
-        }
+  private int num_params;
+  private int kind;
+  private ArrayList<VisibilityAnnotationTag> visibilityAnnotations;
+
+  public VisibilityParameterAnnotationTag(int num, int kind) {
+    this.num_params = num;
+    this.kind = kind;
+  }
+
+  // should also print here number of annotations and perhaps the annotations themselves
+  public String toString() {
+    StringBuffer sb =
+        new StringBuffer(
+            "Visibility Param Annotation: num params: " + num_params + " kind: " + kind);
+    if (visibilityAnnotations != null) {
+      for (VisibilityAnnotationTag tag : visibilityAnnotations) {
         sb.append("\n");
-        return sb.toString();
+        if (tag != null) sb.append(tag.toString());
+      }
     }
+    sb.append("\n");
+    return sb.toString();
+  }
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "VisibilityParameterAnnotationTag";
-    }
+  /** Returns the tag name. */
+  public String getName() {
+    return "VisibilityParameterAnnotationTag";
+  }
 
-    public String getInfo(){
-        return "VisibilityParameterAnnotation";
-    }
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "VisibilityParameterAnnotationTag has no value for bytecode" );
-    }
+  public String getInfo() {
+    return "VisibilityParameterAnnotation";
+  }
 
-    public void addVisibilityAnnotation(VisibilityAnnotationTag a){
-        if (visibilityAnnotations == null){
-            visibilityAnnotations = new ArrayList<VisibilityAnnotationTag>();
-        }
-        visibilityAnnotations.add(a);
-    }
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("VisibilityParameterAnnotationTag has no value for bytecode");
+  }
 
-    public ArrayList<VisibilityAnnotationTag> getVisibilityAnnotations(){
-        return visibilityAnnotations;
+  public void addVisibilityAnnotation(VisibilityAnnotationTag a) {
+    if (visibilityAnnotations == null) {
+      visibilityAnnotations = new ArrayList<VisibilityAnnotationTag>();
     }
+    visibilityAnnotations.add(a);
+  }
 
-    public int getKind(){
-        return kind;
-    }
+  public ArrayList<VisibilityAnnotationTag> getVisibilityAnnotations() {
+    return visibilityAnnotations;
+  }
+
+  public int getKind() {
+    return kind;
+  }
 }
-

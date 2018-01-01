@@ -21,10 +21,7 @@ package soot.shimple;
 
 import soot.jimple.*;
 
-/**
- * @author Navindra Umanee
- **/
-public interface ShimpleExprSwitch extends ExprSwitch
-{
-    public abstract void casePhiExpr(PhiExpr v);
+/** @author Navindra Umanee */
+public interface ShimpleExprSwitch extends ExprSwitch {
+  public abstract void casePhiExpr(PhiExpr v);
 }

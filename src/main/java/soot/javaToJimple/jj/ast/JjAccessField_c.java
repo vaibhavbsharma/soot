@@ -19,55 +19,53 @@
 
 package soot.javaToJimple.jj.ast;
 
+import java.util.*;
 import polyglot.ast.*;
-import polyglot.visit.*;
 import polyglot.ext.jl.ast.*;
 import polyglot.util.*;
-import java.util.*;
+import polyglot.visit.*;
 
 public class JjAccessField_c extends Expr_c implements Expr {
 
-    private Call getMeth;
-    private Call setMeth;
-    private Field field;
-    
-    public JjAccessField_c(Position pos, Call getMeth, Call setMeth, Field field){
-        super(pos);
-        this.getMeth = getMeth;
-        this.setMeth = setMeth;
-        this.field = field;
-    }
+  private Call getMeth;
+  private Call setMeth;
+  private Field field;
 
-    public Call getMeth(){
-        return getMeth;
-    }
+  public JjAccessField_c(Position pos, Call getMeth, Call setMeth, Field field) {
+    super(pos);
+    this.getMeth = getMeth;
+    this.setMeth = setMeth;
+    this.field = field;
+  }
 
-    public Call setMeth(){
-        return setMeth;
-    }
+  public Call getMeth() {
+    return getMeth;
+  }
 
-    public Field field() {
-        return field;
-    }
-    
-    public String toString(){
-        return field+" "+getMeth+" "+setMeth;
-    }
-    
-    public List acceptCFG(CFGBuilder v, List succs)
-    {
-        return succs;
-    }           
+  public Call setMeth() {
+    return setMeth;
+  }
 
-    public Term entry(){
-        return field.entry();
-    }
+  public Field field() {
+    return field;
+  }
 
-    public Node visitChildren(NodeVisitor v){
-        visitChild(field, v);
-        visitChild(getMeth, v);
-        visitChild(setMeth, v);
-        return this;
-    }
+  public String toString() {
+    return field + " " + getMeth + " " + setMeth;
+  }
+
+  public List acceptCFG(CFGBuilder v, List succs) {
+    return succs;
+  }
+
+  public Term entry() {
+    return field.entry();
+  }
+
+  public Node visitChildren(NodeVisitor v) {
+    visitChild(field, v);
+    visitChild(getMeth, v);
+    visitChild(setMeth, v);
+    return this;
+  }
 }
-

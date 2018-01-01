@@ -21,23 +21,23 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import soot.dava.toolkits.base.AST.analysis.*;
 
-public class ExtraLabelNamesRemover extends DepthFirstAdapter{
+public class ExtraLabelNamesRemover extends DepthFirstAdapter {
 
-    /*
+  /*
       label_0:
       while(cond){
          if(cond1)                   NO NEED for break label_0
-	    break label_0             Use just break;
+     break label_0             Use just break;
       }
 
       label_0:
       switch(cond){
-          case 0:  
-	        Body
-		break label_0;     NO NEED for break label_0
-	  case 1:                  Use just break
-	        Body
-		break label_0;
+          case 0:
+         Body
+  break label_0;     NO NEED for break label_0
+   case 1:                  Use just break
+         Body
+  break label_0;
 
        IDEA: In gerneral store the current label name
        Go through the tree rooted at this label name and find all breaks
@@ -47,12 +47,9 @@ public class ExtraLabelNamesRemover extends DepthFirstAdapter{
        THE JAVA LANGUAGE SAYS IT SHOULD BE TRUE
 
     */
-    public ExtraLabelNamesRemover(){
-    }
+  public ExtraLabelNamesRemover() {}
 
-    public ExtraLabelNamesRemover(boolean verbose){
-	super(verbose);
-    }
-
-
+  public ExtraLabelNamesRemover(boolean verbose) {
+    super(verbose);
+  }
 }

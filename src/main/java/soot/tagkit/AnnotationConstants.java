@@ -18,23 +18,16 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
 
-
-/** Represents the annotation constants
- * for Java 1.5.
- */
-
-public class AnnotationConstants
-{
-    public static final int RUNTIME_VISIBLE = 0;
-    public static final int RUNTIME_INVISIBLE = 1;
-    public static final int SOURCE_VISIBLE = 2;
-    
+/** Represents the annotation constants for Java 1.5. */
+public class AnnotationConstants {
+  public static final int RUNTIME_VISIBLE = 0;
+  public static final int RUNTIME_INVISIBLE = 1;
+  public static final int SOURCE_VISIBLE = 2;
 }
-

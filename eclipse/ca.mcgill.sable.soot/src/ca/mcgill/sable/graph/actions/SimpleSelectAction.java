@@ -17,53 +17,42 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.graph.actions;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class SimpleSelectAction extends SelectionAction {
 
-	
-	private final static String SIMPLE_SELECT = "simple select";
-	private IWorkbenchPart part;
-	
-	/**
-	 * @param part
-	 */
-	public SimpleSelectAction(IWorkbenchPart part) {
-		super(part);
-	}
+    private static final String SIMPLE_SELECT = "simple select";
+    private IWorkbenchPart part;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
-	 */
-	protected boolean calculateEnabled() {
-		return true;
-	}
-	
-	public void run(){
-	}
+    /** @param part */
+    public SimpleSelectAction(IWorkbenchPart part) {
+        super(part);
+    }
 
-	/**
-	 * @return
-	 */
-	public IWorkbenchPart getPart() {
-		return part;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
+     */
+    protected boolean calculateEnabled() {
+        return true;
+    }
 
-	/**
-	 * @param part
-	 */
-	public void setPart(IWorkbenchPart part) {
-		this.part = part;
-	}
-	
-	protected void init() { 
-		super.init(); 
-		setId( SIMPLE_SELECT );
-	}
+    public void run() {}
 
+    /** @return */
+    public IWorkbenchPart getPart() {
+        return part;
+    }
+
+    /** @param part */
+    public void setPart(IWorkbenchPart part) {
+        this.part = part;
+    }
+
+    protected void init() {
+        super.init();
+        setId(SIMPLE_SELECT);
+    }
 }

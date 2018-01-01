@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AUnopBoolExpr extends PBoolExpr
-{
-    private PUnopExpr _unopExpr_;
+public final class AUnopBoolExpr extends PBoolExpr {
+  private PUnopExpr _unopExpr_;
 
-    public AUnopBoolExpr()
-    {
-        // Constructor
+  public AUnopBoolExpr() {
+    // Constructor
+  }
+
+  public AUnopBoolExpr(@SuppressWarnings("hiding") PUnopExpr _unopExpr_) {
+    // Constructor
+    setUnopExpr(_unopExpr_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AUnopBoolExpr(cloneNode(this._unopExpr_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAUnopBoolExpr(this);
+  }
+
+  public PUnopExpr getUnopExpr() {
+    return this._unopExpr_;
+  }
+
+  public void setUnopExpr(PUnopExpr node) {
+    if (this._unopExpr_ != null) {
+      this._unopExpr_.parent(null);
     }
 
-    public AUnopBoolExpr(
-        @SuppressWarnings("hiding") PUnopExpr _unopExpr_)
-    {
-        // Constructor
-        setUnopExpr(_unopExpr_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AUnopBoolExpr(
-            cloneNode(this._unopExpr_));
+    this._unopExpr_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._unopExpr_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._unopExpr_ == child) {
+      this._unopExpr_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAUnopBoolExpr(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._unopExpr_ == oldChild) {
+      setUnopExpr((PUnopExpr) newChild);
+      return;
     }
 
-    public PUnopExpr getUnopExpr()
-    {
-        return this._unopExpr_;
-    }
-
-    public void setUnopExpr(PUnopExpr node)
-    {
-        if(this._unopExpr_ != null)
-        {
-            this._unopExpr_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._unopExpr_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._unopExpr_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._unopExpr_ == child)
-        {
-            this._unopExpr_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._unopExpr_ == oldChild)
-        {
-            setUnopExpr((PUnopExpr) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

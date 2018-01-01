@@ -23,17 +23,17 @@ import java.util.Set;
 
 public class ArraySetMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
-  public static final ArraySetMultiMap EMPTY = new ArraySetMultiMap<Object, Object>() {
+  public static final ArraySetMultiMap EMPTY =
+      new ArraySetMultiMap<Object, Object>() {
 
-    public boolean put(Object key, Object val) {
-      throw new RuntimeException();
-    }
+        public boolean put(Object key, Object val) {
+          throw new RuntimeException();
+        }
 
-    public boolean putAll(Object key, Collection<? extends Object> vals) {
-      throw new RuntimeException();
-    }
-
-  };
+        public boolean putAll(Object key, Collection<? extends Object> vals) {
+          throw new RuntimeException();
+        }
+      };
 
   public ArraySetMultiMap() {
     super(false);
@@ -49,7 +49,7 @@ public class ArraySetMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   protected Set<V> emptySet() {
-    return ArraySet.<V> empty();
+    return ArraySet.<V>empty();
   }
 
   public ArraySet<V> get(K key) {

@@ -6,318 +6,266 @@ import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFile extends PFile
-{
-    private final LinkedList<PModifier> _modifier_ = new LinkedList<PModifier>();
-    private PFileType _fileType_;
-    private PClassName _className_;
-    private PExtendsClause _extendsClause_;
-    private PImplementsClause _implementsClause_;
-    private PFileBody _fileBody_;
+public final class AFile extends PFile {
+  private final LinkedList<PModifier> _modifier_ = new LinkedList<PModifier>();
+  private PFileType _fileType_;
+  private PClassName _className_;
+  private PExtendsClause _extendsClause_;
+  private PImplementsClause _implementsClause_;
+  private PFileBody _fileBody_;
 
-    public AFile()
-    {
-        // Constructor
+  public AFile() {
+    // Constructor
+  }
+
+  public AFile(
+      @SuppressWarnings("hiding") List<?> _modifier_,
+      @SuppressWarnings("hiding") PFileType _fileType_,
+      @SuppressWarnings("hiding") PClassName _className_,
+      @SuppressWarnings("hiding") PExtendsClause _extendsClause_,
+      @SuppressWarnings("hiding") PImplementsClause _implementsClause_,
+      @SuppressWarnings("hiding") PFileBody _fileBody_) {
+    // Constructor
+    setModifier(_modifier_);
+
+    setFileType(_fileType_);
+
+    setClassName(_className_);
+
+    setExtendsClause(_extendsClause_);
+
+    setImplementsClause(_implementsClause_);
+
+    setFileBody(_fileBody_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AFile(
+        cloneList(this._modifier_),
+        cloneNode(this._fileType_),
+        cloneNode(this._className_),
+        cloneNode(this._extendsClause_),
+        cloneNode(this._implementsClause_),
+        cloneNode(this._fileBody_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAFile(this);
+  }
+
+  public LinkedList<PModifier> getModifier() {
+    return this._modifier_;
+  }
+
+  public void setModifier(List<?> list) {
+    for (PModifier e : this._modifier_) {
+      e.parent(null);
+    }
+    this._modifier_.clear();
+
+    for (Object obj_e : list) {
+      PModifier e = (PModifier) obj_e;
+      if (e.parent() != null) {
+        e.parent().removeChild(e);
+      }
+
+      e.parent(this);
+      this._modifier_.add(e);
+    }
+  }
+
+  public PFileType getFileType() {
+    return this._fileType_;
+  }
+
+  public void setFileType(PFileType node) {
+    if (this._fileType_ != null) {
+      this._fileType_.parent(null);
     }
 
-    public AFile(
-        @SuppressWarnings("hiding") List<?> _modifier_,
-        @SuppressWarnings("hiding") PFileType _fileType_,
-        @SuppressWarnings("hiding") PClassName _className_,
-        @SuppressWarnings("hiding") PExtendsClause _extendsClause_,
-        @SuppressWarnings("hiding") PImplementsClause _implementsClause_,
-        @SuppressWarnings("hiding") PFileBody _fileBody_)
-    {
-        // Constructor
-        setModifier(_modifier_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setFileType(_fileType_);
-
-        setClassName(_className_);
-
-        setExtendsClause(_extendsClause_);
-
-        setImplementsClause(_implementsClause_);
-
-        setFileBody(_fileBody_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AFile(
-            cloneList(this._modifier_),
-            cloneNode(this._fileType_),
-            cloneNode(this._className_),
-            cloneNode(this._extendsClause_),
-            cloneNode(this._implementsClause_),
-            cloneNode(this._fileBody_));
+    this._fileType_ = node;
+  }
+
+  public PClassName getClassName() {
+    return this._className_;
+  }
+
+  public void setClassName(PClassName node) {
+    if (this._className_ != null) {
+      this._className_.parent(null);
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAFile(this);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
+
+      node.parent(this);
     }
 
-    public LinkedList<PModifier> getModifier()
-    {
-        return this._modifier_;
+    this._className_ = node;
+  }
+
+  public PExtendsClause getExtendsClause() {
+    return this._extendsClause_;
+  }
+
+  public void setExtendsClause(PExtendsClause node) {
+    if (this._extendsClause_ != null) {
+      this._extendsClause_.parent(null);
     }
 
-    public void setModifier(List<?> list)
-    {
-        for(PModifier e : this._modifier_)
-        {
-            e.parent(null);
-        }
-        this._modifier_.clear();
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        for(Object obj_e : list)
-        {
-            PModifier e = (PModifier) obj_e;
-            if(e.parent() != null)
-            {
-                e.parent().removeChild(e);
-            }
-
-            e.parent(this);
-            this._modifier_.add(e);
-        }
+      node.parent(this);
     }
 
-    public PFileType getFileType()
-    {
-        return this._fileType_;
+    this._extendsClause_ = node;
+  }
+
+  public PImplementsClause getImplementsClause() {
+    return this._implementsClause_;
+  }
+
+  public void setImplementsClause(PImplementsClause node) {
+    if (this._implementsClause_ != null) {
+      this._implementsClause_.parent(null);
     }
 
-    public void setFileType(PFileType node)
-    {
-        if(this._fileType_ != null)
-        {
-            this._fileType_.parent(null);
-        }
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fileType_ = node;
+      node.parent(this);
     }
 
-    public PClassName getClassName()
-    {
-        return this._className_;
+    this._implementsClause_ = node;
+  }
+
+  public PFileBody getFileBody() {
+    return this._fileBody_;
+  }
+
+  public void setFileBody(PFileBody node) {
+    if (this._fileBody_ != null) {
+      this._fileBody_.parent(null);
     }
 
-    public void setClassName(PClassName node)
-    {
-        if(this._className_ != null)
-        {
-            this._className_.parent(null);
-        }
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._className_ = node;
+      node.parent(this);
     }
 
-    public PExtendsClause getExtendsClause()
-    {
-        return this._extendsClause_;
+    this._fileBody_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return ""
+        + toString(this._modifier_)
+        + toString(this._fileType_)
+        + toString(this._className_)
+        + toString(this._extendsClause_)
+        + toString(this._implementsClause_)
+        + toString(this._fileBody_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._modifier_.remove(child)) {
+      return;
     }
 
-    public void setExtendsClause(PExtendsClause node)
-    {
-        if(this._extendsClause_ != null)
-        {
-            this._extendsClause_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._extendsClause_ = node;
+    if (this._fileType_ == child) {
+      this._fileType_ = null;
+      return;
     }
 
-    public PImplementsClause getImplementsClause()
-    {
-        return this._implementsClause_;
+    if (this._className_ == child) {
+      this._className_ = null;
+      return;
     }
 
-    public void setImplementsClause(PImplementsClause node)
-    {
-        if(this._implementsClause_ != null)
-        {
-            this._implementsClause_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._implementsClause_ = node;
+    if (this._extendsClause_ == child) {
+      this._extendsClause_ = null;
+      return;
     }
 
-    public PFileBody getFileBody()
-    {
-        return this._fileBody_;
+    if (this._implementsClause_ == child) {
+      this._implementsClause_ = null;
+      return;
     }
 
-    public void setFileBody(PFileBody node)
-    {
-        if(this._fileBody_ != null)
-        {
-            this._fileBody_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fileBody_ = node;
+    if (this._fileBody_ == child) {
+      this._fileBody_ = null;
+      return;
     }
 
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._modifier_)
-            + toString(this._fileType_)
-            + toString(this._className_)
-            + toString(this._extendsClause_)
-            + toString(this._implementsClause_)
-            + toString(this._fileBody_);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    for (ListIterator<PModifier> i = this._modifier_.listIterator(); i.hasNext(); ) {
+      if (i.next() == oldChild) {
+        if (newChild != null) {
+          i.set((PModifier) newChild);
+          newChild.parent(this);
+          oldChild.parent(null);
+          return;
+        }
+
+        i.remove();
+        oldChild.parent(null);
+        return;
+      }
     }
 
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._modifier_.remove(child))
-        {
-            return;
-        }
-
-        if(this._fileType_ == child)
-        {
-            this._fileType_ = null;
-            return;
-        }
-
-        if(this._className_ == child)
-        {
-            this._className_ = null;
-            return;
-        }
-
-        if(this._extendsClause_ == child)
-        {
-            this._extendsClause_ = null;
-            return;
-        }
-
-        if(this._implementsClause_ == child)
-        {
-            this._implementsClause_ = null;
-            return;
-        }
-
-        if(this._fileBody_ == child)
-        {
-            this._fileBody_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
+    if (this._fileType_ == oldChild) {
+      setFileType((PFileType) newChild);
+      return;
     }
 
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        for(ListIterator<PModifier> i = this._modifier_.listIterator(); i.hasNext();)
-        {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PModifier) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
-        }
-
-        if(this._fileType_ == oldChild)
-        {
-            setFileType((PFileType) newChild);
-            return;
-        }
-
-        if(this._className_ == oldChild)
-        {
-            setClassName((PClassName) newChild);
-            return;
-        }
-
-        if(this._extendsClause_ == oldChild)
-        {
-            setExtendsClause((PExtendsClause) newChild);
-            return;
-        }
-
-        if(this._implementsClause_ == oldChild)
-        {
-            setImplementsClause((PImplementsClause) newChild);
-            return;
-        }
-
-        if(this._fileBody_ == oldChild)
-        {
-            setFileBody((PFileBody) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
+    if (this._className_ == oldChild) {
+      setClassName((PClassName) newChild);
+      return;
     }
+
+    if (this._extendsClause_ == oldChild) {
+      setExtendsClause((PExtendsClause) newChild);
+      return;
+    }
+
+    if (this._implementsClause_ == oldChild) {
+      setImplementsClause((PImplementsClause) newChild);
+      return;
+    }
+
+    if (this._fileBody_ == oldChild) {
+      setFileBody((PFileBody) newChild);
+      return;
+    }
+
+    throw new RuntimeException("Not a child.");
+  }
 }

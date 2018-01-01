@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TNull extends Token
-{
-    public TNull()
-    {
-        super.setText("null");
-    }
+public final class TNull extends Token {
+  public TNull() {
+    super.setText("null");
+  }
 
-    public TNull(int line, int pos)
-    {
-        super.setText("null");
-        setLine(line);
-        setPos(pos);
-    }
+  public TNull(int line, int pos) {
+    super.setText("null");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TNull(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TNull(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTNull(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTNull(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TNull text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TNull text.");
+  }
 }

@@ -18,14 +18,10 @@
  */
 package ca.mcgill.sable.soot.examples;
 
-/**
- * 
- * @author Eric Bodden
- */
+/** @author Eric Bodden */
 public class NewAnnotateClassWizard extends NewSootExampleWizard {
 
-	public NewAnnotateClassWizard() {
-		super("AnnotateClass.java","MyMain.java");
-	}
-
+    public NewAnnotateClassWizard() {
+        super("AnnotateClass.java", "MyMain.java");
+    }
 }

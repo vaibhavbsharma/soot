@@ -18,13 +18,11 @@
  */
 
 /**
- * Implementation of the paper "A Combined Pointer and Purity Analysis for
- * Java Programs" by Alexandru Salcianu and Martin Rinard, within the
- * Soot Optimization Framework.
+ * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
+ * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
  *
- * by Antoine Mine, 2005/01/24
+ * <p>by Antoine Mine, 2005/01/24
  */
-
 package soot.jimple.toolkits.annotation.purity;
 
 import java.util.*;
@@ -39,166 +37,160 @@ import soot.util.MultiMap;
 /**
  * Builds a DirectedGraph from a CallGraph and SootMethodFilter.
  *
- * This is used in AbstractInterproceduralAnalysis to construct a reverse pseudo
- * topological order on which to iterate. You can specify a SootMethodFilter to
- * trim the graph by cutting call edges.
+ * <p>This is used in AbstractInterproceduralAnalysis to construct a reverse pseudo topological
+ * order on which to iterate. You can specify a SootMethodFilter to trim the graph by cutting call
+ * edges.
  *
- * Methods filtered-out by the SootMethodFilter will not appear in the
- * DirectedGraph!
+ * <p>Methods filtered-out by the SootMethodFilter will not appear in the DirectedGraph!
  */
 public class DirectedCallGraph implements DirectedGraph<SootMethod> {
 
-    protected Set<SootMethod> nodes;
-    protected Map<SootMethod, List<SootMethod>> succ;
-    protected Map<SootMethod, List<SootMethod>> pred;
-    protected List<SootMethod> heads;
-    protected List<SootMethod> tails;
-    protected int size;
+  protected Set<SootMethod> nodes;
+  protected Map<SootMethod, List<SootMethod>> succ;
+  protected Map<SootMethod, List<SootMethod>> pred;
+  protected List<SootMethod> heads;
+  protected List<SootMethod> tails;
+  protected int size;
 
-    /**
-     * The constructor does all the work here. After constructed, you can safely
-     * use all interface methods. Moreover, these methods should perform very
-     * fast...
-     *
-     * The DirectedGraph will only contain methods in call paths from a method
-     * in head and comprising only methods wanted by filter. Moreover, only
-     * concrete methods are put in the graph...
-     *
-     * @param cg
-     * @param filter
-     * @param heads   is a List of SootMethod
-     * @param verbose
-     */
-    public DirectedCallGraph(CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads, boolean verbose) {
-        // filter heads by filter
-        List<SootMethod> filteredHeads = new LinkedList<SootMethod>();
-        while (heads.hasNext()) {
-            SootMethod m = heads.next();
-            if (m.isConcrete() && filter.want(m)) {
-                filteredHeads.add(m);
-            }
-        }
+  /**
+   * The constructor does all the work here. After constructed, you can safely use all interface
+   * methods. Moreover, these methods should perform very fast...
+   *
+   * <p>The DirectedGraph will only contain methods in call paths from a method in head and
+   * comprising only methods wanted by filter. Moreover, only concrete methods are put in the
+   * graph...
+   *
+   * @param cg
+   * @param filter
+   * @param heads is a List of SootMethod
+   * @param verbose
+   */
+  public DirectedCallGraph(
+      CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads, boolean verbose) {
+    // filter heads by filter
+    List<SootMethod> filteredHeads = new LinkedList<SootMethod>();
+    while (heads.hasNext()) {
+      SootMethod m = heads.next();
+      if (m.isConcrete() && filter.want(m)) {
+        filteredHeads.add(m);
+      }
+    }
 
-        this.nodes = new HashSet<SootMethod>(filteredHeads);
+    this.nodes = new HashSet<SootMethod>(filteredHeads);
 
-        MultiMap<SootMethod, SootMethod> s = new HashMultiMap<SootMethod, SootMethod>();
-        MultiMap<SootMethod, SootMethod> p = new HashMultiMap<SootMethod, SootMethod>();
+    MultiMap<SootMethod, SootMethod> s = new HashMultiMap<SootMethod, SootMethod>();
+    MultiMap<SootMethod, SootMethod> p = new HashMultiMap<SootMethod, SootMethod>();
 
-        // simple breadth-first visit
-        Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
-        int nb = 0;
+    // simple breadth-first visit
+    Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
+    int nb = 0;
+    if (verbose) {
+      G.v().out.println("[AM] dumping method dependencies");
+    }
+    while (!remain.isEmpty()) {
+      Set<SootMethod> newRemain = new HashSet<SootMethod>();
+      for (SootMethod m : remain) {
         if (verbose) {
-            G.v().out.println("[AM] dumping method dependencies");
-        }
-        while (!remain.isEmpty()) {
-            Set<SootMethod> newRemain = new HashSet<SootMethod>();
-            for (SootMethod m : remain) {
-                if (verbose) {
-                    G.v().out.println(" |- " + m.toString() + " calls");
-                }
-
-                for (Iterator<Edge> itt = cg.edgesOutOf(m); itt.hasNext();) {
-                    Edge edge = itt.next();
-                    SootMethod mm = edge.tgt();
-                    boolean keep = mm.isConcrete() && filter.want(mm);
-                    if (verbose) {
-                        G.v().out.println(" |  |- " + mm.toString() + (keep ? "" : " (filtered out)"));
-                    }
-                    if (keep) {
-                        if (this.nodes.add(mm)) {
-                            newRemain.add(mm);
-                        }
-                        s.put(m, mm);
-                        p.put(mm, m);
-                    }
-                }
-                nb++;
-            }
-            remain = newRemain;
-        }
-        G.v().out.println("[AM] number of methods to be analysed: " + nb);
-
-        // MultiMap -> Map of List
-        this.succ = new HashMap<SootMethod, List<SootMethod>>();
-        this.pred = new HashMap<SootMethod, List<SootMethod>>();
-        this.tails = new LinkedList<SootMethod>();
-        this.heads = new LinkedList<SootMethod>();
-        for (SootMethod x : this.nodes) {
-            Set<SootMethod> ss = s.get(x);
-            Set<SootMethod> pp = p.get(x);
-            this.succ.put(x, new LinkedList<SootMethod>(ss));
-            this.pred.put(x, new LinkedList<SootMethod>(pp));
-            if (ss.isEmpty()) {
-                this.tails.add(x);
-            }
-            if (pp.isEmpty()) {
-                this.heads.add(x);
-            }
+          G.v().out.println(" |- " + m.toString() + " calls");
         }
 
-        this.size = this.nodes.size();
+        for (Iterator<Edge> itt = cg.edgesOutOf(m); itt.hasNext(); ) {
+          Edge edge = itt.next();
+          SootMethod mm = edge.tgt();
+          boolean keep = mm.isConcrete() && filter.want(mm);
+          if (verbose) {
+            G.v().out.println(" |  |- " + mm.toString() + (keep ? "" : " (filtered out)"));
+          }
+          if (keep) {
+            if (this.nodes.add(mm)) {
+              newRemain.add(mm);
+            }
+            s.put(m, mm);
+            p.put(mm, m);
+          }
+        }
+        nb++;
+      }
+      remain = newRemain;
+    }
+    G.v().out.println("[AM] number of methods to be analysed: " + nb);
+
+    // MultiMap -> Map of List
+    this.succ = new HashMap<SootMethod, List<SootMethod>>();
+    this.pred = new HashMap<SootMethod, List<SootMethod>>();
+    this.tails = new LinkedList<SootMethod>();
+    this.heads = new LinkedList<SootMethod>();
+    for (SootMethod x : this.nodes) {
+      Set<SootMethod> ss = s.get(x);
+      Set<SootMethod> pp = p.get(x);
+      this.succ.put(x, new LinkedList<SootMethod>(ss));
+      this.pred.put(x, new LinkedList<SootMethod>(pp));
+      if (ss.isEmpty()) {
+        this.tails.add(x);
+      }
+      if (pp.isEmpty()) {
+        this.heads.add(x);
+      }
     }
 
-    /**
-     * You get a List of SootMethod.
-     *
-     * @return
-     */
-    @Override
-    public List<SootMethod> getHeads() {
-        return heads;
-    }
+    this.size = this.nodes.size();
+  }
 
-    /**
-     * You get a List of SootMethod.
-     *
-     * @return
-     */
-    @Override
-    public List<SootMethod> getTails() {
-        return tails;
-    }
+  /**
+   * You get a List of SootMethod.
+   *
+   * @return
+   */
+  @Override
+  public List<SootMethod> getHeads() {
+    return heads;
+  }
 
-    /**
-     * You get an Iterator on SootMethod.
-     *
-     * @return
-     */
-    @Override
-    public Iterator<SootMethod> iterator() {
-        return nodes.iterator();
-    }
+  /**
+   * You get a List of SootMethod.
+   *
+   * @return
+   */
+  @Override
+  public List<SootMethod> getTails() {
+    return tails;
+  }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int size() {
-        return size;
-    }
+  /**
+   * You get an Iterator on SootMethod.
+   *
+   * @return
+   */
+  @Override
+  public Iterator<SootMethod> iterator() {
+    return nodes.iterator();
+  }
 
-    /**
-     * You get a List of SootMethod.
-     *
-     * @param s
-     *
-     * @return
-     */
-    @Override
-    public List<SootMethod> getSuccsOf(SootMethod s) {
-        return succ.get(s);
-    }
+  /** @return */
+  @Override
+  public int size() {
+    return size;
+  }
 
-    /**
-     * You get a List of SootMethod.
-     *
-     * @param s
-     *
-     * @return
-     */
-    @Override
-    public List<SootMethod> getPredsOf(SootMethod s) {
-        return pred.get(s);
-    }
+  /**
+   * You get a List of SootMethod.
+   *
+   * @param s
+   * @return
+   */
+  @Override
+  public List<SootMethod> getSuccsOf(SootMethod s) {
+    return succ.get(s);
+  }
+
+  /**
+   * You get a List of SootMethod.
+   *
+   * @param s
+   * @return
+   */
+  @Override
+  public List<SootMethod> getPredsOf(SootMethod s) {
+    return pred.get(s);
+  }
 }

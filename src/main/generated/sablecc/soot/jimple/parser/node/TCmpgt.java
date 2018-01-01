@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TCmpgt extends Token
-{
-    public TCmpgt()
-    {
-        super.setText(">");
-    }
+public final class TCmpgt extends Token {
+  public TCmpgt() {
+    super.setText(">");
+  }
 
-    public TCmpgt(int line, int pos)
-    {
-        super.setText(">");
-        setLine(line);
-        setPos(pos);
-    }
+  public TCmpgt(int line, int pos) {
+    super.setText(">");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TCmpgt(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TCmpgt(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTCmpgt(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTCmpgt(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TCmpgt text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TCmpgt text.");
+  }
 }

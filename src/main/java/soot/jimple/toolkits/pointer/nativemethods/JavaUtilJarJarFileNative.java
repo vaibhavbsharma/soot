@@ -23,7 +23,6 @@
  * @author Feng Qian
  * @author <XXX>
  */
-
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.*;
@@ -31,48 +30,44 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilJarJarFileNative extends NativeMethodClass {
-    public JavaUtilJarJarFileNative( NativeHelper helper ) { super(helper); }
+  public JavaUtilJarJarFileNative(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding
+   * methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(
+      SootMethod method,
+      ReferenceVariable thisVar,
+      ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
     if (subSignature.equals("java.lang.String[] getMetaInfoEntryNames()")) {
-      java_util_jar_JarFile_getMetaInfoEntryNames(method,
-						  thisVar,
-						  returnVar,
-						  params);
+      java_util_jar_JarFile_getMetaInfoEntryNames(method, thisVar, returnVar, params);
       return;
 
     } else {
       defaultMethod(method, thisVar, returnVar, params);
       return;
-
     }
   }
 
-  /*********************** java.util.jar.JarFile ******************/
+  /** ********************* java.util.jar.JarFile ***************** */
   /**
    * The methods returns an array of strings.
-   * 
-   * @return = new String[]
    *
-   *     private native java.lang.String getMetaInfEntryNames()[];
+   * @return = new String[]
+   *     <p>private native java.lang.String getMetaInfEntryNames()[];
    */
-  public 
-    void java_util_jar_JarFile_getMetaInfoEntryNames(
-				        SootMethod method,
-                                        ReferenceVariable thisVar,
-					ReferenceVariable returnVar,
-					ReferenceVariable params[]) {
+  public void java_util_jar_JarFile_getMetaInfoEntryNames(
+      SootMethod method,
+      ReferenceVariable thisVar,
+      ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
     helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 }

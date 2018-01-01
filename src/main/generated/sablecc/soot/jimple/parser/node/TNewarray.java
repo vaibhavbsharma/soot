@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TNewarray extends Token
-{
-    public TNewarray()
-    {
-        super.setText("newarray");
-    }
+public final class TNewarray extends Token {
+  public TNewarray() {
+    super.setText("newarray");
+  }
 
-    public TNewarray(int line, int pos)
-    {
-        super.setText("newarray");
-        setLine(line);
-        setPos(pos);
-    }
+  public TNewarray(int line, int pos) {
+    super.setText("newarray");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TNewarray(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TNewarray(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTNewarray(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTNewarray(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TNewarray text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TNewarray text.");
+  }
 }

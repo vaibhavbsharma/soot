@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,18 +27,18 @@ package soot.dexpler.instructions;
 import soot.dexpler.DexBody;
 
 /**
- * Interface for instructions that can/must be defered, i.e. executed after the
- * rest of the DexBody has been converted to Jimple
+ * Interface for instructions that can/must be defered, i.e. executed after the rest of the DexBody
+ * has been converted to Jimple
  *
  * @author Michael Markert <michael.markert@googlemail.com>
  */
-public interface DeferableInstruction  {
+public interface DeferableInstruction {
 
-    /**
-     * Jimplify this instruction with the guarantee that every other
-     * (non-deferred) instruction has been jimplified.
-     *
-     * @param body to jimplify into
-     */
-    public void deferredJimplify(DexBody body);
+  /**
+   * Jimplify this instruction with the guarantee that every other (non-deferred) instruction has
+   * been jimplified.
+   *
+   * @param body to jimplify into
+   */
+  public void deferredJimplify(DexBody body);
 }

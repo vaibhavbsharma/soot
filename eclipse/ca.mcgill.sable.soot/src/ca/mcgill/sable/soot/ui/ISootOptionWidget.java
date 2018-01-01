@@ -21,9 +21,9 @@ package ca.mcgill.sable.soot.ui;
 
 import java.util.ArrayList;
 
-
 public interface ISootOptionWidget {
-	
-	public ArrayList getControls();
-	public String getId();
+
+    public ArrayList getControls();
+
+    public String getId();
 }

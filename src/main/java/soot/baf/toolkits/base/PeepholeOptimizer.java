@@ -18,122 +18,114 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.baf.toolkits.base;
 
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 import soot.*;
 
 /**
- * Driver class to run peepholes on the Baf IR. The peepholes applied must
- * implement the Peephole interface. Peepholes are loaded dynamically by the
- * soot runtime; the runtime reads the file peephole.dat, in order to determine
- * which peepholes to apply.
- * 
+ * Driver class to run peepholes on the Baf IR. The peepholes applied must implement the Peephole
+ * interface. Peepholes are loaded dynamically by the soot runtime; the runtime reads the file
+ * peephole.dat, in order to determine which peepholes to apply.
+ *
  * @see Peephole
  * @see ExamplePeephole
  */
-
 public class PeepholeOptimizer extends BodyTransformer {
-	public PeepholeOptimizer(Singletons.Global g) {
-	}
+  public PeepholeOptimizer(Singletons.Global g) {}
 
-	public static PeepholeOptimizer v() {
-		return G.v().soot_baf_toolkits_base_PeepholeOptimizer();
-	}
+  public static PeepholeOptimizer v() {
+    return G.v().soot_baf_toolkits_base_PeepholeOptimizer();
+  }
 
-	private final String packageName = "soot.baf.toolkits.base";
-	private static boolean peepholesLoaded = false;
-	private static final Object loaderLock = new Object();
+  private final String packageName = "soot.baf.toolkits.base";
+  private static boolean peepholesLoaded = false;
+  private static final Object loaderLock = new Object();
 
-	private final Map<String, Class<?>> peepholeMap = new HashMap<String, Class<?>>();
+  private final Map<String, Class<?>> peepholeMap = new HashMap<String, Class<?>>();
 
-	/** The method that drives the optimizations. */
-	/* This is the public interface to PeepholeOptimizer */
+  /** The method that drives the optimizations. */
+  /* This is the public interface to PeepholeOptimizer */
 
-	protected void internalTransform(Body body, String phaseName,
-			Map<String, String> options) {
-		if (!peepholesLoaded) {
-			synchronized (loaderLock) {
-				if (!peepholesLoaded) {
-					peepholesLoaded = true;
-					
-					InputStream peepholeListingStream = null;
-					peepholeListingStream = PeepholeOptimizer.class
-							.getResourceAsStream("/peephole.dat");
-					if (peepholeListingStream == null)
-						throw new RuntimeException("could not open file peephole.dat!");
-					BufferedReader reader = new BufferedReader(
-							new InputStreamReader(peepholeListingStream));
+  protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
+    if (!peepholesLoaded) {
+      synchronized (loaderLock) {
+        if (!peepholesLoaded) {
+          peepholesLoaded = true;
 
-					String line = null;
-					List<String> peepholes = new LinkedList<String>();
-					try {
-						line = reader.readLine();
-						while (line != null) {
-							if (line.length() > 0)
-								if (!(line.charAt(0) == '#'))
-									peepholes.add(line);
-							line = reader.readLine();
-						}
-					} catch (IOException e) {
-						throw new RuntimeException("IO error occured while reading file:  "
-								+ line + System.getProperty("line.separator") + e);
-					}
-					
-					try {
-						reader.close();
-						peepholeListingStream.close();
-					}
-					catch (IOException e) {
-					}
-					
-					for (String peepholeName : peepholes) {
-						Class<?> peepholeClass;
-						if ((peepholeClass = peepholeMap.get(peepholeName)) == null) {
-							try {
-								peepholeClass = Class.forName(packageName + "."
-										+ peepholeName);
-							} catch (ClassNotFoundException e) {
-								throw new RuntimeException(e.toString());
-							}
-							peepholeMap.put(peepholeName, peepholeClass);
-						}
-					}
-				}
-			}
-		}
+          InputStream peepholeListingStream = null;
+          peepholeListingStream = PeepholeOptimizer.class.getResourceAsStream("/peephole.dat");
+          if (peepholeListingStream == null)
+            throw new RuntimeException("could not open file peephole.dat!");
+          BufferedReader reader = new BufferedReader(new InputStreamReader(peepholeListingStream));
 
-		boolean changed = true;
-		while (changed) {
-			changed = false;
+          String line = null;
+          List<String> peepholes = new LinkedList<String>();
+          try {
+            line = reader.readLine();
+            while (line != null) {
+              if (line.length() > 0) if (!(line.charAt(0) == '#')) peepholes.add(line);
+              line = reader.readLine();
+            }
+          } catch (IOException e) {
+            throw new RuntimeException(
+                "IO error occured while reading file:  "
+                    + line
+                    + System.getProperty("line.separator")
+                    + e);
+          }
 
-			for (String peepholeName : peepholeMap.keySet()) {
-				boolean peepholeWorked = true;
-				while (peepholeWorked) {
-					peepholeWorked = false;
-					Peephole p = null;
-					
-					try {
-						p = (Peephole) peepholeMap.get(peepholeName).newInstance();
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e.toString());
-					} catch (InstantiationException e) {
-						throw new RuntimeException(e.toString());
-					}
-					
-					if (p.apply(body)) {
-						peepholeWorked = true;
-						changed = true;
-					}
-				}
-			}
-		}
-	}
+          try {
+            reader.close();
+            peepholeListingStream.close();
+          } catch (IOException e) {
+          }
+
+          for (String peepholeName : peepholes) {
+            Class<?> peepholeClass;
+            if ((peepholeClass = peepholeMap.get(peepholeName)) == null) {
+              try {
+                peepholeClass = Class.forName(packageName + "." + peepholeName);
+              } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e.toString());
+              }
+              peepholeMap.put(peepholeName, peepholeClass);
+            }
+          }
+        }
+      }
+    }
+
+    boolean changed = true;
+    while (changed) {
+      changed = false;
+
+      for (String peepholeName : peepholeMap.keySet()) {
+        boolean peepholeWorked = true;
+        while (peepholeWorked) {
+          peepholeWorked = false;
+          Peephole p = null;
+
+          try {
+            p = (Peephole) peepholeMap.get(peepholeName).newInstance();
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e.toString());
+          } catch (InstantiationException e) {
+            throw new RuntimeException(e.toString());
+          }
+
+          if (p.apply(body)) {
+            peepholeWorked = true;
+            changed = true;
+          }
+        }
+      }
+    }
+  }
 }

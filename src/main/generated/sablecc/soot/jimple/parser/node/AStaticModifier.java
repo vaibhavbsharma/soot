@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AStaticModifier extends PModifier
-{
-    private TStatic _static_;
+public final class AStaticModifier extends PModifier {
+  private TStatic _static_;
 
-    public AStaticModifier()
-    {
-        // Constructor
+  public AStaticModifier() {
+    // Constructor
+  }
+
+  public AStaticModifier(@SuppressWarnings("hiding") TStatic _static_) {
+    // Constructor
+    setStatic(_static_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AStaticModifier(cloneNode(this._static_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAStaticModifier(this);
+  }
+
+  public TStatic getStatic() {
+    return this._static_;
+  }
+
+  public void setStatic(TStatic node) {
+    if (this._static_ != null) {
+      this._static_.parent(null);
     }
 
-    public AStaticModifier(
-        @SuppressWarnings("hiding") TStatic _static_)
-    {
-        // Constructor
-        setStatic(_static_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AStaticModifier(
-            cloneNode(this._static_));
+    this._static_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._static_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._static_ == child) {
+      this._static_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAStaticModifier(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._static_ == oldChild) {
+      setStatic((TStatic) newChild);
+      return;
     }
 
-    public TStatic getStatic()
-    {
-        return this._static_;
-    }
-
-    public void setStatic(TStatic node)
-    {
-        if(this._static_ != null)
-        {
-            this._static_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._static_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._static_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._static_ == child)
-        {
-            this._static_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._static_ == oldChild)
-        {
-            setStatic((TStatic) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

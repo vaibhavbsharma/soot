@@ -23,30 +23,22 @@ import soot.*;
 import soot.grimp.*;
 import soot.grimp.internal.*;
 
-public class DIncrementStmt extends GAssignStmt{
-    public DIncrementStmt(Value variable, Value rvalue){
-	super(variable,rvalue);
-    }
-    
-    public Object clone() { 
-	return new DIncrementStmt(Grimp.cloneIfNecessary(getLeftOp()), 
-				  Grimp.cloneIfNecessary(getRightOp()));
-    }
+public class DIncrementStmt extends GAssignStmt {
+  public DIncrementStmt(Value variable, Value rvalue) {
+    super(variable, rvalue);
+  }
 
-    
-    public String toString(){
-        return getLeftOpBox().getValue().toString() + "++";
-    }
-    
-    public void toString(UnitPrinter up) {
-        getLeftOpBox().toString(up);
-        up.literal("++");
-    }
+  public Object clone() {
+    return new DIncrementStmt(
+        Grimp.cloneIfNecessary(getLeftOp()), Grimp.cloneIfNecessary(getRightOp()));
+  }
 
+  public String toString() {
+    return getLeftOpBox().getValue().toString() + "++";
+  }
+
+  public void toString(UnitPrinter up) {
+    getLeftOpBox().toString(up);
+    up.literal("++");
+  }
 }
-
-
-
-
-
-

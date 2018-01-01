@@ -17,59 +17,53 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.cfg.actions;
 
-import org.eclipse.gef.ui.actions.EditorPartAction;
-import org.eclipse.ui.IEditorPart;
 import ca.mcgill.sable.soot.*;
-import soot.toolkits.graph.interaction.*;
+import org.eclipse.gef.ui.actions.EditorPartAction;
 import org.eclipse.jface.resource.*;
-
+import org.eclipse.ui.IEditorPart;
+import soot.toolkits.graph.interaction.*;
 
 public class StepForwardAction extends EditorPartAction {
 
-	public static final String STEP_FORWARD = "step forward"; 
-	/**
-	 * @param editor
-	 */
-	public StepForwardAction(IEditorPart editor) {
-		super(editor);
-		setImageDescriptor(SootPlugin.getImageDescriptor("resume_co.gif"));
-		setToolTipText("Step Forward");
-	}
-	
+    public static final String STEP_FORWARD = "step forward";
+    /** @param editor */
+    public StepForwardAction(IEditorPart editor) {
+        super(editor);
+        setImageDescriptor(SootPlugin.getImageDescriptor("resume_co.gif"));
+        setToolTipText("Step Forward");
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
-	 */
-	protected boolean calculateEnabled() {
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
+     */
+    protected boolean calculateEnabled() {
+        return true;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.eclipse.jface.action.IAction#run()
-	 * steps forward through flowsets unless method 
-	 * is finished
-	 */
-	public void run(){
-		if (SootPlugin.getDefault().getDataKeeper().inMiddle()){
-			SootPlugin.getDefault().getDataKeeper().stepForward();
-		}
-		else {
-			if (!InteractionHandler.v().doneCurrent()){
-				InteractionHandler.v().setInteractionCon();//true);
-			}
-		}
-	}
-	
-	public void setEditorPart(IEditorPart part){
-		super.setEditorPart(part);
-	}
-	
-	protected void init() { 
-		super.init(); 
-		setId( STEP_FORWARD );
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.eclipse.jface.action.IAction#run()
+     * steps forward through flowsets unless method
+     * is finished
+     */
+    public void run() {
+        if (SootPlugin.getDefault().getDataKeeper().inMiddle()) {
+            SootPlugin.getDefault().getDataKeeper().stepForward();
+        } else {
+            if (!InteractionHandler.v().doneCurrent()) {
+                InteractionHandler.v().setInteractionCon(); // true);
+            }
+        }
+    }
+
+    public void setEditorPart(IEditorPart part) {
+        super.setEditorPart(part);
+    }
+
+    protected void init() {
+        super.init();
+        setId(STEP_FORWARD);
+    }
 }

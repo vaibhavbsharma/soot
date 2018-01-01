@@ -18,14 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
@@ -33,43 +29,36 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst
-{
-    public BArrayReadInst(Type opType)
-    {
-        super(opType);
-    }
+public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst {
+  public BArrayReadInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 2;
+  }
 
-    public int getInCount()
-    {
-        return 2;
-    }
+  public Object clone() {
+    return new BArrayReadInst(getOpType());
+  }
 
-    
-    public Object clone() 
-    {
-        return new BArrayReadInst(getOpType());
-    }
+  public int getInMachineCount() {
+    return 2;
+  }
 
-    public int getInMachineCount()
-    {
-        return 2;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getOutCount() {
+    return 1;
+  }
 
-    
+  public final String getName() {
+    return "arrayread";
+  }
 
-    final public String getName() { return "arrayread"; }
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseArrayReadInst(this);
+  }
 
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseArrayReadInst(this);
-    }   
-    public boolean containsArrayRef() { return true; }
+  public boolean containsArrayRef() {
+    return true;
+  }
 }

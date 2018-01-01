@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,11 +23,9 @@ package soot.jimple.toolkits.typing.fast;
 import soot.*;
 import soot.jimple.*;
 
-/**
- * @author Ben Bellamy
- */
-public interface IUseVisitor
-{
-	Value visit(Value op, Type useType, Stmt stmt);
-	boolean finish();
+/** @author Ben Bellamy */
+public interface IUseVisitor {
+  Value visit(Value op, Type useType, Stmt stmt);
+
+  boolean finish();
 }

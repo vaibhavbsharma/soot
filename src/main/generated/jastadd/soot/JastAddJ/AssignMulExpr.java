@@ -1,70 +1,51 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
 import beaver.*;
-import java.util.ArrayList;
-import java.util.zip.*;
 import java.io.*;
-import java.io.FileNotFoundException;
-import java.util.Collection;
+import java.util.*;
+import java.util.zip.*;
 import soot.*;
-import soot.util.*;
 import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import soot.util.*;
+
 /**
  * @production AssignMulExpr : {@link AssignMultiplicativeExpr};
  * @ast node
  * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:111
  */
 public class AssignMulExpr extends AssignMultiplicativeExpr implements Cloneable {
-  /**
-   * @apilevel low-level
-   */
+  /** @apilevel low-level */
   public void flushCache() {
     super.flushCache();
   }
-  /**
-   * @apilevel internal
-   */
+  /** @apilevel internal */
   public void flushCollectionCache() {
     super.flushCollectionCache();
   }
-  /**
-   * @apilevel internal
-   */
+  /** @apilevel internal */
   @SuppressWarnings({"unchecked", "cast"})
   public AssignMulExpr clone() throws CloneNotSupportedException {
-    AssignMulExpr node = (AssignMulExpr)super.clone();
+    AssignMulExpr node = (AssignMulExpr) super.clone();
     node.in$Circle(false);
     node.is$Final(false);
     return node;
   }
-  /**
-   * @apilevel internal
-   */
+  /** @apilevel internal */
   @SuppressWarnings({"unchecked", "cast"})
   public AssignMulExpr copy() {
     try {
       AssignMulExpr node = (AssignMulExpr) clone();
       node.parent = null;
-      if(children != null)
-        node.children = (ASTNode[]) children.clone();
+      if (children != null) node.children = (ASTNode[]) children.clone();
       return node;
     } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
+      throw new Error("Error: clone not supported for " + getClass().getName());
     }
   }
   /**
-   * Create a deep copy of the AST subtree at this node.
-   * The copy is dangling, i.e. has no parent.
+   * Create a deep copy of the AST subtree at this node. The copy is dangling, i.e. has no parent.
+   *
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
@@ -74,7 +55,7 @@ public class AssignMulExpr extends AssignMultiplicativeExpr implements Cloneable
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         ASTNode child = (ASTNode) children[i];
-        if(child != null) {
+        if (child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
         }
@@ -83,133 +64,125 @@ public class AssignMulExpr extends AssignMultiplicativeExpr implements Cloneable
     return tree;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Expressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Expressions.jrag:156
+   * @declaredat
+   *     /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Expressions.jrag:156
    */
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
     return asImmediate(b, b.newMulExpr(asImmediate(b, fst), asImmediate(b, snd), this));
   }
-  /**
-   * @ast method 
-   * 
-   */
+  /** @ast method */
   public AssignMulExpr() {
     super();
-
-
   }
   /**
-   * Initializes the child array to the correct size.
-   * Initializes List and Opt nta children.
+   * Initializes the child array to the correct size. Initializes List and Opt nta children.
+   *
    * @apilevel internal
    * @ast method
-   * @ast method 
-   * 
+   * @ast method
    */
   public void init$Children() {
     children = new ASTNode[2];
   }
-  /**
-   * @ast method 
-   * 
-   */
+  /** @ast method */
   public AssignMulExpr(Expr p0, Expr p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
    */
   protected int numChildren() {
     return 2;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
    * Replaces the Dest child.
+   *
    * @param node The new node to replace the Dest child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
    */
   public void setDest(Expr node) {
     setChild(node, 0);
   }
   /**
    * Retrieves the Dest child.
+   *
    * @return The current node used as the Dest child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
    */
   public Expr getDest() {
-    return (Expr)getChild(0);
+    return (Expr) getChild(0);
   }
   /**
    * Retrieves the Dest child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
+   *
+   * <p><em>This method does not invoke AST transformations.</em>
+   *
    * @return The current node used as the Dest child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
    */
   public Expr getDestNoTransform() {
-    return (Expr)getChildNoTransform(0);
+    return (Expr) getChildNoTransform(0);
   }
   /**
    * Replaces the Source child.
+   *
    * @param node The new node to replace the Source child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
    */
   public void setSource(Expr node) {
     setChild(node, 1);
   }
   /**
    * Retrieves the Source child.
+   *
    * @return The current node used as the Source child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
    */
   public Expr getSource() {
-    return (Expr)getChild(1);
+    return (Expr) getChild(1);
   }
   /**
    * Retrieves the Source child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
+   *
+   * <p><em>This method does not invoke AST transformations.</em>
+   *
    * @return The current node used as the Source child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
    */
   public Expr getSourceNoTransform() {
-    return (Expr)getChildNoTransform(1);
+    return (Expr) getChildNoTransform(1);
   }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:247
+   * @declaredat
+   *     /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:247
    */
   public String printOp() {
     ASTNode$State state = state();
-    try {  return " *= ";  }
-    finally {
+    try {
+      return " *= ";
+    } finally {
     }
   }
-  /**
-   * @apilevel internal
-   */
+  /** @apilevel internal */
   public ASTNode rewriteTo() {
     return super.rewriteTo();
   }

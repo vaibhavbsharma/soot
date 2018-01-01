@@ -18,30 +18,33 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
+import java.util.*;
 import soot.*;
 import soot.util.*;
-import java.util.*;
 
-public interface NewMultiArrayExpr extends Expr, AnyNewExpr
-{
-    public ArrayType getBaseType();
-    public void setBaseType(ArrayType baseType);
-    public ValueBox getSizeBox(int index);
-    public int getSizeCount();
-    public Value getSize(int index);
-    public List<Value> getSizes();
-    public void setSize(int index, Value size);
-    public Type getType();
-    public void apply(Switch sw);
+public interface NewMultiArrayExpr extends Expr, AnyNewExpr {
+  public ArrayType getBaseType();
+
+  public void setBaseType(ArrayType baseType);
+
+  public ValueBox getSizeBox(int index);
+
+  public int getSizeCount();
+
+  public Value getSize(int index);
+
+  public List<Value> getSizes();
+
+  public void setSize(int index, Value size);
+
+  public Type getType();
+
+  public void apply(Switch sw);
 }

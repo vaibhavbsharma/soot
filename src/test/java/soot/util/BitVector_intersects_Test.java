@@ -1,14 +1,10 @@
 package soot.util;
 
-import soot.util.BitVector;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * JUnit test suite for the BitVector.intersects() method
- * @Author Quentin Sabah
-*/
+/** JUnit test suite for the BitVector.intersects() method @Author Quentin Sabah */
 public class BitVector_intersects_Test extends TestCase {
 
   public BitVector_intersects_Test(String name) {
@@ -50,11 +46,9 @@ public class BitVector_intersects_Test extends TestCase {
     BitVector a = new BitVector();
     BitVector b = new BitVector();
     int i;
-    for(i = 0; i < 512; i++) {
-      if(i % 2 == 0)
-        a.set(i);
-      else
-        b.set(i);
+    for (i = 0; i < 512; i++) {
+      if (i % 2 == 0) a.set(i);
+      else b.set(i);
     }
     assertFalse(a.intersects(b));
     assertFalse(b.intersects(a));
@@ -64,10 +58,10 @@ public class BitVector_intersects_Test extends TestCase {
     BitVector a = new BitVector();
     BitVector b = new BitVector();
     int i;
-    for(i = 0; i < 512; i++) {
+    for (i = 0; i < 512; i++) {
       a.set(i);
     }
-    for(; i < 1024; i++) {
+    for (; i < 1024; i++) {
       b.set(i);
     }
     assertFalse(a.intersects(b));
@@ -91,11 +85,13 @@ public class BitVector_intersects_Test extends TestCase {
     a.clear(337);
     b.clear(337);
 
-    for(int i = 0; i < 512; i++) {
-      a.set(i); b.set(i);
+    for (int i = 0; i < 512; i++) {
+      a.set(i);
+      b.set(i);
       assertTrue(a.intersects(b));
       assertTrue(b.intersects(a));
-      a.clear(i); b.clear(i);
+      a.clear(i);
+      b.clear(i);
     }
   }
 

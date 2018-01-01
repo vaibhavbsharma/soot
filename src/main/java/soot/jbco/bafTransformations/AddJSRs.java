@@ -27,23 +27,22 @@ import soot.jbco.util.*;
 
 /**
  * @author Michael Batchelder
- * 
- * Created on 22-Mar-2006
- * 
- * This transformer transforms gotos/ifs into JSRS, but not all of them.
+ *     <p>Created on 22-Mar-2006
+ *     <p>This transformer transforms gotos/ifs into JSRS, but not all of them.
  */
 public class AddJSRs extends BodyTransformer implements IJbcoTransform {
 
   int jsrcount = 0;
 
-  public static String dependancies[] = new String[] { "jtp.jbco_jl", "bb.jbco_cb2ji", "bb.jbco_ful", "bb.lp" };
-  
+  public static String dependancies[] =
+      new String[] {"jtp.jbco_jl", "bb.jbco_cb2ji", "bb.jbco_ful", "bb.lp"};
+
   public String[] getDependancies() {
     return dependancies;
   }
-  
+
   public static String name = "bb.jbco_cb2ji";
-  
+
   public String getName() {
     return name;
   }
@@ -52,7 +51,7 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     out.println("If/Gotos replaced with JSRs: " + jsrcount);
   }
 
-  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
 
@@ -60,16 +59,16 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     // TODO: introduce if-jsr opaque jumps that never happen?
 
     boolean fallsthrough = false;
-    HashMap<Trap,Unit> trapsToHandler = new HashMap<Trap,Unit>();
+    HashMap<Trap, Unit> trapsToHandler = new HashMap<Trap, Unit>();
     for (Trap t : b.getTraps()) {
       trapsToHandler.put(t, t.getHandlerUnit());
     }
 
     List<Unit> targets = new ArrayList<Unit>();
     List<Unit> seenUts = new ArrayList<Unit>();
-    HashMap<Unit,List<Unit>> switches = new HashMap<Unit,List<Unit>>();
-    HashMap<Unit,Unit> switchDefs = new HashMap<Unit,Unit>();
-    HashMap<TargetArgInst,Unit> ignoreJumps = new HashMap<TargetArgInst,Unit>();
+    HashMap<Unit, List<Unit>> switches = new HashMap<Unit, List<Unit>>();
+    HashMap<Unit, Unit> switchDefs = new HashMap<Unit, Unit>();
+    HashMap<TargetArgInst, Unit> ignoreJumps = new HashMap<TargetArgInst, Unit>();
     PatchingChain<Unit> u = b.getUnits();
     Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext()) {
@@ -80,10 +79,9 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
 
         // test if we've already seen the target - if so, it might be a loop so
         // let's not slow things down
-        if (Rand.getInt(10) > weight) //seenUts.contains(tu)) {
-          ignoreJumps.put(ti, tu);
-        else if (!targets.contains(tu))
-          targets.add(tu);
+        if (Rand.getInt(10) > weight) // seenUts.contains(tu)) {
+        ignoreJumps.put(ti, tu);
+        else if (!targets.contains(tu)) targets.add(tu);
       }
 
       if (unit instanceof TableSwitchInst) {
@@ -102,7 +100,7 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     it = u.snapshotIterator();
     ArrayList<Unit> processedLabels = new ArrayList<Unit>();
     HashMap<Unit, JSRInst> builtJsrs = new HashMap<Unit, JSRInst>();
-    HashMap<Unit,Unit> popsBuilt = new HashMap<Unit,Unit>();
+    HashMap<Unit, Unit> popsBuilt = new HashMap<Unit, Unit>();
     Unit prev = null;
     while (it.hasNext()) {
       Unit unit = (Unit) it.next();
@@ -130,15 +128,15 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     it = u.snapshotIterator();
     while (it.hasNext()) {
       Unit unit = (Unit) it.next();
-      if (builtJsrs.containsValue(unit))
-        continue;
+      if (builtJsrs.containsValue(unit)) continue;
 
       if (unit instanceof TargetArgInst && !ignoreJumps.containsKey(unit)) {
         TargetArgInst ti = (TargetArgInst) unit;
         Unit tu = ti.getTarget();
         // if we haven't dealt with a target yet, add the pop inst
         if (!popsBuilt.containsKey(tu))
-          throw new RuntimeException("It appears a target was found that was not updated with a POP.\n\"This makes no sense,\" said the bug as it flew through the code.");
+          throw new RuntimeException(
+              "It appears a target was found that was not updated with a POP.\n\"This makes no sense,\" said the bug as it flew through the code.");
 
         JSRInst ji = builtJsrs.get(popsBuilt.get(tu));
         if (BodyBuilder.isBafIf(unit)) {
@@ -156,10 +154,8 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
           }
         } else if (unit instanceof GotoInst) {
           if (ji != null) {
-            if (Rand.getInt(10) < weight)
-              ((GotoInst) unit).setTarget(ji);
-            else
-              ((GotoInst) unit).setTarget(popsBuilt.get(tu));
+            if (Rand.getInt(10) < weight) ((GotoInst) unit).setTarget(ji);
+            else ((GotoInst) unit).setTarget(popsBuilt.get(tu));
           } else {
             ((GotoInst) unit).setTarget(popsBuilt.get(tu));
           }
@@ -168,30 +164,26 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     }
 
     for (Trap t : trapsToHandler.keySet()) {
-    	t.setHandlerUnit(trapsToHandler.get(t));
+      t.setHandlerUnit(trapsToHandler.get(t));
     }
 
     for (TargetArgInst ti : ignoreJumps.keySet()) {
-      if (popsBuilt.containsKey(ti.getTarget()))
-        ti.setTarget(popsBuilt.get(ti.getTarget()));
+      if (popsBuilt.containsKey(ti.getTarget())) ti.setTarget(popsBuilt.get(ti.getTarget()));
     }
 
     targets.clear();
     it = u.snapshotIterator();
     while (it.hasNext()) {
       Unit unit = (Unit) it.next();
-      if (!(unit instanceof TargetArgInst))
-        continue;
+      if (!(unit instanceof TargetArgInst)) continue;
       Unit targ = ((TargetArgInst) unit).getTarget();
-      if (!targets.contains(targ))
-        targets.add(targ);
+      if (!targets.contains(targ)) targets.add(targ);
     }
 
     it = popsBuilt.keySet().iterator();
     while (it.hasNext()) {
       Unit pop = (Unit) it.next();
-      if (!targets.contains(pop))
-        u.remove(pop);
+      if (!targets.contains(pop)) u.remove(pop);
     }
 
     it = switches.keySet().iterator();
@@ -200,18 +192,15 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
       List<Unit> targs = switches.get(sw);
 
       for (int i = 0; i < targs.size(); i++) {
-        if (Rand.getInt(10) > weight)
-          continue;
+        if (Rand.getInt(10) > weight) continue;
 
         Unit unit = targs.get(i);
         Unit ji = builtJsrs.get(unit);
-        if (ji != null)
-          targs.set(i, ji);
+        if (ji != null) targs.set(i, ji);
       }
 
       Unit def = switchDefs.get(sw);
-      if (Rand.getInt(10) < weight && builtJsrs.get(def) != null)
-        def = builtJsrs.get(def);
+      if (Rand.getInt(10) < weight && builtJsrs.get(def) != null) def = builtJsrs.get(def);
 
       if (sw instanceof TableSwitchInst) {
         ((TableSwitchInst) sw).setTargets(targs);
@@ -221,8 +210,7 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
         ((LookupSwitchInst) sw).setDefaultTarget(def);
       }
     }
-    
-    if (debug)
-      StackTypeHeightCalculator.calculateStackHeights(b);
+
+    if (debug) StackTypeHeightCalculator.calculateStackHeights(b);
   }
 }

@@ -1,6 +1,4 @@
-
 package soot.jimple.toolkits.thread.mhp.stmt;
-
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -16,23 +14,14 @@ import soot.toolkits.graph.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+public class JoinStmt extends JPegStmt {
 
-public class JoinStmt extends JPegStmt
-
-{
-	
-	public JoinStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "join";
-		this.caller = ca;
-		this.unit = un;
-		this.unitGraph = ug;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+  public JoinStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "join";
+    this.caller = ca;
+    this.unit = un;
+    this.unitGraph = ug;
+    this.sootMethod = sm;
+  }
 }

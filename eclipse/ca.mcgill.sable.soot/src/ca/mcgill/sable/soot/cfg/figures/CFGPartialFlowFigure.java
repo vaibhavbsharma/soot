@@ -17,21 +17,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.cfg.figures;
 
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.*;
+import org.eclipse.draw2d.Figure;
 
 public class CFGPartialFlowFigure extends Figure {
 
-	Panel background;
-	
-	public CFGPartialFlowFigure() {
-		super();
-		FlowLayout layout = new FlowLayout(true);
-		layout.setMinorAlignment(FlowLayout.ALIGN_CENTER);
-		this.setLayoutManager(layout);
-	}
+    Panel background;
 
+    public CFGPartialFlowFigure() {
+        super();
+        FlowLayout layout = new FlowLayout(true);
+        layout.setMinorAlignment(FlowLayout.ALIGN_CENTER);
+        this.setLayoutManager(layout);
+    }
 }

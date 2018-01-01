@@ -18,22 +18,19 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util;
-import soot.toolkits.graph.*;
-import soot.*;
 
 import java.util.*;
+import soot.*;
+import soot.toolkits.graph.*;
 
-/**
- * Maps each unit to the result of <code>mapTo</code>.
- */
-public abstract class UnitMap<T> implements Map<Unit,T> {
+/** Maps each unit to the result of <code>mapTo</code>. */
+public abstract class UnitMap<T> implements Map<Unit, T> {
   private Map<Unit, T> unitToResult;
 
   /**
@@ -87,8 +84,8 @@ public abstract class UnitMap<T> implements Map<Unit,T> {
   /**
    * maps each unit of this body to the result of <code>mapTo</code>.<br>
    * before the mapping the method <code>init</code> is called.<br>
-   * the internal hashtable is initialized to <code>initialCapacity</code> and
-   * <code>loadFactor</code>.
+   * the internal hashtable is initialized to <code>initialCapacity</code> and <code>loadFactor
+   * </code>.
    *
    * @param b a Body
    * @param initialCapacity the initialCapacity of the internal hashtable.
@@ -103,8 +100,8 @@ public abstract class UnitMap<T> implements Map<Unit,T> {
   /**
    * maps each unit of the graph to the result of <code>mapTo</code>.<br>
    * before the mapping the method <code>init</code> is called.<br>
-   * the internal hashtable is initialized to <code>initialCapacity</code> and
-   * <code>loadFactor</code>.
+   * the internal hashtable is initialized to <code>initialCapacity</code> and <code>loadFactor
+   * </code>.
    *
    * @param g a UnitGraph
    * @param initialCapacity the initialCapacity of the internal hashtable.
@@ -114,29 +111,26 @@ public abstract class UnitMap<T> implements Map<Unit,T> {
     this(g.getBody(), initialCapacity);
   }
 
-  /**
-   * does the actual mapping. assumes, that the hashtable is already initialized.
-   */
+  /** does the actual mapping. assumes, that the hashtable is already initialized. */
   private void map(Body b) {
     Iterator<Unit> unitIt = b.getUnits().iterator();
     while (unitIt.hasNext()) {
       Unit currentUnit = unitIt.next();
       T o = mapTo(currentUnit);
-      if (o != null)
-        unitToResult.put(currentUnit, o);
+      if (o != null) unitToResult.put(currentUnit, o);
     }
   }
 
   /**
-   * allows one-time initialization before any mapping. This method is called
-   * before any mapping of a unit (but only once in the beginning).<br>
+   * allows one-time initialization before any mapping. This method is called before any mapping of
+   * a unit (but only once in the beginning).<br>
    * If not overwritten does nothing.
    */
   protected void init() {};
 
   /**
-   * maps a unit to an object. This method is called for every unit. If
-   * the returned object is <code>null</code> no object will be mapped.<br>
+   * maps a unit to an object. This method is called for every unit. If the returned object is
+   * <code>null</code> no object will be mapped.<br>
    *
    * @param the Unit to which <code>o</code> should be mapped.
    * @return an object that is mapped to the unit, or <code>null</code>.
@@ -157,7 +151,7 @@ public abstract class UnitMap<T> implements Map<Unit,T> {
     return unitToResult.containsValue(value);
   }
 
-  public Set<Map.Entry<Unit,T>> entrySet() {
+  public Set<Map.Entry<Unit, T>> entrySet() {
     return unitToResult.entrySet();
   }
 
@@ -201,4 +195,3 @@ public abstract class UnitMap<T> implements Map<Unit,T> {
     return unitToResult.values();
   }
 }
-

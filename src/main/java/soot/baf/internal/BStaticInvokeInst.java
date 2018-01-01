@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -30,44 +30,30 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvokeInst
-{
-    public BStaticInvokeInst(SootMethodRef methodRef) { 
-        if( !methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.methodRef = methodRef;
-    }
+public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvokeInst {
+  public BStaticInvokeInst(SootMethodRef methodRef) {
+    if (!methodRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    this.methodRef = methodRef;
+  }
 
+  public int getInCount() {
+    return methodRef.parameterTypes().size();
+  }
 
-    public int getInCount()
-    {
-        return methodRef.parameterTypes().size();
-        
-    }
+  public Object clone() {
+    return new BStaticInvokeInst(methodRef);
+  }
 
+  public int getOutCount() {
+    if (methodRef.returnType() instanceof VoidType) return 0;
+    else return 1;
+  }
 
+  public String getName() {
+    return "staticinvoke";
+  }
 
-
-    public Object clone() 
-    {
-        return new  BStaticInvokeInst(methodRef);
-    }
-
-
-   
-    public int getOutCount()
-    {
-        if(methodRef.returnType() instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
-
-   
-
-    public String getName() { return "staticinvoke"; }
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseStaticInvokeInst(this);
-    }   
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseStaticInvokeInst(this);
+  }
 }

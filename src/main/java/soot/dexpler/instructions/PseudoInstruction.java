@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,13 +15,12 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
-
 import soot.dexpler.DexBody;
 
 public abstract class PseudoInstruction extends DexlibAbstractInstruction {
@@ -53,8 +52,7 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataFirstByte() {
-    if (dataFirstByte == -1)
-      throw new RuntimeException("Error: dataFirstByte was not set!");
+    if (dataFirstByte == -1) throw new RuntimeException("Error: dataFirstByte was not set!");
     return dataFirstByte;
   }
 
@@ -63,8 +61,7 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataLastByte() {
-    if (dataLastByte == -1)
-      throw new RuntimeException("Error: dataLastByte was not set!");
+    if (dataLastByte == -1) throw new RuntimeException("Error: dataLastByte was not set!");
     return dataLastByte;
   }
 
@@ -73,8 +70,7 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataSize() {
-    if (dataSize == -1)
-      throw new RuntimeException("Error: dataFirstByte was not set!");
+    if (dataSize == -1) throw new RuntimeException("Error: dataFirstByte was not set!");
     return dataSize;
   }
 
@@ -83,9 +79,4 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public abstract void computeDataOffsets(DexBody body);
-
-  
-  
-  
-  
 }

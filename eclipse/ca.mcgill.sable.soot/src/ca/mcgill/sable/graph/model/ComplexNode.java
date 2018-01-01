@@ -17,39 +17,33 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.graph.model;
+
 import java.util.*;
 
 public class ComplexNode extends Element {
 
-	private ArrayList children = new ArrayList();
-	
-	
-	public ComplexNode() {
-		super();
-	}
-	
-	public void addChild(Element child){
-		if (getChildren() == null){
-			setChildren(new ArrayList());
-		}
-		getChildren().add(child);
-		fireStructureChange(COMPLEX_CHILD, child);
-	}
+    private ArrayList children = new ArrayList();
 
-	/**
-	 * @return
-	 */
-	public ArrayList getChildren() {
-		return children;
-	}
+    public ComplexNode() {
+        super();
+    }
 
-	/**
-	 * @param list
-	 */
-	public void setChildren(ArrayList list) {
-		children = list;
-	}
+    public void addChild(Element child) {
+        if (getChildren() == null) {
+            setChildren(new ArrayList());
+        }
+        getChildren().add(child);
+        fireStructureChange(COMPLEX_CHILD, child);
+    }
 
+    /** @return */
+    public ArrayList getChildren() {
+        return children;
+    }
+
+    /** @param list */
+    public void setChildren(ArrayList list) {
+        children = list;
+    }
 }

@@ -1,14 +1,14 @@
 import java.lang.reflect.*;
 
 public class ReflectProblem {
-    public static void main(String [] args) throws Exception{
-        Field f = C.class.getField("cf");
-        System.out.println(f);
-    }
+  public static void main(String[] args) throws Exception {
+    Field f = C.class.getField("cf");
+    System.out.println(f);
+  }
 }
 
-interface I{}
+interface I {}
 
-class C implements I{
-    public int cf;
+class C implements I {
+  public int cf;
 }

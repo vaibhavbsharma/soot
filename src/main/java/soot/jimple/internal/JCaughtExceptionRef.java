@@ -18,63 +18,51 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.internal;
 
+import java.util.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
-public class JCaughtExceptionRef implements CaughtExceptionRef
-{
-    public JCaughtExceptionRef()
-    {
-    }
-    
-    public boolean equivTo(Object c)
-    {
-        return c instanceof CaughtExceptionRef;
-    }
+public class JCaughtExceptionRef implements CaughtExceptionRef {
+  public JCaughtExceptionRef() {}
 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
-    {
-        return 1729;
-    }
+  public boolean equivTo(Object c) {
+    return c instanceof CaughtExceptionRef;
+  }
 
-    public Object clone() 
-    {
-        return new JCaughtExceptionRef();
-    }
+  /** Returns a hash code for this object, consistent with structural equality. */
+  public int equivHashCode() {
+    return 1729;
+  }
 
-    public String toString()
-    {
-        return "@caughtexception";
-    }
-    
-    public void toString(UnitPrinter up)
-    {
-        up.identityRef(this);
-    }
+  public Object clone() {
+    return new JCaughtExceptionRef();
+  }
 
-    public final List<ValueBox> getUseBoxes()
-    {
-        return Collections.emptyList();
-    }
+  public String toString() {
+    return "@caughtexception";
+  }
 
-    public Type getType()
-    {
-        return RefType.v("java.lang.Throwable");
-    }
+  public void toString(UnitPrinter up) {
+    up.identityRef(this);
+  }
 
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
-    }
+  public final List<ValueBox> getUseBoxes() {
+    return Collections.emptyList();
+  }
+
+  public Type getType() {
+    return RefType.v("java.lang.Throwable");
+  }
+
+  public void apply(Switch sw) {
+    ((RefSwitch) sw).caseCaughtExceptionRef(this);
+  }
 }

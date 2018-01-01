@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,10 +24,7 @@ import java.util.*;
 import soot.*;
 import soot.jimple.*;
 
-/**
- * @author Ben Bellamy
- */
-public interface IEvalFunction
-{
-	Collection<Type> eval(Typing tg, Value expr, Stmt stmt);
+/** @author Ben Bellamy */
+public interface IEvalFunction {
+  Collection<Type> eval(Typing tg, Value expr, Stmt stmt);
 }

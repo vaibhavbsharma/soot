@@ -18,28 +18,24 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** An entry in the line number table.
+/**
+ * An entry in the line number table.
+ *
  * @see LineNumberTable_attribute
  * @author Clark Verbrugge
  */
 class line_number_table_entry {
-    /** Offset within bytecode of the start of the code for this line number. */
-    public int start_pc;
-    /** Line number within the source code. */
-    public int line_number;
-    /** Start instruction corresponding to start_pc */
-    public Instruction start_inst;
+  /** Offset within bytecode of the start of the code for this line number. */
+  public int start_pc;
+  /** Line number within the source code. */
+  public int line_number;
+  /** Start instruction corresponding to start_pc */
+  public Instruction start_inst;
 }

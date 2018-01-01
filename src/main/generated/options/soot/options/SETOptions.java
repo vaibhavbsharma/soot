@@ -1,4 +1,3 @@
-
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
  *
@@ -21,40 +20,36 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Side Effect tagger. */
-public class SETOptions
-{
-    private Map<String, String> options;
+public class SETOptions {
+  private Map<String, String> options;
 
-    public SETOptions( Map<String, String> options ) {
-        this.options = options;
-    }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
-    }
-    
-    /** Build naive dependence graph --
-    
-     * .
-    
-     * When set to true, the dependence graph is built with a node for 
-     * each statement, without merging the nodes for equivalent 
-     * statements. This makes it possible to measure the effect of 
-     * merging nodes for equivalent statements on the size of the 
-     * dependence graph.
-     */
-    public boolean naive() {
-        return soot.PhaseOptions.getBoolean( options, "naive" );
-    }
-    
+  public SETOptions(Map<String, String> options) {
+    this.options = options;
+  }
+
+  /**
+   * Enabled --
+   *
+   * <p>.
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
+
+  /**
+   * Build naive dependence graph --
+   *
+   * <p>.
+   *
+   * <p>When set to true, the dependence graph is built with a node for each statement, without
+   * merging the nodes for equivalent statements. This makes it possible to measure the effect of
+   * merging nodes for equivalent statements on the size of the dependence graph.
+   */
+  public boolean naive() {
+    return soot.PhaseOptions.getBoolean(options, "naive");
+  }
 }
-        

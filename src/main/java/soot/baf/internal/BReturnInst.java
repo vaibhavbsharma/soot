@@ -18,14 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
@@ -33,54 +29,40 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
-{
-    public BReturnInst(Type opType) { super(opType); }
-    
-    public int getInCount()
-    {
-        return 1;
-    }
+public class BReturnInst extends AbstractOpTypeInst implements ReturnInst {
+  public BReturnInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 1;
+  }
 
+  public Object clone() {
+    return new BReturnInst(getOpType());
+  }
 
-    public Object clone() 
-    {
-        return new  BReturnInst(getOpType());
-    }
+  public int getInMachineCount() {
+    return AbstractJasminClass.sizeOfType((getOpType()));
+  }
 
-    public int getInMachineCount()
-    {
-        return AbstractJasminClass.sizeOfType((getOpType()));
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getOutCount() {
+    return 0;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
+  public final String getName() {
+    return "return";
+  }
 
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseReturnInst(this);
+  }
 
-    final public String getName() { return "return"; }
-    
-
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseReturnInst(this);
-    }   
-    
-    public boolean fallsThrough()
-    {
-        return false;
-    }
-
-
-
-    
+  public boolean fallsThrough() {
+    return false;
+  }
 }

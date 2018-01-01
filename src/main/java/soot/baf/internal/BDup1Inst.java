@@ -18,76 +18,55 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
+import java.util.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
-public class BDup1Inst extends BDupInst implements Dup1Inst
-{
+public class BDup1Inst extends BDupInst implements Dup1Inst {
 
-    private final Type mOpType;
+  private final Type mOpType;
 
-    
+  public BDup1Inst(Type aOpType) {
+    mOpType = Baf.getDescriptorTypeOf(aOpType);
+  }
 
-    public BDup1Inst(Type aOpType)
-    {
-        mOpType = Baf.getDescriptorTypeOf(aOpType);
-    }
+  public Type getOp1Type() {
+    return mOpType;
+  }
 
-    public Type getOp1Type()
-    {
-        return mOpType;
-    }
+  public List<Type> getOpTypes() {
+    List<Type> res = new ArrayList<Type>();
+    res.add(mOpType);
+    return res;
+  }
 
+  public List<Type> getUnderTypes() {
+    return new ArrayList<Type>();
+  }
 
-    public List<Type> getOpTypes()
-    {
-        List<Type> res =  new ArrayList<Type>();
-        res.add(mOpType);
-        return res;
-    }
-    
-    public List<Type> getUnderTypes()
-    {
-        return new ArrayList<Type>();
-    }
+  public final String getName() {
+    return "dup1";
+  }
 
-    
-    final public String getName() { return "dup1"; }
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseDup1Inst(this);
+  }
 
+  public String toString() {
+    return "dup1." + Baf.bafDescriptorOf(mOpType);
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseDup1Inst(this);
-    }   
-
-
-
-    public String toString()
-    {
-        return "dup1." +  Baf.bafDescriptorOf(mOpType);        
-    }
-
-    public void toString( UnitPrinter up ) {
-        up.literal("dup1");
-        up.literal(".");
-        up.literal(Baf.bafDescriptorOf(mOpType));
-    }
-
-  
+  public void toString(UnitPrinter up) {
+    up.literal("dup1");
+    up.literal(".");
+    up.literal(Baf.bafDescriptorOf(mOpType));
+  }
 }
-
-
-

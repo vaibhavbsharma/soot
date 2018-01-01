@@ -19,37 +19,32 @@
 
 package soot.jimple.spark.fieldrw;
 
-import soot.*;
-
 import java.util.*;
-
+import soot.*;
 import soot.tagkit.*;
 
-public class FieldTagAggregator extends TagAggregator
-{    
-    public FieldTagAggregator( Singletons.Global g ) {}
-    public static FieldTagAggregator v() { return G.v().soot_jimple_spark_fieldrw_FieldTagAggregator(); }
+public class FieldTagAggregator extends TagAggregator {
+  public FieldTagAggregator(Singletons.Global g) {}
 
-    protected void internalTransform( Body b, String phaseName, Map options ) {
-        FieldReadTagAggregator.v().transform( b, phaseName, options );
-        FieldWriteTagAggregator.v().transform( b, phaseName, options );
-    }
+  public static FieldTagAggregator v() {
+    return G.v().soot_jimple_spark_fieldrw_FieldTagAggregator();
+  }
 
-    /** Decide whether this tag should be aggregated by this aggregator. */
-    public boolean wantTag(Tag t)
-    {
-        throw new RuntimeException();
-    }
+  protected void internalTransform(Body b, String phaseName, Map options) {
+    FieldReadTagAggregator.v().transform(b, phaseName, options);
+    FieldWriteTagAggregator.v().transform(b, phaseName, options);
+  }
 
-    public void considerTag(Tag t, Unit u, LinkedList<Tag> tags,
-			LinkedList<Unit> units)
-    {
-        throw new RuntimeException();
-    }
+  /** Decide whether this tag should be aggregated by this aggregator. */
+  public boolean wantTag(Tag t) {
+    throw new RuntimeException();
+  }
 
-    public String aggregatedName()
-    {
-        throw new RuntimeException();
-    }
+  public void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units) {
+    throw new RuntimeException();
+  }
+
+  public String aggregatedName() {
+    throw new RuntimeException();
+  }
 }
-

@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TColon extends Token
-{
-    public TColon()
-    {
-        super.setText(":");
-    }
+public final class TColon extends Token {
+  public TColon() {
+    super.setText(":");
+  }
 
-    public TColon(int line, int pos)
-    {
-        super.setText(":");
-        setLine(line);
-        setPos(pos);
-    }
+  public TColon(int line, int pos) {
+    super.setText(":");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TColon(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TColon(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTColon(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTColon(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TColon text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TColon text.");
+  }
 }

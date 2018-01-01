@@ -6,146 +6,119 @@ import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFullIdentNonvoidType extends PNonvoidType
-{
-    private TFullIdentifier _fullIdentifier_;
-    private final LinkedList<PArrayBrackets> _arrayBrackets_ = new LinkedList<PArrayBrackets>();
+public final class AFullIdentNonvoidType extends PNonvoidType {
+  private TFullIdentifier _fullIdentifier_;
+  private final LinkedList<PArrayBrackets> _arrayBrackets_ = new LinkedList<PArrayBrackets>();
 
-    public AFullIdentNonvoidType()
-    {
-        // Constructor
+  public AFullIdentNonvoidType() {
+    // Constructor
+  }
+
+  public AFullIdentNonvoidType(
+      @SuppressWarnings("hiding") TFullIdentifier _fullIdentifier_,
+      @SuppressWarnings("hiding") List<?> _arrayBrackets_) {
+    // Constructor
+    setFullIdentifier(_fullIdentifier_);
+
+    setArrayBrackets(_arrayBrackets_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AFullIdentNonvoidType(
+        cloneNode(this._fullIdentifier_), cloneList(this._arrayBrackets_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAFullIdentNonvoidType(this);
+  }
+
+  public TFullIdentifier getFullIdentifier() {
+    return this._fullIdentifier_;
+  }
+
+  public void setFullIdentifier(TFullIdentifier node) {
+    if (this._fullIdentifier_ != null) {
+      this._fullIdentifier_.parent(null);
     }
 
-    public AFullIdentNonvoidType(
-        @SuppressWarnings("hiding") TFullIdentifier _fullIdentifier_,
-        @SuppressWarnings("hiding") List<?> _arrayBrackets_)
-    {
-        // Constructor
-        setFullIdentifier(_fullIdentifier_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setArrayBrackets(_arrayBrackets_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AFullIdentNonvoidType(
-            cloneNode(this._fullIdentifier_),
-            cloneList(this._arrayBrackets_));
+    this._fullIdentifier_ = node;
+  }
+
+  public LinkedList<PArrayBrackets> getArrayBrackets() {
+    return this._arrayBrackets_;
+  }
+
+  public void setArrayBrackets(List<?> list) {
+    for (PArrayBrackets e : this._arrayBrackets_) {
+      e.parent(null);
+    }
+    this._arrayBrackets_.clear();
+
+    for (Object obj_e : list) {
+      PArrayBrackets e = (PArrayBrackets) obj_e;
+      if (e.parent() != null) {
+        e.parent().removeChild(e);
+      }
+
+      e.parent(this);
+      this._arrayBrackets_.add(e);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._fullIdentifier_) + toString(this._arrayBrackets_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._fullIdentifier_ == child) {
+      this._fullIdentifier_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAFullIdentNonvoidType(this);
+    if (this._arrayBrackets_.remove(child)) {
+      return;
     }
 
-    public TFullIdentifier getFullIdentifier()
-    {
-        return this._fullIdentifier_;
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._fullIdentifier_ == oldChild) {
+      setFullIdentifier((TFullIdentifier) newChild);
+      return;
     }
 
-    public void setFullIdentifier(TFullIdentifier node)
-    {
-        if(this._fullIdentifier_ != null)
-        {
-            this._fullIdentifier_.parent(null);
+    for (ListIterator<PArrayBrackets> i = this._arrayBrackets_.listIterator(); i.hasNext(); ) {
+      if (i.next() == oldChild) {
+        if (newChild != null) {
+          i.set((PArrayBrackets) newChild);
+          newChild.parent(this);
+          oldChild.parent(null);
+          return;
         }
 
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fullIdentifier_ = node;
+        i.remove();
+        oldChild.parent(null);
+        return;
+      }
     }
 
-    public LinkedList<PArrayBrackets> getArrayBrackets()
-    {
-        return this._arrayBrackets_;
-    }
-
-    public void setArrayBrackets(List<?> list)
-    {
-        for(PArrayBrackets e : this._arrayBrackets_)
-        {
-            e.parent(null);
-        }
-        this._arrayBrackets_.clear();
-
-        for(Object obj_e : list)
-        {
-            PArrayBrackets e = (PArrayBrackets) obj_e;
-            if(e.parent() != null)
-            {
-                e.parent().removeChild(e);
-            }
-
-            e.parent(this);
-            this._arrayBrackets_.add(e);
-        }
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._fullIdentifier_)
-            + toString(this._arrayBrackets_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._fullIdentifier_ == child)
-        {
-            this._fullIdentifier_ = null;
-            return;
-        }
-
-        if(this._arrayBrackets_.remove(child))
-        {
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._fullIdentifier_ == oldChild)
-        {
-            setFullIdentifier((TFullIdentifier) newChild);
-            return;
-        }
-
-        for(ListIterator<PArrayBrackets> i = this._arrayBrackets_.listIterator(); i.hasNext();)
-        {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PArrayBrackets) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

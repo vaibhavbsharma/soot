@@ -1,6 +1,4 @@
-
 package soot.jimple.toolkits.thread.mhp.stmt;
-
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -16,22 +14,14 @@ import soot.toolkits.graph.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+public class WaitStmt extends JPegStmt {
 
-public class WaitStmt extends JPegStmt
-{
-	
-	public WaitStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "wait";
-		this.caller = ca;
-		this.unit = un;
-		this.unitGraph = ug;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+  public WaitStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "wait";
+    this.caller = ca;
+    this.unit = un;
+    this.unitGraph = ug;
+    this.sootMethod = sm;
+  }
 }

@@ -20,85 +20,72 @@
 package soot.dava.toolkits.base.AST.transformations;
 
 import java.util.*;
-
 import soot.*;
+import soot.dava.*;
+import soot.dava.internal.AST.*;
+import soot.dava.internal.asg.*;
 import soot.jimple.*;
 import soot.util.Chain;
-import soot.dava.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.AST.*;
 
+public class VoidReturnRemover {
 
-public class VoidReturnRemover{
- 	
-	public static void cleanClass(SootClass s){
-		List methods = s.getMethods();
-		Iterator it = methods.iterator();
-		while(it.hasNext()){
-			removeReturn((SootMethod)it.next());
-		}
-	}
-	
-	
-    private static void removeReturn(SootMethod method){
-    	// check if this is a void method
-    	if(! (method.getReturnType() instanceof VoidType ))
-    		return;
-	
-    	//get the methodnode
-    	if(!method.hasActiveBody())
-    		return;
-    	
-        Chain units = ((DavaBody) method.getActiveBody()).getUnits();
+  public static void cleanClass(SootClass s) {
+    List methods = s.getMethods();
+    Iterator it = methods.iterator();
+    while (it.hasNext()) {
+      removeReturn((SootMethod) it.next());
+    }
+  }
 
-        if (units.size() != 1) 
-        	return;
+  private static void removeReturn(SootMethod method) {
+    // check if this is a void method
+    if (!(method.getReturnType() instanceof VoidType)) return;
 
-        ASTNode AST = (ASTNode) units.getFirst();
-        if(! (AST instanceof ASTMethodNode))
-        	throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+    // get the methodnode
+    if (!method.hasActiveBody()) return;
 
-		ASTMethodNode node = (ASTMethodNode)AST;
+    Chain units = ((DavaBody) method.getActiveBody()).getUnits();
 
-		//check there is only 1 subBody		
-	    List<Object> subBodies = node.get_SubBodies();
-	    if(subBodies.size()!=1)
-	    	return;
-	    
-	    List subBody = (List)subBodies.get(0);
-	    //see if the last of this is a stmtseq node
-	    if(subBody.size()==0){
-	    	//nothing inside subBody
-	    	return;
-	    }
+    if (units.size() != 1) return;
 
-	    //check last node is a ASTStatementSequenceNode
-	    ASTNode last = (ASTNode)subBody.get(subBody.size()-1);
-	    if(! (last instanceof ASTStatementSequenceNode)) 
-	    	return;
-	    	
-	    	
-	    //get last statement
-	    List<AugmentedStmt> stmts = ((ASTStatementSequenceNode)last).getStatements();
-	    if(stmts.size()==0){
-	    	//no stmts inside statement sequence node
-	    	subBody.remove(subBody.size()-1);
-	    	return;
-	    }
-	    AugmentedStmt lastas = (AugmentedStmt)stmts.get(stmts.size()-1);
-	    Stmt lastStmt = lastas.get_Stmt();
-	    if(! (lastStmt instanceof ReturnVoidStmt))
-	    		return;
-	    			
-	    //we can remove the lastStmt
-	    stmts.remove(stmts.size()-1);
-	    /*
-	     we need to check if we have made the size 0 in
-	     which case the stmtSeq Node should also be removed
-	     */
-	    if(stmts.size()==0)
-	    	subBody.remove(subBody.size()-1);
-	    
-	    
-    }//end method
+    ASTNode AST = (ASTNode) units.getFirst();
+    if (!(AST instanceof ASTMethodNode))
+      throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+
+    ASTMethodNode node = (ASTMethodNode) AST;
+
+    // check there is only 1 subBody
+    List<Object> subBodies = node.get_SubBodies();
+    if (subBodies.size() != 1) return;
+
+    List subBody = (List) subBodies.get(0);
+    // see if the last of this is a stmtseq node
+    if (subBody.size() == 0) {
+      // nothing inside subBody
+      return;
+    }
+
+    // check last node is a ASTStatementSequenceNode
+    ASTNode last = (ASTNode) subBody.get(subBody.size() - 1);
+    if (!(last instanceof ASTStatementSequenceNode)) return;
+
+    // get last statement
+    List<AugmentedStmt> stmts = ((ASTStatementSequenceNode) last).getStatements();
+    if (stmts.size() == 0) {
+      // no stmts inside statement sequence node
+      subBody.remove(subBody.size() - 1);
+      return;
+    }
+    AugmentedStmt lastas = (AugmentedStmt) stmts.get(stmts.size() - 1);
+    Stmt lastStmt = lastas.get_Stmt();
+    if (!(lastStmt instanceof ReturnVoidStmt)) return;
+
+    // we can remove the lastStmt
+    stmts.remove(stmts.size() - 1);
+    /*
+    we need to check if we have made the size 0 in
+    which case the stmtSeq Node should also be removed
+    */
+    if (stmts.size() == 0) subBody.remove(subBody.size() - 1);
+  } // end method
 }

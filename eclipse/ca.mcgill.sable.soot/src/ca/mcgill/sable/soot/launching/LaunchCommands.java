@@ -23,54 +23,53 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * A bunch of Soot commands (used in the plugin). It is possible to break
- * these by changing soot_options.xml but at least only have to change
- * here.
+ * A bunch of Soot commands (used in the plugin). It is possible to break these by changing
+ * soot_options.xml but at least only have to change here.
  */
 public class LaunchCommands {
 
-	private static final String RESOURCE_BUNDLE= "ca.mcgill.sable.soot.launching.launchingCmds";//$NON-NLS-1$
+    private static final String RESOURCE_BUNDLE =
+            "ca.mcgill.sable.soot.launching.launchingCmds"; // $NON-NLS-1$
 
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+    private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
-	public static final String SOOT_CLASSPATH = "cp";
-	public static final String XML_ATTRIBUTES = "xml-attributes";
-	public static final String KEEP_LINE_NUMBER = "keep-line-number";
-	public static final String OUTPUT = "f ";
-	public static final String JIMPLE_OUT = "J";
-	public static final String PROCESS_PATH = "process-dir";
-	public static final String DAVA = "f dava";
-	public static final String APP = "app ";
-	public static final String OUTPUT_DIR = "d";
-	public static final String INTRA_PROC = "O --p jop.cse disabled:false --f J ";
-	public static final String EVERYTHING = "W --O --p wjop.si insert-null-checks:false --p jop.cse disabled:false --app --f dava ";
-	public static final String SRC_PREC = "src-prec";
-	public static final String JIMPLE_IN = "J";
-	public static final String CLASS_IN = "class ";
-	public static final String GRIMP_OUT = "g";
-	public static final String INLINING = "--W --app --f grimp ";
-	public static final String STATIC = "--W --app --p wjop.smb diasabled:false --p wjop.si disabled:true --f grimp ";
+    public static final String SOOT_CLASSPATH = "cp";
+    public static final String XML_ATTRIBUTES = "xml-attributes";
+    public static final String KEEP_LINE_NUMBER = "keep-line-number";
+    public static final String OUTPUT = "f ";
+    public static final String JIMPLE_OUT = "J";
+    public static final String PROCESS_PATH = "process-dir";
+    public static final String DAVA = "f dava";
+    public static final String APP = "app ";
+    public static final String OUTPUT_DIR = "d";
+    public static final String INTRA_PROC = "O --p jop.cse disabled:false --f J ";
+    public static final String EVERYTHING =
+            "W --O --p wjop.si insert-null-checks:false --p jop.cse disabled:false --app --f dava ";
+    public static final String SRC_PREC = "src-prec";
+    public static final String JIMPLE_IN = "J";
+    public static final String CLASS_IN = "class ";
+    public static final String GRIMP_OUT = "g";
+    public static final String INLINING = "--W --app --f grimp ";
+    public static final String STATIC =
+            "--W --app --p wjop.smb diasabled:false --p wjop.si disabled:true --f grimp ";
     public static final String JAVA_IN = "java";
 
-	private LaunchCommands() {
-		// prevent instantiation of class
-	}
+    private LaunchCommands() {
+        // prevent instantiation of class
+    }
 
-	/**
-	 * Returns the resource object with the given key in
-	 * the resource bundle. If there isn't any value under
-	 * the given key, the key is returned, surrounded by '!'s.
-	 *
-	 * @param key the resource name
-	 * @return the string
-	 */	
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return "";
-		}
-	}
-	
-
+    /**
+     * Returns the resource object with the given key in the resource bundle. If there isn't any
+     * value under the given key, the key is returned, surrounded by '!'s.
+     *
+     * @param key the resource name
+     * @return the string
+     */
+    public static String getString(String key) {
+        try {
+            return fgResourceBundle.getString(key);
+        } catch (MissingResourceException e) {
+            return "";
+        }
+    }
 }

@@ -17,92 +17,85 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
-
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 
+public class SootAttrJavaIconGenerator implements Runnable {
 
-public class SootAttrJavaIconGenerator implements Runnable{
+    private IFile rec;
+    private SootAttributesHandler handler;
 
-	private IFile rec;
-	private SootAttributesHandler handler;
+    public void run() {
+        removeOldMarkers();
+        addSootAttributeMarkers();
+    }
 
-	public void run(){
-		removeOldMarkers();
-		addSootAttributeMarkers();		
-	}
-	
-	private boolean typesContainsOneOf(ArrayList list){
-		boolean result = false;
-		Iterator it = list.iterator();
-		while (it.hasNext()){
-			if (getHandler().getTypesToShow().contains(it.next())) {
-				result = true;
-				break;
-			}
-		}
-		return result;
-	}
-	
-	public void addSootAttributeMarkers(){//SootAttributesHandler handler, IFile rec) {
-		
-		if (getHandler().getAttrList() == null) return;
-		Iterator it = getHandler().getAttrList().iterator();
-		HashMap markerAttr = new HashMap();
-	
-		while (it.hasNext()) {
-			SootAttribute sa = (SootAttribute)it.next();
-			if (getHandler().isShowAllTypes() || typesContainsOneOf(sa.getAnalysisTypes())) {
-				if (((sa.getAllTextAttrs("<br>") == null) || (sa.getAllTextAttrs("<br>").length() == 0)) && 
-					((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
-				markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
-				try {
-					MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
-				}
-				catch(CoreException e) {
-					System.out.println(e.getMessage());
-				}
-			}
-		}
-	}
-	public void removeOldMarkers(){//IFile file){
-		try{
-			getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
-		}
-		catch(CoreException e){
-		}
-	}
-	/**
-	 * @return
-	 */
-	public SootAttributesHandler getHandler() {
-		return handler;
-	}
+    private boolean typesContainsOneOf(ArrayList list) {
+        boolean result = false;
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            if (getHandler().getTypesToShow().contains(it.next())) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * @return
-	 */
-	public IFile getRec() {
-		return rec;
-	}
+    public void addSootAttributeMarkers() { // SootAttributesHandler handler, IFile rec) {
 
-	/**
-	 * @param handler
-	 */
-	public void setHandler(SootAttributesHandler handler) {
-		this.handler = handler;
-	}
+        if (getHandler().getAttrList() == null) return;
+        Iterator it = getHandler().getAttrList().iterator();
+        HashMap markerAttr = new HashMap();
 
-	/**
-	 * @param file
-	 */
-	public void setRec(IFile file) {
-		rec = file;
-	}
+        while (it.hasNext()) {
+            SootAttribute sa = (SootAttribute) it.next();
+            if (getHandler().isShowAllTypes() || typesContainsOneOf(sa.getAnalysisTypes())) {
+                if (((sa.getAllTextAttrs("<br>") == null)
+                                || (sa.getAllTextAttrs("<br>").length() == 0))
+                        && ((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() == 0)))
+                    continue;
+                markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
+                try {
+                    MarkerUtilities.createMarker(
+                            getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+                } catch (CoreException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+    }
 
+    public void removeOldMarkers() { // IFile file){
+        try {
+            getRec().deleteMarkers(
+                            "ca.mcgill.sable.soot.sootattributemarker",
+                            true,
+                            IResource.DEPTH_INFINITE);
+        } catch (CoreException e) {
+        }
+    }
+    /** @return */
+    public SootAttributesHandler getHandler() {
+        return handler;
+    }
+
+    /** @return */
+    public IFile getRec() {
+        return rec;
+    }
+
+    /** @param handler */
+    public void setHandler(SootAttributesHandler handler) {
+        this.handler = handler;
+    }
+
+    /** @param file */
+    public void setRec(IFile file) {
+        rec = file;
+    }
 }

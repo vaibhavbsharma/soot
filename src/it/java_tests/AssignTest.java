@@ -1,24 +1,24 @@
 public class AssignTest {
 
-    public int h = 0;
-    
-    public static void main (String [] args) {
-        int x = 9;
-        int j = 0;
-        int y = 8;
+  public int h = 0;
 
-        j = x + y;
-        j += y;
-        j -= y;
-        j /= y;
+  public static void main(String[] args) {
+    int x = 9;
+    int j = 0;
+    int y = 8;
 
-        AssignTest t = new AssignTest();
-        t.run();
-    }
+    j = x + y;
+    j += y;
+    j -= y;
+    j /= y;
 
-    private void run(){
-        h = 8;
+    AssignTest t = new AssignTest();
+    t.run();
+  }
 
-        h++;
-    }
+  private void run() {
+    h = 8;
+
+    h++;
+  }
 }

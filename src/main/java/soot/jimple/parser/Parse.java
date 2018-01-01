@@ -18,133 +18,109 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.parser;
 
+import java.io.*;
+import java.util.*;
+import soot.*;
 import soot.jimple.JimpleBody;
-import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
-import java.io.*;
+import soot.jimple.parser.parser.*;
 import soot.util.*;
-import java.util.*;
-
-import soot.*;
 
 /** Provides a test-driver for the Jimple parser. */
 @Deprecated
-public class Parse 
-{
-    private static final String EXT = ".jimple";
-    
-    private static final String USAGE = "usage: java Parse [options] " +
-        "jimple_file [jimple_file ...]";
+public class Parse {
+  private static final String EXT = ".jimple";
 
+  private static final String USAGE =
+      "usage: java Parse [options] " + "jimple_file [jimple_file ...]";
 
-    /*
-      Parses a jimple input stream.
-      If you just want to get the method bodies for a SootClass, pass as the second
-      argument the SootClass you want fill it's method bodies.
-      If you want to create a SootClass for the inputStream set the 2nd arg to null.
-    */
-    static public SootClass parse(InputStream istream, SootClass sc) 
-    {  
-        Start tree = null;
-        
-        Parser p = 
-                new Parser(new Lexer(
-                      new PushbackReader(new EscapedReader(new BufferedReader(
-                              new InputStreamReader(istream))), 1024)));        
+  /*
+    Parses a jimple input stream.
+    If you just want to get the method bodies for a SootClass, pass as the second
+    argument the SootClass you want fill it's method bodies.
+    If you want to create a SootClass for the inputStream set the 2nd arg to null.
+  */
+  public static SootClass parse(InputStream istream, SootClass sc) {
+    Start tree = null;
 
-        try {
-            tree = p.parse();
-        } catch(ParserException e) {
-            throw new RuntimeException("Parser exception occurred: " + e);
-        } catch(LexerException e) {
-            throw new RuntimeException("Lexer exception occurred: " + e);
-        } catch(IOException e) {
-            throw new RuntimeException("IOException occurred: " + e);
-        }
-        
-        Walker w;
-        if(sc == null)
-            w = new Walker(null);
-        else {
-            w = new BodyExtractorWalker(sc, null, new HashMap<SootMethod, JimpleBody>());
-        }
-        
-        tree.apply(w);          
-        return w.getSootClass();        
+    Parser p =
+        new Parser(
+            new Lexer(
+                new PushbackReader(
+                    new EscapedReader(new BufferedReader(new InputStreamReader(istream))), 1024)));
+
+    try {
+      tree = p.parse();
+    } catch (ParserException e) {
+      throw new RuntimeException("Parser exception occurred: " + e);
+    } catch (LexerException e) {
+      throw new RuntimeException("Lexer exception occurred: " + e);
+    } catch (IOException e) {
+      throw new RuntimeException("IOException occurred: " + e);
     }
 
+    Walker w;
+    if (sc == null) w = new Walker(null);
+    else {
+      w = new BodyExtractorWalker(sc, null, new HashMap<SootMethod, JimpleBody>());
+    }
 
-    public static void main(String args[])  
-        throws java.lang.Exception
-              
+    tree.apply(w);
+    return w.getSootClass();
+  }
 
-    {
+  public static void main(String args[]) throws java.lang.Exception {
+
     boolean verbose = false;
-        InputStream inFile;
-        
-        // check arguments
-        if (args.length < 1) {
-            G.v().out.println(USAGE);
-            System.exit(0);
+    InputStream inFile;
+
+    // check arguments
+    if (args.length < 1) {
+      G.v().out.println(USAGE);
+      System.exit(0);
+    }
+
+    Scene.v().setPhantomRefs(true);
+
+    for (String arg : args) {
+      if (arg.startsWith("-")) {
+        arg = arg.substring(1);
+        if (arg.equals("d")) {
+        } else if (arg.equals("v")) verbose = true;
+      } else {
+
+        try {
+          if (verbose) G.v().out.println(" ... looking for " + arg);
+          inFile = new FileInputStream(arg);
+        } catch (FileNotFoundException e) {
+          if (arg.endsWith(EXT)) {
+            G.v().out.println(" *** can't find " + arg);
+            continue;
+          }
+          arg = arg + EXT;
+          try {
+            if (verbose) G.v().out.println(" ... looking for " + arg);
+            inFile = new BufferedInputStream(new FileInputStream(arg));
+          } catch (FileNotFoundException ee) {
+            G.v().out.println(" *** can't find " + arg);
+            continue;
+          }
         }
 
+        Parser p = new Parser(new Lexer(new PushbackReader(new InputStreamReader(inFile), 1024)));
 
-        Scene.v().setPhantomRefs(true);
+        Start tree = p.parse();
 
-        for (String arg : args) {
-            if (arg.startsWith("-")) {
-                arg = arg.substring(1);
-                if (arg.equals("d")) {
-				} else if (arg.equals("v"))
-                    verbose = true;
-            }
-            else {
-
-               
-                try {
-                    if (verbose)
-                        G.v().out.println(" ... looking for " + arg);
-                    inFile = new FileInputStream(arg);
-                } catch (FileNotFoundException e) {
-                    if (arg.endsWith(EXT)) {
-                        G.v().out.println(" *** can't find " + arg);
-                        continue;
-                    }
-                    arg = arg + EXT;
-                    try {
-                        if (verbose)
-                            G.v().out.println(" ... looking for " + arg);
-                        inFile = new BufferedInputStream(new FileInputStream(arg));
-                    } catch (FileNotFoundException ee) {
-                        G.v().out.println(" *** can't find " + arg);
-                        continue;
-                    }
-                }
-               
-                Parser p =
-                    new Parser(
-                               new Lexer(
-                                         new PushbackReader(
-                                                            new InputStreamReader(inFile), 1024)));
-
-                Start tree = p.parse();
-                    
-                tree.apply(new Walker(null));               
-            }
-        }
-    } // main
+        tree.apply(new Walker(null));
+      }
+    }
+  } // main
 } // Parse
-
-
-
-
-

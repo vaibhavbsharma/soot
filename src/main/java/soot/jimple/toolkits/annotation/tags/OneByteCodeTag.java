@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -28,6 +28,4 @@ package soot.jimple.toolkits.annotation.tags;
 import soot.tagkit.*;
 
 /** A tag which is guaranteed to contain no more than 1 byte of information. */
-public interface OneByteCodeTag extends Tag
-{
-}
+public interface OneByteCodeTag extends Tag {}

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -28,47 +28,34 @@
 
 package ashes.examples.addattributes;
 
+import java.util.*;
 import soot.*;
 import soot.tagkit.*;
-import java.util.*;
 
-
-/** Annotation example, adds a "Hello World!" string
- *  as method attribute to each method.
- */ 
-
-public class Main
-{
-    public static void main(String[] args)
-    {
+/** Annotation example, adds a "Hello World!" string as method attribute to each method. */
+public class Main {
+    public static void main(String[] args) {
         /* adds the transformer. */
-        PackManager.v().getPack("jtp").add(new
-                        Transform("annotexample",
-                        AnnExampleWrapper.v()));
+        PackManager.v().getPack("jtp").add(new Transform("annotexample", AnnExampleWrapper.v()));
 
         /* invokes Soot */
         soot.Main.main(args);
     }
 }
 
-
-class AnnExampleWrapper extends BodyTransformer
-{
-    private static AnnExampleWrapper instance =
-        new AnnExampleWrapper();
+class AnnExampleWrapper extends BodyTransformer {
+    private static AnnExampleWrapper instance = new AnnExampleWrapper();
 
     private AnnExampleWrapper() {};
 
-    public static AnnExampleWrapper v()
-    {
+    public static AnnExampleWrapper v() {
         return instance;
     }
 
-    public void internalTransform(Body body, String phaseName, Map options)
-    {
+    public void internalTransform(Body body, String phaseName, Map options) {
         SootMethod method = body.getMethod();
         String attr = new String("Hello world!");
-        
+
         Tag example = new GenericAttribute("Example", attr.getBytes());
         method.addTag(example);
     }

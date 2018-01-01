@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AVirtualNonstaticInvoke extends PNonstaticInvoke
-{
-    private TVirtualinvoke _virtualinvoke_;
+public final class AVirtualNonstaticInvoke extends PNonstaticInvoke {
+  private TVirtualinvoke _virtualinvoke_;
 
-    public AVirtualNonstaticInvoke()
-    {
-        // Constructor
+  public AVirtualNonstaticInvoke() {
+    // Constructor
+  }
+
+  public AVirtualNonstaticInvoke(@SuppressWarnings("hiding") TVirtualinvoke _virtualinvoke_) {
+    // Constructor
+    setVirtualinvoke(_virtualinvoke_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AVirtualNonstaticInvoke(cloneNode(this._virtualinvoke_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAVirtualNonstaticInvoke(this);
+  }
+
+  public TVirtualinvoke getVirtualinvoke() {
+    return this._virtualinvoke_;
+  }
+
+  public void setVirtualinvoke(TVirtualinvoke node) {
+    if (this._virtualinvoke_ != null) {
+      this._virtualinvoke_.parent(null);
     }
 
-    public AVirtualNonstaticInvoke(
-        @SuppressWarnings("hiding") TVirtualinvoke _virtualinvoke_)
-    {
-        // Constructor
-        setVirtualinvoke(_virtualinvoke_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AVirtualNonstaticInvoke(
-            cloneNode(this._virtualinvoke_));
+    this._virtualinvoke_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._virtualinvoke_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._virtualinvoke_ == child) {
+      this._virtualinvoke_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAVirtualNonstaticInvoke(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._virtualinvoke_ == oldChild) {
+      setVirtualinvoke((TVirtualinvoke) newChild);
+      return;
     }
 
-    public TVirtualinvoke getVirtualinvoke()
-    {
-        return this._virtualinvoke_;
-    }
-
-    public void setVirtualinvoke(TVirtualinvoke node)
-    {
-        if(this._virtualinvoke_ != null)
-        {
-            this._virtualinvoke_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._virtualinvoke_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._virtualinvoke_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._virtualinvoke_ == child)
-        {
-            this._virtualinvoke_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._virtualinvoke_ == oldChild)
-        {
-            setVirtualinvoke((TVirtualinvoke) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

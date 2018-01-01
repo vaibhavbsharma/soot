@@ -18,51 +18,46 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
 
+/** Represents a tag that just has a string to be printed with the code. */
+public class StringTag implements Tag {
+  String s;
+  private String analysisType = "Unknown";
 
-/** Represents a tag that just has a string to be printed with the code.
- */
+  public StringTag(String s, String type) {
+    this(s);
+    analysisType = type;
+  }
 
-public class StringTag implements  Tag
-{
-    String s;
-    private String analysisType = "Unknown";
+  public StringTag(String s) {
+    this.s = s;
+  }
 
-    public StringTag(String s, String type){
-        this(s);
-        analysisType = type;
-    }
-    
-    public StringTag( String s ) {
-        this.s = s;
-    }
+  public String toString() {
+    return s;
+  }
 
-    public String toString() {
-        return s;
-    }
+  public String getAnalysisType() {
+    return analysisType;
+  }
 
-    public String getAnalysisType(){
-        return analysisType;
-    }
+  /** Returns the tag name. */
+  public String getName() {
+    return "StringTag";
+  }
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "StringTag";
-    }
+  public String getInfo() {
+    return s;
+  }
 
-    public String getInfo(){
-        return s;
-    }
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "StringTag has no value for bytecode" );
-    }
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("StringTag has no value for bytecode");
+  }
 }
-

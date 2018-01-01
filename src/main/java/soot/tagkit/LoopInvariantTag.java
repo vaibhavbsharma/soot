@@ -18,27 +18,22 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
 
+/** Represents a tag that just has a string to be printed with the code. */
+public class LoopInvariantTag extends StringTag {
 
-/** Represents a tag that just has a string to be printed with the code.
- */
+  public LoopInvariantTag(String s) {
+    super(s);
+  }
 
-public class LoopInvariantTag extends StringTag
-{
-
-    public LoopInvariantTag(String s){
-        super(s);
-    }
-    
-    /** Returns the tag name. */
-    public String getName() {
-        return "LoopInvariantTag";
-    }
+  /** Returns the tag name. */
+  public String getName() {
+    return "LoopInvariantTag";
+  }
 }
-

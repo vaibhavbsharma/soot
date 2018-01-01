@@ -1,4 +1,3 @@
-
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
  *
@@ -21,86 +20,77 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Purity Analysis [AM]. */
-public class PurityOptions
-{
-    private Map<String, String> options;
+public class PurityOptions {
+  private Map<String, String> options;
 
-    public PurityOptions( Map<String, String> options ) {
-        this.options = options;
-    }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
-    }
-    
-    /** Dump one .dot files for each method summary --
-    
-     * .
-    
-     * 
-     */
-    public boolean dump_summaries() {
-        return soot.PhaseOptions.getBoolean( options, "dump-summaries" );
-    }
-    
-    /** Dump .dot call-graph annotated with method summaries (huge) --
-    
-     * .
-    
-     * 
-     */
-    public boolean dump_cg() {
-        return soot.PhaseOptions.getBoolean( options, "dump-cg" );
-    }
-    
-    /** Dump one .dot for each intra-procedural method analysis (long) --
-    
-     * .
-    
-     * 
-     */
-    public boolean dump_intra() {
-        return soot.PhaseOptions.getBoolean( options, "dump-intra" );
-    }
-    
-    /** Print analysis results --
-    
-     * .
-    
-     * 
-     */
-    public boolean print() {
-        return soot.PhaseOptions.getBoolean( options, "print" );
-    }
-    
-    /** Annotate class files --
-    
-     * Marks pure methods with a purity bytecode attribute.
-    
-     * 
-     */
-    public boolean annotate() {
-        return soot.PhaseOptions.getBoolean( options, "annotate" );
-    }
-    
-    /** Be (quite) verbose --
-    
-     * .
-    
-     * 
-     */
-    public boolean verbose() {
-        return soot.PhaseOptions.getBoolean( options, "verbose" );
-    }
-    
+  public PurityOptions(Map<String, String> options) {
+    this.options = options;
+  }
+
+  /**
+   * Enabled --
+   *
+   * <p>.
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
+
+  /**
+   * Dump one .dot files for each method summary --
+   *
+   * <p>.
+   */
+  public boolean dump_summaries() {
+    return soot.PhaseOptions.getBoolean(options, "dump-summaries");
+  }
+
+  /**
+   * Dump .dot call-graph annotated with method summaries (huge) --
+   *
+   * <p>.
+   */
+  public boolean dump_cg() {
+    return soot.PhaseOptions.getBoolean(options, "dump-cg");
+  }
+
+  /**
+   * Dump one .dot for each intra-procedural method analysis (long) --
+   *
+   * <p>.
+   */
+  public boolean dump_intra() {
+    return soot.PhaseOptions.getBoolean(options, "dump-intra");
+  }
+
+  /**
+   * Print analysis results --
+   *
+   * <p>.
+   */
+  public boolean print() {
+    return soot.PhaseOptions.getBoolean(options, "print");
+  }
+
+  /**
+   * Annotate class files --
+   *
+   * <p>Marks pure methods with a purity bytecode attribute.
+   */
+  public boolean annotate() {
+    return soot.PhaseOptions.getBoolean(options, "annotate");
+  }
+
+  /**
+   * Be (quite) verbose --
+   *
+   * <p>.
+   */
+  public boolean verbose() {
+    return soot.PhaseOptions.getBoolean(options, "verbose");
+  }
 }
-        

@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AAndBinop extends PBinop
-{
-    private TAnd _and_;
+public final class AAndBinop extends PBinop {
+  private TAnd _and_;
 
-    public AAndBinop()
-    {
-        // Constructor
+  public AAndBinop() {
+    // Constructor
+  }
+
+  public AAndBinop(@SuppressWarnings("hiding") TAnd _and_) {
+    // Constructor
+    setAnd(_and_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AAndBinop(cloneNode(this._and_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAAndBinop(this);
+  }
+
+  public TAnd getAnd() {
+    return this._and_;
+  }
+
+  public void setAnd(TAnd node) {
+    if (this._and_ != null) {
+      this._and_.parent(null);
     }
 
-    public AAndBinop(
-        @SuppressWarnings("hiding") TAnd _and_)
-    {
-        // Constructor
-        setAnd(_and_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AAndBinop(
-            cloneNode(this._and_));
+    this._and_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._and_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._and_ == child) {
+      this._and_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAAndBinop(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._and_ == oldChild) {
+      setAnd((TAnd) newChild);
+      return;
     }
 
-    public TAnd getAnd()
-    {
-        return this._and_;
-    }
-
-    public void setAnd(TAnd node)
-    {
-        if(this._and_ != null)
-        {
-            this._and_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._and_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._and_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._and_ == child)
-        {
-            this._and_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._and_ == oldChild)
-        {
-            setAnd((TAnd) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

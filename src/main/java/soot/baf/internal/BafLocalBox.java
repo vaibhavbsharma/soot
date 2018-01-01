@@ -18,25 +18,21 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
 
 package soot.baf.internal;
 
 import soot.*;
 
-public class BafLocalBox extends AbstractValueBox
-{
-    public BafLocalBox(Value value)
-    {
-        setValue(value);
-    }
+public class BafLocalBox extends AbstractValueBox {
+  public BafLocalBox(Value value) {
+    setValue(value);
+  }
 
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof BafLocal;
-    }
+  public boolean canContainValue(Value value) {
+    return value instanceof BafLocal;
+  }
 }

@@ -19,10 +19,8 @@
 
 package ca.mcgill.sable.soot.launching;
 
-/**
- * Listener interface for handling a Soot Output Event
- */
+/** Listener interface for handling a Soot Output Event */
 public interface ISootOutputEventListener {
 
-	public void handleSootOutputEvent(SootOutputEvent event);
+    public void handleSootOutputEvent(SootOutputEvent event);
 }

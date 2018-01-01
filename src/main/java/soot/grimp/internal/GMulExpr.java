@@ -18,15 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
-
 
 package soot.grimp.internal;
 
@@ -35,16 +30,24 @@ import soot.grimp.*;
 import soot.jimple.*;
 import soot.util.*;
 
-public class GMulExpr extends AbstractGrimpFloatBinopExpr implements MulExpr
-{
-    public GMulExpr(Value op1, Value op2) { super(op1, op2); }
-    public final String getSymbol() { return " * "; }
-    public final int getPrecedence() { return 800; }
-    public void apply(Switch sw) { ((ExprSwitch) sw).caseMulExpr(this); }
-    
-    public Object clone() 
-    {
-        return new GMulExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
-    }    
-}
+public class GMulExpr extends AbstractGrimpFloatBinopExpr implements MulExpr {
+  public GMulExpr(Value op1, Value op2) {
+    super(op1, op2);
+  }
 
+  public final String getSymbol() {
+    return " * ";
+  }
+
+  public final int getPrecedence() {
+    return 800;
+  }
+
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseMulExpr(this);
+  }
+
+  public Object clone() {
+    return new GMulExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+  }
+}

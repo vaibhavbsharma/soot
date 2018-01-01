@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -28,28 +28,28 @@ package soot.toolkits.scalar;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
- * Abstract class that provides the fixed point iteration functionality required
- * by all ForwardFlowAnalyses.
+ * Abstract class that provides the fixed point iteration functionality required by all
+ * ForwardFlowAnalyses.
  */
 public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 
-	/**
-	 * Construct the analysis from a DirectedGraph representation of a Body.
-	 */
-	public ForwardFlowAnalysis(DirectedGraph<N> graph) {
-		super(graph);
-	}
+  /** Construct the analysis from a DirectedGraph representation of a Body. */
+  public ForwardFlowAnalysis(DirectedGraph<N> graph) {
+    super(graph);
+  }
 
-	@Override
-	protected boolean isForward() {
-		return true;
-	}
+  @Override
+  protected boolean isForward() {
+    return true;
+  }
 
-	@Override
-	protected void doAnalysis() {
-		int i = doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, unitToAfterFlow);
+  @Override
+  protected void doAnalysis() {
+    int i =
+        doAnalysis(
+            GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, unitToAfterFlow);
 
-		soot.Timers.v().totalFlowNodes += graph.size();
-		soot.Timers.v().totalFlowComputations += i;
-	}
+    soot.Timers.v().totalFlowNodes += graph.size();
+    soot.Timers.v().totalFlowComputations += i;
+  }
 }

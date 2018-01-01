@@ -18,43 +18,33 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
+import java.util.*;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import java.util.*;
 
-public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr 
-{
-    public GNewMultiArrayExpr(ArrayType type, List sizes)
-    {
-        super(type, new ValueBox[sizes.size()]);
+public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
+  public GNewMultiArrayExpr(ArrayType type, List sizes) {
+    super(type, new ValueBox[sizes.size()]);
 
-        for(int i = 0; i < sizes.size(); i++)
-            sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
-    }
-    
-    public Object clone() 
-    {
-        List clonedSizes =  new ArrayList(getSizeCount());
+    for (int i = 0; i < sizes.size(); i++)
+      sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
+  }
 
-        for(int i = 0; i <  getSizeCount(); i++) {
-            clonedSizes.add(i,  Grimp.cloneIfNecessary(getSize(i)));
-        }
-                                                         
-        
-        return new GNewMultiArrayExpr(getBaseType(), clonedSizes);
+  public Object clone() {
+    List clonedSizes = new ArrayList(getSizeCount());
+
+    for (int i = 0; i < getSizeCount(); i++) {
+      clonedSizes.add(i, Grimp.cloneIfNecessary(getSize(i)));
     }
 
+    return new GNewMultiArrayExpr(getBaseType(), clonedSizes);
+  }
 }

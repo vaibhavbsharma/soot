@@ -17,7 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.callgraph;
 
 import ca.mcgill.sable.graph.model.*;
@@ -25,81 +24,64 @@ import soot.*;
 
 public class CallGraphNode extends SimpleNode {
 
-	private CallGraphGenerator generator;
-	private boolean expand = true;
-	private boolean expandCollape = false;
-	private boolean collapse = false;
-	
-	public boolean isLeaf(){
-		if ((getOutputs() == null) ||(getOutputs().size() == 0)) return true;
-		return false;
-	}
+    private CallGraphGenerator generator;
+    private boolean expand = true;
+    private boolean expandCollape = false;
+    private boolean collapse = false;
 
-	public CallGraphNode() {
-		super();
-	}
-	
-	public void setData(Object obj){
-		if (obj instanceof SootMethod){
-			data = obj;
-			firePropertyChange(DATA, obj);
-		}
-	}
+    public boolean isLeaf() {
+        if ((getOutputs() == null) || (getOutputs().size() == 0)) return true;
+        return false;
+    }
 
-	/**
-	 * @return
-	 */
-	public CallGraphGenerator getGenerator() {
-		return generator;
-	}
+    public CallGraphNode() {
+        super();
+    }
 
-	/**
-	 * @param generator
-	 */
-	public void setGenerator(CallGraphGenerator generator) {
-		this.generator = generator;
-	}
+    public void setData(Object obj) {
+        if (obj instanceof SootMethod) {
+            data = obj;
+            firePropertyChange(DATA, obj);
+        }
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isExpand() {
-		return expand;
-	}
+    /** @return */
+    public CallGraphGenerator getGenerator() {
+        return generator;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setExpand(boolean b) {
-		expand = b;
-	}
+    /** @param generator */
+    public void setGenerator(CallGraphGenerator generator) {
+        this.generator = generator;
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isCollapse() {
-		return collapse;
-	}
+    /** @return */
+    public boolean isExpand() {
+        return expand;
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isExpandCollape() {
-		return expandCollape;
-	}
+    /** @param b */
+    public void setExpand(boolean b) {
+        expand = b;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setCollapse(boolean b) {
-		collapse = b;
-	}
+    /** @return */
+    public boolean isCollapse() {
+        return collapse;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setExpandCollape(boolean b) {
-		expandCollape = b;
-	}
+    /** @return */
+    public boolean isExpandCollape() {
+        return expandCollape;
+    }
 
+    /** @param b */
+    public void setCollapse(boolean b) {
+        collapse = b;
+    }
+
+    /** @param b */
+    public void setExpandCollape(boolean b) {
+        expandCollape = b;
+    }
 }

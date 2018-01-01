@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TThrow extends Token
-{
-    public TThrow()
-    {
-        super.setText("throw");
-    }
+public final class TThrow extends Token {
+  public TThrow() {
+    super.setText("throw");
+  }
 
-    public TThrow(int line, int pos)
-    {
-        super.setText("throw");
-        setLine(line);
-        setPos(pos);
-    }
+  public TThrow(int line, int pos) {
+    super.setText("throw");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TThrow(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TThrow(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTThrow(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTThrow(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TThrow text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TThrow text.");
+  }
 }

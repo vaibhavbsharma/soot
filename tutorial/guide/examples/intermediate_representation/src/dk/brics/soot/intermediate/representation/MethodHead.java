@@ -6,20 +6,19 @@ public class MethodHead extends Statement {
     public Variable[] params;
 
     public MethodHead(Variable[] params) {
-    	this.params = params;
+        this.params = params;
     }
-	
-	@Override
-	public <T> T process(StatementProcessor<T> v) {
-		return v.dispatch(this);
-	}
-	
-	public String toString() {
-		String res = "";
-		for (Variable v: params) {
-			res += v;
-		}
-		return res;
-	}
 
+    @Override
+    public <T> T process(StatementProcessor<T> v) {
+        return v.dispatch(this);
+    }
+
+    public String toString() {
+        String res = "";
+        for (Variable v : params) {
+            res += v;
+        }
+        return res;
+    }
 }

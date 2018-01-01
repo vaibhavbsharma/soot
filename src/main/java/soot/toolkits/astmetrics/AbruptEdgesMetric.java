@@ -24,80 +24,73 @@ import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 
 /*
- * Should take care of the following metrics:
- * 
- * Break Statements
+* Should take care of the following metrics:
+*
+* Break Statements
 
-       1. of implicit breaks (breaking inner most loop)   DONE
-       2. of explicit breaks (breaking an outer loop)        NOTQUITE DONE
-       3. of explicit breaks (breaking other constructs)      DONE (any explicit break)
+      1. of implicit breaks (breaking inner most loop)   DONE
+      2. of explicit breaks (breaking an outer loop)        NOTQUITE DONE
+      3. of explicit breaks (breaking other constructs)      DONE (any explicit break)
 
- * Continue Statements
+* Continue Statements
 
-       1. of implicit continues (breaking inner most loop)   DONE
-       2. of explicit continues (breaking outer loops)       DONE
-  */
+      1. of implicit continues (breaking inner most loop)   DONE
+      2. of explicit continues (breaking outer loops)       DONE
+ */
 public class AbruptEdgesMetric extends ASTMetric {
 
-	private int iBreaks, eBreaks;
-	private int iContinues, eContinues;
-	
-	public AbruptEdgesMetric(polyglot.ast.Node astNode){
-		super(astNode);
-	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * @see soot.toolkits.astmetrics.ASTMetric#reset()
-	 * Implementation of the abstract method which is 
-	 * invoked by parent constructor and whenever the classDecl in the polyglot changes 
-	 */
-	public void reset(){
-		iBreaks=eBreaks=iContinues=eContinues=0;
-	}
+  private int iBreaks, eBreaks;
+  private int iContinues, eContinues;
 
-	/*
-	 * Implementation of the abstract method
-	 * 
-	 * Should add the metrics to the data object sent
-	 */
-	public void addMetrics(ClassData data){
+  public AbruptEdgesMetric(polyglot.ast.Node astNode) {
+    super(astNode);
+  }
 
-		data.addMetric(new MetricData("Total-breaks",new Integer(iBreaks+eBreaks)));
-		data.addMetric(new MetricData("I-breaks",new Integer(iBreaks)));
-		data.addMetric(new MetricData("E-breaks",new Integer(eBreaks)));
+  /*
+   * (non-Javadoc)
+   * @see soot.toolkits.astmetrics.ASTMetric#reset()
+   * Implementation of the abstract method which is
+   * invoked by parent constructor and whenever the classDecl in the polyglot changes
+   */
+  public void reset() {
+    iBreaks = eBreaks = iContinues = eContinues = 0;
+  }
 
-		data.addMetric(new MetricData("Total-continues",new Integer(iContinues+eContinues)));
-		data.addMetric(new MetricData("I-continues",new Integer(iContinues)));
-		data.addMetric(new MetricData("E-continues",new Integer(eContinues)));
-		
-		data.addMetric(new MetricData("Total-Abrupt",new Integer(iBreaks+eBreaks+iContinues+eContinues)));
-	}
-	
-	
-	/*
-	 * A branch in polyglot is either a break or continue
-	 */
-	public NodeVisitor enter(Node parent, Node n){
-		if(n instanceof Branch){
-			Branch branch = (Branch)n;
-			if(branch.kind().equals(Branch.BREAK)){
-				if(branch.label() != null) 
-					eBreaks++;
-				else 
-					iBreaks++;
-			}
-			else if(branch.kind().equals(Branch.CONTINUE)){
-				if(branch.label() != null)
-					eContinues++;
-				else
-					iContinues++;
-			}
-			else{
-				System.out.println("\t Error:'"+branch.toString()+"'");
-			}
-		}
-		return enter(n);
-	}
+  /*
+   * Implementation of the abstract method
+   *
+   * Should add the metrics to the data object sent
+   */
+  public void addMetrics(ClassData data) {
+
+    data.addMetric(new MetricData("Total-breaks", new Integer(iBreaks + eBreaks)));
+    data.addMetric(new MetricData("I-breaks", new Integer(iBreaks)));
+    data.addMetric(new MetricData("E-breaks", new Integer(eBreaks)));
+
+    data.addMetric(new MetricData("Total-continues", new Integer(iContinues + eContinues)));
+    data.addMetric(new MetricData("I-continues", new Integer(iContinues)));
+    data.addMetric(new MetricData("E-continues", new Integer(eContinues)));
+
+    data.addMetric(
+        new MetricData("Total-Abrupt", new Integer(iBreaks + eBreaks + iContinues + eContinues)));
+  }
+
+  /*
+   * A branch in polyglot is either a break or continue
+   */
+  public NodeVisitor enter(Node parent, Node n) {
+    if (n instanceof Branch) {
+      Branch branch = (Branch) n;
+      if (branch.kind().equals(Branch.BREAK)) {
+        if (branch.label() != null) eBreaks++;
+        else iBreaks++;
+      } else if (branch.kind().equals(Branch.CONTINUE)) {
+        if (branch.label() != null) eContinues++;
+        else iContinues++;
+      } else {
+        System.out.println("\t Error:'" + branch.toString() + "'");
+      }
+    }
+    return enter(n);
+  }
 }

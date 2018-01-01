@@ -18,14 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
@@ -33,46 +29,36 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BIfCmpLtInst extends AbstractOpTypeBranchInst 
-                          implements IfCmpLtInst
-{
-    public BIfCmpLtInst(Type opType, Unit target)
-    {
-        super(opType, Baf.v().newInstBox(target));
-    }
-    public int getInCount()
-    {
-        return 2;
-    }
+public class BIfCmpLtInst extends AbstractOpTypeBranchInst implements IfCmpLtInst {
+  public BIfCmpLtInst(Type opType, Unit target) {
+    super(opType, Baf.v().newInstBox(target));
+  }
 
+  public int getInCount() {
+    return 2;
+  }
 
-    public Object clone() 
-    {
-        return new  BIfCmpLtInst(getOpType(), getTarget());
-    }
+  public Object clone() {
+    return new BIfCmpLtInst(getOpType(), getTarget());
+  }
 
-    public int getInMachineCount()
-    {
-        return 2*AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getInMachineCount() {
+    return 2 * AbstractJasminClass.sizeOfType(getOpType());
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public int getOutCount() {
+    return 0;
+  }
 
+  public int getOutMachineCount() {
+    return 0;
+  }
 
+  public String getName() {
+    return "ifcmplt";
+  }
 
-    public String getName() { return "ifcmplt"; }
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseIfCmpLtInst(this);
-    }    
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseIfCmpLtInst(this);
+  }
 }
-

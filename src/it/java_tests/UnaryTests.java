@@ -1,28 +1,23 @@
 public class UnaryTests {
 
-    
-    public static void main (String [] args) {
-    
-        UnaryTests ut = new UnaryTests();
-        ut.solve();
-    }
+  public static void main(String[] args) {
 
-    void solve(){
-    
-        long l = 10;
-        
-        
-        int i = 1;
-        
-        l >>= 1;
+    UnaryTests ut = new UnaryTests();
+    ut.solve();
+  }
 
-        if (l != 0) {
-        }
+  void solve() {
 
-        i++;
+    long l = 10;
 
-        
-        for (i = 1; (l >>= 1) != 0; i++);
-    }
-    
+    int i = 1;
+
+    l >>= 1;
+
+    if (l != 0) {}
+
+    i++;
+
+    for (i = 1; (l >>= 1) != 0; i++) ;
+  }
 }

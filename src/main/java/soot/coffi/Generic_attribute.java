@@ -18,24 +18,20 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** For representing an unknown, or generic attribute.
+/**
+ * For representing an unknown, or generic attribute.
+ *
  * @see attribute_info
  * @author Clark Verbrugge
  */
 class Generic_attribute extends attribute_info {
-   /** Actual attribute information in byte form. */
-   public byte info[];
+  /** Actual attribute information in byte form. */
+  public byte info[];
 }

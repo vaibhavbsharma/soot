@@ -18,24 +18,28 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.graph;
 
-
-/** Convenience class which returns a PseudoTopologicalOrderer with the mReversed
- * flag set by default.
+/**
+ * Convenience class which returns a PseudoTopologicalOrderer with the mReversed flag set by
+ * default.
+ *
  * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead
- * */
+ */
 @Deprecated
-public class ReversePseudoTopologicalOrderer<N> extends PseudoTopologicalOrderer<N>
-{
-    /** Constructs a PseudoTopologicalOrderer with the mReversed flag set.
-     * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead
-     * */
-    public ReversePseudoTopologicalOrderer() { super(); setReverseOrder(true); }
+public class ReversePseudoTopologicalOrderer<N> extends PseudoTopologicalOrderer<N> {
+  /**
+   * Constructs a PseudoTopologicalOrderer with the mReversed flag set.
+   *
+   * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead
+   */
+  public ReversePseudoTopologicalOrderer() {
+    super();
+    setReverseOrder(true);
+  }
 }

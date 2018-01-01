@@ -23,43 +23,41 @@ import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
-public class DNewArrayExpr extends AbstractNewArrayExpr implements Precedence
-{
-    public DNewArrayExpr(Type type, Value size)
-    {
-	super(type, Grimp.v().newExprBox(size));
-    }
-    
-    public int getPrecedence() { return 850; }
-    
-    public Object clone() 
-    {
-        return new DNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
-    }
+public class DNewArrayExpr extends AbstractNewArrayExpr implements Precedence {
+  public DNewArrayExpr(Type type, Value size) {
+    super(type, Grimp.v().newExprBox(size));
+  }
 
-    public void toString( UnitPrinter up ) {
-        up.literal( "new" );
-        up.literal( " " );
-        Type type = getBaseType();
-        if(type instanceof ArrayType) {
-            ArrayType arrayType = (ArrayType)type;
-            up.type(arrayType.baseType);
-            up.literal( "[" );
-            getSizeBox().toString( up );
-            up.literal( "]" );
-            for(int i = 0; i < arrayType.numDimensions; i++) {
-                up.literal("[]");
-            }
-        } else {
-            up.type( getBaseType() );
-            up.literal( "[" );
-            getSizeBox().toString( up );
-            up.literal( "]" );
-        }
+  public int getPrecedence() {
+    return 850;
+  }
+
+  public Object clone() {
+    return new DNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal("new");
+    up.literal(" ");
+    Type type = getBaseType();
+    if (type instanceof ArrayType) {
+      ArrayType arrayType = (ArrayType) type;
+      up.type(arrayType.baseType);
+      up.literal("[");
+      getSizeBox().toString(up);
+      up.literal("]");
+      for (int i = 0; i < arrayType.numDimensions; i++) {
+        up.literal("[]");
+      }
+    } else {
+      up.type(getBaseType());
+      up.literal("[");
+      getSizeBox().toString(up);
+      up.literal("]");
     }
-    public String toString()
-    {
-	return "new " + getBaseType() + "[" + getSize() + "]";
-    }
-    
+  }
+
+  public String toString() {
+    return "new " + getBaseType() + "[" + getSize() + "]";
+  }
 }

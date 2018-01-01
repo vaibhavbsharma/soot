@@ -19,270 +19,266 @@
 
 package soot.dava.toolkits.base.finders;
 
-import soot.*;
 import java.util.*;
+import soot.*;
 import soot.dava.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
+import soot.dava.internal.asg.*;
+import soot.jimple.*;
+import soot.util.*;
 
-public class SwitchFinder implements FactFinder
-{
-    public SwitchFinder( Singletons.Global g ) {}
-    public static SwitchFinder v() { return G.v().soot_dava_toolkits_base_finders_SwitchFinder(); }
+public class SwitchFinder implements FactFinder {
+  public SwitchFinder(Singletons.Global g) {}
 
-    private IterableSet junkBody;
-    private HashSet targetSet;
-    private LinkedList 	targetList, snTargetList, tSuccList;
-    private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
+  public static SwitchFinder v() {
+    return G.v().soot_dava_toolkits_base_finders_SwitchFinder();
+  }
 
-    public void find( DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
-    {
-	Dava.v().log( "SwitchFinder::find()");
+  private IterableSet junkBody;
+  private HashSet targetSet;
+  private LinkedList targetList, snTargetList, tSuccList;
+  private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
 
-	final String defaultStr = "default";
+  public void find(DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET)
+      throws RetriggerAnalysisException {
+    Dava.v().log("SwitchFinder::find()");
 
-	Iterator asgit = asg.iterator();
-	while (asgit.hasNext()) {
-	    AugmentedStmt as = (AugmentedStmt) asgit.next();
+    final String defaultStr = "default";
 
-	    Stmt s = as.get_Stmt();
+    Iterator asgit = asg.iterator();
+    while (asgit.hasNext()) {
+      AugmentedStmt as = (AugmentedStmt) asgit.next();
 
-	    if (((s instanceof TableSwitchStmt) == false) && ((s instanceof LookupSwitchStmt) == false))
-		continue;
+      Stmt s = as.get_Stmt();
 
+      if (((s instanceof TableSwitchStmt) == false) && ((s instanceof LookupSwitchStmt) == false))
+        continue;
 
-	    Value key = null;
+      Value key = null;
 
-	    junkBody  = new IterableSet();
-	    targetSet = new HashSet();
+      junkBody = new IterableSet();
+      targetSet = new HashSet();
 
-	    targetList   = new LinkedList();
-	    snTargetList = new LinkedList();
-	    tSuccList    = new LinkedList();
+      targetList = new LinkedList();
+      snTargetList = new LinkedList();
+      tSuccList = new LinkedList();
 
-	    index2target   = new HashMap();
-	    tSucc2indexSet = new HashMap();
-	    tSucc2target   = new HashMap();
-	    tSucc2Body     = new HashMap();
+      index2target = new HashMap();
+      tSucc2indexSet = new HashMap();
+      tSucc2target = new HashMap();
+      tSucc2Body = new HashMap();
 
-	    if (s instanceof TableSwitchStmt) {
-		TableSwitchStmt tss = (TableSwitchStmt) s;
+      if (s instanceof TableSwitchStmt) {
+        TableSwitchStmt tss = (TableSwitchStmt) s;
 
-		int target_count = tss.getHighIndex() - tss.getLowIndex() + 1;
-		for (int i=0; i<target_count; i++)
-		    build_Bindings( as, new Integer(i + tss.getLowIndex()), asg.get_AugStmt( (Stmt) tss.getTarget( i)));
+        int target_count = tss.getHighIndex() - tss.getLowIndex() + 1;
+        for (int i = 0; i < target_count; i++)
+          build_Bindings(
+              as, new Integer(i + tss.getLowIndex()), asg.get_AugStmt((Stmt) tss.getTarget(i)));
 
-		build_Bindings( as, defaultStr, asg.get_AugStmt( (Stmt) tss.getDefaultTarget()));
-		key = tss.getKey();
-	    }
+        build_Bindings(as, defaultStr, asg.get_AugStmt((Stmt) tss.getDefaultTarget()));
+        key = tss.getKey();
+      } else if (s instanceof LookupSwitchStmt) {
+        LookupSwitchStmt lss = (LookupSwitchStmt) s;
 
-	    else if (s instanceof LookupSwitchStmt) {
-		LookupSwitchStmt lss = (LookupSwitchStmt) s;
+        int target_count = lss.getTargetCount();
+        for (int i = 0; i < target_count; i++)
+          build_Bindings(
+              as, new Integer(lss.getLookupValue(i)), asg.get_AugStmt((Stmt) lss.getTarget(i)));
 
-		int target_count = lss.getTargetCount();
-		for (int i=0; i<target_count; i++) 
-		    build_Bindings( as, new Integer( lss.getLookupValue( i)), asg.get_AugStmt( (Stmt) lss.getTarget( i)));
+        build_Bindings(as, defaultStr, asg.get_AugStmt((Stmt) lss.getDefaultTarget()));
+        key = lss.getKey();
+      }
 
-		build_Bindings( as, defaultStr, asg.get_AugStmt( (Stmt) lss.getDefaultTarget()));
-		key = lss.getKey();
-	    }
+      Iterator tsit = tSuccList.iterator();
+      while (tsit.hasNext()) {
+        AugmentedStmt tSucc = (AugmentedStmt) tsit.next();
+        AugmentedStmt target = (AugmentedStmt) tSucc2target.get(tSucc);
 
-	    Iterator tsit = tSuccList.iterator();
-	    while (tsit.hasNext()) {
-		AugmentedStmt tSucc = (AugmentedStmt) tsit.next();
-		AugmentedStmt target = (AugmentedStmt) tSucc2target.get( tSucc);
+        snTargetList.addLast(
+            new SwitchNode(
+                target,
+                (TreeSet<Object>) tSucc2indexSet.get(tSucc),
+                (IterableSet) tSucc2Body.get(tSucc)));
+      }
 
-		snTargetList.addLast( new SwitchNode( target, (TreeSet<Object>) tSucc2indexSet.get( tSucc), (IterableSet) tSucc2Body.get( tSucc)));
-	    }
-	    
-	    TreeSet 
-		targetHeads = new TreeSet(),
-		killBodies  = new TreeSet();
-	    
-	    //  Get the set of head cases and clear those bodies that should not be included in the switch.  Clear as mud, huh? :-)
-	    {
-		asg.calculate_Reachability( targetList, targetSet, as);
-		
-		SwitchNodeGraph sng = new SwitchNodeGraph( snTargetList);
+      TreeSet targetHeads = new TreeSet(), killBodies = new TreeSet();
 
-		killBodies.addAll( snTargetList);
-		snTargetList = new LinkedList();
+      //  Get the set of head cases and clear those bodies that should not be included in the
+      // switch.  Clear as mud, huh? :-)
+      {
+        asg.calculate_Reachability(targetList, targetSet, as);
 
-		LinkedList worklist = new LinkedList();
-		worklist.addAll( sng.getHeads());
+        SwitchNodeGraph sng = new SwitchNodeGraph(snTargetList);
 
-		while (worklist.isEmpty() == false) {
-		    SwitchNode sn = (SwitchNode) worklist.removeFirst();
-		    
-		    snTargetList.addLast( sn);
-		    killBodies.remove( sn);
+        killBodies.addAll(snTargetList);
+        snTargetList = new LinkedList();
 
-		    SwitchNode champ = null;
-		    Iterator sit = sn.get_Succs().iterator();
+        LinkedList worklist = new LinkedList();
+        worklist.addAll(sng.getHeads());
 
-		    while (sit.hasNext()) {
-			SwitchNode ssn = (SwitchNode) sit.next();
-			
-			if ((champ == null) || (champ.get_Score() < ssn.get_Score()))
-			    champ = ssn;
-		    }
+        while (worklist.isEmpty() == false) {
+          SwitchNode sn = (SwitchNode) worklist.removeFirst();
 
-		    if ((champ != null) && (champ.get_Score() > 0))
-			worklist.addLast( champ);
+          snTargetList.addLast(sn);
+          killBodies.remove(sn);
 
-		}
+          SwitchNode champ = null;
+          Iterator sit = sn.get_Succs().iterator();
 
-		Iterator kit = killBodies.iterator();
-		while (kit.hasNext()) {
-		    SwitchNode sn = (SwitchNode) kit.next();
+          while (sit.hasNext()) {
+            SwitchNode ssn = (SwitchNode) sit.next();
 
-		    IterableSet snBody = sn.get_Body();
-		    snBody.clear();
-		    snBody.add( sn.get_AugStmt());
-		}
+            if ((champ == null) || (champ.get_Score() < ssn.get_Score())) champ = ssn;
+          }
 
-		sng = new SwitchNodeGraph( snTargetList);
-		targetHeads.addAll( sng.getHeads());
-	    }
+          if ((champ != null) && (champ.get_Score() > 0)) worklist.addLast(champ);
+        }
 
-	    LinkedList<SwitchNode> switchNodeList = new LinkedList<SwitchNode>();
+        Iterator kit = killBodies.iterator();
+        while (kit.hasNext()) {
+          SwitchNode sn = (SwitchNode) kit.next();
 
-	    // Now, merge the targetHeads list and the killBodies list, keeping bundles of case fall throughs from the node graph.
-	    {
-		while ((targetHeads.isEmpty() == false) || (killBodies.isEmpty() == false)) {
+          IterableSet snBody = sn.get_Body();
+          snBody.clear();
+          snBody.add(sn.get_AugStmt());
+        }
 
-		    if ((targetHeads.isEmpty()) ||
-			((targetHeads.isEmpty() == false) && (killBodies.isEmpty() == false) && (((SwitchNode) targetHeads.first()).compareTo( killBodies.first()) > 0))) {
-			
-			SwitchNode nextNode = (SwitchNode) killBodies.first();
-			killBodies.remove( nextNode);
+        sng = new SwitchNodeGraph(snTargetList);
+        targetHeads.addAll(sng.getHeads());
+      }
 
-			switchNodeList.addLast( nextNode);
-		    }
-		    else {
+      LinkedList<SwitchNode> switchNodeList = new LinkedList<SwitchNode>();
 
-			SwitchNode nextNode = (SwitchNode) targetHeads.first();
-			targetHeads.remove( nextNode);
+      // Now, merge the targetHeads list and the killBodies list, keeping bundles of case fall
+      // throughs from the node graph.
+      {
+        while ((targetHeads.isEmpty() == false) || (killBodies.isEmpty() == false)) {
 
-			while (true) {
-			    switchNodeList.addLast( nextNode);
+          if ((targetHeads.isEmpty())
+              || ((targetHeads.isEmpty() == false)
+                  && (killBodies.isEmpty() == false)
+                  && (((SwitchNode) targetHeads.first()).compareTo(killBodies.first()) > 0))) {
 
-			    if (nextNode.get_Succs().isEmpty())
-				break;
+            SwitchNode nextNode = (SwitchNode) killBodies.first();
+            killBodies.remove(nextNode);
 
-			    nextNode = (SwitchNode) nextNode.get_Succs().get(0);
-			}
-		    }
-		}
-	    }
+            switchNodeList.addLast(nextNode);
+          } else {
 
-	    IterableSet body = new IterableSet();
-	    body.add( as);
-	    for	(SwitchNode sn : switchNodeList) {
-		body.addAll( sn.get_Body());
-		if (sn.get_IndexSet().contains( defaultStr)) {
-		    sn.get_IndexSet().clear();
-		    sn.get_IndexSet().add( defaultStr);
-		}
-	    }
+            SwitchNode nextNode = (SwitchNode) targetHeads.first();
+            targetHeads.remove(nextNode);
 
-	    body.addAll( junkBody);
+            while (true) {
+              switchNodeList.addLast(nextNode);
 
-	    for (ExceptionNode en : davaBody.get_ExceptionFacts()) {
-		IterableSet tryBody = en.get_TryBody();
-		
-		if (tryBody.contains( as)) {
-		    Iterator fbit = body.snapshotIterator();
-		    
-		    while (fbit.hasNext()) {
-			AugmentedStmt fbas = (AugmentedStmt) fbit.next();
-			
-			if (tryBody.contains( fbas) == false) {
-			    body.remove( fbas);
-			    
-			    for (SwitchNode sn : switchNodeList) {
-				IterableSet switchBody = sn.get_Body();
+              if (nextNode.get_Succs().isEmpty()) break;
 
-				if (switchBody.contains( fbas)) {
-				    switchBody.remove( fbas);
-				    break;
-				}
-			    }
-			}
-		    }
-		}
-	    }
+              nextNode = (SwitchNode) nextNode.get_Succs().get(0);
+            }
+          }
+        }
+      }
 
-	    SET.nest( new SETSwitchNode( as, key, body, switchNodeList, junkBody));
-	}
-    }    
+      IterableSet body = new IterableSet();
+      body.add(as);
+      for (SwitchNode sn : switchNodeList) {
+        body.addAll(sn.get_Body());
+        if (sn.get_IndexSet().contains(defaultStr)) {
+          sn.get_IndexSet().clear();
+          sn.get_IndexSet().add(defaultStr);
+        }
+      }
 
-    private IterableSet find_SubBody( AugmentedStmt switchAS, AugmentedStmt branchS)
-    {
-	IterableSet subBody = new IterableSet();
-	LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
+      body.addAll(junkBody);
 
-	subBody.add( branchS);
-	branchS = (AugmentedStmt) branchS.bsuccs.get(0);
-	
-	if (branchS.get_Dominators().contains( switchAS)) {
-	    worklist.addLast( branchS);
-	    subBody.add( branchS);
-	}
-	
-	while (worklist.isEmpty() == false) {
-	    AugmentedStmt as = worklist.removeFirst();
-	    
-	    Iterator sit = as.csuccs.iterator();
-	    while (sit.hasNext()) {
-		AugmentedStmt sas = (AugmentedStmt) sit.next();
-		
-		if ((subBody.contains( sas) == false) && (sas.get_Dominators().contains( branchS))) {
-		    worklist.addLast( sas);
-		    subBody.add( sas);
-		}
-	    }
-	}
+      for (ExceptionNode en : davaBody.get_ExceptionFacts()) {
+        IterableSet tryBody = en.get_TryBody();
 
-	return subBody;
+        if (tryBody.contains(as)) {
+          Iterator fbit = body.snapshotIterator();
+
+          while (fbit.hasNext()) {
+            AugmentedStmt fbas = (AugmentedStmt) fbit.next();
+
+            if (tryBody.contains(fbas) == false) {
+              body.remove(fbas);
+
+              for (SwitchNode sn : switchNodeList) {
+                IterableSet switchBody = sn.get_Body();
+
+                if (switchBody.contains(fbas)) {
+                  switchBody.remove(fbas);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      SET.nest(new SETSwitchNode(as, key, body, switchNodeList, junkBody));
+    }
+  }
+
+  private IterableSet find_SubBody(AugmentedStmt switchAS, AugmentedStmt branchS) {
+    IterableSet subBody = new IterableSet();
+    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
+
+    subBody.add(branchS);
+    branchS = (AugmentedStmt) branchS.bsuccs.get(0);
+
+    if (branchS.get_Dominators().contains(switchAS)) {
+      worklist.addLast(branchS);
+      subBody.add(branchS);
     }
 
-    private void build_Bindings( AugmentedStmt swAs, Object index, AugmentedStmt target)
-    {
-	AugmentedStmt tSucc = (AugmentedStmt) target.bsuccs.get(0);
+    while (worklist.isEmpty() == false) {
+      AugmentedStmt as = worklist.removeFirst();
 
-	if (targetSet.add( tSucc))
-	    targetList.addLast( tSucc);
-	
-	index2target.put( index, target);
-	
-	TreeSet indices = null;
-	if ((indices = (TreeSet) tSucc2indexSet.get( tSucc)) == null) {
-	    indices = new TreeSet( new IndexComparator());
-	    tSucc2indexSet.put( tSucc, indices);
-	    tSucc2target.put( tSucc, target);
-	    tSucc2Body.put( tSucc, find_SubBody( swAs, target));
-	    tSuccList.add( tSucc);
-	}
-	else {
-	    junkBody.add( target);
+      Iterator sit = as.csuccs.iterator();
+      while (sit.hasNext()) {
+        AugmentedStmt sas = (AugmentedStmt) sit.next();
 
-	    // break all edges between the junk body and any of it's successors
-
-	    Iterator sit = target.bsuccs.iterator();
-	    while (sit.hasNext()) 
-		((AugmentedStmt) sit.next()).bpreds.remove( target);
-
-	    sit = target.csuccs.iterator();
-	    while (sit.hasNext())
-		((AugmentedStmt) sit.next()).cpreds.remove( target);
-
-	    target.bsuccs.clear();
-	    target.csuccs.clear();
-	}
-	
-	indices.add( index);
+        if ((subBody.contains(sas) == false) && (sas.get_Dominators().contains(branchS))) {
+          worklist.addLast(sas);
+          subBody.add(sas);
+        }
+      }
     }
+
+    return subBody;
+  }
+
+  private void build_Bindings(AugmentedStmt swAs, Object index, AugmentedStmt target) {
+    AugmentedStmt tSucc = (AugmentedStmt) target.bsuccs.get(0);
+
+    if (targetSet.add(tSucc)) targetList.addLast(tSucc);
+
+    index2target.put(index, target);
+
+    TreeSet indices = null;
+    if ((indices = (TreeSet) tSucc2indexSet.get(tSucc)) == null) {
+      indices = new TreeSet(new IndexComparator());
+      tSucc2indexSet.put(tSucc, indices);
+      tSucc2target.put(tSucc, target);
+      tSucc2Body.put(tSucc, find_SubBody(swAs, target));
+      tSuccList.add(tSucc);
+    } else {
+      junkBody.add(target);
+
+      // break all edges between the junk body and any of it's successors
+
+      Iterator sit = target.bsuccs.iterator();
+      while (sit.hasNext()) ((AugmentedStmt) sit.next()).bpreds.remove(target);
+
+      sit = target.csuccs.iterator();
+      while (sit.hasNext()) ((AugmentedStmt) sit.next()).cpreds.remove(target);
+
+      target.bsuccs.clear();
+      target.csuccs.clear();
+    }
+
+    indices.add(index);
+  }
 }

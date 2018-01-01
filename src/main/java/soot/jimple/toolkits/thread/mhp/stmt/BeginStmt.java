@@ -1,6 +1,4 @@
-
 package soot.jimple.toolkits.thread.mhp.stmt;
-
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -16,21 +14,13 @@ import soot.toolkits.graph.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+public class BeginStmt extends JPegStmt {
 
-public class BeginStmt extends JPegStmt
-{
-	
-	public BeginStmt(String obj, String ca,  UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "begin";
-		this.caller = ca;
-		this.unitGraph = ug;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+  public BeginStmt(String obj, String ca, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "begin";
+    this.caller = ca;
+    this.unitGraph = ug;
+    this.sootMethod = sm;
+  }
 }

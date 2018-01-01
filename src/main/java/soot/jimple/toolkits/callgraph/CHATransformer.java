@@ -18,37 +18,33 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.options.*;
-import soot.*;
-
 import java.util.*;
-
+import soot.*;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
+import soot.options.*;
 
 /** Builds an invoke graph using Class Hierarchy Analysis. */
-public class CHATransformer extends SceneTransformer
-{
-    public CHATransformer( Singletons.Global g ) {}
-    public static CHATransformer v() { return G.v().soot_jimple_toolkits_callgraph_CHATransformer(); }
+public class CHATransformer extends SceneTransformer {
+  public CHATransformer(Singletons.Global g) {}
 
-    protected void internalTransform(String phaseName, Map<String, String> opts)
-    {
-        CHAOptions options = new CHAOptions( opts );
-        CallGraphBuilder cg = options.apponly() ? new CallGraphBuilder() :
-        	new CallGraphBuilder( DumbPointerAnalysis.v() );
-        cg.build();
-        if( options.verbose() ) {
-            G.v().out.println( "Number of reachable methods: "
-                    +Scene.v().getReachableMethods().size() );
-        }
+  public static CHATransformer v() {
+    return G.v().soot_jimple_toolkits_callgraph_CHATransformer();
+  }
+
+  protected void internalTransform(String phaseName, Map<String, String> opts) {
+    CHAOptions options = new CHAOptions(opts);
+    CallGraphBuilder cg =
+        options.apponly() ? new CallGraphBuilder() : new CallGraphBuilder(DumbPointerAnalysis.v());
+    cg.build();
+    if (options.verbose()) {
+      G.v().out.println("Number of reachable methods: " + Scene.v().getReachableMethods().size());
     }
+  }
 }
-
-

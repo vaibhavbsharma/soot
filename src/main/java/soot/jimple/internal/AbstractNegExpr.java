@@ -18,15 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
-
 
 package soot.jimple.internal;
 
@@ -35,59 +30,51 @@ import soot.jimple.*;
 import soot.util.*;
 
 @SuppressWarnings("serial")
-public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExpr
-{
-    protected AbstractNegExpr(ValueBox opBox) { super(opBox); }
+public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExpr {
+  protected AbstractNegExpr(ValueBox opBox) {
+    super(opBox);
+  }
 
-    /** Compares the specified object with this one for structural equality. */
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof AbstractNegExpr)
-        {
-            return opBox.getValue().equivTo(((AbstractNegExpr)o).opBox.getValue());
-        }
-        return false;
+  /** Compares the specified object with this one for structural equality. */
+  public boolean equivTo(Object o) {
+    if (o instanceof AbstractNegExpr) {
+      return opBox.getValue().equivTo(((AbstractNegExpr) o).opBox.getValue());
     }
+    return false;
+  }
 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
-    {
-        return opBox.getValue().equivHashCode();
-    }
+  /** Returns a hash code for this object, consistent with structural equality. */
+  public int equivHashCode() {
+    return opBox.getValue().equivHashCode();
+  }
 
-    public abstract Object clone();
+  public abstract Object clone();
 
-    public String toString()
-    {
-        return Jimple.NEG + " " + opBox.getValue().toString();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.NEG);
-        up.literal(" ");
-        opBox.toString(up);
-    }
+  public String toString() {
+    return Jimple.NEG + " " + opBox.getValue().toString();
+  }
 
-    public Type getType()
-    {
-        Value op = opBox.getValue();
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.NEG);
+    up.literal(" ");
+    opBox.toString(up);
+  }
 
-        if(op.getType().equals(IntType.v()) || op.getType().equals(ByteType.v()) ||
-            op.getType().equals(ShortType.v()) || op.getType().equals(BooleanType.v()) || 
-            op.getType().equals(CharType.v()))
-            return IntType.v();
-        else if(op.getType().equals(LongType.v()))
-            return LongType.v();
-        else if(op.getType().equals(DoubleType.v()))
-            return DoubleType.v();
-        else if(op.getType().equals(FloatType.v()))
-            return FloatType.v();
-        else
-            return UnknownType.v();
-    }
+  public Type getType() {
+    Value op = opBox.getValue();
 
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseNegExpr(this);
-    }
+    if (op.getType().equals(IntType.v())
+        || op.getType().equals(ByteType.v())
+        || op.getType().equals(ShortType.v())
+        || op.getType().equals(BooleanType.v())
+        || op.getType().equals(CharType.v())) return IntType.v();
+    else if (op.getType().equals(LongType.v())) return LongType.v();
+    else if (op.getType().equals(DoubleType.v())) return DoubleType.v();
+    else if (op.getType().equals(FloatType.v())) return FloatType.v();
+    else return UnknownType.v();
+  }
+
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseNegExpr(this);
+  }
 }

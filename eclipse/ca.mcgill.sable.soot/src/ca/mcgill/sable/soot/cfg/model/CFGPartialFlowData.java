@@ -19,35 +19,28 @@
 
 package ca.mcgill.sable.soot.cfg.model;
 
-
 import java.util.*;
 
 public class CFGPartialFlowData extends CFGElement {
 
-	private ArrayList children = new ArrayList();
-	
+    private ArrayList children = new ArrayList();
 
-	public CFGPartialFlowData() {
-		super();
-	}
-	
-	public void addChild(CFGFlowInfo child){
-		children.add(child);
-		fireStructureChange(PART_FLOW_CHILDREN, child);
-	}
+    public CFGPartialFlowData() {
+        super();
+    }
 
-	/**
-	 * @return
-	 */
-	public ArrayList getChildren() {
-		return children;
-	}
+    public void addChild(CFGFlowInfo child) {
+        children.add(child);
+        fireStructureChange(PART_FLOW_CHILDREN, child);
+    }
 
-	/**
-	 * @param list
-	 */
-	public void setChildren(ArrayList list) {
-		children = list;
-	}
+    /** @return */
+    public ArrayList getChildren() {
+        return children;
+    }
 
+    /** @param list */
+    public void setChildren(ArrayList list) {
+        children = list;
+    }
 }

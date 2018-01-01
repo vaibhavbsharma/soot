@@ -17,125 +17,103 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.editors;
 
+import ca.mcgill.sable.soot.editors.parser.JimpleFile;
 import java.io.*;
-import java.util.ArrayList;
-
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.ui.views.contentoutline.*;
 
-import ca.mcgill.sable.soot.editors.parser.JimpleFile;
+public class JimpleContentOutlinePage extends ContentOutlinePage
+        implements ISelectionChangedListener {
 
-public class JimpleContentOutlinePage extends ContentOutlinePage implements ISelectionChangedListener  {
+    private IFile input;
+    private JimpleEditor ed;
+    private JimpleFile jimpleFileParser;
+    private TreeViewer viewer;
 
-	private IFile input;
-	private JimpleEditor ed;
-	private JimpleFile jimpleFileParser;
-	private TreeViewer viewer;
-	
-	public JimpleContentOutlinePage(IFile file, JimpleEditor ed) {
-		super();
-		setInput(file);
-		setEd(ed);
-		
-	}
-	
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		
-		setViewer(getTreeViewer());
-		getViewer().setContentProvider(new JimpleOutlineContentProvider());
-		getViewer().setLabelProvider(new JimpleOutlineLabelProvider());
-		getViewer().setInput(getContentOutline());
-		getViewer().expandAll();
-		
-		getViewer().addSelectionChangedListener(this);
-		
-	}
-	
-	public JimpleOutlineObject getContentOutline(){
-		setJimpleFileParser(new JimpleFile(getInput()));
-		return getJimpleFileParser().getOutline();
-	}
-	
-	public void selectionChanged(SelectionChangedEvent event) {
-		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-		if (!selection.isEmpty()) {
-			Object elem = selection.getFirstElement();
-			if (elem instanceof JimpleOutlineObject) {
-				String toHighlight = ((JimpleOutlineObject)elem).getLabel();
-				int start = getJimpleFileParser().getStartOfSelected(toHighlight);
-				int length = getJimpleFileParser().getLength(toHighlight);
-				getEd().selectAndReveal(start, length);
-			}
-		}
-	}
-	
-	/**
-	 * @return IFile
-	 */
-	public IFile getInput() {
-		return input;
-	}
+    public JimpleContentOutlinePage(IFile file, JimpleEditor ed) {
+        super();
+        setInput(file);
+        setEd(ed);
+    }
 
-	/**
-	 * Sets the input.
-	 * @param input The input to set
-	 */
-	public void setInput(IFile input) {
-		this.input = input;
-	}
+    public void createControl(Composite parent) {
+        super.createControl(parent);
 
-	/**
-	 * @return
-	 */
-	public JimpleEditor getEd() {
-		return ed;
-	}
+        setViewer(getTreeViewer());
+        getViewer().setContentProvider(new JimpleOutlineContentProvider());
+        getViewer().setLabelProvider(new JimpleOutlineLabelProvider());
+        getViewer().setInput(getContentOutline());
+        getViewer().expandAll();
 
-	/**
-	 * @param editor
-	 */
-	public void setEd(JimpleEditor editor) {
-		ed = editor;
-	}
+        getViewer().addSelectionChangedListener(this);
+    }
 
-	/**
-	 * @return
-	 */
-	public JimpleFile getJimpleFileParser() {
-		return jimpleFileParser;
-	}
+    public JimpleOutlineObject getContentOutline() {
+        setJimpleFileParser(new JimpleFile(getInput()));
+        return getJimpleFileParser().getOutline();
+    }
 
-	/**
-	 * @param file
-	 */
-	public void setJimpleFileParser(JimpleFile file) {
-		jimpleFileParser = file;
-	}
+    public void selectionChanged(SelectionChangedEvent event) {
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        if (!selection.isEmpty()) {
+            Object elem = selection.getFirstElement();
+            if (elem instanceof JimpleOutlineObject) {
+                String toHighlight = ((JimpleOutlineObject) elem).getLabel();
+                int start = getJimpleFileParser().getStartOfSelected(toHighlight);
+                int length = getJimpleFileParser().getLength(toHighlight);
+                getEd().selectAndReveal(start, length);
+            }
+        }
+    }
 
-	/**
-	 * @return
-	 */
-	public TreeViewer getViewer() {
-		return viewer;
-	}
+    /** @return IFile */
+    public IFile getInput() {
+        return input;
+    }
 
-	/**
-	 * @param viewer
-	 */
-	public void setViewer(TreeViewer viewer) {
-		this.viewer = viewer;
-	}
+    /**
+     * Sets the input.
+     *
+     * @param input The input to set
+     */
+    public void setInput(IFile input) {
+        this.input = input;
+    }
 
+    /** @return */
+    public JimpleEditor getEd() {
+        return ed;
+    }
+
+    /** @param editor */
+    public void setEd(JimpleEditor editor) {
+        ed = editor;
+    }
+
+    /** @return */
+    public JimpleFile getJimpleFileParser() {
+        return jimpleFileParser;
+    }
+
+    /** @param file */
+    public void setJimpleFileParser(JimpleFile file) {
+        jimpleFileParser = file;
+    }
+
+    /** @return */
+    public TreeViewer getViewer() {
+        return viewer;
+    }
+
+    /** @param viewer */
+    public void setViewer(TreeViewer viewer) {
+        this.viewer = viewer;
+    }
 }

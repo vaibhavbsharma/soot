@@ -18,136 +18,108 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
+import java.util.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
-public class BIdentityInst extends AbstractInst 
-    implements IdentityInst
-{
-    ValueBox leftBox;
-    ValueBox rightBox;
+public class BIdentityInst extends AbstractInst implements IdentityInst {
+  ValueBox leftBox;
+  ValueBox rightBox;
 
-    List defBoxes;
-    
-   
-    
+  List defBoxes;
 
-    public Value getLeftOp()
-    {
-        return leftBox.getValue();
-    }
-  
-  public int getInCount()
-  {
-        return 0;
-    }
+  public Value getLeftOp() {
+    return leftBox.getValue();
+  }
 
-  public int getInMachineCount()
-  {
-        return 0;
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getInCount() {
+    return 0;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public int getInMachineCount() {
+    return 0;
+  }
 
-    public Value getRightOp()
-    {
-        return rightBox.getValue();
-    }
+  public int getOutCount() {
+    return 0;
+  }
 
-    public ValueBox getLeftOpBox()
-    {
-        return leftBox;
-    }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
-    public ValueBox getRightOpBox()
-    {
-        return rightBox;
-    }
+  public Value getRightOp() {
+    return rightBox.getValue();
+  }
 
-    public List getDefBoxes()
-    {
-        return defBoxes;
-    }
+  public ValueBox getLeftOpBox() {
+    return leftBox;
+  }
 
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
+  public ValueBox getRightOpBox() {
+    return rightBox;
+  }
 
-        list.addAll(rightBox.getValue().getUseBoxes());
-        list.add(rightBox);
-        list.addAll(leftBox.getValue().getUseBoxes());
+  public List getDefBoxes() {
+    return defBoxes;
+  }
 
-        return list;
-    }
+  public List getUseBoxes() {
+    List list = new ArrayList();
 
-    public BIdentityInst(Value local, Value identityValue)
-    {
-        this(Baf.v().newLocalBox(local),
-             Baf.v().newIdentityRefBox(identityValue));
-    }
+    list.addAll(rightBox.getValue().getUseBoxes());
+    list.add(rightBox);
+    list.addAll(leftBox.getValue().getUseBoxes());
 
-    protected BIdentityInst(ValueBox localBox, ValueBox identityValueBox)
-    {
-        this.leftBox = localBox; this.rightBox = identityValueBox;
+    return list;
+  }
 
-        defBoxes = Collections.singletonList(leftBox);
-    }
+  public BIdentityInst(Value local, Value identityValue) {
+    this(Baf.v().newLocalBox(local), Baf.v().newIdentityRefBox(identityValue));
+  }
 
+  protected BIdentityInst(ValueBox localBox, ValueBox identityValueBox) {
+    this.leftBox = localBox;
+    this.rightBox = identityValueBox;
 
-    public Object clone() 
-    {
-            return new BIdentityInst(getLeftOp(), getRightOp());
-    }
+    defBoxes = Collections.singletonList(leftBox);
+  }
 
-    public String toString()
-    {
-        return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
-    }
+  public Object clone() {
+    return new BIdentityInst(getLeftOp(), getRightOp());
+  }
 
-    public void toString( UnitPrinter up ) {
-        leftBox.toString(up);
-        up.literal(" := ");
-        rightBox.toString(up);
-    }
+  public String toString() {
+    return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
+  }
 
-    final public String getName() { return ":="; }
+  public void toString(UnitPrinter up) {
+    leftBox.toString(up);
+    up.literal(" := ");
+    rightBox.toString(up);
+  }
 
-    public void setLeftOp(Value local)
-    {
-        leftBox.setValue(local);
-    }
+  public final String getName() {
+    return ":=";
+  }
 
-    public void setRightOp(Value identityRef)
-    {
-        rightBox.setValue(identityRef);
-    }
+  public void setLeftOp(Value local) {
+    leftBox.setValue(local);
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseIdentityInst(this);
-    }    
+  public void setRightOp(Value identityRef) {
+    rightBox.setValue(identityRef);
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseIdentityInst(this);
+  }
 }
-
-
-

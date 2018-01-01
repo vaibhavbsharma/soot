@@ -18,10 +18,7 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
-/**
- * A simple interface for defining a function that maps objects.
- */
-public interface Mapper<T,U> {
-    public U map(T obj_);
- }
-
+/** A simple interface for defining a function that maps objects. */
+public interface Mapper<T, U> {
+  public U map(T obj_);
+}

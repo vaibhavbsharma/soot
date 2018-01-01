@@ -19,102 +19,82 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
+import java.util.*;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import java.util.*;
 
-public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
-    implements Precedence
-{
-    public GSpecialInvokeExpr(Value base, SootMethodRef methodRef, List args)
-    {
-        super(Grimp.v().newObjExprBox(base), methodRef, 
-             new ExprBox[args.size()]);
+public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Precedence {
+  public GSpecialInvokeExpr(Value base, SootMethodRef methodRef, List args) {
+    super(Grimp.v().newObjExprBox(base), methodRef, new ExprBox[args.size()]);
 
-        for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    for (int i = 0; i < args.size(); i++)
+      this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+  }
+
+  public int getPrecedence() {
+    return 950;
+  }
+
+  private String toString(Value op, String opString, String rightString) {
+    String leftOp = opString;
+
+    if (getBase() instanceof Precedence
+        && ((Precedence) getBase()).getPrecedence() < getPrecedence()) leftOp = "(" + leftOp + ")";
+    return leftOp + rightString;
+  }
+
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+
+    buffer.append("." + methodRef.getSignature() + "(");
+
+    if (argBoxes != null) {
+      for (int i = 0; i < argBoxes.length; i++) {
+        if (i != 0) buffer.append(", ");
+
+        buffer.append(argBoxes[i].getValue().toString());
+      }
     }
 
-    public int getPrecedence() { return 950; }
+    buffer.append(")");
 
-    private String toString(Value op, String opString, String rightString)
-    {
-        String leftOp = opString;
+    return toString(getBase(), getBase().toString(), buffer.toString());
+  }
 
-        if (getBase() instanceof Precedence && 
-            ((Precedence)getBase()).getPrecedence() < getPrecedence()) 
-            leftOp = "(" + leftOp + ")";
-        return leftOp + rightString;
+  public void toString(UnitPrinter up) {
+    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal("(");
+    baseBox.toString(up);
+    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal(")");
+    up.literal(".");
+    up.methodRef(methodRef);
+    up.literal("(");
+
+    if (argBoxes != null) {
+      for (int i = 0; i < argBoxes.length; i++) {
+        if (i != 0) up.literal(", ");
+
+        argBoxes[i].toString(up);
+      }
     }
 
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer();
+    up.literal(")");
+  }
 
-        buffer.append("." + methodRef.getSignature() + "(");
+  public Object clone() {
+    ArrayList clonedArgs = new ArrayList(getArgCount());
 
-        if (argBoxes != null) {
-	        for(int i = 0; i < argBoxes.length; i++)
-	        {
-	            if(i != 0)
-	                buffer.append(", ");
-	
-	            buffer.append(argBoxes[i].getValue().toString());
-	        }
-        }
-
-        buffer.append(")");
-
-        return toString(getBase(), getBase().toString(), 
-                        buffer.toString());
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
     }
 
-    public void toString(UnitPrinter up)
-    {
-        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
-        baseBox.toString(up);
-        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
-        up.literal(".");
-        up.methodRef(methodRef);
-        up.literal("(");
-
-        if (argBoxes != null) {
-	        for(int i = 0; i < argBoxes.length; i++)
-	        {
-	            if(i != 0)
-	                up.literal(", ");
-	
-	            argBoxes[i].toString(up);
-	        }
-        }
-
-        up.literal(")");
-    }
-
-    
-    public Object clone() 
-    {
-        ArrayList clonedArgs = new ArrayList(getArgCount());
-
-        for(int i = 0; i < getArgCount(); i++) {
-            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
-        }
-        
-        return new GSpecialInvokeExpr(Grimp.cloneIfNecessary(getBase()), 
-            methodRef, clonedArgs);
-    }
+    return new GSpecialInvokeExpr(Grimp.cloneIfNecessary(getBase()), methodRef, clonedArgs);
+  }
 }
- 

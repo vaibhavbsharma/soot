@@ -18,96 +18,80 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
 import java.util.*;
+import soot.*;
+import soot.baf.*;
+import soot.jimple.*;
+import soot.util.*;
 
-public class JGotoStmt extends AbstractStmt implements GotoStmt
-{
-    final UnitBox targetBox;
-    final List<UnitBox> targetBoxes;
+public class JGotoStmt extends AbstractStmt implements GotoStmt {
+  final UnitBox targetBox;
+  final List<UnitBox> targetBoxes;
 
-    public JGotoStmt(Unit target)
-    {
-        this(Jimple.v().newStmtBox(target));
-    }
+  public JGotoStmt(Unit target) {
+    this(Jimple.v().newStmtBox(target));
+  }
 
-    public JGotoStmt(UnitBox box)
-    {
-        targetBox = box;
-        targetBoxes = Collections.singletonList(box);
-    }
+  public JGotoStmt(UnitBox box) {
+    targetBox = box;
+    targetBoxes = Collections.singletonList(box);
+  }
 
-    public Object clone() 
-    {
-        return new JGotoStmt(getTarget());
-    }
+  public Object clone() {
+    return new JGotoStmt(getTarget());
+  }
 
-    public String toString()
-    {
-        Unit t = getTarget();
-        String target = "(branch)";
-        if(!t.branches())
-            target = t.toString();
-        return Jimple.GOTO + " [?= " + target + "]";
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.GOTO);
-        up.literal(" ");
-        targetBox.toString(up);
-    }
-    
-    public Unit getTarget()
-    {
-        return targetBox.getUnit();
-    }
+  public String toString() {
+    Unit t = getTarget();
+    String target = "(branch)";
+    if (!t.branches()) target = t.toString();
+    return Jimple.GOTO + " [?= " + target + "]";
+  }
 
-    public void setTarget(Unit target)
-    {
-        targetBox.setUnit(target);
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.GOTO);
+    up.literal(" ");
+    targetBox.toString(up);
+  }
 
-    public UnitBox getTargetBox()
-    {
-        return targetBox;
-    }
+  public Unit getTarget() {
+    return targetBox.getUnit();
+  }
 
-    public List<UnitBox> getUnitBoxes()
-    {
-        return targetBoxes;
-    }
+  public void setTarget(Unit target) {
+    targetBox.setUnit(target);
+  }
 
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseGotoStmt(this);
-    }    
-    
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-    	Unit u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget()));
-    	u.addAllTagsOf(this);
-        out.add(u);
-    }
-    
-    public boolean fallsThrough(){return false;}        
-    public boolean branches() { return true;}
-    
+  public UnitBox getTargetBox() {
+    return targetBox;
+  }
+
+  public List<UnitBox> getUnitBoxes() {
+    return targetBoxes;
+  }
+
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseGotoStmt(this);
+  }
+
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    Unit u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget()));
+    u.addAllTagsOf(this);
+    out.add(u);
+  }
+
+  public boolean fallsThrough() {
+    return false;
+  }
+
+  public boolean branches() {
+    return true;
+  }
 }
-
-
-

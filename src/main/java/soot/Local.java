@@ -18,28 +18,26 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
 
 package soot;
 
 import soot.util.*;
 
-/** A local variable, used within Body
- * classes.  Intermediate representations must use an implementation
- * of Local for their local variables.
- *  */
-public interface Local extends Value, Numberable, Immediate
-{
-    /** Returns the name of the current Local variable. */
-    public String getName();
+/**
+ * A local variable, used within Body classes. Intermediate representations must use an
+ * implementation of Local for their local variables.
+ */
+public interface Local extends Value, Numberable, Immediate {
+  /** Returns the name of the current Local variable. */
+  public String getName();
 
-    /** Sets the name of the current variable. */
-    public void setName(String name);
+  /** Sets the name of the current variable. */
+  public void setName(String name);
 
-    /** Sets the type of the current variable. */
-    public void setType(Type t);
+  /** Sets the type of the current variable. */
+  public void setType(Type t);
 }

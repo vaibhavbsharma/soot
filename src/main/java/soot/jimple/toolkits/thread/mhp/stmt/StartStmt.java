@@ -18,19 +18,14 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 
-
-
-
-
 package soot.jimple.toolkits.thread.mhp.stmt;
-
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -46,27 +41,20 @@ import soot.toolkits.graph.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
-
 public class StartStmt extends JPegStmt
 
-//public class JPegStmt implements CommunicationStmt
-//public class JPegStmt extends AbstractStmt implements CommunicationStm 
-//public class JPegStmt extends AbstractStm 
+// public class JPegStmt implements CommunicationStmt
+// public class JPegStmt extends AbstractStmt implements CommunicationStm
+// public class JPegStmt extends AbstractStm
 
 {
-	
-	public StartStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "start";
-		this.caller = ca;
-		this.unit = un;
-		this.unitGraph = ug;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+
+  public StartStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "start";
+    this.caller = ca;
+    this.unit = un;
+    this.unitGraph = ug;
+    this.sootMethod = sm;
+  }
 }

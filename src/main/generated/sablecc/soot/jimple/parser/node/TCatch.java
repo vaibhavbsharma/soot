@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TCatch extends Token
-{
-    public TCatch()
-    {
-        super.setText("catch");
-    }
+public final class TCatch extends Token {
+  public TCatch() {
+    super.setText("catch");
+  }
 
-    public TCatch(int line, int pos)
-    {
-        super.setText("catch");
-        setLine(line);
-        setPos(pos);
-    }
+  public TCatch(int line, int pos) {
+    super.setText("catch");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TCatch(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TCatch(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTCatch(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTCatch(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TCatch text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TCatch text.");
+  }
 }

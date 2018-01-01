@@ -5,177 +5,146 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AMultiParameterList extends PParameterList
-{
-    private PParameter _parameter_;
-    private TComma _comma_;
-    private PParameterList _parameterList_;
+public final class AMultiParameterList extends PParameterList {
+  private PParameter _parameter_;
+  private TComma _comma_;
+  private PParameterList _parameterList_;
 
-    public AMultiParameterList()
-    {
-        // Constructor
+  public AMultiParameterList() {
+    // Constructor
+  }
+
+  public AMultiParameterList(
+      @SuppressWarnings("hiding") PParameter _parameter_,
+      @SuppressWarnings("hiding") TComma _comma_,
+      @SuppressWarnings("hiding") PParameterList _parameterList_) {
+    // Constructor
+    setParameter(_parameter_);
+
+    setComma(_comma_);
+
+    setParameterList(_parameterList_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AMultiParameterList(
+        cloneNode(this._parameter_), cloneNode(this._comma_), cloneNode(this._parameterList_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAMultiParameterList(this);
+  }
+
+  public PParameter getParameter() {
+    return this._parameter_;
+  }
+
+  public void setParameter(PParameter node) {
+    if (this._parameter_ != null) {
+      this._parameter_.parent(null);
     }
 
-    public AMultiParameterList(
-        @SuppressWarnings("hiding") PParameter _parameter_,
-        @SuppressWarnings("hiding") TComma _comma_,
-        @SuppressWarnings("hiding") PParameterList _parameterList_)
-    {
-        // Constructor
-        setParameter(_parameter_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setComma(_comma_);
-
-        setParameterList(_parameterList_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AMultiParameterList(
-            cloneNode(this._parameter_),
-            cloneNode(this._comma_),
-            cloneNode(this._parameterList_));
+    this._parameter_ = node;
+  }
+
+  public TComma getComma() {
+    return this._comma_;
+  }
+
+  public void setComma(TComma node) {
+    if (this._comma_ != null) {
+      this._comma_.parent(null);
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAMultiParameterList(this);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
+
+      node.parent(this);
     }
 
-    public PParameter getParameter()
-    {
-        return this._parameter_;
+    this._comma_ = node;
+  }
+
+  public PParameterList getParameterList() {
+    return this._parameterList_;
+  }
+
+  public void setParameterList(PParameterList node) {
+    if (this._parameterList_ != null) {
+      this._parameterList_.parent(null);
     }
 
-    public void setParameter(PParameter node)
-    {
-        if(this._parameter_ != null)
-        {
-            this._parameter_.parent(null);
-        }
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._parameter_ = node;
+      node.parent(this);
     }
 
-    public TComma getComma()
-    {
-        return this._comma_;
+    this._parameterList_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return ""
+        + toString(this._parameter_)
+        + toString(this._comma_)
+        + toString(this._parameterList_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._parameter_ == child) {
+      this._parameter_ = null;
+      return;
     }
 
-    public void setComma(TComma node)
-    {
-        if(this._comma_ != null)
-        {
-            this._comma_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._comma_ = node;
+    if (this._comma_ == child) {
+      this._comma_ = null;
+      return;
     }
 
-    public PParameterList getParameterList()
-    {
-        return this._parameterList_;
+    if (this._parameterList_ == child) {
+      this._parameterList_ = null;
+      return;
     }
 
-    public void setParameterList(PParameterList node)
-    {
-        if(this._parameterList_ != null)
-        {
-            this._parameterList_.parent(null);
-        }
+    throw new RuntimeException("Not a child.");
+  }
 
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._parameterList_ = node;
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._parameter_ == oldChild) {
+      setParameter((PParameter) newChild);
+      return;
     }
 
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._parameter_)
-            + toString(this._comma_)
-            + toString(this._parameterList_);
+    if (this._comma_ == oldChild) {
+      setComma((TComma) newChild);
+      return;
     }
 
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._parameter_ == child)
-        {
-            this._parameter_ = null;
-            return;
-        }
-
-        if(this._comma_ == child)
-        {
-            this._comma_ = null;
-            return;
-        }
-
-        if(this._parameterList_ == child)
-        {
-            this._parameterList_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
+    if (this._parameterList_ == oldChild) {
+      setParameterList((PParameterList) newChild);
+      return;
     }
 
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._parameter_ == oldChild)
-        {
-            setParameter((PParameter) newChild);
-            return;
-        }
-
-        if(this._comma_ == oldChild)
-        {
-            setComma((TComma) newChild);
-            return;
-        }
-
-        if(this._parameterList_ == oldChild)
-        {
-            setParameterList((PParameterList) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

@@ -18,136 +18,117 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
- 
-
-
-
 package soot.jimple.toolkits.base;
-import soot.options.*;
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.*;
-import soot.util.*;
 
 import java.util.*;
+import soot.*;
+import soot.jimple.*;
+import soot.options.*;
+import soot.toolkits.scalar.*;
+import soot.util.*;
 
-public class PartialConstructorFolder extends BodyTransformer
-{
-    //public JimpleConstructorFolder( Singletons.Global g ) {}
-    //public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
+public class PartialConstructorFolder extends BodyTransformer {
+  // public JimpleConstructorFolder( Singletons.Global g ) {}
+  // public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
 
-    private List<Type> types;
+  private List<Type> types;
 
-    public void setTypes(List<Type> t){
-        types = t;
-    }
+  public void setTypes(List<Type> t) {
+    types = t;
+  }
 
-    public List<Type> getTypes(){
-        return types;
-    }
-    
-    /** This method pushes all newExpr down to be the stmt directly before every
-     * invoke of the init only if they are in the types list*/
-    
-    public void internalTransform(Body b, String phaseName, Map<String,String> options)
-    {
-        JimpleBody body = (JimpleBody)b;
+  public List<Type> getTypes() {
+    return types;
+  }
 
-        if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
-                "] Folding Jimple constructors...");
+  /**
+   * This method pushes all newExpr down to be the stmt directly before every invoke of the init
+   * only if they are in the types list
+   */
+  public void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    JimpleBody body = (JimpleBody) b;
 
-        Chain<Unit> units = body.getUnits();
-        List<Unit> stmtList = new ArrayList<Unit>();
-        stmtList.addAll(units);
+    if (Options.v().verbose())
+      G.v().out.println("[" + body.getMethod().getName() + "] Folding Jimple constructors...");
 
-        Iterator<Unit> it = stmtList.iterator();
-        Iterator<Unit> nextStmtIt = stmtList.iterator();
-        // start ahead one
-        nextStmtIt.next();
-        
-        LocalUses localUses = LocalUses.Factory.newLocalUses(body);
+    Chain<Unit> units = body.getUnits();
+    List<Unit> stmtList = new ArrayList<Unit>();
+    stmtList.addAll(units);
 
-        /* fold in NewExpr's with specialinvoke's */
-        while (it.hasNext())
-        {
-            Stmt s = (Stmt)it.next();
-            
-            
-            if (!(s instanceof AssignStmt))
-                continue;
-            
-            /* this should be generalized to ArrayRefs */
-            // only deal with stmts that are an local = newExpr
-            Value lhs = ((AssignStmt)s).getLeftOp();
-            if (!(lhs instanceof Local))
-                continue;
-            
-            Value rhs = ((AssignStmt)s).getRightOp();
-            if (!(rhs instanceof NewExpr))
-                continue;
+    Iterator<Unit> it = stmtList.iterator();
+    Iterator<Unit> nextStmtIt = stmtList.iterator();
+    // start ahead one
+    nextStmtIt.next();
 
-            
-            //check if very next statement is invoke -->
-            //this indicates there is no control flow between
-            //new and invoke and should do nothing
-            if (nextStmtIt.hasNext()){
-                Stmt next = (Stmt)nextStmtIt.next();
-                if (next instanceof InvokeStmt){
-                    InvokeStmt invoke = (InvokeStmt)next;
-                
-                    if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
-                        SpecialInvokeExpr invokeExpr = (SpecialInvokeExpr)invoke.getInvokeExpr();
-                        if (invokeExpr.getBase() == lhs){
-                            break;
-                        }
-                    }
-                }
+    LocalUses localUses = LocalUses.Factory.newLocalUses(body);
+
+    /* fold in NewExpr's with specialinvoke's */
+    while (it.hasNext()) {
+      Stmt s = (Stmt) it.next();
+
+      if (!(s instanceof AssignStmt)) continue;
+
+      /* this should be generalized to ArrayRefs */
+      // only deal with stmts that are an local = newExpr
+      Value lhs = ((AssignStmt) s).getLeftOp();
+      if (!(lhs instanceof Local)) continue;
+
+      Value rhs = ((AssignStmt) s).getRightOp();
+      if (!(rhs instanceof NewExpr)) continue;
+
+      // check if very next statement is invoke -->
+      // this indicates there is no control flow between
+      // new and invoke and should do nothing
+      if (nextStmtIt.hasNext()) {
+        Stmt next = (Stmt) nextStmtIt.next();
+        if (next instanceof InvokeStmt) {
+          InvokeStmt invoke = (InvokeStmt) next;
+
+          if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
+            SpecialInvokeExpr invokeExpr = (SpecialInvokeExpr) invoke.getInvokeExpr();
+            if (invokeExpr.getBase() == lhs) {
+              break;
             }
-            
-
-            // check if new is in the types list - only process these
-            if (!types.contains(((NewExpr)rhs).getType())) continue;
-            
-            List<UnitValueBoxPair> lu = localUses.getUsesOf(s);
-            Iterator<UnitValueBoxPair> luIter = lu.iterator();
-            boolean MadeNewInvokeExpr = false;
-          
-            while (luIter.hasNext())
-            {
-                Unit use = ((luIter.next())).unit;
-                if (!(use instanceof InvokeStmt))
-                    continue;
-                InvokeStmt is = (InvokeStmt)use;
-                if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) ||
-                  lhs != ((SpecialInvokeExpr)is.getInvokeExpr()).getBase())
-                    continue;
-              
-             //make a new one here 
-              AssignStmt constructStmt = Jimple.v().newAssignStmt
-                (((DefinitionStmt)s).getLeftOp(), ((DefinitionStmt)s).getRightOp());
-              constructStmt.setRightOp
-                (Jimple.v().newNewExpr
-                 (((NewExpr)rhs).getBaseType()));
-              MadeNewInvokeExpr = true;
-              
-              // redirect jumps
-              use.redirectJumpsToThisTo(constructStmt);
-              // insert new one here
-              units.insertBefore(constructStmt, use);
-              
-              constructStmt.addTag(s.getTag("SourceLnPosTag"));
-            }
-          if (MadeNewInvokeExpr)
-            {
-              units.remove(s);
-            }
+          }
         }
-    }  
+      }
+
+      // check if new is in the types list - only process these
+      if (!types.contains(((NewExpr) rhs).getType())) continue;
+
+      List<UnitValueBoxPair> lu = localUses.getUsesOf(s);
+      Iterator<UnitValueBoxPair> luIter = lu.iterator();
+      boolean MadeNewInvokeExpr = false;
+
+      while (luIter.hasNext()) {
+        Unit use = ((luIter.next())).unit;
+        if (!(use instanceof InvokeStmt)) continue;
+        InvokeStmt is = (InvokeStmt) use;
+        if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr)
+            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) continue;
+
+        // make a new one here
+        AssignStmt constructStmt =
+            Jimple.v()
+                .newAssignStmt(((DefinitionStmt) s).getLeftOp(), ((DefinitionStmt) s).getRightOp());
+        constructStmt.setRightOp(Jimple.v().newNewExpr(((NewExpr) rhs).getBaseType()));
+        MadeNewInvokeExpr = true;
+
+        // redirect jumps
+        use.redirectJumpsToThisTo(constructStmt);
+        // insert new one here
+        units.insertBefore(constructStmt, use);
+
+        constructStmt.addTag(s.getTag("SourceLnPosTag"));
+      }
+      if (MadeNewInvokeExpr) {
+        units.remove(s);
+      }
+    }
+  }
 }

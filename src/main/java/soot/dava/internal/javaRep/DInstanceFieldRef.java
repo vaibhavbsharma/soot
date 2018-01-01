@@ -20,39 +20,34 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
 import java.util.*;
+import soot.*;
 import soot.grimp.internal.*;
 
-public class DInstanceFieldRef extends GInstanceFieldRef 
-{
-    private HashSet<Object> thisLocals;
+public class DInstanceFieldRef extends GInstanceFieldRef {
+  private HashSet<Object> thisLocals;
 
-    public DInstanceFieldRef( Value base, SootFieldRef fieldRef, HashSet<Object> thisLocals)
-    {
-	super( base, fieldRef);
+  public DInstanceFieldRef(Value base, SootFieldRef fieldRef, HashSet<Object> thisLocals) {
+    super(base, fieldRef);
 
-	this.thisLocals = thisLocals;
+    this.thisLocals = thisLocals;
+  }
+
+  public void toString(UnitPrinter up) {
+    if (thisLocals.contains(getBase())) {
+      up.fieldRef(fieldRef);
+    } else {
+      super.toString(up);
     }
+  }
 
-    public void toString( UnitPrinter up ) {
-        if( thisLocals.contains(getBase()) ) {
-            up.fieldRef( fieldRef );
-        } else {
-            super.toString( up );
-        }
-    }
+  public String toString() {
+    if (thisLocals.contains(getBase())) return fieldRef.name();
 
-    public String toString()
-    {
-	if (thisLocals.contains( getBase())) 
-	    return fieldRef.name();
+    return super.toString();
+  }
 
-	return super.toString();
-    }
-
-    public Object clone()
-    {
-	return new DInstanceFieldRef( getBase(), fieldRef, thisLocals);
-    }
+  public Object clone() {
+    return new DInstanceFieldRef(getBase(), fieldRef, thisLocals);
+  }
 }

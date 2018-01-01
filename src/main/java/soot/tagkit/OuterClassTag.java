@@ -18,63 +18,53 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
 
 package soot.tagkit;
 
 import java.io.UnsupportedEncodingException;
 import soot.*;
 
-public class OuterClassTag implements Tag
-{
-    SootClass outerClass;
-    String simpleName;
-    boolean anon;
-    
-    public OuterClassTag(SootClass outer, String simpleName, boolean anon)
-    {
-	    this.outerClass = outer;
-        this.simpleName = simpleName;
-        this.anon = anon;
-    }
+public class OuterClassTag implements Tag {
+  SootClass outerClass;
+  String simpleName;
+  boolean anon;
 
-    public String getName()
-    {
-	    return "OuterClassTag";
-    }
+  public OuterClassTag(SootClass outer, String simpleName, boolean anon) {
+    this.outerClass = outer;
+    this.simpleName = simpleName;
+    this.anon = anon;
+  }
 
-    /**
-     */
-    public byte[] getValue()
-    {
-	try {
-		return outerClass.getName().getBytes("UTF8");
-	} catch (UnsupportedEncodingException e) {
-		return new byte[0];
-	}
-    }
+  public String getName() {
+    return "OuterClassTag";
+  }
 
+  /** */
+  public byte[] getValue() {
+    try {
+      return outerClass.getName().getBytes("UTF8");
+    } catch (UnsupportedEncodingException e) {
+      return new byte[0];
+    }
+  }
 
-    public SootClass getOuterClass()
-    {
-	    return outerClass;
-    }
+  public SootClass getOuterClass() {
+    return outerClass;
+  }
 
-    public String getSimpleName(){
-        return simpleName;
-    }
-    
-    public boolean isAnon(){
-        return anon;
-    }
-    
-    public String toString()
-    {
-	return "[outer class="+outerClass.getName()+"]";
-    }
+  public String getSimpleName() {
+    return simpleName;
+  }
+
+  public boolean isAnon() {
+    return anon;
+  }
+
+  public String toString() {
+    return "[outer class=" + outerClass.getName() + "]";
+  }
 }
-

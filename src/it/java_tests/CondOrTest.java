@@ -1,12 +1,12 @@
 public class CondOrTest {
 
-    public static void main(String [] args) {
-    
-        boolean x = true;
-        boolean y = false;
+  public static void main(String[] args) {
 
-        if (x || y) {
-            System.out.println("Both True");
-        }
+    boolean x = true;
+    boolean y = false;
+
+    if (x || y) {
+      System.out.println("Both True");
     }
+  }
 }

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -55,156 +54,152 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
- *         Created on 31-May-2006
+ *     <p>Created on 31-May-2006
  */
 public class CollectConstants extends SceneTransformer implements IJbcoTransform {
 
-	int updatedConstants = 0;
-	int constants = 0;
+  int updatedConstants = 0;
+  int constants = 0;
 
-	public void outputSummary() {
-		out.println(constants + " constants found");
-		out.println(updatedConstants + " static fields created");
-	}
+  public void outputSummary() {
+    out.println(constants + " constants found");
+    out.println(updatedConstants + " static fields created");
+  }
 
-	public static String dependancies[] = new String[] { "wjtp.jbco_cc" };
+  public static String dependancies[] = new String[] {"wjtp.jbco_cc"};
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+  public String[] getDependancies() {
+    return dependancies;
+  }
 
-	public static String name = "wjtp.jbco_cc";
+  public static String name = "wjtp.jbco_cc";
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public static HashMap<Constant, SootField> constantsToFields = new HashMap<Constant, SootField>();
-	public static HashMap<Type, List<Constant>> typesToValues = new HashMap<Type, List<Constant>>();
+  public static HashMap<Constant, SootField> constantsToFields = new HashMap<Constant, SootField>();
+  public static HashMap<Type, List<Constant>> typesToValues = new HashMap<Type, List<Constant>>();
 
-	public static SootField field = null;
+  public static SootField field = null;
 
-	protected void internalTransform(String phaseName, Map<String, String> options) {
-		Scene scene = G.v().soot_Scene();
+  protected void internalTransform(String phaseName, Map<String, String> options) {
+    Scene scene = G.v().soot_Scene();
 
-		if (output)
-			out.println("Collecting Constant Data");
+    if (output) out.println("Collecting Constant Data");
 
-		soot.jbco.util.BodyBuilder.retrieveAllNames();
+    soot.jbco.util.BodyBuilder.retrieveAllNames();
 
-		Chain<SootClass> appClasses = scene.getApplicationClasses();
+    Chain<SootClass> appClasses = scene.getApplicationClasses();
 
-		for (SootClass cl : appClasses) {
-			for (SootMethod m : cl.getMethods()) {
-				if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName))
-					continue;
+    for (SootClass cl : appClasses) {
+      for (SootMethod m : cl.getMethods()) {
+        if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName)) continue;
 
-				for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
-					Value v = useBox.getValue();
-					if (v instanceof Constant) {
-						Constant c = (Constant) v;
-						Type t = c.getType();
-						List<Constant> values = typesToValues.get(t);
-						if (values == null) {
-							values = new ArrayList<Constant>();
-							typesToValues.put(t, values);
-						}
+        for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
+          Value v = useBox.getValue();
+          if (v instanceof Constant) {
+            Constant c = (Constant) v;
+            Type t = c.getType();
+            List<Constant> values = typesToValues.get(t);
+            if (values == null) {
+              values = new ArrayList<Constant>();
+              typesToValues.put(t, values);
+            }
 
-						boolean found = false;
-						Iterator<Constant> vit = values.iterator();
-						while (vit.hasNext()) {
-							if (vit.next().equals(c)) {
-								found = true;
-								break;
-							}
-						}
+            boolean found = false;
+            Iterator<Constant> vit = values.iterator();
+            while (vit.hasNext()) {
+              if (vit.next().equals(c)) {
+                found = true;
+                break;
+              }
+            }
 
-						if (!found) {
-							constants++;
-							values.add(c);
-						}
-					}
-				}
-			}
-		}
+            if (!found) {
+              constants++;
+              values.add(c);
+            }
+          }
+        }
+      }
+    }
 
-		int count = 0;
-		String name = "newConstantJbcoName";
-		Object classes[] = appClasses.toArray();
-		Iterator<Type> it = typesToValues.keySet().iterator();
-		while (it.hasNext()) {
-			Type t = it.next();
-			if (t instanceof NullType)
-				continue; // t = RefType.v("java.lang.Object");
-			Iterator<Constant> cit = typesToValues.get(t).iterator();
-			while (cit.hasNext()) {
-				Constant c = cit.next();
+    int count = 0;
+    String name = "newConstantJbcoName";
+    Object classes[] = appClasses.toArray();
+    Iterator<Type> it = typesToValues.keySet().iterator();
+    while (it.hasNext()) {
+      Type t = it.next();
+      if (t instanceof NullType) continue; // t = RefType.v("java.lang.Object");
+      Iterator<Constant> cit = typesToValues.get(t).iterator();
+      while (cit.hasNext()) {
+        Constant c = cit.next();
 
-				name += "_";
-				SootClass rand = null;
-				do {
-					rand = (SootClass) classes[Rand.getInt(classes.length)];
-				} while (rand.isInterface());
+        name += "_";
+        SootClass rand = null;
+        do {
+          rand = (SootClass) classes[Rand.getInt(classes.length)];
+        } while (rand.isInterface());
 
-				SootField newf = Scene.v().makeSootField(FieldRenamer.getNewName(), t,
-						Modifier.STATIC ^ Modifier.PUBLIC);
-				rand.addField(newf);
-				FieldRenamer.sootFieldsRenamed.add(newf);
-				FieldRenamer.addOldAndNewName(name, newf.getName());
-				constantsToFields.put(c, newf);
-				addInitializingValue(rand, newf, c);
-				FieldRenamer.addOldAndNewName("addedConstant" + count++, newf.getName());
-			}
-		}
+        SootField newf =
+            Scene.v()
+                .makeSootField(FieldRenamer.getNewName(), t, Modifier.STATIC ^ Modifier.PUBLIC);
+        rand.addField(newf);
+        FieldRenamer.sootFieldsRenamed.add(newf);
+        FieldRenamer.addOldAndNewName(name, newf.getName());
+        constantsToFields.put(c, newf);
+        addInitializingValue(rand, newf, c);
+        FieldRenamer.addOldAndNewName("addedConstant" + count++, newf.getName());
+      }
+    }
 
-		updatedConstants += count;
-	}
+    updatedConstants += count;
+  }
 
-	private void addInitializingValue(SootClass clas, SootField f, Constant con) {
-		if (con instanceof NullConstant) {
-			return;
-		} else if (con instanceof IntConstant) {
-			if (((IntConstant) con).value == 0)
-				return;
-		} else if (con instanceof LongConstant) {
-			if (((LongConstant) con).value == 0)
-				return;
-		} else if (con instanceof StringConstant) {
-			if (((StringConstant) con).value == null)
-				return;
-		} else if (con instanceof DoubleConstant) {
-			if (((DoubleConstant) con).value == 0)
-				return;
-		} else if (con instanceof FloatConstant) {
-			if (((FloatConstant) con).value == 0)
-				return;
-		}
+  private void addInitializingValue(SootClass clas, SootField f, Constant con) {
+    if (con instanceof NullConstant) {
+      return;
+    } else if (con instanceof IntConstant) {
+      if (((IntConstant) con).value == 0) return;
+    } else if (con instanceof LongConstant) {
+      if (((LongConstant) con).value == 0) return;
+    } else if (con instanceof StringConstant) {
+      if (((StringConstant) con).value == null) return;
+    } else if (con instanceof DoubleConstant) {
+      if (((DoubleConstant) con).value == 0) return;
+    } else if (con instanceof FloatConstant) {
+      if (((FloatConstant) con).value == 0) return;
+    }
 
-		Body b;
-		boolean newInit = false;
-		if (!clas.declaresMethodByName(SootMethod.staticInitializerName)) {
-			SootMethod m = Scene.v().makeSootMethod(SootMethod.staticInitializerName,
-                    Collections.<Type>emptyList(), VoidType.v(), Modifier.STATIC);
-			clas.addMethod(m);
-			b = Jimple.v().newBody(m);
-			m.setActiveBody(b);
-			newInit = true;
-		} else {
-			SootMethod m = clas.getMethodByName(SootMethod.staticInitializerName);
-			if (!m.hasActiveBody()) {
-				b = Jimple.v().newBody(m);
-				m.setActiveBody(b);
-				newInit = true;
-			} else {
-				b = m.getActiveBody();
-			}
-		}
+    Body b;
+    boolean newInit = false;
+    if (!clas.declaresMethodByName(SootMethod.staticInitializerName)) {
+      SootMethod m =
+          Scene.v()
+              .makeSootMethod(
+                  SootMethod.staticInitializerName,
+                  Collections.<Type>emptyList(),
+                  VoidType.v(),
+                  Modifier.STATIC);
+      clas.addMethod(m);
+      b = Jimple.v().newBody(m);
+      m.setActiveBody(b);
+      newInit = true;
+    } else {
+      SootMethod m = clas.getMethodByName(SootMethod.staticInitializerName);
+      if (!m.hasActiveBody()) {
+        b = Jimple.v().newBody(m);
+        m.setActiveBody(b);
+        newInit = true;
+      } else {
+        b = m.getActiveBody();
+      }
+    }
 
-		PatchingChain<Unit> units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
 
-		units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), con));
-		if (newInit)
-			units.addLast(Jimple.v().newReturnVoidStmt());
-	}
+    units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), con));
+    if (newInit) units.addLast(Jimple.v().newReturnVoidStmt());
+  }
 }

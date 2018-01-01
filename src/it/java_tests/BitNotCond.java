@@ -1,12 +1,12 @@
 public class BitNotCond {
 
-    public static void main(String [] args){
-    
-        int x = 9;
-        int y = 10;
+  public static void main(String[] args) {
 
-        boolean b = !(x > y);
+    int x = 9;
+    int y = 10;
 
-        int b2 = ~x;
-    }
+    boolean b = !(x > y);
+
+    int b2 = ~x;
+  }
 }

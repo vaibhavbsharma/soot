@@ -22,24 +22,22 @@ package ca.mcgill.sable.soot.callgraph;
 import ca.mcgill.sable.graph.editparts.PartFactory;
 import org.eclipse.gef.*;
 
-
 public class CallGraphPartFactory extends PartFactory {
 
+    public CallGraphPartFactory() {
+        super();
+    }
 
-	public CallGraphPartFactory() {
-		super();
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
+     */
+    public EditPart createEditPart(EditPart arg0, Object arg1) {
+        EditPart part = super.createEditPart(arg0, arg1);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
-	 */
-	public EditPart createEditPart(EditPart arg0, Object arg1) {
-		EditPart part = super.createEditPart(arg0, arg1);
-		
-		if (arg1 instanceof CallGraphNode){
-			part = new CallGraphNodeEditPart();
-		}
-		part.setModel(arg1);
-		return part;
-	}
+        if (arg1 instanceof CallGraphNode) {
+            part = new CallGraphNodeEditPart();
+        }
+        part.setModel(arg1);
+        return part;
+    }
 }

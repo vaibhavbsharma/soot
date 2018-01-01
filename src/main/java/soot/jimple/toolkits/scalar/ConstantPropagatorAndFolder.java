@@ -18,103 +18,98 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
 package soot.jimple.toolkits.scalar;
-import soot.options.*;
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.*;
 
 import java.util.*;
-
+import soot.*;
+import soot.jimple.*;
+import soot.options.*;
 import soot.toolkits.graph.*;
+import soot.toolkits.scalar.*;
 
-/** Does constant propagation and folding. 
- * Constant folding is the compile-time evaluation of constant
- * expressions (i.e. 2 * 3). */
-public class ConstantPropagatorAndFolder extends BodyTransformer
-{
-    public ConstantPropagatorAndFolder( Singletons.Global g ) {}
-    public static ConstantPropagatorAndFolder v() { return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder(); }
+/**
+ * Does constant propagation and folding. Constant folding is the compile-time evaluation of
+ * constant expressions (i.e. 2 * 3).
+ */
+public class ConstantPropagatorAndFolder extends BodyTransformer {
+  public ConstantPropagatorAndFolder(Singletons.Global g) {}
 
-    protected void internalTransform(Body b, String phaseName, Map<String,String> options)
-    {
-        int numFolded = 0;
-        int numPropagated = 0;
+  public static ConstantPropagatorAndFolder v() {
+    return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder();
+  }
 
-        if (Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
-                               "] Propagating and folding constants...");
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    int numFolded = 0;
+    int numPropagated = 0;
 
-        UnitGraph g = new ExceptionalUnitGraph(b);
-        LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(g);
+    if (Options.v().verbose())
+      G.v().out.println("[" + b.getMethod().getName() + "] Propagating and folding constants...");
 
-        // Perform a constant/local propagation pass.
-        Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
-        
-        // go through each use box in each statement
-        for (Unit u : orderer.newList(g, false)) {
+    UnitGraph g = new ExceptionalUnitGraph(b);
+    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(g);
 
-            // propagation pass
-            for (ValueBox useBox : u.getUseBoxes()) {
-                Value value = useBox.getValue();
-                if (value instanceof Local) {
-                    Local local = (Local) value;
-                    List<Unit> defsOfUse = localDefs.getDefsOfAt(local, u);
-                    if (defsOfUse.size() == 1) {
-                        DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
-                        Value rhs = defStmt.getRightOp();
-                        if (rhs instanceof NumericConstant
-                        		|| rhs instanceof StringConstant
-                        		|| rhs instanceof NullConstant) {
-                            if (useBox.canContainValue(rhs)) {
-                                useBox.setValue(rhs);
-                                numPropagated++;
-                            }
-                        }
-                        else if (rhs instanceof CastExpr) {
-                        	CastExpr ce = (CastExpr) rhs;
-                        	if (ce.getCastType() instanceof RefType
-                        			&& ce.getOp() instanceof NullConstant) {
-                                defStmt.getRightOpBox().setValue(NullConstant.v());
-                                numPropagated++;
-                        	}
-                        }
-                    }
-                }
+    // Perform a constant/local propagation pass.
+    Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
+
+    // go through each use box in each statement
+    for (Unit u : orderer.newList(g, false)) {
+
+      // propagation pass
+      for (ValueBox useBox : u.getUseBoxes()) {
+        Value value = useBox.getValue();
+        if (value instanceof Local) {
+          Local local = (Local) value;
+          List<Unit> defsOfUse = localDefs.getDefsOfAt(local, u);
+          if (defsOfUse.size() == 1) {
+            DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
+            Value rhs = defStmt.getRightOp();
+            if (rhs instanceof NumericConstant
+                || rhs instanceof StringConstant
+                || rhs instanceof NullConstant) {
+              if (useBox.canContainValue(rhs)) {
+                useBox.setValue(rhs);
+                numPropagated++;
+              }
+            } else if (rhs instanceof CastExpr) {
+              CastExpr ce = (CastExpr) rhs;
+              if (ce.getCastType() instanceof RefType && ce.getOp() instanceof NullConstant) {
+                defStmt.getRightOpBox().setValue(NullConstant.v());
+                numPropagated++;
+              }
             }
-                
-            // folding pass
-            for (ValueBox useBox : u.getUseBoxes()) {
-                Value value = useBox.getValue();
-                if (!(value instanceof Constant)) {
-                    if (Evaluator.isValueConstantValued(value)) {
-                        Value constValue =
-                            Evaluator.getConstantValueOf(value);
-                        if (useBox.canContainValue(constValue)) {
-                            useBox.setValue(constValue);
-                            numFolded++;
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
 
-       if (Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
-                "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
+      // folding pass
+      for (ValueBox useBox : u.getUseBoxes()) {
+        Value value = useBox.getValue();
+        if (!(value instanceof Constant)) {
+          if (Evaluator.isValueConstantValued(value)) {
+            Value constValue = Evaluator.getConstantValueOf(value);
+            if (useBox.canContainValue(constValue)) {
+              useBox.setValue(constValue);
+              numFolded++;
+            }
+          }
+        }
+      }
+    }
 
-    } // optimizeConstants
-
+    if (Options.v().verbose())
+      G.v()
+          .out
+          .println(
+              "["
+                  + b.getMethod().getName()
+                  + "]     Propagated: "
+                  + numPropagated
+                  + ", Folded:  "
+                  + numFolded);
+  } // optimizeConstants
 }
-    
-
-
-
-

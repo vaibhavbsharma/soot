@@ -1,6 +1,4 @@
-
 package soot.jimple.toolkits.thread.mhp.stmt;
-
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -16,29 +14,21 @@ import soot.toolkits.graph.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+public class MonitorExitStmt extends JPegStmt {
 
-public class MonitorExitStmt extends JPegStmt
-{
-	
-	public MonitorExitStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "exit";
-		this.caller = ca;
-		this.unit = un;
-		this.unitGraph = ug;
-	}	
-	public MonitorExitStmt(String obj, String ca,  UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "exit";
-		this.caller = ca;
-		this.unitGraph = ug;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+  public MonitorExitStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "exit";
+    this.caller = ca;
+    this.unit = un;
+    this.unitGraph = ug;
+  }
+
+  public MonitorExitStmt(String obj, String ca, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "exit";
+    this.caller = ca;
+    this.unitGraph = ug;
+    this.sootMethod = sm;
+  }
 }

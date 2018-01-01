@@ -18,23 +18,24 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import soot.*;
+
 import java.util.*;
+import soot.*;
 import soot.toolkits.graph.*;
 
 /** A body transformer that simply calls the CastCheckEliminator analysis. */
-public class CastCheckEliminatorDumper extends BodyTransformer
-{ 
-    public CastCheckEliminatorDumper( Singletons.Global g ) {}
-    public static CastCheckEliminatorDumper v() { return G.v().soot_jimple_toolkits_pointer_CastCheckEliminatorDumper(); }
+public class CastCheckEliminatorDumper extends BodyTransformer {
+  public CastCheckEliminatorDumper(Singletons.Global g) {}
 
-    public String getDefaultOptions() { return ""; }
+  public static CastCheckEliminatorDumper v() {
+    return G.v().soot_jimple_toolkits_pointer_CastCheckEliminatorDumper();
+  }
 
-    protected void internalTransform(Body b, String phaseName, Map options)
-    {
-	CastCheckEliminator cce = new CastCheckEliminator( 
-		new BriefUnitGraph( b ) );
-    }
+  public String getDefaultOptions() {
+    return "";
+  }
+
+  protected void internalTransform(Body b, String phaseName, Map options) {
+    CastCheckEliminator cce = new CastCheckEliminator(new BriefUnitGraph(b));
+  }
 }
-
-

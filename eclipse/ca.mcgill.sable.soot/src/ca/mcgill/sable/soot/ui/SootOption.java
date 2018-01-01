@@ -23,92 +23,88 @@ import java.util.Vector;
 
 public class SootOption {
 
-	private Vector children;
-	private String label;
-	private SootOption parent;
-	private String alias;
-	
-	public SootOption() {
-	
-	}
-	
-	/**
-	 * Constructor for TreeOption.
-	 */
-	public SootOption(String label, String alias) {
-		setLabel(label);
-		setAlias(alias);
-	}
-	
-	public void addChild(SootOption t) {
-		if (getChildren() == null) {
-			setChildren(new Vector());
-		}
-		t.setParent(this);
-		getChildren().add(t);
-	}
-	
+    private Vector children;
+    private String label;
+    private SootOption parent;
+    private String alias;
 
-	/**
-	 * Returns the children.
-	 * @return Vector
-	 */
-	public Vector getChildren() {
-		return children;
-	}
+    public SootOption() {}
 
-	/**
-	 * Returns the label.
-	 * @return String
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /** Constructor for TreeOption. */
+    public SootOption(String label, String alias) {
+        setLabel(label);
+        setAlias(alias);
+    }
 
-	/**
-	 * Sets the children.
-	 * @param children The children to set
-	 */
-	public void setChildren(Vector children) {
-		this.children = children;
-	}
+    public void addChild(SootOption t) {
+        if (getChildren() == null) {
+            setChildren(new Vector());
+        }
+        t.setParent(this);
+        getChildren().add(t);
+    }
 
-	/**
-	 * Sets the label.
-	 * @param label The label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    /**
+     * Returns the children.
+     *
+     * @return Vector
+     */
+    public Vector getChildren() {
+        return children;
+    }
 
-	/**
-	 * Returns the parent.
-	 * @return SootOption
-	 */
-	public SootOption getParent() {
-		return parent;
-	}
+    /**
+     * Returns the label.
+     *
+     * @return String
+     */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * Sets the parent.
-	 * @param parent The parent to set
-	 */
-	public void setParent(SootOption parent) {
-		this.parent = parent;
-	}
+    /**
+     * Sets the children.
+     *
+     * @param children The children to set
+     */
+    public void setChildren(Vector children) {
+        this.children = children;
+    }
 
-	/**
-	 * @return
-	 */
-	public String getAlias() {
-		return alias;
-	}
+    /**
+     * Sets the label.
+     *
+     * @param label The label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setAlias(String string) {
-		alias = string;
-	}
+    /**
+     * Returns the parent.
+     *
+     * @return SootOption
+     */
+    public SootOption getParent() {
+        return parent;
+    }
 
+    /**
+     * Sets the parent.
+     *
+     * @param parent The parent to set
+     */
+    public void setParent(SootOption parent) {
+        this.parent = parent;
+    }
+
+    /** @return */
+    public String getAlias() {
+        return alias;
+    }
+
+    /** @param string */
+    public void setAlias(String string) {
+        alias = string;
+    }
 }

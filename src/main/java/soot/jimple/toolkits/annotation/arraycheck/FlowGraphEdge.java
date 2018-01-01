@@ -18,64 +18,52 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-class FlowGraphEdge
-{
-    Object from;
-    Object to;
+class FlowGraphEdge {
+  Object from;
+  Object to;
 
-    public FlowGraphEdge()
-    {
-        this.from = null; 
-	this.to = null;
-    }
-    
-    public FlowGraphEdge(Object from, Object to)
-    {
-        this.from = from;
-	this.to = to;
-    }
+  public FlowGraphEdge() {
+    this.from = null;
+    this.to = null;
+  }
 
-    public int hashCode()
-    {
-        return this.from.hashCode()^this.to.hashCode();
-    }
+  public FlowGraphEdge(Object from, Object to) {
+    this.from = from;
+    this.to = to;
+  }
 
-    public Object getStartUnit()
-    {
-        return this.from;
-    }
+  public int hashCode() {
+    return this.from.hashCode() ^ this.to.hashCode();
+  }
 
-    public Object getTargetUnit()
-    {
-        return this.to;
-    }
+  public Object getStartUnit() {
+    return this.from;
+  }
 
-    public void changeEndUnits(Object from, Object to)
-    {
-        this.from = from;
-	this.to = to;
-    }
-    
-    public boolean equals(Object other)
-    {
-	if (other == null)
-	    return false;
+  public Object getTargetUnit() {
+    return this.to;
+  }
 
-        if (other instanceof FlowGraphEdge)
-	{
-	    Object otherstart = ((FlowGraphEdge)other).getStartUnit();
-	    Object othertarget = ((FlowGraphEdge)other).getTargetUnit();
+  public void changeEndUnits(Object from, Object to) {
+    this.from = from;
+    this.to = to;
+  }
 
-	    return (this.from.equals(otherstart)&&this.to.equals(othertarget));
-	}
-	else
-	    return false;
-    }
+  public boolean equals(Object other) {
+    if (other == null) return false;
+
+    if (other instanceof FlowGraphEdge) {
+      Object otherstart = ((FlowGraphEdge) other).getStartUnit();
+      Object othertarget = ((FlowGraphEdge) other).getTargetUnit();
+
+      return (this.from.equals(otherstart) && this.to.equals(othertarget));
+    } else return false;
+  }
 }

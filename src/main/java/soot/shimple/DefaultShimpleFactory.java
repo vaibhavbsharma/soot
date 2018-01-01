@@ -20,155 +20,128 @@
 package soot.shimple;
 
 import soot.*;
-import soot.shimple.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.shimple.toolkits.graph.*;
 import soot.toolkits.graph.*;
 
-/**
- * @author Navindra Umanee
- **/
-public class DefaultShimpleFactory implements ShimpleFactory
-{
-    protected final Body body;
-    protected BlockGraph bg;
-    protected UnitGraph ug;
-    protected DominatorsFinder<Block> dFinder;
-    protected DominatorTree<Block> dTree;
-    protected DominanceFrontier<Block> dFrontier;
-    protected PointsToAnalysis pta;
-    protected CallGraph cg;
-    protected SideEffectAnalysis sea;
-    protected GlobalValueNumberer gvn;
+/** @author Navindra Umanee */
+public class DefaultShimpleFactory implements ShimpleFactory {
+  protected final Body body;
+  protected BlockGraph bg;
+  protected UnitGraph ug;
+  protected DominatorsFinder<Block> dFinder;
+  protected DominatorTree<Block> dTree;
+  protected DominanceFrontier<Block> dFrontier;
+  protected PointsToAnalysis pta;
+  protected CallGraph cg;
+  protected SideEffectAnalysis sea;
+  protected GlobalValueNumberer gvn;
 
-    protected ReversibleGraph<Block> rbg;
-    protected DominatorTree<Block> rdTree;
-    protected DominanceFrontier<Block> rdFrontier;
-    protected DominatorsFinder<Block> rdFinder;
-    
-    public DefaultShimpleFactory(Body body)
-    {
-    	this.body = body;
-    }
-    
-    public void clearCache()
-    {
-        bg = null;
-        ug = null;
-        dFinder = null;
-        dTree = null;
-        dFrontier = null;
-        pta = null;
-        cg = null;
-        sea = null;
-        gvn = null;
-        rbg = null;
-        rdTree = null;
-        rdFinder = null;
-        rdFrontier = null;
-    }
+  protected ReversibleGraph<Block> rbg;
+  protected DominatorTree<Block> rdTree;
+  protected DominanceFrontier<Block> rdFrontier;
+  protected DominatorsFinder<Block> rdFinder;
 
-    public Body getBody()
-    {
-        if(body == null)
-            throw new RuntimeException("Assertion failed: Call setBody() first.");
+  public DefaultShimpleFactory(Body body) {
+    this.body = body;
+  }
 
-        return body;
-    }
+  public void clearCache() {
+    bg = null;
+    ug = null;
+    dFinder = null;
+    dTree = null;
+    dFrontier = null;
+    pta = null;
+    cg = null;
+    sea = null;
+    gvn = null;
+    rbg = null;
+    rdTree = null;
+    rdFinder = null;
+    rdFrontier = null;
+  }
 
-    public ReversibleGraph<Block> getReverseBlockGraph()
-    {
-        if(rbg != null)
-            return rbg;
-        
-        BlockGraph bg = getBlockGraph();
-        rbg = new HashReversibleGraph<Block>(bg);
-        rbg.reverse();
-        return rbg;
-    }
+  public Body getBody() {
+    if (body == null) throw new RuntimeException("Assertion failed: Call setBody() first.");
 
-    public DominatorsFinder<Block> getReverseDominatorsFinder()
-    {
-        if(rdFinder != null)
-            return rdFinder;
+    return body;
+  }
 
-        rdFinder = new SimpleDominatorsFinder<Block>(getReverseBlockGraph());
-        return rdFinder;
-    }
+  public ReversibleGraph<Block> getReverseBlockGraph() {
+    if (rbg != null) return rbg;
 
-    public DominatorTree<Block> getReverseDominatorTree()
-    {
-        if(rdTree != null)
-            return rdTree;
+    BlockGraph bg = getBlockGraph();
+    rbg = new HashReversibleGraph<Block>(bg);
+    rbg.reverse();
+    return rbg;
+  }
 
-        rdTree = new DominatorTree<Block>(getReverseDominatorsFinder());
-        return rdTree;
-    }
+  public DominatorsFinder<Block> getReverseDominatorsFinder() {
+    if (rdFinder != null) return rdFinder;
 
-    public DominanceFrontier<Block> getReverseDominanceFrontier()
-    {
-        if(rdFrontier != null)
-            return rdFrontier;
+    rdFinder = new SimpleDominatorsFinder<Block>(getReverseBlockGraph());
+    return rdFinder;
+  }
 
-        rdFrontier = new CytronDominanceFrontier<Block>(getReverseDominatorTree());
-        return rdFrontier;
-    }
-    
-    public BlockGraph getBlockGraph()
-    {
-        if(bg != null)
-            return bg;
+  public DominatorTree<Block> getReverseDominatorTree() {
+    if (rdTree != null) return rdTree;
 
-        bg = new ExceptionalBlockGraph((ExceptionalUnitGraph)getUnitGraph());
-        BlockGraphConverter.addStartStopNodesTo(bg);
-        return bg;
-    }
+    rdTree = new DominatorTree<Block>(getReverseDominatorsFinder());
+    return rdTree;
+  }
 
-    public UnitGraph getUnitGraph()
-    {
-        if(ug != null)
-            return ug;
-        
-        UnreachableCodeEliminator.v().transform(getBody());
+  public DominanceFrontier<Block> getReverseDominanceFrontier() {
+    if (rdFrontier != null) return rdFrontier;
 
-        ug = new ExceptionalUnitGraph(getBody());
-        return ug;
-    }
-    
-    public DominatorsFinder<Block> getDominatorsFinder()
-    {
-        if(dFinder != null)
-            return dFinder;
+    rdFrontier = new CytronDominanceFrontier<Block>(getReverseDominatorTree());
+    return rdFrontier;
+  }
 
-        dFinder = new SimpleDominatorsFinder<Block>(getBlockGraph());
-        return dFinder;
-    }
+  public BlockGraph getBlockGraph() {
+    if (bg != null) return bg;
 
-    public DominatorTree<Block> getDominatorTree()
-    {
-        if(dTree != null)
-            return dTree;
+    bg = new ExceptionalBlockGraph((ExceptionalUnitGraph) getUnitGraph());
+    BlockGraphConverter.addStartStopNodesTo(bg);
+    return bg;
+  }
 
-        dTree = new DominatorTree<Block>(getDominatorsFinder());
-        return dTree;
-    }
-    
-    public DominanceFrontier<Block> getDominanceFrontier()
-    {
-        if(dFrontier != null)
-            return dFrontier;
+  public UnitGraph getUnitGraph() {
+    if (ug != null) return ug;
 
-        dFrontier = new CytronDominanceFrontier<Block>(getDominatorTree());
-        return dFrontier;
-    }
+    UnreachableCodeEliminator.v().transform(getBody());
 
-    public GlobalValueNumberer getGlobalValueNumberer()
-    {
-        if(gvn != null)
-            return gvn;
-        
-        gvn = new SimpleGlobalValueNumberer(getBlockGraph());
-        return gvn;
-    }
+    ug = new ExceptionalUnitGraph(getBody());
+    return ug;
+  }
+
+  public DominatorsFinder<Block> getDominatorsFinder() {
+    if (dFinder != null) return dFinder;
+
+    dFinder = new SimpleDominatorsFinder<Block>(getBlockGraph());
+    return dFinder;
+  }
+
+  public DominatorTree<Block> getDominatorTree() {
+    if (dTree != null) return dTree;
+
+    dTree = new DominatorTree<Block>(getDominatorsFinder());
+    return dTree;
+  }
+
+  public DominanceFrontier<Block> getDominanceFrontier() {
+    if (dFrontier != null) return dFrontier;
+
+    dFrontier = new CytronDominanceFrontier<Block>(getDominatorTree());
+    return dFrontier;
+  }
+
+  public GlobalValueNumberer getGlobalValueNumberer() {
+    if (gvn != null) return gvn;
+
+    gvn = new SimpleGlobalValueNumberer(getBlockGraph());
+    return gvn;
+  }
 }

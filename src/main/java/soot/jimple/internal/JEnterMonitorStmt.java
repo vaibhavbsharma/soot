@@ -18,71 +18,58 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-
-import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
 import java.util.*;
+import soot.*;
+import soot.baf.*;
+import soot.jimple.*;
+import soot.util.*;
 
-public class JEnterMonitorStmt extends AbstractOpStmt 
-    implements EnterMonitorStmt
-{
-    public JEnterMonitorStmt(Value op)
-    {
-        this(Jimple.v().newImmediateBox(op));
-    }
+public class JEnterMonitorStmt extends AbstractOpStmt implements EnterMonitorStmt {
+  public JEnterMonitorStmt(Value op) {
+    this(Jimple.v().newImmediateBox(op));
+  }
 
-    protected JEnterMonitorStmt(ValueBox opBox)
-    {
-        super(opBox);
-    }
+  protected JEnterMonitorStmt(ValueBox opBox) {
+    super(opBox);
+  }
 
-    public Object clone() 
-    {
-        return new JEnterMonitorStmt(Jimple.cloneIfNecessary(getOp()));
-    }
+  public Object clone() {
+    return new JEnterMonitorStmt(Jimple.cloneIfNecessary(getOp()));
+  }
 
-    public String toString()
-    {
-        return Jimple.ENTERMONITOR + " "  + opBox.getValue().toString();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.ENTERMONITOR);
-        up.literal(" ");
-        opBox.toString(up);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseEnterMonitorStmt(this);
+  public String toString() {
+    return Jimple.ENTERMONITOR + " " + opBox.getValue().toString();
+  }
 
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
-        Unit u = Baf.v().newEnterMonitorInst();
-        u.addAllTagsOf(this);
-        out.add(u);
-    }
-  
-    
-    
-  public boolean fallsThrough(){return true;}
-  public boolean branches() { return false;}
-  
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.ENTERMONITOR);
+    up.literal(" ");
+    opBox.toString(up);
+  }
+
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseEnterMonitorStmt(this);
+  }
+
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    ((ConvertToBaf) (getOp())).convertToBaf(context, out);
+    Unit u = Baf.v().newEnterMonitorInst();
+    u.addAllTagsOf(this);
+    out.add(u);
+  }
+
+  public boolean fallsThrough() {
+    return true;
+  }
+
+  public boolean branches() {
+    return false;
+  }
 }

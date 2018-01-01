@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TVirtualinvoke extends Token
-{
-    public TVirtualinvoke()
-    {
-        super.setText("virtualinvoke");
-    }
+public final class TVirtualinvoke extends Token {
+  public TVirtualinvoke() {
+    super.setText("virtualinvoke");
+  }
 
-    public TVirtualinvoke(int line, int pos)
-    {
-        super.setText("virtualinvoke");
-        setLine(line);
-        setPos(pos);
-    }
+  public TVirtualinvoke(int line, int pos) {
+    super.setText("virtualinvoke");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TVirtualinvoke(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TVirtualinvoke(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTVirtualinvoke(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTVirtualinvoke(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TVirtualinvoke text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TVirtualinvoke text.");
+  }
 }

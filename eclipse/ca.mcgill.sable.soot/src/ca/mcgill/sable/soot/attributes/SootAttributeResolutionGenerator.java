@@ -17,7 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.attributes;
 
 import org.eclipse.core.resources.IMarker;
@@ -25,21 +24,19 @@ import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator2;
 
 // not used
-public class SootAttributeResolutionGenerator
-	implements IMarkerResolutionGenerator2 {
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IMarkerResolutionGenerator2#hasResolutions(org.eclipse.core.resources.IMarker)
-	 */
-	public boolean hasResolutions(IMarker marker) {
-		return true;
-	}
+public class SootAttributeResolutionGenerator implements IMarkerResolutionGenerator2 {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
-	 */
-	public IMarkerResolution[] getResolutions(IMarker marker) {
-		return new IMarkerResolution[] {new FindMethodResolver(marker)};
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IMarkerResolutionGenerator2#hasResolutions(org.eclipse.core.resources.IMarker)
+     */
+    public boolean hasResolutions(IMarker marker) {
+        return true;
+    }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
+     */
+    public IMarkerResolution[] getResolutions(IMarker marker) {
+        return new IMarkerResolution[] {new FindMethodResolver(marker)};
+    }
 }

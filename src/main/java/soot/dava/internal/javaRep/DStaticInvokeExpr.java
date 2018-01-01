@@ -20,31 +20,27 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
 import java.util.*;
+import soot.*;
 import soot.grimp.*;
 import soot.grimp.internal.*;
 
-public class DStaticInvokeExpr extends GStaticInvokeExpr
-{
-    public DStaticInvokeExpr( SootMethodRef methodRef, java.util.List args) 
-    {
-	super( methodRef, args);
-    }
+public class DStaticInvokeExpr extends GStaticInvokeExpr {
+  public DStaticInvokeExpr(SootMethodRef methodRef, java.util.List args) {
+    super(methodRef, args);
+  }
 
-    public void toString( UnitPrinter up ) {
-        up.type( methodRef.declaringClass().getType() );
-        up.literal( "." );
-        super.toString(up);
-    }
+  public void toString(UnitPrinter up) {
+    up.type(methodRef.declaringClass().getType());
+    up.literal(".");
+    super.toString(up);
+  }
 
-    public Object clone() 
-    {
-        ArrayList clonedArgs = new ArrayList( getArgCount());
+  public Object clone() {
+    ArrayList clonedArgs = new ArrayList(getArgCount());
 
-        for(int i = 0; i < getArgCount(); i++) 
-            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
-        
-        return new DStaticInvokeExpr( methodRef, clonedArgs);
-    }
+    for (int i = 0; i < getArgCount(); i++) clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+
+    return new DStaticInvokeExpr(methodRef, clonedArgs);
+  }
 }

@@ -5,134 +5,107 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASimpleNewExpr extends PNewExpr
-{
-    private TNew _new_;
-    private PBaseType _baseType_;
+public final class ASimpleNewExpr extends PNewExpr {
+  private TNew _new_;
+  private PBaseType _baseType_;
 
-    public ASimpleNewExpr()
-    {
-        // Constructor
+  public ASimpleNewExpr() {
+    // Constructor
+  }
+
+  public ASimpleNewExpr(
+      @SuppressWarnings("hiding") TNew _new_, @SuppressWarnings("hiding") PBaseType _baseType_) {
+    // Constructor
+    setNew(_new_);
+
+    setBaseType(_baseType_);
+  }
+
+  @Override
+  public Object clone() {
+    return new ASimpleNewExpr(cloneNode(this._new_), cloneNode(this._baseType_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseASimpleNewExpr(this);
+  }
+
+  public TNew getNew() {
+    return this._new_;
+  }
+
+  public void setNew(TNew node) {
+    if (this._new_ != null) {
+      this._new_.parent(null);
     }
 
-    public ASimpleNewExpr(
-        @SuppressWarnings("hiding") TNew _new_,
-        @SuppressWarnings("hiding") PBaseType _baseType_)
-    {
-        // Constructor
-        setNew(_new_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setBaseType(_baseType_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new ASimpleNewExpr(
-            cloneNode(this._new_),
-            cloneNode(this._baseType_));
+    this._new_ = node;
+  }
+
+  public PBaseType getBaseType() {
+    return this._baseType_;
+  }
+
+  public void setBaseType(PBaseType node) {
+    if (this._baseType_ != null) {
+      this._baseType_.parent(null);
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseASimpleNewExpr(this);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
+
+      node.parent(this);
     }
 
-    public TNew getNew()
-    {
-        return this._new_;
+    this._baseType_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._new_) + toString(this._baseType_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._new_ == child) {
+      this._new_ = null;
+      return;
     }
 
-    public void setNew(TNew node)
-    {
-        if(this._new_ != null)
-        {
-            this._new_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._new_ = node;
+    if (this._baseType_ == child) {
+      this._baseType_ = null;
+      return;
     }
 
-    public PBaseType getBaseType()
-    {
-        return this._baseType_;
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._new_ == oldChild) {
+      setNew((TNew) newChild);
+      return;
     }
 
-    public void setBaseType(PBaseType node)
-    {
-        if(this._baseType_ != null)
-        {
-            this._baseType_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._baseType_ = node;
+    if (this._baseType_ == oldChild) {
+      setBaseType((PBaseType) newChild);
+      return;
     }
 
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._new_)
-            + toString(this._baseType_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._new_ == child)
-        {
-            this._new_ = null;
-            return;
-        }
-
-        if(this._baseType_ == child)
-        {
-            this._baseType_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._new_ == oldChild)
-        {
-            setNew((TNew) newChild);
-            return;
-        }
-
-        if(this._baseType_ == oldChild)
-        {
-            setBaseType((PBaseType) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

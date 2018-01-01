@@ -18,60 +18,49 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
 
-/** Reference implementation for UnitBox; just
- * add a canContainUnit method. */
+/** Reference implementation for UnitBox; just add a canContainUnit method. */
 @SuppressWarnings("serial")
-public abstract class AbstractUnitBox implements UnitBox
-{
-    protected Unit unit;
+public abstract class AbstractUnitBox implements UnitBox {
+  protected Unit unit;
 
-    public abstract boolean canContainUnit(Unit u);
+  public abstract boolean canContainUnit(Unit u);
 
-    public boolean isBranchTarget()
-    {
-        return true;
-    }
-    
-    public void setUnit(Unit unit)
-    {
-        if(!canContainUnit(unit))
-            throw new RuntimeException("attempting to put invalid unit in UnitBox");
-            
-        // Remove this from set of back pointers.
-            if(this.unit != null)
-            {
-                this.unit.removeBoxPointingToThis(this);
-            }
+  public boolean isBranchTarget() {
+    return true;
+  }
 
-        // Perform link
-            this.unit = unit;
+  public void setUnit(Unit unit) {
+    if (!canContainUnit(unit))
+      throw new RuntimeException("attempting to put invalid unit in UnitBox");
 
-        // Add this to back pointers
-            if(this.unit != null)
-            {
-                this.unit.addBoxPointingToThis(this);
-            }
+    // Remove this from set of back pointers.
+    if (this.unit != null) {
+      this.unit.removeBoxPointingToThis(this);
     }
 
-    public Unit getUnit()
-    {
-        return unit;
-    }
+    // Perform link
+    this.unit = unit;
 
-    public void toString(UnitPrinter up) {
-        up.startUnitBox(this);
-        up.unitRef(unit, isBranchTarget());
-        up.endUnitBox(this);
+    // Add this to back pointers
+    if (this.unit != null) {
+      this.unit.addBoxPointingToThis(this);
     }
+  }
+
+  public Unit getUnit() {
+    return unit;
+  }
+
+  public void toString(UnitPrinter up) {
+    up.startUnitBox(this);
+    up.unitRef(unit, isBranchTarget());
+    up.endUnitBox(this);
+  }
 }

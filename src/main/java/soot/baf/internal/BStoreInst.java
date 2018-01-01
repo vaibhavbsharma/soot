@@ -18,90 +18,75 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
+import java.util.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
-public class BStoreInst extends AbstractOpTypeInst implements StoreInst
-{
-   
-    ValueBox localBox;
-    List defBoxes;
-   
-    public BStoreInst(Type opType, Local local)
-    {
-        super(opType);      
-        localBox = new BafLocalBox(local);
-        defBoxes = Collections.singletonList(localBox);
-    }
+public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 
-    public int getInCount()
-    {
-        return 1;
-    }
+  ValueBox localBox;
+  List defBoxes;
 
-    public Object clone() 
-    {
-        return new  BStoreInst(getOpType(), getLocal());
-    }
+  public BStoreInst(Type opType, Local local) {
+    super(opType);
+    localBox = new BafLocalBox(local);
+    defBoxes = Collections.singletonList(localBox);
+  }
 
-    public int getInMachineCount()
-    {
-        return AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getInCount() {
+    return 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public Object clone() {
+    return new BStoreInst(getOpType(), getLocal());
+  }
 
-    final public String getName() { return "store"; }
-    final String getParameters()
-    { return " " + localBox.getValue().toString(); }
-    protected void getParameters(UnitPrinter up ) {
-        up.literal(" ");
-        localBox.toString(up);
-    }
+  public int getInMachineCount() {
+    return AbstractJasminClass.sizeOfType(getOpType());
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseStoreInst(this);
-    }   
- 
-   
+  public int getOutCount() {
+    return 0;
+  }
 
-    public void setLocal(Local l)
-    {
-        localBox.setValue(l);
-    }   
-    
-    public Local getLocal()
-    {
-        return (Local) localBox.getValue();
-    }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
+  public final String getName() {
+    return "store";
+  }
 
-    public List getDefBoxes() 
-    {
-        return defBoxes;
-    }
+  final String getParameters() {
+    return " " + localBox.getValue().toString();
+  }
 
-    
+  protected void getParameters(UnitPrinter up) {
+    up.literal(" ");
+    localBox.toString(up);
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseStoreInst(this);
+  }
+
+  public void setLocal(Local l) {
+    localBox.setValue(l);
+  }
+
+  public Local getLocal() {
+    return (Local) localBox.getValue();
+  }
+
+  public List getDefBoxes() {
+    return defBoxes;
+  }
 }

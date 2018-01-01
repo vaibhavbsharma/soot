@@ -18,15 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
-
 
 package soot.grimp.internal;
 
@@ -34,19 +29,16 @@ import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
-public class GNewArrayExpr extends AbstractNewArrayExpr implements Precedence
-{
-  public GNewArrayExpr(Type type, Value size)
-    {
-      super(type, Grimp.v().newExprBox(size));
-    }
-  
-  public int getPrecedence() { return 850; }
-    
-    
-    public Object clone() 
-    {
-        return new GNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
-    }
+public class GNewArrayExpr extends AbstractNewArrayExpr implements Precedence {
+  public GNewArrayExpr(Type type, Value size) {
+    super(type, Grimp.v().newExprBox(size));
+  }
 
+  public int getPrecedence() {
+    return 850;
+  }
+
+  public Object clone() {
+    return new GNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
+  }
 }

@@ -18,7 +18,7 @@
  *
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,14 +26,11 @@
 package soot;
 
 public class OptionsParseException extends RuntimeException {
-	
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -8274657472953193866L;
 
-	public OptionsParseException(String msg) {
-    	super(msg);
-    }
-	
+  /** */
+  private static final long serialVersionUID = -8274657472953193866L;
+
+  public OptionsParseException(String msg) {
+    super(msg);
+  }
 }

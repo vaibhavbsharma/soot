@@ -22,20 +22,19 @@ package soot.jimple.spark.fieldrw;
 import soot.*;
 import soot.tagkit.*;
 
-public class FieldReadTagAggregator extends ImportantTagAggregator
-{    
-    public FieldReadTagAggregator( Singletons.Global g ) {}
-    public static FieldReadTagAggregator v() { return G.v().soot_jimple_spark_fieldrw_FieldReadTagAggregator(); }
+public class FieldReadTagAggregator extends ImportantTagAggregator {
+  public FieldReadTagAggregator(Singletons.Global g) {}
 
-    /** Decide whether this tag should be aggregated by this aggregator. */
-    public boolean wantTag(Tag t)
-    {
-	return (t instanceof FieldReadTag);
-    }
-    
-    public String aggregatedName()
-    {
-        return "FieldRead";
-    }
+  public static FieldReadTagAggregator v() {
+    return G.v().soot_jimple_spark_fieldrw_FieldReadTagAggregator();
+  }
+
+  /** Decide whether this tag should be aggregated by this aggregator. */
+  public boolean wantTag(Tag t) {
+    return (t instanceof FieldReadTag);
+  }
+
+  public String aggregatedName() {
+    return "FieldRead";
+  }
 }
-

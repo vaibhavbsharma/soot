@@ -20,7 +20,6 @@ package soot.jimple.spark.ondemand.pautil;
 
 import java.util.Iterator;
 import java.util.Map;
-
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -30,35 +29,30 @@ import soot.Transform;
 
 public class DumpNumAppReachableMethods extends SceneTransformer {
 
-    protected void internalTransform(String phaseName, Map options) {
-        int numAppMethods = 0;
-        for (Iterator mIt = Scene.v().getReachableMethods().listener(); mIt
-                .hasNext();) {
-            final SootMethod m = (SootMethod) mIt.next();
+  protected void internalTransform(String phaseName, Map options) {
+    int numAppMethods = 0;
+    for (Iterator mIt = Scene.v().getReachableMethods().listener(); mIt.hasNext(); ) {
+      final SootMethod m = (SootMethod) mIt.next();
 
-            if (isAppMethod(m)) {
-                // System.out.println(m);
-                // assert OnFlyCallGraphBuilder.processedMethods.contains(m) : m
-                // + " not processed!!";
-                numAppMethods++;
-            }
-        }
-        G.v().out.println("Number of reachable methods in application: "
-                + numAppMethods);
+      if (isAppMethod(m)) {
+        // System.out.println(m);
+        // assert OnFlyCallGraphBuilder.processedMethods.contains(m) : m
+        // + " not processed!!";
+        numAppMethods++;
+      }
     }
+    G.v().out.println("Number of reachable methods in application: " + numAppMethods);
+  }
 
-    private boolean isAppMethod(final SootMethod m) {
-        return !SootUtil.inLibrary(m.getDeclaringClass().getName());
-    }
+  private boolean isAppMethod(final SootMethod m) {
+    return !SootUtil.inLibrary(m.getDeclaringClass().getName());
+  }
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        PackManager.v().getPack("wjtp").add(
-                new Transform("wjtp.narm", new DumpNumAppReachableMethods()));
-        soot.Main.main(args);
-
-    }
-
+  /** @param args */
+  public static void main(String[] args) {
+    PackManager.v()
+        .getPack("wjtp")
+        .add(new Transform("wjtp.narm", new DumpNumAppReachableMethods()));
+    soot.Main.main(args);
+  }
 }

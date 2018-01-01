@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TStaticinvoke extends Token
-{
-    public TStaticinvoke()
-    {
-        super.setText("staticinvoke");
-    }
+public final class TStaticinvoke extends Token {
+  public TStaticinvoke() {
+    super.setText("staticinvoke");
+  }
 
-    public TStaticinvoke(int line, int pos)
-    {
-        super.setText("staticinvoke");
-        setLine(line);
-        setPos(pos);
-    }
+  public TStaticinvoke(int line, int pos) {
+    super.setText("staticinvoke");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TStaticinvoke(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TStaticinvoke(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTStaticinvoke(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTStaticinvoke(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TStaticinvoke text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TStaticinvoke text.");
+  }
 }

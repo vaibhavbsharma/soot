@@ -18,83 +18,69 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple.toolkits.annotation.profiling;
 
+import java.util.*;
 import soot.*;
 import soot.jimple.*;
+import soot.options.ProfilingOptions;
 import soot.util.*;
 
-import java.util.*;
-import soot.options.ProfilingOptions;
+public class ProfilingGenerator extends BodyTransformer {
+  public ProfilingGenerator(Singletons.Global g) {}
 
-public class ProfilingGenerator extends BodyTransformer
-{
-    public ProfilingGenerator( Singletons.Global g ) {}
-    public static ProfilingGenerator v() { return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator(); }
+  public static ProfilingGenerator v() {
+    return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator();
+  }
 
-    public String mainSignature = "void main(java.lang.String[])";
+  public String mainSignature = "void main(java.lang.String[])";
 
-    //    private String mainSignature = "long runBenchmark(java.lang.String[])";
+  //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 
-    protected void internalTransform(Body body, String phaseName, Map opts)
+  protected void internalTransform(Body body, String phaseName, Map opts) {
+    ProfilingOptions options = new ProfilingOptions(opts);
+    if (options.notmainentry()) mainSignature = "long runBenchmark(java.lang.String[])";
+
     {
-        ProfilingOptions options = new ProfilingOptions( opts );
-	if (options.notmainentry())
-	    mainSignature = "long runBenchmark(java.lang.String[])";
+      SootMethod m = body.getMethod();
 
-	{
-	    SootMethod m = body.getMethod();
+      SootClass counterClass = Scene.v().loadClassAndSupport("MultiCounter");
+      SootMethod reset = counterClass.getMethod("void reset()");
+      SootMethod report = counterClass.getMethod("void report()");
 
-	    SootClass counterClass = Scene.v().loadClassAndSupport("MultiCounter");
-	    SootMethod reset = counterClass.getMethod("void reset()") ;
-	    SootMethod report = counterClass.getMethod("void report()") ;
-	    
-	    boolean isMainMethod= m.getSubSignature().equals(mainSignature);
-	    
-	    Chain units = body.getUnits();
+      boolean isMainMethod = m.getSubSignature().equals(mainSignature);
 
-	    if (isMainMethod)
-	    {
-	        units.addFirst(Jimple.v().newInvokeStmt(
-			       Jimple.v().newStaticInvokeExpr(reset.makeRef())));		
-	    }
+      Chain units = body.getUnits();
 
-	    Iterator stmtIt = body.getUnits().snapshotIterator();
-	    while (stmtIt.hasNext())
-	    {
-	        Stmt stmt = (Stmt)stmtIt.next();
+      if (isMainMethod) {
+        units.addFirst(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(reset.makeRef())));
+      }
 
-		if (stmt instanceof InvokeStmt)
-		{
-		    InvokeExpr iexpr = ((InvokeStmt)stmt).getInvokeExpr() ;
-		
-		    if (iexpr instanceof StaticInvokeExpr)
-		    {
-		        SootMethod tempm = ((StaticInvokeExpr)iexpr).getMethod() ;
-			
-			if (tempm.getSignature().equals(
-				"<java.lang.System: void exit(int)>"))
-			{
-			    units.insertBefore (Jimple.v().newInvokeStmt( 
-				    Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt) ;
+      Iterator stmtIt = body.getUnits().snapshotIterator();
+      while (stmtIt.hasNext()) {
+        Stmt stmt = (Stmt) stmtIt.next();
 
-			}
-		    }
-		}
-		else
-		if (isMainMethod
-		    && (  stmt instanceof ReturnStmt 
-			 || stmt instanceof ReturnVoidStmt))
-		{
-		    units.insertBefore(Jimple.v().newInvokeStmt(
-			    Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt);				 
-		}
-	    }
-	}
+        if (stmt instanceof InvokeStmt) {
+          InvokeExpr iexpr = ((InvokeStmt) stmt).getInvokeExpr();
+
+          if (iexpr instanceof StaticInvokeExpr) {
+            SootMethod tempm = ((StaticInvokeExpr) iexpr).getMethod();
+
+            if (tempm.getSignature().equals("<java.lang.System: void exit(int)>")) {
+              units.insertBefore(
+                  Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt);
+            }
+          }
+        } else if (isMainMethod && (stmt instanceof ReturnStmt || stmt instanceof ReturnVoidStmt)) {
+          units.insertBefore(
+              Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt);
+        }
+      }
     }
+  }
 }

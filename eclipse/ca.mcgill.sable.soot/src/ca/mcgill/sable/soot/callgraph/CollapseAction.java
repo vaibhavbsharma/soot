@@ -17,38 +17,33 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.callgraph;
 
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.*;
-import org.eclipse.gef.ui.actions.*;
 import ca.mcgill.sable.graph.actions.*;
+import org.eclipse.gef.ui.actions.*;
+import org.eclipse.jface.action.*;
+import org.eclipse.ui.*;
 
 public class CollapseAction extends SimpleSelectAction {
 
-	public static final String COLLAPSE = "collapse action";
-	
-	public CollapseAction(IWorkbenchPart part) {
-		super(part);
-	}
+    public static final String COLLAPSE = "collapse action";
 
-	
+    public CollapseAction(IWorkbenchPart part) {
+        super(part);
+    }
 
-	
-	protected void init(){
-		super.init();
-		setId(COLLAPSE);
-		setText("Collapse");
-	}
+    protected void init() {
+        super.init();
+        setId(COLLAPSE);
+        setText("Collapse");
+    }
 
-	public void run(){
-		CallGraphNodeEditPart cgPart = (CallGraphNodeEditPart)getSelectedObjects().get(0);
-		cgPart.collapseGraph();
-	}
-	
-	public boolean calculateEnabled(){
-		return true;
-	}
+    public void run() {
+        CallGraphNodeEditPart cgPart = (CallGraphNodeEditPart) getSelectedObjects().get(0);
+        cgPart.collapseGraph();
+    }
+
+    public boolean calculateEnabled() {
+        return true;
+    }
 }

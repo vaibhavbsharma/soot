@@ -17,39 +17,34 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.graph.editparts;
 
+import ca.mcgill.sable.graph.model.*;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
-import ca.mcgill.sable.graph.model.*;
 
 public class PartFactory implements EditPartFactory {
 
-	public PartFactory() {
-		super();
-	}
+    public PartFactory() {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
-	 */
-	public EditPart createEditPart(EditPart arg0, Object arg1) {
-		EditPart part = null;
-		if (arg1 instanceof Graph){
-			part = new GraphEditPart();
-		}
-		else if (arg1 instanceof SimpleNode){
-			part = new SimpleNodeEditPart();
-		}
-		else if (arg1 instanceof Edge){
-			part = new EdgeEditPart();	
-		}
-		else if (arg1 instanceof ComplexNode){
-			part = new ComplexNodeEditPart();
-		}
-		
-		part.setModel(arg1);
-		return part;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
+     */
+    public EditPart createEditPart(EditPart arg0, Object arg1) {
+        EditPart part = null;
+        if (arg1 instanceof Graph) {
+            part = new GraphEditPart();
+        } else if (arg1 instanceof SimpleNode) {
+            part = new SimpleNodeEditPart();
+        } else if (arg1 instanceof Edge) {
+            part = new EdgeEditPart();
+        } else if (arg1 instanceof ComplexNode) {
+            part = new ComplexNodeEditPart();
+        }
 
+        part.setModel(arg1);
+        return part;
+    }
 }

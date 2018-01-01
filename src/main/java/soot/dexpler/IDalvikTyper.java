@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,7 +15,7 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler;
@@ -25,15 +25,15 @@ import soot.Type;
 import soot.ValueBox;
 
 public interface IDalvikTyper {
-  
+
   public static final boolean ENABLE_DVKTYPER = false;
   public static boolean DEBUG = false;
-  
+
   public abstract void setType(ValueBox v, Type type, boolean isUse);
-  //public abstract void setObjectType(ValueBox v);
+  // public abstract void setObjectType(ValueBox v);
   public abstract void addConstraint(ValueBox box1, ValueBox box2);
-  //public abstract void addStrongConstraint(ValueBox vb, Type t);
+  // public abstract void addStrongConstraint(ValueBox vb, Type t);
   abstract void assignType(Body b);
-  //public static IDalvikTyper getDvkTyper(); 
-  //public Stmt captureAssign(JAssignStmt stmt, int current);
+  // public static IDalvikTyper getDvkTyper();
+  // public Stmt captureAssign(JAssignStmt stmt, int current);
 }

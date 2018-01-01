@@ -5,134 +5,107 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ANopStatement extends PStatement
-{
-    private TNop _nop_;
-    private TSemicolon _semicolon_;
+public final class ANopStatement extends PStatement {
+  private TNop _nop_;
+  private TSemicolon _semicolon_;
 
-    public ANopStatement()
-    {
-        // Constructor
+  public ANopStatement() {
+    // Constructor
+  }
+
+  public ANopStatement(
+      @SuppressWarnings("hiding") TNop _nop_, @SuppressWarnings("hiding") TSemicolon _semicolon_) {
+    // Constructor
+    setNop(_nop_);
+
+    setSemicolon(_semicolon_);
+  }
+
+  @Override
+  public Object clone() {
+    return new ANopStatement(cloneNode(this._nop_), cloneNode(this._semicolon_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseANopStatement(this);
+  }
+
+  public TNop getNop() {
+    return this._nop_;
+  }
+
+  public void setNop(TNop node) {
+    if (this._nop_ != null) {
+      this._nop_.parent(null);
     }
 
-    public ANopStatement(
-        @SuppressWarnings("hiding") TNop _nop_,
-        @SuppressWarnings("hiding") TSemicolon _semicolon_)
-    {
-        // Constructor
-        setNop(_nop_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setSemicolon(_semicolon_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new ANopStatement(
-            cloneNode(this._nop_),
-            cloneNode(this._semicolon_));
+    this._nop_ = node;
+  }
+
+  public TSemicolon getSemicolon() {
+    return this._semicolon_;
+  }
+
+  public void setSemicolon(TSemicolon node) {
+    if (this._semicolon_ != null) {
+      this._semicolon_.parent(null);
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseANopStatement(this);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
+
+      node.parent(this);
     }
 
-    public TNop getNop()
-    {
-        return this._nop_;
+    this._semicolon_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._nop_) + toString(this._semicolon_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._nop_ == child) {
+      this._nop_ = null;
+      return;
     }
 
-    public void setNop(TNop node)
-    {
-        if(this._nop_ != null)
-        {
-            this._nop_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._nop_ = node;
+    if (this._semicolon_ == child) {
+      this._semicolon_ = null;
+      return;
     }
 
-    public TSemicolon getSemicolon()
-    {
-        return this._semicolon_;
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._nop_ == oldChild) {
+      setNop((TNop) newChild);
+      return;
     }
 
-    public void setSemicolon(TSemicolon node)
-    {
-        if(this._semicolon_ != null)
-        {
-            this._semicolon_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._semicolon_ = node;
+    if (this._semicolon_ == oldChild) {
+      setSemicolon((TSemicolon) newChild);
+      return;
     }
 
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._nop_)
-            + toString(this._semicolon_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._nop_ == child)
-        {
-            this._nop_ = null;
-            return;
-        }
-
-        if(this._semicolon_ == child)
-        {
-            this._semicolon_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._nop_ == oldChild)
-        {
-            setNop((TNop) newChild);
-            return;
-        }
-
-        if(this._semicolon_ == oldChild)
-        {
-            setSemicolon((TSemicolon) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

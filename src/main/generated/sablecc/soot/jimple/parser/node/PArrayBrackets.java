@@ -2,7 +2,6 @@
 
 package soot.jimple.parser.node;
 
-public abstract class PArrayBrackets extends Node
-{
-    // Empty body
+public abstract class PArrayBrackets extends Node {
+  // Empty body
 }

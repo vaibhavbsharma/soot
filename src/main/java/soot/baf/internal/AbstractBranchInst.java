@@ -18,81 +18,63 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
+import java.util.*;
 import soot.*;
 import soot.util.*;
-import java.util.*;
 
-public abstract class AbstractBranchInst extends AbstractInst
-{
-    UnitBox targetBox;
+public abstract class AbstractBranchInst extends AbstractInst {
+  UnitBox targetBox;
 
-    final List<UnitBox> targetBoxes;
+  final List<UnitBox> targetBoxes;
 
-    AbstractBranchInst(UnitBox targetBox)
-    {
-        this.targetBox = targetBox;
+  AbstractBranchInst(UnitBox targetBox) {
+    this.targetBox = targetBox;
 
-        targetBoxes = Collections.singletonList(targetBox);
-    }
+    targetBoxes = Collections.singletonList(targetBox);
+  }
 
-    abstract public String getName();
+  public abstract String getName();
 
-    public String toString()
-    {
-		String target = ""; 
-		Unit targetUnit = getTarget();
-		if (this == targetUnit)
-		  target = getName();
-		else
-		  target = getTarget().toString();
-		return getName() + " " + target;	    	
-    }
+  public String toString() {
+    String target = "";
+    Unit targetUnit = getTarget();
+    if (this == targetUnit) target = getName();
+    else target = getTarget().toString();
+    return getName() + " " + target;
+  }
 
-    public void toString( UnitPrinter up ) {
-        up.literal( getName() );
-        up.literal(" ");
-        targetBox.toString( up );
-    }
-    
-    public Unit getTarget()
-    {
-        return targetBox.getUnit();
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(getName());
+    up.literal(" ");
+    targetBox.toString(up);
+  }
 
-    public void setTarget(Unit target)
-    {
-        targetBox.setUnit(target);
-    }
+  public Unit getTarget() {
+    return targetBox.getUnit();
+  }
 
-    public UnitBox getTargetBox()
-    {
-        return targetBox;
-    }
+  public void setTarget(Unit target) {
+    targetBox.setUnit(target);
+  }
 
-    public List<UnitBox> getUnitBoxes()
-    {
-        return targetBoxes;
-    }
+  public UnitBox getTargetBox() {
+    return targetBox;
+  }
 
-    abstract public void apply(Switch sw);
+  public List<UnitBox> getUnitBoxes() {
+    return targetBoxes;
+  }
 
-    
-    public boolean branches()
-    {
-        return true;
-    }
-    
+  public abstract void apply(Switch sw);
 
+  public boolean branches() {
+    return true;
+  }
 }
-

@@ -1,19 +1,17 @@
 public class AssignStmts {
 
-    public static void main (String [] args){
-        run();
-    }
+  public static void main(String[] args) {
+    run();
+  }
 
-    
-    public static void run(){
-    
-        int x = 9;
-        int y = 10;
-        int z = 0;
+  public static void run() {
 
-        z += y;
+    int x = 9;
+    int y = 10;
+    int z = 0;
 
-        z -= x;
-    }
-        
+    z += y;
+
+    z -= x;
+  }
 }

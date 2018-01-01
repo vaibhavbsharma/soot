@@ -18,14 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
@@ -33,56 +29,50 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BInstanceOfInst extends AbstractInst 
-                            implements InstanceOfInst
-{
+public class BInstanceOfInst extends AbstractInst implements InstanceOfInst {
 
+  protected Type checkType;
 
-    protected Type checkType;
+  public BInstanceOfInst(Type opType) {
+    if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
+      throw new RuntimeException("invalid InstanceOfInst: " + opType);
 
-    public BInstanceOfInst(Type opType) 
-    { 
-        if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
-            throw new RuntimeException("invalid InstanceOfInst: "+ opType);
+    checkType = opType;
+  }
 
-        checkType = opType;
-    }
-    
-    public int getInCount()
-    {
-        return 1;
-    }
+  public int getInCount() {
+    return 1;
+  }
 
-    public int getInMachineCount()
-    {
-        return 1;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getInMachineCount() {
+    return 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
-    
-    final public String getName() { return "instanceof"; }
+  public int getOutCount() {
+    return 1;
+  }
 
-    public Type getCheckType() { return checkType; }
-    public void setCheckType(Type t) { checkType = t; }
+  public int getOutMachineCount() {
+    return 1;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseInstanceOfInst(this);
-    }   
+  public final String getName() {
+    return "instanceof";
+  }
 
+  public Type getCheckType() {
+    return checkType;
+  }
 
-    public Object clone() 
-    {
-        return new BInstanceOfInst(checkType); 
-    }
+  public void setCheckType(Type t) {
+    checkType = t;
+  }
 
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseInstanceOfInst(this);
+  }
+
+  public Object clone() {
+    return new BInstanceOfInst(checkType);
+  }
 }
-

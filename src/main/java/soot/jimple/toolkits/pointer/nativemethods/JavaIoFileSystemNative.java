@@ -23,7 +23,6 @@
  * @author Feng Qian
  * @author <XXX>
  */
-
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.*;
@@ -31,18 +30,19 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoFileSystemNative extends NativeMethodClass {
-    public JavaIoFileSystemNative( NativeHelper helper ) { super(helper); }
-
+  public JavaIoFileSystemNative(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding
+   * methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(
+      SootMethod method,
+      ReferenceVariable thisVar,
+      ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -53,20 +53,19 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
     } else {
       defaultMethod(method, thisVar, returnVar, params);
       return;
-
     }
   }
-  /************************ java.io.FileSystem ***********************/
+  /** ********************** java.io.FileSystem ********************** */
   /**
    * Returns a variable pointing to the file system constant
    *
-   *    public static native java.io.FileSystem getFileSystem();
+   * <p>public static native java.io.FileSystem getFileSystem();
    */
-  public 
-    void java_io_FileSystem_getFileSystem(SootMethod method,
-					  ReferenceVariable thisVar,
-					  ReferenceVariable returnVar,
-					  ReferenceVariable params[]) {
+  public void java_io_FileSystem_getFileSystem(
+      SootMethod method,
+      ReferenceVariable thisVar,
+      ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
     helper.assignObjectTo(returnVar, Environment.v().getFileSystemObject());
   }
 }

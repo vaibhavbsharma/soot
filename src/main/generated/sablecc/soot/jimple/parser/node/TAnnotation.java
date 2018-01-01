@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TAnnotation extends Token
-{
-    public TAnnotation()
-    {
-        super.setText("annotation");
-    }
+public final class TAnnotation extends Token {
+  public TAnnotation() {
+    super.setText("annotation");
+  }
 
-    public TAnnotation(int line, int pos)
-    {
-        super.setText("annotation");
-        setLine(line);
-        setPos(pos);
-    }
+  public TAnnotation(int line, int pos) {
+    super.setText("annotation");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TAnnotation(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TAnnotation(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTAnnotation(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTAnnotation(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TAnnotation text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TAnnotation text.");
+  }
 }

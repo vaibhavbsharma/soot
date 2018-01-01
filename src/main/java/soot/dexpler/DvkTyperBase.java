@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,7 +15,7 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler;
@@ -25,10 +25,15 @@ import soot.ValueBox;
 
 public abstract class DvkTyperBase {
   public static boolean ENABLE_DVKTYPER = false;
+
   public abstract void setType(ValueBox v, Type type);
+
   public abstract void setObjectType(ValueBox v);
+
   public abstract void setConstraint(ValueBox box1, ValueBox box2);
+
   abstract void assignType();
+
   public static DvkTyperBase getDvkTyper() {
     // TODO Auto-generated method stub
     return null;

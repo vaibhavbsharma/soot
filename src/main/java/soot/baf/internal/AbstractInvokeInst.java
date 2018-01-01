@@ -18,91 +18,71 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
 import java.util.*;
+import soot.*;
 
-abstract class AbstractInvokeInst extends AbstractInst
-{
-    SootMethodRef methodRef;
+abstract class AbstractInvokeInst extends AbstractInst {
+  SootMethodRef methodRef;
 
-    public SootMethodRef getMethodRef()
-    {
-        return methodRef;
-    }
+  public SootMethodRef getMethodRef() {
+    return methodRef;
+  }
 
-    public SootMethod getMethod()
-    {
-        return methodRef.resolve();
-    }
+  public SootMethod getMethod() {
+    return methodRef.resolve();
+  }
 
-    public Type getType()
-    {
-        return methodRef.returnType();
-    }
+  public Type getType() {
+    return methodRef.returnType();
+  }
 
-    public String toString()
-    {
-        return getName() + getParameters();
-    }
+  public String toString() {
+    return getName() + getParameters();
+  }
 
-    abstract public String getName();
-    String getParameters()
-        { return " " + methodRef.getSignature(); }
-    protected void getParameters(UnitPrinter up) {
-        up.literal(" ");
-        up.methodRef(methodRef);
-    }
+  public abstract String getName();
 
-    
+  String getParameters() {
+    return " " + methodRef.getSignature();
+  }
 
-  
-  public int getInCount()
-  {
+  protected void getParameters(UnitPrinter up) {
+    up.literal(" ");
+    up.methodRef(methodRef);
+  }
+
+  public int getInCount() {
     return getMethodRef().parameterTypes().size();
   }
-  
 
-  public int getOutCount()
-  {
-    if(getMethodRef().returnType() instanceof VoidType) 
-      return 0;
-    else
-      return 1;
+  public int getOutCount() {
+    if (getMethodRef().returnType() instanceof VoidType) return 0;
+    else return 1;
   }
-  
 
-
-  public int getInMachineCount()
-  {
+  public int getInMachineCount() {
     int count = 0;
-    
+
     Iterator it = getMethodRef().parameterTypes().iterator();
-    while(it.hasNext()) {
-      count += AbstractJasminClass.sizeOfType((Type) it.next());            
+    while (it.hasNext()) {
+      count += AbstractJasminClass.sizeOfType((Type) it.next());
     }
     return count;
   }
-  
 
-  public int getOutMachineCount()
-  {
-    if(getMethodRef().returnType() instanceof VoidType) 
-      return 0;
-    else
-      return AbstractJasminClass.sizeOfType(getMethodRef().returnType());
-  } 
+  public int getOutMachineCount() {
+    if (getMethodRef().returnType() instanceof VoidType) return 0;
+    else return AbstractJasminClass.sizeOfType(getMethodRef().returnType());
+  }
 
-  public boolean containsInvokeExpr() { return true; }
-
+  public boolean containsInvokeExpr() {
+    return true;
+  }
 }

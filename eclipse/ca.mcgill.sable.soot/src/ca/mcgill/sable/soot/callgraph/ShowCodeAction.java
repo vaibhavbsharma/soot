@@ -19,37 +19,31 @@
 
 package ca.mcgill.sable.soot.callgraph;
 
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.*;
-import org.eclipse.gef.ui.actions.*;
 import ca.mcgill.sable.graph.actions.*;
-
+import org.eclipse.gef.ui.actions.*;
+import org.eclipse.jface.action.*;
+import org.eclipse.ui.*;
 
 public class ShowCodeAction extends SimpleSelectAction {
 
-	public static final String SHOW_IN_CODE = "show in code";
-	
-	public ShowCodeAction(IWorkbenchPart part) {
-		super(part);
-	}
+    public static final String SHOW_IN_CODE = "show in code";
 
-	
+    public ShowCodeAction(IWorkbenchPart part) {
+        super(part);
+    }
 
-	
-	protected void init(){
-		super.init();
-		setId(SHOW_IN_CODE);
-		setText("Show in Code");
-	}
+    protected void init() {
+        super.init();
+        setId(SHOW_IN_CODE);
+        setText("Show in Code");
+    }
 
-	public void run(){
-		CallGraphNodeEditPart cgPart = (CallGraphNodeEditPart)getSelectedObjects().get(0);
-		cgPart.showInCode();
+    public void run() {
+        CallGraphNodeEditPart cgPart = (CallGraphNodeEditPart) getSelectedObjects().get(0);
+        cgPart.showInCode();
+    }
 
-	}
-	
-	public boolean calculateEnabled(){
-		return true;
-	}
+    public boolean calculateEnabled() {
+        return true;
+    }
 }

@@ -18,91 +18,69 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-class BoolValue 
-{
-    private boolean isRectangular;
+class BoolValue {
+  private boolean isRectangular;
 
-    private static final BoolValue trueValue = new BoolValue(true);
-    private static final BoolValue falseValue = new BoolValue(false);
+  private static final BoolValue trueValue = new BoolValue(true);
+  private static final BoolValue falseValue = new BoolValue(false);
 
-    public BoolValue(boolean v)
-    {
-	isRectangular = v;
+  public BoolValue(boolean v) {
+    isRectangular = v;
+  }
+
+  public static BoolValue v(boolean v) {
+    if (v) return trueValue;
+    else return falseValue;
+  }
+
+  public boolean getValue() {
+    return isRectangular;
+  }
+
+  public boolean or(BoolValue other) {
+    if (other.getValue()) isRectangular = true;
+
+    return isRectangular;
+  }
+
+  public boolean or(boolean other) {
+    if (other) isRectangular = true;
+    return isRectangular;
+  }
+
+  public boolean and(BoolValue other) {
+    if (!other.getValue()) isRectangular = false;
+
+    return isRectangular;
+  }
+
+  public boolean and(boolean other) {
+    if (!other) isRectangular = false;
+
+    return isRectangular;
+  }
+
+  public int hashCode() {
+    if (isRectangular) return 1;
+    else return 0;
+  }
+
+  public boolean equals(Object other) {
+    if (other instanceof BoolValue) {
+      return isRectangular == ((BoolValue) other).getValue();
     }
 
-    public static BoolValue v(boolean v)
-    {
-	if (v)
-	    return trueValue;
-	else
-	    return falseValue;
-    }
+    return false;
+  }
 
-    public boolean getValue()
-    {
-	return isRectangular;
-    }
-
-    public boolean or(BoolValue other)
-    {
-	if (other.getValue())
-	    isRectangular = true;
-
-	return isRectangular;
-    }
-
-    public boolean or(boolean other)
-    {
-	if (other)
-	    isRectangular = true;
-	return isRectangular;
-    }
-
-    public boolean and(BoolValue other)
-    {
-        if (!other.getValue())
-	    isRectangular = false;
-
-	return isRectangular;
-    }
-
-    public boolean and(boolean other)
-    {
-	if (!other)
-	    isRectangular = false;
-
-	return isRectangular;
-    }
-
-    public int hashCode()
-    {
-	if (isRectangular)
-	    return 1;
-	else
-	    return 0;
-    }
-
-    public boolean equals(Object other)
-    {
-	if (other instanceof BoolValue)
-	{
-	    return isRectangular == ((BoolValue)other).getValue();
-	}
-
-	return false;
-    }
-
-    public String toString()
-    {
-    	return "["+isRectangular+"]";
-    }
+  public String toString() {
+    return "[" + isRectangular + "]";
+  }
 }
-
-

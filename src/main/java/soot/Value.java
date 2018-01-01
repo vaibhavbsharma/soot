@@ -18,34 +18,35 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
-import soot.util.*;
-import java.util.*;
 import java.io.*;
+import java.util.*;
+import soot.util.*;
 
-/** Data used as, for instance, arguments to instructions; typical implementations are
- * constants or expressions. 
+/**
+ * Data used as, for instance, arguments to instructions; typical implementations are constants or
+ * expressions.
  *
- * Values are typed, clonable and must declare which other 
- * Values they use (contain). */
-public interface Value extends Switchable, EquivTo, Serializable
-{
-    /** Returns a List of boxes corresponding to Values 
-     * which are used by (ie contained within) this Value. */
-    public List<ValueBox> getUseBoxes();
+ * <p>Values are typed, clonable and must declare which other Values they use (contain).
+ */
+public interface Value extends Switchable, EquivTo, Serializable {
+  /**
+   * Returns a List of boxes corresponding to Values which are used by (ie contained within) this
+   * Value.
+   */
+  public List<ValueBox> getUseBoxes();
 
-    /** Returns the Soot type of this Value. */
-    public Type getType();
+  /** Returns the Soot type of this Value. */
+  public Type getType();
 
-    /** Returns a clone of this Value. */
-    public Object clone();
-    
-    public void toString( UnitPrinter up );
+  /** Returns a clone of this Value. */
+  public Object clone();
+
+  public void toString(UnitPrinter up);
 }

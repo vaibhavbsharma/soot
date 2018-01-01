@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,11 +23,9 @@ package soot.jimple.toolkits.typing.fast;
 import java.util.*;
 import soot.*;
 
-/**
- * @author Ben Bellamy
- */
-public interface IHierarchy
-{
-	Collection<Type> lcas(Type a, Type b);
-	boolean ancestor(Type ancestor, Type child);
+/** @author Ben Bellamy */
+public interface IHierarchy {
+  Collection<Type> lcas(Type a, Type b);
+
+  boolean ancestor(Type ancestor, Type child);
 }

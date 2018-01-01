@@ -5,134 +5,108 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AExtendsClause extends PExtendsClause
-{
-    private TExtends _extends_;
-    private PClassName _className_;
+public final class AExtendsClause extends PExtendsClause {
+  private TExtends _extends_;
+  private PClassName _className_;
 
-    public AExtendsClause()
-    {
-        // Constructor
+  public AExtendsClause() {
+    // Constructor
+  }
+
+  public AExtendsClause(
+      @SuppressWarnings("hiding") TExtends _extends_,
+      @SuppressWarnings("hiding") PClassName _className_) {
+    // Constructor
+    setExtends(_extends_);
+
+    setClassName(_className_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AExtendsClause(cloneNode(this._extends_), cloneNode(this._className_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAExtendsClause(this);
+  }
+
+  public TExtends getExtends() {
+    return this._extends_;
+  }
+
+  public void setExtends(TExtends node) {
+    if (this._extends_ != null) {
+      this._extends_.parent(null);
     }
 
-    public AExtendsClause(
-        @SuppressWarnings("hiding") TExtends _extends_,
-        @SuppressWarnings("hiding") PClassName _className_)
-    {
-        // Constructor
-        setExtends(_extends_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setClassName(_className_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AExtendsClause(
-            cloneNode(this._extends_),
-            cloneNode(this._className_));
+    this._extends_ = node;
+  }
+
+  public PClassName getClassName() {
+    return this._className_;
+  }
+
+  public void setClassName(PClassName node) {
+    if (this._className_ != null) {
+      this._className_.parent(null);
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAExtendsClause(this);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
+
+      node.parent(this);
     }
 
-    public TExtends getExtends()
-    {
-        return this._extends_;
+    this._className_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._extends_) + toString(this._className_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._extends_ == child) {
+      this._extends_ = null;
+      return;
     }
 
-    public void setExtends(TExtends node)
-    {
-        if(this._extends_ != null)
-        {
-            this._extends_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._extends_ = node;
+    if (this._className_ == child) {
+      this._className_ = null;
+      return;
     }
 
-    public PClassName getClassName()
-    {
-        return this._className_;
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._extends_ == oldChild) {
+      setExtends((TExtends) newChild);
+      return;
     }
 
-    public void setClassName(PClassName node)
-    {
-        if(this._className_ != null)
-        {
-            this._className_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._className_ = node;
+    if (this._className_ == oldChild) {
+      setClassName((PClassName) newChild);
+      return;
     }
 
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._extends_)
-            + toString(this._className_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._extends_ == child)
-        {
-            this._extends_ = null;
-            return;
-        }
-
-        if(this._className_ == child)
-        {
-            this._className_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._extends_ == oldChild)
-        {
-            setExtends((TExtends) newChild);
-            return;
-        }
-
-        if(this._className_ == oldChild)
-        {
-            setClassName((PClassName) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

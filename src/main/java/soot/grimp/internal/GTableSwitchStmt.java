@@ -18,52 +18,46 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
+import java.util.*;
 import soot.*;
 import soot.grimp.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import java.util.*;
+import soot.jimple.internal.*;
 
-public class GTableSwitchStmt extends JTableSwitchStmt
-{
-    // This method is necessary to deal with constructor-must-be-first-ism.
-    private static UnitBox[] getTargetBoxesArray(List targets)
-    {
-        UnitBox[] targetBoxes = new UnitBox[targets.size()];
+public class GTableSwitchStmt extends JTableSwitchStmt {
+  // This method is necessary to deal with constructor-must-be-first-ism.
+  private static UnitBox[] getTargetBoxesArray(List targets) {
+    UnitBox[] targetBoxes = new UnitBox[targets.size()];
 
-        for(int i = 0; i < targetBoxes.length; i++)
-            targetBoxes[i] = Grimp.v().newStmtBox((Stmt) targets.get(i));
+    for (int i = 0; i < targetBoxes.length; i++)
+      targetBoxes[i] = Grimp.v().newStmtBox((Stmt) targets.get(i));
 
-        return targetBoxes;
-    }
+    return targetBoxes;
+  }
 
-    public GTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets,
-                    Unit defaultTarget)
-    {
-        super(Grimp.v().newExprBox(key), lowIndex, highIndex,
-              getTargetBoxesArray(targets), 
-              Grimp.v().newStmtBox(defaultTarget));
-    }
+  public GTableSwitchStmt(
+      Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget) {
+    super(
+        Grimp.v().newExprBox(key),
+        lowIndex,
+        highIndex,
+        getTargetBoxesArray(targets),
+        Grimp.v().newStmtBox(defaultTarget));
+  }
 
-    
-    public Object clone() 
-    {
-        return new GTableSwitchStmt(Grimp.cloneIfNecessary(getKey()), getLowIndex(), getHighIndex(), 
-            getTargets(), getDefaultTarget());
-    }
-
+  public Object clone() {
+    return new GTableSwitchStmt(
+        Grimp.cloneIfNecessary(getKey()),
+        getLowIndex(),
+        getHighIndex(),
+        getTargets(),
+        getDefaultTarget());
+  }
 }
-
-

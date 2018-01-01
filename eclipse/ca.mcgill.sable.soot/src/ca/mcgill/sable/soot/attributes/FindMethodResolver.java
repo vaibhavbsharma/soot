@@ -17,55 +17,48 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.attributes;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.IMarkerResolution;
+
 // not used
 public class FindMethodResolver implements IMarkerResolution {
 
+    private String label;
+    private IMarker marker;
 
-	private String label;
-	private IMarker marker;
-		
-	public FindMethodResolver(IMarker marker){
-		setMarker(marker);
-		generateLabel();
-	}
-	
-	private void generateLabel(){
-		setLabel("myMarker1");
-	}
-	
-	public void setLabel(String l){
-		label = l;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IMarkerResolution#getLabel()
-	 */
-	public String getLabel() {
-		return getLabel();
-	}
+    public FindMethodResolver(IMarker marker) {
+        setMarker(marker);
+        generateLabel();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
-	 */
-	public void run(IMarker marker) {
-	}
+    private void generateLabel() {
+        setLabel("myMarker1");
+    }
 
-	/**
-	 * @return
-	 */
-	public IMarker getMarker() {
-		return marker;
-	}
+    public void setLabel(String l) {
+        label = l;
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IMarkerResolution#getLabel()
+     */
+    public String getLabel() {
+        return getLabel();
+    }
 
-	/**
-	 * @param marker
-	 */
-	public void setMarker(IMarker marker) {
-		this.marker = marker;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
+     */
+    public void run(IMarker marker) {}
 
+    /** @return */
+    public IMarker getMarker() {
+        return marker;
+    }
+
+    /** @param marker */
+    public void setMarker(IMarker marker) {
+        this.marker = marker;
+    }
 }

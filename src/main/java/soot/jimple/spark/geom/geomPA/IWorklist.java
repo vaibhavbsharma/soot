@@ -20,26 +20,25 @@ package soot.jimple.spark.geom.geomPA;
 
 /**
  * The worklist interface that abstracts the selection strategy.
- * 
- * @author xiao
  *
+ * @author xiao
  */
-public interface IWorklist 
-{
-	/**
-	 * Some worklist may need the initial capacity.
-	 * @param size
-	 * @return
-	 */
-	public void initialize(int size);
-	
-	public boolean has_job();
+public interface IWorklist {
+  /**
+   * Some worklist may need the initial capacity.
+   *
+   * @param size
+   * @return
+   */
+  public void initialize(int size);
 
-	public IVarAbstraction next();
+  public boolean has_job();
 
-	public void push(IVarAbstraction p);
+  public IVarAbstraction next();
 
-	public int size();
-	
-	public void clear();
+  public void push(IVarAbstraction p);
+
+  public int size();
+
+  public void clear();
 };

@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TNeg extends Token
-{
-    public TNeg()
-    {
-        super.setText("neg");
-    }
+public final class TNeg extends Token {
+  public TNeg() {
+    super.setText("neg");
+  }
 
-    public TNeg(int line, int pos)
-    {
-        super.setText("neg");
-        setLine(line);
-        setPos(pos);
-    }
+  public TNeg(int line, int pos) {
+    super.setText("neg");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TNeg(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TNeg(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTNeg(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTNeg(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TNeg text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TNeg text.");
+  }
 }

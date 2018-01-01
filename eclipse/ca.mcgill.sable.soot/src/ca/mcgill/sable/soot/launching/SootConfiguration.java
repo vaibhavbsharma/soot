@@ -23,137 +23,143 @@ import java.util.*;
 
 public class SootConfiguration {
 
+    private Vector children;
+    private String label;
+    private SootConfiguration parent;
 
-	private Vector children;
-	private String label;
-	private SootConfiguration parent;
-	
-	/**
-	 * Constructor for SootConfiguration.
-	 */
-	public SootConfiguration(HashMap aliasValPairs, String name) {
-		super();
-		setAliasValPairs(aliasValPairs);
-		setName(name);
-	}
-	
-	public SootConfiguration(String label) {
-		setLabel(label);
-	}
-	
-	private HashMap aliasValPairs;
-	private String name;
+    /** Constructor for SootConfiguration. */
+    public SootConfiguration(HashMap aliasValPairs, String name) {
+        super();
+        setAliasValPairs(aliasValPairs);
+        setName(name);
+    }
 
-	public void addChild(SootConfiguration t) {
-		if (getChildren() == null) {
-			setChildren(new Vector());
-		}
-		t.setParent(this);
-		getChildren().add(t);
-	}
-	
-	public void removeChild(String name) {
-		Iterator it = getChildren().iterator();
-		SootConfiguration toRemove = null;
-		while (it.hasNext()) {
-			SootConfiguration temp = (SootConfiguration)it.next();
-			if (temp.getLabel().equals(name)) {
-				toRemove = temp;
-			}
-		}
-		if (toRemove != null) {
-			getChildren().remove(toRemove);
-		}
-	}
+    public SootConfiguration(String label) {
+        setLabel(label);
+    }
 
-	public void renameChild(String oldName, String newName){
-		Iterator it = getChildren().iterator();
-		while (it.hasNext()){
-			SootConfiguration temp = (SootConfiguration)it.next();
-			if (temp.getLabel().equals(oldName)){
-				temp.setLabel(newName);	
-			}
-		}
-	}
-	
-	/**
-	 * Returns the aliasValPairs.
-	 * @return HashMap
-	 */
-	public HashMap getAliasValPairs() {
-		return aliasValPairs;
-	}
+    private HashMap aliasValPairs;
+    private String name;
 
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName() {
-		return name;
-	}
+    public void addChild(SootConfiguration t) {
+        if (getChildren() == null) {
+            setChildren(new Vector());
+        }
+        t.setParent(this);
+        getChildren().add(t);
+    }
 
-	/**
-	 * Sets the aliasValPairs.
-	 * @param aliasValPairs The aliasValPairs to set
-	 */
-	public void setAliasValPairs(HashMap aliasValPairs) {
-		this.aliasValPairs = aliasValPairs;
-	}
+    public void removeChild(String name) {
+        Iterator it = getChildren().iterator();
+        SootConfiguration toRemove = null;
+        while (it.hasNext()) {
+            SootConfiguration temp = (SootConfiguration) it.next();
+            if (temp.getLabel().equals(name)) {
+                toRemove = temp;
+            }
+        }
+        if (toRemove != null) {
+            getChildren().remove(toRemove);
+        }
+    }
 
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void renameChild(String oldName, String newName) {
+        Iterator it = getChildren().iterator();
+        while (it.hasNext()) {
+            SootConfiguration temp = (SootConfiguration) it.next();
+            if (temp.getLabel().equals(oldName)) {
+                temp.setLabel(newName);
+            }
+        }
+    }
 
-	/**
-	 * Returns the children.
-	 * @return Vector
-	 */
-	public Vector getChildren() {
-		return children;
-	}
+    /**
+     * Returns the aliasValPairs.
+     *
+     * @return HashMap
+     */
+    public HashMap getAliasValPairs() {
+        return aliasValPairs;
+    }
 
-	/**
-	 * Returns the label.
-	 * @return String
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /**
+     * Returns the name.
+     *
+     * @return String
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Returns the parent.
-	 * @return SootConfiguration
-	 */
-	public SootConfiguration getParent() {
-		return parent;
-	}
+    /**
+     * Sets the aliasValPairs.
+     *
+     * @param aliasValPairs The aliasValPairs to set
+     */
+    public void setAliasValPairs(HashMap aliasValPairs) {
+        this.aliasValPairs = aliasValPairs;
+    }
 
-	/**
-	 * Sets the children.
-	 * @param children The children to set
-	 */
-	public void setChildren(Vector children) {
-		this.children = children;
-	}
+    /**
+     * Sets the name.
+     *
+     * @param name The name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Sets the label.
-	 * @param label The label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    /**
+     * Returns the children.
+     *
+     * @return Vector
+     */
+    public Vector getChildren() {
+        return children;
+    }
 
-	/**
-	 * Sets the parent.
-	 * @param parent The parent to set
-	 */
-	public void setParent(SootConfiguration parent) {
-		this.parent = parent;
-	}
+    /**
+     * Returns the label.
+     *
+     * @return String
+     */
+    public String getLabel() {
+        return label;
+    }
 
+    /**
+     * Returns the parent.
+     *
+     * @return SootConfiguration
+     */
+    public SootConfiguration getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the children.
+     *
+     * @param children The children to set
+     */
+    public void setChildren(Vector children) {
+        this.children = children;
+    }
+
+    /**
+     * Sets the label.
+     *
+     * @param label The label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    /**
+     * Sets the parent.
+     *
+     * @param parent The parent to set
+     */
+    public void setParent(SootConfiguration parent) {
+        this.parent = parent;
+    }
 }

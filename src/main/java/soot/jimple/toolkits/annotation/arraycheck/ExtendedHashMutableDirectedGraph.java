@@ -18,141 +18,108 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import soot.toolkits.graph.*;
 import java.util.*;
+import soot.toolkits.graph.*;
 
 /**
-   add skipNode method to direct all predecessor edges to successors.
+ * add skipNode method to direct all predecessor edges to successors.
+ *
+ * <p>override 'addEdge' to add node if the node was not in the graph
+ */
+class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
+  public ExtendedHashMutableDirectedGraph() {}
 
-   override 'addEdge' to add node if the node was not in the graph
+  /** If nodes are not in the graph, add them into graph first. */
+  public void addEdge(Object from, Object to) {
+    if (!super.containsNode(from)) super.addNode(from);
 
-*/
-class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph
-{  
-    public ExtendedHashMutableDirectedGraph() {}
-    
-    /**
-       If nodes are not in the graph, add them into graph first.
-     */
-    public void addEdge (Object from, Object to)
-    {
-	if (!super.containsNode(from))
-	    super.addNode(from);
+    if (!super.containsNode(to)) super.addNode(to);
 
-	if (!super.containsNode(to))
-	    super.addNode(to);
+    super.addEdge(from, to);
+  }
 
-	super.addEdge(from, to);
+  /** Add mutual edge to the graph. It should be optimized in the future. */
+  public void addMutualEdge(Object from, Object to) {
+    if (!super.containsNode(from)) super.addNode(from);
+
+    if (!super.containsNode(to)) super.addNode(to);
+
+    super.addEdge(from, to);
+    super.addEdge(to, from);
+  }
+
+  /** Bypass the in edge to out edge. Not delete the node */
+  public void skipNode(Object node) {
+    if (!super.containsNode(node)) return;
+
+    Object[] preds = getPredsOf(node).toArray();
+    Object[] succs = getSuccsOf(node).toArray();
+
+    for (Object element : preds) {
+      for (Object element0 : succs) {
+        if (element != element0) super.addEdge(element, element0);
+      }
     }
 
-
-    /**
-       Add mutual edge to the graph. It should be optimized in the future.
-    */
-    public void addMutualEdge (Object from, Object to)
-    {
-	if (!super.containsNode(from))
-	    super.addNode(from);
-
-	if (!super.containsNode(to))
-	    super.addNode(to);
-
-	super.addEdge(from, to);
-	super.addEdge(to, from);
+    for (Object element : preds) {
+      super.removeEdge(element, node);
     }
 
-    /** 
-       Bypass the in edge to out edge. Not delete the node 
-     */
-    public void skipNode(Object node)
-    {
-	if (!super.containsNode(node))
-	    return;
-
-	Object[] preds = getPredsOf(node).toArray();
-	Object[] succs = getSuccsOf(node).toArray();
-
-	
-	for (Object element : preds) {
-	    for (Object element0 : succs) {
-		if (element != element0)
-		    super.addEdge(element, element0);
-	    }
-	}
-
-	for (Object element : preds) {
-	    super.removeEdge(element, node);
-	}
-
-	for (Object element : succs) {
-	    super.removeEdge(node, element);
-	}
-
-	super.removeNode(node);
+    for (Object element : succs) {
+      super.removeEdge(node, element);
     }
 
-    public void mergeWith(ExtendedHashMutableDirectedGraph other)
-    {
-	List<Object> nodes = other.getNodes();
+    super.removeNode(node);
+  }
 
-	Iterator<Object> nodesIt = nodes.iterator();
+  public void mergeWith(ExtendedHashMutableDirectedGraph other) {
+    List<Object> nodes = other.getNodes();
 
-	while (nodesIt.hasNext())
-	{
-	    Object node = nodesIt.next();
+    Iterator<Object> nodesIt = nodes.iterator();
 
-	    List succs = other.getSuccsOf(node);
+    while (nodesIt.hasNext()) {
+      Object node = nodesIt.next();
 
-	    Iterator succsIt = succs.iterator();
+      List succs = other.getSuccsOf(node);
 
-	    while (succsIt.hasNext())
-	    {
-		Object succ = succsIt.next();
-		
-		this.addEdge(node, succ);
-	    }
-	}
+      Iterator succsIt = succs.iterator();
+
+      while (succsIt.hasNext()) {
+        Object succ = succsIt.next();
+
+        this.addEdge(node, succ);
+      }
+    }
+  }
+
+  public String toString() {
+    String rtn = "Graph:\n";
+
+    List nodes = super.getNodes();
+
+    Iterator nodesIt = nodes.iterator();
+
+    while (nodesIt.hasNext()) {
+      Object node = nodesIt.next();
+
+      List succs = super.getSuccsOf(node);
+
+      Iterator succsIt = succs.iterator();
+
+      while (succsIt.hasNext()) {
+        Object succ = succsIt.next();
+
+        rtn = rtn + node + "\t --- \t" + succ + "\n";
+      }
     }
 
-    public String toString()
-    {
-	String rtn = "Graph:\n";
-
-        List nodes = super.getNodes();
-
-	Iterator nodesIt = nodes.iterator();
-
-	while (nodesIt.hasNext())
-        {
-	    Object node = nodesIt.next();
-
-	    List succs = super.getSuccsOf(node);
-
-	    Iterator succsIt = succs.iterator();
-
-	    while (succsIt.hasNext())
-	    {
-		Object succ = succsIt.next();
-
-		rtn = rtn + node + "\t --- \t" + succ +"\n";
-	    }
-	}	 
-
-	return rtn;
-    }
+    return rtn;
+  }
 }
-
-
-
-
-
-
-
-

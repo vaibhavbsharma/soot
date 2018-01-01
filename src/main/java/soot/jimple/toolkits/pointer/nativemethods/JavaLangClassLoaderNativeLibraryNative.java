@@ -23,7 +23,6 @@
  * @author Feng Qian
  * @author <XXX>
  */
-
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.*;
@@ -31,33 +30,32 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangClassLoaderNativeLibraryNative extends NativeMethodClass {
-    public JavaLangClassLoaderNativeLibraryNative( NativeHelper helper ) { super(helper); }
+  public JavaLangClassLoaderNativeLibraryNative(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding
+   * methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(
+      SootMethod method,
+      ReferenceVariable thisVar,
+      ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
     {
       defaultMethod(method, thisVar, returnVar, params);
       return;
-
     }
   }
-  /************** java.lang.ClassLoader$NativeLibrary ****************/
+  /** ************ java.lang.ClassLoader$NativeLibrary *************** */
   /**
    * NO side effects
    *
-   *        native void load(java.lang.String);
-   *        native long find(java.lang.String);
-   *        native void unload();
+   * <p>native void load(java.lang.String); native long find(java.lang.String); native void
+   * unload();
    */
-
 }

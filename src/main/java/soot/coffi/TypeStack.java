@@ -18,21 +18,14 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
 import java.io.*;
-
 import soot.*;
 
 /*
@@ -40,131 +33,112 @@ import soot.*;
  * 'sub-stacks' instead of copying the entire array around.
  */
 
-class TypeStack
-{
-    private Type[] types;
+class TypeStack {
+  private Type[] types;
 
-    private TypeStack()
-    {
-        // no constructor
-    }
+  private TypeStack() {
+    // no constructor
+  }
 
-    public Object clone()
-    {
-        TypeStack newTypeStack = new TypeStack();
+  public Object clone() {
+    TypeStack newTypeStack = new TypeStack();
 
-        newTypeStack.types = types.clone();
+    newTypeStack.types = types.clone();
 
-        return newTypeStack;
-    }
+    return newTypeStack;
+  }
 
-    /**
-     * Returns an empty stack.
-     */
+  /** Returns an empty stack. */
+  public static TypeStack v() {
+    TypeStack typeStack = new TypeStack();
 
-    public static TypeStack v()
-    {
-        TypeStack typeStack = new TypeStack();
+    typeStack.types = new Type[0];
 
-        typeStack.types = new Type[0];
+    return typeStack;
+  }
 
-        return typeStack;
-    }
+  public TypeStack pop() {
+    TypeStack newStack = new TypeStack();
 
-    public TypeStack pop()
-    {
-        TypeStack newStack = new TypeStack();
+    newStack.types = new Type[types.length - 1];
+    System.arraycopy(types, 0, newStack.types, 0, types.length - 1);
 
-        newStack.types = new Type[types.length - 1];
-        System.arraycopy(types, 0, newStack.types, 0, types.length - 1);
+    return newStack;
+  }
 
-        return newStack;
-    }
+  public TypeStack push(Type type) {
+    TypeStack newStack = new TypeStack();
 
-    public TypeStack push(Type type)
-    {
-        TypeStack newStack = new TypeStack();
+    newStack.types = new Type[types.length + 1];
+    System.arraycopy(types, 0, newStack.types, 0, types.length);
 
-        newStack.types = new Type[types.length + 1];
-        System.arraycopy(types, 0, newStack.types, 0, types.length);
+    newStack.types[types.length] = type;
 
-        newStack.types[types.length] = type;
+    return newStack;
+  }
 
-        return newStack;
-    }
+  public Type get(int index) {
+    return types[index];
+  }
 
-    public Type get(int index)
-    {
-        return types[index];
-    }
+  public int topIndex() {
+    return types.length - 1;
+  }
 
-    public int topIndex()
-    {
-        return types.length - 1;
-    }
+  public Type top() {
+    if (types.length == 0) throw new RuntimeException("TypeStack is empty");
+    else return types[types.length - 1];
+  }
 
-    public Type top()
-    {
-        if(types.length == 0)
-            throw new RuntimeException("TypeStack is empty");
-        else
-            return types[types.length - 1];
-    }
+  public boolean equals(Object object) {
+    if (object instanceof TypeStack) {
+      TypeStack otherStack = (TypeStack) object;
 
-    public boolean equals(Object object)
-    {
-        if(object instanceof TypeStack)
-        {
-            TypeStack otherStack = (TypeStack) object;
+      if (otherStack.types.length != types.length) return false;
 
-            if(otherStack.types.length != types.length)
-                return false;
+      for (Type element : types) if (!element.equals(element)) return false;
 
-            for (Type element : types)
-				if(!element.equals(element))
-                    return false;
+      return true;
+    } else return false;
+  }
 
-            return true;
+  public TypeStack merge(TypeStack other) {
+
+    if (types.length != other.types.length)
+      throw new RuntimeException(
+          "TypeStack merging failed; unequal "
+              + "stack lengths: "
+              + types.length
+              + " and "
+              + other.types.length);
+
+    TypeStack newStack = new TypeStack();
+
+    newStack.types = new Type[other.types.length];
+
+    for (int i = 0; i < types.length; i++)
+      if (types[i].equals(other.types[i])) newStack.types[i] = types[i];
+      else {
+        if ((!(types[i] instanceof ArrayType) && !(types[i] instanceof RefType))
+            || (!(other.types[i] instanceof RefType) && !(other.types[i] instanceof ArrayType))) {
+          throw new RuntimeException(
+              "TypeStack merging failed; incompatible types "
+                  + types[i]
+                  + " and "
+                  + other.types[i]);
         }
-        else
-            return false;
-    }
 
-    public TypeStack merge(TypeStack other)
-    {
+        // G.v().out.println("Merging: " + types[i] + " with " + other.types[i]);
 
-        if(types.length != other.types.length)
-            throw new RuntimeException("TypeStack merging failed; unequal " +
-            "stack lengths: " + types.length + " and " + other.types.length);
+        newStack.types[i] = RefType.v("java.lang.Object");
+      }
 
-        TypeStack newStack = new TypeStack();
+    return newStack;
+  }
 
-        newStack.types = new Type[other.types.length];
+  public void print(PrintStream out) {
+    for (int i = types.length - 1; i >= 0; i--) out.println(i + ": " + types[i].toString());
 
-        for(int i = 0; i < types.length; i++)
-            if(types[i].equals(other.types[i]))
-                newStack.types[i] = types[i];
-            else {
-                if((!(types[i] instanceof ArrayType) && !(types[i] instanceof RefType)) || 
-                    (!(other.types[i] instanceof RefType) && !(other.types[i] instanceof ArrayType)))
-                {
-                    throw new RuntimeException("TypeStack merging failed; incompatible types " + types[i] + " and " + other.types[i]);
-                }
-
-                // G.v().out.println("Merging: " + types[i] + " with " + other.types[i]);
-
-                newStack.types[i] = RefType.v("java.lang.Object");
-            }
-
-        return newStack;
-    }
-
-    public void print(PrintStream out)
-    {
-        for(int i = types.length - 1; i >= 0; i--)
-            out.println(i + ": " + types[i].toString());
-
-        if(types.length == 0)
-            out.println("<empty>");
-    }
+    if (types.length == 0) out.println("<empty>");
+  }
 }

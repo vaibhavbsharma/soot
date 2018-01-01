@@ -20,45 +20,40 @@
 package soot.jbco.util;
 
 import java.util.*;
-
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
 import soot.toolkits.graph.TrapUnitGraph;
 
 /**
- * @author Michael Batchelder 
- * 
- * Created on 15-Jun-2006 
+ * @author Michael Batchelder
+ *     <p>Created on 15-Jun-2006
  */
 public class SimpleExceptionalGraph extends TrapUnitGraph {
 
-  /**
-   * @param body
-   */
+  /** @param body */
   public SimpleExceptionalGraph(Body body) {
     super(body);
-	int size = unitChain.size();
+    int size = unitChain.size();
 
-	unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-	unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-	buildUnexceptionalEdges(unitToSuccs, unitToPreds);
-	buildSimpleExceptionalEdges(unitToSuccs, unitToPreds);
-	
-	buildHeadsAndTails();
+    unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+    unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+    buildUnexceptionalEdges(unitToSuccs, unitToPreds);
+    buildSimpleExceptionalEdges(unitToSuccs, unitToPreds);
+
+    buildHeadsAndTails();
   }
 
   protected void buildSimpleExceptionalEdges(Map unitToSuccs, Map unitToPreds) {
-	for (Iterator<Trap> trapIt = body.getTraps().iterator(); 
-	     	trapIt.hasNext(); ) {
-	    Trap trap = trapIt.next();
+    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
+      Trap trap = trapIt.next();
 
-	    Unit handler = trap.getHandlerUnit();
-	    for (Iterator predIt = ((List)unitToPreds.get(trap.getBeginUnit())).iterator();
-	    	 	predIt.hasNext();) {
-	      Unit pred = (Unit)predIt.next();
-	      addEdge(unitToSuccs, unitToPreds, pred, handler);
-	    }
-	}
+      Unit handler = trap.getHandlerUnit();
+      for (Iterator predIt = ((List) unitToPreds.get(trap.getBeginUnit())).iterator();
+          predIt.hasNext(); ) {
+        Unit pred = (Unit) predIt.next();
+        addEdge(unitToSuccs, unitToPreds, pred, handler);
+      }
+    }
   }
 }

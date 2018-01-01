@@ -19,11 +19,9 @@
 
 package ca.mcgill.sable.soot.attributes;
 
-
-
 public interface ISootAttributesHandler {
 
-	public boolean attrExistsForJavaLine(String project, String filename, int lineNum);
-	public boolean attrExistsForJimpleLine(String project, String filename, int lineNum);	 
+    public boolean attrExistsForJavaLine(String project, String filename, int lineNum);
 
+    public boolean attrExistsForJimpleLine(String project, String filename, int lineNum);
 }

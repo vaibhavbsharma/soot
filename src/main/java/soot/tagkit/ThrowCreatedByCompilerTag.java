@@ -18,34 +18,25 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
 
+/** Represents a tag that just has a string to be printed with the code. */
+public class ThrowCreatedByCompilerTag implements Tag {
 
-/** Represents a tag that just has a string to be printed with the code.
- */
+  public ThrowCreatedByCompilerTag() {}
 
-public class ThrowCreatedByCompilerTag implements  Tag
-{
+  /** Returns the tag name. */
+  public String getName() {
+    return "ThrowCreatedByCompilerTag";
+  }
 
-    public ThrowCreatedByCompilerTag(){
-    }
-
-
-
-    /** Returns the tag name. */
-    public String getName() {
-        return "ThrowCreatedByCompilerTag";
-    }
-
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "ThrowCreatedByCompilerTag has no value for bytecode" );
-    }
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("ThrowCreatedByCompilerTag has no value for bytecode");
+  }
 }
-

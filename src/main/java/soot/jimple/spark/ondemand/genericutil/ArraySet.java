@@ -25,11 +25,12 @@ import java.util.NoSuchElementException;
 
 public class ArraySet<T> extends AbstractSet<T> {
 
-  private static final ArraySet EMPTY = new ArraySet<Object>(0, true) {
-    public boolean add(Object obj_) {
-      throw new RuntimeException();
-    }
-  };
+  private static final ArraySet EMPTY =
+      new ArraySet<Object>(0, true) {
+        public boolean add(Object obj_) {
+          throw new RuntimeException();
+        }
+      };
 
   @SuppressWarnings("all")
   public static final <T> ArraySet<T> empty() {
@@ -68,14 +69,13 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see AAA.util.AAASet#add(java.lang.Object)
    */
   @SuppressWarnings("all")
   public boolean add(T obj_) {
     assert obj_ != null;
-    if (checkDupes && this.contains(obj_))
-      return false;
+    if (checkDupes && this.contains(obj_)) return false;
     if (_curIndex == _elems.length) {
       // lengthen array
       Object[] tmp = _elems;
@@ -98,28 +98,26 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see AAA.util.AAASet#contains(java.lang.Object)
    */
   public boolean contains(Object obj_) {
     for (int i = 0; i < _curIndex; i++) {
-      if (_elems[i].equals(obj_))
-        return true;
+      if (_elems[i].equals(obj_)) return true;
     }
     return false;
   }
 
   public boolean intersects(ArraySet<T> other) {
     for (int i = 0; i < other.size(); i++) {
-      if (contains(other.get(i)))
-        return true;
+      if (contains(other.get(i))) return true;
     }
     return false;
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see AAA.util.AAASet#forall(AAA.util.ObjectVisitor)
    */
   public void forall(ObjectVisitor<T> visitor_) {
@@ -138,11 +136,9 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   public boolean remove(Object obj_) {
     int ind;
-    for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {
-    }
+    for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {}
     // check if object was never there
-    if (ind == _curIndex)
-      return false;
+    if (ind == _curIndex) return false;
     return remove(ind);
   }
 
@@ -180,7 +176,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.util.Set#toArray()
    */
   public Object[] toArray() {
@@ -189,7 +185,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.util.Set#addAll(java.util.Collection)
    */
   public boolean addAll(Collection<? extends T> c) {
@@ -203,7 +199,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.util.Set#iterator()
    */
   public Iterator<T> iterator() {
@@ -212,7 +208,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.util.Set#toArray(java.lang.Object[])
    */
   @SuppressWarnings("unchecked")
@@ -224,24 +220,19 @@ public class ArraySet<T> extends AbstractSet<T> {
     return a;
   }
 
-  /**
-   * @author manu
-   */
+  /** @author manu */
   public class ArraySetIterator implements Iterator<T> {
 
     int ind = 0;
 
     final int setSize = size();
 
-    /**
-     * 
-     */
-    public ArraySetIterator() {
-    }
+    /** */
+    public ArraySetIterator() {}
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Iterator#remove()
      */
     public void remove() {
@@ -250,7 +241,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
@@ -259,7 +250,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Iterator#next()
      */
     public T next() {
@@ -268,7 +259,5 @@ public class ArraySet<T> extends AbstractSet<T> {
       }
       return get(ind++);
     }
-
   }
-
 }

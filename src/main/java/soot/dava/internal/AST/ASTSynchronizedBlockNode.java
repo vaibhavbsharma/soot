@@ -20,110 +20,100 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.jimple.*;
 import java.util.*;
+import soot.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.analysis.*;
+import soot.jimple.*;
 
-public class ASTSynchronizedBlockNode extends ASTLabeledNode
-{
-    private List<Object> body;
-    private ValueBox localBox;
+public class ASTSynchronizedBlockNode extends ASTLabeledNode {
+  private List<Object> body;
+  private ValueBox localBox;
 
-    public ASTSynchronizedBlockNode( SETNodeLabel label, List<Object> body, Value local)
-    {
-	super( label);
-	this.body = body;
-	this.localBox = Jimple.v().newLocalBox( local );
+  public ASTSynchronizedBlockNode(SETNodeLabel label, List<Object> body, Value local) {
+    super(label);
+    this.body = body;
+    this.localBox = Jimple.v().newLocalBox(local);
 
-	subBodies.add( body);
-    }
+    subBodies.add(body);
+  }
 
-    /*
-      Nomair A Naeem 21-FEB-2005
-      Used by UselessLabeledBlockRemove to update a body
+  /*
+    Nomair A Naeem 21-FEB-2005
+    Used by UselessLabeledBlockRemove to update a body
+  */
+  public void replaceBody(List<Object> body) {
+    this.body = body;
+    subBodies = new ArrayList<Object>();
+    subBodies.add(body);
+  }
+
+  public int size() {
+    return body.size();
+  }
+
+  public Local getLocal() {
+    return (Local) localBox.getValue();
+  }
+
+  public void setLocal(Local local) {
+    this.localBox = Jimple.v().newLocalBox(local);
+  }
+
+  public Object clone() {
+    return new ASTSynchronizedBlockNode(get_Label(), body, getLocal());
+  }
+
+  public void toString(UnitPrinter up) {
+    label_toString(up);
+
+    /*        up.literal( "synchronized" );
+    	  up.literal( " " );
+    	  up.literal( "(" );
     */
-    public void replaceBody(List<Object> body){
-	this.body=body;
-	subBodies=new ArrayList<Object>();
-	subBodies.add(body);
-    }
+    up.literal("synchronized (");
+    localBox.toString(up);
+    up.literal(")");
+    up.newline();
 
-    public int size()
-    {
-	return body.size();
-    }
-    
-    public Local getLocal() {
-        return (Local) localBox.getValue();
-    }
+    up.literal("{");
+    up.newline();
 
+    up.incIndent();
+    body_toString(up, body);
+    up.decIndent();
 
-    public void setLocal(Local local){
-	this.localBox = Jimple.v().newLocalBox( local );
-    }
+    up.literal("}");
+    up.newline();
+  }
 
-    public Object clone()
-    {
-	return new ASTSynchronizedBlockNode( get_Label(), body, getLocal());
-    }
+  public String toString() {
+    StringBuffer b = new StringBuffer();
 
-    public void toString( UnitPrinter up)
-    {
-	label_toString(up);
+    b.append(label_toString());
 
-	/*        up.literal( "synchronized" );
-		  up.literal( " " );
-		  up.literal( "(" );
-	*/
-	up.literal( "synchronized (");
-	localBox.toString(up);
-	up.literal( ")");
-        up.newline();
+    b.append("synchronized (");
+    b.append(getLocal());
+    b.append(")");
+    b.append(NEWLINE);
 
-        up.literal( "{" );
-        up.newline();
- 
-        up.incIndent();
-        body_toString( up, body );
-        up.decIndent();
+    b.append("{");
+    b.append(NEWLINE);
 
-        up.literal( "}" );
-        up.newline();
-    }
+    b.append(body_toString(body));
 
-    public String toString()
-    {
-	StringBuffer b = new StringBuffer();
+    b.append("}");
+    b.append(NEWLINE);
 
-	b.append( label_toString(  ));
+    return b.toString();
+  }
 
-	b.append( "synchronized (");
-	b.append( getLocal());
-	b.append( ")");
-	b.append( NEWLINE);
-
-	b.append( "{");
-	b.append( NEWLINE);
- 
-	b.append( body_toString( body));
-
-	b.append( "}");
-	b.append( NEWLINE);
-
-	return b.toString();
-    }
-
-
-
-
-    /*
-      Nomair A. Naeem, 7-FEB-05
-      Part of Visitor Design Implementation for AST
-      See: soot.dava.toolkits.base.AST.analysis For details
-    */
-    public void apply(Analysis a){
-	a.caseASTSynchronizedBlockNode(this);
-    }
+  /*
+    Nomair A. Naeem, 7-FEB-05
+    Part of Visitor Design Implementation for AST
+    See: soot.dava.toolkits.base.AST.analysis For details
+  */
+  public void apply(Analysis a) {
+    a.caseASTSynchronizedBlockNode(this);
+  }
 }

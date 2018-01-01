@@ -19,37 +19,32 @@
 
 package ca.mcgill.sable.soot.cfg;
 
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.*;
-import org.eclipse.gef.ui.actions.*;
 import ca.mcgill.sable.graph.actions.*;
 import ca.mcgill.sable.soot.cfg.editParts.*;
+import org.eclipse.gef.ui.actions.*;
+import org.eclipse.jface.action.*;
+import org.eclipse.ui.*;
 
 public class UnStopAction extends SimpleSelectAction {
 
-	public static final String UN_STOP = "un mark stop action";
-	
+    public static final String UN_STOP = "un mark stop action";
 
-	public UnStopAction(IWorkbenchPart part) {
-		super(part);
-	}
+    public UnStopAction(IWorkbenchPart part) {
+        super(part);
+    }
 
-	
+    protected void init() {
+        super.init();
+        setId(UN_STOP);
+        setText("Remove Breakpoint");
+    }
 
-	
-	protected void init(){
-		super.init();
-		setId(UN_STOP);
-		setText("Remove Breakpoint");
-	}
+    public void run() {
+        NodeDataEditPart cfgPart = (NodeDataEditPart) getSelectedObjects().get(0);
+        cfgPart.unMarkStop();
+    }
 
-	public void run(){
-		NodeDataEditPart cfgPart = (NodeDataEditPart)getSelectedObjects().get(0);
-		cfgPart.unMarkStop();
-	}
-	
-	public boolean calculateEnabled(){
-		return true;
-	}
+    public boolean calculateEnabled() {
+        return true;
+    }
 }

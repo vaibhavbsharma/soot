@@ -21,353 +21,287 @@ package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
 
-
 public class SootAttribute {
 
-	private int javaEndLn;
-	private int javaStartLn;
-	private int jimpleEndLn;
-	private int jimpleStartLn;
-	private int jimpleStartPos;
-	private int jimpleEndPos;
+    private int javaEndLn;
+    private int javaStartLn;
+    private int jimpleEndLn;
+    private int jimpleStartLn;
+    private int jimpleStartPos;
+    private int jimpleEndPos;
     private int javaStartPos;
     private int javaEndPos;
 
-	private ArrayList colorList;
-	private ArrayList textList;
+    private ArrayList colorList;
+    private ArrayList textList;
 
-	private ArrayList linkList;
-	
-	private int jimpleLength;
-	private int javaLength;
-	
+    private ArrayList linkList;
 
-	public ArrayList getAnalysisTypes(){
-		ArrayList types = new ArrayList();
-		if (getTextList() != null){
-			Iterator it = getTextList().iterator();
-			while (it.hasNext()){
-				TextAttribute ta = (TextAttribute)it.next();
-				if (!types.contains(ta.getType())){
-					types.add(ta.getType());
-				}
-			}
-		}
-		if (getLinkList() != null){
-			Iterator lit = getLinkList().iterator();
-			while (lit.hasNext()){
-				LinkAttribute la = (LinkAttribute)lit.next();
-				if (!types.contains(la.getType())){
-					types.add(la.getType());
-				}
-			}
-		}
-		
-		if (getColorList() != null){
-			Iterator cit = getColorList().iterator();
-			while (cit.hasNext()){
-				ColorAttribute ca = (ColorAttribute)cit.next();
-				if (!types.contains(ca.type())){
-					types.add(ca.type());
-				}
-			}
-		}
-		return types;
-	}
-	
-	public void addColorAttr(ColorAttribute color){
-		if (getColorList() == null){
-			setColorList(new ArrayList());
-		}
-		getColorList().add(color);
-		
-	}
-	
-	private static final String NEWLINE = "\n";
-	
-	public void addLinkAttr(LinkAttribute link){
-		if (getLinkList() == null){
-			setLinkList(new ArrayList());
-		}
-		getLinkList().add(link);
-		TextAttribute ta = new TextAttribute();
-		ta.setInfo(link.getLabel());
-		ta.setType(link.getType());
-		addTextAttr(ta);
-	}
-	
-	public ArrayList getAllLinkAttrs(){
-		return getLinkList();
-	}
+    private int jimpleLength;
+    private int javaLength;
 
-	public void addTextAttr(TextAttribute text){
-		if (getTextList() == null){
-			setTextList(new ArrayList());
-		}
-		text.setInfo(formatText(text.getInfo()));
-		getTextList().add(text);
-	}
-	
-	public String formatText(String text){
-		text = text.replaceAll("&lt;", "<");
-		text = text.replaceAll("&gt;", ">");
-		text = text.replaceAll("&amp;", "&");
-		return text;
-	}
-	
-	public StringBuffer getAllTextAttrs(String lineSep){
-		StringBuffer sb = new StringBuffer();
-		if (getTextList() != null){
-			Iterator it = getTextList().iterator();
-			while (it.hasNext()){
-				TextAttribute ta = (TextAttribute)it.next();
-				String next = ta.getInfo();
-				if (lineSep.equals("<br>")){
-					// implies java tooltip
-					next = convertHTMLTags(next);
-				}
-				sb.append(next);
-				sb.append(lineSep);
-			}
-		}
-		return sb;
-	}
-	
-	public StringBuffer getTextAttrsForType(String lineSep, String type){
-		StringBuffer sb = new StringBuffer();
-		
-		if (getTextList() != null){
-			Iterator it = getTextList().iterator();
-			while (it.hasNext()){
-				TextAttribute ta = (TextAttribute)it.next();
-				if (ta.getType().equals(type)){
-					String next = ta.getInfo();
-					if (lineSep.equals("<br>")){
-						// implies java tooltip
-						next = convertHTMLTags(next);
-					}
-					sb.append(next);
-					sb.append(lineSep);
-				}
-			}
-		}
-		return sb;
-	}
-	
-	public String convertHTMLTags(String next){
-		if (next == null) return null;
-		else {
-			next = next.replaceAll("<", "&lt;");
-			next = next.replaceAll(">", "&gt;");
-			return next;
-		}
-	}
-	
+    public ArrayList getAnalysisTypes() {
+        ArrayList types = new ArrayList();
+        if (getTextList() != null) {
+            Iterator it = getTextList().iterator();
+            while (it.hasNext()) {
+                TextAttribute ta = (TextAttribute) it.next();
+                if (!types.contains(ta.getType())) {
+                    types.add(ta.getType());
+                }
+            }
+        }
+        if (getLinkList() != null) {
+            Iterator lit = getLinkList().iterator();
+            while (lit.hasNext()) {
+                LinkAttribute la = (LinkAttribute) lit.next();
+                if (!types.contains(la.getType())) {
+                    types.add(la.getType());
+                }
+            }
+        }
 
-	// these two are maybe not accurate maybe
-	// need to check if ln in question is between
-	// the start and end ln's
-	public boolean attrForJimpleLn(int jimple_ln) {
-		if (getJimpleStartLn() == jimple_ln) return true;
-		else return false;
-	}
-	
-	public boolean attrForJavaLn(int java_ln) {
-		if (getJavaStartLn() == java_ln) return true;
-		else return false;
-	}
-	
-	public SootAttribute() {
-	}
-	
-	
+        if (getColorList() != null) {
+            Iterator cit = getColorList().iterator();
+            while (cit.hasNext()) {
+                ColorAttribute ca = (ColorAttribute) cit.next();
+                if (!types.contains(ca.type())) {
+                    types.add(ca.type());
+                }
+            }
+        }
+        return types;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJimpleEndPos() {
-		return jimpleEndPos;
-	}
+    public void addColorAttr(ColorAttribute color) {
+        if (getColorList() == null) {
+            setColorList(new ArrayList());
+        }
+        getColorList().add(color);
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJimpleStartPos() {
-		return jimpleStartPos;
-	}
+    private static final String NEWLINE = "\n";
 
+    public void addLinkAttr(LinkAttribute link) {
+        if (getLinkList() == null) {
+            setLinkList(new ArrayList());
+        }
+        getLinkList().add(link);
+        TextAttribute ta = new TextAttribute();
+        ta.setInfo(link.getLabel());
+        ta.setType(link.getType());
+        addTextAttr(ta);
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJimpleEndPos(int i) {
-		jimpleEndPos = i;
-	}
+    public ArrayList getAllLinkAttrs() {
+        return getLinkList();
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJimpleStartPos(int i) {
-		jimpleStartPos = i;
-	}
+    public void addTextAttr(TextAttribute text) {
+        if (getTextList() == null) {
+            setTextList(new ArrayList());
+        }
+        text.setInfo(formatText(text.getInfo()));
+        getTextList().add(text);
+    }
 
-	/**
-	 * @return
-	 */
-	public ArrayList getTextList() {
-		return textList;
-	}
+    public String formatText(String text) {
+        text = text.replaceAll("&lt;", "<");
+        text = text.replaceAll("&gt;", ">");
+        text = text.replaceAll("&amp;", "&");
+        return text;
+    }
 
-	/**
-	 * @param list
-	 */
-	public void setTextList(ArrayList list) {
-		textList = list;
-	}
+    public StringBuffer getAllTextAttrs(String lineSep) {
+        StringBuffer sb = new StringBuffer();
+        if (getTextList() != null) {
+            Iterator it = getTextList().iterator();
+            while (it.hasNext()) {
+                TextAttribute ta = (TextAttribute) it.next();
+                String next = ta.getInfo();
+                if (lineSep.equals("<br>")) {
+                    // implies java tooltip
+                    next = convertHTMLTags(next);
+                }
+                sb.append(next);
+                sb.append(lineSep);
+            }
+        }
+        return sb;
+    }
 
+    public StringBuffer getTextAttrsForType(String lineSep, String type) {
+        StringBuffer sb = new StringBuffer();
 
+        if (getTextList() != null) {
+            Iterator it = getTextList().iterator();
+            while (it.hasNext()) {
+                TextAttribute ta = (TextAttribute) it.next();
+                if (ta.getType().equals(type)) {
+                    String next = ta.getInfo();
+                    if (lineSep.equals("<br>")) {
+                        // implies java tooltip
+                        next = convertHTMLTags(next);
+                    }
+                    sb.append(next);
+                    sb.append(lineSep);
+                }
+            }
+        }
+        return sb;
+    }
 
-	/**
-	 * @return
-	 */
-	public ArrayList getLinkList() {
-		return linkList;
-	}
+    public String convertHTMLTags(String next) {
+        if (next == null) return null;
+        else {
+            next = next.replaceAll("<", "&lt;");
+            next = next.replaceAll(">", "&gt;");
+            return next;
+        }
+    }
 
-	/**
-	 * @param list
-	 */
-	public void setLinkList(ArrayList list) {
-		linkList = list;
-	}
+    // these two are maybe not accurate maybe
+    // need to check if ln in question is between
+    // the start and end ln's
+    public boolean attrForJimpleLn(int jimple_ln) {
+        if (getJimpleStartLn() == jimple_ln) return true;
+        else return false;
+    }
 
-    /**
-     * @return
-     */
+    public boolean attrForJavaLn(int java_ln) {
+        if (getJavaStartLn() == java_ln) return true;
+        else return false;
+    }
+
+    public SootAttribute() {}
+
+    /** @return */
+    public int getJimpleEndPos() {
+        return jimpleEndPos;
+    }
+
+    /** @return */
+    public int getJimpleStartPos() {
+        return jimpleStartPos;
+    }
+
+    /** @param i */
+    public void setJimpleEndPos(int i) {
+        jimpleEndPos = i;
+    }
+
+    /** @param i */
+    public void setJimpleStartPos(int i) {
+        jimpleStartPos = i;
+    }
+
+    /** @return */
+    public ArrayList getTextList() {
+        return textList;
+    }
+
+    /** @param list */
+    public void setTextList(ArrayList list) {
+        textList = list;
+    }
+
+    /** @return */
+    public ArrayList getLinkList() {
+        return linkList;
+    }
+
+    /** @param list */
+    public void setLinkList(ArrayList list) {
+        linkList = list;
+    }
+
+    /** @return */
     public int getJavaEndPos() {
         return javaEndPos;
     }
 
-    /**
-     * @return
-     */
+    /** @return */
     public int getJavaStartPos() {
         return javaStartPos;
     }
 
-    /**
-     * @param i
-     */
+    /** @param i */
     public void setJavaEndPos(int i) {
         javaEndPos = i;
     }
 
-    /**
-     * @param i
-     */
+    /** @param i */
     public void setJavaStartPos(int i) {
         javaStartPos = i;
     }
 
+    /** @return */
+    public int getJavaEndLn() {
+        return javaEndLn;
+    }
 
+    /** @return */
+    public int getJavaStartLn() {
+        return javaStartLn;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJavaEndLn() {
-		return javaEndLn;
-	}
+    /** @return */
+    public int getJimpleEndLn() {
+        return jimpleEndLn;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJavaStartLn() {
-		return javaStartLn;
-	}
+    /** @return */
+    public int getJimpleStartLn() {
+        return jimpleStartLn;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJimpleEndLn() {
-		return jimpleEndLn;
-	}
+    /** @param i */
+    public void setJavaEndLn(int i) {
+        javaEndLn = i;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJimpleStartLn() {
-		return jimpleStartLn;
-	}
+    /** @param i */
+    public void setJavaStartLn(int i) {
+        javaStartLn = i;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJavaEndLn(int i) {
-		javaEndLn = i;
-	}
+    /** @param i */
+    public void setJimpleEndLn(int i) {
+        jimpleEndLn = i;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJavaStartLn(int i) {
-		javaStartLn = i;
-	}
+    /** @param i */
+    public void setJimpleStartLn(int i) {
+        jimpleStartLn = i;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJimpleEndLn(int i) {
-		jimpleEndLn = i;
-	}
+    /** @return */
+    public int getJavaLength() {
+        return javaLength;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJimpleStartLn(int i) {
-		jimpleStartLn = i;
-	}
+    /** @return */
+    public int getJimpleLength() {
+        return jimpleLength;
+    }
 
+    /** @param i */
+    public void setJavaLength(int i) {
+        javaLength = i;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJavaLength() {
-		return javaLength;
-	}
+    /** @param i */
+    public void setJimpleLength(int i) {
+        jimpleLength = i;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJimpleLength() {
-		return jimpleLength;
-	}
+    /** @return */
+    public ArrayList getColorList() {
+        return colorList;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJavaLength(int i) {
-		javaLength = i;
-	}
-
-	/**
-	 * @param i
-	 */
-	public void setJimpleLength(int i) {
-		jimpleLength = i;
-	}
-
-	/**
-	 * @return
-	 */
-	public ArrayList getColorList() {
-		return colorList;
-	}
-
-	/**
-	 * @param list
-	 */
-	public void setColorList(ArrayList list) {
-		colorList = list;
-	}
-
+    /** @param list */
+    public void setColorList(ArrayList list) {
+        colorList = list;
+    }
 }

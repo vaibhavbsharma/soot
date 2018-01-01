@@ -18,19 +18,18 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
 
 package soot.toolkits.scalar;
 
 import java.util.Iterator;
 
-/** 
- * Provides an interface of a flow universe, used by an implementation 
- * of BoundedFlowSet to do complementation.
+/**
+ * Provides an interface of a flow universe, used by an implementation of BoundedFlowSet to do
+ * complementation.
  */
 public interface FlowUniverse<E> extends Iterable<E> {
 
@@ -50,8 +49,8 @@ public interface FlowUniverse<E> extends Iterable<E> {
 
   /**
    * returns the elements of the universe in form of an array.<br>
-   * The returned array could be backed or not. If you want to be sure
-   * that it is unbacked, clone() it.
+   * The returned array could be backed or not. If you want to be sure that it is unbacked, clone()
+   * it.
    *
    * @return the elements of the universe.
    */

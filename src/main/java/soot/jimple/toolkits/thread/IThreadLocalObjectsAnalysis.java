@@ -28,6 +28,5 @@ import soot.Value;
  */
 public interface IThreadLocalObjectsAnalysis {
 
-	public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm);
-
+  public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm);
 }

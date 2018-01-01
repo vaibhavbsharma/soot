@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -30,36 +30,29 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInvokeInst
-{
-    public BSpecialInvokeInst(SootMethodRef methodRef) {
-        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.methodRef = methodRef;
-    }
+public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInvokeInst {
+  public BSpecialInvokeInst(SootMethodRef methodRef) {
+    if (methodRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    this.methodRef = methodRef;
+  }
 
-  public int getInCount()
-  {         
-        return super.getInCount() +1;
-    }
+  public int getInCount() {
+    return super.getInCount() + 1;
+  }
 
+  public int getInMachineCount() {
+    return super.getInMachineCount() + 1;
+  }
 
-    public int getInMachineCount()
-    {
-        return super.getInMachineCount() +1;        
-    }
+  public Object clone() {
+    return new BSpecialInvokeInst(methodRef);
+  }
 
+  public String getName() {
+    return "specialinvoke";
+  }
 
-
-    public Object clone() 
-    {
-        return new  BSpecialInvokeInst(methodRef);
-    }
-           
-    public String getName() { return "specialinvoke"; }
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseSpecialInvokeInst(this);
-    }
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseSpecialInvokeInst(this);
+  }
 }
-

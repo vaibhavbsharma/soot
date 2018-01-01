@@ -21,13 +21,10 @@ package soot.shimple;
 
 import soot.jimple.*;
 
-/**
- * @author Navindra Umanee
- **/
-public abstract class AbstractShimpleExprSwitch extends AbstractExprSwitch implements ShimpleExprSwitch
-{
-    public void casePhiExpr(PhiExpr v)
-    {
-        defaultCase(v);
-    }
+/** @author Navindra Umanee */
+public abstract class AbstractShimpleExprSwitch extends AbstractExprSwitch
+    implements ShimpleExprSwitch {
+  public void casePhiExpr(PhiExpr v) {
+    defaultCase(v);
+  }
 }

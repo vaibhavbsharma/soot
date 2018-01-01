@@ -18,45 +18,42 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
+
 import java.util.*;
 
-/** Represents a tag that just has a string to be printed with the code.
- */
+/** Represents a tag that just has a string to be printed with the code. */
+public class ParamNamesTag implements Tag {
+  ArrayList<String> names;
 
-public class ParamNamesTag implements  Tag
-{
-    ArrayList<String> names;
-    public ParamNamesTag(ArrayList<String> list){
-        names = list;
-    }
-    
-    public String toString() {
-        return names.toString();
-    }
+  public ParamNamesTag(ArrayList<String> list) {
+    names = list;
+  }
 
-    public ArrayList<String> getNames(){
-        return names;
-    }
+  public String toString() {
+    return names.toString();
+  }
 
+  public ArrayList<String> getNames() {
+    return names;
+  }
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "ParamNamesTag";
-    }
+  /** Returns the tag name. */
+  public String getName() {
+    return "ParamNamesTag";
+  }
 
-    public ArrayList<String> getInfo(){
-        return names;
-    }
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "ParamNamesTag has no value for bytecode" );
-    }
+  public ArrayList<String> getInfo() {
+    return names;
+  }
+
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("ParamNamesTag has no value for bytecode");
+  }
 }
-

@@ -22,6 +22,4 @@ package soot.shimple;
 import soot.*;
 import soot.jimple.*;
 
-public interface ShimpleExpr extends Expr, UnitBoxOwner
-{
-}
+public interface ShimpleExpr extends Expr, UnitBoxOwner {}

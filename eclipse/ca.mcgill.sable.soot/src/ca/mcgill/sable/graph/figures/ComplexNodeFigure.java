@@ -17,20 +17,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.graph.figures;
 
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.*;
-
+import org.eclipse.draw2d.Figure;
 
 public class ComplexNodeFigure extends Figure {
 
+    public ComplexNodeFigure() {
 
-	public ComplexNodeFigure() {
-	
-		ToolbarLayout layout = new ToolbarLayout();
-		this.setLayoutManager(layout);
-	}
-
+        ToolbarLayout layout = new ToolbarLayout();
+        this.setLayoutManager(layout);
+    }
 }

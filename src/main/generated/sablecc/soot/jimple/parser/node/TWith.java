@@ -5,35 +5,29 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TWith extends Token
-{
-    public TWith()
-    {
-        super.setText("with");
-    }
+public final class TWith extends Token {
+  public TWith() {
+    super.setText("with");
+  }
 
-    public TWith(int line, int pos)
-    {
-        super.setText("with");
-        setLine(line);
-        setPos(pos);
-    }
+  public TWith(int line, int pos) {
+    super.setText("with");
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TWith(getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TWith(getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTWith(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTWith(this);
+  }
 
-    @Override
-    public void setText(@SuppressWarnings("unused") String text)
-    {
-        throw new RuntimeException("Cannot change TWith text.");
-    }
+  @Override
+  public void setText(@SuppressWarnings("unused") String text) {
+    throw new RuntimeException("Cannot change TWith text.");
+  }
 }

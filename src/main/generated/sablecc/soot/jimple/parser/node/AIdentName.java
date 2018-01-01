@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AIdentName extends PName
-{
-    private TIdentifier _identifier_;
+public final class AIdentName extends PName {
+  private TIdentifier _identifier_;
 
-    public AIdentName()
-    {
-        // Constructor
+  public AIdentName() {
+    // Constructor
+  }
+
+  public AIdentName(@SuppressWarnings("hiding") TIdentifier _identifier_) {
+    // Constructor
+    setIdentifier(_identifier_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AIdentName(cloneNode(this._identifier_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAIdentName(this);
+  }
+
+  public TIdentifier getIdentifier() {
+    return this._identifier_;
+  }
+
+  public void setIdentifier(TIdentifier node) {
+    if (this._identifier_ != null) {
+      this._identifier_.parent(null);
     }
 
-    public AIdentName(
-        @SuppressWarnings("hiding") TIdentifier _identifier_)
-    {
-        // Constructor
-        setIdentifier(_identifier_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AIdentName(
-            cloneNode(this._identifier_));
+    this._identifier_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._identifier_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._identifier_ == child) {
+      this._identifier_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAIdentName(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._identifier_ == oldChild) {
+      setIdentifier((TIdentifier) newChild);
+      return;
     }
 
-    public TIdentifier getIdentifier()
-    {
-        return this._identifier_;
-    }
-
-    public void setIdentifier(TIdentifier node)
-    {
-        if(this._identifier_ != null)
-        {
-            this._identifier_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._identifier_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._identifier_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._identifier_ == child)
-        {
-            this._identifier_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._identifier_ == oldChild)
-        {
-            setIdentifier((TIdentifier) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

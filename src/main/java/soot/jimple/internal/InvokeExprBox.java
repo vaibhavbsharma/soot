@@ -18,30 +18,22 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
-
 
 package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
 
-public class InvokeExprBox extends AbstractValueBox
-{
-    public InvokeExprBox(Value value)
-    {
-        setValue(value);
-    }
+public class InvokeExprBox extends AbstractValueBox {
+  public InvokeExprBox(Value value) {
+    setValue(value);
+  }
 
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof InvokeExpr;
-    }
+  public boolean canContainValue(Value value) {
+    return value instanceof InvokeExpr;
+  }
 }

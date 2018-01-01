@@ -18,43 +18,42 @@
  */
 
 package soot.jimple.toolkits.annotation;
-import soot.*;
+
 import java.util.*;
-import soot.toolkits.graph.*;
+import soot.*;
 import soot.jimple.*;
-import soot.options.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.scalar.*;
+import soot.options.*;
+import soot.toolkits.graph.*;
 
-/** A body transformer that records avail expression 
- * information in tags.  - both pessimistic and optimistic options*/
-public class AvailExprTagger extends BodyTransformer
-{ 
-	public AvailExprTagger( Singletons.Global g ) {}
-    public static AvailExprTagger v() { return G.v().soot_jimple_toolkits_annotation_AvailExprTagger(); }
+/**
+ * A body transformer that records avail expression information in tags. - both pessimistic and
+ * optimistic options
+ */
+public class AvailExprTagger extends BodyTransformer {
+  public AvailExprTagger(Singletons.Global g) {}
 
-    protected void internalTransform(
-            Body b, String phaseName, Map opts)
-    {
+  public static AvailExprTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_AvailExprTagger();
+  }
 
-        SideEffectTester sideEffect;
-        if( Scene.v().hasCallGraph()
-            && !PhaseOptions.getBoolean( opts, "naive-side-effect" ) ) {
-            sideEffect = new PASideEffectTester();
-        } 
-        else {
-            sideEffect = new NaiveSideEffectTester();
-        }
-        sideEffect.newMethod( b.getMethod() );
-                                
-        AETOptions options = new AETOptions(opts);
-        if (options.kind() == AETOptions.kind_optimistic){
-            new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b)); 
-        }
-        else {
-            new PessimisticAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), sideEffect); 
-        }
+  protected void internalTransform(Body b, String phaseName, Map opts) {
+
+    SideEffectTester sideEffect;
+    if (Scene.v().hasCallGraph() && !PhaseOptions.getBoolean(opts, "naive-side-effect")) {
+      sideEffect = new PASideEffectTester();
+    } else {
+      sideEffect = new NaiveSideEffectTester();
     }
+    sideEffect.newMethod(b.getMethod());
+
+    AETOptions options = new AETOptions(opts);
+    if (options.kind() == AETOptions.kind_optimistic) {
+      new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b));
+    } else {
+      new PessimisticAvailableExpressionsAnalysis(
+          new ExceptionalUnitGraph(b), b.getMethod(), sideEffect);
+    }
+  }
 }
-
-

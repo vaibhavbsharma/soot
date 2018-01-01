@@ -18,70 +18,60 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
+import java.util.*;
 import soot.*;
+import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
-import soot.baf.*;
-import java.util.*;
 
-public class JThrowStmt extends AbstractOpStmt implements ThrowStmt
-{
+public class JThrowStmt extends AbstractOpStmt implements ThrowStmt {
 
-    public JThrowStmt(Value op)
-    {
-        this(Jimple.v().newImmediateBox(op));
-    }
+  public JThrowStmt(Value op) {
+    this(Jimple.v().newImmediateBox(op));
+  }
 
-    protected JThrowStmt(ValueBox opBox)
-    {
-        super(opBox);
-    }
+  protected JThrowStmt(ValueBox opBox) {
+    super(opBox);
+  }
 
-    public Object clone() 
-    {
-        return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
-    }
+  public Object clone() {
+    return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
+  }
 
-    public String toString()
-    {
-        return "throw " + opBox.getValue().toString();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.THROW);
-        up.literal(" ");
-        opBox.toString(up);
-    }
+  public String toString() {
+    return "throw " + opBox.getValue().toString();
+  }
 
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseThrowStmt(this);
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.THROW);
+    up.literal(" ");
+    opBox.toString(up);
+  }
 
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-        ((ConvertToBaf)getOp()).convertToBaf(context, out);
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseThrowStmt(this);
+  }
 
-        Unit u = Baf.v().newThrowInst();
-        u.addAllTagsOf(this);
-        out.add(u);	
-    }
-    
-    public boolean fallsThrough(){return false;}
-    public boolean branches(){return false;}
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    ((ConvertToBaf) getOp()).convertToBaf(context, out);
 
+    Unit u = Baf.v().newThrowInst();
+    u.addAllTagsOf(this);
+    out.add(u);
+  }
 
+  public boolean fallsThrough() {
+    return false;
+  }
 
+  public boolean branches() {
+    return false;
+  }
 }

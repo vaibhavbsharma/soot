@@ -20,7 +20,6 @@
 package soot.jbco.bafTransformations;
 
 import java.util.*;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
@@ -31,28 +30,27 @@ import soot.jbco.IJbcoTransform;
 
 public class BAFCounter extends BodyTransformer implements IJbcoTransform {
 
-	static int count = 0;
-	public static String dependancies[] = new String[] { "bb.jbco_counter" };
+  static int count = 0;
+  public static String dependancies[] = new String[] {"bb.jbco_counter"};
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+  public String[] getDependancies() {
+    return dependancies;
+  }
 
-	public static String name = "bb.jbco_counter";
+  public static String name = "bb.jbco_counter";
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void outputSummary() {
-		out.println("Count: " + count);
-	}
+  public void outputSummary() {
+    out.println("Count: " + count);
+  }
 
-	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-		for (Unit u : b.getUnits()) {
-			if (u instanceof TargetArgInst && !(u instanceof GotoInst)
-					&& !(u instanceof JSRInst))
-				count++;
-		}
-	}
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    for (Unit u : b.getUnits()) {
+      if (u instanceof TargetArgInst && !(u instanceof GotoInst) && !(u instanceof JSRInst))
+        count++;
+    }
+  }
 }

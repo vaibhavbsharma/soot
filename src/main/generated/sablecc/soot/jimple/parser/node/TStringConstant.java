@@ -5,29 +5,24 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TStringConstant extends Token
-{
-    public TStringConstant(String text)
-    {
-        setText(text);
-    }
+public final class TStringConstant extends Token {
+  public TStringConstant(String text) {
+    setText(text);
+  }
 
-    public TStringConstant(String text, int line, int pos)
-    {
-        setText(text);
-        setLine(line);
-        setPos(pos);
-    }
+  public TStringConstant(String text, int line, int pos) {
+    setText(text);
+    setLine(line);
+    setPos(pos);
+  }
 
-    @Override
-    public Object clone()
-    {
-      return new TStringConstant(getText(), getLine(), getPos());
-    }
+  @Override
+  public Object clone() {
+    return new TStringConstant(getText(), getLine(), getPos());
+  }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseTStringConstant(this);
-    }
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseTStringConstant(this);
+  }
 }

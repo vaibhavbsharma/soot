@@ -20,85 +20,63 @@
 package ca.mcgill.sable.soot.attributes;
 
 public class LinkAttribute {
-	
-	private String label;
-	private int jimpleLink;
-	private int javaLink;
-	
-	private String className;
-	private String type;
-	
-		
-	/**
-	 * @return
-	 */
-	public String getClassName() {
-		return className;
-	}
 
-	/**
-	 * @return
-	 */
-	public String getLabel() {
-		return label;
-	}
+    private String label;
+    private int jimpleLink;
+    private int javaLink;
 
-	/**
-	 * @return
-	 */
-	public int getJimpleLink() {
-		return jimpleLink;
-	}
+    private String className;
+    private String type;
 
-	/**
-	 * @param string
-	 */
-	public void setClassName(String string) {
-		className = string;
-	}
+    /** @return */
+    public String getClassName() {
+        return className;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setLabel(String string) {
-		
-		string = string.replaceAll("&lt;", "<");
-		label = string.replaceAll("&gt;", ">");
-	}
+    /** @return */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setJimpleLink(int l) {
-		jimpleLink = l;
-	}
+    /** @return */
+    public int getJimpleLink() {
+        return jimpleLink;
+    }
 
-	/**
-	 * @return
-	 */
-	public int getJavaLink() {
-		return javaLink;
-	}
+    /** @param string */
+    public void setClassName(String string) {
+        className = string;
+    }
 
-	/**
-	 * @param i
-	 */
-	public void setJavaLink(int i) {
-		javaLink = i;
-	}
+    /** @param string */
+    public void setLabel(String string) {
 
-	/**
-	 * @return
-	 */
-	public String getType() {
-		return type;
-	}
+        string = string.replaceAll("&lt;", "<");
+        label = string.replaceAll("&gt;", ">");
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setType(String string) {
-		type = string;
-	}
+    /** @param string */
+    public void setJimpleLink(int l) {
+        jimpleLink = l;
+    }
 
+    /** @return */
+    public int getJavaLink() {
+        return javaLink;
+    }
+
+    /** @param i */
+    public void setJavaLink(int i) {
+        javaLink = i;
+    }
+
+    /** @return */
+    public String getType() {
+        return type;
+    }
+
+    /** @param string */
+    public void setType(String string) {
+        type = string;
+    }
 }

@@ -19,11 +19,9 @@
 
 package ca.mcgill.sable.soot.launching;
 
-/**
- * Constants for Soot Output View events
- */
+/** Constants for Soot Output View events */
 public interface ISootOutputEventConstants {
 
-	public static final int SOOT_CLEAR_EVENT = 0;
-	public static final int SOOT_NEW_TEXT_EVENT = 1;
+    public static final int SOOT_CLEAR_EVENT = 0;
+    public static final int SOOT_NEW_TEXT_EVENT = 1;
 }

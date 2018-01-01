@@ -3,7 +3,6 @@ package soot.jimple.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
@@ -13,135 +12,115 @@ import soot.jimple.SwitchStmt;
 @SuppressWarnings("serial")
 public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
 
-    final UnitBox defaultTargetBox;
-    
-    final ValueBox keyBox;
+  final UnitBox defaultTargetBox;
 
-    final List<UnitBox> stmtBoxes;
-    
-    final protected UnitBox[] targetBoxes;
-    
-    protected AbstractSwitchStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox ... targetBoxes) {
-    	this.keyBox = keyBox;
-    	this.defaultTargetBox = defaultTargetBox;
-    	this.targetBoxes = targetBoxes;
-    	
-        // Build up stmtBoxes
-        List<UnitBox> list = new ArrayList<UnitBox>();
-        stmtBoxes = Collections.unmodifiableList(list);
-        
-        Collections.addAll(list, targetBoxes);
-        list.add(defaultTargetBox);
-    }
+  final ValueBox keyBox;
 
-    @Override
-    final public Unit getDefaultTarget()
-    {
-        return defaultTargetBox.getUnit();
-    }
+  final List<UnitBox> stmtBoxes;
 
-    @Override
-    final public void setDefaultTarget(Unit defaultTarget)
-    {
-        defaultTargetBox.setUnit(defaultTarget);
-    }
+  protected final UnitBox[] targetBoxes;
 
-    @Override
-    final public UnitBox getDefaultTargetBox()
-    {
-        return defaultTargetBox;
-    }
+  protected AbstractSwitchStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox... targetBoxes) {
+    this.keyBox = keyBox;
+    this.defaultTargetBox = defaultTargetBox;
+    this.targetBoxes = targetBoxes;
 
-    @Override
-    final public Value getKey()
-    {
-        return keyBox.getValue();
-    }
+    // Build up stmtBoxes
+    List<UnitBox> list = new ArrayList<UnitBox>();
+    stmtBoxes = Collections.unmodifiableList(list);
 
-    @Override
-    final public void setKey(Value key)
-    {
-        keyBox.setValue(key);
-    }
+    Collections.addAll(list, targetBoxes);
+    list.add(defaultTargetBox);
+  }
 
-    @Override
-    final public ValueBox getKeyBox()
-    {
-        return keyBox;
-    }    
-    
-    @Override
-    final public List<ValueBox> getUseBoxes()
-    {
-        List<ValueBox> list = new ArrayList<ValueBox>();
+  @Override
+  public final Unit getDefaultTarget() {
+    return defaultTargetBox.getUnit();
+  }
 
-        list.addAll(keyBox.getValue().getUseBoxes());
-        list.add(keyBox);
+  @Override
+  public final void setDefaultTarget(Unit defaultTarget) {
+    defaultTargetBox.setUnit(defaultTarget);
+  }
 
-        return list;
-    }
-    
-    final public int getTargetCount()
-    {
-        return targetBoxes.length;
-    }
-    
-    @Override
-    final public Unit getTarget(int index)
-    {
-        return targetBoxes[index].getUnit();
-    }
+  @Override
+  public final UnitBox getDefaultTargetBox() {
+    return defaultTargetBox;
+  }
 
-    @Override
-    final public UnitBox getTargetBox(int index)
-    {
-        return targetBoxes[index];
-    }
+  @Override
+  public final Value getKey() {
+    return keyBox.getValue();
+  }
 
-    @Override
-    final public void setTarget(int index, Unit target)
-    {
-        targetBoxes[index].setUnit(target);
-    }
-    
-    @Override
-    final public List<Unit> getTargets()
-    {
-        List<Unit> targets = new ArrayList<Unit>();
+  @Override
+  public final void setKey(Value key) {
+    keyBox.setValue(key);
+  }
 
-        for (UnitBox element : targetBoxes)
-			targets.add(element.getUnit());
+  @Override
+  public final ValueBox getKeyBox() {
+    return keyBox;
+  }
 
-        return targets;
-    }
-    
-    final public void setTargets(List<? extends Unit> targets)
-    {
-        for(int i = 0; i < targets.size(); i++)
-            targetBoxes[i].setUnit(targets.get(i));
-    }
-    
-    final public void setTargets(Unit[] targets)
-    {
-        for(int i = 0; i < targets.length; i++)
-            targetBoxes[i].setUnit(targets[i]);
-    }
+  @Override
+  public final List<ValueBox> getUseBoxes() {
+    List<ValueBox> list = new ArrayList<ValueBox>();
 
-    @Override
-    final public List<UnitBox> getUnitBoxes()
-    {
-        return stmtBoxes;
-    }
+    list.addAll(keyBox.getValue().getUseBoxes());
+    list.add(keyBox);
 
-    @Override
-    public final boolean fallsThrough() 
-    {
-    	return false;
-	}
-    
-    @Override
-    public final boolean branches()
-    {
-    	return true;
-	}
+    return list;
+  }
+
+  public final int getTargetCount() {
+    return targetBoxes.length;
+  }
+
+  @Override
+  public final Unit getTarget(int index) {
+    return targetBoxes[index].getUnit();
+  }
+
+  @Override
+  public final UnitBox getTargetBox(int index) {
+    return targetBoxes[index];
+  }
+
+  @Override
+  public final void setTarget(int index, Unit target) {
+    targetBoxes[index].setUnit(target);
+  }
+
+  @Override
+  public final List<Unit> getTargets() {
+    List<Unit> targets = new ArrayList<Unit>();
+
+    for (UnitBox element : targetBoxes) targets.add(element.getUnit());
+
+    return targets;
+  }
+
+  public final void setTargets(List<? extends Unit> targets) {
+    for (int i = 0; i < targets.size(); i++) targetBoxes[i].setUnit(targets.get(i));
+  }
+
+  public final void setTargets(Unit[] targets) {
+    for (int i = 0; i < targets.length; i++) targetBoxes[i].setUnit(targets[i]);
+  }
+
+  @Override
+  public final List<UnitBox> getUnitBoxes() {
+    return stmtBoxes;
+  }
+
+  @Override
+  public final boolean fallsThrough() {
+    return false;
+  }
+
+  @Override
+  public final boolean branches() {
+    return true;
+  }
 }

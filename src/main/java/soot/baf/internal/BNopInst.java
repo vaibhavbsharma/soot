@@ -18,61 +18,44 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
 import soot.baf.*;
 import soot.util.*;
 
-public class BNopInst extends AbstractInst implements NopInst
-{
-    public BNopInst()
-    {
-    }
+public class BNopInst extends AbstractInst implements NopInst {
+  public BNopInst() {}
 
-    public int getInCount()
-    {
-        return 0;
-    }
+  public int getInCount() {
+    return 0;
+  }
 
+  public Object clone() {
+    return new BNopInst();
+  }
 
+  public int getInMachineCount() {
+    return 0;
+  }
 
+  public int getOutCount() {
+    return 0;
+  }
 
+  public int getOutMachineCount() {
+    return 0;
+  }
 
-    public Object clone() 
-    {
-        return new  BNopInst();
-    }
+  public final String getName() {
+    return "nop";
+  }
 
-
-    public int getInMachineCount()
-    {
-        return 0;
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
-
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
-    
-    final public String getName() { return "nop"; }
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseNopInst(this);
-    }   
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseNopInst(this);
+  }
 }
-

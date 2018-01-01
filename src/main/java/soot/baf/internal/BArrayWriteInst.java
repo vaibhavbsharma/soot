@@ -18,14 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
@@ -33,47 +29,40 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BArrayWriteInst extends AbstractOpTypeInst 
-                             implements ArrayWriteInst
-{
-    public BArrayWriteInst(Type opType)
-    {
-        super(opType);
-    }
+public class BArrayWriteInst extends AbstractOpTypeInst implements ArrayWriteInst {
+  public BArrayWriteInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 3;
+  }
 
-    public int getInCount()
-    {
-        return 3;
-    }
+  public Object clone() {
+    return new BArrayWriteInst(getOpType());
+  }
 
+  public int getInMachineCount() {
+    return 2 + AbstractJasminClass.sizeOfType(getOpType());
+  }
 
+  public int getOutCount() {
+    return 0;
+  }
 
-    public Object clone()
-    {
-        return new BArrayWriteInst(getOpType());
-    }
-    
-    public int getInMachineCount()
-    {
-        return 2 +  AbstractJasminClass.sizeOfType(getOpType());          
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public final String getName() {
+    return "arraywrite";
+  }
 
-    final public String getName() { return "arraywrite"; }
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseArrayWriteInst(this);
-    }   
-    public boolean containsArrayRef() { return true; }
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseArrayWriteInst(this);
+  }
+
+  public boolean containsArrayRef() {
+    return true;
+  }
 }

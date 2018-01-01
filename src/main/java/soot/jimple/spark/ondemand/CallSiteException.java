@@ -19,6 +19,4 @@
 package soot.jimple.spark.ondemand;
 
 @SuppressWarnings("serial")
-public class CallSiteException extends RuntimeException {
-
-}
+public class CallSiteException extends RuntimeException {}

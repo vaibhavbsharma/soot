@@ -18,11 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
 
 package soot.jimple;
 
@@ -30,17 +29,12 @@ import soot.*;
 
 /** Abstract base class for Body's on Stmts (Jimple and Grimp). */
 @SuppressWarnings("serial")
-abstract public class StmtBody extends Body
-{
-    /** Creates a StmtBody associated with the given method. */
-    protected StmtBody(SootMethod m)
-    {
-        super(m);
-    }
+public abstract class StmtBody extends Body {
+  /** Creates a StmtBody associated with the given method. */
+  protected StmtBody(SootMethod m) {
+    super(m);
+  }
 
-    /** Creates an empty StmtBody. */
-    protected StmtBody() {}
+  /** Creates an empty StmtBody. */
+  protected StmtBody() {}
 }
-
-
-

@@ -17,59 +17,53 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.cfg.actions;
 
-import org.eclipse.gef.ui.actions.EditorPartAction;
-import org.eclipse.ui.IEditorPart;
 import ca.mcgill.sable.soot.*;
-import soot.toolkits.graph.interaction.*;
+import org.eclipse.gef.ui.actions.EditorPartAction;
 import org.eclipse.jface.resource.*;
-
+import org.eclipse.ui.IEditorPart;
+import soot.toolkits.graph.interaction.*;
 
 public class FinishMethodAction extends EditorPartAction {
 
-	public static final String FINISH_METHOD = "finish method"; 
-	/**
-	 * @param editor
-	 */
-	public FinishMethodAction(IEditorPart editor) {
-		super(editor);
-		setImageDescriptor(SootPlugin.getImageDescriptor("finish_method.gif"));
-		setToolTipText("Finish Method");
-	}
-	
+    public static final String FINISH_METHOD = "finish method";
+    /** @param editor */
+    public FinishMethodAction(IEditorPart editor) {
+        super(editor);
+        setImageDescriptor(SootPlugin.getImageDescriptor("finish_method.gif"));
+        setToolTipText("Finish Method");
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
-	 */
-	protected boolean calculateEnabled() {
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
+     */
+    protected boolean calculateEnabled() {
+        return true;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.eclipse.jface.action.IAction#run()
-	 * finishes displaying the flow sets for the current
-	 * method 
-	 */
-	public void run(){
-		if (SootPlugin.getDefault().getDataKeeper().inMiddle()){
-			SootPlugin.getDefault().getDataKeeper().stepForwardAuto();
-		}
-		InteractionHandler.v().autoCon(true);
-		if (!InteractionHandler.v().doneCurrent()){
-			InteractionHandler.v().setInteractionCon();
-		}
-		
-	}
-	
-	public void setEditorPart(IEditorPart part){
-		super.setEditorPart(part);
-	}
-	
-	protected void init() { 
-		super.init(); 
-		setId( FINISH_METHOD );
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.eclipse.jface.action.IAction#run()
+     * finishes displaying the flow sets for the current
+     * method
+     */
+    public void run() {
+        if (SootPlugin.getDefault().getDataKeeper().inMiddle()) {
+            SootPlugin.getDefault().getDataKeeper().stepForwardAuto();
+        }
+        InteractionHandler.v().autoCon(true);
+        if (!InteractionHandler.v().doneCurrent()) {
+            InteractionHandler.v().setInteractionCon();
+        }
+    }
+
+    public void setEditorPart(IEditorPart part) {
+        super.setEditorPart(part);
+    }
+
+    protected void init() {
+        super.init();
+        setId(FINISH_METHOD);
+    }
 }

@@ -18,34 +18,34 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
+
 import soot.*;
-/** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.
- * <p>
- * Each subclass is derived from one of
- * <ul><li>Instruction</li>
- * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
- * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
- * <li>Instruction_bytevar (a byte argument specifying a local variable)</li>
- * <li>Instruction_byteindex (a byte argument specifying a constant pool index)</li>
- * <li>Instruction_int (an Instruction with a single short data argument)</li>
- * <li>Instruction_intvar (a short argument specifying a local variable)</li>
- * <li>Instruction_intindex (a short argument specifying a constant pool index)</li>
- * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
- * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
+
+/**
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a
+ * corresponding subclass of Instruction.
+ *
+ * <p>Each subclass is derived from one of
+ *
+ * <ul>
+ *   <li>Instruction
+ *   <li>Instruction_noargs (an Instruction with no embedded arguments)
+ *   <li>Instruction_byte (an Instruction with a single byte data argument)
+ *   <li>Instruction_bytevar (a byte argument specifying a local variable)
+ *   <li>Instruction_byteindex (a byte argument specifying a constant pool index)
+ *   <li>Instruction_int (an Instruction with a single short data argument)
+ *   <li>Instruction_intvar (a short argument specifying a local variable)
+ *   <li>Instruction_intindex (a short argument specifying a constant pool index)
+ *   <li>Instruction_intbranch (a short argument specifying a code offset)
+ *   <li>Instruction_longbranch (an int argument specifying a code offset)
  * </ul>
+ *
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -60,33 +60,39 @@ import soot.*;
  * @see Instruction_Unknown
  */
 abstract class Instruction_branch extends Instruction {
-   public int arg_i;
-   public Instruction target;         // pointer to target instruction
-   public Instruction_branch(byte c) { super(c); branches = true; }
+  public int arg_i;
+  public Instruction target; // pointer to target instruction
 
-   public String toString(cp_info constant_pool[]) {
-      return super.toString(constant_pool) + argsep 
-	  + "[label_" + Integer.toString(target.label) + "]";
-   }
+  public Instruction_branch(byte c) {
+    super(c);
+    branches = true;
+  }
 
-   public void offsetToPointer(ByteCode bc) {
-      target = bc.locateInst(arg_i+label);
-      if (target==null) {
-         G.v().out.println("Warning: can't locate target of instruction");
-         G.v().out.println(" which should be at byte address " + (label+arg_i));
-      } else
-         target.labelled = true;
-   }
-   // returns the array of instructions which might be the target of a
-   // branch with this instruction, assuming the next instruction is next
-   public Instruction[] branchpoints(Instruction next) {
-      Instruction i[] = new Instruction[2];
-      i[0] = target; i[1] = next;
-      return i;
-   }
+  public String toString(cp_info constant_pool[]) {
+    return super.toString(constant_pool)
+        + argsep
+        + "[label_"
+        + Integer.toString(target.label)
+        + "]";
+  }
 
-    public String toString()
-    {
-	return super.toString()+ "\t"+target.label;
-    }
+  public void offsetToPointer(ByteCode bc) {
+    target = bc.locateInst(arg_i + label);
+    if (target == null) {
+      G.v().out.println("Warning: can't locate target of instruction");
+      G.v().out.println(" which should be at byte address " + (label + arg_i));
+    } else target.labelled = true;
+  }
+  // returns the array of instructions which might be the target of a
+  // branch with this instruction, assuming the next instruction is next
+  public Instruction[] branchpoints(Instruction next) {
+    Instruction i[] = new Instruction[2];
+    i[0] = target;
+    i[1] = next;
+    return i;
+  }
+
+  public String toString() {
+    return super.toString() + "\t" + target.label;
+  }
 }

@@ -1,6 +1,4 @@
-
 package soot.jimple.toolkits.thread.mhp.stmt;
-
 
 import soot.*;
 
@@ -15,20 +13,12 @@ import soot.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+public class NotifiedEntryStmt extends JPegStmt {
 
-public class NotifiedEntryStmt extends JPegStmt
-{
-	
-	public NotifiedEntryStmt(String obj, String ca, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "notified-entry";
-		this.caller = ca;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+  public NotifiedEntryStmt(String obj, String ca, SootMethod sm) {
+    this.object = obj;
+    this.name = "notified-entry";
+    this.caller = ca;
+    this.sootMethod = sm;
+  }
 }

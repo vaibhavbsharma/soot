@@ -18,82 +18,68 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
+import java.util.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
-public class BDup1_x2Inst extends BDupInst implements Dup1_x2Inst
-{
-    private final Type mOpType;
-    private final Type mUnder1Type;
-    private final Type mUnder2Type;
+public class BDup1_x2Inst extends BDupInst implements Dup1_x2Inst {
+  private final Type mOpType;
+  private final Type mUnder1Type;
+  private final Type mUnder2Type;
 
-    public BDup1_x2Inst(Type aOpType, Type aUnder1Type, Type aUnder2Type)
-    {
-        mOpType = Baf.getDescriptorTypeOf(aOpType);
-        mUnder1Type = Baf.getDescriptorTypeOf(aUnder1Type);
-        mUnder2Type = Baf.getDescriptorTypeOf(aUnder2Type);
-    }
+  public BDup1_x2Inst(Type aOpType, Type aUnder1Type, Type aUnder2Type) {
+    mOpType = Baf.getDescriptorTypeOf(aOpType);
+    mUnder1Type = Baf.getDescriptorTypeOf(aUnder1Type);
+    mUnder2Type = Baf.getDescriptorTypeOf(aUnder2Type);
+  }
 
-    public Type getOp1Type()
-    {
-        return mOpType;
-    }
+  public Type getOp1Type() {
+    return mOpType;
+  }
 
-    public Type getUnder1Type()
-    {
-        return mUnder1Type;
-    }
+  public Type getUnder1Type() {
+    return mUnder1Type;
+  }
 
-    public Type getUnder2Type()
-    {
-        return mUnder2Type;
-    }
+  public Type getUnder2Type() {
+    return mUnder2Type;
+  }
 
-    public List<Type> getOpTypes()
-    {
-        List<Type> res =  new ArrayList<Type>();
-        res.add(mOpType);
-        return res;
-    }
-    
-    public List<Type> getUnderTypes()
-    {
-        List<Type> res =  new ArrayList<Type>();
-        res.add(mUnder1Type);
-        res.add(mUnder2Type);
-        return res;
-    }
+  public List<Type> getOpTypes() {
+    List<Type> res = new ArrayList<Type>();
+    res.add(mOpType);
+    return res;
+  }
 
-    
-    final public String getName() { return "dup1_x2"; }
+  public List<Type> getUnderTypes() {
+    List<Type> res = new ArrayList<Type>();
+    res.add(mUnder1Type);
+    res.add(mUnder2Type);
+    return res;
+  }
 
+  public final String getName() {
+    return "dup1_x2";
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseDup1_x2Inst(this);
-    }   
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseDup1_x2Inst(this);
+  }
 
-
-
-    public String toString()
-    {
-        return "dup1_x2." +  Baf.bafDescriptorOf(mOpType) + "_" +  Baf.bafDescriptorOf(mUnder1Type) + "." + Baf.bafDescriptorOf(mUnder2Type);
-    }
-  
+  public String toString() {
+    return "dup1_x2."
+        + Baf.bafDescriptorOf(mOpType)
+        + "_"
+        + Baf.bafDescriptorOf(mUnder1Type)
+        + "."
+        + Baf.bafDescriptorOf(mUnder2Type);
+  }
 }
-
-
-

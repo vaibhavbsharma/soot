@@ -17,65 +17,50 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package ca.mcgill.sable.soot.cfg.model;
-import java.util.*;
 
+import java.util.*;
 
 public class CFGNodeData extends CFGElement {
 
-	private ArrayList text;
-	private boolean head;
-	private boolean tail;
-	
-	
-	public CFGNodeData() {
-		super();
-	}
+    private ArrayList text;
+    private boolean head;
+    private boolean tail;
 
-	/**
-	 * @return
-	 */
-	public ArrayList getText() {
-		return text;
-	}
+    public CFGNodeData() {
+        super();
+    }
 
-	/**
-	 * @param list
-	 */
-	public void setText(ArrayList list) {
-		text = list;
-		firePropertyChange(TEXT, text);
-	}
+    /** @return */
+    public ArrayList getText() {
+        return text;
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isHead() {
-		return head;
-	}
+    /** @param list */
+    public void setText(ArrayList list) {
+        text = list;
+        firePropertyChange(TEXT, text);
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isTail() {
-		return tail;
-	}
+    /** @return */
+    public boolean isHead() {
+        return head;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setHead(boolean b) {
-		head = b;
-		firePropertyChange(HEAD, new Boolean(head));
-	}
+    /** @return */
+    public boolean isTail() {
+        return tail;
+    }
 
-	/**
-	 * @param b
-	 */
-	public void setTail(boolean b) {
-		tail = b;
-		firePropertyChange(TAIL, new Boolean(tail));
-	}
+    /** @param b */
+    public void setHead(boolean b) {
+        head = b;
+        firePropertyChange(HEAD, new Boolean(head));
+    }
 
+    /** @param b */
+    public void setTail(boolean b) {
+        tail = b;
+        firePropertyChange(TAIL, new Boolean(tail));
+    }
 }

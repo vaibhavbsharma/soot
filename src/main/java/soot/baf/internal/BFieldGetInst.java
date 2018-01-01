@@ -18,14 +18,10 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-
-
-
-
 
 package soot.baf.internal;
 
@@ -33,59 +29,60 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-public class BFieldGetInst extends AbstractInst implements FieldGetInst
-{
-    SootFieldRef fieldRef;
+public class BFieldGetInst extends AbstractInst implements FieldGetInst {
+  SootFieldRef fieldRef;
 
-    public BFieldGetInst(SootFieldRef fieldRef)
-    {
-        if( fieldRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.fieldRef = fieldRef;
-    }
+  public BFieldGetInst(SootFieldRef fieldRef) {
+    if (fieldRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    this.fieldRef = fieldRef;
+  }
 
-    public int getInCount()
-    {
-        return 1;
-    }
+  public int getInCount() {
+    return 1;
+  }
 
+  public Object clone() {
+    return new BFieldGetInst(fieldRef);
+  }
 
-    public Object clone() 
-    {
-        return new BFieldGetInst(fieldRef);
-    }
+  public int getInMachineCount() {
+    return 1;
+  }
 
-    public int getInMachineCount()
-    {
-        return 1;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getOutCount() {
+    return 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return AbstractJasminClass.sizeOfType(fieldRef.type());
-    }
-    
+  public int getOutMachineCount() {
+    return AbstractJasminClass.sizeOfType(fieldRef.type());
+  }
 
-    final public String getName() { return "fieldget"; }
-    final String getParameters()
-    { 
-        return " " + fieldRef.getSignature(); 
-    }
-    protected void getParameters(UnitPrinter up) {
-        up.literal(" ");
-        up.fieldRef(fieldRef);
-    }
-    
-    public SootFieldRef getFieldRef() { return fieldRef; }
-    public SootField getField() { return fieldRef.resolve(); }
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseFieldGetInst(this);
-    }   
-    public boolean containsFieldRef() { return true; }
+  public final String getName() {
+    return "fieldget";
+  }
+
+  final String getParameters() {
+    return " " + fieldRef.getSignature();
+  }
+
+  protected void getParameters(UnitPrinter up) {
+    up.literal(" ");
+    up.fieldRef(fieldRef);
+  }
+
+  public SootFieldRef getFieldRef() {
+    return fieldRef;
+  }
+
+  public SootField getField() {
+    return fieldRef.resolve();
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseFieldGetInst(this);
+  }
+
+  public boolean containsFieldRef() {
+    return true;
+  }
 }

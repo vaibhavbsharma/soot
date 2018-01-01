@@ -19,47 +19,49 @@
 
 package soot.jimple.toolkits.annotation.liveness;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.tagkit.*;
 import java.util.*;
+import soot.*;
 import soot.jimple.*;
+import soot.tagkit.*;
+import soot.toolkits.graph.*;
+import soot.toolkits.scalar.*;
 
 public class LiveVarsTagger extends BodyTransformer {
 
+  public LiveVarsTagger(Singletons.Global g) {}
 
-    public LiveVarsTagger(Singletons.Global g) {}
-    public static LiveVarsTagger v() { return G.v().soot_jimple_toolkits_annotation_liveness_LiveVarsTagger();}
+  public static LiveVarsTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_liveness_LiveVarsTagger();
+  }
 
-    protected void internalTransform(Body b, String phaseName, Map options){
-    
-        LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(b));
+  protected void internalTransform(Body b, String phaseName, Map options) {
 
-        Iterator it = b.getUnits().iterator();
-        while (it.hasNext()){
-            Stmt s = (Stmt)it.next();
-            //System.out.println("stmt: "+s);
-            Iterator liveLocalsIt = sll.getLiveLocalsAfter(s).iterator();
-            while (liveLocalsIt.hasNext()){
-                Value v = (Value)liveLocalsIt.next();
-                s.addTag(new StringTag("Live Variable: "+v, "Live Variable"));
+    LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(b));
 
-                Iterator usesIt = s.getUseBoxes().iterator();
-                while (usesIt.hasNext()){
-                    ValueBox use = (ValueBox)usesIt.next();
-                    if (use.getValue().equals(v)){
-                        use.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
-                    }
-                }
-                Iterator defsIt = s.getDefBoxes().iterator();
-                while (defsIt.hasNext()){
-                    ValueBox def = (ValueBox)defsIt.next();
-                    if (def.getValue().equals(v)){
-                        def.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
-                    }
-                }
-            }
+    Iterator it = b.getUnits().iterator();
+    while (it.hasNext()) {
+      Stmt s = (Stmt) it.next();
+      // System.out.println("stmt: "+s);
+      Iterator liveLocalsIt = sll.getLiveLocalsAfter(s).iterator();
+      while (liveLocalsIt.hasNext()) {
+        Value v = (Value) liveLocalsIt.next();
+        s.addTag(new StringTag("Live Variable: " + v, "Live Variable"));
+
+        Iterator usesIt = s.getUseBoxes().iterator();
+        while (usesIt.hasNext()) {
+          ValueBox use = (ValueBox) usesIt.next();
+          if (use.getValue().equals(v)) {
+            use.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
+          }
         }
+        Iterator defsIt = s.getDefBoxes().iterator();
+        while (defsIt.hasNext()) {
+          ValueBox def = (ValueBox) defsIt.next();
+          if (def.getValue().equals(v)) {
+            def.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
+          }
+        }
+      }
     }
-}   
+  }
+}

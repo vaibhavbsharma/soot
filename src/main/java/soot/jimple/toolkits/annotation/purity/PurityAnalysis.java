@@ -18,13 +18,11 @@
  */
 
 /**
- * Implementation of the paper "A Combined Pointer and Purity Analysis for
- * Java Programs" by Alexandru Salcianu and Martin Rinard, within the
- * Soot Optimization Framework.
+ * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
+ * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
  *
- * by Antoine Mine, 2005/01/24
+ * <p>by Antoine Mine, 2005/01/24
  */
-
 package soot.jimple.toolkits.annotation.purity;
 
 import java.util.Map;
@@ -38,31 +36,31 @@ import soot.options.PurityOptions;
 /**
  * Purity analysis phase.
  *
- * TODO: - test, test, and test (and correct the potentially infinite bugs) -
- * optimise PurityGraph, especially methodCall) - find a better abstraction for
- * exceptions (throw & catch) - output nicer graphs (especially clusters!)
+ * <p>TODO: - test, test, and test (and correct the potentially infinite bugs) - optimise
+ * PurityGraph, especially methodCall) - find a better abstraction for exceptions (throw & catch) -
+ * output nicer graphs (especially clusters!)
  */
 public class PurityAnalysis extends SceneTransformer {
 
-    Singletons.Global g;
+  Singletons.Global g;
 
-    public PurityAnalysis(Singletons.Global g) {
-        this.g = g;
-    }
+  public PurityAnalysis(Singletons.Global g) {
+    this.g = g;
+  }
 
-    public static PurityAnalysis v() {
-        return G.v().soot_jimple_toolkits_annotation_purity_PurityAnalysis();
-    }
+  public static PurityAnalysis v() {
+    return G.v().soot_jimple_toolkits_annotation_purity_PurityAnalysis();
+  }
 
-    @Override
-    protected void internalTransform(String phaseName, Map<String, String> options) {
-        PurityOptions opts = new PurityOptions(options);
+  @Override
+  protected void internalTransform(String phaseName, Map<String, String> options) {
+    PurityOptions opts = new PurityOptions(options);
 
-        G.v().out.println("[AM] Analysing purity");
+    G.v().out.println("[AM] Analysing purity");
 
-        CallGraph cg = Scene.v().getCallGraph();
+    CallGraph cg = Scene.v().getCallGraph();
 
-        // launch the analysis
-        new PurityInterproceduralAnalysis(cg, Scene.v().getEntryPoints().iterator(), opts);
-    }
+    // launch the analysis
+    new PurityInterproceduralAnalysis(cg, Scene.v().getEntryPoints().iterator(), opts);
+  }
 }

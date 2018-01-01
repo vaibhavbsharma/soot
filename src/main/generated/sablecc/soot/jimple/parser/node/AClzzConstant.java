@@ -5,134 +5,108 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AClzzConstant extends PConstant
-{
-    private TClass _id_;
-    private TStringConstant _stringConstant_;
+public final class AClzzConstant extends PConstant {
+  private TClass _id_;
+  private TStringConstant _stringConstant_;
 
-    public AClzzConstant()
-    {
-        // Constructor
+  public AClzzConstant() {
+    // Constructor
+  }
+
+  public AClzzConstant(
+      @SuppressWarnings("hiding") TClass _id_,
+      @SuppressWarnings("hiding") TStringConstant _stringConstant_) {
+    // Constructor
+    setId(_id_);
+
+    setStringConstant(_stringConstant_);
+  }
+
+  @Override
+  public Object clone() {
+    return new AClzzConstant(cloneNode(this._id_), cloneNode(this._stringConstant_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseAClzzConstant(this);
+  }
+
+  public TClass getId() {
+    return this._id_;
+  }
+
+  public void setId(TClass node) {
+    if (this._id_ != null) {
+      this._id_.parent(null);
     }
 
-    public AClzzConstant(
-        @SuppressWarnings("hiding") TClass _id_,
-        @SuppressWarnings("hiding") TStringConstant _stringConstant_)
-    {
-        // Constructor
-        setId(_id_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
-        setStringConstant(_stringConstant_);
-
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new AClzzConstant(
-            cloneNode(this._id_),
-            cloneNode(this._stringConstant_));
+    this._id_ = node;
+  }
+
+  public TStringConstant getStringConstant() {
+    return this._stringConstant_;
+  }
+
+  public void setStringConstant(TStringConstant node) {
+    if (this._stringConstant_ != null) {
+      this._stringConstant_.parent(null);
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseAClzzConstant(this);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
+
+      node.parent(this);
     }
 
-    public TClass getId()
-    {
-        return this._id_;
+    this._stringConstant_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._id_) + toString(this._stringConstant_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._id_ == child) {
+      this._id_ = null;
+      return;
     }
 
-    public void setId(TClass node)
-    {
-        if(this._id_ != null)
-        {
-            this._id_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._id_ = node;
+    if (this._stringConstant_ == child) {
+      this._stringConstant_ = null;
+      return;
     }
 
-    public TStringConstant getStringConstant()
-    {
-        return this._stringConstant_;
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._id_ == oldChild) {
+      setId((TClass) newChild);
+      return;
     }
 
-    public void setStringConstant(TStringConstant node)
-    {
-        if(this._stringConstant_ != null)
-        {
-            this._stringConstant_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._stringConstant_ = node;
+    if (this._stringConstant_ == oldChild) {
+      setStringConstant((TStringConstant) newChild);
+      return;
     }
 
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._id_)
-            + toString(this._stringConstant_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._id_ == child)
-        {
-            this._id_ = null;
-            return;
-        }
-
-        if(this._stringConstant_ == child)
-        {
-            this._stringConstant_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._id_ == oldChild)
-        {
-            setId((TClass) newChild);
-            return;
-        }
-
-        if(this._stringConstant_ == oldChild)
-        {
-            setStringConstant((TStringConstant) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

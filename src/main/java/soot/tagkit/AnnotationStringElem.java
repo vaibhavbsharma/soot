@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -27,34 +27,29 @@ package soot.tagkit;
 
 import soot.util.Switch;
 
-
-/** 
- * Represents the base class of annotation elements
- * each annotation can have several elements 
- * for Java 1.5.
+/**
+ * Represents the base class of annotation elements each annotation can have several elements for
+ * Java 1.5.
  */
+public class AnnotationStringElem extends AnnotationElem {
 
-public class AnnotationStringElem extends AnnotationElem
-{
+  String value;
 
-    String value;
+  public AnnotationStringElem(String s, char kind, String name) {
+    super(kind, name);
+    this.value = s;
+  }
 
-    public AnnotationStringElem(String s, char kind, String name){
-        super(kind, name);
-        this.value = s;
-    }
-    
-    public String toString(){
-        return super.toString()+" value: "+value;
-    }
+  public String toString() {
+    return super.toString() + " value: " + value;
+  }
 
-    public String getValue(){
-        return value;
-    }
-    
-	@Override
-	public void apply(Switch sw) {
-		((IAnnotationElemTypeSwitch) sw).caseAnnotationStringElem(this);
-	}
+  public String getValue() {
+    return value;
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((IAnnotationElemTypeSwitch) sw).caseAnnotationStringElem(this);
+  }
 }
-

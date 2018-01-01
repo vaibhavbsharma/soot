@@ -20,7 +20,6 @@
 package ca.mcgill.sable.soot.ui;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -28,39 +27,31 @@ import org.eclipse.ui.part.ViewPart;
 
 public class AnalysisKeyView extends ViewPart {
 
-	private ArrayList inputKeys;
-	private TableViewer viewer;
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-	 */
-	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent);
-		viewer.setLabelProvider(new KeysLabelProvider());
-		viewer.setContentProvider(new ArrayContentProvider());
-	}
-	
-	
+    private ArrayList inputKeys;
+    private TableViewer viewer;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-	 */
-	public void setFocus() {
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createPartControl(Composite parent) {
+        viewer = new TableViewer(parent);
+        viewer.setLabelProvider(new KeysLabelProvider());
+        viewer.setContentProvider(new ArrayContentProvider());
+    }
 
-	/**
-	 * @return
-	 */
-	public ArrayList getInputKeys() {
-		return inputKeys;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#setFocus()
+     */
+    public void setFocus() {}
 
-	/**
-	 * @param list
-	 */
-	public void setInputKeys(ArrayList list) {
-		inputKeys = list;
-		viewer.setInput(inputKeys);
-	}
+    /** @return */
+    public ArrayList getInputKeys() {
+        return inputKeys;
+    }
 
+    /** @param list */
+    public void setInputKeys(ArrayList list) {
+        inputKeys = list;
+        viewer.setInput(inputKeys);
+    }
 }

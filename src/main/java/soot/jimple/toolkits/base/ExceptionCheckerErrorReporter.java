@@ -21,6 +21,5 @@ package soot.jimple.toolkits.base;
 
 public interface ExceptionCheckerErrorReporter {
 
-    public void reportError(ExceptionCheckerError e);
-    
+  public void reportError(ExceptionCheckerError e);
 }

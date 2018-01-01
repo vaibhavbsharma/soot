@@ -18,25 +18,18 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.tagkit;
 
+/** Represents the synthetic attribute. */
+public class EnclosingTag extends SyntheticParamTag {
 
-/** Represents the synthetic attribute.
- */
-
-public class EnclosingTag extends SyntheticParamTag 
-{
-
-
-    /** Returns the tag name. */
-    public String getName() {
-        return "EnclosingTag";
-    }
-
+  /** Returns the tag name. */
+  public String getName() {
+    return "EnclosingTag";
+  }
 }
-

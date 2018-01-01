@@ -27,13 +27,11 @@ package soot.dexpler.instructions;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
 import org.jf.dexlib2.iface.reference.TypeReference;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -60,27 +58,29 @@ import soot.jimple.Stmt;
 
 public class FillArrayDataInstruction extends PseudoInstruction {
 
-  public FillArrayDataInstruction (Instruction instruction, int codeAdress) {
+  public FillArrayDataInstruction(Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);
   }
 
   @Override
-public void jimplify (DexBody body) {
-    if(!(instruction instanceof Instruction31t))
-      throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
+  public void jimplify(DexBody body) {
+    if (!(instruction instanceof Instruction31t))
+      throw new IllegalArgumentException(
+          "Expected Instruction31t but got: " + instruction.getClass());
 
-    Instruction31t fillArrayInstr = (Instruction31t)instruction;
+    Instruction31t fillArrayInstr = (Instruction31t) instruction;
     int destRegister = fillArrayInstr.getRegisterA();
     int offset = fillArrayInstr.getCodeOffset();
     int targetAddress = codeAddress + offset;
 
     Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
 
-    if(!(referenceTable instanceof ArrayPayload)) {
-      throw new RuntimeException("Address " + targetAddress + "refers to an invalid PseudoInstruction.");
+    if (!(referenceTable instanceof ArrayPayload)) {
+      throw new RuntimeException(
+          "Address " + targetAddress + "refers to an invalid PseudoInstruction.");
     }
 
-    ArrayPayload arrayTable = (ArrayPayload)referenceTable;
+    ArrayPayload arrayTable = (ArrayPayload) referenceTable;
 
     //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
     //        body.add(nopStmtBeginning);
@@ -92,8 +92,9 @@ public void jimplify (DexBody body) {
     Stmt firstAssign = null;
     for (int i = 0; i < numElements; i++) {
       ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
-      NumericConstant element = getArrayElement(elements.get(i),body,destRegister);
-      if (element == null) //array was not defined -> element type can not be found (obfuscated bytecode?)
+      NumericConstant element = getArrayElement(elements.get(i), body, destRegister);
+      if (element == null) // array was not defined -> element type can not be found (obfuscated
+        // bytecode?)
         break;
       AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
       addTags(assign);
@@ -103,16 +104,15 @@ public void jimplify (DexBody body) {
       }
     }
     if (firstAssign == null) { // if numElements == 0. Is it possible?
-        firstAssign = Jimple.v().newNopStmt();
-        body.add (firstAssign);
+      firstAssign = Jimple.v().newNopStmt();
+      body.add(firstAssign);
     }
 
     //        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
     //        body.add(nopStmtEnd);
 
     //        defineBlock(nopStmtBeginning, nopStmtEnd);
-    setUnit (firstAssign);
-
+    setUnit(firstAssign);
   }
 
   private NumericConstant getArrayElement(Number element, DexBody body, int arrayRegister) {
@@ -123,43 +123,46 @@ public void jimplify (DexBody body) {
 
     Type elementType = null;
     Outer:
-      for(DexlibAbstractInstruction i : instructions) {
-        if (usedRegisters.isEmpty())
-          break;
+    for (DexlibAbstractInstruction i : instructions) {
+      if (usedRegisters.isEmpty()) break;
 
-        for (int reg : usedRegisters)
-          if (i instanceof NewArrayInstruction) {
-            NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
-            Instruction22c instruction22c = (Instruction22c)newArrayInstruction.instruction;
-            if (instruction22c.getRegisterA()==reg) {
-              ArrayType arrayType = (ArrayType) DexType.toSoot((TypeReference) instruction22c.getReference());
-              elementType = arrayType.getElementType();
-              break Outer;
-            }
-          }
-
-//        // look for obsolete registers
-//        for (int reg : usedRegisters) {
-//          if (i.overridesRegister(reg)) {
-//            usedRegisters.remove(reg);
-//            break;      // there can't be more than one obsolete
-//          }
-//        }
-
-        // look for new registers
-        for (int reg : usedRegisters) {
-          int newRegister = i.movesToRegister(reg);
-          if (newRegister != -1) {
-            usedRegisters.add(newRegister);
-            usedRegisters.remove(reg);
-            break;      // there can't be more than one new
+      for (int reg : usedRegisters)
+        if (i instanceof NewArrayInstruction) {
+          NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
+          Instruction22c instruction22c = (Instruction22c) newArrayInstruction.instruction;
+          if (instruction22c.getRegisterA() == reg) {
+            ArrayType arrayType =
+                (ArrayType) DexType.toSoot((TypeReference) instruction22c.getReference());
+            elementType = arrayType.getElementType();
+            break Outer;
           }
         }
-      }
 
-    if(elementType==null) {
-      //throw new InternalError("Unable to find array type to type array elements!");
-      G.v().out.println("Warning: Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
+      //        // look for obsolete registers
+      //        for (int reg : usedRegisters) {
+      //          if (i.overridesRegister(reg)) {
+      //            usedRegisters.remove(reg);
+      //            break;      // there can't be more than one obsolete
+      //          }
+      //        }
+
+      // look for new registers
+      for (int reg : usedRegisters) {
+        int newRegister = i.movesToRegister(reg);
+        if (newRegister != -1) {
+          usedRegisters.add(newRegister);
+          usedRegisters.remove(reg);
+          break; // there can't be more than one new
+        }
+      }
+    }
+
+    if (elementType == null) {
+      // throw new InternalError("Unable to find array type to type array elements!");
+      G.v()
+          .out
+          .println(
+              "Warning: Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
       return null;
     }
 
@@ -167,45 +170,51 @@ public void jimplify (DexBody body) {
 
     if (elementType instanceof BooleanType) {
       value = IntConstant.v(element.intValue());
-      IntConstant ic = (IntConstant)value;
+      IntConstant ic = (IntConstant) value;
       if (ic.value != 0) {
         value = IntConstant.v(1);
       }
-    } else if(elementType instanceof ByteType) {
+    } else if (elementType instanceof ByteType) {
       value = IntConstant.v(element.byteValue());
-    } else if(elementType instanceof CharType || elementType instanceof ShortType) {
+    } else if (elementType instanceof CharType || elementType instanceof ShortType) {
       value = IntConstant.v(element.shortValue());
-    } else if(elementType instanceof DoubleType) {
+    } else if (elementType instanceof DoubleType) {
       value = DoubleConstant.v(Double.longBitsToDouble(element.longValue()));
-    } else if(elementType instanceof FloatType) {
+    } else if (elementType instanceof FloatType) {
       value = FloatConstant.v(Float.intBitsToFloat(element.intValue()));
-    } else if(elementType instanceof IntType) {
+    } else if (elementType instanceof IntType) {
       value = IntConstant.v(element.intValue());
-    } else if(elementType instanceof LongType) {
+    } else if (elementType instanceof LongType) {
       value = LongConstant.v(element.longValue());
     } else {
-      throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
+      throw new RuntimeException(
+          "Invalid Array Type occured in FillArrayDataInstruction: " + elementType);
     }
     return value;
-
   }
 
   @Override
   public void computeDataOffsets(DexBody body) {
-    if(!(instruction instanceof Instruction31t))
-      throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
+    if (!(instruction instanceof Instruction31t))
+      throw new IllegalArgumentException(
+          "Expected Instruction31t but got: " + instruction.getClass());
 
-    Instruction31t fillArrayInstr = (Instruction31t)instruction;
+    Instruction31t fillArrayInstr = (Instruction31t) instruction;
     int offset = fillArrayInstr.getCodeOffset();
     int targetAddress = codeAddress + offset;
 
     Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
 
-    if(!(referenceTable instanceof ArrayPayload)) {
-      throw new RuntimeException("Address 0x" + Integer.toHexString(targetAddress) + " refers to an invalid PseudoInstruction ("+ referenceTable.getClass() +").");
+    if (!(referenceTable instanceof ArrayPayload)) {
+      throw new RuntimeException(
+          "Address 0x"
+              + Integer.toHexString(targetAddress)
+              + " refers to an invalid PseudoInstruction ("
+              + referenceTable.getClass()
+              + ").");
     }
 
-    ArrayPayload arrayTable = (ArrayPayload)referenceTable;
+    ArrayPayload arrayTable = (ArrayPayload) referenceTable;
     int numElements = arrayTable.getArrayElements().size();
     int widthElement = arrayTable.getElementWidth();
     int size = (widthElement * numElements) / 2; // addresses are on 16bits
@@ -221,22 +230,19 @@ public void jimplify (DexBody body) {
     //    out.write(encodedValues);
     //
 
-    setDataFirstByte (targetAddress + 3); // address for 16 bits elements not 8 bits
-    setDataLastByte (targetAddress + 3 + size);// - 1);
-    setDataSize (size);
+    setDataFirstByte(targetAddress + 3); // address for 16 bits elements not 8 bits
+    setDataLastByte(targetAddress + 3 + size); // - 1);
+    setDataSize(size);
 
-// TODO: how to handle this with dexlib2 ?
-//    ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
-//    arrayTable.write(out, targetAddress);
-//
-//    byte[] outa = out.getArray();
-//    byte[] data = new byte[outa.length-6];
-//    for (int i=6; i<outa.length; i++) {
-//      data[i-6] = outa[i];
-//    }
-//    setData (data);
+    // TODO: how to handle this with dexlib2 ?
+    //    ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
+    //    arrayTable.write(out, targetAddress);
+    //
+    //    byte[] outa = out.getArray();
+    //    byte[] data = new byte[outa.length-6];
+    //    for (int i=6; i<outa.length; i++) {
+    //      data[i-6] = outa[i];
+    //    }
+    //    setData (data);
   }
-
-
-
 }

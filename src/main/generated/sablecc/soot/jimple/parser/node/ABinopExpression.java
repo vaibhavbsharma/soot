@@ -5,91 +5,73 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ABinopExpression extends PExpression
-{
-    private PBinopExpr _binopExpr_;
+public final class ABinopExpression extends PExpression {
+  private PBinopExpr _binopExpr_;
 
-    public ABinopExpression()
-    {
-        // Constructor
+  public ABinopExpression() {
+    // Constructor
+  }
+
+  public ABinopExpression(@SuppressWarnings("hiding") PBinopExpr _binopExpr_) {
+    // Constructor
+    setBinopExpr(_binopExpr_);
+  }
+
+  @Override
+  public Object clone() {
+    return new ABinopExpression(cloneNode(this._binopExpr_));
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((Analysis) sw).caseABinopExpression(this);
+  }
+
+  public PBinopExpr getBinopExpr() {
+    return this._binopExpr_;
+  }
+
+  public void setBinopExpr(PBinopExpr node) {
+    if (this._binopExpr_ != null) {
+      this._binopExpr_.parent(null);
     }
 
-    public ABinopExpression(
-        @SuppressWarnings("hiding") PBinopExpr _binopExpr_)
-    {
-        // Constructor
-        setBinopExpr(_binopExpr_);
+    if (node != null) {
+      if (node.parent() != null) {
+        node.parent().removeChild(node);
+      }
 
+      node.parent(this);
     }
 
-    @Override
-    public Object clone()
-    {
-        return new ABinopExpression(
-            cloneNode(this._binopExpr_));
+    this._binopExpr_ = node;
+  }
+
+  @Override
+  public String toString() {
+    return "" + toString(this._binopExpr_);
+  }
+
+  @Override
+  void removeChild(@SuppressWarnings("unused") Node child) {
+    // Remove child
+    if (this._binopExpr_ == child) {
+      this._binopExpr_ = null;
+      return;
     }
 
-    @Override
-    public void apply(Switch sw)
-    {
-        ((Analysis) sw).caseABinopExpression(this);
+    throw new RuntimeException("Not a child.");
+  }
+
+  @Override
+  void replaceChild(
+      @SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild) {
+    // Replace child
+    if (this._binopExpr_ == oldChild) {
+      setBinopExpr((PBinopExpr) newChild);
+      return;
     }
 
-    public PBinopExpr getBinopExpr()
-    {
-        return this._binopExpr_;
-    }
-
-    public void setBinopExpr(PBinopExpr node)
-    {
-        if(this._binopExpr_ != null)
-        {
-            this._binopExpr_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._binopExpr_ = node;
-    }
-
-    @Override
-    public String toString()
-    {
-        return ""
-            + toString(this._binopExpr_);
-    }
-
-    @Override
-    void removeChild(@SuppressWarnings("unused") Node child)
-    {
-        // Remove child
-        if(this._binopExpr_ == child)
-        {
-            this._binopExpr_ = null;
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
-
-    @Override
-    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
-    {
-        // Replace child
-        if(this._binopExpr_ == oldChild)
-        {
-            setBinopExpr((PBinopExpr) newChild);
-            return;
-        }
-
-        throw new RuntimeException("Not a child.");
-    }
+    throw new RuntimeException("Not a child.");
+  }
 }

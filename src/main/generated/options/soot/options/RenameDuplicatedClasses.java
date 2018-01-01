@@ -1,4 +1,3 @@
-
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
  *
@@ -21,39 +20,36 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Rename duplicated classes. */
-public class RenameDuplicatedClasses
-{
-    private Map<String, String> options;
+public class RenameDuplicatedClasses {
+  private Map<String, String> options;
 
-    public RenameDuplicatedClasses( Map<String, String> options ) {
-        this.options = options;
-    }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
-    }
-    
-    /** FixedClassNames --
-    
-     * Set for the fixed class names..
-    
-     * 							Use this parameter to set some class names unchangable 
-     * even they are duplicated. 							The fixed class name list 
-     * cannot contain duplicated class names. 							Using '-' to split 
-     * multiple class names (e.g., fcn:a.b.c-a.b.d). 						
-     */
-    public String fixed_class_names() {
-        return soot.PhaseOptions.getString( options, "fcn" );
-    }
-    
+  public RenameDuplicatedClasses(Map<String, String> options) {
+    this.options = options;
+  }
+
+  /**
+   * Enabled --
+   *
+   * <p>.
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
+
+  /**
+   * FixedClassNames --
+   *
+   * <p>Set for the fixed class names..
+   *
+   * <p>Use this parameter to set some class names unchangable even they are duplicated. The fixed
+   * class name list cannot contain duplicated class names. Using '-' to split multiple class names
+   * (e.g., fcn:a.b.c-a.b.d).
+   */
+  public String fixed_class_names() {
+    return soot.PhaseOptions.getString(options, "fcn");
+  }
 }
-        

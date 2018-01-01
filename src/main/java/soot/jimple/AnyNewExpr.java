@@ -19,10 +19,9 @@
 
 package soot.jimple;
 
-/** Any expression that allocates objects.
+/**
+ * Any expression that allocates objects.
+ *
  * @author Ondrej Lhotak
  */
-
-public interface AnyNewExpr extends Expr {
-}
-
+public interface AnyNewExpr extends Expr {}

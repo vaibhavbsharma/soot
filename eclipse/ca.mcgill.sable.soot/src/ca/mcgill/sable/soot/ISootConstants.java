@@ -19,28 +19,24 @@
 
 package ca.mcgill.sable.soot;
 
-
-
 public interface ISootConstants {
 
-	public static final String SOOT_OUTPUT_VIEW_ID =
-		"ca.mcgill.sable.soot.ui.sootoutputview.view";
-	
-	public static final String SOOT_PLUGIN_ID = 
-		"ca.mcgill.sable.soot";	
-		
-	public static final String SOOT_PLUGIN_RESOURCES_ID = 
-		"ca.mcgill.sable.soot.SootPluginResources";
-		
-	public static final String JIMPLE_EXT = "jimple";
-	public static final String CLASS_EXT = "class";
-	public static final String JAVA_EXT = "java";
-	
-	public static final String ICON_PATH = "icons/";
+    public static final String SOOT_OUTPUT_VIEW_ID = "ca.mcgill.sable.soot.ui.sootoutputview.view";
 
-	public static final String ANALYSIS_KEY_VIEW_ID =
-		"ca.mcgill.sable.soot.ui.analysiskeyview.view";
-		
-	public static final String ANALYSIS_TYPES_VIEW_ID = 
-		"ca.mcgill.sable.soot.ui.analysistypesview.view";
+    public static final String SOOT_PLUGIN_ID = "ca.mcgill.sable.soot";
+
+    public static final String SOOT_PLUGIN_RESOURCES_ID =
+            "ca.mcgill.sable.soot.SootPluginResources";
+
+    public static final String JIMPLE_EXT = "jimple";
+    public static final String CLASS_EXT = "class";
+    public static final String JAVA_EXT = "java";
+
+    public static final String ICON_PATH = "icons/";
+
+    public static final String ANALYSIS_KEY_VIEW_ID =
+            "ca.mcgill.sable.soot.ui.analysiskeyview.view";
+
+    public static final String ANALYSIS_TYPES_VIEW_ID =
+            "ca.mcgill.sable.soot.ui.analysistypesview.view";
 }
