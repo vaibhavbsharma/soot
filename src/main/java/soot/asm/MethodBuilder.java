@@ -24,6 +24,7 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
+
 import soot.ArrayType;
 import soot.RefType;
 import soot.SootMethod;
@@ -55,7 +56,9 @@ class MethodBuilder extends JSRInlinerAdapter {
 
   private TagBuilder getTagBuilder() {
     TagBuilder t = tb;
-    if (t == null) t = tb = new TagBuilder(method, scb);
+    if (t == null) {
+      t = tb = new TagBuilder(method, scb);
+    }
     return t;
   }
 
@@ -120,15 +123,20 @@ class MethodBuilder extends JSRInlinerAdapter {
   public void visitTypeInsn(int op, String t) {
     super.visitTypeInsn(op, t);
     Type rt = AsmUtil.toJimpleRefType(t);
-    if (rt instanceof ArrayType) scb.addDep(((ArrayType) rt).baseType);
-    else scb.addDep(rt);
+    if (rt instanceof ArrayType) {
+      scb.addDep(((ArrayType) rt).baseType);
+    } else {
+      scb.addDep(rt);
+    }
   }
 
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     super.visitFieldInsn(opcode, owner, name, desc);
     for (Type t : AsmUtil.toJimpleDesc(desc)) {
-      if (t instanceof RefType) scb.addDep(t);
+      if (t instanceof RefType) {
+        scb.addDep(t);
+      }
     }
 
     scb.addDep(AsmUtil.toQualifiedName(owner));
@@ -156,8 +164,9 @@ class MethodBuilder extends JSRInlinerAdapter {
   }
 
   private void addDeps(Type t) {
-    if (t instanceof RefType) scb.addDep(t);
-    else if (t instanceof ArrayType) {
+    if (t instanceof RefType) {
+      scb.addDep(t);
+    } else if (t instanceof ArrayType) {
       ArrayType at = (ArrayType) t;
       addDeps(at.getElementType());
     }
@@ -166,7 +175,9 @@ class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
     super.visitTryCatchBlock(start, end, handler, type);
-    if (type != null) scb.addDep(AsmUtil.toQualifiedName(type));
+    if (type != null) {
+      scb.addDep(AsmUtil.toQualifiedName(type));
+    }
   }
 
   @Override

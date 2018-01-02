@@ -27,6 +27,9 @@
  */
 package soot.dava.toolkits.base.AST.traversals;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import soot.G;
 import soot.Singletons;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -40,9 +43,6 @@ import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class has been created because we need the immediate target of a implicit break/continue
@@ -66,11 +66,9 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
   }
 
   HashMap<DAbruptStmt, ASTNode> closestNode =
-      new HashMap<
-          DAbruptStmt,
-          ASTNode>(); // a mapping of each abrupt statement to the node they are targeting
+      new HashMap<>(); // a mapping of each abrupt statement to the node they are targeting
   ArrayList<ASTLabeledNode> nodeStack =
-      new ArrayList<ASTLabeledNode>(); // the last element will always be the "currentNode" meaning
+      new ArrayList<>(); // the last element will always be the "currentNode" meaning
   // the closest target to a abrupt stmt
 
   /**
@@ -79,30 +77,38 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
    */
   public ASTNode getTarget(DAbruptStmt ab) {
     Object node = closestNode.get(ab);
-    if (node != null) return (ASTNode) node;
-    else throw new RuntimeException("Unable to find target for AbruptStmt");
+    if (node != null) {
+      return (ASTNode) node;
+    } else {
+      throw new RuntimeException("Unable to find target for AbruptStmt");
+    }
   }
 
   /**
    * Following methods add a new node to the end of the nodeStack arrayList Since that node becomes
    * the closest target of an implicit break or continue
    */
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     nodeStack.add(node);
   }
 
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     nodeStack.add(node);
   }
 
+  @Override
   public void inASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     nodeStack.add(node);
   }
 
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     nodeStack.add(node);
   }
 
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     nodeStack.add(node);
   }
@@ -111,41 +117,52 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
    * Following methods remove the last node from the end of the nodeStack arrayList Since the
    * previous node now becomes the closest target to an implicit break or continue
    */
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
-    if (nodeStack.isEmpty())
+    if (nodeStack.isEmpty()) {
       throw new RuntimeException(
           "trying to remove node from empty stack: ClosestBreakTargetFinder");
+    }
     nodeStack.remove(nodeStack.size() - 1);
   }
 
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
-    if (nodeStack.isEmpty())
+    if (nodeStack.isEmpty()) {
       throw new RuntimeException(
           "trying to remove node from empty stack: ClosestBreakTargetFinder");
+    }
     nodeStack.remove(nodeStack.size() - 1);
   }
 
+  @Override
   public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
-    if (nodeStack.isEmpty())
+    if (nodeStack.isEmpty()) {
       throw new RuntimeException(
           "trying to remove node from empty stack: ClosestBreakTargetFinder");
+    }
     nodeStack.remove(nodeStack.size() - 1);
   }
 
+  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
-    if (nodeStack.isEmpty())
+    if (nodeStack.isEmpty()) {
       throw new RuntimeException(
           "trying to remove node from empty stack: ClosestBreakTargetFinder");
+    }
     nodeStack.remove(nodeStack.size() - 1);
   }
 
+  @Override
   public void outASTSwitchNode(ASTSwitchNode node) {
-    if (nodeStack.isEmpty())
+    if (nodeStack.isEmpty()) {
       throw new RuntimeException(
           "trying to remove node from empty stack: ClosestBreakTargetFinder");
+    }
     nodeStack.remove(nodeStack.size() - 1);
   }
 
+  @Override
   public void inStmt(Stmt s) {
     if (s instanceof DAbruptStmt) {
       // breaks and continues are abrupt statements

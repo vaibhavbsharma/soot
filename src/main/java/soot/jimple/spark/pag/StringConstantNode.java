@@ -27,6 +27,7 @@ import soot.RefType;
  * @author Ondrej Lhotak
  */
 public class StringConstantNode extends AllocNode {
+  @Override
   public String toString() {
     return "StringConstantNode " + getNumber() + " " + newExpr;
   }

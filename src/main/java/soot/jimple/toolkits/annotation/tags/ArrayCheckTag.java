@@ -44,14 +44,19 @@ public class ArrayCheckTag implements OneByteCodeTag {
   /**
    * Returns back the check information in binary form, which will be written into the class file.
    */
+  @Override
   public byte[] getValue() {
     byte[] value = new byte[1];
 
     value[0] = 0;
 
-    if (lowerCheck) value[0] |= 0x01;
+    if (lowerCheck) {
+      value[0] |= 0x01;
+    }
 
-    if (upperCheck) value[0] |= 0x02;
+    if (upperCheck) {
+      value[0] |= 0x02;
+    }
 
     return value;
   }
@@ -66,10 +71,12 @@ public class ArrayCheckTag implements OneByteCodeTag {
     return lowerCheck;
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public String toString() {
     return (lowerCheck ? "[potentially unsafe lower bound]" : "[safe lower bound]")
         + ""

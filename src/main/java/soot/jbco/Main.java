@@ -19,6 +19,14 @@
 
 package soot.jbco;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import soot.G;
 import soot.Local;
 import soot.Pack;
@@ -53,14 +61,6 @@ import soot.jbco.jimpleTransformations.FieldRenamer;
 import soot.jbco.jimpleTransformations.GotoInstrumenter;
 import soot.jbco.jimpleTransformations.LibraryMethodWrappersBuilder;
 import soot.jbco.jimpleTransformations.MethodRenamer;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Michael Batchelder
@@ -129,7 +129,7 @@ public class Main {
 
   public static void main(String[] argv) {
     int rcount = 0;
-    Vector<String> transformsToAdd = new Vector<String>();
+    Vector<String> transformsToAdd = new Vector<>();
     boolean remove[] = new boolean[argv.length];
     for (int i = 0; i < argv.length; i++) {
       String arg = argv[i];
@@ -153,7 +153,9 @@ public class Main {
         for (int j = 0; j < optionStrings[0].length; j++) {
           String line = "\t" + optionStrings[1][j];
           int size = 20 - line.length();
-          while (size-- > 0) line += " ";
+          while (size-- > 0) {
+            line += " ";
+          }
           line += "-  " + optionStrings[0][j];
           System.out.println(line);
         }
@@ -184,7 +186,9 @@ public class Main {
 
         transformsToAdd.add(arg);
         transformsToWeights.put(arg, new Integer(tweight));
-        if (arg.equals("wjtp.jbco_fr")) FieldRenamer.rename_fields = true;
+        if (arg.equals("wjtp.jbco_fr")) {
+          FieldRenamer.rename_fields = true;
+        }
         remove[i] = true;
         rcount++;
       } else if (arg.equals("-jbco:verbose")) {
@@ -246,7 +250,7 @@ public class Main {
 
         Map<Object, Integer> htmp = transformsToMethodsToWeights.get(trans);
         if (htmp == null) {
-          htmp = new HashMap<Object, Integer>();
+          htmp = new HashMap<>();
           transformsToMethodsToWeights.put(trans, htmp);
         }
         htmp.put(o, new Integer(tweight));
@@ -262,7 +266,9 @@ public class Main {
       String tmp[] = argv.clone();
       argv = new String[argv.length - rcount];
       for (int i = 0; i < tmp.length; i++) {
-        if (!remove[i]) argv[index++] = tmp[i];
+        if (!remove[i]) {
+          argv[index++] = tmp[i];
+        }
       }
     }
 
@@ -285,13 +291,16 @@ public class Main {
         wjtp.add(
             new Transform(
                 "wjtp.jbco_fr", newTransform((Transformer) getTransform("wjtp.jbco_fr"))));
-        if (transformsToAdd.remove("wjtp.jbco_fr")) FieldRenamer.rename_fields = true;
+        if (transformsToAdd.remove("wjtp.jbco_fr")) {
+          FieldRenamer.rename_fields = true;
+        }
       }
 
-      if (transformsToAdd.contains("bb.jbco_ecvf"))
+      if (transformsToAdd.contains("bb.jbco_ecvf")) {
         wjtp.add(
             new Transform(
                 "wjtp.jbco_cc", newTransform((Transformer) getTransform("wjtp.jbco_cc"))));
+      }
 
       String jl = null;
       for (int i = 0; i < transformsToAdd.size(); i++) {
@@ -321,11 +330,13 @@ public class Main {
         String insertBefore = p == jtp ? jl : p == bb ? "bb.jbco_ful" : null;
         if (insertBefore != null) {
           p.insertBefore(new Transform(tname, newTransform((Transformer) t)), insertBefore);
-        } else p.add(new Transform(tname, newTransform((Transformer) t)));
+        } else {
+          p.add(new Transform(tname, newTransform((Transformer) t)));
+        }
       }
 
-      for (Iterator<Transform> phases = wjtp.iterator(); phases.hasNext(); ) {
-        if (phases.next().getPhaseName().indexOf("jbco") > 0) {
+      for (Transform transform : wjtp) {
+        if (transform.getPhaseName().indexOf("jbco") > 0) {
           argv = checkWhole(argv, true);
           break;
         }
@@ -385,10 +396,13 @@ public class Main {
           return argv;
         } else {
           String tmp[] = new String[argv.length - 1];
-          if (i == 0) System.arraycopy(argv, 1, tmp, 0, tmp.length);
-          else {
+          if (i == 0) {
+            System.arraycopy(argv, 1, tmp, 0, tmp.length);
+          } else {
             System.arraycopy(argv, 0, tmp, 0, i);
-            if (i < (argv.length - 1)) System.arraycopy(argv, i + 1, tmp, i, tmp.length - i);
+            if (i < (argv.length - 1)) {
+              System.arraycopy(argv, i + 1, tmp, i, tmp.length - i);
+            }
           }
           return tmp;
         }
@@ -411,31 +425,81 @@ public class Main {
   }
 
   private static IJbcoTransform getTransform(String name) {
-    if (name.startsWith("bb.jbco_rrps")) return new RemoveRedundantPushStores();
-    if (name.startsWith("bb.printout")) return new BAFPrintout(name, true);
-    if (name.equals("bb.jbco_j2bl")) return new Jimple2BafLocalBuilder();
-    if (name.equals("jtp.jbco_gia")) return new GotoInstrumenter();
-    if (name.equals("jtp.jbco_cae2bo")) return new ArithmeticTransformer();
-    if (name.equals("wjtp.jbco_cc")) return new CollectConstants();
-    if (name.equals("bb.jbco_ecvf")) return new UpdateConstantsToFields();
-    if (name.equals("bb.jbco_rds")) return new FindDuplicateSequences();
-    if (name.equals("bb.jbco_plvb")) return new LocalsToBitField();
-    if (name.equals("bb.jbco_rlaii")) return new MoveLoadsAboveIfs();
-    if (name.equals("bb.jbco_ptss")) return new WrapSwitchesInTrys();
-    if (name.equals("bb.jbco_iii")) return new IndirectIfJumpsToCaughtGotos();
-    if (name.equals("bb.jbco_ctbcb")) return new TryCatchCombiner();
-    if (name.equals("bb.jbco_cb2ji")) return new AddJSRs();
-    if (name.equals("bb.jbco_riitcb")) return new IfNullToTryCatch();
-    if (name.equals("wjtp.jbco_blbc")) return new LibraryMethodWrappersBuilder();
-    if (name.equals("wjtp.jbco_bapibm")) return new BuildIntermediateAppClasses();
-    if (name.equals("wjtp.jbco_cr")) return new ClassRenamer();
-    if (name.equals("bb.jbco_ful")) return new FixUndefinedLocals();
-    if (name.equals("wjtp.jbco_fr")) return new FieldRenamer();
-    if (name.equals("wjtp.jbco_mr")) return new MethodRenamer();
-    if (name.equals("jtp.jbco_adss")) return new AddSwitches();
-    if (name.equals("jtp.jbco_jl")) return new CollectJimpleLocals();
-    if (name.equals("bb.jbco_dcc")) return new ConstructorConfuser();
-    if (name.equals("bb.jbco_counter")) return new BAFCounter();
+    if (name.startsWith("bb.jbco_rrps")) {
+      return new RemoveRedundantPushStores();
+    }
+    if (name.startsWith("bb.printout")) {
+      return new BAFPrintout(name, true);
+    }
+    if (name.equals("bb.jbco_j2bl")) {
+      return new Jimple2BafLocalBuilder();
+    }
+    if (name.equals("jtp.jbco_gia")) {
+      return new GotoInstrumenter();
+    }
+    if (name.equals("jtp.jbco_cae2bo")) {
+      return new ArithmeticTransformer();
+    }
+    if (name.equals("wjtp.jbco_cc")) {
+      return new CollectConstants();
+    }
+    if (name.equals("bb.jbco_ecvf")) {
+      return new UpdateConstantsToFields();
+    }
+    if (name.equals("bb.jbco_rds")) {
+      return new FindDuplicateSequences();
+    }
+    if (name.equals("bb.jbco_plvb")) {
+      return new LocalsToBitField();
+    }
+    if (name.equals("bb.jbco_rlaii")) {
+      return new MoveLoadsAboveIfs();
+    }
+    if (name.equals("bb.jbco_ptss")) {
+      return new WrapSwitchesInTrys();
+    }
+    if (name.equals("bb.jbco_iii")) {
+      return new IndirectIfJumpsToCaughtGotos();
+    }
+    if (name.equals("bb.jbco_ctbcb")) {
+      return new TryCatchCombiner();
+    }
+    if (name.equals("bb.jbco_cb2ji")) {
+      return new AddJSRs();
+    }
+    if (name.equals("bb.jbco_riitcb")) {
+      return new IfNullToTryCatch();
+    }
+    if (name.equals("wjtp.jbco_blbc")) {
+      return new LibraryMethodWrappersBuilder();
+    }
+    if (name.equals("wjtp.jbco_bapibm")) {
+      return new BuildIntermediateAppClasses();
+    }
+    if (name.equals("wjtp.jbco_cr")) {
+      return new ClassRenamer();
+    }
+    if (name.equals("bb.jbco_ful")) {
+      return new FixUndefinedLocals();
+    }
+    if (name.equals("wjtp.jbco_fr")) {
+      return new FieldRenamer();
+    }
+    if (name.equals("wjtp.jbco_mr")) {
+      return new MethodRenamer();
+    }
+    if (name.equals("jtp.jbco_adss")) {
+      return new AddSwitches();
+    }
+    if (name.equals("jtp.jbco_jl")) {
+      return new CollectJimpleLocals();
+    }
+    if (name.equals("bb.jbco_dcc")) {
+      return new ConstructorConfuser();
+    }
+    if (name.equals("bb.jbco_counter")) {
+      return new BAFCounter();
+    }
 
     return null;
   }
@@ -443,7 +507,9 @@ public class Main {
   private static int getWeight(String phasename) {
     int weight = 9;
     Integer intg = transformsToWeights.get(phasename);
-    if (intg != null) weight = intg.intValue();
+    if (intg != null) {
+      weight = intg.intValue();
+    }
     return weight;
   }
 
@@ -459,18 +525,25 @@ public class Main {
         Integer intg = null;
         Object o = keys.next();
         if (o instanceof java.util.regex.Pattern) {
-          if (((java.util.regex.Pattern) o).matcher(method).matches()) intg = htmp.get(o);
+          if (((java.util.regex.Pattern) o).matcher(method).matches()) {
+            intg = htmp.get(o);
+          }
         } else if (o instanceof String && method.equals(o)) {
           intg = htmp.get(o);
         }
 
-        if (intg != null && intg.intValue() < result) result = intg.intValue();
+        if (intg != null && intg.intValue() < result) {
+          result = intg.intValue();
+        }
       }
     }
-    if (result > 9 || result < 0) result = getWeight(phasename);
+    if (result > 9 || result < 0) {
+      result = getWeight(phasename);
+    }
 
-    if (jbcoVerbose)
+    if (jbcoVerbose) {
       G.v().out.println("[" + phasename + "] Processing " + method + " with weight: " + result);
+    }
     return result;
   }
 }

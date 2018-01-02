@@ -1,5 +1,9 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Body;
 import soot.SootClass;
 import soot.SootMethod;
@@ -7,10 +11,6 @@ import soot.dava.DavaBody;
 import soot.dava.internal.AST.ASTMethodNode;
 import soot.dava.internal.AST.ASTNode;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
  * It has been seen that Dava's output contains the default constructor with just the invocation
@@ -32,7 +32,7 @@ public class RemoveEmptyBodyDefaultConstructor {
     debug("\n\nRemoveEmptyBodyDefaultConstructor----" + s.getName());
     List methods = s.getMethods();
     Iterator it = methods.iterator();
-    List<SootMethod> constructors = new ArrayList<SootMethod>();
+    List<SootMethod> constructors = new ArrayList<>();
 
     while (it.hasNext()) {
       SootMethod method = (SootMethod) it.next();
@@ -73,8 +73,9 @@ public class RemoveEmptyBodyDefaultConstructor {
     }
 
     ASTNode AST = (ASTNode) units.getFirst();
-    if (!(AST instanceof ASTMethodNode))
+    if (!(AST instanceof ASTMethodNode)) {
       throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+    }
 
     ASTMethodNode methodNode = (ASTMethodNode) AST;
     debug("got methodnode check body is empty and super has nothing in it");
@@ -103,6 +104,8 @@ public class RemoveEmptyBodyDefaultConstructor {
   }
 
   public static void debug(String debug) {
-    if (DEBUG) System.out.println("DEBUG: " + debug);
+    if (DEBUG) {
+      System.out.println("DEBUG: " + debug);
+    }
   }
 }

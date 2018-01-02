@@ -18,12 +18,6 @@ package soot;
  * Boston, MA 02111-1307, USA.
  */
 
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.ClassDef;
-import soot.dexpler.DexFileProvider;
-import soot.dexpler.Util;
-import soot.options.Options;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,11 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.ClassDef;
+
+import soot.dexpler.DexFileProvider;
+import soot.dexpler.Util;
+import soot.options.Options;
+
 /** Looks for a dex file which includes the definition of a class. */
 public class DexClassProvider implements ClassProvider {
 
   public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
-    Set<String> classes = new HashSet<String>();
+    Set<String> classes = new HashSet<>();
     for (ClassDef c : dexFile.getClasses()) {
       String name = Util.dottedClassName(c.getType());
       classes.add(name);
@@ -51,12 +52,15 @@ public class DexClassProvider implements ClassProvider {
    * @param className class to provide.
    * @return a DexClassSource that defines the className named class.
    */
+  @Override
   public ClassSource find(String className) {
     ensureDexIndex();
 
     Map<String, File> index = SourceLocator.v().dexClassIndex();
     File file = index.get(className);
-    if (file == null) return null;
+    if (file == null) {
+      return null;
+    }
 
     return new DexClassSource(className, file);
   }
@@ -67,7 +71,7 @@ public class DexClassProvider implements ClassProvider {
   protected void ensureDexIndex() {
     Map<String, File> index = SourceLocator.v().dexClassIndex();
     if (index == null) {
-      index = new HashMap<String, File>();
+      index = new HashMap<>();
       buildDexIndex(index, SourceLocator.v().classPath());
       SourceLocator.v().setDexClassIndex(index);
     }
@@ -93,8 +97,9 @@ public class DexClassProvider implements ClassProvider {
         for (DexFileProvider.DexContainer container :
             DexFileProvider.v().getDexFromSource(new File(path))) {
           for (String className : classesOfDex(container.getBase())) {
-            if (!index.containsKey(className)) index.put(className, container.getFilePath());
-            else if (Options.v().verbose())
+            if (!index.containsKey(className)) {
+              index.put(className, container.getFilePath());
+            } else if (Options.v().verbose()) {
               G.v()
                   .out
                   .println(
@@ -103,6 +108,7 @@ public class DexClassProvider implements ClassProvider {
                           className,
                           container.getDexName(),
                           container.getFilePath().getCanonicalPath()));
+            }
           }
         }
       } catch (IOException e) {

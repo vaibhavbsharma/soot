@@ -19,6 +19,10 @@
 
 package soot.toolkits.exceptions;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -31,10 +35,6 @@ import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link BodyTransformer} that shrinks the protected area covered by each {@link Trap} in the
@@ -63,11 +63,15 @@ public final class TrapTightener extends TrapTransformer {
     this.throwAnalysis = ta;
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (this.throwAnalysis == null) this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    if (this.throwAnalysis == null) {
+      this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Tightening trap boundaries...");
+    }
 
     Chain<Trap> trapChain = body.getTraps();
     Chain<Unit> unitChain = body.getUnits();
@@ -95,7 +99,9 @@ public final class TrapTightener extends TrapTransformer {
           // an,
           // active monitor, we need to keep the block
           if (isCatchAll && unitsWithMonitor.contains(u)) {
-            if (firstTrappedThrower == null) firstTrappedThrower = u;
+            if (firstTrappedThrower == null) {
+              firstTrappedThrower = u;
+            }
             break;
           }
         }
@@ -116,8 +122,9 @@ public final class TrapTightener extends TrapTransformer {
         }
         // If no statement inside the trap can throw an exception, we
         // remove the complete trap.
-        if (firstTrappedThrower == null) trapIt.remove();
-        else {
+        if (firstTrappedThrower == null) {
+          trapIt.remove();
+        } else {
           if (firstTrappedThrower != null && firstTrappedUnit != firstTrappedThrower) {
             trap.setBeginUnit(firstTrappedThrower);
           }

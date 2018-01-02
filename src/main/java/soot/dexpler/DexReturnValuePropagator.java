@@ -1,5 +1,11 @@
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -16,12 +22,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class DexReturnValuePropagator extends BodyTransformer {
 
   public static DexReturnValuePropagator v() {
@@ -37,7 +37,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
 
     // If a return statement's operand has only one definition and this is
     // a copy statement, we take the original operand
-    for (Unit u : body.getUnits())
+    for (Unit u : body.getUnits()) {
       if (u instanceof ReturnStmt) {
         ReturnStmt retStmt = (ReturnStmt) u;
         if (retStmt.getOp() instanceof Local) {
@@ -53,17 +53,22 @@ public class DexReturnValuePropagator extends BodyTransformer {
               // the return statement is not overwritten in between
               // a = 1; b = a; a = 3; return b; may not be translated
               // to return a;
-              if (!isRedefined((Local) rightOp, u, assign, graph)) retStmt.setOp(rightOp);
+              if (!isRedefined((Local) rightOp, u, assign, graph)) {
+                retStmt.setOp(rightOp);
+              }
             } else if (rightOp instanceof Constant) {
               retStmt.setOp(rightOp);
             }
             // If this is a field access which has no other uses,
             // we rename the local to help splitting
             else if (rightOp instanceof FieldRef) {
-              if (localUses == null) localUses = LocalUses.Factory.newLocalUses(body, localDefs);
+              if (localUses == null) {
+                localUses = LocalUses.Factory.newLocalUses(body, localDefs);
+              }
               if (localUses.getUsesOf(assign).size() == 1) {
-                if (localCreation == null)
+                if (localCreation == null) {
                   localCreation = new LocalCreation(body.getLocals(), "ret");
+                }
                 Local newLocal = localCreation.newLocal(leftOp.getType());
                 assign.setLeftOp(newLocal);
                 retStmt.setOp(newLocal);
@@ -72,6 +77,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
           }
         }
       }
+    }
   }
 
   /**
@@ -86,21 +92,25 @@ public class DexReturnValuePropagator extends BodyTransformer {
    *     redefined, otherwise false
    */
   private boolean isRedefined(Local l, Unit unitUse, AssignStmt unitDef, UnitGraph graph) {
-    List<Unit> workList = new ArrayList<Unit>();
+    List<Unit> workList = new ArrayList<>();
     workList.add(unitUse);
 
-    Set<Unit> doneSet = new HashSet<Unit>();
+    Set<Unit> doneSet = new HashSet<>();
 
     // Check for redefinitions of the local between definition and use
     while (!workList.isEmpty()) {
       Unit curStmt = workList.remove(0);
-      if (!doneSet.add(curStmt)) continue;
+      if (!doneSet.add(curStmt)) {
+        continue;
+      }
 
       for (Unit u : graph.getPredsOf(curStmt)) {
         if (u != unitDef) {
           if (u instanceof DefinitionStmt) {
             DefinitionStmt defStmt = (DefinitionStmt) u;
-            if (defStmt.getLeftOp() == l) return true;
+            if (defStmt.getLeftOp() == l) {
+              return true;
+            }
           }
           workList.add(u);
         }

@@ -18,7 +18,9 @@ class LargePriorityQueue<E> extends PriorityQueue<E> {
 
   @Override
   boolean add(int ordinal) {
-    if (contains(ordinal)) return false;
+    if (contains(ordinal)) {
+      return false;
+    }
     queue.set(ordinal);
     min = Math.min(min, ordinal);
     modCount++;
@@ -40,10 +42,14 @@ class LargePriorityQueue<E> extends PriorityQueue<E> {
 
   @Override
   boolean remove(int ordinal) {
-    if (!contains(ordinal)) return false;
+    if (!contains(ordinal)) {
+      return false;
+    }
     queue.clear(ordinal);
 
-    if (min == ordinal) min = nextSetBit(min + 1);
+    if (min == ordinal) {
+      min = nextSetBit(min + 1);
+    }
 
     modCount++;
     return true;

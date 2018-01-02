@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PatchingChain;
@@ -31,9 +34,6 @@ import soot.jbco.jimpleTransformations.CollectConstants;
 import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 31-May-2006
@@ -43,27 +43,35 @@ public class UpdateConstantsToFields extends BodyTransformer implements IJbcoTra
   public static String dependancies[] =
       new String[] {"wjtp.jbco_cc", "bb.jbco_ecvf", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ecvf";
 
+  @Override
   public String getName() {
     return name;
   }
 
   static int updated = 0;
 
+  @Override
   public void outputSummary() {
     out.println("Updated constant references: " + updated);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (b.getMethod().getName().indexOf("<clinit>") >= 0) return;
+    if (b.getMethod().getName().indexOf("<clinit>") >= 0) {
+      return;
+    }
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     PatchingChain<Unit> units = b.getUnits();
     Iterator<Unit> iter = units.snapshotIterator();

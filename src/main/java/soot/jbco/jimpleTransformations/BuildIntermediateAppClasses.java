@@ -19,6 +19,14 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -47,14 +55,6 @@ import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.ThisRef;
 
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 1-Feb-2006
@@ -67,6 +67,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
   static int newclasses = 0;
   static int newmethods = 0;
 
+  @Override
   public void outputSummary() {
     out.println("New buffer classes created: " + newclasses);
     out.println("New buffer class methods created: " + newmethods);
@@ -74,18 +75,23 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
 
   public static String dependancies[] = new String[] {"wjtp.jbco_bapibm"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "wjtp.jbco_bapibm";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
-    if (output) out.println("Building Intermediate Classes...");
+    if (output) {
+      out.println("Building Intermediate Classes...");
+    }
 
     soot.jbco.util.BodyBuilder.retrieveAllBodies();
 
@@ -93,25 +99,29 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
     // iterate through application classes, build intermediate classes
     Iterator<SootClass> it = scene.getApplicationClasses().snapshotIterator();
     while (it.hasNext()) {
-      Vector<SootMethod> initMethodsToRewrite = new Vector<SootMethod>();
-      Hashtable<String, SootMethod> methodsToAdd = new Hashtable<String, SootMethod>();
+      Vector<SootMethod> initMethodsToRewrite = new Vector<>();
+      Hashtable<String, SootMethod> methodsToAdd = new Hashtable<>();
       SootClass c = it.next();
       SootClass cOrigSuperclass = c.getSuperclass();
 
-      if (output)
+      if (output) {
         out.println("Processing " + c.getName() + " with super " + cOrigSuperclass.getName());
+      }
 
       Iterator<SootMethod> mIt = c.methodIterator();
       while (mIt.hasNext()) {
         SootMethod m = mIt.next();
-        if (!m.isConcrete()) continue;
+        if (!m.isConcrete()) {
+          continue;
+        }
 
         try {
           m.getActiveBody();
         } catch (Exception exc) {
-          if (m.retrieveActiveBody() == null)
+          if (m.retrieveActiveBody() == null) {
             throw new RuntimeException(
                 m.getSignature() + " has no body. This was not expected dude.");
+          }
         }
 
         String subSig = m.getSubSignature();
@@ -147,7 +157,9 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
         ClassRenamer.oldToNewClassNames.put(newName, newName);
         String fullName = ClassRenamer.getNamePrefix(c.getName()) + newName;
 
-        if (output) out.println("\tBuilding " + fullName);
+        if (output) {
+          out.println("\tBuilding " + fullName);
+        }
 
         // make non-final soot class
         SootClass iC = new SootClass(fullName, c.getModifiers() & (~Modifier.FINAL));

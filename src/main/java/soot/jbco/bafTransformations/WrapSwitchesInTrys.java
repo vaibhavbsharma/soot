@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PatchingChain;
@@ -33,9 +36,6 @@ import soot.jbco.util.Rand;
 import soot.jbco.util.ThrowSet;
 import soot.util.Chain;
 
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 24-May-2006
@@ -46,23 +46,29 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
 
   public static String dependancies[] = new String[] {"bb.jbco_ptss", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ptss";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Switches wrapped in Tries: " + totaltraps);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     int i = 0;
     Unit handler = null;
@@ -97,8 +103,11 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
           Unit succ = units.getSuccOf(twi);
           while (!BodyBuilder.isExceptionCaughtAt(units, succ, traps.iterator()) && size-- > 0) {
             Object o = units.getSuccOf(succ);
-            if (o != null) succ = (Unit) o;
-            else break;
+            if (o != null) {
+              succ = (Unit) o;
+            } else {
+              break;
+            }
           }
 
           traps.add(Baf.v().newTrap(ThrowSet.getRandomThrowable(), twi, succ, handler));

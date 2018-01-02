@@ -26,13 +26,13 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Local;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.jimple.Jimple;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr {
   public JSpecialInvokeExpr(Local base, SootMethodRef methodRef, List<? extends Value> args) {
@@ -43,8 +43,9 @@ public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr {
     }
   }
 
+  @Override
   public Object clone() {
-    List<Value> clonedArgs = new ArrayList<Value>(getArgCount());
+    List<Value> clonedArgs = new ArrayList<>(getArgCount());
 
     for (int i = 0; i < getArgCount(); i++) {
       clonedArgs.add(i, getArg(i));

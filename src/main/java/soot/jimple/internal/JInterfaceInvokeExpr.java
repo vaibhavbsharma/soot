@@ -26,14 +26,14 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Jimple;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr {
   public JInterfaceInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args) {
@@ -50,12 +50,14 @@ public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr {
               + " Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
     }
 
-    for (int i = 0; i < args.size(); i++)
+    for (int i = 0; i < args.size(); i++) {
       this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+    }
   }
 
+  @Override
   public Object clone() {
-    List<Value> argList = new ArrayList<Value>(getArgCount());
+    List<Value> argList = new ArrayList<>(getArgCount());
 
     for (int i = 0; i < getArgCount(); i++) {
       argList.add(i, Jimple.cloneIfNecessary(getArg(i)));

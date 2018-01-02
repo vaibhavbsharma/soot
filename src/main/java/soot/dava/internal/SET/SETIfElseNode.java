@@ -19,6 +19,8 @@
 
 package soot.dava.internal.SET;
 
+import java.util.List;
+
 import soot.dava.internal.AST.ASTIfElseNode;
 import soot.dava.internal.AST.ASTIfNode;
 import soot.dava.internal.AST.ASTNode;
@@ -27,8 +29,6 @@ import soot.dava.toolkits.base.misc.ConditionFlipper;
 import soot.jimple.ConditionExpr;
 import soot.jimple.IfStmt;
 import soot.util.IterableSet;
-
-import java.util.List;
 
 public class SETIfElseNode extends SETDagNode {
   private IterableSet ifBody, elseBody;
@@ -47,18 +47,24 @@ public class SETIfElseNode extends SETDagNode {
     add_SubBody(elseBody);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
 
     IterableSet ifChain = body2childChain.get(ifBody);
-    if (ifChain.isEmpty() == false) c.addAll(((SETNode) ifChain.getLast()).get_NaturalExits());
+    if (ifChain.isEmpty() == false) {
+      c.addAll(((SETNode) ifChain.getLast()).get_NaturalExits());
+    }
 
     IterableSet elseChain = body2childChain.get(elseBody);
-    if (elseChain.isEmpty() == false) c.addAll(((SETNode) elseChain.getLast()).get_NaturalExits());
+    if (elseChain.isEmpty() == false) {
+      c.addAll(((SETNode) elseChain.getLast()).get_NaturalExits());
+    }
 
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
     List<Object> astBody0 = emit_ASTBody(body2childChain.get(ifBody)),
         astBody1 = emit_ASTBody(body2childChain.get(elseBody));
@@ -74,7 +80,10 @@ public class SETIfElseNode extends SETDagNode {
       ce = ConditionFlipper.flip(ce);
     }
 
-    if (astBody1.isEmpty()) return new ASTIfNode(get_Label(), ce, astBody0);
-    else return new ASTIfElseNode(get_Label(), ce, astBody0, astBody1);
+    if (astBody1.isEmpty()) {
+      return new ASTIfNode(get_Label(), ce, astBody0);
+    } else {
+      return new ASTIfElseNode(get_Label(), ce, astBody0, astBody1);
+    }
   }
 }

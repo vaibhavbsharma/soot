@@ -1,5 +1,12 @@
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Local;
 import soot.Unit;
@@ -7,13 +14,6 @@ import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
 import soot.toolkits.scalar.LocalDefs;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Simplistic caching, flow-insensitive def/use analysis
@@ -23,9 +23,9 @@ import java.util.Set;
 public class DexDefUseAnalysis implements LocalDefs {
 
   private final Body body;
-  private Map<Local, Set<Unit>> localToUses = new HashMap<Local, Set<Unit>>();
-  private Map<Local, Set<Unit>> localToDefs = new HashMap<Local, Set<Unit>>();
-  private Map<Local, Set<Unit>> localToDefsWithAliases = new HashMap<Local, Set<Unit>>();
+  private Map<Local, Set<Unit>> localToUses = new HashMap<>();
+  private Map<Local, Set<Unit>> localToDefs = new HashMap<>();
+  private Map<Local, Set<Unit>> localToDefsWithAliases = new HashMap<>();
 
   public DexDefUseAnalysis(Body body) {
     this.body = body;
@@ -34,9 +34,13 @@ public class DexDefUseAnalysis implements LocalDefs {
   public Set<Unit> getUsesOf(Local l) {
     Set<Unit> uses = localToUses.get(l);
     if (uses == null) {
-      uses = new HashSet<Unit>();
+      uses = new HashSet<>();
       for (Unit u : body.getUnits()) {
-        for (ValueBox vb : u.getUseBoxes()) if (vb.getValue() == l) uses.add(u);
+        for (ValueBox vb : u.getUseBoxes()) {
+          if (vb.getValue() == l) {
+            uses.add(u);
+          }
+        }
       }
       localToUses.put(l, uses);
     }
@@ -54,10 +58,10 @@ public class DexDefUseAnalysis implements LocalDefs {
   protected Set<Unit> collectDefinitionsWithAliases(Local l) {
     Set<Unit> defs = localToDefsWithAliases.get(l);
     if (defs == null) {
-      Set<Local> seenLocals = new HashSet<Local>();
-      defs = new HashSet<Unit>();
+      Set<Local> seenLocals = new HashSet<>();
+      defs = new HashSet<>();
 
-      List<Local> newLocals = new ArrayList<Local>();
+      List<Local> newLocals = new ArrayList<>();
       newLocals.add(l);
 
       while (!newLocals.isEmpty()) {
@@ -68,19 +72,23 @@ public class DexDefUseAnalysis implements LocalDefs {
           defs.add(defUnit);
 
           DefinitionStmt defStmt = (DefinitionStmt) defUnit;
-          if (defStmt.getRightOp() instanceof Local && seenLocals.add((Local) defStmt.getRightOp()))
+          if (defStmt.getRightOp() instanceof Local
+              && seenLocals.add((Local) defStmt.getRightOp())) {
             newLocals.add((Local) defStmt.getRightOp());
+          }
         }
 
         // Use of l?
-        for (Unit use : getUsesOf(curLocal))
+        for (Unit use : getUsesOf(curLocal)) {
           if (use instanceof AssignStmt) {
             AssignStmt assignUse = (AssignStmt) use;
             if (assignUse.getRightOp() == curLocal
                 && assignUse.getLeftOp() instanceof Local
-                && seenLocals.add((Local) assignUse.getLeftOp()))
+                && seenLocals.add((Local) assignUse.getLeftOp())) {
               newLocals.add((Local) assignUse.getLeftOp());
+            }
           }
+        }
       }
       localToDefsWithAliases.put(l, defs);
     }
@@ -96,12 +104,16 @@ public class DexDefUseAnalysis implements LocalDefs {
   public List<Unit> getDefsOf(Local l) {
     Set<Unit> defs = localToDefs.get(l);
     if (defs == null) {
-      defs = new HashSet<Unit>();
+      defs = new HashSet<>();
       for (Unit u : body.getUnits()) {
-        if (u instanceof DefinitionStmt) if (((DefinitionStmt) u).getLeftOp() == l) defs.add(u);
+        if (u instanceof DefinitionStmt) {
+          if (((DefinitionStmt) u).getLeftOp() == l) {
+            defs.add(u);
+          }
+        }
       }
       localToDefs.put(l, defs);
     }
-    return new ArrayList<Unit>(defs);
+    return new ArrayList<>(defs);
   }
 }

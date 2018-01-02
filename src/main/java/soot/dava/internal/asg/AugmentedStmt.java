@@ -20,13 +20,13 @@
 
 package soot.dava.internal.asg;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.G;
 import soot.dava.internal.SET.SETNode;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public class AugmentedStmt {
   public List<AugmentedStmt> bpreds, bsuccs, cpreds, csuccs;
@@ -39,8 +39,8 @@ public class AugmentedStmt {
   public AugmentedStmt(Stmt s) {
     this.s = s;
 
-    dominators = new IterableSet<AugmentedStmt>();
-    reachers = new IterableSet<AugmentedStmt>();
+    dominators = new IterableSet<>();
+    reachers = new IterableSet<>();
 
     reset_PredsSuccs();
   }
@@ -50,7 +50,9 @@ public class AugmentedStmt {
   }
 
   public boolean add_BPred(AugmentedStmt bpred) {
-    if (add_CPred(bpred) == false) return false;
+    if (add_CPred(bpred) == false) {
+      return false;
+    }
 
     if (bpreds.contains(bpred)) {
       cpreds.remove(bpred);
@@ -62,7 +64,9 @@ public class AugmentedStmt {
   }
 
   public boolean add_BSucc(AugmentedStmt bsucc) {
-    if (add_CSucc(bsucc) == false) return false;
+    if (add_CSucc(bsucc) == false) {
+      return false;
+    }
 
     if (bsuccs.contains(bsucc)) {
       csuccs.remove(bsucc);
@@ -92,7 +96,9 @@ public class AugmentedStmt {
   }
 
   public boolean remove_BPred(AugmentedStmt bpred) {
-    if (remove_CPred(bpred) == false) return false;
+    if (remove_CPred(bpred) == false) {
+      return false;
+    }
 
     if (bpreds.contains(bpred)) {
       bpreds.remove(bpred);
@@ -104,7 +110,9 @@ public class AugmentedStmt {
   }
 
   public boolean remove_BSucc(AugmentedStmt bsucc) {
-    if (remove_CSucc(bsucc) == false) return false;
+    if (remove_CSucc(bsucc) == false) {
+      return false;
+    }
 
     if (bsuccs.contains(bsucc)) {
       bsuccs.remove(bsucc);
@@ -153,17 +161,19 @@ public class AugmentedStmt {
     G.v().out.println(toString());
   }
 
+  @Override
   public String toString() {
     return "(" + s.toString() + " @ " + hashCode() + ")";
   }
 
   public void reset_PredsSuccs() {
-    bpreds = new LinkedList<AugmentedStmt>();
-    bsuccs = new LinkedList<AugmentedStmt>();
-    cpreds = new LinkedList<AugmentedStmt>();
-    csuccs = new LinkedList<AugmentedStmt>();
+    bpreds = new LinkedList<>();
+    bsuccs = new LinkedList<>();
+    cpreds = new LinkedList<>();
+    csuccs = new LinkedList<>();
   }
 
+  @Override
   public Object clone() {
     return new AugmentedStmt((Stmt) s.clone());
   }

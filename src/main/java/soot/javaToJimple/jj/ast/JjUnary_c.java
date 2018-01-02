@@ -33,6 +33,7 @@ public class JjUnary_c extends Unary_c {
     super(pos, op, expr);
   }
 
+  @Override
   public Type childExpectedType(Expr child, AscriptionVisitor av) {
     TypeSystem ts = av.typeSystem();
 

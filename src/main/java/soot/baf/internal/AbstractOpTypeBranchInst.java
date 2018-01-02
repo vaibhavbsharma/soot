@@ -38,16 +38,19 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst {
 
   AbstractOpTypeBranchInst(Type opType, UnitBox targetBox) {
     super(targetBox);
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
       opType = RefType.v();
+    }
 
     this.opType = opType;
   }
 
+  @Override
   public int getInCount() {
     return 2;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
@@ -58,15 +61,18 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst {
 
   public void setOpType(Type t) {
     opType = t;
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
       opType = RefType.v();
+    }
   }
 
+  @Override
   public String toString() {
     // do stuff with opType later.
     return getName() + "." + Baf.bafDescriptorOf(opType) + " " + getTarget();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(getName());
     up.literal(".");

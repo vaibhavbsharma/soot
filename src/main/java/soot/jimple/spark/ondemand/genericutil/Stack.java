@@ -56,7 +56,9 @@ public final class Stack<T> implements Cloneable {
   }
 
   public T pop() {
-    if (size == 0) return null;
+    if (size == 0) {
+      return null;
+    }
     size--;
     T ret = elems[size];
     elems[size] = null;
@@ -64,7 +66,9 @@ public final class Stack<T> implements Cloneable {
   }
 
   public T peek() {
-    if (size == 0) return null;
+    if (size == 0) {
+      return null;
+    }
     return elems[size - 1];
   }
 
@@ -80,6 +84,7 @@ public final class Stack<T> implements Cloneable {
     size = 0;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Stack<T> clone() {
     Stack<T> ret = null;
@@ -110,16 +115,21 @@ public final class Stack<T> implements Cloneable {
    */
   public int indexOf(T o) {
     for (int i = 0; i < size && elems[i] != null; i++) {
-      if (elems[i].equals(o)) return i;
+      if (elems[i].equals(o)) {
+        return i;
+      }
     }
     return -1;
   }
 
+  @Override
   public String toString() {
     StringBuffer s = new StringBuffer();
     s.append("[");
     for (int i = 0; i < size && elems[i] != null; i++) {
-      if (i > 0) s.append(", ");
+      if (i > 0) {
+        s.append(", ");
+      }
       s.append(elems[i].toString());
     }
     s.append("]");

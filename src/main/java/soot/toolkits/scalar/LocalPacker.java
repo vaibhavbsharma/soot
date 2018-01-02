@@ -25,6 +25,13 @@
 
 package soot.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -38,13 +45,6 @@ import soot.ValueBox;
 import soot.jimple.GroupIntPair;
 import soot.options.Options;
 import soot.util.DeterministicHashMap;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A BodyTransformer that attemps to minimize the number of local variables used in Body by
@@ -69,23 +69,23 @@ public class LocalPacker extends BodyTransformer {
     return G.v().soot_toolkits_scalar_LocalPacker();
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     boolean isUnsplit = PhaseOptions.getBoolean(options, "unsplit-original-locals");
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Packing locals...");
+    }
 
     Map<Local, Object> localToGroup =
-        new DeterministicHashMap<Local, Object>(body.getLocalCount() * 2 + 1, 0.7f);
+        new DeterministicHashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
     // A group represents a bunch of locals which may potentially interfere
     // with each other
     // 2 separate groups can not possibly interfere with each other
     // (coloring say ints and doubles)
 
-    Map<Object, Integer> groupToColorCount =
-        new HashMap<Object, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
-    Map<Local, Integer> localToColor =
-        new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+    Map<Object, Integer> groupToColorCount = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+    Map<Local, Integer> localToColor = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
     Map<Local, Local> localToNewLocal;
 
     // Assign each local to a group, and set that group's color count to 0.
@@ -120,16 +120,17 @@ public class LocalPacker extends BodyTransformer {
     }
 
     // Call the graph colorer.
-    if (isUnsplit)
+    if (isUnsplit) {
       FastColorer.unsplitAssignColorsToLocals(body, localToGroup, localToColor, groupToColorCount);
-    else FastColorer.assignColorsToLocals(body, localToGroup, localToColor, groupToColorCount);
+    } else {
+      FastColorer.assignColorsToLocals(body, localToGroup, localToColor, groupToColorCount);
+    }
 
     // Map each local to a new local.
     {
-      List<Local> originalLocals = new ArrayList<Local>(body.getLocals());
-      localToNewLocal = new HashMap<Local, Local>(body.getLocalCount() * 2 + 1, 0.7f);
-      Map<GroupIntPair, Local> groupIntToLocal =
-          new HashMap<GroupIntPair, Local>(body.getLocalCount() * 2 + 1, 0.7f);
+      List<Local> originalLocals = new ArrayList<>(body.getLocals());
+      localToNewLocal = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+      Map<GroupIntPair, Local> groupIntToLocal = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
 
       body.getLocals().clear();
 
@@ -141,8 +142,9 @@ public class LocalPacker extends BodyTransformer {
 
         Local newLocal;
 
-        if (groupIntToLocal.containsKey(pair)) newLocal = groupIntToLocal.get(pair);
-        else {
+        if (groupIntToLocal.containsKey(pair)) {
+          newLocal = groupIntToLocal.get(pair);
+        } else {
           newLocal = (Local) original.clone();
           newLocal.setType((Type) group);
 
@@ -165,8 +167,9 @@ public class LocalPacker extends BodyTransformer {
           int signIndex = newLocal.getName().indexOf("#");
           if (signIndex != -1) {
             String newName = newLocal.getName().substring(0, signIndex);
-            if (usedLocalNames.add(newName)) newLocal.setName(newName);
-            else {
+            if (usedLocalNames.add(newName)) {
+              newLocal.setName(newName);
+            } else {
               // just leave it alone for now
             }
           }

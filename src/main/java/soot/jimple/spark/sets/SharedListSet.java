@@ -58,23 +58,29 @@ public class SharedListSet extends PointsToSetInternal {
   // used to construct SharedHybridSets
   public static final P2SetFactory getFactory() {
     return new P2SetFactory() {
+      @Override
       public final PointsToSetInternal newSet(Type type, PAG pag) {
         return new SharedListSet(type, pag);
       }
     };
   }
 
+  @Override
   public boolean contains(Node n) {
     for (ListNode i = data; i != null; i = i.next) {
-      if (i.elem == n) return true;
+      if (i.elem == n) {
+        return true;
+      }
     }
     return false;
   }
 
+  @Override
   public boolean isEmpty() {
     return data == null;
   }
 
+  @Override
   public boolean forall(P2SetVisitor v) {
     for (ListNode i = data; i != null; i = i.next) {
       v.visit(i.elem);
@@ -103,7 +109,9 @@ public class SharedListSet extends PointsToSetInternal {
     // we know the rest of the list.
 
     if (first == null) {
-      if (other == null) return null;
+      if (other == null) {
+        return null;
+      }
 
       // Normally, we could just return other in this case.
       // But the problem is that there might be elements to exclude from other.
@@ -178,12 +186,15 @@ public class SharedListSet extends PointsToSetInternal {
       // result is about to have an extra thing pointing at it, and data is about to
       // have one less thing pointing at it, so adjust the reference counts.
       result.incRefCount();
-      if (data != null) data.decRefCount();
+      if (data != null) {
+        data.decRefCount();
+      }
       data = result;
       return true;
     }
   }
 
+  @Override
   public boolean add(Node n) {
 
     // Prevent repeated code by saying add() is just a union() with one element in the
@@ -199,8 +210,11 @@ public class SharedListSet extends PointsToSetInternal {
     return added;
   }
 
+  @Override
   public boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
-    if (other == null) return false;
+    if (other == null) {
+      return false;
+    }
 
     if ((!(other instanceof SharedListSet))
         || (exclude != null && !(exclude instanceof SharedListSet))) {
@@ -226,14 +240,21 @@ public class SharedListSet extends PointsToSetInternal {
       this.second = second;
     }
 
+    @Override
     public int hashCode() {
       // I don't think the Node will ever be null
-      if (second == null) return first.hashCode();
-      else return first.hashCode() + second.hashCode();
+      if (second == null) {
+        return first.hashCode();
+      } else {
+        return first.hashCode() + second.hashCode();
+      }
     }
 
+    @Override
     public boolean equals(Object other) {
-      if (!(other instanceof Pair)) return false;
+      if (!(other instanceof Pair)) {
+        return false;
+      }
       Pair o = (Pair) other;
       return ((first == null && o.first == null) || first == o.first)
           && ((second == null && o.second == null) || second == o.second);
@@ -279,7 +300,9 @@ public class SharedListSet extends PointsToSetInternal {
     // if it's not an existing node
     {
       retVal = new ListNode(elem, next);
-      if (next != null) next.incRefCount(); // next now has an extra
+      if (next != null) {
+        next.incRefCount(); // next now has an extra
+      }
       // thing pointing at it (the newly created node)
       AllSharedListNodes.v().allNodes.put(p, retVal);
     }

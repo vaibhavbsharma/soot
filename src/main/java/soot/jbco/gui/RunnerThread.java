@@ -19,10 +19,11 @@
 
 package soot.jbco.gui;
 
-import javax.swing.JScrollBar;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+
+import javax.swing.JScrollBar;
 
 public class RunnerThread implements Runnable {
 
@@ -37,6 +38,7 @@ public class RunnerThread implements Runnable {
     wdir = workingdir;
   }
 
+  @Override
   public void run() {
     synchronized (viewer.newFileMenuItem) {
       viewer.newFileMenuItem.setEnabled(false);
@@ -48,8 +50,9 @@ public class RunnerThread implements Runnable {
       File f = null;
       if (wdir != null) {
         f = new File(wdir);
-        if (!f.exists() || !f.isDirectory())
+        if (!f.exists() || !f.isDirectory()) {
           throw new Exception(f + " does not appear to be a proper working directory.");
+        }
       }
 
       Process p = Runtime.getRuntime().exec(cmdarray, null, f);
@@ -75,9 +78,10 @@ public class RunnerThread implements Runnable {
               autoScroll = ((vbar.getValue() + vbar.getVisibleAmount()) == vbar.getMaximum());
             }
             viewer.TextAreaOutput.append("\n" + line_in);
-            if (autoScroll)
+            if (autoScroll) {
               viewer.TextAreaOutput.setCaretPosition(
                   viewer.TextAreaOutput.getDocument().getLength());
+            }
           }
         }
       } catch (Exception exc) {

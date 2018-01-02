@@ -1,16 +1,16 @@
 package soot.util;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class SmallPriorityQueueTest {
 
@@ -64,7 +64,9 @@ public class SmallPriorityQueueTest {
     assertTrue(q.isEmpty());
     assertNull(q.peek());
     assertNull(q.poll());
-    for (Integer i : universe1) assertFalse(q.contains(i));
+    for (Integer i : universe1) {
+      assertFalse(q.contains(i));
+    }
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -171,7 +173,9 @@ public class SmallPriorityQueueTest {
     assertTrue(q.remove(universe1[hole]));
     int j = 0;
     for (Integer i : q) {
-      if (j == hole) j++;
+      if (j == hole) {
+        j++;
+      }
       assertEquals(universe1[j++], i);
     }
   }

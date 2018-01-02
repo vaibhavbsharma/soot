@@ -27,6 +27,7 @@ public class StrictFPPropagator extends polyglot.visit.NodeVisitor {
     strict = val;
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     if (n instanceof polyglot.ast.ClassDecl) {
       if (((polyglot.ast.ClassDecl) n).flags().isStrictFP()) {
@@ -51,6 +52,7 @@ public class StrictFPPropagator extends polyglot.visit.NodeVisitor {
     return this;
   }
 
+  @Override
   public polyglot.ast.Node leave(
       polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor nodeVisitor) {
 

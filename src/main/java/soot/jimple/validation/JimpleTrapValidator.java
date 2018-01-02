@@ -19,6 +19,10 @@
 
 package soot.jimple.validation;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
@@ -26,10 +30,6 @@ import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * This validator checks whether the jimple traps are correct. It does not perform the same checks
@@ -48,20 +48,21 @@ public enum JimpleTrapValidator implements BodyValidator {
   /** Checks whether all Caught-Exception-References are associated to traps. */
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    Set<Unit> caughtUnits = new HashSet<Unit>();
+    Set<Unit> caughtUnits = new HashSet<>();
     for (Trap trap : body.getTraps()) {
       caughtUnits.add(trap.getHandlerUnit());
 
-      if (!(trap.getHandlerUnit() instanceof IdentityStmt))
+      if (!(trap.getHandlerUnit() instanceof IdentityStmt)) {
         exceptions.add(
             new ValidationException(
                 trap, "Trap handler does not start with caught " + "exception reference"));
-      else {
+      } else {
         IdentityStmt is = (IdentityStmt) trap.getHandlerUnit();
-        if (!(is.getRightOp() instanceof CaughtExceptionRef))
+        if (!(is.getRightOp() instanceof CaughtExceptionRef)) {
           exceptions.add(
               new ValidationException(
                   trap, "Trap handler does not start with caught " + "exception reference"));
+        }
       }
     }
     for (Unit u : body.getUnits()) {

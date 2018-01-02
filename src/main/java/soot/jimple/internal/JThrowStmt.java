@@ -25,6 +25,8 @@
 
 package soot.jimple.internal;
 
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
@@ -37,8 +39,6 @@ import soot.jimple.StmtSwitch;
 import soot.jimple.ThrowStmt;
 import soot.util.Switch;
 
-import java.util.List;
-
 public class JThrowStmt extends AbstractOpStmt implements ThrowStmt {
 
   public JThrowStmt(Value op) {
@@ -49,24 +49,29 @@ public class JThrowStmt extends AbstractOpStmt implements ThrowStmt {
     super(opBox);
   }
 
+  @Override
   public Object clone() {
     return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
   }
 
+  @Override
   public String toString() {
     return "throw " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.THROW);
     up.literal(" ");
     opBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseThrowStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) getOp()).convertToBaf(context, out);
 
@@ -75,10 +80,12 @@ public class JThrowStmt extends AbstractOpStmt implements ThrowStmt {
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

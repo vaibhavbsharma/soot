@@ -1,14 +1,5 @@
 package soot.jimple.toolkits.base;
 
-import soot.G;
-import soot.PhaseOptions;
-import soot.Scene;
-import soot.SceneTransformer;
-import soot.Singletons;
-import soot.SootClass;
-import soot.options.Options;
-import soot.util.Chain;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import soot.G;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.options.Options;
+import soot.util.Chain;
 
 /**
  * A scene transformer that renames the duplicated class names.
@@ -61,7 +61,7 @@ public class RenameDuplicatedClasses extends SceneTransformer {
     }
 
     Chain<SootClass> sootClasses = Scene.v().getClasses();
-    Map<String, String> lowerCaseClassNameToReal = new HashMap<String, String>();
+    Map<String, String> lowerCaseClassNameToReal = new HashMap<>();
 
     int count = 0;
 
@@ -89,7 +89,7 @@ public class RenameDuplicatedClasses extends SceneTransformer {
   }
 
   public void duplicatedCheck(List<String> classNames) {
-    Set<String> classNameSet = new HashSet<String>();
+    Set<String> classNameSet = new HashSet<>();
     for (String className : classNames) {
       if (classNameSet.contains(className.toLowerCase())) {
         throw new RuntimeException("The fixed class names cannot contain duplicated class names.");
@@ -107,7 +107,9 @@ public class RenameDuplicatedClasses extends SceneTransformer {
   public boolean isFileSystemCaseSensitive() {
     File dir = new File(".");
     File[] files = dir.listFiles();
-    if (files == null) return false;
+    if (files == null) {
+      return false;
+    }
 
     for (File file : files) {
       if (file.isFile()) {

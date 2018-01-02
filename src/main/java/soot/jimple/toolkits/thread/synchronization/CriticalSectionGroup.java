@@ -1,12 +1,12 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import soot.Value;
-import soot.jimple.toolkits.pointer.CodeBlockRWSet;
-import soot.jimple.toolkits.pointer.RWSet;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import soot.Value;
+import soot.jimple.toolkits.pointer.CodeBlockRWSet;
+import soot.jimple.toolkits.pointer.RWSet;
 
 class CriticalSectionGroup implements Iterable<CriticalSection> {
   int groupNum;
@@ -25,7 +25,7 @@ class CriticalSectionGroup implements Iterable<CriticalSection> {
 
   public CriticalSectionGroup(int groupNum) {
     this.groupNum = groupNum;
-    this.criticalSections = new ArrayList<CriticalSection>();
+    this.criticalSections = new ArrayList<>();
     this.rwSet = new CodeBlockRWSet();
 
     this.isDynamicLock = false;
@@ -45,19 +45,24 @@ class CriticalSectionGroup implements Iterable<CriticalSection> {
   public void add(CriticalSection tn) {
     tn.setNumber = groupNum;
     tn.group = this;
-    if (!criticalSections.contains(tn)) criticalSections.add(tn);
+    if (!criticalSections.contains(tn)) {
+      criticalSections.add(tn);
+    }
   }
 
   public boolean contains(CriticalSection tn) {
     return criticalSections.contains(tn);
   }
 
+  @Override
   public Iterator<CriticalSection> iterator() {
     return criticalSections.iterator();
   }
 
   public void mergeGroups(CriticalSectionGroup other) {
-    if (other == this) return;
+    if (other == this) {
+      return;
+    }
 
     Iterator<CriticalSection> tnIt = other.criticalSections.iterator();
     while (tnIt.hasNext()) {

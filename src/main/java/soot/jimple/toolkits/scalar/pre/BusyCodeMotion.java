@@ -25,6 +25,10 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -48,10 +52,6 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 import soot.util.UnitMap;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Performs a partial redundancy elimination (= code motion). This is done, by moving
@@ -77,13 +77,15 @@ public class BusyCodeMotion extends BodyTransformer {
   private static final String PREFIX = "$bcm";
 
   /** performs the busy code motion. */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
     BCMOptions options = new BCMOptions(opts);
-    HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
+    HashMap<EquivalentValue, Local> expToHelper = new HashMap<>();
     Chain<Unit> unitChain = b.getUnits();
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + b.getMethod().getName() + "]     performing Busy Code Motion...");
+    }
 
     CriticalEdgeRemover.v().transform(b, phaseName + ".cer");
 
@@ -92,10 +94,13 @@ public class BusyCodeMotion extends BodyTransformer {
     /* map each unit to its RHS. only take binary expressions */
     Map<Unit, EquivalentValue> unitToEquivRhs =
         new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+          @Override
           protected EquivalentValue mapTo(Unit unit) {
             Value tmp = SootFilter.noInvokeRhs(unit);
             Value tmp2 = SootFilter.binop(tmp);
-            if (tmp2 == null) tmp2 = SootFilter.concreteRef(tmp);
+            if (tmp2 == null) {
+              tmp2 = SootFilter.concreteRef(tmp);
+            }
             return SootFilter.equiVal(tmp2);
           }
         };
@@ -103,6 +108,7 @@ public class BusyCodeMotion extends BodyTransformer {
     /* same as before, but without exception-throwing expressions */
     Map<Unit, EquivalentValue> unitToNoExceptionEquivRhs =
         new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+          @Override
           protected EquivalentValue mapTo(Unit unit) {
             Value tmp = SootFilter.binopRhs(unit);
             tmp = SootFilter.noExceptionThrowing(tmp);
@@ -139,7 +145,9 @@ public class BusyCodeMotion extends BodyTransformer {
 
           // Make sure not to place any stuff inside the identity block at
           // the beginning of the method
-          if (currentUnit instanceof IdentityStmt) currentUnit = getFirstNonIdentityStmt(b);
+          if (currentUnit instanceof IdentityStmt) {
+            currentUnit = getFirstNonIdentityStmt(b);
+          }
 
           if (helper == null) {
             helper = localCreation.newLocal(equiVal.getType());
@@ -162,16 +170,23 @@ public class BusyCodeMotion extends BodyTransformer {
         EquivalentValue rhs = unitToEquivRhs.get(currentUnit);
         if (rhs != null) {
           Local helper = expToHelper.get(rhs);
-          if (helper != null) ((AssignStmt) currentUnit).setRightOp(helper);
+          if (helper != null) {
+            ((AssignStmt) currentUnit).setRightOp(helper);
+          }
         }
       }
     }
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + b.getMethod().getName() + "]     Busy Code Motion done!");
+    }
   }
 
   private Unit getFirstNonIdentityStmt(Body b) {
-    for (Unit u : b.getUnits()) if (!(u instanceof IdentityStmt)) return u;
+    for (Unit u : b.getUnits()) {
+      if (!(u instanceof IdentityStmt)) {
+        return u;
+      }
+    }
     return null;
   }
 }

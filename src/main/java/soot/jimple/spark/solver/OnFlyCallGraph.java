@@ -122,7 +122,9 @@ public class OnFlyCallGraph {
 
   public void updatedNode(VarNode vn) {
     Object r = vn.getVariable();
-    if (!(r instanceof Local)) return;
+    if (!(r instanceof Local)) {
+      return;
+    }
     final Local receiver = (Local) r;
     final Context context = vn.context();
 
@@ -130,15 +132,18 @@ public class OnFlyCallGraph {
     if (ofcgb.wantTypes(receiver)) {
       p2set.forall(
           new P2SetVisitor() {
+            @Override
             public final void visit(Node n) {
-              if (n instanceof AllocNode)
+              if (n instanceof AllocNode) {
                 ofcgb.addType(receiver, context, n.getType(), (AllocNode) n);
+              }
             }
           });
     }
     if (ofcgb.wantStringConstants(receiver)) {
       p2set.forall(
           new P2SetVisitor() {
+            @Override
             public final void visit(Node n) {
               if (n instanceof StringConstantNode) {
                 String constant = ((StringConstantNode) n).getString();

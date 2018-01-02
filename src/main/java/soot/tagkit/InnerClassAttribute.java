@@ -46,7 +46,9 @@ public class InnerClassAttribute implements Tag {
   }
 
   public String getClassSpecs() {
-    if (list == null) return "";
+    if (list == null) {
+      return "";
+    }
 
     StringBuffer sb = new StringBuffer();
     for (InnerClassTag ict : list) {
@@ -64,10 +66,12 @@ public class InnerClassAttribute implements Tag {
     return sb.toString();
   }
 
+  @Override
   public String getName() {
     return "InnerClassAttribute";
   }
 
+  @Override
   public byte[] getValue() throws AttributeValueException {
     return new byte[1];
   }
@@ -82,13 +86,14 @@ public class InnerClassAttribute implements Tag {
       for (InnerClassTag ict : this.list) {
         String inner = ict.getInnerClass();
         if (new_inner.equals(inner)) {
-          if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags)
+          if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags) {
             throw new RuntimeException(
                 "Error: trying to add an InnerClassTag twice with different access flags! ("
                     + ict.accessFlags
                     + " and "
                     + newt.accessFlags
                     + ")");
+          }
           if (ict.accessFlags == 0 && newt.accessFlags != 0) {
             // The Dalvik parser may find an InnerClass annotation without accessFlags
             // in the outer class
@@ -103,7 +108,9 @@ public class InnerClassAttribute implements Tag {
       }
     }
 
-    if (list == null) list = new ArrayList<InnerClassTag>();
+    if (list == null) {
+      list = new ArrayList<>();
+    }
     list.add(newt);
   }
 }

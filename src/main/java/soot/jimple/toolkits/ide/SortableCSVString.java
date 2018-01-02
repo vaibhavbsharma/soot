@@ -27,6 +27,7 @@ public class SortableCSVString implements Comparable<SortableCSVString> {
     position = pos;
   }
 
+  @Override
   public int compareTo(SortableCSVString anotherString) {
     // "@"+i+";
     int result;
@@ -35,8 +36,12 @@ public class SortableCSVString implements Comparable<SortableCSVString> {
 
     result = subString.compareTo(anotherSubString);
     if (result == 0) {
-      if (position < anotherString.position) return -1;
-      if (position > anotherString.position) return 1;
+      if (position < anotherString.position) {
+        return -1;
+      }
+      if (position > anotherString.position) {
+        return 1;
+      }
       return 0;
     } else {
       return result;

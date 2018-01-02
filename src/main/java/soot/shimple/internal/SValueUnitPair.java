@@ -35,10 +35,12 @@ public class SValueUnitPair extends ValueUnitPair implements SUnitBox {
     setUnitChanged(true);
   }
 
+  @Override
   public boolean isBranchTarget() {
     return false;
   }
 
+  @Override
   public void setUnit(Unit u) {
     super.setUnit(u);
     setUnitChanged(true);
@@ -47,11 +49,13 @@ public class SValueUnitPair extends ValueUnitPair implements SUnitBox {
   protected boolean unitChanged = false;
 
   /** @see SUnitBox#isUnitChanged() */
+  @Override
   public boolean isUnitChanged() {
     return unitChanged;
   }
 
   /** @see SUnitBox#setUnitChanged(boolean) */
+  @Override
   public void setUnitChanged(boolean unitChanged) {
     this.unitChanged = unitChanged;
   }

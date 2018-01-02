@@ -25,6 +25,11 @@
 
 package soot.jimple;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.ErroneousType;
 import soot.G;
@@ -104,11 +109,6 @@ import soot.jimple.internal.JimpleLocalBox;
 import soot.jimple.internal.RValueBox;
 import soot.jimple.internal.StmtBox;
 import soot.jimple.internal.VariableBox;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * The Jimple class contains all the constructors for the components of the Jimple grammar for the
@@ -192,7 +192,7 @@ public class Jimple {
   public static final String FALSE = "false";
 
   public static List<String> jimpleKeywordList() {
-    List<String> l = new LinkedList<String>();
+    List<String> l = new LinkedList<>();
     Collections.addAll(
         l,
         NEWARRAY,
@@ -271,8 +271,11 @@ public class Jimple {
   }
 
   public static Value cloneIfNecessary(Value val) {
-    if (val instanceof Immediate) return val;
-    else return (Value) val.clone();
+    if (val instanceof Immediate) {
+      return val;
+    } else {
+      return (Value) val.clone();
+    }
   }
 
   /** Constructs a XorExpr(Immediate, Immediate) grammar chunk. */

@@ -38,6 +38,10 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
@@ -61,10 +65,6 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.DavaFlowSet;
 import soot.dava.toolkits.base.AST.structuredAnalysis.ReachingCopies;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
 * TODO: shouldnt this be a transformation and hence under the transformation package???
@@ -125,11 +125,15 @@ public class CopyPropagation extends DepthFirstAdapter {
 
   private void setup() {
     // create the uD and dU chains
-    if (DEBUG) System.out.println("computing usesAnd Defs");
+    if (DEBUG) {
+      System.out.println("computing usesAnd Defs");
+    }
     useDefs = new ASTUsesAndDefs(AST);
     AST.apply(useDefs);
 
-    if (DEBUG) System.out.println("computing usesAnd Defs....done");
+    if (DEBUG) {
+      System.out.println("computing usesAnd Defs....done");
+    }
 
     // apply the reaching copies Structural flow Analysis
     reachingCopies = new ReachingCopies(AST);
@@ -142,6 +146,7 @@ public class CopyPropagation extends DepthFirstAdapter {
    * If any copy stmt was removed or any substitution made we might be able to
    * get better results by redoing the analysis
    */
+  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     if (ASTMODIFIED) {
       // need to rerun copy prop
@@ -156,6 +161,7 @@ public class CopyPropagation extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -283,7 +289,7 @@ public class CopyPropagation extends DepthFirstAdapter {
     }
     ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-    ArrayList<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
+    ArrayList<AugmentedStmt> newSequence = new ArrayList<>();
 
     for (AugmentedStmt as : parentNode.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -389,7 +395,9 @@ public class CopyPropagation extends DepthFirstAdapter {
         someCopyStmtModified = true;
       }
       List useBoxes = s.getUseBoxes();
-      if (DEBUG) System.out.println("Printing uses for stmt" + useBoxes);
+      if (DEBUG) {
+        System.out.println("Printing uses for stmt" + useBoxes);
+      }
 
       // TODO
       modifyUseBoxes(from, to, useBoxes);
@@ -418,7 +426,9 @@ public class CopyPropagation extends DepthFirstAdapter {
           ASTMODIFIED = true;
         }
       } else if (use instanceof ASTIfNode) {
-        if (DEBUG) System.out.println("Use is an instanceof if node");
+        if (DEBUG) {
+          System.out.println("Use is an instanceof if node");
+        }
 
         ASTIfNode temp = (ASTIfNode) use;
         ASTCondition cond = temp.get_Condition();
@@ -453,10 +463,12 @@ public class CopyPropagation extends DepthFirstAdapter {
         // condition
         ASTCondition cond = temp.get_Condition();
         modifyUses(from, to, cond);
-      } else
+      } else {
         throw new RuntimeException(
             "Encountered an unknown ASTNode in copyPropagation method replace");
-    } else
+      }
+    } else {
       throw new RuntimeException("Encountered an unknown use in copyPropagation method replace");
+    }
   }
 }

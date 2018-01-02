@@ -20,13 +20,13 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.UnitPrinter;
 import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
 import soot.jimple.ConditionExpr;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ASTIfElseNode extends ASTControlFlowNode {
   private List<Object> ifBody, elseBody;
@@ -64,7 +64,7 @@ public class ASTIfElseNode extends ASTControlFlowNode {
       SETNodeLabel newLabel, ASTCondition newCond, List<Object> newBody, List<Object> bodyTwo) {
     this.ifBody = newBody;
     this.elseBody = bodyTwo;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(newBody);
     subBodies.add(bodyTwo);
     set_Condition(newCond);
@@ -79,7 +79,7 @@ public class ASTIfElseNode extends ASTControlFlowNode {
     this.ifBody = ifBody;
     this.elseBody = elseBody;
 
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(ifBody);
     subBodies.add(elseBody);
   }
@@ -91,7 +91,7 @@ public class ASTIfElseNode extends ASTControlFlowNode {
   public void replaceElseBody(List<Object> elseBody) {
     this.elseBody = elseBody;
 
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(ifBody);
     subBodies.add(elseBody);
   }
@@ -108,10 +108,12 @@ public class ASTIfElseNode extends ASTControlFlowNode {
     return elseBody;
   }
 
+  @Override
   public Object clone() {
     return new ASTIfElseNode(get_Label(), get_Condition(), ifBody, elseBody);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -146,6 +148,7 @@ public class ASTIfElseNode extends ASTControlFlowNode {
     up.newline();
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -183,6 +186,7 @@ public class ASTIfElseNode extends ASTControlFlowNode {
     Part of Visitor Design Implementation for AST
     See: soot.dava.toolkits.base.AST.analysis For details
   */
+  @Override
   public void apply(Analysis a) {
     a.caseASTIfElseNode(this);
   }

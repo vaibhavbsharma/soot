@@ -1,16 +1,16 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.Tag;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.scalar.FlowSet;
-import soot.util.Chain;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.tagkit.Tag;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.scalar.FlowSet;
+import soot.util.Chain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -25,9 +25,9 @@ import java.util.Set;
 
 public class DfsForBackEdge {
 
-  private final Map<Object, Object> backEdges = new HashMap<Object, Object>();
-  private final Set<Object> gray = new HashSet<Object>();
-  private final Set<Object> black = new HashSet<Object>();
+  private final Map<Object, Object> backEdges = new HashMap<>();
+  private final Set<Object> gray = new HashSet<>();
+  private final Set<Object> black = new HashSet<>();
   private final DominatorsFinder domFinder;
 
   DfsForBackEdge(Chain chain, DirectedGraph peg) {

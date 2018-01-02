@@ -19,15 +19,15 @@
 
 package soot;
 
-import soot.javaToJimple.IInitialResolver;
-import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.options.Options;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.javaToJimple.IInitialResolver;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
 
 /** A class source for resolving from .class files through coffi. */
 public class CoffiClassSource extends ClassSource {
@@ -39,8 +39,9 @@ public class CoffiClassSource extends ClassSource {
 
   public CoffiClassSource(String className, FoundFile foundFile) {
     super(className);
-    if (foundFile == null)
+    if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");
+    }
     this.foundFile = foundFile;
     this.classFile = foundFile.inputStream();
     this.fileName = foundFile.getFile().getAbsolutePath();
@@ -49,18 +50,22 @@ public class CoffiClassSource extends ClassSource {
 
   public CoffiClassSource(String className, InputStream classFile, String fileName) {
     super(className);
-    if (classFile == null || fileName == null)
+    if (classFile == null || fileName == null) {
       throw new IllegalStateException(
           "Error: The class file input strean and file name must not be null.");
+    }
     this.classFile = classFile;
     this.fileName = fileName;
     this.zipFileName = null;
     this.foundFile = null;
   }
 
+  @Override
   public Dependencies resolve(SootClass sc) {
-    if (Options.v().verbose()) G.v().out.println("resolving [from .class]: " + className);
-    List<Type> references = new ArrayList<Type>();
+    if (Options.v().verbose()) {
+      G.v().out.println("resolving [from .class]: " + className);
+    }
+    List<Type> references = new ArrayList<>();
 
     try {
       soot.coffi.Util.v().resolveFromClassFile(sc, classFile, fileName, references);
@@ -76,7 +81,9 @@ public class CoffiClassSource extends ClassSource {
   }
 
   private void addSourceFileTag(soot.SootClass sc) {
-    if (fileName == null && zipFileName == null) return;
+    if (fileName == null && zipFileName == null) {
+      return;
+    }
 
     soot.tagkit.SourceFileTag tag = null;
     if (sc.hasTag("SourceFileTag")) {

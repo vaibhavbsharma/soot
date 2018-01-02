@@ -63,25 +63,30 @@ class Instruction_byte extends Instruction {
     super(c);
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool) + argsep + arg_b;
   }
 
+  @Override
   public int nextOffset(int curr) {
     return curr + 2;
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     arg_b = bc[index];
     return index + 1;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     bc[index++] = code;
     bc[index++] = arg_b;
     return index;
   }
 
+  @Override
   public String toString() {
     return super.toString() + "    " + arg_b;
   }

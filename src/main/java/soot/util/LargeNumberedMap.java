@@ -32,13 +32,17 @@ public final class LargeNumberedMap<K extends Numberable, V> {
   public LargeNumberedMap(ArrayNumberer<K> universe) {
     this.universe = universe;
     int newsize = universe.size();
-    if (newsize < 8) newsize = 8;
+    if (newsize < 8) {
+      newsize = 8;
+    }
     values = new Object[newsize];
   }
 
   public boolean put(Numberable key, V value) {
     int number = key.getNumber();
-    if (number == 0) throw new RuntimeException("oops, forgot to initialize");
+    if (number == 0) {
+      throw new RuntimeException("oops, forgot to initialize");
+    }
     if (number >= values.length) {
       Object[] oldValues = values;
       values = new Object[universe.size() * 2 + 5];
@@ -52,7 +56,9 @@ public final class LargeNumberedMap<K extends Numberable, V> {
   @SuppressWarnings("unchecked")
   public V get(Numberable key) {
     int i = key.getNumber();
-    if (i >= values.length) return null;
+    if (i >= values.length) {
+      return null;
+    }
     return (V) values[i];
   }
 
@@ -61,19 +67,26 @@ public final class LargeNumberedMap<K extends Numberable, V> {
       int cur = 0;
 
       private void advance() {
-        while (cur < values.length && values[cur] == null) cur++;
+        while (cur < values.length && values[cur] == null) {
+          cur++;
+        }
       }
 
+      @Override
       public boolean hasNext() {
         advance();
         return cur < values.length;
       }
 
+      @Override
       public K next() {
-        if (!hasNext()) throw new NoSuchElementException();
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         return universe.get(cur++);
       }
 
+      @Override
       public void remove() {
         throw new UnsupportedOperationException();
       }

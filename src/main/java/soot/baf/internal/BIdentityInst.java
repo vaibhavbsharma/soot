@@ -25,6 +25,10 @@
 
 package soot.baf.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
@@ -33,52 +37,58 @@ import soot.baf.IdentityInst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class BIdentityInst extends AbstractInst implements IdentityInst {
   ValueBox leftBox;
   ValueBox rightBox;
 
   List defBoxes;
 
+  @Override
   public Value getLeftOp() {
     return leftBox.getValue();
   }
 
+  @Override
   public int getInCount() {
     return 0;
   }
 
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public Value getRightOp() {
     return rightBox.getValue();
   }
 
+  @Override
   public ValueBox getLeftOpBox() {
     return leftBox;
   }
 
+  @Override
   public ValueBox getRightOpBox() {
     return rightBox;
   }
 
+  @Override
   public List getDefBoxes() {
     return defBoxes;
   }
 
+  @Override
   public List getUseBoxes() {
     List list = new ArrayList();
 
@@ -100,32 +110,39 @@ public class BIdentityInst extends AbstractInst implements IdentityInst {
     defBoxes = Collections.singletonList(leftBox);
   }
 
+  @Override
   public Object clone() {
     return new BIdentityInst(getLeftOp(), getRightOp());
   }
 
+  @Override
   public String toString() {
     return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     leftBox.toString(up);
     up.literal(" := ");
     rightBox.toString(up);
   }
 
+  @Override
   public final String getName() {
     return ":=";
   }
 
+  @Override
   public void setLeftOp(Value local) {
     leftBox.setValue(local);
   }
 
+  @Override
   public void setRightOp(Value identityRef) {
     rightBox.setValue(identityRef);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIdentityInst(this);
   }

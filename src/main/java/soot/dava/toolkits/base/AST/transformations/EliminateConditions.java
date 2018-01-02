@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.AST.ASTCondition;
@@ -40,10 +44,6 @@ import soot.dava.internal.javaRep.DIntConstant;
 import soot.dava.internal.javaRep.DNotExpr;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /*
  * if (true)   ---> remove conditional copy ifbody to parent
@@ -88,6 +88,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     this.AST = AST;
   }
 
+  @Override
   public void normalRetrieving(ASTNode node) {
     modified = false;
     if (node instanceof ASTSwitchNode) {
@@ -114,7 +115,9 @@ public class EliminateConditions extends DepthFirstAdapter {
           if (returned != null && canChange(returned, temp)) {
             break;
           } else {
-            if (DEBUG) System.out.println("returned is null" + temp.getClass());
+            if (DEBUG) {
+              System.out.println("returned is null" + temp.getClass());
+            }
             bodyContainingNode = null;
           }
         }
@@ -122,7 +125,9 @@ public class EliminateConditions extends DepthFirstAdapter {
       } // end while going through nodes in subBody
 
       boolean changed = change(returned, temp);
-      if (changed) modified = true;
+      if (changed) {
+        modified = true;
+      }
     } // end of going over subBodies
 
     if (modified) {
@@ -133,10 +138,15 @@ public class EliminateConditions extends DepthFirstAdapter {
 
   public Boolean eliminate(ASTNode node) {
     ASTCondition cond = null;
-    if (node instanceof ASTControlFlowNode) cond = ((ASTControlFlowNode) node).get_Condition();
-    else return null;
+    if (node instanceof ASTControlFlowNode) {
+      cond = ((ASTControlFlowNode) node).get_Condition();
+    } else {
+      return null;
+    }
 
-    if (cond == null || !(cond instanceof ASTUnaryCondition)) return null;
+    if (cond == null || !(cond instanceof ASTUnaryCondition)) {
+      return null;
+    }
 
     ASTUnaryCondition unary = (ASTUnaryCondition) cond;
     Value unaryValue = unary.getValue();
@@ -162,7 +172,9 @@ public class EliminateConditions extends DepthFirstAdapter {
     AST.apply(finder);
 
     Object temp = finder.getParentOf(node);
-    if (temp == null) return null;
+    if (temp == null) {
+      return null;
+    }
 
     ASTNode parent = (ASTNode) temp;
     List<Object> subBodies = parent.get_SubBodies();
@@ -189,30 +201,45 @@ public class EliminateConditions extends DepthFirstAdapter {
    */
   public Boolean isBooleanConstant(Value internal) {
 
-    if (!(internal instanceof DIntConstant)) return null;
+    if (!(internal instanceof DIntConstant)) {
+      return null;
+    }
 
-    if (DEBUG) System.out.println("Found Constant");
+    if (DEBUG) {
+      System.out.println("Found Constant");
+    }
 
     DIntConstant intConst = (DIntConstant) internal;
 
-    if (!(intConst.type instanceof BooleanType)) return null;
+    if (!(intConst.type instanceof BooleanType)) {
+      return null;
+    }
 
     // either true or false
-    if (DEBUG) System.out.println("Found Boolean Constant");
+    if (DEBUG) {
+      System.out.println("Found Boolean Constant");
+    }
 
     if (intConst.value == 1) {
       return new Boolean(true);
     } else if (intConst.value == 0) {
       return new Boolean(false);
-    } else throw new RuntimeException("BooleanType found with value different than 0 or 1");
+    } else {
+      throw new RuntimeException("BooleanType found with value different than 0 or 1");
+    }
   }
 
   public Boolean eliminateForTry(ASTNode node) {
     ASTCondition cond = null;
-    if (node instanceof ASTControlFlowNode) cond = ((ASTControlFlowNode) node).get_Condition();
-    else return null;
+    if (node instanceof ASTControlFlowNode) {
+      cond = ((ASTControlFlowNode) node).get_Condition();
+    } else {
+      return null;
+    }
 
-    if (cond == null || !(cond instanceof ASTUnaryCondition)) return null;
+    if (cond == null || !(cond instanceof ASTUnaryCondition)) {
+      return null;
+    }
 
     ASTUnaryCondition unary = (ASTUnaryCondition) cond;
     Value unaryValue = unary.getValue();
@@ -238,10 +265,13 @@ public class EliminateConditions extends DepthFirstAdapter {
     AST.apply(finder);
 
     Object temp = finder.getParentOf(node);
-    if (temp == null) return null;
+    if (temp == null) {
+      return null;
+    }
 
-    if (!(temp instanceof ASTTryNode))
+    if (!(temp instanceof ASTTryNode)) {
       throw new RuntimeException("eliminateTry called when parent was not a try node");
+    }
 
     ASTTryNode parent = (ASTTryNode) temp;
 
@@ -270,6 +300,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     return null;
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     modified = false;
     inASTTryNode(node);
@@ -284,14 +315,19 @@ public class EliminateConditions extends DepthFirstAdapter {
       if (temp instanceof ASTControlFlowNode) {
         bodyContainingNode = null;
         returned = eliminateForTry(temp);
-        if (returned != null && canChange(returned, temp)) break;
-        else bodyContainingNode = null;
+        if (returned != null && canChange(returned, temp)) {
+          break;
+        } else {
+          bodyContainingNode = null;
+        }
       }
       temp.apply(this);
     } // end while
 
     boolean changed = change(returned, temp);
-    if (changed) modified = true;
+    if (changed) {
+      modified = true;
+    }
 
     // get catch list and apply on the following
     // a, type of exception caught ......... NO NEED
@@ -315,13 +351,18 @@ public class EliminateConditions extends DepthFirstAdapter {
         if (temp instanceof ASTControlFlowNode) {
           bodyContainingNode = null;
           returned = eliminateForTry(temp);
-          if (returned != null && canChange(returned, temp)) break;
-          else bodyContainingNode = null;
+          if (returned != null && canChange(returned, temp)) {
+            break;
+          } else {
+            bodyContainingNode = null;
+          }
         }
         temp.apply(this);
       }
       changed = change(returned, temp);
-      if (changed) modified = true;
+      if (changed) {
+        modified = true;
+      }
     }
     outASTTryNode(node);
     if (modified) {
@@ -338,7 +379,9 @@ public class EliminateConditions extends DepthFirstAdapter {
     if (bodyContainingNode != null && returned != null && temp != null) {
 
       int index = bodyContainingNode.indexOf(temp);
-      if (DEBUG) System.out.println("in change");
+      if (DEBUG) {
+        System.out.println("in change");
+      }
       if (temp instanceof ASTIfNode) {
         bodyContainingNode.remove(temp);
 
@@ -359,7 +402,9 @@ public class EliminateConditions extends DepthFirstAdapter {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
           }
         }
-        if (DEBUG) System.out.println("Removed if" + temp);
+        if (DEBUG) {
+          System.out.println("Removed if" + temp);
+        }
         return true;
       } else if (temp instanceof ASTIfElseNode) {
         bodyContainingNode.remove(temp);
@@ -436,13 +481,18 @@ public class EliminateConditions extends DepthFirstAdapter {
           if (temp instanceof ASTControlFlowNode) {
             bodyContainingNode = null;
             returned = eliminate(temp);
-            if (returned != null && canChange(returned, temp)) break;
-            else bodyContainingNode = null;
+            if (returned != null && canChange(returned, temp)) {
+              break;
+            } else {
+              bodyContainingNode = null;
+            }
           }
           temp.apply(this);
         }
         boolean changed = change(returned, temp);
-        if (changed) modified = true;
+        if (changed) {
+          modified = true;
+        }
       } // end while changed
     }
   }

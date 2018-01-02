@@ -25,20 +25,19 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import soot.G;
-
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import soot.G;
 
 class StronglyConnectedComponents {
   List<TypeVariable> variables;
   Set<TypeVariable> black;
   List<TypeVariable> finished;
 
-  List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
+  List<List<TypeVariable>> forest = new LinkedList<>();
   List<TypeVariable> current_tree;
 
   private static final boolean DEBUG = false;
@@ -50,8 +49,8 @@ class StronglyConnectedComponents {
   private StronglyConnectedComponents(List<TypeVariable> typeVariableList) throws TypeException {
     variables = typeVariableList;
 
-    black = new TreeSet<TypeVariable>();
-    finished = new LinkedList<TypeVariable>();
+    black = new TreeSet<>();
+    finished = new LinkedList<>();
 
     for (TypeVariable var : variables) {
       if (!black.contains(var)) {
@@ -60,28 +59,25 @@ class StronglyConnectedComponents {
       }
     }
 
-    black = new TreeSet<TypeVariable>();
+    black = new TreeSet<>();
 
     for (TypeVariable var : finished) {
       if (!black.contains(var)) {
-        current_tree = new LinkedList<TypeVariable>();
+        current_tree = new LinkedList<>();
         forest.add(current_tree);
         black.add(var);
         dfsgt_visit(var);
       }
     }
 
-    for (Iterator<List<TypeVariable>> i = forest.iterator(); i.hasNext(); ) {
-      List<TypeVariable> list = i.next();
+    for (List<TypeVariable> list : forest) {
       TypeVariable previous = null;
       StringBuffer s = null;
       if (DEBUG) {
         s = new StringBuffer("scc:\n");
       }
 
-      for (Iterator<TypeVariable> j = list.iterator(); j.hasNext(); ) {
-        TypeVariable current = j.next();
-
+      for (TypeVariable current : list) {
         if (DEBUG) {
           s.append(" " + current + "\n");
         }

@@ -26,14 +26,14 @@
 
 package soot.toolkits.scalar;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 /** Reference implementation for a BoundedFlowSet. Items are stored in an Array. */
 public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
@@ -41,7 +41,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   BitSet bits;
 
   public ArrayPackedSet(FlowUniverse<T> universe) {
-    this(new ObjectIntMapper<T>(universe));
+    this(new ObjectIntMapper<>(universe));
   }
 
   ArrayPackedSet(ObjectIntMapper<T> map) {
@@ -55,12 +55,12 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
   @Override
   public ArrayPackedSet<T> clone() {
-    return new ArrayPackedSet<T>(map, (BitSet) bits.clone());
+    return new ArrayPackedSet<>(map, (BitSet) bits.clone());
   }
 
   @Override
   public FlowSet<T> emptySet() {
-    return new ArrayPackedSet<T>(map);
+    return new ArrayPackedSet<>(map);
   }
 
   @Override
@@ -89,7 +89,9 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
   /** Returns true if flowSet is the same type of flow set as this. */
   private boolean sameType(Object flowSet) {
-    if (flowSet instanceof ArrayPackedSet) return ((ArrayPackedSet<?>) flowSet).map == map;
+    if (flowSet instanceof ArrayPackedSet) {
+      return ((ArrayPackedSet<?>) flowSet).map == map;
+    }
     return false;
   }
 
@@ -103,7 +105,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
         return singletonList(map.getObject((base - 1) + bits.length()));
 
       default:
-        List<T> elements = new ArrayList<T>(len);
+        List<T> elements = new ArrayList<>(len);
 
         int i = bits.nextSetBit(0);
         do {
@@ -119,11 +121,15 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   }
 
   public List<T> toList(int lowInclusive, int highInclusive) {
-    if (lowInclusive > highInclusive) return emptyList();
+    if (lowInclusive > highInclusive) {
+      return emptyList();
+    }
 
     int highExclusive = highInclusive + 1;
 
-    if (lowInclusive < 0) throw new IllegalArgumentException();
+    if (lowInclusive < 0) {
+      throw new IllegalArgumentException();
+    }
 
     return toList(bits.get(lowInclusive, highExclusive), lowInclusive);
   }
@@ -156,7 +162,9 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
   @Override
   public boolean isSubSet(FlowSet<T> other) {
-    if (other == this) return true;
+    if (other == this) {
+      return true;
+    }
     if (sameType(other)) {
       ArrayPackedSet<T> o = (ArrayPackedSet<T>) other;
 
@@ -218,16 +226,22 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   public boolean equals(Object otherFlow) {
     if (sameType(otherFlow)) {
       return bits.equals(((ArrayPackedSet<?>) otherFlow).bits);
-    } else return super.equals(otherFlow);
+    } else {
+      return super.equals(otherFlow);
+    }
   }
 
   @Override
   public void copy(FlowSet<T> destFlow) {
-    if (this == destFlow) return;
+    if (this == destFlow) {
+      return;
+    }
     if (sameType(destFlow)) {
       ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
       copyBitSet(dest);
-    } else super.copy(destFlow);
+    } else {
+      super.copy(destFlow);
+    }
   }
 
   @Override
@@ -243,7 +257,9 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
       @Override
       public T next() {
-        if (next < 0) throw new NoSuchElementException();
+        if (next < 0) {
+          throw new NoSuchElementException();
+        }
         curr = next;
         next = bits.nextSetBit(curr + 1);
         return map.getObject(curr);
@@ -251,7 +267,9 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
       @Override
       public void remove() {
-        if (curr < 0) throw new IllegalStateException();
+        if (curr < 0) {
+          throw new IllegalStateException();
+        }
         bits.clear(curr);
         curr = -1;
       }

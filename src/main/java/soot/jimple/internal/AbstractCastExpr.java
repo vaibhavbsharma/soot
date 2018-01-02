@@ -25,6 +25,9 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.RefType;
 import soot.Type;
@@ -41,9 +44,6 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SuppressWarnings("serial")
 public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
   final ValueBox opBox;
@@ -53,6 +53,7 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
     this(Jimple.v().newImmediateBox(op), type);
   }
 
+  @Override
   public abstract Object clone();
 
   protected AbstractCastExpr(ValueBox opBox, Type type) {
@@ -60,6 +61,7 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
     this.type = type;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractCastExpr) {
       AbstractCastExpr ace = (AbstractCastExpr) o;
@@ -69,21 +71,28 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode() * 101 + type.hashCode() + 17;
   }
 
+  @Override
   public String toString() {
     return "(" + type.toString() + ") " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("(");
     up.type(type);
     up.literal(") ");
-    if (PrecedenceTest.needsBrackets(opBox, this)) up.literal("(");
+    if (PrecedenceTest.needsBrackets(opBox, this)) {
+      up.literal("(");
+    }
     opBox.toString(up);
-    if (PrecedenceTest.needsBrackets(opBox, this)) up.literal(")");
+    if (PrecedenceTest.needsBrackets(opBox, this)) {
+      up.literal(")");
+    }
   }
 
   @Override
@@ -103,7 +112,7 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     list.addAll(opBox.getValue().getUseBoxes());
     list.add(opBox);
@@ -111,22 +120,27 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
     return list;
   }
 
+  @Override
   public Type getCastType() {
     return type;
   }
 
+  @Override
   public void setCastType(Type castType) {
     this.type = castType;
   }
 
+  @Override
   public Type getType() {
     return type;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseCastExpr(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     final Type toType = getCastType();
     final Type fromType = getOp().getType();
@@ -134,11 +148,14 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
     ((ConvertToBaf) getOp()).convertToBaf(context, out);
 
     Unit u;
-    if (toType instanceof ArrayType || toType instanceof RefType)
+    if (toType instanceof ArrayType || toType instanceof RefType) {
       u = Baf.v().newInstanceCastInst(toType);
-    else {
-      if (!fromType.equals(toType)) u = Baf.v().newPrimitiveCastInst(fromType, toType);
-      else u = Baf.v().newNopInst();
+    } else {
+      if (!fromType.equals(toType)) {
+        u = Baf.v().newPrimitiveCastInst(fromType, toType);
+      } else {
+        u = Baf.v().newNopInst();
+      }
     }
 
     out.add(u);

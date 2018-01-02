@@ -30,22 +30,26 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
     super(body);
   }
 
+  @Override
   public void type(Type t) {
     handleIndent();
     String s = t == null ? "<null>" : t.toQuotedString();
     output.append(s);
   }
 
+  @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
     output.append(m.getSignature());
   }
 
+  @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     output.append(f.getSignature());
   }
 
+  @Override
   public void identityRef(IdentityRef r) {
     handleIndent();
     if (r instanceof ThisRef) {
@@ -57,9 +61,12 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
       type(r.getType());
     } else if (r instanceof CaughtExceptionRef) {
       literal("@caughtexception");
-    } else throw new RuntimeException();
+    } else {
+      throw new RuntimeException();
+    }
   }
 
+  @Override
   public void literal(String s) {
     handleIndent();
     output.append(s);

@@ -28,6 +28,12 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.Local;
 import soot.Type;
@@ -45,12 +51,6 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.util.DeterministicHashMap;
 import soot.util.IterableSet;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /*
  * ALWAYS REMEMBER THAT THE FIRST NODE IN THE BODY OF A METHODNODE HAS TO BE A STATEMENT
@@ -70,7 +70,7 @@ public class ASTMethodNode extends ASTNode {
    *
    * Any local in the dontPrintLocals list is not printed in the top declarations
    */
-  private List<Local> dontPrintLocals = new ArrayList<Local>();
+  private List<Local> dontPrintLocals = new ArrayList<>();
 
   public ASTStatementSequenceNode getDeclarations() {
     return declarations;
@@ -89,8 +89,9 @@ public class ASTMethodNode extends ASTNode {
   }
 
   public void storeLocals(Body OrigBody) {
-    if ((OrigBody instanceof DavaBody) == false)
+    if ((OrigBody instanceof DavaBody) == false) {
       throw new RuntimeException("Only DavaBodies should invoke this method");
+    }
 
     davaBody = (DavaBody) OrigBody;
     Map<Type, List<Local>> typeToLocals =
@@ -106,7 +107,9 @@ public class ASTMethodNode extends ASTNode {
     while (localIt.hasNext()) {
       Local local = (Local) localIt.next();
 
-      if (params.contains(local) || thisLocals.contains(local)) continue;
+      if (params.contains(local) || thisLocals.contains(local)) {
+        continue;
+      }
 
       List<Local> localList;
 
@@ -115,9 +118,10 @@ public class ASTMethodNode extends ASTNode {
 
       typeName = t.toString();
 
-      if (typeToLocals.containsKey(t)) localList = typeToLocals.get(t);
-      else {
-        localList = new ArrayList<Local>();
+      if (typeToLocals.containsKey(t)) {
+        localList = typeToLocals.get(t);
+      } else {
+        localList = new ArrayList<>();
         typeToLocals.put(t, localList);
       }
 
@@ -126,7 +130,7 @@ public class ASTMethodNode extends ASTNode {
 
     // create a StatementSequenceNode with all the declarations
 
-    List<AugmentedStmt> statementSequence = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> statementSequence = new ArrayList<>();
 
     Iterator<Type> typeIt = typeToLocals.keySet().iterator();
 
@@ -148,7 +152,7 @@ public class ASTMethodNode extends ASTNode {
     declarations = new ASTStatementSequenceNode(statementSequence);
 
     body.add(0, declarations);
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(body);
   }
 
@@ -169,8 +173,9 @@ public class ASTMethodNode extends ASTNode {
     for (AugmentedStmt as : declarations.getStatements()) { // going through each stmt
       Stmt s = as.get_Stmt();
 
-      if (!(s instanceof DVariableDeclarationStmt))
+      if (!(s instanceof DVariableDeclarationStmt)) {
         continue; // shouldnt happen since this node only contains declarations
+      }
 
       DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt) s;
 
@@ -198,8 +203,9 @@ public class ASTMethodNode extends ASTNode {
     for (AugmentedStmt as : declarations.getStatements()) { // going through each stmt
       s = as.get_Stmt();
 
-      if (!(s instanceof DVariableDeclarationStmt))
+      if (!(s instanceof DVariableDeclarationStmt)) {
         continue; // shouldnt happen since this node only contains declarations
+      }
 
       DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt) s;
 
@@ -226,15 +232,19 @@ public class ASTMethodNode extends ASTNode {
     // the removal of a local might have made some declaration empty
     // remove such a declaraion
 
-    List<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> newSequence = new ArrayList<>();
     for (AugmentedStmt as : declarations.getStatements()) {
       s = as.get_Stmt();
 
-      if (!(s instanceof DVariableDeclarationStmt)) continue;
+      if (!(s instanceof DVariableDeclarationStmt)) {
+        continue;
+      }
 
       DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt) s;
 
-      if (varStmt.getDeclarations().size() != 0) newSequence.add(as);
+      if (varStmt.getDeclarations().size() != 0) {
+        newSequence.add(as);
+      }
     }
     declarations.setStatements(newSequence);
   }
@@ -245,10 +255,11 @@ public class ASTMethodNode extends ASTNode {
   */
   public void replaceBody(List<Object> body) {
     this.body = body;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(body);
   }
 
+  @Override
   public Object clone() {
     ASTMethodNode toReturn = new ASTMethodNode(body);
     toReturn.setDeclarations((ASTStatementSequenceNode) declarations.clone());
@@ -264,13 +275,16 @@ public class ASTMethodNode extends ASTNode {
     dontPrintLocals.add(toAdd);
   }
 
+  @Override
   public void perform_Analysis(ASTAnalysis a) {
     perform_AnalysisOnSubBodies(a);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    if (!(up instanceof DavaUnitPrinter))
+    if (!(up instanceof DavaUnitPrinter)) {
       throw new RuntimeException("Only DavaUnitPrinter should be used to print DavaBody");
+    }
 
     DavaUnitPrinter dup = (DavaUnitPrinter) up;
     /*
@@ -285,13 +299,16 @@ public class ASTMethodNode extends ASTNode {
             .getMethod()
             .getDeclaringClass()
             .getName()
-            .equals(constructorExpr.getMethodRef().declaringClass().toString()))
+            .equals(constructorExpr.getMethodRef().declaringClass().toString())) {
           dup.printString("        this(");
-        else {
+        } else {
           // only invoke super if its not the default call since the default is
           // called automatically
-          if (constructorExpr.getArgCount() > 0) dup.printString("        super(");
-          else printCloseBrace = false;
+          if (constructorExpr.getArgCount() > 0) {
+            dup.printString("        super(");
+          } else {
+            printCloseBrace = false;
+          }
         }
         Iterator ait = constructorExpr.getArgs().iterator();
         while (ait.hasNext()) {
@@ -313,10 +330,14 @@ public class ASTMethodNode extends ASTNode {
             dup.printString(arg.toString());
           }
 
-          if (ait.hasNext()) dup.printString(", ");
+          if (ait.hasNext()) {
+            dup.printString(", ");
+          }
         }
 
-        if (printCloseBrace) dup.printString(");\n");
+        if (printCloseBrace) {
+          dup.printString(");\n");
+        }
       }
 
       // print out the remaining body
@@ -362,19 +383,25 @@ public class ASTMethodNode extends ASTNode {
           // shouldnt print this declaration stmt
           continue;
         }
-        if (localDeclarations.size() == 0) continue;
+        if (localDeclarations.size() == 0) {
+          continue;
+        }
 
-        if (!(up instanceof DavaUnitPrinter))
+        if (!(up instanceof DavaUnitPrinter)) {
           throw new RuntimeException("DavaBody should always be printed using the DavaUnitPrinter");
+        }
 
         DavaUnitPrinter dup = (DavaUnitPrinter) up;
         dup.startUnit(u);
         String type = declStmt.getType().toString();
 
-        if (type.equals("null_type")) dup.printString("Object");
-        else {
+        if (type.equals("null_type")) {
+          dup.printString("Object");
+        } else {
           IterableSet importSet = davaBody.getImportList();
-          if (!importSet.contains(type)) davaBody.addToImportList(type);
+          if (!importSet.contains(type)) {
+            davaBody.addToImportList(type);
+          }
 
           type =
               RemoveFullyQualifiedName.getReducedName(
@@ -388,9 +415,13 @@ public class ASTMethodNode extends ASTNode {
         Iterator decIt = localDeclarations.iterator();
         while (decIt.hasNext()) {
           Local tempDec = (Local) decIt.next();
-          if (dontPrintLocals.contains(tempDec)) continue;
+          if (dontPrintLocals.contains(tempDec)) {
+            continue;
+          }
 
-          if (number != 0) dup.printString(", ");
+          if (number != 0) {
+            dup.printString(", ");
+          }
           number++;
           dup.printString(tempDec.getName());
         }
@@ -429,6 +460,7 @@ public class ASTMethodNode extends ASTNode {
     }
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     /*
@@ -442,13 +474,17 @@ public class ASTMethodNode extends ASTNode {
             .getMethod()
             .getDeclaringClass()
             .getName()
-            .equals(constructorExpr.getMethodRef().declaringClass().toString()))
+            .equals(constructorExpr.getMethodRef().declaringClass().toString())) {
           b.append("        this(");
-        else b.append("        super(");
+        } else {
+          b.append("        super(");
+        }
 
         boolean isFirst = true;
         for (Value val : constructorExpr.getArgs()) {
-          if (!isFirst) b.append(", ");
+          if (!isFirst) {
+            b.append(", ");
+          }
           b.append(val.toString());
           isFirst = false;
         }
@@ -467,6 +503,7 @@ public class ASTMethodNode extends ASTNode {
   Part of Visitor Design Implementation for AST
   See: soot.dava.toolkits.base.AST.analysis For details
   */
+  @Override
   public void apply(Analysis a) {
     a.caseASTMethodNode(this);
   }

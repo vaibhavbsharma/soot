@@ -25,6 +25,9 @@
 
 package soot.jimple.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.Local;
 import soot.Scene;
 import soot.Type;
@@ -38,9 +41,6 @@ import soot.jimple.JimpleValueSwitch;
 import soot.util.ArrayNumberer;
 import soot.util.Switch;
 
-import java.util.Collections;
-import java.util.List;
-
 public class JimpleLocal implements Local, ConvertToBaf {
   protected String name;
   Type type;
@@ -50,7 +50,9 @@ public class JimpleLocal implements Local, ConvertToBaf {
     setName(name);
     setType(type);
     ArrayNumberer<Local> numberer = Scene.v().getLocalNumberer();
-    if (numberer != null) numberer.add(this);
+    if (numberer != null) {
+      numberer.add(this);
+    }
   }
 
   /** Returns true if the given object is structurally equal to this one. */

@@ -83,30 +83,39 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
     ASTCondition returned;
     do {
-      if (DEBUG) System.out.println("Invoking simplify");
+      if (DEBUG) {
+        System.out.println("Invoking simplify");
+      }
       changed = false;
       ASTCondition cond = node.get_Condition();
       returned = simplifyTheCondition(cond);
-      if (returned != null) node.set_Condition(returned);
+      if (returned != null) {
+        node.set_Condition(returned);
+      }
     } while (changed);
   }
 
+  @Override
   public void outASTIfNode(ASTIfNode node) {
     fixedPoint(node);
   }
 
+  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     fixedPoint(node);
   }
 
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     fixedPoint(node);
   }
 
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     fixedPoint(node);
   }
 
+  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     fixedPoint(node);
   }
@@ -128,8 +137,11 @@ public class SimplifyConditions extends DepthFirstAdapter {
       //    ! (  x==y &&  a<b )
       left.flip();
       right.flip();
-      if (aggCond instanceof ASTAndCondition) aggCond = new ASTOrCondition(left, right);
-      else aggCond = new ASTAndCondition(left, right);
+      if (aggCond instanceof ASTAndCondition) {
+        aggCond = new ASTOrCondition(left, right);
+      } else {
+        aggCond = new ASTAndCondition(left, right);
+      }
 
       return aggCond;
     }
@@ -144,11 +156,15 @@ public class SimplifyConditions extends DepthFirstAdapter {
       right.flip();
 
       ASTAggregatedCondition newCond;
-      if (aggCond instanceof ASTAndCondition) newCond = new ASTOrCondition(left, right);
-      else newCond = new ASTAndCondition(left, right);
+      if (aggCond instanceof ASTAndCondition) {
+        newCond = new ASTOrCondition(left, right);
+      } else {
+        newCond = new ASTAndCondition(left, right);
+      }
 
-      if (aggCond.isNotted()) return newCond;
-      else {
+      if (aggCond.isNotted()) {
+        return newCond;
+      } else {
         newCond.flip();
         return newCond;
       }
@@ -169,11 +185,13 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
     Boolean leftBool = null;
     Boolean rightBool = null;
-    if (left instanceof ASTUnaryCondition)
+    if (left instanceof ASTUnaryCondition) {
       leftBool = isBooleanConstant(((ASTUnaryCondition) left).getValue());
+    }
 
-    if (right instanceof ASTUnaryCondition)
+    if (right instanceof ASTUnaryCondition) {
       rightBool = isBooleanConstant(((ASTUnaryCondition) right).getValue());
+    }
 
     /*
      *  a && b NOCHANGE    DONE
@@ -291,7 +309,9 @@ public class SimplifyConditions extends DepthFirstAdapter {
           return left;
         }
       }
-    } else throw new RuntimeException("Found unknown aggregated condition");
+    } else {
+      throw new RuntimeException("Found unknown aggregated condition");
+    }
 
     return null;
   }
@@ -303,22 +323,32 @@ public class SimplifyConditions extends DepthFirstAdapter {
    */
   public Boolean isBooleanConstant(Value internal) {
 
-    if (!(internal instanceof DIntConstant)) return null;
+    if (!(internal instanceof DIntConstant)) {
+      return null;
+    }
 
-    if (DEBUG) System.out.println("Found Constant");
+    if (DEBUG) {
+      System.out.println("Found Constant");
+    }
 
     DIntConstant intConst = (DIntConstant) internal;
 
-    if (!(intConst.type instanceof BooleanType)) return null;
+    if (!(intConst.type instanceof BooleanType)) {
+      return null;
+    }
 
     // either true or false
-    if (DEBUG) System.out.println("Found Boolean Constant");
+    if (DEBUG) {
+      System.out.println("Found Boolean Constant");
+    }
 
     if (intConst.value == 1) {
       return new Boolean(true);
     } else if (intConst.value == 0) {
       return new Boolean(false);
-    } else throw new RuntimeException("BooleanType found with value different than 0 or 1");
+    } else {
+      throw new RuntimeException("BooleanType found with value different than 0 or 1");
+    }
   }
 
   /*
@@ -364,7 +394,9 @@ public class SimplifyConditions extends DepthFirstAdapter {
        */
       Value unaryVal = unary.getValue();
       if (unaryVal instanceof DNotExpr) {
-        if (DEBUG) System.out.println("Found NotExpr in unary COndition" + unaryVal);
+        if (DEBUG) {
+          System.out.println("Found NotExpr in unary COndition" + unaryVal);
+        }
 
         DNotExpr notted = (DNotExpr) unaryVal;
         Value internal = notted.getOp();
@@ -375,17 +407,25 @@ public class SimplifyConditions extends DepthFirstAdapter {
           // convert !true to false
           if (isIt.booleanValue()) {
             // true
-            if (DEBUG) System.out.println("CONVERTED !true to false");
+            if (DEBUG) {
+              System.out.println("CONVERTED !true to false");
+            }
             changed = true;
             return new ASTUnaryCondition(DIntConstant.v(0, BooleanType.v()));
           } else if (!isIt.booleanValue()) {
             // false
-            if (DEBUG) System.out.println("CONVERTED !false to true");
+            if (DEBUG) {
+              System.out.println("CONVERTED !false to true");
+            }
             changed = true;
             return new ASTUnaryCondition(DIntConstant.v(1, BooleanType.v()));
-          } else throw new RuntimeException("BooleanType found with value different than 0 or 1");
+          } else {
+            throw new RuntimeException("BooleanType found with value different than 0 or 1");
+          }
         } else {
-          if (DEBUG) System.out.println("Not boolean type");
+          if (DEBUG) {
+            System.out.println("Not boolean type");
+          }
         }
       }
       return unary;
@@ -395,8 +435,12 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
       // returns null if no change
       ASTUnaryCondition temp = evaluateBinaryCondition(expr);
-      if (DEBUG) System.out.println("changed binary condition " + cond + " to" + temp);
-      if (temp != null) changed = true;
+      if (DEBUG) {
+        System.out.println("changed binary condition " + cond + " to" + temp);
+      }
+      if (temp != null) {
+        changed = true;
+      }
       return temp;
     } else {
       throw new RuntimeException(
@@ -410,22 +454,34 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
     int op = -1;
     if (symbol.indexOf("==") > -1) {
-      if (DEBUG) System.out.println("==");
+      if (DEBUG) {
+        System.out.println("==");
+      }
       op = 1;
     } else if (symbol.indexOf(">=") > -1) {
-      if (DEBUG) System.out.println(">=");
+      if (DEBUG) {
+        System.out.println(">=");
+      }
       op = 2;
     } else if (symbol.indexOf('>') > -1) {
-      if (DEBUG) System.out.println(">");
+      if (DEBUG) {
+        System.out.println(">");
+      }
       op = 3;
     } else if (symbol.indexOf("<=") > -1) {
-      if (DEBUG) System.out.println("<=");
+      if (DEBUG) {
+        System.out.println("<=");
+      }
       op = 4;
     } else if (symbol.indexOf('<') > -1) {
-      if (DEBUG) System.out.println("<");
+      if (DEBUG) {
+        System.out.println("<");
+      }
       op = 5;
     } else if (symbol.indexOf("!=") > -1) {
-      if (DEBUG) System.out.println("!=");
+      if (DEBUG) {
+        System.out.println("!=");
+      }
       op = 6;
     }
 
@@ -434,7 +490,9 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
     Boolean result = null;
     if (leftOp instanceof LongConstant && rightOp instanceof LongConstant) {
-      if (DEBUG) System.out.println("long constants!!");
+      if (DEBUG) {
+        System.out.println("long constants!!");
+      }
       long left = ((LongConstant) leftOp).value;
       long right = ((LongConstant) rightOp).value;
       result = longSwitch(op, left, right);
@@ -453,8 +511,11 @@ public class SimplifyConditions extends DepthFirstAdapter {
     }
 
     if (result != null) {
-      if (result.booleanValue()) return new ASTUnaryCondition(DIntConstant.v(1, BooleanType.v()));
-      else return new ASTUnaryCondition(DIntConstant.v(0, BooleanType.v()));
+      if (result.booleanValue()) {
+        return new ASTUnaryCondition(DIntConstant.v(1, BooleanType.v()));
+      } else {
+        return new ASTUnaryCondition(DIntConstant.v(0, BooleanType.v()));
+      }
     }
     return null;
   }
@@ -463,37 +524,57 @@ public class SimplifyConditions extends DepthFirstAdapter {
     switch (op) {
       case 1:
         // ==
-        if (l == r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l == r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 2:
         // >=
-        if (l >= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l >= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 3:
         // >
-        if (l > r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l > r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 4:
         // <=
-        if (l <= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l <= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 5:
         // <
 
-        if (l < r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l < r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 6:
         // !=
-        if (l != r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l != r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       default:
-        if (DEBUG) System.out.println("got here");
+        if (DEBUG) {
+          System.out.println("got here");
+        }
         return null;
     }
   }
@@ -502,34 +583,52 @@ public class SimplifyConditions extends DepthFirstAdapter {
     switch (op) {
       case 1:
         // ==
-        if (l == r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l == r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 2:
         // >=
-        if (l >= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l >= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 3:
         // >
-        if (l > r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l > r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 4:
         // <=
-        if (l <= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l <= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 5:
         // <
 
-        if (l < r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l < r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 6:
         // !=
-        if (l != r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l != r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       default:
         return null;
@@ -540,34 +639,52 @@ public class SimplifyConditions extends DepthFirstAdapter {
     switch (op) {
       case 1:
         // ==
-        if (l == r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l == r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 2:
         // >=
-        if (l >= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l >= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 3:
         // >
-        if (l > r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l > r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 4:
         // <=
-        if (l <= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l <= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 5:
         // <
 
-        if (l < r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l < r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 6:
         // !=
-        if (l != r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l != r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       default:
         return null;
@@ -578,34 +695,52 @@ public class SimplifyConditions extends DepthFirstAdapter {
     switch (op) {
       case 1:
         // ==
-        if (l == r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l == r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 2:
         // >=
-        if (l >= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l >= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 3:
         // >
-        if (l > r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l > r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 4:
         // <=
-        if (l <= r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l <= r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 5:
         // <
 
-        if (l < r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l < r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       case 6:
         // !=
-        if (l != r) return new Boolean(true);
-        else return new Boolean(false);
+        if (l != r) {
+          return new Boolean(true);
+        } else {
+          return new Boolean(false);
+        }
 
       default:
         return null;

@@ -76,18 +76,23 @@ public class AnnotationTag implements Tag {
   public AnnotationTag(String type, Collection<AnnotationElem> elements) {
     this.type = type;
 
-    if (elements == null || elements.isEmpty()) this.elems = null;
-    else if (elements instanceof List<?>) this.elems = (List<AnnotationElem>) elements;
-    else this.elems = new ArrayList<AnnotationElem>(elements);
+    if (elements == null || elements.isEmpty()) {
+      this.elems = null;
+    } else if (elements instanceof List<?>) {
+      this.elems = (List<AnnotationElem>) elements;
+    } else {
+      this.elems = new ArrayList<>(elements);
+    }
   }
 
   @Deprecated
   public AnnotationTag(String type, int numElem) {
     this.type = type;
-    this.elems = new ArrayList<AnnotationElem>(numElem);
+    this.elems = new ArrayList<>(numElem);
   }
 
   // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
     if (elems != null) {
       StringBuffer sb =
@@ -100,10 +105,13 @@ public class AnnotationTag implements Tag {
       }
       sb.append("\n");
       return sb.toString();
-    } else return "Annotation type: " + type + " without elements";
+    } else {
+      return "Annotation type: " + type + " without elements";
+    }
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "AnnotationTag";
   }
@@ -117,6 +125,7 @@ public class AnnotationTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("AnnotationTag has no value for bytecode");
   }
@@ -127,7 +136,9 @@ public class AnnotationTag implements Tag {
    * @param elem the element
    */
   public void addElem(AnnotationElem elem) {
-    if (elems == null) elems = new ArrayList<AnnotationElem>();
+    if (elems == null) {
+      elems = new ArrayList<>();
+    }
     elems.add(elem);
   }
 
@@ -142,8 +153,6 @@ public class AnnotationTag implements Tag {
 
   /** @return an immutable collection of the elements */
   public Collection<AnnotationElem> getElems() {
-    return elems == null
-        ? Collections.emptyList()
-        : Collections.unmodifiableCollection(elems);
+    return elems == null ? Collections.emptyList() : Collections.unmodifiableCollection(elems);
   }
 }

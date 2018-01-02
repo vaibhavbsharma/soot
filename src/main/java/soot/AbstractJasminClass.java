@@ -28,6 +28,15 @@
 
 package soot;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import soot.baf.DoubleWordType;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -65,15 +74,6 @@ import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.toolkits.graph.Block;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 public abstract class AbstractJasminClass {
   protected Map<Unit, String> unitToLabel;
   protected Map<Local, Integer> localToSlot;
@@ -94,18 +94,22 @@ public abstract class AbstractJasminClass {
   protected Map<Local, Integer> localToColor;
 
   protected Map<Block, Integer> blockToStackHeight =
-      new HashMap<Block, Integer>(); // maps a block to the stack height upon entering it
+      new HashMap<>(); // maps a block to the stack height upon entering it
   protected Map<Block, Integer> blockToLogicalStackHeight =
-      new HashMap<Block, Integer>(); // maps a block to the logical stack height upon entering it
+      new HashMap<>(); // maps a block to the logical stack height upon entering it
 
   public static String slashify(String s) {
     return s.replace('.', '/');
   }
 
   public static int sizeOfType(Type t) {
-    if (t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType) return 2;
-    else if (t instanceof VoidType) return 0;
-    else return 1;
+    if (t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType) {
+      return 2;
+    } else if (t instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
 
   public static int argCountOf(SootMethodRef m) {
@@ -127,54 +131,68 @@ public abstract class AbstractJasminClass {
     type.apply(
         sw =
             new TypeSwitch() {
+              @Override
               public void caseBooleanType(BooleanType t) {
                 setResult("Z");
               }
 
+              @Override
               public void caseByteType(ByteType t) {
                 setResult("B");
               }
 
+              @Override
               public void caseCharType(CharType t) {
                 setResult("C");
               }
 
+              @Override
               public void caseDoubleType(DoubleType t) {
                 setResult("D");
               }
 
+              @Override
               public void caseFloatType(FloatType t) {
                 setResult("F");
               }
 
+              @Override
               public void caseIntType(IntType t) {
                 setResult("I");
               }
 
+              @Override
               public void caseLongType(LongType t) {
                 setResult("J");
               }
 
+              @Override
               public void caseShortType(ShortType t) {
                 setResult("S");
               }
 
+              @Override
               public void defaultCase(Type t) {
                 throw new RuntimeException("Invalid type: " + t);
               }
 
+              @Override
               public void caseArrayType(ArrayType t) {
                 StringBuffer buffer = new StringBuffer();
 
-                for (int i = 0; i < t.numDimensions; i++) buffer.append("[");
+                for (int i = 0; i < t.numDimensions; i++) {
+                  buffer.append("[");
+                }
 
                 setResult(buffer.toString() + jasminDescriptorOf(t.baseType));
               }
 
+              @Override
               public void caseRefType(RefType t) {
                 setResult("L" + t.getClassName().replace('.', '/') + ";");
               }
 
+              @Override
               public void caseVoidType(VoidType t) {
                 setResult("V");
               }
@@ -211,8 +229,11 @@ public abstract class AbstractJasminClass {
   }
 
   protected void okayEmit(String s) {
-    if (isEmittingMethodCode && !s.endsWith(":")) code.add("    " + s);
-    else code.add(s);
+    if (isEmittingMethodCode && !s.endsWith(":")) {
+      code.add("    " + s);
+    } else {
+      code.add(s);
+    }
   }
 
   private String getVisibilityAnnotationAttr(VisibilityAnnotationTag tag) {
@@ -263,12 +284,13 @@ public abstract class AbstractJasminClass {
     return sb.toString();
   }
 
-  private static Map<Integer, VisibilityAnnotationTag> safeVats =
-      new HashMap<Integer, VisibilityAnnotationTag>();
+  private static Map<Integer, VisibilityAnnotationTag> safeVats = new HashMap<>();
 
   private VisibilityAnnotationTag getSafeVisibilityAnnotationTag(int kind) {
     VisibilityAnnotationTag safeVat = safeVats.get(kind);
-    if (safeVat == null) safeVats.put(kind, safeVat = new VisibilityAnnotationTag(kind));
+    if (safeVat == null) {
+      safeVats.put(kind, safeVat = new VisibilityAnnotationTag(kind));
+    }
     return safeVat;
   }
 
@@ -414,12 +436,15 @@ public abstract class AbstractJasminClass {
   }
 
   public AbstractJasminClass(SootClass sootClass) {
-    if (Options.v().time()) Timers.v().buildJasminTimer.start();
+    if (Options.v().time()) {
+      Timers.v().buildJasminTimer.start();
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
+    }
 
-    code = new LinkedList<String>();
+    code = new LinkedList<>();
 
     // Emit the header
     {
@@ -430,7 +455,9 @@ public abstract class AbstractJasminClass {
         String srcName = ((SourceFileTag) sootClass.getTag("SourceFileTag")).getSourceFile();
         // Since Jasmin fails on backslashes and only Windows uses backslashes,
         // but also accepts forward slashes, we transform it.
-        if (File.separatorChar == '\\') srcName = srcName.replace('\\', '/');
+        if (File.separatorChar == '\\') {
+          srcName = srcName.replace('\\', '/');
+        }
         srcName = soot.util.StringTools.getEscapedStringOf(srcName);
 
         // if 'srcName' starts with a digit, Jasmin throws an
@@ -439,23 +466,31 @@ public abstract class AbstractJasminClass {
         // can start with a digit.
         if (!Options.v().android_jars().isEmpty()
             && !srcName.isEmpty()
-            && Character.isDigit(srcName.charAt(0))) srcName = "n_" + srcName;
+            && Character.isDigit(srcName.charAt(0))) {
+          srcName = "n_" + srcName;
+        }
 
         // Jasmin does not support blanks and quotes, so get rid of them
         srcName = srcName.replace(" ", "-");
         srcName = srcName.replace("\"", "");
 
-        if (!srcName.isEmpty()) emit(".source " + srcName);
+        if (!srcName.isEmpty()) {
+          emit(".source " + srcName);
+        }
       }
       if (Modifier.isInterface(modifiers)) {
         modifiers -= Modifier.INTERFACE;
 
         emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
-      } else emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
+      } else {
+        emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
+      }
 
-      if (sootClass.hasSuperclass())
+      if (sootClass.hasSuperclass()) {
         emit(".super " + slashify(sootClass.getSuperclass().getName()));
-      else emit(".no_super");
+      } else {
+        emit(".no_super");
+      }
 
       emit("");
     }
@@ -479,16 +514,17 @@ public abstract class AbstractJasminClass {
     Iterator<Tag> it = sootClass.getTags().iterator();
     while (it.hasNext()) {
       Tag tag = it.next();
-      if (tag instanceof Attribute)
+      if (tag instanceof Attribute) {
         emit(
             ".class_attribute "
                 + tag.getName()
                 + " \""
                 + new String(Base64.encode(tag.getValue()))
                 + "\"");
-      /*else {
-          emit("");
-      }*/
+        /*else {
+         emit("");
+        }*/
+      }
     }
 
     // emit synthetic attributes
@@ -615,17 +651,20 @@ public abstract class AbstractJasminClass {
         Iterator<Tag> attributeIt = field.getTags().iterator();
         while (attributeIt.hasNext()) {
           Tag tag = attributeIt.next();
-          if (tag instanceof Attribute)
+          if (tag instanceof Attribute) {
             emit(
                 ".field_attribute "
                     + tag.getName()
                     + " \""
                     + new String(Base64.encode(tag.getValue()))
                     + "\"");
+          }
         }
       }
 
-      if (sootClass.getFieldCount() != 0) emit("");
+      if (sootClass.getFieldCount() != 0) {
+        emit("");
+      }
     }
 
     // Emit the methods
@@ -638,18 +677,23 @@ public abstract class AbstractJasminClass {
       }
     }
 
-    if (Options.v().time()) Timers.v().buildJasminTimer.end();
+    if (Options.v().time()) {
+      Timers.v().buildJasminTimer.end();
+    }
   }
 
   protected void assignColorsToLocals(Body body) {
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Assigning colors to locals...");
+    }
 
-    if (Options.v().time()) Timers.v().packTimer.start();
+    if (Options.v().time()) {
+      Timers.v().packTimer.start();
+    }
 
-    localToGroup = new HashMap<Local, Object>(body.getLocalCount() * 2 + 1, 0.7f);
-    groupToColorCount = new HashMap<Object, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
-    localToColor = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+    localToGroup = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+    groupToColorCount = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+    localToColor = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
 
     // Assign each local to a group, and set that group's color count to 0.
     {
@@ -659,8 +703,11 @@ public abstract class AbstractJasminClass {
         Local l = localIt.next();
         Object g;
 
-        if (sizeOfType(l.getType()) == 1) g = IntType.v();
-        else g = LongType.v();
+        if (sizeOfType(l.getType()) == 1) {
+          g = IntType.v();
+        } else {
+          g = LongType.v();
+        }
 
         localToGroup.put(l, g);
 
@@ -694,7 +741,9 @@ public abstract class AbstractJasminClass {
   }
 
   protected void emitMethod(SootMethod method) {
-    if (method.isPhantom()) return;
+    if (method.isPhantom()) {
+      return;
+    }
 
     // Emit prologue
     emit(
@@ -741,9 +790,11 @@ public abstract class AbstractJasminClass {
     }
 
     if (method.isConcrete()) {
-      if (!method.hasActiveBody())
+      if (!method.hasActiveBody()) {
         throw new RuntimeException("method: " + method.getName() + " has no active body!");
-      else emitMethodBody(method);
+      } else {
+        emitMethodBody(method);
+      }
     }
 
     // Emit epilogue
@@ -752,37 +803,48 @@ public abstract class AbstractJasminClass {
     Iterator<Tag> it = method.getTags().iterator();
     while (it.hasNext()) {
       Tag tag = it.next();
-      if (tag instanceof Attribute)
+      if (tag instanceof Attribute) {
         emit(
             ".method_attribute "
                 + tag.getName()
                 + " \""
                 + new String(Base64.encode(tag.getValue()))
                 + "\"");
+      }
     }
   }
 
   protected abstract void emitMethodBody(SootMethod method);
 
   public void print(PrintWriter out) {
-    for (String s : code) out.println(s);
+    for (String s : code) {
+      out.println(s);
+    }
   }
 
   protected String doubleToString(DoubleConstant v) {
     String s = v.toString();
 
-    if (s.equals("#Infinity")) s = "+DoubleInfinity";
-    else if (s.equals("#-Infinity")) s = "-DoubleInfinity";
-    else if (s.equals("#NaN")) s = "+DoubleNaN";
+    if (s.equals("#Infinity")) {
+      s = "+DoubleInfinity";
+    } else if (s.equals("#-Infinity")) {
+      s = "-DoubleInfinity";
+    } else if (s.equals("#NaN")) {
+      s = "+DoubleNaN";
+    }
     return s;
   }
 
   protected String doubleToString(double d) {
     String doubleString = new Double(d).toString();
 
-    if (doubleString.equals("NaN")) return "+DoubleNaN";
-    else if (doubleString.equals("Infinity")) return "+DoubleInfinity";
-    else if (doubleString.equals("-Infinity")) return "-DoubleInfinity";
+    if (doubleString.equals("NaN")) {
+      return "+DoubleNaN";
+    } else if (doubleString.equals("Infinity")) {
+      return "+DoubleInfinity";
+    } else if (doubleString.equals("-Infinity")) {
+      return "-DoubleInfinity";
+    }
 
     return doubleString;
   }
@@ -790,18 +852,26 @@ public abstract class AbstractJasminClass {
   protected String floatToString(FloatConstant v) {
     String s = v.toString();
 
-    if (s.equals("#InfinityF")) s = "+FloatInfinity";
-    else if (s.equals("#-InfinityF")) s = "-FloatInfinity";
-    else if (s.equals("#NaNF")) s = "+FloatNaN";
+    if (s.equals("#InfinityF")) {
+      s = "+FloatInfinity";
+    } else if (s.equals("#-InfinityF")) {
+      s = "-FloatInfinity";
+    } else if (s.equals("#NaNF")) {
+      s = "+FloatNaN";
+    }
     return s;
   }
 
   protected String floatToString(float d) {
     String floatString = new Float(d).toString();
 
-    if (floatString.equals("NaN")) return "+FloatNaN";
-    else if (floatString.equals("Infinity")) return "+FloatInfinity";
-    else if (floatString.equals("-Infinity")) return "-FloatInfinity";
+    if (floatString.equals("NaN")) {
+      return "+FloatNaN";
+    } else if (floatString.equals("Infinity")) {
+      return "+FloatInfinity";
+    } else if (floatString.equals("-Infinity")) {
+      return "-FloatInfinity";
+    }
 
     return floatString;
   }

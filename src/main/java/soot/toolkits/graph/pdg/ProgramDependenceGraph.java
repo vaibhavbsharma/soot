@@ -18,10 +18,10 @@
  */
 package soot.toolkits.graph.pdg;
 
+import java.util.List;
+
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.MutableEdgeLabelledDirectedGraph;
-
-import java.util.List;
 
 /**
  * This defines the interface to a Program Dependence Graph as defined in
@@ -89,5 +89,6 @@ public interface ProgramDependenceGraph extends MutableEdgeLabelledDirectedGraph
   PDGNode getPDGNode(Object cfgNode);
 
   /** @return A human readable description of the PDG. */
+  @Override
   String toString();
 }

@@ -20,6 +20,14 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -49,14 +57,6 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
 import soot.toolkits.scalar.LocalDefs;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference' at OOPSLA 08).
  *
@@ -78,15 +78,20 @@ public class TypeResolver {
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
 
-    this.assignments = new ArrayList<DefinitionStmt>();
-    this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
-    for (Local v : this.jb.getLocals()) this.addLocal(v);
+    this.assignments = new ArrayList<>();
+    this.depends = new HashMap<>(jb.getLocalCount());
+    for (Local v : this.jb.getLocals()) {
+      this.addLocal(v);
+    }
     this.initAssignments();
   }
 
   private void initAssignments() {
-    for (Unit stmt : this.jb.getUnits())
-      if (stmt instanceof DefinitionStmt) this.initAssignment((DefinitionStmt) stmt);
+    for (Unit stmt : this.jb.getUnits()) {
+      if (stmt instanceof DefinitionStmt) {
+        this.initAssignment((DefinitionStmt) stmt);
+      }
+    }
   }
 
   private void initAssignment(DefinitionStmt ds) {
@@ -95,20 +100,30 @@ public class TypeResolver {
       int assignmentIdx = this.assignments.size();
       this.assignments.add(ds);
 
-      if (rhs instanceof Local) this.addDepend((Local) rhs, assignmentIdx);
-      else if (rhs instanceof BinopExpr) {
+      if (rhs instanceof Local) {
+        this.addDepend((Local) rhs, assignmentIdx);
+      } else if (rhs instanceof BinopExpr) {
         BinopExpr be = (BinopExpr) rhs;
         Value lop = be.getOp1(), rop = be.getOp2();
-        if (lop instanceof Local) this.addDepend((Local) lop, assignmentIdx);
-        if (rop instanceof Local) this.addDepend((Local) rop, assignmentIdx);
+        if (lop instanceof Local) {
+          this.addDepend((Local) lop, assignmentIdx);
+        }
+        if (rop instanceof Local) {
+          this.addDepend((Local) rop, assignmentIdx);
+        }
       } else if (rhs instanceof NegExpr) {
         Value op = ((NegExpr) rhs).getOp();
-        if (op instanceof Local) this.addDepend((Local) op, assignmentIdx);
+        if (op instanceof Local) {
+          this.addDepend((Local) op, assignmentIdx);
+        }
       } else if (rhs instanceof CastExpr) {
         Value op = ((CastExpr) rhs).getOp();
-        if (op instanceof Local) this.addDepend((Local) op, assignmentIdx);
-      } else if (rhs instanceof ArrayRef)
+        if (op instanceof Local) {
+          this.addDepend((Local) op, assignmentIdx);
+        }
+      } else if (rhs instanceof ArrayRef) {
         this.addDepend((Local) ((ArrayRef) rhs).getBase(), assignmentIdx);
+      }
     }
   }
 
@@ -127,7 +142,9 @@ public class TypeResolver {
         this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
 
     // If there is nothing to type, we can quit
-    if (sigma.isEmpty()) return;
+    if (sigma.isEmpty()) {
+      return;
+    }
 
     int[] castCount = new int[1];
     Typing tg = this.minCasts(sigma, bh, castCount);
@@ -150,10 +167,14 @@ public class TypeResolver {
     }
 
     tg = this.typePromotion(tg);
-    if (tg == null)
+    if (tg == null) {
       // Use original soot algorithm for inserting casts
       soot.jimple.toolkits.typing.integer.TypeResolver.resolve(this.jb);
-    else for (Local v : this.jb.getLocals()) v.setType(tg.get(v));
+    } else {
+      for (Local v : this.jb.getLocals()) {
+        v.setType(tg.get(v));
+      }
+    }
   }
 
   private class CastInsertionUseVisitor implements IUseVisitor {
@@ -178,12 +199,15 @@ public class TypeResolver {
       final Jimple jimple = Jimple.v();
       Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
 
-      if (this.h.ancestor(useType, t)) return op;
+      if (this.h.ancestor(useType, t)) {
+        return op;
+      }
 
       this.count++;
 
-      if (countOnly) return op;
-      else {
+      if (countOnly) {
+        return op;
+      } else {
         // If we're referencing an array of the base type java.lang.Object,
         // we also need to fix the type of the assignment's target variable.
         if (stmt.containsArrayRef()
@@ -196,10 +220,11 @@ public class TypeResolver {
             final String name = rt.getSootClass().getName();
             if (name.equals("java.lang.Object")
                 || name.equals("java.io.Serializable")
-                || name.equals("java.lang.Cloneable"))
+                || name.equals("java.lang.Cloneable")) {
               tg.set(
                   (Local) ((DefinitionStmt) stmt).getLeftOp(),
                   ((ArrayType) useType).getElementType());
+            }
           }
         }
 
@@ -214,7 +239,9 @@ public class TypeResolver {
           this.jb.getLocals().add(vold);
           Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
           this.jb.getUnits().insertBefore(jimple.newAssignStmt(vold, op), u);
-        } else vold = (Local) op;
+        } else {
+          vold = (Local) op;
+        }
 
         Local vnew = jimple.newLocal("tmp", useType);
         vnew.setName("tmp$" + System.identityHashCode(vnew));
@@ -259,36 +286,55 @@ public class TypeResolver {
 
     private Type promote(Type tlow, Type thigh) {
       if (tlow instanceof Integer1Type) {
-        if (thigh instanceof IntType) return Integer127Type.v();
-        else if (thigh instanceof ShortType) return byteType;
-        else if (thigh instanceof BooleanType
+        if (thigh instanceof IntType) {
+          return Integer127Type.v();
+        } else if (thigh instanceof ShortType) {
+          return byteType;
+        } else if (thigh instanceof BooleanType
             || thigh instanceof ByteType
             || thigh instanceof CharType
             || thigh instanceof Integer127Type
-            || thigh instanceof Integer32767Type) return thigh;
-        else throw new RuntimeException();
+            || thigh instanceof Integer32767Type) {
+          return thigh;
+        } else {
+          throw new RuntimeException();
+        }
       } else if (tlow instanceof Integer127Type) {
-        if (thigh instanceof ShortType) return byteType;
-        else if (thigh instanceof IntType) return integer127Type;
-        else if (thigh instanceof ByteType
+        if (thigh instanceof ShortType) {
+          return byteType;
+        } else if (thigh instanceof IntType) {
+          return integer127Type;
+        } else if (thigh instanceof ByteType
             || thigh instanceof CharType
-            || thigh instanceof Integer32767Type) return thigh;
-        else throw new RuntimeException();
+            || thigh instanceof Integer32767Type) {
+          return thigh;
+        } else {
+          throw new RuntimeException();
+        }
       } else if (tlow instanceof Integer32767Type) {
-        if (thigh instanceof IntType) return integer32767Type;
-        else if (thigh instanceof ShortType || thigh instanceof CharType) return thigh;
-        else throw new RuntimeException();
-      } else throw new RuntimeException();
+        if (thigh instanceof IntType) {
+          return integer32767Type;
+        } else if (thigh instanceof ShortType || thigh instanceof CharType) {
+          return thigh;
+        } else {
+          throw new RuntimeException();
+        }
+      } else {
+        throw new RuntimeException();
+      }
     }
 
     @Override
     public Value visit(Value op, Type useType, Stmt stmt) {
-      if (this.finish()) return op;
+      if (this.finish()) {
+        return op;
+      }
 
       Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
 
-      if (!AugHierarchy.ancestor_(useType, t)) this.fail = true;
-      else if (op instanceof Local
+      if (!AugHierarchy.ancestor_(useType, t)) {
+        this.fail = true;
+      } else if (op instanceof Local
           && (t instanceof Integer1Type
               || t instanceof Integer127Type
               || t instanceof Integer32767Type)) {
@@ -323,11 +369,15 @@ public class TypeResolver {
       TypePromotionUseVisitor uv = new TypePromotionUseVisitor(jb, tg);
       do {
         Collection<Typing> sigma = this.applyAssignmentConstraints(tg, ef, h);
-        if (sigma.isEmpty()) return null;
+        if (sigma.isEmpty()) {
+          return null;
+        }
         tg = sigma.iterator().next();
         uv.typingChanged = false;
         uc.check(tg, uv);
-        if (uv.fail) return null;
+        if (uv.fail) {
+          return null;
+        }
       } while (uv.typingChanged);
 
       conversionDone = false;
@@ -368,17 +418,22 @@ public class TypeResolver {
         setR = true;
       }
     }
-    if (setR) return r;
-    else return null;
+    if (setR) {
+      return r;
+    } else {
+      return null;
+    }
   }
 
   private Collection<Typing> applyAssignmentConstraints(Typing tg, IEvalFunction ef, IHierarchy h) {
     final int numAssignments = this.assignments.size();
 
-    LinkedList<Typing> sigma = new LinkedList<Typing>(), r = new LinkedList<Typing>();
-    if (numAssignments == 0) return sigma;
+    LinkedList<Typing> sigma = new LinkedList<>(), r = new LinkedList<>();
+    if (numAssignments == 0) {
+      return sigma;
+    }
 
-    HashMap<Typing, BitSet> worklists = new HashMap<Typing, BitSet>();
+    HashMap<Typing, BitSet> worklists = new HashMap<>();
 
     sigma.add(tg);
     BitSet wl = new BitSet(numAssignments - 1);
@@ -401,12 +456,15 @@ public class TypeResolver {
         Value lhs = stmt.getLeftOp(), rhs = stmt.getRightOp();
 
         Local v;
-        if (lhs instanceof Local) v = (Local) lhs;
-        else v = (Local) ((ArrayRef) lhs).getBase();
+        if (lhs instanceof Local) {
+          v = (Local) lhs;
+        } else {
+          v = (Local) ((ArrayRef) lhs).getBase();
+        }
 
         Type told = tg.get(v);
 
-        Collection<Type> eval = new ArrayList<Type>(ef.eval(tg, rhs, stmt));
+        Collection<Type> eval = new ArrayList<>(ef.eval(tg, rhs, stmt));
 
         boolean isFirstType = true;
         for (Type t_ : eval) {
@@ -429,9 +487,11 @@ public class TypeResolver {
               && t_ instanceof RefType
               && (((RefType) told).getSootClass().isPhantom()
                   || ((RefType) t_).getSootClass().isPhantom())
-              && (stmt.getRightOp() instanceof CaughtExceptionRef))
+              && (stmt.getRightOp() instanceof CaughtExceptionRef)) {
             lcas = Collections.singleton(RefType.v("java.lang.Throwable"));
-          else lcas = h.lcas(told, t_);
+          } else {
+            lcas = h.lcas(told, t_);
+          }
 
           for (Type t : lcas) {
             if (!typesEqual(t, told)) {
@@ -453,7 +513,9 @@ public class TypeResolver {
               tg_.set(v, t);
 
               BitSet dependsV = this.depends.get(v);
-              if (dependsV != null) wl_.or(dependsV);
+              if (dependsV != null) {
+                wl_.or(dependsV);
+              }
             }
             isFirstType = false;
           }

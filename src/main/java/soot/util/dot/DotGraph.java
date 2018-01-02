@@ -70,9 +70,9 @@ public class DotGraph implements Renderable {
   public DotGraph(String graphname) {
     this.graphname = graphname;
     this.isSubGraph = false;
-    this.nodes = new HashMap<String, DotGraphNode>(100);
-    this.drawElements = new LinkedList<Renderable>();
-    this.attributes = new LinkedList<DotGraphAttribute>();
+    this.nodes = new HashMap<>(100);
+    this.drawElements = new LinkedList<>();
+    this.attributes = new LinkedList<>();
   }
 
   /**
@@ -118,9 +118,13 @@ public class DotGraph implements Renderable {
   public DotGraphNode drawNode(String name) {
     DotGraphNode node = getNode(name);
 
-    if (node == null) throw new RuntimeException("Assertion failed.");
+    if (node == null) {
+      throw new RuntimeException("Assertion failed.");
+    }
 
-    if (!this.drawElements.contains(node)) this.drawElements.add(node);
+    if (!this.drawElements.contains(node)) {
+      this.drawElements.add(node);
+    }
 
     return node;
   }
@@ -133,7 +137,9 @@ public class DotGraph implements Renderable {
    *     node.
    */
   public DotGraphNode getNode(String name) {
-    if (name == null) return null;
+    if (name == null) {
+      return null;
+    }
 
     DotGraphNode node = nodes.get(name);
     if (node == null) {
@@ -240,6 +246,7 @@ public class DotGraph implements Renderable {
   }
 
   /* implements renderable interface. */
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
     // header
     String graphname = this.graphname;

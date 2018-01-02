@@ -48,8 +48,9 @@ public class ClassConstant extends Constant {
   }
 
   public static ClassConstant v(String value) {
-    if (value.contains("."))
+    if (value.contains(".")) {
       throw new RuntimeException("ClassConstants must use class names separated by '/', not '.'!");
+    }
     return new ClassConstant(value);
   }
 
@@ -58,21 +59,34 @@ public class ClassConstant extends Constant {
   }
 
   private static String sootTypeToString(Type tp) {
-    if (tp instanceof RefType) return "L" + tp.toString().replaceAll("\\.", "/") + ";";
-    else if (tp instanceof ArrayType) {
+    if (tp instanceof RefType) {
+      return "L" + tp.toString().replaceAll("\\.", "/") + ";";
+    } else if (tp instanceof ArrayType) {
       ArrayType at = (ArrayType) tp;
       return "[" + sootTypeToString(at.getElementType());
     } else if (tp instanceof PrimType) {
-      if (tp instanceof IntType) return "I";
-      else if (tp instanceof ByteType) return "B";
-      else if (tp instanceof CharType) return "C";
-      else if (tp instanceof DoubleType) return "D";
-      else if (tp instanceof FloatType) return "F";
-      else if (tp instanceof LongType) return "L";
-      else if (tp instanceof ShortType) return "S";
-      else if (tp instanceof BooleanType) return "Z";
-      else throw new RuntimeException("Unsupported primitive type");
-    } else throw new RuntimeException("Unsupported type" + tp);
+      if (tp instanceof IntType) {
+        return "I";
+      } else if (tp instanceof ByteType) {
+        return "B";
+      } else if (tp instanceof CharType) {
+        return "C";
+      } else if (tp instanceof DoubleType) {
+        return "D";
+      } else if (tp instanceof FloatType) {
+        return "F";
+      } else if (tp instanceof LongType) {
+        return "L";
+      } else if (tp instanceof ShortType) {
+        return "S";
+      } else if (tp instanceof BooleanType) {
+        return "Z";
+      } else {
+        throw new RuntimeException("Unsupported primitive type");
+      }
+    } else {
+      throw new RuntimeException("Unsupported type" + tp);
+    }
   }
 
   /**
@@ -95,18 +109,30 @@ public class ClassConstant extends Constant {
     Type baseType = null;
     if (tmp.startsWith("L")) {
       tmp = tmp.substring(1);
-      if (tmp.endsWith(";")) tmp = tmp.substring(0, tmp.length() - 1);
+      if (tmp.endsWith(";")) {
+        tmp = tmp.substring(0, tmp.length() - 1);
+      }
       tmp = tmp.replace("/", ".");
       baseType = RefType.v(tmp);
-    } else if (tmp.equals("I")) baseType = IntType.v();
-    else if (tmp.equals("B")) baseType = ByteType.v();
-    else if (tmp.equals("C")) baseType = CharType.v();
-    else if (tmp.equals("D")) baseType = DoubleType.v();
-    else if (tmp.equals("F")) baseType = FloatType.v();
-    else if (tmp.equals("L")) baseType = LongType.v();
-    else if (tmp.equals("S")) baseType = ShortType.v();
-    else if (tmp.equals("Z")) baseType = BooleanType.v();
-    else throw new RuntimeException("Unsupported class constant: " + value);
+    } else if (tmp.equals("I")) {
+      baseType = IntType.v();
+    } else if (tmp.equals("B")) {
+      baseType = ByteType.v();
+    } else if (tmp.equals("C")) {
+      baseType = CharType.v();
+    } else if (tmp.equals("D")) {
+      baseType = DoubleType.v();
+    } else if (tmp.equals("F")) {
+      baseType = FloatType.v();
+    } else if (tmp.equals("L")) {
+      baseType = LongType.v();
+    } else if (tmp.equals("S")) {
+      baseType = ShortType.v();
+    } else if (tmp.equals("Z")) {
+      baseType = BooleanType.v();
+    } else {
+      throw new RuntimeException("Unsupported class constant: " + value);
+    }
 
     return numDimensions > 0 ? ArrayType.v(baseType, numDimensions) : baseType;
   }
@@ -132,10 +158,12 @@ public class ClassConstant extends Constant {
     return value;
   }
 
+  @Override
   public Type getType() {
     return RefType.v("java.lang.Class");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseClassConstant(this);
   }

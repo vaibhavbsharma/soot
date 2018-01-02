@@ -32,6 +32,7 @@ public class JjFieldAssign_c extends FieldAssign_c {
     super(pos, left, op, right);
   }
 
+  @Override
   public Type childExpectedType(Expr child, AscriptionVisitor av) {
     if (op == SHL_ASSIGN || op == SHR_ASSIGN || op == USHR_ASSIGN) {
       return child.type();

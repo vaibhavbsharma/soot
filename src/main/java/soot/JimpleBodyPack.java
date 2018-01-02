@@ -25,11 +25,11 @@
 
 package soot;
 
+import java.util.Map;
+
 import soot.jimple.JimpleBody;
 import soot.options.JBOptions;
 import soot.options.Options;
-
-import java.util.Map;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key
@@ -44,10 +44,13 @@ public class JimpleBodyPack extends BodyPack {
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
     JBOptions options = new JBOptions(opts);
 
-    if (options.use_original_names())
+    if (options.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
+    }
 
-    if (Options.v().time()) Timers.v().splitTimer.start();
+    if (Options.v().time()) {
+      Timers.v().splitTimer.start();
+    }
 
     PackManager.v().getTransform("jb.tt").apply(b); // TrapTigthener
     PackManager.v().getTransform("jb.dtr").apply(b); // DuplicateCatchAllTrapRemover
@@ -59,16 +62,22 @@ public class JimpleBodyPack extends BodyPack {
 
     PackManager.v().getTransform("jb.ls").apply(b);
 
-    if (Options.v().time()) Timers.v().splitTimer.end();
+    if (Options.v().time()) {
+      Timers.v().splitTimer.end();
+    }
 
     PackManager.v().getTransform("jb.a").apply(b);
     PackManager.v().getTransform("jb.ule").apply(b);
 
-    if (Options.v().time()) Timers.v().assignTimer.start();
+    if (Options.v().time()) {
+      Timers.v().assignTimer.start();
+    }
 
     PackManager.v().getTransform("jb.tr").apply(b);
 
-    if (Options.v().time()) Timers.v().assignTimer.end();
+    if (Options.v().time()) {
+      Timers.v().assignTimer.end();
+    }
 
     if (options.use_original_names()) {
       PackManager.v().getTransform("jb.ulp").apply(b);
@@ -92,9 +101,12 @@ public class JimpleBodyPack extends BodyPack {
       PackManager.v().getTransform("jb.lns").apply(b);
     }
 
-    if (Options.v().time()) Timers.v().stmtCount += b.getUnits().size();
+    if (Options.v().time()) {
+      Timers.v().stmtCount += b.getUnits().size();
+    }
   }
 
+  @Override
   protected void internalApply(Body b) {
     applyPhaseOptions((JimpleBody) b, PhaseOptions.v().getPhaseOptions(getPhaseName()));
   }

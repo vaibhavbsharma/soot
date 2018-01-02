@@ -25,19 +25,19 @@
 
 package soot;
 
-import soot.options.Options;
-import soot.tagkit.JimpleLineNumberTag;
-import soot.tagkit.Tag;
-import soot.toolkits.graph.UnitGraph;
-import soot.util.Chain;
-import soot.util.DeterministicHashMap;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import soot.options.Options;
+import soot.tagkit.JimpleLineNumberTag;
+import soot.tagkit.Tag;
+import soot.toolkits.graph.UnitGraph;
+import soot.util.Chain;
+import soot.util.DeterministicHashMap;
 
 /** Prints out a class and all its methods. */
 public class Printer {
@@ -93,7 +93,9 @@ public class Printer {
       StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers()));
       while (st.hasMoreTokens()) {
         String tok = st.nextToken();
-        if (cl.isInterface() && tok.equals("abstract")) continue;
+        if (cl.isInterface() && tok.equals("abstract")) {
+          continue;
+        }
         out.print(tok + " ");
       }
 
@@ -109,8 +111,9 @@ public class Printer {
 
     // Print extension
     {
-      if (cl.hasSuperclass())
+      if (cl.hasSuperclass()) {
         out.print(" extends " + Scene.v().quotedNameOf(cl.getSuperclass().getName()) + "");
+      }
     }
 
     // Print interfaces
@@ -158,7 +161,9 @@ public class Printer {
         while (fieldIt.hasNext()) {
           SootField f = fieldIt.next();
 
-          if (f.isPhantom()) continue;
+          if (f.isPhantom()) {
+            continue;
+          }
 
           if (Options.v().print_tags_in_output()) {
             Iterator<Tag> fTagIterator = f.getTags().iterator();
@@ -192,14 +197,17 @@ public class Printer {
         while (methodIt.hasNext()) {
           SootMethod method = methodIt.next();
 
-          if (method.isPhantom()) continue;
+          if (method.isPhantom()) {
+            continue;
+          }
 
           if (!Modifier.isAbstract(method.getModifiers())
               && !Modifier.isNative(method.getModifiers())) {
             if (!method.hasActiveBody()) {
               method.retrieveActiveBody(); // force loading the body
-              if (!method.hasActiveBody()) // in case we really don't have it
-              throw new RuntimeException("method " + method.getName() + " has no active body!");
+              if (!method.hasActiveBody()) {
+                throw new RuntimeException("method " + method.getName() + " has no active body!");
+              }
             } else if (Options.v().print_tags_in_output()) {
               Iterator<Tag> mTagIterator = method.getTags().iterator();
               while (mTagIterator.hasNext()) {
@@ -280,8 +288,11 @@ public class Printer {
     UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(b);
 
     LabeledUnitPrinter up;
-    if (isPrecise) up = new NormalUnitPrinter(b);
-    else up = new BriefUnitPrinter(b);
+    if (isPrecise) {
+      up = new NormalUnitPrinter(b);
+    } else {
+      up = new BriefUnitPrinter(b);
+    }
 
     if (addJimpleLn()) {
       up.setPositionTagger(new AttributesUnitPrinter(getJimpleLnNum()));
@@ -422,7 +433,7 @@ public class Printer {
     // Print out local variables
     {
       Map<Type, List<Local>> typeToLocals =
-          new DeterministicHashMap<Type, List<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
+          new DeterministicHashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // Collect locals
       {
@@ -435,9 +446,10 @@ public class Printer {
 
           Type t = local.getType();
 
-          if (typeToLocals.containsKey(t)) localList = typeToLocals.get(t);
-          else {
-            localList = new ArrayList<Local>();
+          if (typeToLocals.containsKey(t)) {
+            localList = typeToLocals.get(t);
+          } else {
+            localList = new ArrayList<>();
             typeToLocals.put(t, localList);
           }
 
@@ -458,7 +470,9 @@ public class Printer {
           up.literal(" ");
 
           for (int k = 0; k < locals.length; k++) {
-            if (k != 0) up.literal(", ");
+            if (k != 0) {
+              up.literal(", ");
+            }
 
             up.local((Local) locals[k]);
           }

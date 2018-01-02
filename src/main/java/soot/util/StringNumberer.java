@@ -19,10 +19,10 @@
 
 package soot.util;
 
-import heros.ThreadSafe;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import heros.ThreadSafe;
 
 /**
  * A class that numbers strings, so they can be placed in bitsets.
@@ -31,7 +31,7 @@ import java.util.Map;
  */
 @ThreadSafe
 public class StringNumberer extends ArrayNumberer<NumberedString> {
-  private Map<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
+  private Map<String, NumberedString> stringToNumbered = new HashMap<>(1024);
 
   public synchronized NumberedString findOrAdd(String s) {
     NumberedString ret = stringToNumbered.get(s);

@@ -52,15 +52,23 @@ public class ArraySet<E> extends AbstractSet<E> {
   public ArraySet(E[] elements) {
     this();
 
-    for (E element : elements) add(element);
+    for (E element : elements) {
+      add(element);
+    }
   }
 
+  @Override
   public final void clear() {
     numElements = 0;
   }
 
+  @Override
   public final boolean contains(Object obj) {
-    for (int i = 0; i < numElements; i++) if (elements[i].equals(obj)) return true;
+    for (int i = 0; i < numElements; i++) {
+      if (elements[i].equals(obj)) {
+        return true;
+      }
+    }
 
     return false;
   }
@@ -70,21 +78,31 @@ public class ArraySet<E> extends AbstractSet<E> {
    * guarantee that it isn't.
    */
   public final boolean addElement(E e) {
-    if (e == null) throw new RuntimeException("oops");
+    if (e == null) {
+      throw new RuntimeException("oops");
+    }
     // Expand array if necessary
-    if (numElements == maxElements) doubleCapacity();
+    if (numElements == maxElements) {
+      doubleCapacity();
+    }
 
     // Add element
     elements[numElements++] = e;
     return true;
   }
 
+  @Override
   public final boolean add(E e) {
-    if (e == null) throw new RuntimeException("oops");
-    if (contains(e)) return false;
-    else {
+    if (e == null) {
+      throw new RuntimeException("oops");
+    }
+    if (contains(e)) {
+      return false;
+    } else {
       // Expand array if necessary
-      if (numElements == maxElements) doubleCapacity();
+      if (numElements == maxElements) {
+        doubleCapacity();
+      }
 
       // Add element
       elements[numElements++] = e;
@@ -92,23 +110,30 @@ public class ArraySet<E> extends AbstractSet<E> {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public final boolean addAll(Collection<? extends E> s) {
     boolean ret = false;
-    if (!(s instanceof ArraySet)) return super.addAll(s);
+    if (!(s instanceof ArraySet)) {
+      return super.addAll(s);
+    }
     ArraySet<?> as = (ArraySet<?>) s;
     int asSize = as.size();
     Object[] asElements = as.elements;
-    for (int i = 0; i < asSize; i++) ret = add((E) asElements[i]) | ret;
+    for (int i = 0; i < asSize; i++) {
+      ret = add((E) asElements[i]) | ret;
+    }
     return ret;
   }
 
+  @Override
   public final int size() {
     return numElements;
   }
 
+  @Override
   public final Iterator<E> iterator() {
-    return new ArrayIterator<E>();
+    return new ArrayIterator<>();
   }
 
   private class ArrayIterator<V> implements Iterator<V> {
@@ -118,20 +143,26 @@ public class ArraySet<E> extends AbstractSet<E> {
       nextIndex = 0;
     }
 
+    @Override
     public final boolean hasNext() {
       return nextIndex < numElements;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final V next() throws NoSuchElementException {
-      if (!(nextIndex < numElements)) throw new NoSuchElementException();
+      if (!(nextIndex < numElements)) {
+        throw new NoSuchElementException();
+      }
 
       return (V) elements[nextIndex++];
     }
 
+    @Override
     public final void remove() throws NoSuchElementException {
-      if (nextIndex == 0) throw new NoSuchElementException();
-      else {
+      if (nextIndex == 0) {
+        throw new NoSuchElementException();
+      } else {
         removeElementAt(nextIndex - 1);
         nextIndex = nextIndex - 1;
       }
@@ -160,6 +191,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     maxElements = newSize;
   }
 
+  @Override
   public final Object[] toArray() {
     Object[] array = new Object[numElements];
 
@@ -167,6 +199,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     return array;
   }
 
+  @Override
   public final <T> T[] toArray(T[] array) {
     System.arraycopy(elements, 0, array, 0, numElements);
     return array;
@@ -205,7 +238,9 @@ public class ArraySet<E> extends AbstractSet<E> {
 
     public final void addElement(Object e) {
       // Expand array if necessary
-      if (numElements == maxElements) doubleCapacity();
+      if (numElements == maxElements) {
+        doubleCapacity();
+      }
 
       // Add element
       elements[numElements++] = e;
@@ -213,7 +248,9 @@ public class ArraySet<E> extends AbstractSet<E> {
 
     public final void insertElementAt(Object e, int index) {
       // Expaxpand array if necessary
-      if (numElements == maxElements) doubleCapacity();
+      if (numElements == maxElements) {
+        doubleCapacity();
+      }
 
       // Handle simple case
       if (index == numElements) {
@@ -228,7 +265,11 @@ public class ArraySet<E> extends AbstractSet<E> {
     }
 
     public final boolean contains(Object e) {
-      for (int i = 0; i < numElements; i++) if (elements[i].equals(e)) return true;
+      for (int i = 0; i < numElements; i++) {
+        if (elements[i].equals(e)) {
+          return true;
+        }
+      }
 
       return false;
     }

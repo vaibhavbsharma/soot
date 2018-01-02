@@ -45,12 +45,14 @@ public class ConstructNumbersMetric extends ASTMetric {
     super(node);
   }
 
+  @Override
   public void reset() {
     numIf = numIfElse = 0;
     numLabeledBlocks = 0;
     doLoop = forLoop = whileLoop = whileTrue = 0;
   }
 
+  @Override
   public void addMetrics(ClassData data) {
     // TODO Auto-generated method stub
     // conditionals
@@ -70,6 +72,7 @@ public class ConstructNumbersMetric extends ASTMetric {
         new MetricData("Total Loops", new Integer(whileTrue + whileLoop + forLoop + doLoop)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
 
     /*
@@ -122,8 +125,11 @@ public class ConstructNumbersMetric extends ASTMetric {
      */
     if (n instanceof While) {
       // System.out.println((While)n);
-      if (((While) n).condIsConstantTrue()) whileTrue++;
-      else whileLoop++;
+      if (((While) n).condIsConstantTrue()) {
+        whileTrue++;
+      } else {
+        whileLoop++;
+      }
     }
 
     return enter(n);

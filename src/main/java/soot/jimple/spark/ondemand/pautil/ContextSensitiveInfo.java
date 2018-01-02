@@ -18,6 +18,14 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import soot.G;
 import soot.SootMethod;
 import soot.jimple.InvokeExpr;
@@ -30,14 +38,6 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 import soot.toolkits.scalar.Pair;
 import soot.util.HashMultiMap;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Information for a context-sensitive analysis, eg. for call sites
@@ -59,50 +59,41 @@ public class ContextSensitiveInfo {
    * ArraySet[AssignEdge]
    */
   private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignEdges =
-      new ArraySetMultiMap<VarNode, AssignEdge>();
+      new ArraySetMultiMap<>();
 
   private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignBarEdges =
-      new ArraySetMultiMap<VarNode, AssignEdge>();
+      new ArraySetMultiMap<>();
 
   /** nodes in each method */
-  private final ArraySetMultiMap<SootMethod, VarNode> methodToNodes =
-      new ArraySetMultiMap<SootMethod, VarNode>();
+  private final ArraySetMultiMap<SootMethod, VarNode> methodToNodes = new ArraySetMultiMap<>();
 
-  private final ArraySetMultiMap<SootMethod, VarNode> methodToOutPorts =
-      new ArraySetMultiMap<SootMethod, VarNode>();
+  private final ArraySetMultiMap<SootMethod, VarNode> methodToOutPorts = new ArraySetMultiMap<>();
 
-  private final ArraySetMultiMap<SootMethod, VarNode> methodToInPorts =
-      new ArraySetMultiMap<SootMethod, VarNode>();
+  private final ArraySetMultiMap<SootMethod, VarNode> methodToInPorts = new ArraySetMultiMap<>();
 
-  private final ArraySetMultiMap<SootMethod, Integer> callSitesInMethod =
-      new ArraySetMultiMap<SootMethod, Integer>();
+  private final ArraySetMultiMap<SootMethod, Integer> callSitesInMethod = new ArraySetMultiMap<>();
 
   private final ArraySetMultiMap<SootMethod, Integer> callSitesInvokingMethod =
-      new ArraySetMultiMap<SootMethod, Integer>();
+      new ArraySetMultiMap<>();
 
-  private final ArraySetMultiMap<Integer, SootMethod> callSiteToTargets =
-      new ArraySetMultiMap<Integer, SootMethod>();
+  private final ArraySetMultiMap<Integer, SootMethod> callSiteToTargets = new ArraySetMultiMap<>();
 
-  private final ArraySetMultiMap<Integer, AssignEdge> callSiteToEdges =
-      new ArraySetMultiMap<Integer, AssignEdge>();
+  private final ArraySetMultiMap<Integer, AssignEdge> callSiteToEdges = new ArraySetMultiMap<>();
 
-  private final Map<Integer, LocalVarNode> virtCallSiteToReceiver =
-      new HashMap<Integer, LocalVarNode>();
+  private final Map<Integer, LocalVarNode> virtCallSiteToReceiver = new HashMap<>();
 
-  private final Map<Integer, SootMethod> callSiteToInvokedMethod =
-      new HashMap<Integer, SootMethod>();
+  private final Map<Integer, SootMethod> callSiteToInvokedMethod = new HashMap<>();
 
-  private final Map<Integer, SootMethod> callSiteToInvokingMethod =
-      new HashMap<Integer, SootMethod>();
+  private final Map<Integer, SootMethod> callSiteToInvokingMethod = new HashMap<>();
 
   private final ArraySetMultiMap<LocalVarNode, Integer> receiverToVirtCallSites =
-      new ArraySetMultiMap<LocalVarNode, Integer>();
+      new ArraySetMultiMap<>();
 
   /** */
   public ContextSensitiveInfo(PAG pag) {
     // set up method to node map
-    for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter.hasNext(); ) {
-      VarNode varNode = (VarNode) iter.next();
+    for (Object element : pag.getVarNodeNumberer()) {
+      VarNode varNode = (VarNode) element;
       if (varNode instanceof LocalVarNode) {
         LocalVarNode local = (LocalVarNode) varNode;
         SootMethod method = local.getMethod();
@@ -126,9 +117,11 @@ public class ContextSensitiveInfo {
       }
       boolean sourceGlobal = assignSource instanceof GlobalVarNode;
       Node[] assignTargets = pag.simpleLookup(assignSource);
-      for (int i = 0; i < assignTargets.length; i++) {
-        VarNode assignTarget = (VarNode) assignTargets[i];
-        if (skipNode(assignTarget)) continue;
+      for (Node assignTarget2 : assignTargets) {
+        VarNode assignTarget = (VarNode) assignTarget2;
+        if (skipNode(assignTarget)) {
+          continue;
+        }
         boolean isFinalizerNode = false;
         if (assignTarget instanceof LocalVarNode) {
           LocalVarNode local = (LocalVarNode) assignTarget;
@@ -201,7 +194,9 @@ public class ContextSensitiveInfo {
         Pair callAssign = (Pair) iterator.next();
         // for reflective calls, the "O1" value can actually be a FieldRefNode
         // we simply ignore such cases here (appears to be sound)
-        if (!(callAssign.getO1() instanceof VarNode)) continue;
+        if (!(callAssign.getO1() instanceof VarNode)) {
+          continue;
+        }
         VarNode src = (VarNode) callAssign.getO1();
         VarNode dst = (VarNode) callAssign.getO2();
         if (skipNode(src)) {
@@ -276,15 +271,19 @@ public class ContextSensitiveInfo {
 
   @SuppressWarnings("unused")
   private String assignEdgesWellFormed(PAG pag) {
-    for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter.hasNext(); ) {
-      VarNode v = (VarNode) iter.next();
+    for (Object element : pag.getVarNodeNumberer()) {
+      VarNode v = (VarNode) element;
       Set<AssignEdge> outgoingAssigns = getAssignBarEdges(v);
       for (AssignEdge edge : outgoingAssigns) {
-        if (edge.getSrc() != v) return edge + " src should be " + v;
+        if (edge.getSrc() != v) {
+          return edge + " src should be " + v;
+        }
       }
       Set<AssignEdge> incomingAssigns = getAssignEdges(v);
       for (AssignEdge edge : incomingAssigns) {
-        if (edge.getDst() != v) return edge + " dst should be " + v;
+        if (edge.getDst() != v) {
+          return edge + " dst should be " + v;
+        }
       }
     }
     return null;

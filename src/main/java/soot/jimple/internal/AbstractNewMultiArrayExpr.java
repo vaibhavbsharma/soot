@@ -25,6 +25,10 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.Type;
 import soot.Unit;
@@ -39,15 +43,12 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.NewMultiArrayExpr;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 @SuppressWarnings("serial")
 public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf {
   ArrayType baseType;
   protected final ValueBox[] sizeBoxes;
 
+  @Override
   public abstract Object clone();
 
   protected AbstractNewMultiArrayExpr(ArrayType type, ValueBox[] sizeBoxes) {
@@ -55,6 +56,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     this.sizeBoxes = sizeBoxes;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractNewMultiArrayExpr) {
       AbstractNewMultiArrayExpr ae = (AbstractNewMultiArrayExpr) o;
@@ -64,23 +66,30 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return baseType.hashCode();
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
     Type t = baseType.baseType;
     buffer.append(Jimple.NEWMULTIARRAY + " (" + t.toString() + ")");
 
-    for (ValueBox element : sizeBoxes) buffer.append("[" + element.getValue().toString() + "]");
+    for (ValueBox element : sizeBoxes) {
+      buffer.append("[" + element.getValue().toString() + "]");
+    }
 
-    for (int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++) buffer.append("[]");
+    for (int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++) {
+      buffer.append("[]");
+    }
 
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     Type t = baseType.baseType;
 
@@ -100,41 +109,50 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     }
   }
 
+  @Override
   public ArrayType getBaseType() {
     return baseType;
   }
 
+  @Override
   public void setBaseType(ArrayType baseType) {
     this.baseType = baseType;
   }
 
+  @Override
   public ValueBox getSizeBox(int index) {
     return sizeBoxes[index];
   }
 
+  @Override
   public int getSizeCount() {
     return sizeBoxes.length;
   }
 
+  @Override
   public Value getSize(int index) {
     return sizeBoxes[index].getValue();
   }
 
+  @Override
   public List<Value> getSizes() {
-    List<Value> toReturn = new ArrayList<Value>();
+    List<Value> toReturn = new ArrayList<>();
 
-    for (ValueBox element : sizeBoxes) toReturn.add(element.getValue());
+    for (ValueBox element : sizeBoxes) {
+      toReturn.add(element.getValue());
+    }
 
     return toReturn;
   }
 
+  @Override
   public void setSize(int index, Value size) {
     sizeBoxes[index].setValue(size);
   }
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
     Collections.addAll(list, sizeBoxes);
 
     for (ValueBox element : sizeBoxes) {
@@ -144,19 +162,23 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     return list;
   }
 
+  @Override
   public Type getType() {
     return baseType;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseNewMultiArrayExpr(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     List<Value> sizes = getSizes();
 
-    for (int i = 0; i < sizes.size(); i++)
+    for (int i = 0; i < sizes.size(); i++) {
       ((ConvertToBaf) (sizes.get(i))).convertToBaf(context, out);
+    }
 
     Unit u = Baf.v().newNewMultiArrayInst(getBaseType(), sizes.size());
     out.add(u);

@@ -41,30 +41,41 @@ public class JUshrExpr extends AbstractJimpleIntLongBinopExpr implements UshrExp
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " >>> ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseUshrExpr(this);
   }
 
+  @Override
   Object makeBafInst(Type opType) {
     return Baf.v().newUshrInst(this.getOp1().getType());
   }
 
+  @Override
   public Type getType() {
     Value op1 = op1Box.getValue();
     Value op2 = op2Box.getValue();
 
-    if (!isIntLikeType(op2.getType())) return UnknownType.v();
+    if (!isIntLikeType(op2.getType())) {
+      return UnknownType.v();
+    }
 
-    if (isIntLikeType(op1.getType())) return IntType.v();
-    if (op1.getType().equals(LongType.v())) return LongType.v();
+    if (isIntLikeType(op1.getType())) {
+      return IntType.v();
+    }
+    if (op1.getType().equals(LongType.v())) {
+      return LongType.v();
+    }
 
     return UnknownType.v();
   }
 
+  @Override
   public Object clone() {
     return new JUshrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }

@@ -19,13 +19,13 @@
 
 package soot.jimple.toolkits.pointer;
 
-import soot.tagkit.Attribute;
-
 import java.util.HashSet;
+
+import soot.tagkit.Attribute;
 
 public class DependenceGraph implements Attribute {
   private static final String NAME = "DependenceGraph";
-  HashSet<Edge> edges = new HashSet<Edge>();
+  HashSet<Edge> edges = new HashSet<>();
 
   protected class Edge {
     short from;
@@ -36,10 +36,12 @@ public class DependenceGraph implements Attribute {
       this.to = to;
     }
 
+    @Override
     public int hashCode() {
       return (((from) << 16) + to);
     }
 
+    @Override
     public boolean equals(Object other) {
       Edge o = (Edge) other;
       return from == o.from && to == o.to;
@@ -47,15 +49,25 @@ public class DependenceGraph implements Attribute {
   }
 
   public boolean areAdjacent(short from, short to) {
-    if (from > to) return areAdjacent(to, from);
-    if (from < 0 || to < 0) return false;
-    if (from == to) return true;
+    if (from > to) {
+      return areAdjacent(to, from);
+    }
+    if (from < 0 || to < 0) {
+      return false;
+    }
+    if (from == to) {
+      return true;
+    }
     return edges.contains(new Edge(from, to));
   }
 
   public void addEdge(short from, short to) {
-    if (from < 0) throw new RuntimeException("from < 0");
-    if (to < 0) throw new RuntimeException("to < 0");
+    if (from < 0) {
+      throw new RuntimeException("from < 0");
+    }
+    if (to < 0) {
+      throw new RuntimeException("to < 0");
+    }
     if (from > to) {
       addEdge(to, from);
       return;
@@ -63,14 +75,17 @@ public class DependenceGraph implements Attribute {
     edges.add(new Edge(from, to));
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public void setValue(byte[] v) {
     throw new RuntimeException("Not Supported");
   }
 
+  @Override
   public byte[] getValue() {
     byte[] ret = new byte[4 * edges.size()];
     int i = 0;
@@ -84,6 +99,7 @@ public class DependenceGraph implements Attribute {
     return ret;
   }
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer("Dependences");
     for (Edge e : edges) {

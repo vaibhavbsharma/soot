@@ -1,14 +1,15 @@
 package soot.toDex.instructions;
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.builder.BuilderInstruction;
-import soot.toDex.LabelAssigner;
-import soot.toDex.Register;
-import soot.toDex.SootToDexUtils;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+
+import soot.toDex.LabelAssigner;
+import soot.toDex.Register;
+import soot.toDex.SootToDexUtils;
 
 /** Abstract implementation of an {@link Insn}. */
 public abstract class AbstractInsn implements Insn {
@@ -22,25 +23,30 @@ public abstract class AbstractInsn implements Insn {
       throw new IllegalArgumentException("opcode must not be null");
     }
     this.opc = opc;
-    regs = new ArrayList<Register>();
+    regs = new ArrayList<>();
   }
 
+  @Override
   public Opcode getOpcode() {
     return opc;
   }
 
+  @Override
   public List<Register> getRegs() {
     return regs;
   }
 
+  @Override
   public BitSet getIncompatibleRegs() {
     return new BitSet(0);
   }
 
+  @Override
   public boolean hasIncompatibleRegs() {
     return getIncompatibleRegs().cardinality() > 0;
   }
 
+  @Override
   public int getMinimumRegsNeeded() {
     BitSet incompatRegs = getIncompatibleRegs();
     int resultNeed = 0;
@@ -60,8 +66,11 @@ public abstract class AbstractInsn implements Insn {
     // not free to overlap as we still need to provide input data in it.
     // add-long/2addr r0 r0 -> 2 registers
     // add-int r0 r0 r2 -> 2 registers, re-use result register
-    if (opc.name.endsWith("/2addr")) return resultNeed + miscRegsNeed;
-    else return Math.max(resultNeed, miscRegsNeed);
+    if (opc.name.endsWith("/2addr")) {
+      return resultNeed + miscRegsNeed;
+    } else {
+      return Math.max(resultNeed, miscRegsNeed);
+    }
   }
 
   @Override
@@ -80,6 +89,7 @@ public abstract class AbstractInsn implements Insn {
     return opc.toString() + " " + regs;
   }
 
+  @Override
   public int getSize() {
     return opc.format.size / 2; // the format size is in byte count, we need word count
   }

@@ -36,34 +36,42 @@ public class BArrayWriteInst extends AbstractOpTypeInst implements ArrayWriteIns
     super(opType);
   }
 
+  @Override
   public int getInCount() {
     return 3;
   }
 
+  @Override
   public Object clone() {
     return new BArrayWriteInst(getOpType());
   }
 
+  @Override
   public int getInMachineCount() {
     return 2 + AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public final String getName() {
     return "arraywrite";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseArrayWriteInst(this);
   }
 
+  @Override
   public boolean containsArrayRef() {
     return true;
   }

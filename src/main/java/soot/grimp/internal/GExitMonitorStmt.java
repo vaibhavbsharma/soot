@@ -34,6 +34,7 @@ public class GExitMonitorStmt extends JExitMonitorStmt {
     super(((Grimp.v())).newExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new GExitMonitorStmt(Grimp.cloneIfNecessary(getOp()));
   }

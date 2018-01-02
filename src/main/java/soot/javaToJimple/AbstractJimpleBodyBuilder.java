@@ -34,7 +34,9 @@ public abstract class AbstractJimpleBodyBuilder {
   }
 
   public AbstractJimpleBodyBuilder ext() {
-    if (ext == null) return this;
+    if (ext == null) {
+      return this;
+    }
     return ext;
   }
 

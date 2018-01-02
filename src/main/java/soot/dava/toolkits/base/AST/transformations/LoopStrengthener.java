@@ -19,6 +19,11 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.SootClass;
@@ -36,11 +41,6 @@ import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -66,6 +66,7 @@ public class LoopStrengthener extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
   /*
@@ -81,6 +82,7 @@ public class LoopStrengthener extends DepthFirstAdapter {
     ASTLabeledBlockNode
     ASTSynchronizedBlockNode
   */
+  @Override
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
       dealWithSwitchNode((ASTSwitchNode) node);
@@ -130,6 +132,7 @@ public class LoopStrengthener extends DepthFirstAdapter {
     } // end of going over subBodies
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     inASTTryNode(node);
 
@@ -430,7 +433,7 @@ public class LoopStrengthener extends DepthFirstAdapter {
   public static List<Object> createNewSubBody(
       List<Object> oldSubBody, int nodeNumber, ASTNode oldNode, List<ASTNode> newNode) {
     // create a new SubBody
-    List<Object> newSubBody = new ArrayList<Object>();
+    List<Object> newSubBody = new ArrayList<>();
 
     // this is an iterator of ASTNodes
     Iterator<Object> it = oldSubBody.iterator();

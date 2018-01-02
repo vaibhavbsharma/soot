@@ -26,6 +26,14 @@
 
 package soot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.JastAddJavaParser;
@@ -36,23 +44,13 @@ import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
   /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesSignature =
-      new ConcurrentHashMultiMap<SootClass, Type>();
+  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<>();
 
   /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesHierarchy =
-      new ConcurrentHashMultiMap<SootClass, Type>();
+  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<>();
 
   /** SootClasses waiting to be resolved. */
   @SuppressWarnings("unchecked")
@@ -61,9 +59,9 @@ public class SootResolver {
   private Program program = null;
 
   public SootResolver(Singletons.Global g) {
-    worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
-    worklist[SootClass.SIGNATURES] = new ArrayDeque<SootClass>();
-    worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
+    worklist[SootClass.HIERARCHY] = new ArrayDeque<>();
+    worklist[SootClass.SIGNATURES] = new ArrayDeque<>();
+    worklist[SootClass.BODIES] = new ArrayDeque<>();
   }
 
   protected void initializeProgram() {
@@ -84,12 +82,13 @@ public class SootResolver {
       program.options().initOptions();
       program.options().addKeyValueOption("-classpath");
       program.options().setValueForOption(Scene.v().getSootClassPath(), "-classpath");
-      if (Options.v().src_prec() == Options.src_prec_java)
+      if (Options.v().src_prec() == Options.src_prec_java) {
         program.setSrcPrec(Program.SRC_PREC_JAVA);
-      else if (Options.v().src_prec() == Options.src_prec_class)
+      } else if (Options.v().src_prec() == Options.src_prec_class) {
         program.setSrcPrec(Program.SRC_PREC_CLASS);
-      else if (Options.v().src_prec() == Options.src_prec_only_class)
+      } else if (Options.v().src_prec() == Options.src_prec_only_class) {
         program.setSrcPrec(Program.SRC_PREC_CLASS);
+      }
       program.initPaths();
     }
   }
@@ -100,7 +99,9 @@ public class SootResolver {
 
   /** Returns true if we are resolving all class refs recursively. */
   protected boolean resolveEverything() {
-    if (Options.v().on_the_fly()) return false;
+    if (Options.v().on_the_fly()) {
+      return false;
+    }
     return (Options.v().whole_program()
         || Options.v().whole_shimple()
         || Options.v().full_resolver()
@@ -112,7 +113,9 @@ public class SootResolver {
    * the class is resolved, it will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
-    if (Scene.v().containsClass(className)) return Scene.v().getSootClass(className);
+    if (Scene.v().containsClass(className)) {
+      return Scene.v().getSootClass(className);
+    }
 
     SootClass newClass;
     newClass = new SootClass(className);
@@ -164,7 +167,9 @@ public class SootResolver {
             for (SootField f : sc.getFields()) {
               f.setPhantom(true);
             }
-          } else bringToBodies(sc);
+          } else {
+            bringToBodies(sc);
+          }
         } else { // No transitive
           switch (i) {
             case SootClass.BODIES:
@@ -185,13 +190,18 @@ public class SootResolver {
   protected void addToResolveWorklist(Type type, int level) {
     // We go from Type -> SootClass directly, since RefType.getSootClass
     // calls makeClassRef anyway
-    if (type instanceof RefType) addToResolveWorklist(((RefType) type).getSootClass(), level);
-    else if (type instanceof ArrayType) addToResolveWorklist(((ArrayType) type).baseType, level);
-    // Other types ignored
+    if (type instanceof RefType) {
+      addToResolveWorklist(((RefType) type).getSootClass(), level);
+    } else if (type instanceof ArrayType) {
+      addToResolveWorklist(((ArrayType) type).baseType, level);
+      // Other types ignored
+    }
   }
 
   protected void addToResolveWorklist(SootClass sc, int desiredLevel) {
-    if (sc.resolvingLevel() >= desiredLevel) return;
+    if (sc.resolvingLevel() >= desiredLevel) {
+      return;
+    }
     worklist[desiredLevel].add(sc);
   }
 
@@ -200,8 +210,12 @@ public class SootResolver {
    * all supertypes and enclosing types.
    */
   protected void bringToHierarchy(SootClass sc) {
-    if (sc.resolvingLevel() >= SootClass.HIERARCHY) return;
-    if (Options.v().debug_resolver()) G.v().out.println("bringing to HIERARCHY: " + sc);
+    if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
+      return;
+    }
+    if (Options.v().debug_resolver()) {
+      G.v().out.println("bringing to HIERARCHY: " + sc);
+    }
     sc.setResolvingLevel(SootClass.HIERARCHY);
 
     bringToHierarchyUnchecked(sc);
@@ -238,21 +252,29 @@ public class SootResolver {
         }
       } else {
         Dependencies dependencies = is.resolve(sc);
-        if (!dependencies.typesToSignature.isEmpty())
+        if (!dependencies.typesToSignature.isEmpty()) {
           classToTypesSignature.putAll(sc, dependencies.typesToSignature);
-        if (!dependencies.typesToHierarchy.isEmpty())
+        }
+        if (!dependencies.typesToHierarchy.isEmpty()) {
           classToTypesHierarchy.putAll(sc, dependencies.typesToHierarchy);
+        }
       }
     } finally {
-      if (is != null) is.close();
+      if (is != null) {
+        is.close();
+      }
     }
     reResolveHierarchy(sc);
   }
 
   public void reResolveHierarchy(SootClass sc) {
     // Bring superclasses to hierarchy
-    if (sc.hasSuperclass()) addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
-    if (sc.hasOuterClass()) addToResolveWorklist(sc.getOuterClass(), SootClass.HIERARCHY);
+    if (sc.hasSuperclass()) {
+      addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
+    }
+    if (sc.hasOuterClass()) {
+      addToResolveWorklist(sc.getOuterClass(), SootClass.HIERARCHY);
+    }
     for (SootClass iface : sc.getInterfaces()) {
       addToResolveWorklist(iface, SootClass.HIERARCHY);
     }
@@ -263,9 +285,13 @@ public class SootResolver {
    * all referred to types in these signatures.
    */
   protected void bringToSignatures(SootClass sc) {
-    if (sc.resolvingLevel() >= SootClass.SIGNATURES) return;
+    if (sc.resolvingLevel() >= SootClass.SIGNATURES) {
+      return;
+    }
     bringToHierarchy(sc);
-    if (Options.v().debug_resolver()) G.v().out.println("bringing to SIGNATURES: " + sc);
+    if (Options.v().debug_resolver()) {
+      G.v().out.println("bringing to SIGNATURES: " + sc);
+    }
     sc.setResolvingLevel(SootClass.SIGNATURES);
 
     bringToSignaturesUnchecked(sc);
@@ -289,7 +315,9 @@ public class SootResolver {
     }
 
     // Bring superclasses to signatures
-    if (sc.hasSuperclass()) addToResolveWorklist(sc.getSuperclass(), SootClass.SIGNATURES);
+    if (sc.hasSuperclass()) {
+      addToResolveWorklist(sc.getSuperclass(), SootClass.SIGNATURES);
+    }
     for (SootClass iface : sc.getInterfaces()) {
       addToResolveWorklist(iface, SootClass.SIGNATURES);
     }
@@ -303,9 +331,13 @@ public class SootResolver {
    * all of them to signatures. But this could/should be improved.
    */
   protected void bringToBodies(SootClass sc) {
-    if (sc.resolvingLevel() >= SootClass.BODIES) return;
+    if (sc.resolvingLevel() >= SootClass.BODIES) {
+      return;
+    }
     bringToSignatures(sc);
-    if (Options.v().debug_resolver()) G.v().out.println("bringing to BODIES: " + sc);
+    if (Options.v().debug_resolver()) {
+      G.v().out.println("bringing to BODIES: " + sc);
+    }
     sc.setResolvingLevel(SootClass.BODIES);
 
     bringToBodiesUnchecked(sc);
@@ -341,7 +373,9 @@ public class SootResolver {
 
   public void reResolve(SootClass cl, int newResolvingLevel) {
     int resolvingLevel = cl.resolvingLevel();
-    if (resolvingLevel >= newResolvingLevel) return;
+    if (resolvingLevel >= newResolvingLevel) {
+      return;
+    }
     reResolveHierarchy(cl);
     cl.setResolvingLevel(newResolvingLevel);
     addToResolveWorklist(cl, resolvingLevel);
@@ -353,7 +387,9 @@ public class SootResolver {
   }
 
   public Program getProgram() {
-    if (program == null) initializeProgram();
+    if (program == null) {
+      initializeProgram();
+    }
     return program;
   }
 

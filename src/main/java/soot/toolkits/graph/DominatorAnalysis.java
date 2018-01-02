@@ -19,13 +19,13 @@
 
 package soot.toolkits.graph;
 
+import java.util.List;
+
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.List;
 
 // STEP 1: What are we computing?
 // SETS OF Units that are dominators => Use ArraySparseSet.
@@ -54,7 +54,7 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Unit>> 
   }
 
   private void initAllNodes() {
-    allNodes = new ArraySparseSet<Unit>();
+    allNodes = new ArraySparseSet<>();
     for (Unit u : g) {
       allNodes.add(u);
     }
@@ -123,7 +123,7 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Unit>> 
   @Override
   protected FlowSet<Unit> entryInitialFlow() {
 
-    FlowSet<Unit> fs = new ArraySparseSet<Unit>();
+    FlowSet<Unit> fs = new ArraySparseSet<>();
     List<Unit> heads = g.getHeads();
     if (heads.size() != 1) {
       throw new RuntimeException("Expect one start node only.");

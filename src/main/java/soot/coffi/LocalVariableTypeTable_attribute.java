@@ -89,6 +89,7 @@ class LocalVariableTypeTable_attribute extends attribute_info {
     return null;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 

@@ -31,11 +31,16 @@ public class SingletonList<E> extends AbstractList<E> {
     this.e = e;
   }
 
+  @Override
   public E get(int index) {
-    if (index != 0) throw new IndexOutOfBoundsException();
-    else return this.e;
+    if (index != 0) {
+      throw new IndexOutOfBoundsException();
+    } else {
+      return this.e;
+    }
   }
 
+  @Override
   public int size() {
     return 1;
   }

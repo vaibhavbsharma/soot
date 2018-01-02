@@ -47,10 +47,12 @@ class ListItr implements Iterator {
     cell = head;
   }
 
+  @Override
   public boolean hasNext() {
     return cell != null;
   }
 
+  @Override
   public Object next() {
     Object result = cell.data;
     cell = cell.next;
@@ -105,7 +107,9 @@ public class PurityTest {
     while (it.hasNext()) {
       Point p = (Point) it.next();
       p.print();
-      if (it.hasNext()) System.out.print(";");
+      if (it.hasNext()) {
+        System.out.print(";");
+      }
     }
     System.out.println("]");
   }

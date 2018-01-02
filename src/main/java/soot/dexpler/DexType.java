@@ -26,6 +26,7 @@ package soot.dexpler;
 
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -47,13 +48,17 @@ public class DexType {
   protected TypeReference type;
 
   public DexType(TypeReference type) {
-    if (type == null) throw new RuntimeException("error: type ref is null!");
+    if (type == null) {
+      throw new RuntimeException("error: type ref is null!");
+    }
     this.type = type;
     this.name = type.getType();
   }
 
   public DexType(String type) {
-    if (type == null) throw new RuntimeException("error: type is null!");
+    if (type == null) {
+      throw new RuntimeException("error: type is null!");
+    }
     this.type = new ImmutableTypeReference(type);
     this.name = type;
   }
@@ -175,8 +180,12 @@ public class DexType {
     String r = "";
     String[] split1 = type.split(";");
     for (String s : split1) {
-      if (s.startsWith("L")) s = s.replaceFirst("L", "");
-      if (s.startsWith("<L")) s = s.replaceFirst("<L", "<");
+      if (s.startsWith("L")) {
+        s = s.replaceFirst("L", "");
+      }
+      if (s.startsWith("<L")) {
+        s = s.replaceFirst("<L", "<");
+      }
       r += s;
     }
     return r;
@@ -187,7 +196,9 @@ public class DexType {
     type = type.replaceAll(">", ">;");
     type = "L" + type; // a class name cannot be a primitive
     type = type.replaceAll("L\\*;", "*");
-    if (!type.endsWith(";")) type += ";";
+    if (!type.endsWith(";")) {
+      type += ";";
+    }
     return type;
   }
 

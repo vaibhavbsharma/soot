@@ -18,6 +18,10 @@
  */
 package soot.jimple.toolkits.pointer;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.Body;
 import soot.Local;
 import soot.RefLikeType;
@@ -31,10 +35,6 @@ import soot.jimple.internal.AbstractNewExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * LocalNotMayAliasAnalysis attempts to determine if two local variables (at two potentially
@@ -53,6 +53,7 @@ public class LocalMustNotAliasAnalysis
   @SuppressWarnings({"serial", "unchecked"})
   protected static final NewExpr UNKNOWN =
       new AbstractNewExpr() {
+        @Override
         public String toString() {
           return "UNKNOWN";
         }
@@ -71,16 +72,19 @@ public class LocalMustNotAliasAnalysis
 
   public LocalMustNotAliasAnalysis(DirectedGraph<Unit> directedGraph, Body b) {
     super(directedGraph);
-    locals = new HashSet<Local>();
+    locals = new HashSet<>();
     locals.addAll(b.getLocals());
 
     for (Local l : b.getLocals()) {
-      if (l.getType() instanceof RefLikeType) locals.add(l);
+      if (l.getType() instanceof RefLikeType) {
+        locals.add(l);
+      }
     }
 
     doAnalysis();
   }
 
+  @Override
   protected void merge(
       HashMap<Local, Set<NewExpr>> in1,
       HashMap<Local, Set<NewExpr>> in2,
@@ -99,6 +103,7 @@ public class LocalMustNotAliasAnalysis
     }
   }
 
+  @Override
   protected void flowThrough(
       HashMap<Local, Set<NewExpr>> in, Unit unit, HashMap<Local, Set<NewExpr>> out) {
     Stmt s = (Stmt) unit;
@@ -111,35 +116,40 @@ public class LocalMustNotAliasAnalysis
       Value lhs = ds.getLeftOp();
       Value rhs = ds.getRightOp();
       if (lhs instanceof Local) {
-        HashSet<NewExpr> lv = new HashSet<NewExpr>();
+        HashSet<NewExpr> lv = new HashSet<>();
         out.put((Local) lhs, lv);
         if (rhs instanceof NewExpr) {
           lv.add((NewExpr) rhs);
         } else if (rhs instanceof Local) {
           lv.addAll(in.get(rhs));
-        } else lv.add(UNKNOWN);
+        } else {
+          lv.add(UNKNOWN);
+        }
       }
     }
   }
 
+  @Override
   protected void copy(HashMap<Local, Set<NewExpr>> source, HashMap<Local, Set<NewExpr>> dest) {
     dest.putAll(source);
   }
 
+  @Override
   protected HashMap<Local, Set<NewExpr>> entryInitialFlow() {
-    HashMap<Local, Set<NewExpr>> m = new HashMap<Local, Set<NewExpr>>();
+    HashMap<Local, Set<NewExpr>> m = new HashMap<>();
     for (Local l : locals) {
-      HashSet<NewExpr> s = new HashSet<NewExpr>();
+      HashSet<NewExpr> s = new HashSet<>();
       s.add(UNKNOWN);
       m.put(l, s);
     }
     return m;
   }
 
+  @Override
   protected HashMap<Local, Set<NewExpr>> newInitialFlow() {
-    HashMap<Local, Set<NewExpr>> m = new HashMap<Local, Set<NewExpr>>();
+    HashMap<Local, Set<NewExpr>> m = new HashMap<>();
     for (Local l : locals) {
-      HashSet<NewExpr> s = new HashSet<NewExpr>();
+      HashSet<NewExpr> s = new HashSet<>();
       m.put(l, s);
     }
     return m;
@@ -166,9 +176,11 @@ public class LocalMustNotAliasAnalysis
     Set<NewExpr> l1n = getFlowBefore(s1).get(l1);
     Set<NewExpr> l2n = getFlowBefore(s2).get(l2);
 
-    if (l1n.contains(UNKNOWN) || l2n.contains(UNKNOWN)) return false;
+    if (l1n.contains(UNKNOWN) || l2n.contains(UNKNOWN)) {
+      return false;
+    }
 
-    Set<NewExpr> n = new HashSet<NewExpr>();
+    Set<NewExpr> n = new HashSet<>();
     n.addAll(l1n);
     n.retainAll(l2n);
     return n.isEmpty();
@@ -183,10 +195,13 @@ public class LocalMustNotAliasAnalysis
     HashMap<Local, Set<NewExpr>> flowBefore = getFlowBefore(s);
 
     Set<NewExpr> set = flowBefore.get(l);
-    if (set.size() != 1) return null;
-    else {
+    if (set.size() != 1) {
+      return null;
+    } else {
       NewExpr singleNewExpr = set.iterator().next();
-      if (singleNewExpr == UNKNOWN) return null;
+      if (singleNewExpr == UNKNOWN) {
+        return null;
+      }
       return (RefType) singleNewExpr.getType();
     }
   }

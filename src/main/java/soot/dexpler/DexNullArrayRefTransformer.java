@@ -20,6 +20,11 @@
 
 package soot.dexpler;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -41,11 +46,6 @@ import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * If Dalvik bytecode contains statements using a base array which is always null, Soot's fast type
  * resolver will fail with the following exception: "Exception in thread " main"
@@ -63,6 +63,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
     return new DexNullArrayRefTransformer();
   }
 
+  @Override
   protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
     final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
     final LocalDefs defs = LocalDefs.Factory.newLocalDefs(g);
@@ -100,7 +101,9 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
       }
     }
 
-    if (changed) UnreachableCodeEliminator.v().transform(body);
+    if (changed) {
+      UnreachableCodeEliminator.v().transform(body);
+    }
   }
 
   /**
@@ -114,12 +117,18 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
    */
   private boolean isAlwaysNullBefore(Stmt s, Local base, LocalDefs defs) {
     List<Unit> baseDefs = defs.getDefsOfAt(base, s);
-    if (baseDefs.isEmpty()) return true;
+    if (baseDefs.isEmpty()) {
+      return true;
+    }
 
     for (Unit u : baseDefs) {
-      if (!(u instanceof DefinitionStmt)) return false;
+      if (!(u instanceof DefinitionStmt)) {
+        return false;
+      }
       DefinitionStmt defStmt = (DefinitionStmt) u;
-      if (defStmt.getRightOp() != NullConstant.v()) return false;
+      if (defStmt.getRightOp() != NullConstant.v()) {
+        return false;
+      }
     }
     return true;
   }

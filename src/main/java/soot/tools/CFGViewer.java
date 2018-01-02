@@ -25,6 +25,11 @@
 
 package soot.tools;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -41,11 +46,6 @@ import soot.util.cfgcmd.CFGGraphType;
 import soot.util.cfgcmd.CFGIntermediateRep;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A utility class for generating dot graph file for a control flow graph
@@ -75,6 +75,7 @@ public class CFGViewer extends BodyTransformer {
   // from method name to the class
   // name declaring the method.
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     initialize(options);
     SootMethod meth = b.getMethod();
@@ -179,7 +180,7 @@ public class CFGViewer extends BodyTransformer {
    * @return an array of arguments to pass on to Soot.Main.main().
    */
   private String[] parse_options(String[] args) {
-    List<String> sootArgs = new ArrayList<String>(args.length);
+    List<String> sootArgs = new ArrayList<>(args.length);
 
     for (int i = 0, n = args.length; i < n; i++) {
       if (args[i].equals("--alt-classpath") || args[i].equals("--alt-class-path")) {
@@ -236,7 +237,7 @@ public class CFGViewer extends BodyTransformer {
           sootArgs.add(clsname);
           String methname = args[i].substring(smpos + 1);
           if (methodsToPrint == null) {
-            methodsToPrint = new HashMap<String, String>();
+            methodsToPrint = new HashMap<>();
           }
           methodsToPrint.put(methname, clsname);
         }

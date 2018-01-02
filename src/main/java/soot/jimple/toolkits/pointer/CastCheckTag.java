@@ -29,16 +29,19 @@ public class CastCheckTag implements Tag {
     this.eliminateCheck = eliminateCheck;
   }
 
+  @Override
   public String getName() {
     return "CastCheckTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] ret = new byte[1];
     ret[0] = (byte) (eliminateCheck ? 1 : 0);
     return ret;
   }
 
+  @Override
   public String toString() {
     if (eliminateCheck) {
       return "This cast check can be eliminated.";

@@ -36,7 +36,9 @@ public class Util {
    */
   public static Unit findFirstNonIdentityUnit(Body b, Stmt s) {
     Unit u1 = s;
-    while (u1 instanceof IdentityStmt) u1 = b.getUnits().getSuccOf(u1);
+    while (u1 instanceof IdentityStmt) {
+      u1 = b.getUnits().getSuccOf(u1);
+    }
     return u1;
   }
 }

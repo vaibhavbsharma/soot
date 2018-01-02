@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTIfNode;
@@ -31,10 +35,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
   Nomair A. Naeem 18-FEB-2005
@@ -67,11 +67,15 @@ public class OrAggregatorOne extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
+  @Override
   public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {
     String outerLabel = node.get_Label().toString();
-    if (outerLabel == null) return;
+    if (outerLabel == null) {
+      return;
+    }
 
     String innerLabel = null;
 
@@ -108,12 +112,15 @@ public class OrAggregatorOne extends DepthFirstAdapter {
     ASTCondition newCond = null;
     while (condIt.hasNext()) {
       ASTCondition next = condIt.next();
-      if (newCond == null) newCond = next;
-      else newCond = new ASTOrCondition(newCond, next);
+      if (newCond == null) {
+        newCond = next;
+      } else {
+        newCond = new ASTOrCondition(newCond, next);
+      }
     }
 
     // will contain the Body of the ASTIfNode
-    List<Object> newIfBody = new ArrayList<Object>();
+    List<Object> newIfBody = new ArrayList<>();
 
     // get_SubBodies of upper labeled block
     List<Object> subBodies = node.get_SubBodies();
@@ -131,7 +138,7 @@ public class OrAggregatorOne extends DepthFirstAdapter {
 
     ASTIfNode newNode = new ASTIfNode(new SETNodeLabel(), newCond, newIfBody);
 
-    List<Object> newLabeledBlockBody = new ArrayList<Object>();
+    List<Object> newLabeledBlockBody = new ArrayList<>();
     newLabeledBlockBody.add(newNode);
 
     G.v().ASTTransformations_modified = true;
@@ -217,9 +224,13 @@ public class OrAggregatorOne extends DepthFirstAdapter {
       }
 
       // check if this is the inner label broken and is not the last in the iterator
-      if (labelBroken.compareTo(innerLabel) == 0 && it.hasNext()) continue;
+      if (labelBroken.compareTo(innerLabel) == 0 && it.hasNext()) {
+        continue;
+      }
       // check if this is the outer label broken and is the last in the iterator
-      if (labelBroken.compareTo(outerLabel) == 0 && !it.hasNext()) continue;
+      if (labelBroken.compareTo(outerLabel) == 0 && !it.hasNext()) {
+        continue;
+      }
 
       // if we get here that means this is not a break breaking the label we want
       return false;
@@ -298,7 +309,7 @@ public class OrAggregatorOne extends DepthFirstAdapter {
     1, All nodes are ASTIFNodes
   */
   private List<ASTCondition> getConditions(Iterator it) {
-    List<ASTCondition> toReturn = new ArrayList<ASTCondition>();
+    List<ASTCondition> toReturn = new ArrayList<>();
     while (it.hasNext()) {
       // safe cast since we know these are all ASTIfNodes
       ASTIfNode node = (ASTIfNode) it.next();

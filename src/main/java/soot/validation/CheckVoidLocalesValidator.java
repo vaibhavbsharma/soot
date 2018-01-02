@@ -1,10 +1,10 @@
 package soot.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.Local;
 import soot.VoidType;
-
-import java.util.List;
 
 public enum CheckVoidLocalesValidator implements BodyValidator {
   INSTANCE;
@@ -16,10 +16,11 @@ public enum CheckVoidLocalesValidator implements BodyValidator {
   @Override
   public void validate(Body body, List<ValidationException> exception) {
     for (Local l : body.getLocals()) {
-      if (l.getType() instanceof VoidType)
+      if (l.getType() instanceof VoidType) {
         exception.add(
             new ValidationException(
                 l, "Local " + l + " in " + body.getMethod() + " defined with void type"));
+      }
     }
   }
 

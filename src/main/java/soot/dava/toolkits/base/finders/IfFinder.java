@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -32,9 +35,6 @@ import soot.jimple.IfStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
 public class IfFinder implements FactFinder {
   public IfFinder(Singletons.Global g) {}
 
@@ -42,6 +42,7 @@ public class IfFinder implements FactFinder {
     return G.v().soot_dava_toolkits_base_finders_IfFinder();
   }
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET)
       throws RetriggerAnalysisException {
     Dava.v().log("IfFinder::find()");
@@ -55,14 +56,17 @@ public class IfFinder implements FactFinder {
       if (s instanceof IfStmt) {
         IfStmt ifs = (IfStmt) s;
 
-        if (body.get_ConsumedConditions().contains(as)) continue;
+        if (body.get_ConsumedConditions().contains(as)) {
+          continue;
+        }
 
         body.consume_Condition(as);
 
-        AugmentedStmt succIf = asg.get_AugStmt(ifs.getTarget()),
-            succElse = as.bsuccs.get(0);
+        AugmentedStmt succIf = asg.get_AugStmt(ifs.getTarget()), succElse = as.bsuccs.get(0);
 
-        if (succIf == succElse) succElse = as.bsuccs.get(1);
+        if (succIf == succElse) {
+          succElse = as.bsuccs.get(1);
+        }
 
         asg.calculate_Reachability(succIf, succElse, as);
         asg.calculate_Reachability(succElse, succIf, as);
@@ -89,9 +93,13 @@ public class IfFinder implements FactFinder {
               if (tryBody.contains(fbas) == false) {
                 fullBody.remove(fbas);
 
-                if (ifBody.contains(fbas)) ifBody.remove(fbas);
+                if (ifBody.contains(fbas)) {
+                  ifBody.remove(fbas);
+                }
 
-                if (elseBody.contains(fbas)) elseBody.remove(fbas);
+                if (elseBody.contains(fbas)) {
+                  elseBody.remove(fbas);
+                }
               }
             }
           }
@@ -105,9 +113,11 @@ public class IfFinder implements FactFinder {
   private IterableSet find_Body(AugmentedStmt targetBranch, AugmentedStmt otherBranch) {
     IterableSet body = new IterableSet();
 
-    if (targetBranch.get_Reachers().contains(otherBranch)) return body;
+    if (targetBranch.get_Reachers().contains(otherBranch)) {
+      return body;
+    }
 
-    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
+    LinkedList<AugmentedStmt> worklist = new LinkedList<>();
     worklist.addLast(targetBranch);
 
     while (worklist.isEmpty() == false) {
@@ -121,7 +131,9 @@ public class IfFinder implements FactFinder {
           AugmentedStmt sas = (AugmentedStmt) sit.next();
 
           if ((sas.get_Reachers().contains(otherBranch) == false)
-              && (sas.get_Dominators().contains(targetBranch) == true)) worklist.addLast(sas);
+              && (sas.get_Dominators().contains(targetBranch) == true)) {
+            worklist.addLast(sas);
+          }
         }
       }
     }

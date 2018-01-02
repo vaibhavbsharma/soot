@@ -25,13 +25,13 @@
 
 package soot.jimple;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * <code>ParameterRef</code> objects are used by <code>Body</code> objects to refer to the parameter
@@ -52,6 +52,7 @@ public class ParameterRef implements IdentityRef {
     this.paramType = paramType;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof ParameterRef) {
       return n == ((ParameterRef) o).n && paramType.equals(((ParameterRef) o).paramType);
@@ -59,20 +60,24 @@ public class ParameterRef implements IdentityRef {
     return false;
   }
 
+  @Override
   public int equivHashCode() {
     return n * 101 + paramType.hashCode() * 17;
   }
 
   /** Create a new ParameterRef object with the same paramType and number. */
+  @Override
   public Object clone() {
     return new ParameterRef(paramType, n);
   }
 
   /** Converts the given ParameterRef into a String i.e. <code>@parameter0: .int</code>. */
+  @Override
   public String toString() {
     return "@parameter" + n + ": " + paramType;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.identityRef(this);
   }
@@ -93,11 +98,13 @@ public class ParameterRef implements IdentityRef {
   }
 
   /** Returns the type of this ParameterRef. */
+  @Override
   public Type getType() {
     return paramType;
   }
 
   /** Used with RefSwitch. */
+  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseParameterRef(this);
   }

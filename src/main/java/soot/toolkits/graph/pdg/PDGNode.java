@@ -18,10 +18,10 @@
  */
 package soot.toolkits.graph.pdg;
 
-import soot.toolkits.graph.Block;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.toolkits.graph.Block;
 
 /**
  * This class defines a Node in the Program Dependence Graph. There might be a need to store
@@ -46,8 +46,8 @@ public class PDGNode {
 
   protected Type m_type;
   protected Object m_node = null;
-  protected List<PDGNode> m_dependents = new ArrayList<PDGNode>();
-  protected List<PDGNode> m_backDependents = new ArrayList<PDGNode>();
+  protected List<PDGNode> m_dependents = new ArrayList<>();
+  protected List<PDGNode> m_backDependents = new ArrayList<>();
   // This is used to keep an ordered list of the nodes in a region, based on the control-flow
   // between them (if any).
   protected PDGNode m_next = null;
@@ -114,7 +114,9 @@ public class PDGNode {
   }
 
   public void addDependent(PDGNode node) {
-    if (!this.m_dependents.contains(node)) this.m_dependents.add(node);
+    if (!this.m_dependents.contains(node)) {
+      this.m_dependents.add(node);
+    }
   }
 
   public void addBackDependent(PDGNode node) {
@@ -133,6 +135,7 @@ public class PDGNode {
     return this.m_backDependents;
   }
 
+  @Override
   public String toString() {
     String s = new String();
     s = "Type: " + ((this.m_type == Type.REGION) ? "REGION: " : "CFGNODE: ");
@@ -143,8 +146,11 @@ public class PDGNode {
   public String toShortString() {
     String s = new String();
     s = "Type: " + ((this.m_type == Type.REGION) ? "REGION: " : "CFGNODE: ");
-    if (this.m_type == Type.REGION) s += ((IRegion) this.m_node).getID();
-    else s += ((Block) this.m_node).toShortString();
+    if (this.m_type == Type.REGION) {
+      s += ((IRegion) this.m_node).getID();
+    } else {
+      s += ((Block) this.m_node).toShortString();
+    }
 
     return s;
   }

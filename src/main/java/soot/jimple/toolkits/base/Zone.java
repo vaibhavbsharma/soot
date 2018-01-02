@@ -32,6 +32,7 @@ public class Zone {
     this.name = name;
   }
 
+  @Override
   public String toString() {
     return "<zone: " + name + ">";
   }

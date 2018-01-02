@@ -55,13 +55,17 @@ class TypeNode {
   }
 
   public boolean hasAncestor_1(TypeNode typeNode) {
-    if (typeNode == this) return true;
+    if (typeNode == this) {
+      return true;
+    }
 
     return ClassHierarchy.v().hasAncestor_1(id, typeNode.id);
   }
 
   public boolean hasAncestor_2(TypeNode typeNode) {
-    if (typeNode == this) return true;
+    if (typeNode == this) {
+      return true;
+    }
 
     return ClassHierarchy.v().hasAncestor_2(id, typeNode.id);
   }
@@ -108,6 +112,7 @@ class TypeNode {
     return ClassHierarchy.v().gcd_2(id, typeNode.id);
   }
 
+  @Override
   public String toString() {
     if (type != null) {
       return type + "(" + id + ")";

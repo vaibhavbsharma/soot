@@ -25,14 +25,14 @@
 
 package soot.jimple;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.RefType;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 public class ThisRef implements IdentityRef {
   RefType thisType;
@@ -41,6 +41,7 @@ public class ThisRef implements IdentityRef {
     this.thisType = thisType;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof ThisRef) {
       return thisType.equals(((ThisRef) o).thisType);
@@ -48,14 +49,17 @@ public class ThisRef implements IdentityRef {
     return false;
   }
 
+  @Override
   public int equivHashCode() {
     return thisType.hashCode();
   }
 
+  @Override
   public String toString() {
     return "@this: " + thisType;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.identityRef(this);
   }
@@ -65,14 +69,17 @@ public class ThisRef implements IdentityRef {
     return Collections.emptyList();
   }
 
+  @Override
   public Type getType() {
     return thisType;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseThisRef(this);
   }
 
+  @Override
   public Object clone() {
     return new ThisRef(thisType);
   }

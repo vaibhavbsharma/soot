@@ -25,6 +25,19 @@
 
 package soot.coffi;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.Vector;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -77,19 +90,6 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.ArraySet;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.Vector;
 
 /**
  * A Control Flow Graph.
@@ -151,20 +151,26 @@ public class CFG {
     if (cfg != null) {
       cfg.beginCode = true;
       firstInstruction = cfg.head;
-    } else firstInstruction = null;
+    } else {
+      firstInstruction = null;
+    }
 
     // calculate complexity metrics
-    if (soot.jbco.Main.metrics) complexity();
+    if (soot.jbco.Main.metrics) {
+      complexity();
+    }
   }
 
-  public static HashMap<SootMethod, int[]> methodsToVEM = new HashMap<SootMethod, int[]>();
+  public static HashMap<SootMethod, int[]> methodsToVEM = new HashMap<>();
 
   private void complexity() {
     // ignore all non-app classes
-    if (!method.jmethod.getDeclaringClass().isApplicationClass()) return;
+    if (!method.jmethod.getDeclaringClass().isApplicationClass()) {
+      return;
+    }
 
     BasicBlock b = this.cfg;
-    HashMap<BasicBlock, Integer> block2exc = new HashMap<BasicBlock, Integer>();
+    HashMap<BasicBlock, Integer> block2exc = new HashMap<>();
     int tmp, nodes = 0, edges = 0, highest = 0;
 
     while (b != null) {
@@ -174,7 +180,9 @@ public class CFG {
         Instruction end = element.start_inst;
         if ((start.label >= b.head.label && start.label <= b.tail.label)
             || (end.label > b.head.label
-                && (b.tail.next == null || end.label <= b.tail.next.label))) tmp++;
+                && (b.tail.next == null || end.label <= b.tail.next.label))) {
+          tmp++;
+        }
       }
       block2exc.put(b, new Integer(tmp));
       b = b.next;
@@ -187,7 +195,9 @@ public class CFG {
 
       // exceptions are not counted in succs and preds so we need to do so manually
       int deg = b.pred.size() + tmp + (b.beginException ? 1 : 0);
-      if (deg > highest) highest = deg;
+      if (deg > highest) {
+        highest = deg;
+      }
       edges += tmp;
       b = b.next;
     }
@@ -202,8 +212,8 @@ public class CFG {
     Code_attribute ca = method.locate_code_attribute();
 
     {
-      h2bb = new Hashtable<Instruction, BasicBlock>(100, 25);
-      t2bb = new Hashtable<Instruction, BasicBlock>(100, 25);
+      h2bb = new Hashtable<>(100, 25);
+      t2bb = new Hashtable<>(100, 25);
 
       Instruction insn = this.sentinel.next;
       BasicBlock blast = null;
@@ -236,7 +246,7 @@ public class CFG {
         if (insn instanceof Instruction_Athrow) {
           // see how many targets it can reach.  Note that this is a
           // subset of the exception_table.
-          HashSet<Instruction> ethandlers = new HashSet<Instruction>();
+          HashSet<Instruction> ethandlers = new HashSet<>();
 
           // not quite a subset---could also be that control
           // exits this method, so start icount at 1
@@ -302,11 +312,14 @@ public class CFG {
     insn = head;
     next = insn.next;
 
-    if (next == null) return insn;
+    if (next == null) {
+      return insn;
+    }
 
     do {
-      if (insn.branches || next.labelled) break;
-      else {
+      if (insn.branches || next.labelled) {
+        break;
+      } else {
         insn = next;
         next = insn.next;
       }
@@ -316,10 +329,10 @@ public class CFG {
   }
 
   /* We only handle simple cases. */
-  Map<Instruction, Instruction> jsr2astore = new HashMap<Instruction, Instruction>();
-  Map<Instruction, Instruction> astore2ret = new HashMap<Instruction, Instruction>();
+  Map<Instruction, Instruction> jsr2astore = new HashMap<>();
+  Map<Instruction, Instruction> astore2ret = new HashMap<>();
 
-  LinkedList<Instruction> jsrorder = new LinkedList<Instruction>();
+  LinkedList<Instruction> jsrorder = new LinkedList<>();
 
   /* Eliminate subroutines ( JSR/RET instructions ) by inlining the
   routine bodies. */
@@ -332,9 +345,9 @@ public class CFG {
     }
     this.lastInstruction = insn;
 
-    HashMap<Instruction, Instruction> todoBlocks = new HashMap<Instruction, Instruction>();
+    HashMap<Instruction, Instruction> todoBlocks = new HashMap<>();
     todoBlocks.put(this.sentinel.next, this.lastInstruction);
-    LinkedList<Instruction> todoList = new LinkedList<Instruction>();
+    LinkedList<Instruction> todoList = new LinkedList<>();
     todoList.add(this.sentinel.next);
 
     while (!todoList.isEmpty()) {
@@ -376,7 +389,7 @@ public class CFG {
   // the caller cleans jsr2astore, astore2ret
   private boolean findOutmostJsrs(Instruction start, Instruction end) {
     // use to put innerJsrs.
-    HashSet<Instruction> innerJsrs = new HashSet<Instruction>();
+    HashSet<Instruction> innerJsrs = new HashSet<>();
     boolean unusual = false;
 
     Instruction insn = start;
@@ -429,7 +442,9 @@ public class CFG {
     while (insn != null) {
       if (insn instanceof Instruction_Ret || insn instanceof Instruction_Ret_w) {
         int retnum = ((Interface_OneIntArg) insn).getIntArg();
-        if (astorenum == retnum) return insn;
+        if (astorenum == retnum) {
+          return insn;
+        }
       } else
       /* adjust the jsr inlining order. */
       if (insn instanceof Instruction_Jsr || insn instanceof Instruction_Jsr_w) {
@@ -455,7 +470,7 @@ public class CFG {
     		       +"ret"+ret.label);
     }
     */
-    HashMap<Instruction, Instruction> newblocks = new HashMap<Instruction, Instruction>();
+    HashMap<Instruction, Instruction> newblocks = new HashMap<>();
 
     while (!jsrorder.isEmpty()) {
       Instruction jsr = jsrorder.removeFirst();
@@ -505,7 +520,7 @@ public class CFG {
     int curlabel = this.lastInstruction.label;
 
     // mapping from original instructions to new instructions.
-    HashMap<Instruction, Instruction> insnmap = new HashMap<Instruction, Instruction>();
+    HashMap<Instruction, Instruction> insnmap = new HashMap<>();
     Instruction insn = astore.next;
 
     while (insn != ret && insn != null) {
@@ -594,7 +609,7 @@ public class CFG {
     {
       Code_attribute ca = method.locate_code_attribute();
 
-      LinkedList<exception_table_entry> newentries = new LinkedList<exception_table_entry>();
+      LinkedList<exception_table_entry> newentries = new LinkedList<>();
 
       int orig_start_of_subr = astore.next.originalIndex; // inclusive
       int orig_end_of_subr = ret.originalIndex; // again, inclusive
@@ -611,8 +626,11 @@ public class CFG {
             newone.start_inst = headbefore.next;
           } else {
             Instruction ins = insnmap.get(etentry.start_inst);
-            if (ins != null) newone.start_inst = insnmap.get(etentry.start_inst);
-            else newone.start_inst = etentry.start_inst;
+            if (ins != null) {
+              newone.start_inst = insnmap.get(etentry.start_inst);
+            } else {
+              newone.start_inst = etentry.start_inst;
+            }
           }
           if (orig_end_of_trap > orig_end_of_subr) {
             newone.end_inst = null; // Representing the insn after
@@ -624,7 +642,9 @@ public class CFG {
           }
 
           newone.handler_inst = insnmap.get(etentry.handler_inst);
-          if (newone.handler_inst == null) newone.handler_inst = etentry.handler_inst;
+          if (newone.handler_inst == null) {
+            newone.handler_inst = etentry.handler_inst;
+          }
 
           // We can leave newone.start_pc == 0 and newone.end_pc == 0.
           // since that cannot overlap the range of any other
@@ -657,8 +677,7 @@ public class CFG {
   }
 
   /* if a jsr/astore/ret is replaced by some other instruction, it will be put on this table. */
-  private final Hashtable<Instruction, Instruction_Goto> replacedInsns =
-      new Hashtable<Instruction, Instruction_Goto>();
+  private final Hashtable<Instruction, Instruction_Goto> replacedInsns = new Hashtable<>();
   /* bootstrap methods table */
   private BootstrapMethods_attribute bootstrap_methods_attribute;
   /* do not forget set the target labelled as TRUE.*/
@@ -718,23 +737,33 @@ public class CFG {
 
       Instruction oldinsn = entry.start_inst;
       Instruction newinsn = replacedInsns.get(oldinsn);
-      if (newinsn != null) entry.start_inst = newinsn;
+      if (newinsn != null) {
+        entry.start_inst = newinsn;
+      }
 
       oldinsn = entry.end_inst;
       if (entry.end_inst != null) {
         newinsn = replacedInsns.get(oldinsn);
-        if (newinsn != null) entry.end_inst = newinsn;
+        if (newinsn != null) {
+          entry.end_inst = newinsn;
+        }
       }
 
       oldinsn = entry.handler_inst;
       newinsn = replacedInsns.get(oldinsn);
-      if (newinsn != null) entry.handler_inst = newinsn;
+      if (newinsn != null) {
+        entry.handler_inst = newinsn;
+      }
     }
   }
 
   private void adjustLineNumberTable() {
-    if (!Options.v().keep_line_number()) return;
-    if (method.code_attr == null) return;
+    if (!Options.v().keep_line_number()) {
+      return;
+    }
+    if (method.code_attr == null) {
+      return;
+    }
 
     attribute_info[] attributes = method.code_attr.attributes;
 
@@ -744,7 +773,9 @@ public class CFG {
         for (line_number_table_entry element0 : lntattr.line_number_table) {
           Instruction oldinst = element0.start_inst;
           Instruction newinst = replacedInsns.get(oldinst);
-          if (newinst != null) element0.start_inst = newinst;
+          if (newinst != null) {
+            element0.start_inst = newinst;
+          }
         }
       }
     }
@@ -760,8 +791,11 @@ public class CFG {
    * @return the head of the list of instructions.
    */
   public Instruction reconstructInstructions() {
-    if (cfg != null) return cfg.head;
-    else return null;
+    if (cfg != null) {
+      return cfg.head;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -785,8 +819,8 @@ public class CFG {
 
     this.listBody = listBody;
     this.units = units;
-    instructionToFirstStmt = new HashMap<Instruction, Stmt>();
-    instructionToLastStmt = new HashMap<Instruction, Stmt>();
+    instructionToFirstStmt = new HashMap<>();
+    instructionToLastStmt = new HashMap<>();
 
     jmethod = listBody.getMethod();
     cm = Scene.v();
@@ -794,7 +828,7 @@ public class CFG {
     // TypeArray.setClassManager(cm);
     // TypeStack.setClassManager(cm);
 
-    Set<Local> initialLocals = new ArraySet<Local>();
+    Set<Local> initialLocals = new ArraySet<>();
 
     List<Type> parameterTypes = jmethod.getParameterTypes();
 
@@ -872,7 +906,9 @@ public class CFG {
         int size = bsucc.size();
         Instruction[] succs = new Instruction[size];
 
-        for (int i = 0; i < size; i++) succs[i] = bsucc.elementAt(i).head;
+        for (int i = 0; i < size; i++) {
+          succs[i] = bsucc.elementAt(i).head;
+        }
         insn.succs = succs;
       }
 
@@ -894,10 +930,9 @@ public class CFG {
    */
   void jimplify(cp_info constant_pool[], int this_class) {
     Code_attribute codeAttribute = method.locate_code_attribute();
-    Set<Instruction> handlerInstructions = new ArraySet<Instruction>();
+    Set<Instruction> handlerInstructions = new ArraySet<>();
 
-    Map<Instruction, SootClass> handlerInstructionToException =
-        new HashMap<Instruction, SootClass>();
+    Map<Instruction, SootClass> handlerInstructionToException = new HashMap<>();
     Map<Instruction, TypeStack> instructionToTypeStack;
     Map<Instruction, TypeStack> instructionToPostTypeStack;
 
@@ -927,13 +962,16 @@ public class CFG {
               name = name.replace('/', '.');
 
               exception = cm.getSootClass(name);
-            } else exception = cm.getSootClass("java.lang.Throwable");
+            } else {
+              exception = cm.getSootClass("java.lang.Throwable");
+            }
 
             handlerInstructionToException.put(handlerIns, exception);
           }
 
-          if (startIns == endIns)
+          if (startIns == endIns) {
             throw new RuntimeException("Empty catch range for exception handler");
+          }
 
           Instruction ins = startIns;
 
@@ -947,17 +985,19 @@ public class CFG {
             ins.succs = newsuccs;
 
             ins = ins.next;
-            if (ins == endIns || ins == null) break;
+            if (ins == endIns || ins == null) {
+              break;
+            }
           }
         }
       }
     }
 
-    Set<Instruction> reachableInstructions = new HashSet<Instruction>();
+    Set<Instruction> reachableInstructions = new HashSet<>();
 
     // Mark all the reachable instructions
     {
-      LinkedList<Instruction> instructionsToVisit = new LinkedList<Instruction>();
+      LinkedList<Instruction> instructionsToVisit = new LinkedList<>();
 
       reachableInstructions.add(firstInstruction);
       instructionsToVisit.addLast(firstInstruction);
@@ -1001,11 +1041,11 @@ public class CFG {
     // Perform the flow analysis, and build up instructionToTypeStack and
     // instructionToLocalArray
     {
-      instructionToTypeStack = new HashMap<Instruction, TypeStack>();
-      instructionToPostTypeStack = new HashMap<Instruction, TypeStack>();
+      instructionToTypeStack = new HashMap<>();
+      instructionToPostTypeStack = new HashMap<>();
 
-      Set<Instruction> visitedInstructions = new HashSet<Instruction>();
-      List<Instruction> changedInstructions = new ArrayList<Instruction>();
+      Set<Instruction> visitedInstructions = new HashSet<>();
+      List<Instruction> changedInstructions = new ArrayList<>();
 
       TypeStack initialTypeStack;
 
@@ -1094,14 +1134,14 @@ public class CFG {
 
       while (b != null) {
         Instruction ins = b.head;
-        b.statements = new ArrayList<Stmt>();
+        b.statements = new ArrayList<>();
 
         List<Stmt> blockStatements = b.statements;
 
         for (; ; ) {
-          List<Stmt> statementsForIns = new ArrayList<Stmt>();
+          List<Stmt> statementsForIns = new ArrayList<>();
 
-          if (reachableInstructions.contains(ins))
+          if (reachableInstructions.contains(ins)) {
             generateJimple(
                 ins,
                 instructionToTypeStack.get(ins),
@@ -1109,7 +1149,9 @@ public class CFG {
                 constant_pool,
                 statementsForIns,
                 b);
-          else statementsForIns.add(Jimple.v().newNopStmt());
+          } else {
+            statementsForIns.add(Jimple.v().newNopStmt());
+          }
 
           if (!statementsForIns.isEmpty()) {
             for (int i = 0; i < statementsForIns.size(); i++) {
@@ -1121,7 +1163,9 @@ public class CFG {
             instructionToLastStmt.put(ins, statementsForIns.get(statementsForIns.size() - 1));
           }
 
-          if (ins == b.tail) break;
+          if (ins == b.tail) {
+            break;
+          }
 
           ins = ins.next;
         }
@@ -1158,7 +1202,7 @@ public class CFG {
 
     // Insert beginCatch/endCatch statements for exception handling
     {
-      Map<Stmt, Stmt> targetToHandler = new HashMap<Stmt, Stmt>();
+      Map<Stmt, Stmt> targetToHandler = new HashMap<>();
 
       for (int i = 0; i < codeAttribute.exception_table_length; i++) {
         Instruction startIns = codeAttribute.exception_table[i].start_inst;
@@ -1185,7 +1229,9 @@ public class CFG {
             String name = ((CONSTANT_Utf8_info) (constant_pool[classinfo.name_index])).convert();
             name = name.replace('/', '.');
             exception = cm.getSootClass(name);
-          } else exception = cm.getSootClass("java.lang.Throwable");
+          } else {
+            exception = cm.getSootClass("java.lang.Throwable");
+          }
         }
 
         Stmt newTarget;
@@ -1194,9 +1240,9 @@ public class CFG {
         {
           Stmt firstTargetStmt = instructionToFirstStmt.get(targetIns);
 
-          if (targetToHandler.containsKey(firstTargetStmt))
+          if (targetToHandler.containsKey(firstTargetStmt)) {
             newTarget = targetToHandler.get(firstTargetStmt);
-          else {
+          } else {
             Local local =
                 Util.v().getLocalCreatingIfNecessary(listBody, "$stack0", UnknownType.v());
 
@@ -1210,8 +1256,9 @@ public class CFG {
             targetToHandler.put(firstTargetStmt, newTarget);
             if (units.getFirst() != newTarget) {
               Unit prev = units.getPredOf(newTarget);
-              if (prev != null && prev.fallsThrough())
+              if (prev != null && prev.fallsThrough()) {
                 units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
+              }
             }
           }
         }
@@ -1256,8 +1303,8 @@ public class CFG {
 
     /* convert line number table to tags attached to statements */
     if (Options.v().keep_line_number()) {
-      HashMap<Stmt, Tag> stmtstags = new HashMap<Stmt, Tag>();
-      LinkedList<Stmt> startstmts = new LinkedList<Stmt>();
+      HashMap<Stmt, Tag> stmtstags = new HashMap<>();
+      LinkedList<Stmt> startstmts = new LinkedList<>();
 
       attribute_info[] attrs = codeAttribute.attributes;
       for (attribute_info element : attrs) {
@@ -1277,15 +1324,17 @@ public class CFG {
 
       /* if the predecessor of a statement is a caughtexcetionref,
        * give it the tag of its successor */
-      for (Iterator<Stmt> stmtIt = new ArrayList<Stmt>(stmtstags.keySet()).iterator();
-          stmtIt.hasNext(); ) {
-        final Stmt stmt = stmtIt.next();
+      for (Stmt stmt : new ArrayList<>(stmtstags.keySet())) {
         Stmt pred = stmt;
         Tag tag = stmtstags.get(stmt);
         while (true) {
           pred = (Stmt) units.getPredOf(pred);
-          if (pred == null) break;
-          if (!(pred instanceof IdentityStmt)) break;
+          if (pred == null) {
+            break;
+          }
+          if (!(pred instanceof IdentityStmt)) {
+            break;
+          }
           stmtstags.put(pred, tag);
           pred.addTag(tag);
         }
@@ -1313,7 +1362,9 @@ public class CFG {
         || type.equals(ByteType.v())
         || type.equals(BooleanType.v())) {
       return IntType.v();
-    } else return type;
+    } else {
+      return type;
+    }
   }
 
   OutFlow processFlow(Instruction ins, TypeStack typeStack, cp_info[] constant_pool) {
@@ -1540,7 +1591,9 @@ public class CFG {
 
           ArrayType arrayType = (ArrayType) Util.v().jimpleTypeOfFieldDescriptor(arrayDescriptor);
 
-          for (int j = 0; j < bdims; j++) typeStack = popSafe(typeStack, IntType.v());
+          for (int j = 0; j < bdims; j++) {
+            typeStack = popSafe(typeStack, IntType.v());
+          }
 
           typeStack = typeStack.push(arrayType);
           break;
@@ -1573,10 +1626,12 @@ public class CFG {
             ArrayType arrayType = (ArrayType) typeStack.top();
             typeStack = popSafeRefType(typeStack);
 
-            if (arrayType.numDimensions == 1) typeStack = typeStack.push(arrayType.baseType);
-            else
+            if (arrayType.numDimensions == 1) {
+              typeStack = typeStack.push(arrayType.baseType);
+            } else {
               typeStack =
                   typeStack.push(ArrayType.v(arrayType.baseType, arrayType.numDimensions - 1));
+            }
           } else {
             // it's a null object
 
@@ -2006,8 +2061,11 @@ public class CFG {
           } else if (type.equals(LongType.v())) {
             typeStack = popSafe(typeStack, Long2ndHalfType.v());
             typeStack = popSafe(typeStack, LongType.v());
-          } else if (type instanceof RefType) typeStack = popSafeRefType(typeStack);
-          else typeStack = popSafe(typeStack, type);
+          } else if (type instanceof RefType) {
+            typeStack = popSafeRefType(typeStack);
+          } else {
+            typeStack = popSafe(typeStack, type);
+          }
 
           typeStack = popSafeRefType(typeStack);
           break;
@@ -2028,7 +2086,9 @@ public class CFG {
           } else if (type.equals(LongType.v())) {
             typeStack = typeStack.push(LongType.v());
             typeStack = typeStack.push(Long2ndHalfType.v());
-          } else typeStack = typeStack.push(type);
+          } else {
+            typeStack = typeStack.push(type);
+          }
           break;
         }
 
@@ -2045,8 +2105,11 @@ public class CFG {
           } else if (type.equals(LongType.v())) {
             typeStack = popSafe(typeStack, Long2ndHalfType.v());
             typeStack = popSafe(typeStack, LongType.v());
-          } else if (type instanceof RefType) typeStack = popSafeRefType(typeStack);
-          else typeStack = popSafe(typeStack, type);
+          } else if (type instanceof RefType) {
+            typeStack = popSafeRefType(typeStack);
+          } else {
+            typeStack = popSafe(typeStack, type);
+          }
 
           break;
         }
@@ -2064,7 +2127,9 @@ public class CFG {
           } else if (type.equals(LongType.v())) {
             typeStack = typeStack.push(LongType.v());
             typeStack = typeStack.push(Long2ndHalfType.v());
-          } else typeStack = typeStack.push(type);
+          } else {
+            typeStack = typeStack.push(type);
+          }
           break;
         }
 
@@ -2087,10 +2152,14 @@ public class CFG {
             } else if (typeStack.top().equals(Double2ndHalfType.v())) {
               typeStack = popSafe(typeStack, Double2ndHalfType.v());
               typeStack = popSafe(typeStack, DoubleType.v());
-            } else typeStack = popSafe(typeStack, typeStack.top());
+            } else {
+              typeStack = popSafe(typeStack, typeStack.top());
+            }
           }
 
-          if (!returnType.equals(VoidType.v())) typeStack = smartPush(typeStack, returnType);
+          if (!returnType.equals(VoidType.v())) {
+            typeStack = smartPush(typeStack, returnType);
+          }
           break;
         }
 
@@ -2110,12 +2179,16 @@ public class CFG {
             } else if (typeStack.top().equals(Double2ndHalfType.v())) {
               typeStack = popSafe(typeStack, Double2ndHalfType.v());
               typeStack = popSafe(typeStack, DoubleType.v());
-            } else typeStack = popSafe(typeStack, typeStack.top());
+            } else {
+              typeStack = popSafe(typeStack, typeStack.top());
+            }
           }
 
           typeStack = popSafeRefType(typeStack);
 
-          if (!returnType.equals(VoidType.v())) typeStack = smartPush(typeStack, returnType);
+          if (!returnType.equals(VoidType.v())) {
+            typeStack = smartPush(typeStack, returnType);
+          }
           break;
         }
 
@@ -2135,12 +2208,16 @@ public class CFG {
             } else if (typeStack.top().equals(Double2ndHalfType.v())) {
               typeStack = popSafe(typeStack, Double2ndHalfType.v());
               typeStack = popSafe(typeStack, DoubleType.v());
-            } else typeStack = popSafe(typeStack, typeStack.top());
+            } else {
+              typeStack = popSafe(typeStack, typeStack.top());
+            }
           }
 
           typeStack = popSafeRefType(typeStack);
 
-          if (!returnType.equals(VoidType.v())) typeStack = smartPush(typeStack, returnType);
+          if (!returnType.equals(VoidType.v())) {
+            typeStack = smartPush(typeStack, returnType);
+          }
           break;
         }
 
@@ -2160,10 +2237,14 @@ public class CFG {
             } else if (typeStack.top().equals(Double2ndHalfType.v())) {
               typeStack = popSafe(typeStack, Double2ndHalfType.v());
               typeStack = popSafe(typeStack, DoubleType.v());
-            } else typeStack = popSafe(typeStack, typeStack.top());
+            } else {
+              typeStack = popSafe(typeStack, typeStack.top());
+            }
           }
 
-          if (!returnType.equals(VoidType.v())) typeStack = smartPush(typeStack, returnType);
+          if (!returnType.equals(VoidType.v())) {
+            typeStack = smartPush(typeStack, returnType);
+          }
           break;
         }
 
@@ -2183,12 +2264,16 @@ public class CFG {
             } else if (typeStack.top().equals(Double2ndHalfType.v())) {
               typeStack = popSafe(typeStack, Double2ndHalfType.v());
               typeStack = popSafe(typeStack, DoubleType.v());
-            } else typeStack = popSafe(typeStack, typeStack.top());
+            } else {
+              typeStack = popSafe(typeStack, typeStack.top());
+            }
           }
 
           typeStack = popSafeRefType(typeStack);
 
-          if (!returnType.equals(VoidType.v())) typeStack = smartPush(typeStack, returnType);
+          if (!returnType.equals(VoidType.v())) {
+            typeStack = smartPush(typeStack, returnType);
+          }
           break;
         }
 
@@ -2213,12 +2298,14 @@ public class CFG {
 
           Type castType;
 
-          if (className.startsWith("["))
+          if (className.startsWith("[")) {
             castType =
                 Util.v()
                     .jimpleTypeOfFieldDescriptor(
                         getClassName(constant_pool, ((Instruction_Checkcast) ins).arg_i));
-          else castType = RefType.v(className);
+          } else {
+            castType = RefType.v(className);
+          }
 
           typeStack = popSafeRefType(typeStack);
           typeStack = typeStack.push(castType);
@@ -2294,19 +2381,21 @@ public class CFG {
       cp_info constant_pool[], int i, TypeStack typeStack, SootMethod jmethod) {
     cp_info c = constant_pool[i];
 
-    if (c instanceof CONSTANT_Integer_info) typeStack = typeStack.push(IntType.v());
-    else if (c instanceof CONSTANT_Float_info) typeStack = typeStack.push(FloatType.v());
-    else if (c instanceof CONSTANT_Long_info) {
+    if (c instanceof CONSTANT_Integer_info) {
+      typeStack = typeStack.push(IntType.v());
+    } else if (c instanceof CONSTANT_Float_info) {
+      typeStack = typeStack.push(FloatType.v());
+    } else if (c instanceof CONSTANT_Long_info) {
       typeStack = typeStack.push(LongType.v());
       typeStack = typeStack.push(Long2ndHalfType.v());
     } else if (c instanceof CONSTANT_Double_info) {
       typeStack = typeStack.push(DoubleType.v());
       typeStack = typeStack.push(Double2ndHalfType.v());
-    } else if (c instanceof CONSTANT_String_info)
+    } else if (c instanceof CONSTANT_String_info) {
       typeStack = typeStack.push(RefType.v("java.lang.String"));
-    else if (c instanceof CONSTANT_Utf8_info)
+    } else if (c instanceof CONSTANT_Utf8_info) {
       typeStack = typeStack.push(RefType.v("java.lang.String"));
-    else if (c instanceof CONSTANT_Class_info) {
+    } else if (c instanceof CONSTANT_Class_info) {
       CONSTANT_Class_info info = (CONSTANT_Class_info) c;
       String name = ((CONSTANT_Utf8_info) (constant_pool[info.name_index])).convert();
       name = name.replace('/', '.');
@@ -2353,7 +2442,9 @@ public class CFG {
       } else {
         typeStack = typeStack.push(RefType.v(name));
       }
-    } else throw new RuntimeException("Attempting to push a non-constant cp entry" + c.getClass());
+    } else {
+      throw new RuntimeException("Attempting to push a non-constant cp entry" + c.getClass());
+    }
 
     return new OutFlow(typeStack);
   }
@@ -2365,7 +2456,9 @@ public class CFG {
     } else if (type.equals(DoubleType.v())) {
       typeStack = typeStack.push(DoubleType.v());
       typeStack = typeStack.push(Double2ndHalfType.v());
-    } else typeStack = typeStack.push(type);
+    } else {
+      typeStack = typeStack.push(type);
+    }
 
     return typeStack;
   }
@@ -2461,12 +2554,16 @@ public class CFG {
                             ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());
           */
           G.v().out.println("Error :");
-          for (int i = 0; i < b.statements.size(); i++) G.v().out.println(b.statements.get(i));
+          for (int i = 0; i < b.statements.size(); i++) {
+            G.v().out.println(b.statements.get(i));
+          }
 
           throw new RuntimeException(b + " has " + b.succ.size() + " successors.");
         }
       } else if (s instanceof IfStmt) {
-        if (b.succ.size() != 2) G.v().out.println("How can an if not have 2 successors?");
+        if (b.succ.size() != 2) {
+          G.v().out.println("How can an if not have 2 successors?");
+        }
 
         if ((b.succ.firstElement()) == b.next) {
           ((IfStmt) s).setTarget(b.succ.elementAt(1).getHeadJStmt());
@@ -2511,7 +2608,9 @@ public class CFG {
       b.done = false;
       for (BasicBlock basicBlock : b.succ) {
         p = (basicBlock);
-        if (p.done) bbq.push(p);
+        if (p.done) {
+          bbq.push(p);
+        }
       }
     }
   }
@@ -2528,7 +2627,9 @@ public class CFG {
     BBQ bbq = new BBQ();
 
     Code_attribute c = method.locate_code_attribute();
-    if (c == null) return;
+    if (c == null) {
+      return;
+    }
 
     // Reset all the dones to true
     {
@@ -2616,8 +2717,9 @@ public class CFG {
 
       String constant = cs.toString(constant_pool);
 
-      if (constant.startsWith("\"") && constant.endsWith("\""))
+      if (constant.startsWith("\"") && constant.endsWith("\"")) {
         constant = constant.substring(1, constant.length() - 1);
+      }
 
       rvalue = StringConstant.v(constant);
       stmt =
@@ -2630,8 +2732,9 @@ public class CFG {
 
       String constant = cu.convert();
 
-      if (constant.startsWith("\"") && constant.endsWith("\""))
+      if (constant.startsWith("\"") && constant.endsWith("\"")) {
         constant = constant.substring(1, constant.length() - 1);
+      }
 
       rvalue = StringConstant.v(constant);
       stmt =
@@ -3095,12 +3198,14 @@ public class CFG {
 
           Type baseType;
 
-          if (baseName.startsWith("["))
+          if (baseName.startsWith("[")) {
             baseType =
                 Util.v()
                     .jimpleTypeOfFieldDescriptor(
                         getClassName(constant_pool, ((Instruction_Anewarray) ins).arg_i));
-          else baseType = RefType.v(baseName);
+          } else {
+            baseType = RefType.v(baseName);
+          }
 
           rhs =
               Jimple.v()
@@ -3120,12 +3225,13 @@ public class CFG {
       case ByteCode.MULTIANEWARRAY:
         {
           int bdims = (((Instruction_Multianewarray) ins).dims);
-          List<Value> dims = new ArrayList<Value>();
+          List<Value> dims = new ArrayList<>();
 
-          for (int j = 0; j < bdims; j++)
+          for (int j = 0; j < bdims; j++) {
             dims.add(
                 Util.v()
                     .getLocalForStackOp(listBody, typeStack, typeStack.topIndex() - bdims + j + 1));
+          }
 
           String mstype =
               constant_pool[((Instruction_Multianewarray) ins).arg_i].toString(constant_pool);
@@ -4364,11 +4470,12 @@ public class CFG {
 
       case ByteCode.LOOKUPSWITCH:
         {
-          List<IntConstant> matches = new ArrayList<IntConstant>();
+          List<IntConstant> matches = new ArrayList<>();
           int npairs = ((Instruction_Lookupswitch) ins).npairs;
 
-          for (int j = 0; j < npairs; j++)
+          for (int j = 0; j < npairs; j++) {
             matches.add(IntConstant.v(((Instruction_Lookupswitch) ins).match_offsets[j * 2]));
+          }
 
           stmt =
               Jimple.v()
@@ -4437,7 +4544,9 @@ public class CFG {
           String fieldDescriptor =
               ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).convert();
 
-          if (className.charAt(0) == '[') className = "java.lang.Object";
+          if (className.charAt(0) == '[') {
+            className = "java.lang.Object";
+          }
 
           SootClass bclass = cm.getSootClass(className);
 
@@ -4535,7 +4644,7 @@ public class CFG {
           args = cp_info.countParams(constant_pool, iv_info.name_and_type_index);
 
           SootMethodRef bootstrapMethodRef;
-          List<Value> bootstrapArgs = new LinkedList<Value>();
+          List<Value> bootstrapArgs = new LinkedList<>();
           {
             short[] bootstrapMethodTable = bootstrap_methods_attribute.method_handles;
             short methodSigIndex = bootstrapMethodTable[iv_info.bootstrap_method_index];
@@ -4577,7 +4686,7 @@ public class CFG {
           {
             Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
-            parameterTypes = new ArrayList<Type>();
+            parameterTypes = new ArrayList<>();
 
             for (int k = 0; k < types.length - 1; k++) {
               parameterTypes.add(types[k]);
@@ -4597,7 +4706,9 @@ public class CFG {
             if (typeSize(typeStack.top()) == 2) {
               typeStack = typeStack.pop();
               typeStack = typeStack.pop();
-            } else typeStack = typeStack.pop();
+            } else {
+              typeStack = typeStack.pop();
+            }
           }
 
           rvalue =
@@ -4612,7 +4723,9 @@ public class CFG {
                         Util.v()
                             .getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
                         rvalue);
-          } else stmt = Jimple.v().newInvokeStmt(rvalue);
+          } else {
+            stmt = Jimple.v().newInvokeStmt(rvalue);
+          }
 
           break;
         }
@@ -4635,7 +4748,9 @@ public class CFG {
             if (typeSize(typeStack.top()) == 2) {
               typeStack = typeStack.pop();
               typeStack = typeStack.pop();
-            } else typeStack = typeStack.pop();
+            } else {
+              typeStack = typeStack.pop();
+            }
           }
 
           rvalue =
@@ -4652,7 +4767,9 @@ public class CFG {
                         Util.v()
                             .getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
                         rvalue);
-          } else stmt = Jimple.v().newInvokeStmt(rvalue);
+          } else {
+            stmt = Jimple.v().newInvokeStmt(rvalue);
+          }
           break;
         }
 
@@ -4675,7 +4792,9 @@ public class CFG {
             if (typeSize(typeStack.top()) == 2) {
               typeStack = typeStack.pop();
               typeStack = typeStack.pop();
-            } else typeStack = typeStack.pop();
+            } else {
+              typeStack = typeStack.pop();
+            }
           }
 
           rvalue =
@@ -4692,7 +4811,9 @@ public class CFG {
                         Util.v()
                             .getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
                         rvalue);
-          } else stmt = Jimple.v().newInvokeStmt(rvalue);
+          } else {
+            stmt = Jimple.v().newInvokeStmt(rvalue);
+          }
           break;
         }
 
@@ -4722,7 +4843,9 @@ public class CFG {
             if (typeSize(typeStack.top()) == 2) {
               typeStack = typeStack.pop();
               typeStack = typeStack.pop();
-            } else typeStack = typeStack.pop();
+            } else {
+              typeStack = typeStack.pop();
+            }
           }
 
           rvalue = Jimple.v().newStaticInvokeExpr(methodRef, Arrays.asList(params));
@@ -4734,7 +4857,9 @@ public class CFG {
                         Util.v()
                             .getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
                         rvalue);
-          } else stmt = Jimple.v().newInvokeStmt(rvalue);
+          } else {
+            stmt = Jimple.v().newInvokeStmt(rvalue);
+          }
 
           break;
         }
@@ -4759,7 +4884,9 @@ public class CFG {
             if (typeSize(typeStack.top()) == 2) {
               typeStack = typeStack.pop();
               typeStack = typeStack.pop();
-            } else typeStack = typeStack.pop();
+            } else {
+              typeStack = typeStack.pop();
+            }
           }
 
           rvalue =
@@ -4776,7 +4903,9 @@ public class CFG {
                         Util.v()
                             .getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
                         rvalue);
-          } else stmt = Jimple.v().newInvokeStmt(rvalue);
+          } else {
+            stmt = Jimple.v().newInvokeStmt(rvalue);
+          }
           break;
         }
 
@@ -4807,12 +4936,14 @@ public class CFG {
 
           Type castType;
 
-          if (className.startsWith("["))
+          if (className.startsWith("[")) {
             castType =
                 Util.v()
                     .jimpleTypeOfFieldDescriptor(
                         getClassName(constant_pool, ((Instruction_Checkcast) ins).arg_i));
-          else castType = RefType.v(className);
+          } else {
+            castType = RefType.v(className);
+          }
 
           rhs =
               Jimple.v()
@@ -4835,12 +4966,14 @@ public class CFG {
 
           String className = getClassName(constant_pool, ((Instruction_Instanceof) ins).arg_i);
 
-          if (className.startsWith("["))
+          if (className.startsWith("[")) {
             checkType =
                 Util.v()
                     .jimpleTypeOfFieldDescriptor(
                         getClassName(constant_pool, ((Instruction_Instanceof) ins).arg_i));
-          else checkType = RefType.v(className);
+          } else {
+            checkType = RefType.v(className);
+          }
 
           rhs =
               Jimple.v()
@@ -4897,7 +5030,9 @@ public class CFG {
     String methodName = ((CONSTANT_Utf8_info) (constant_pool[i.name_index])).convert();
     String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).convert();
 
-    if (className.charAt(0) == '[') className = "java.lang.Object";
+    if (className.charAt(0) == '[') {
+      className = "java.lang.Object";
+    }
 
     SootClass bclass = cm.getSootClass(className);
 
@@ -4907,7 +5042,7 @@ public class CFG {
     {
       Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
-      parameterTypes = new ArrayList<Type>();
+      parameterTypes = new ArrayList<>();
 
       for (int k = 0; k < types.length - 1; k++) {
         parameterTypes.add(types[k]);
@@ -4957,7 +5092,9 @@ public class CFG {
         || type.equals(Long2ndHalfType.v())
         || type.equals(Double2ndHalfType.v())) {
       return 2;
-    } else return 1;
+    } else {
+      return 1;
+    }
   }
 }
 

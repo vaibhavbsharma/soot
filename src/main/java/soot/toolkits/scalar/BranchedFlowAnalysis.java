@@ -33,12 +33,12 @@
 
 package soot.toolkits.scalar;
 
-import soot.Unit;
-import soot.toolkits.graph.DirectedGraph;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import soot.Unit;
+import soot.toolkits.graph.DirectedGraph;
 
 /**
  * Abstract class providing functionality for branched flow analysis.
@@ -57,8 +57,8 @@ public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFl
   public BranchedFlowAnalysis(DirectedGraph<N> graph) {
     super(graph);
 
-    unitToAfterFallFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
-    unitToAfterBranchFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
+    unitToAfterFallFlow = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    unitToAfterBranchFlow = new HashMap<>(graph.size() * 2 + 1, 0.7f);
   }
 
   /**
@@ -70,8 +70,11 @@ public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFl
   public A getFallFlowAfter(Unit s) {
     List<A> fl = unitToAfterFallFlow.get(s);
 
-    if (fl.isEmpty()) return newInitialFlow();
-    else return fl.get(0);
+    if (fl.isEmpty()) {
+      return newInitialFlow();
+    } else {
+      return fl.get(0);
+    }
   }
 
   public List<A> getBranchFlowAfter(Unit s) {

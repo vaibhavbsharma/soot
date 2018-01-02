@@ -51,12 +51,14 @@ public class LocalUnitPair {
    * @param other another LocalUnitPair
    * @return true if other contains the same objects as this.
    */
+  @Override
   public boolean equals(Object other) {
     return other instanceof LocalUnitPair
         && ((LocalUnitPair) other).local == this.local
         && ((LocalUnitPair) other).unit == this.unit;
   }
 
+  @Override
   public int hashCode() {
     return local.hashCode() * 101 + unit.hashCode() + 17;
   }

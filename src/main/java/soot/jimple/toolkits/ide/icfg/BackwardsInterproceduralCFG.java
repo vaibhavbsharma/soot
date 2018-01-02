@@ -18,14 +18,14 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs. This should be
@@ -154,7 +154,11 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
   // swapped
   @Override
   public boolean isReturnSite(Unit n) {
-    for (Unit pred : getSuccsOf(n)) if (isCallStmt(pred)) return true;
+    for (Unit pred : getSuccsOf(n)) {
+      if (isCallStmt(pred)) {
+        return true;
+      }
+    }
     return false;
   }
 

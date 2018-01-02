@@ -40,6 +40,7 @@ public class SETDoWhileNode extends SETCycleNode {
     add_SubBody(subBody);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
 
@@ -48,6 +49,7 @@ public class SETDoWhileNode extends SETCycleNode {
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
     return new ASTDoWhileNode(
         get_Label(),
@@ -55,6 +57,7 @@ public class SETDoWhileNode extends SETCycleNode {
         emit_ASTBody(body2childChain.get(subBodies.get(0))));
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return entryPoint;
   }

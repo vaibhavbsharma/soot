@@ -1,10 +1,10 @@
 package soot.validation;
 
-import soot.SootClass;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import soot.SootClass;
 
 /**
  * Validates classes to make sure that the outer class chain is not recursive
@@ -20,7 +20,7 @@ public enum OuterClassValidator implements ClassValidator {
 
   @Override
   public void validate(SootClass sc, List<ValidationException> exceptions) {
-    Set<SootClass> outerClasses = new HashSet<SootClass>();
+    Set<SootClass> outerClasses = new HashSet<>();
     SootClass curClass = sc;
     while (curClass != null) {
       if (!outerClasses.add(curClass)) {

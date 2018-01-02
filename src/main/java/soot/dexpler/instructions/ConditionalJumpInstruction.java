@@ -26,6 +26,7 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
+
 import soot.Immediate;
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -44,6 +45,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction
   /** Return an if statement depending on the instruction. */
   protected abstract IfStmt ifStatement(DexBody body);
 
+  @Override
   public void jimplify(DexBody body) {
     // check if target instruction has been jimplified
     if (getTargetInstruction(body).getUnit() != null) {
@@ -67,6 +69,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction
 
   // DalvikTyper.v() here?
 
+  @Override
   public void deferredJimplify(DexBody body) {
     IfStmt s = ifStatement(body);
     body.getBody().getUnits().swapWith(markerUnit, s); // insertAfter(s, markerUnit);

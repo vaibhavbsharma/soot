@@ -25,6 +25,9 @@
 
 package soot.baf.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.Local;
 import soot.Type;
 import soot.UnitPrinter;
@@ -32,9 +35,6 @@ import soot.ValueBox;
 import soot.baf.InstSwitch;
 import soot.baf.LoadInst;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 public class BLoadInst extends AbstractOpTypeInst implements LoadInst {
   ValueBox localBox;
@@ -46,47 +46,58 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst {
     useBoxes = Collections.singletonList(localBox);
   }
 
+  @Override
   public int getInCount() {
     return 0;
   }
 
+  @Override
   public Object clone() {
     return new BLoadInst(getOpType(), getLocal());
   }
 
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public final String getName() {
     return "load";
   }
 
+  @Override
   final String getParameters() {
     return " " + localBox.getValue().toString();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     localBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseLoadInst(this);
   }
 
+  @Override
   public void setLocal(Local l) {
     localBox.setValue(l);
   }
 
+  @Override
   public Local getLocal() {
     return (Local) localBox.getValue();
   }
 
+  @Override
   public List getUseBoxes() {
     return useBoxes;
   }

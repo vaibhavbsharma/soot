@@ -1,13 +1,13 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.Tag;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -134,7 +134,9 @@ public class CheckMSet {
               while (itit.hasNext()) {
                 temp.add(itit.next());
               }
-            } else temp.add(o);
+            } else {
+              temp.add(o);
+            }
           }
         } else {
 

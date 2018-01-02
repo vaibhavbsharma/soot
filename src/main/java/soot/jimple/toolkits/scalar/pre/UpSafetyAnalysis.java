@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.SideEffectTester;
 import soot.Unit;
@@ -38,9 +41,6 @@ import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Performs an UpSafe-analysis on the given graph. An expression is upsafe, if the computation
@@ -75,8 +75,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
         dg,
         unitToGen,
         sideEffect,
-        new ArrayPackedSet<EquivalentValue>(
-            new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(unitToGen.values())));
   }
 
   /**
@@ -119,7 +118,9 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
 
     // Perform generation
     EquivalentValue add = unitToGenerateMap.get(u);
-    if (add != null) out.add(add, out);
+    if (add != null) {
+      out.add(add, out);
+    }
 
     {
       /* Perform kill */
@@ -128,7 +129,9 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
         EquivalentValue equiVal = outIt.next();
         Value avail = equiVal.getValue();
         if (avail instanceof FieldRef) {
-          if (sideEffect.unitCanWriteTo(u, avail)) outIt.remove();
+          if (sideEffect.unitCanWriteTo(u, avail)) {
+            outIt.remove();
+          }
         } else {
           // iterate over uses in each avail.
           for (ValueBox useBox : avail.getUseBoxes()) {

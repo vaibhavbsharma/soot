@@ -41,7 +41,9 @@ public final class ChunkedQueue<E> {
   }
   /** Add an object to the queue. */
   public void add(E o) {
-    if (o == null) o = (E) NULL_CONST;
+    if (o == null) {
+      o = (E) NULL_CONST;
+    }
     if (index == LENGTH - 1) {
       Object[] temp = new Object[LENGTH];
       q[index] = temp;
@@ -52,6 +54,6 @@ public final class ChunkedQueue<E> {
   }
   /** Create reader which will read objects from the queue. */
   public QueueReader<E> reader() {
-    return new QueueReader<E>((E[]) q, index);
+    return new QueueReader<>((E[]) q, index);
   }
 }

@@ -38,18 +38,22 @@ public class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr {
     super(op1, op2);
   }
 
+  @Override
   public String getSymbol() {
     return " % ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseRemExpr(this);
   }
 
+  @Override
   Object makeBafInst(Type opType) {
     return Baf.v().newRemInst(this.getOp1().getType());
   }
 
+  @Override
   public Object clone() {
     return new JRemExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }

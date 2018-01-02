@@ -25,9 +25,9 @@
 
 package soot;
 
-import soot.options.Options;
-
 import java.text.DecimalFormat;
+
+import soot.options.Options;
 
 public class Timers {
   public Timers(Singletons.Global g) {}
@@ -271,18 +271,23 @@ public class Timers {
   public double truncatedOf(double d, int numDigits) {
     double multiplier = 1;
 
-    for (int i = 0; i < numDigits; i++) multiplier *= 10;
+    for (int i = 0; i < numDigits; i++) {
+      multiplier *= 10;
+    }
 
     return ((long) (d * multiplier)) / multiplier;
   }
 
   public String paddedLeftOf(String s, int length) {
-    if (s.length() >= length) return s;
-    else {
+    if (s.length() >= length) {
+      return s;
+    } else {
       int diff = length - s.length();
       char[] padding = new char[diff];
 
-      for (int i = 0; i < diff; i++) padding[i] = ' ';
+      for (int i = 0; i < diff; i++) {
+        padding[i] = ' ';
+      }
 
       return new String(padding) + s;
     }

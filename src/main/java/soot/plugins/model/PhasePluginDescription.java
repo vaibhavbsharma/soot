@@ -23,6 +23,8 @@ package soot.plugins.model;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import soot.plugins.SootPhasePlugin;
+
 /**
  * A phase plugin adds a new analysis to a pack. Therefore, it needs a phase name and a plugin class
  * name.

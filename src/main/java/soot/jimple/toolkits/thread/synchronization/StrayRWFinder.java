@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -14,10 +18,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that
@@ -37,6 +37,7 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     if (G.v().Union_factory == null) {
       G.v().Union_factory =
           new UnionFactory() {
+            @Override
             public Union newUnion() {
               return FullObjectSet.v();
             }
@@ -48,16 +49,19 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   }
 
   /** All INs are initialized to the empty set. */
+  @Override
   protected Object newInitialFlow() {
     return emptySet.clone();
   }
 
   /** IN(Start) is the empty set */
+  @Override
   protected Object entryInitialFlow() {
     return emptySet.clone();
   }
 
   /** OUT is the same as (IN minus killSet) plus the genSet. */
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
@@ -71,7 +75,9 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
       CriticalSection tn = (CriticalSection) tnIt.next();
       if (stmtRead.hasNonEmptyIntersection(tn.write)
           || stmtWrite.hasNonEmptyIntersection(tn.read)
-          || stmtWrite.hasNonEmptyIntersection(tn.write)) addSelf = Boolean.TRUE;
+          || stmtWrite.hasNonEmptyIntersection(tn.write)) {
+        addSelf = Boolean.TRUE;
+      }
     }
 
     in.copy(out);
@@ -86,6 +92,7 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   }
 
   /** union, except for transactions in progress. They get joined */
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = ((FlowSet) in1).clone(),
         inSet2 = ((FlowSet) in2).clone(),
@@ -133,6 +140,7 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     inSet1.union(inSet2, outSet);
   }
 
+  @Override
   protected void copy(Object source, Object dest) {
     FlowSet sourceSet = (FlowSet) source, destSet = (FlowSet) dest;
 

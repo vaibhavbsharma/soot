@@ -64,14 +64,17 @@ class Instruction_Iinc extends Instruction_bytevar {
     name = "iinc";
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool) + argsep + arg_c;
   }
 
+  @Override
   public int nextOffset(int curr) {
     return super.nextOffset(curr) + ((isWide) ? 2 : 1);
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     index = super.parse(bc, index);
 
@@ -88,6 +91,7 @@ class Instruction_Iinc extends Instruction_bytevar {
     }
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     index = super.compile(bc, index);
     bc[index] = (byte) (arg_c & 0xff);

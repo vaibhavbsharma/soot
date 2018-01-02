@@ -1,5 +1,11 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
@@ -15,12 +21,6 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 // UseFinder written by Richard L. Halpert, 2007-03-13
 // Compiles a list of all uses of fields of each application class within the
@@ -39,10 +39,10 @@ public class UseFinder {
   Map<SootClass, ArrayList> classToIntCalls;
 
   public UseFinder() {
-    classToExtFieldAccesses = new HashMap<SootClass, List>();
-    classToIntFieldAccesses = new HashMap<SootClass, ArrayList>();
-    classToExtCalls = new HashMap<SootClass, List>();
-    classToIntCalls = new HashMap<SootClass, ArrayList>();
+    classToExtFieldAccesses = new HashMap<>();
+    classToIntFieldAccesses = new HashMap<>();
+    classToExtCalls = new HashMap<>();
+    classToIntCalls = new HashMap<>();
 
     rm = Scene.v().getReachableMethods();
 
@@ -50,10 +50,10 @@ public class UseFinder {
   }
 
   public UseFinder(ReachableMethods rm) {
-    classToExtFieldAccesses = new HashMap<SootClass, List>();
-    classToIntFieldAccesses = new HashMap<SootClass, ArrayList>();
-    classToExtCalls = new HashMap<SootClass, List>();
-    classToIntCalls = new HashMap<SootClass, ArrayList>();
+    classToExtFieldAccesses = new HashMap<>();
+    classToIntFieldAccesses = new HashMap<>();
+    classToExtCalls = new HashMap<>();
+    classToIntCalls = new HashMap<>();
 
     this.rm = rm;
 
@@ -61,22 +61,30 @@ public class UseFinder {
   }
 
   public List getExtFieldAccesses(SootClass sc) {
-    if (classToExtFieldAccesses.containsKey(sc)) return classToExtFieldAccesses.get(sc);
+    if (classToExtFieldAccesses.containsKey(sc)) {
+      return classToExtFieldAccesses.get(sc);
+    }
     throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
   }
 
   public List getIntFieldAccesses(SootClass sc) {
-    if (classToIntFieldAccesses.containsKey(sc)) return classToIntFieldAccesses.get(sc);
+    if (classToIntFieldAccesses.containsKey(sc)) {
+      return classToIntFieldAccesses.get(sc);
+    }
     throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
   }
 
   public List getExtCalls(SootClass sc) {
-    if (classToExtCalls.containsKey(sc)) return classToExtCalls.get(sc);
+    if (classToExtCalls.containsKey(sc)) {
+      return classToExtCalls.get(sc);
+    }
     throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
   }
 
   public List getIntCalls(SootClass sc) {
-    if (classToIntCalls.containsKey(sc)) return classToIntCalls.get(sc);
+    if (classToIntCalls.containsKey(sc)) {
+      return classToIntCalls.get(sc);
+    }
     throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
   }
 
@@ -85,11 +93,13 @@ public class UseFinder {
   public List<SootMethod> getExtMethods(SootClass sc) {
     if (classToExtCalls.containsKey(sc)) {
       List extCalls = classToExtCalls.get(sc);
-      List<SootMethod> extMethods = new ArrayList<SootMethod>();
+      List<SootMethod> extMethods = new ArrayList<>();
       for (Iterator callIt = extCalls.iterator(); callIt.hasNext(); ) {
         Pair call = (Pair) callIt.next();
         SootMethod calledMethod = ((Stmt) call.getO2()).getInvokeExpr().getMethod();
-        if (!extMethods.contains(calledMethod)) extMethods.add(calledMethod);
+        if (!extMethods.contains(calledMethod)) {
+          extMethods.add(calledMethod);
+        }
       }
       return extMethods;
     }
@@ -99,11 +109,13 @@ public class UseFinder {
   public List<SootField> getExtFields(SootClass sc) {
     if (classToExtFieldAccesses.containsKey(sc)) {
       List extAccesses = classToExtFieldAccesses.get(sc);
-      List<SootField> extFields = new ArrayList<SootField>();
+      List<SootField> extFields = new ArrayList<>();
       for (Iterator accessIt = extAccesses.iterator(); accessIt.hasNext(); ) {
         Pair access = (Pair) accessIt.next();
         SootField accessedField = ((Stmt) access.getO2()).getFieldRef().getField();
-        if (!extFields.contains(accessedField)) extFields.add(accessedField);
+        if (!extFields.contains(accessedField)) {
+          extFields.add(accessedField);
+        }
       }
       return extFields;
     }
@@ -156,7 +168,7 @@ public class UseFinder {
                 List<Pair> otherClassList =
                     classToExtFieldAccesses.get(fr.getFieldRef().resolve().getDeclaringClass());
                 if (otherClassList == null) {
-                  otherClassList = new ArrayList<Pair>();
+                  otherClassList = new ArrayList<>();
                   classToExtFieldAccesses.put(
                       fr.getFieldRef().resolve().getDeclaringClass(), otherClassList);
                 }
@@ -186,7 +198,7 @@ public class UseFinder {
                 List<Pair> otherClassList =
                     classToExtCalls.get(ie.getMethodRef().resolve().getDeclaringClass());
                 if (otherClassList == null) {
-                  otherClassList = new ArrayList<Pair>();
+                  otherClassList = new ArrayList<>();
                   classToExtCalls.put(
                       ie.getMethodRef().resolve().getDeclaringClass(), otherClassList);
                 }

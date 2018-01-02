@@ -41,42 +41,52 @@ public class BPopInst extends AbstractInst implements PopInst {
 
   // public interface PopInst extends Inst
 
+  @Override
   public int getWordCount() {
     return getInMachineCount();
   }
 
+  @Override
   public void setWordCount(int count) {
     throw new RuntimeException("not implemented");
   }
 
+  @Override
   public Object clone() {
     return new BPopInst(mType);
   }
 
+  @Override
   public final String getName() {
     return "pop";
   }
 
+  @Override
   final String getParameters() {
     return "";
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getInMachineCount() {
     return AbstractJasminClass.sizeOfType(mType);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).casePopInst(this);
   }

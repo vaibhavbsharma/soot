@@ -37,42 +37,52 @@ public class BNewArrayInst extends AbstractInst implements NewArrayInst {
     baseType = opType;
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public Object clone() {
     return new BNewArrayInst(baseType);
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   public final String getName() {
     return "newarray";
   }
 
+  @Override
   public Type getBaseType() {
     return baseType;
   }
 
+  @Override
   public void setBaseType(Type type) {
     baseType = type;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseNewArrayInst(this);
   }
 
+  @Override
   public boolean containsNewExpr() {
     return true;
   }

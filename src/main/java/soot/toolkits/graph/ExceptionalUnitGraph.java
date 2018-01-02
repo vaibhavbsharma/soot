@@ -25,6 +25,17 @@
 
 package soot.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import soot.Body;
 import soot.RefType;
 import soot.Scene;
@@ -48,17 +59,6 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.util.ArraySet;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Represents a control flow graph for a {@link Body} instance where the nodes are {@link Unit}
@@ -197,10 +197,12 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     int size = unitChain.size();
     Set<Unit> trapUnitsThatAreHeads = Collections.emptySet();
 
-    if (Options.v().time()) Timers.v().graphTimer.start();
+    if (Options.v().time()) {
+      Timers.v().graphTimer.start();
+    }
 
-    unitToUnexceptionalSuccs = new LinkedHashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-    unitToUnexceptionalPreds = new LinkedHashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+    unitToUnexceptionalSuccs = new LinkedHashMap<>(size * 2 + 1, 0.7f);
+    unitToUnexceptionalPreds = new LinkedHashMap<>(size * 2 + 1, 0.7f);
     buildUnexceptionalEdges(unitToUnexceptionalSuccs, unitToUnexceptionalPreds);
     this.throwAnalysis = throwAnalysis;
 
@@ -215,10 +217,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
     } else {
       unitToExceptionDests = buildExceptionDests(throwAnalysis);
-      unitToExceptionalSuccs =
-          new LinkedHashMap<Unit, List<Unit>>(unitToExceptionDests.size() * 2 + 1, 0.7f);
-      unitToExceptionalPreds =
-          new LinkedHashMap<Unit, List<Unit>>(body.getTraps().size() * 2 + 1, 0.7f);
+      unitToExceptionalSuccs = new LinkedHashMap<>(unitToExceptionDests.size() * 2 + 1, 0.7f);
+      unitToExceptionalPreds = new LinkedHashMap<>(body.getTraps().size() * 2 + 1, 0.7f);
       trapUnitsThatAreHeads =
           buildExceptionalEdges(
               throwAnalysis,
@@ -235,7 +235,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
     buildHeadsAndTails(trapUnitsThatAreHeads);
 
-    if (Options.v().time()) Timers.v().graphTimer.end();
+    if (Options.v().time()) {
+      Timers.v().graphTimer.end();
+    }
 
     soot.util.PhaseDumper.v().dumpGraph(this);
   }
@@ -264,8 +266,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    */
   protected Map<Unit, Collection<ExceptionDest>> buildExceptionDests(ThrowAnalysis throwAnalysis) {
     Chain<Unit> units = body.getUnits();
-    Map<Unit, ThrowableSet> unitToUncaughtThrowables =
-        new LinkedHashMap<Unit, ThrowableSet>(units.size());
+    Map<Unit, ThrowableSet> unitToUncaughtThrowables = new LinkedHashMap<>(units.size());
     Map<Unit, Collection<ExceptionDest>> result = null;
 
     // Record the caught exceptions.
@@ -273,7 +274,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       RefType catcher = trap.getException().getType();
       for (Iterator<Unit> unitIt =
               units.iterator(trap.getBeginUnit(), units.getPredOf(trap.getEndUnit()));
-          unitIt.hasNext(); ) {
+          unitIt.hasNext();
+          ) {
         Unit unit = unitIt.next();
         ThrowableSet thrownSet = unitToUncaughtThrowables.get(unit);
         if (thrownSet == null) {
@@ -338,9 +340,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         return map;
       } else {
         if (map == null) {
-          map = new LinkedHashMap<Unit, Collection<ExceptionDest>>(unitChain.size() * 2 + 1);
+          map = new LinkedHashMap<>(unitChain.size() * 2 + 1);
         }
-        dests = new ArrayList<ExceptionDest>(3);
+        dests = new ArrayList<>(3);
         map.put(u, dests);
       }
     }
@@ -378,7 +380,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       Map<Unit, List<Unit>> unitToSuccs,
       Map<Unit, List<Unit>> unitToPreds,
       boolean omitExceptingUnitEdges) {
-    Set<Unit> trapsThatAreHeads = new ArraySet<Unit>();
+    Set<Unit> trapsThatAreHeads = new ArraySet<>();
     Unit entryPoint = unitChain.getFirst();
     for (Entry<Unit, Collection<ExceptionDest>> entry : unitToExceptionDests.entrySet()) {
       Unit thrower = entry.getKey();
@@ -467,9 +469,10 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       Unit tail;
 
       CFGEdge(Unit head, Unit tail) {
-        if (tail == null)
+        if (tail == null) {
           throw new RuntimeException(
               "invalid CFGEdge(" + (head == null ? "null" : head.toString()) + ',' + "null" + ')');
+        }
         this.head = head;
         this.tail = tail;
       }
@@ -496,7 +499,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       }
     }
 
-    LinkedList<CFGEdge> workList = new LinkedList<CFGEdge>();
+    LinkedList<CFGEdge> workList = new LinkedList<>();
 
     for (Trap trap : body.getTraps()) {
       Unit handlerStart = trap.getHandlerUnit();
@@ -631,18 +634,19 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    * bytecode or an <code>athrow</code> bytecode which may escape the method.
    */
   private void buildHeadsAndTails(Set<Unit> additionalHeads) {
-    heads = new ArrayList<Unit>(additionalHeads.size() + 1);
+    heads = new ArrayList<>(additionalHeads.size() + 1);
     heads.addAll(additionalHeads);
 
-    if (unitChain.isEmpty())
+    if (unitChain.isEmpty()) {
       throw new IllegalStateException("No body for method " + body.getMethod().getSignature());
+    }
 
     Unit entryPoint = unitChain.getFirst();
     if (!heads.contains(entryPoint)) {
       heads.add(entryPoint);
     }
 
-    tails = new ArrayList<Unit>();
+    tails = new ArrayList<>();
     for (Unit u : unitChain) {
       if (u instanceof soot.jimple.ReturnStmt
           || u instanceof soot.jimple.ReturnVoidStmt
@@ -684,7 +688,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
             @Override
             public ThrowableSet getThrowables() {
-              if (null == throwables) throwables = throwAnalysis.mightThrow(u);
+              if (null == throwables) {
+                throwables = throwAnalysis.mightThrow(u);
+              }
               return throwables;
             }
           };

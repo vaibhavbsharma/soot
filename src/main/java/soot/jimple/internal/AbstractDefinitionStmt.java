@@ -25,13 +25,13 @@
 
 package soot.jimple.internal;
 
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.DefinitionStmt;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.DefinitionStmt;
 
 @SuppressWarnings("serial")
 public abstract class AbstractDefinitionStmt extends AbstractStmt implements DefinitionStmt {
@@ -70,7 +70,7 @@ public abstract class AbstractDefinitionStmt extends AbstractStmt implements Def
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
     list.addAll(getLeftOp().getUseBoxes());
     list.add(rightBox);
     list.addAll(getRightOp().getUseBoxes());

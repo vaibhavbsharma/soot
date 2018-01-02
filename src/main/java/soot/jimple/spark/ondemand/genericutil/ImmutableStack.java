@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 public class ImmutableStack<T> {
 
-  private static final ImmutableStack<Object> EMPTY = new ImmutableStack<Object>(new Object[0]);
+  private static final ImmutableStack<Object> EMPTY = new ImmutableStack<>(new Object[0]);
 
   private static final int MAX_SIZE = Integer.MAX_VALUE;
 
@@ -41,8 +41,11 @@ public class ImmutableStack<T> {
     this.entries = entries;
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
+    if (this == o) {
+      return true;
+    }
     if (o != null && o instanceof ImmutableStack) {
       ImmutableStack other = (ImmutableStack) o;
       return Arrays.equals(entries, other.entries);
@@ -50,6 +53,7 @@ public class ImmutableStack<T> {
     return false;
   }
 
+  @Override
   public int hashCode() {
     return Util.hashArray(this.entries);
   }
@@ -71,7 +75,7 @@ public class ImmutableStack<T> {
       System.arraycopy(entries, 1, tmpEntries, 0, entries.length - 1);
       tmpEntries[MAX_SIZE - 1] = entry;
     }
-    return new ImmutableStack<T>(tmpEntries);
+    return new ImmutableStack<>(tmpEntries);
   }
 
   public T peek() {
@@ -85,7 +89,7 @@ public class ImmutableStack<T> {
     int size = entries.length - 1;
     T[] tmpEntries = (T[]) new Object[size];
     System.arraycopy(entries, 0, tmpEntries, 0, size);
-    return new ImmutableStack<T>(tmpEntries);
+    return new ImmutableStack<>(tmpEntries);
   }
 
   public boolean isEmpty() {
@@ -100,6 +104,7 @@ public class ImmutableStack<T> {
     return entries[i];
   }
 
+  @Override
   public String toString() {
     String objArrayToString = Util.objArrayToString(entries);
     assert entries.length <= MAX_SIZE : objArrayToString;
@@ -111,9 +116,13 @@ public class ImmutableStack<T> {
   }
 
   public boolean topMatches(ImmutableStack<T> other) {
-    if (other.size() > size()) return false;
+    if (other.size() > size()) {
+      return false;
+    }
     for (int i = other.size() - 1, j = this.size() - 1; i >= 0; i--, j--) {
-      if (!other.get(i).equals(get(j))) return false;
+      if (!other.get(i).equals(get(j))) {
+        return false;
+      }
     }
     return true;
   }
@@ -124,7 +133,7 @@ public class ImmutableStack<T> {
     for (int i = entries.length - 1, j = 0; i >= 0; i--, j++) {
       tmpEntries[j] = entries[i];
     }
-    return new ImmutableStack<T>(tmpEntries);
+    return new ImmutableStack<>(tmpEntries);
   }
 
   @SuppressWarnings("unchecked")
@@ -134,7 +143,7 @@ public class ImmutableStack<T> {
     int size = entries.length - other.entries.length;
     T[] tmpEntries = (T[]) new Object[size];
     System.arraycopy(entries, 0, tmpEntries, 0, size);
-    return new ImmutableStack<T>(tmpEntries);
+    return new ImmutableStack<>(tmpEntries);
   }
 
   @SuppressWarnings("unchecked")
@@ -155,6 +164,6 @@ public class ImmutableStack<T> {
       System.arraycopy(entries, entries.length - numFromThis, tmpEntries, 0, numFromThis);
       System.arraycopy(other.entries, 0, tmpEntries, numFromThis, other.entries.length);
     }
-    return new ImmutableStack<T>(tmpEntries);
+    return new ImmutableStack<>(tmpEntries);
   }
 }

@@ -35,10 +35,12 @@ public class Integer1Type extends PrimType implements IntegerType {
 
   public Integer1Type(Singletons.Global g) {}
 
+  @Override
   public String toString() {
     return "[0..1]";
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }

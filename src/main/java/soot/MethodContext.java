@@ -29,12 +29,14 @@ import java.util.Map;
 public final class MethodContext implements MethodOrMethodContext {
   private SootMethod method;
 
+  @Override
   public SootMethod method() {
     return method;
   }
 
   private Context context;
 
+  @Override
   public Context context() {
     return context;
   }
@@ -44,10 +46,12 @@ public final class MethodContext implements MethodOrMethodContext {
     this.context = context;
   }
 
+  @Override
   public int hashCode() {
     return method.hashCode() + context.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof MethodContext) {
       MethodContext other = (MethodContext) o;
@@ -57,7 +61,9 @@ public final class MethodContext implements MethodOrMethodContext {
   }
 
   public static MethodOrMethodContext v(SootMethod method, Context context) {
-    if (context == null) return method;
+    if (context == null) {
+      return method;
+    }
     MethodContext probe = new MethodContext(method, context);
     Map<MethodContext, MethodContext> map = G.v().MethodContext_map;
     MethodContext ret = map.get(probe);
@@ -68,6 +74,7 @@ public final class MethodContext implements MethodOrMethodContext {
     return ret;
   }
 
+  @Override
   public String toString() {
     return "Method " + method + " in context " + context;
   }

@@ -1,6 +1,13 @@
 package soot.toDex;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jf.dexlib2.Opcode;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -21,19 +28,13 @@ import soot.VoidType;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /** Utility class for the conversion from soot to dex. */
 public class SootToDexUtils {
 
   private static final Map<Class<? extends Type>, String> sootToDexTypeDescriptor;
 
   static {
-    sootToDexTypeDescriptor = new HashMap<Class<? extends Type>, String>();
+    sootToDexTypeDescriptor = new HashMap<>();
     sootToDexTypeDescriptor.put(BooleanType.class, "Z");
     sootToDexTypeDescriptor.put(ByteType.class, "B");
     sootToDexTypeDescriptor.put(CharType.class, "C");
@@ -55,17 +56,21 @@ public class SootToDexUtils {
       typeDesc = sootToDexTypeDescriptor.get(sootType.getClass());
     }
 
-    if (typeDesc == null || typeDesc.isEmpty())
+    if (typeDesc == null || typeDesc.isEmpty()) {
       throw new RuntimeException("Could not create type descriptor for class " + sootType);
+    }
     return typeDesc;
   }
 
   public static String getDexClassName(String dottedClassName) {
-    if (dottedClassName == null || dottedClassName.isEmpty())
+    if (dottedClassName == null || dottedClassName.isEmpty()) {
       throw new RuntimeException("Empty class name detected");
+    }
 
     String slashedName = dottedClassName.replace('.', '/');
-    if (slashedName.startsWith("L") && slashedName.endsWith(";")) return slashedName;
+    if (slashedName.startsWith("L") && slashedName.endsWith(";")) {
+      return slashedName;
+    }
     return "L" + slashedName + ";";
   }
 
@@ -205,7 +210,7 @@ public class SootToDexUtils {
    * @return
    */
   public static List<String> splitSignature(String sig) {
-    List<String> split = new ArrayList<String>();
+    List<String> split = new ArrayList<>();
     int len = sig.length();
     int i = 0;
     int j = 0;

@@ -95,7 +95,9 @@ public class Base64 {
 
     int tempLen = data.length;
     for (char element : data) {
-      if ((element > 255) || codes[element] < 0) --tempLen; // ignore non-valid chars and padding
+      if ((element > 255) || codes[element] < 0) {
+        --tempLen; // ignore non-valid chars and padding
+      }
     }
     // calculate required length:
     //  -- 3 bytes for every 4 valid base64 chars
@@ -103,8 +105,12 @@ public class Base64 {
     //     or plus 1 byte if there are 2 extra.
 
     int len = (tempLen / 4) * 3;
-    if ((tempLen % 4) == 3) len += 2;
-    if ((tempLen % 4) == 2) len += 1;
+    if ((tempLen % 4) == 3) {
+      len += 2;
+    }
+    if ((tempLen % 4) == 2) {
+      len += 1;
+    }
 
     byte[] out = new byte[len];
 
@@ -156,10 +162,18 @@ public class Base64 {
   private static final byte[] codes = new byte[256];
 
   static {
-    for (int i = 0; i < 256; i++) codes[i] = -1;
-    for (int i = 'A'; i <= 'Z'; i++) codes[i] = (byte) (i - 'A');
-    for (int i = 'a'; i <= 'z'; i++) codes[i] = (byte) (26 + i - 'a');
-    for (int i = '0'; i <= '9'; i++) codes[i] = (byte) (52 + i - '0');
+    for (int i = 0; i < 256; i++) {
+      codes[i] = -1;
+    }
+    for (int i = 'A'; i <= 'Z'; i++) {
+      codes[i] = (byte) (i - 'A');
+    }
+    for (int i = 'a'; i <= 'z'; i++) {
+      codes[i] = (byte) (26 + i - 'a');
+    }
+    for (int i = '0'; i <= '9'; i++) {
+      codes[i] = (byte) (52 + i - '0');
+    }
     codes['+'] = 62;
     codes['/'] = 63;
   }

@@ -34,6 +34,7 @@ import soot.Type;
 public interface AbstractObject {
   Type getType();
 
+  @Override
   String toString();
 
   String shortString();

@@ -30,9 +30,12 @@ public class FieldRefNode extends ValNode {
     return base;
   }
 
+  @Override
   public Node getReplacement() {
     if (replacement == this) {
-      if (base.replacement == base) return this;
+      if (base.replacement == base) {
+        return this;
+      }
       Node baseRep = base.getReplacement();
       FieldRefNode newRep = pag.makeFieldRefNode((VarNode) baseRep, field);
       newRep.mergeWith(this);
@@ -46,6 +49,7 @@ public class FieldRefNode extends ValNode {
     return field;
   }
 
+  @Override
   public String toString() {
     return "FieldRefNode " + getNumber() + " " + base + "." + field;
   }
@@ -54,7 +58,9 @@ public class FieldRefNode extends ValNode {
 
   FieldRefNode(PAG pag, VarNode base, SparkField field) {
     super(pag, null);
-    if (field == null) throw new RuntimeException("null field");
+    if (field == null) {
+      throw new RuntimeException("null field");
+    }
     this.base = base;
     this.field = field;
     base.addField(this, field);

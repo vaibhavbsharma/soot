@@ -27,8 +27,8 @@ public class DavaMonitor {
   private final HashMap<Object, Lock> ref, lockTable;
 
   private DavaMonitor() {
-    ref = new HashMap<Object, Lock>(1, 0.7f);
-    lockTable = new HashMap<Object, Lock>(1, 0.7f);
+    ref = new HashMap<>(1, 0.7f);
+    lockTable = new HashMap<>(1, 0.7f);
   }
 
   public static DavaMonitor v() {
@@ -38,7 +38,9 @@ public class DavaMonitor {
   public synchronized void enter(Object o) throws NullPointerException {
     Thread currentThread = Thread.currentThread();
 
-    if (o == null) throw new NullPointerException();
+    if (o == null) {
+      throw new NullPointerException();
+    }
 
     Lock lock = ref.get(o);
 
@@ -80,15 +82,20 @@ public class DavaMonitor {
 
   public synchronized void exit(Object o)
       throws NullPointerException, IllegalMonitorStateException {
-    if (o == null) throw new NullPointerException();
+    if (o == null) {
+      throw new NullPointerException();
+    }
 
     Lock lock = ref.get(o);
 
-    if ((lock == null) || (lock.level == 0) || (lock.owner != Thread.currentThread()))
+    if ((lock == null) || (lock.level == 0) || (lock.owner != Thread.currentThread())) {
       throw new IllegalMonitorStateException();
+    }
 
     lock.level--;
 
-    if (lock.level == 0) notifyAll();
+    if (lock.level == 0) {
+      notifyAll();
+    }
   }
 }

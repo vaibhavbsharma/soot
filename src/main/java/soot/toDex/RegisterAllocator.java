@@ -1,5 +1,13 @@
 package soot.toDex;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import soot.Local;
 import soot.SootMethod;
 import soot.Type;
@@ -12,14 +20,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An allocator for registers. It keeps track of locals to re-use their registers.<br>
@@ -36,7 +36,7 @@ public class RegisterAllocator {
   private int paramRegCount;
 
   public RegisterAllocator() {
-    localToLastRegNum = new HashMap<Local, Integer>();
+    localToLastRegNum = new HashMap<>();
   }
 
   //
@@ -75,13 +75,13 @@ public class RegisterAllocator {
   // - array reference in assignment (ex: a[1] = 2)
   // - multi-dimension array initialization (ex: a = new int[1][2][3])
   //
-  private List<Register> classConstantReg = new ArrayList<Register>();
-  private List<Register> nullConstantReg = new ArrayList<Register>();
-  private List<Register> floatConstantReg = new ArrayList<Register>();
-  private List<Register> intConstantReg = new ArrayList<Register>();
-  private List<Register> longConstantReg = new ArrayList<Register>();
-  private List<Register> doubleConstantReg = new ArrayList<Register>();
-  private List<Register> stringConstantReg = new ArrayList<Register>();
+  private List<Register> classConstantReg = new ArrayList<>();
+  private List<Register> nullConstantReg = new ArrayList<>();
+  private List<Register> floatConstantReg = new ArrayList<>();
+  private List<Register> intConstantReg = new ArrayList<>();
+  private List<Register> longConstantReg = new ArrayList<>();
+  private List<Register> doubleConstantReg = new ArrayList<>();
+  private List<Register> stringConstantReg = new ArrayList<>();
   private AtomicInteger classI = new AtomicInteger(0);
   private AtomicInteger nullI = new AtomicInteger(0);
   private AtomicInteger floatI = new AtomicInteger(0);
@@ -90,7 +90,7 @@ public class RegisterAllocator {
   private AtomicInteger doubleI = new AtomicInteger(0);
   private AtomicInteger stringI = new AtomicInteger(0);
 
-  private Set<Register> lockedRegisters = new HashSet<Register>();
+  private Set<Register> lockedRegisters = new HashSet<>();
 
   private int lastReg;
 
@@ -176,7 +176,9 @@ public class RegisterAllocator {
   public void asParameter(SootMethod sm, Local l) {
     // If we already have a register for this parameter, there is nothing
     // more to be done here.
-    if (localToLastRegNum.containsKey(l)) return;
+    if (localToLastRegNum.containsKey(l)) {
+      return;
+    }
 
     // since a parameter in dex always has a register, we handle it like a new local without the
     // need of a new register
@@ -196,11 +198,13 @@ public class RegisterAllocator {
         // ignore
       }
     }
-    if (!found)
+    if (!found) {
       for (int i = 0; i < sm.getParameterCount(); i++) {
         if (sm.getActiveBody().getParameterLocal(i) == l) {
           // For a non-static method, p0 is <this>.
-          if (!sm.isStatic()) paramRegNum++;
+          if (!sm.isStatic()) {
+            paramRegNum++;
+          }
           found = true;
           break;
         }
@@ -209,7 +213,10 @@ public class RegisterAllocator {
         Type paramType = sm.getParameterType(i);
         paramRegNum += SootToDexUtils.getDexWords(paramType);
       }
-    if (!found) throw new RuntimeException("Parameter local not found");
+    }
+    if (!found) {
+      throw new RuntimeException("Parameter local not found");
+    }
 
     localToLastRegNum.put(l, paramRegNum);
     int wordsforParameters = SootToDexUtils.getDexWords(l.getType());

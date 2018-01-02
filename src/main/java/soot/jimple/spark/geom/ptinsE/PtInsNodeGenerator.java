@@ -32,8 +32,6 @@ import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
 
-import java.util.Iterator;
-
 /**
  * Build the initial encoded pointer assignment graph with the PtIns encoding.
  *
@@ -58,7 +56,9 @@ public class PtInsNodeGenerator extends IEncodingBroker {
     n_legal_cons = 0;
 
     for (PlainConstraint cons : ptAnalyzer.constraints) {
-      if (!cons.isActive) continue;
+      if (!cons.isActive) {
+        continue;
+      }
 
       my_lhs = cons.getLHS().getRepresentative();
       my_rhs = cons.getRHS().getRepresentative();
@@ -87,8 +87,7 @@ public class PtInsNodeGenerator extends IEncodingBroker {
           // The core part of any context sensitive algorithms
           if (cons.interCallEdges != null) {
             // Inter-procedural assignment
-            for (Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext(); ) {
-              Edge sEdge = it.next();
+            for (Edge sEdge : cons.interCallEdges) {
               q = ptAnalyzer.getInternalEdgeFromSootEdge(sEdge);
               if (q.is_obsoleted == true) {
                 continue;

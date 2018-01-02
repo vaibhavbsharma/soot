@@ -51,6 +51,7 @@ class local_variable_type_table_entry {
   /** The index in the local variable array of this local variable. */
   public int index;
 
+  @Override
   public String toString() {
     return "start: "
         + start_pc

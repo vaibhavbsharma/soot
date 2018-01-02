@@ -19,6 +19,8 @@
 
 package soot.jimple.toolkits.annotation.defs;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -30,8 +32,6 @@ import soot.ValueBox;
 import soot.tagkit.LinkTag;
 import soot.toolkits.scalar.LocalDefs;
 
-import java.util.Map;
-
 public class ReachingDefsTagger extends BodyTransformer {
 
   public ReachingDefsTagger(Singletons.Global g) {}
@@ -40,6 +40,7 @@ public class ReachingDefsTagger extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_defs_ReachingDefsTagger();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     LocalDefs ld = LocalDefs.Factory.newLocalDefs(b);

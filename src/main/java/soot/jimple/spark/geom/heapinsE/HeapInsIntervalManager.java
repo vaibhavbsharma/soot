@@ -49,18 +49,22 @@ public class HeapInsIntervalManager extends IFigureManager {
   private SegmentNode header[] = {null, null, null};
   private boolean hasNewFigure = false;
 
+  @Override
   public SegmentNode[] getFigures() {
     return header;
   }
 
+  @Override
   public int[] getSizes() {
     return size;
   }
 
+  @Override
   public boolean isThereUnprocessedFigures() {
     return hasNewFigure;
   }
 
+  @Override
   public void flush() {
     hasNewFigure = false;
 
@@ -88,13 +92,16 @@ public class HeapInsIntervalManager extends IFigureManager {
    * This case is specially handled because it is very common in the program.
    * And, treating it as a MANY-TO-ALL is loss of precision.
    */
+  @Override
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
 
     if (code == ALL_TO_ALL) {
       // The input figure is a all-to-all figure
       // Directly clean all the existing intervals unless the all-to-all figure is existing.
-      if (header[ALL_TO_MANY] != null && header[ALL_TO_MANY].I2 == 0) return null;
+      if (header[ALL_TO_MANY] != null && header[ALL_TO_MANY].I2 == 0) {
+        return null;
+      }
 
       p = new SegmentNode();
 
@@ -112,7 +119,9 @@ public class HeapInsIntervalManager extends IFigureManager {
       if (code == ALL_TO_MANY || code == ONE_TO_ONE) {
         p = header[ALL_TO_MANY];
         while (p != null) {
-          if ((p.I2 <= pnew.I2) && (p.I2 + p.L >= pnew.I2 + pnew.L)) return null;
+          if ((p.I2 <= pnew.I2) && (p.I2 + p.L >= pnew.I2 + pnew.L)) {
+            return null;
+          }
           p = p.next;
         }
       }
@@ -121,7 +130,9 @@ public class HeapInsIntervalManager extends IFigureManager {
       if (code == MANY_TO_ALL || code == ONE_TO_ONE) {
         p = header[MANY_TO_ALL];
         while (p != null) {
-          if ((p.I1 <= pnew.I1) && (p.I1 + p.L >= pnew.I1 + pnew.L)) return null;
+          if ((p.I1 <= pnew.I1) && (p.I1 + p.L >= pnew.I1 + pnew.L)) {
+            return null;
+          }
           p = p.next;
         }
       }
@@ -134,7 +145,9 @@ public class HeapInsIntervalManager extends IFigureManager {
           // is a segment
           if (p.I1 - p.I2 == pnew.I1 - pnew.I2) {
             // On the same line
-            if (p.I1 <= pnew.I1 && p.I1 + p.L >= pnew.I1 + pnew.L) return null;
+            if (p.I1 <= pnew.I1 && p.I1 + p.L >= pnew.I1 + pnew.L) {
+              return null;
+            }
           }
 
           p = p.next;
@@ -144,9 +157,13 @@ public class HeapInsIntervalManager extends IFigureManager {
       // Insert the new interval immediately, and we delay the merging until necessary
       p = new SegmentNode(pnew);
 
-      if (code == ALL_TO_MANY) clean_garbage_all_to_many(p);
-      else if (code == MANY_TO_ALL) clean_garbage_many_to_all(p);
-      else clean_garbage_one_to_one(p);
+      if (code == ALL_TO_MANY) {
+        clean_garbage_all_to_many(p);
+      } else if (code == MANY_TO_ALL) {
+        clean_garbage_many_to_all(p);
+      } else {
+        clean_garbage_one_to_one(p);
+      }
     }
 
     hasNewFigure = true;
@@ -157,8 +174,11 @@ public class HeapInsIntervalManager extends IFigureManager {
   }
 
   // This function tries to do the geometric merging
+  @Override
   public void mergeFigures(int upperSize) {
-    if (!hasNewFigure) return;
+    if (!hasNewFigure) {
+      return;
+    }
 
     /*
      * We start the merging from ONE_TO_ONE, because the generated figure may be merged with those figures in MANY_TO_ALL
@@ -188,6 +208,7 @@ public class HeapInsIntervalManager extends IFigureManager {
     }
   }
 
+  @Override
   public void removeUselessSegments() {
     int i;
     SegmentNode p, q, temp;
@@ -238,9 +259,13 @@ public class HeapInsIntervalManager extends IFigureManager {
     p = mp.next;
 
     while (p != null) {
-      if (p.I2 < left) left = p.I2;
+      if (p.I2 < left) {
+        left = p.I2;
+      }
       long t = p.I2 + p.L;
-      if (t > right) right = t;
+      if (t > right) {
+        right = t;
+      }
       p = p.next;
     }
 
@@ -263,9 +288,13 @@ public class HeapInsIntervalManager extends IFigureManager {
     p = mp.next;
 
     while (p != null) {
-      if (p.I1 < left) left = p.I1;
+      if (p.I1 < left) {
+        left = p.I1;
+      }
       long t = p.I1 + p.L;
-      if (t > right) right = t;
+      if (t > right) {
+        right = t;
+      }
       p = p.next;
     }
 
@@ -328,7 +357,9 @@ public class HeapInsIntervalManager extends IFigureManager {
 
     predator.I1 = left;
     predator.L = right - left;
-    if (q != null) q.next = null;
+    if (q != null) {
+      q.next = null;
+    }
     header[MANY_TO_ALL] = p;
     size[MANY_TO_ALL] = num;
   }
@@ -379,7 +410,9 @@ public class HeapInsIntervalManager extends IFigureManager {
 
     predator.I2 = left;
     predator.L = right - left;
-    if (q != null) q.next = null;
+    if (q != null) {
+      q.next = null;
+    }
     header[ALL_TO_MANY] = p;
     size[ALL_TO_MANY] = num;
   }
@@ -399,11 +432,11 @@ public class HeapInsIntervalManager extends IFigureManager {
       long L = list.L;
       if ((predator.I2 - predator.I1 == list.I2 - list.I1)
           && predator.I1 <= list.I1
-          && (predator.I1 + predator.L >= list.I2 + L))
-        // The checked figure is completely contained in the predator
+          && (predator.I1 + predator.L
+              >= list.I2 + L)) { // The checked figure is completely contained in the predator
         // So we ignore it
         ;
-      else {
+      } else {
         if (q == null) {
           p = q = list;
         } else {
@@ -417,7 +450,9 @@ public class HeapInsIntervalManager extends IFigureManager {
       list = list.next;
     }
 
-    if (q != null) q.next = null;
+    if (q != null) {
+      q.next = null;
+    }
     header[ONE_TO_ONE] = p;
     size[ONE_TO_ONE] = num;
   }

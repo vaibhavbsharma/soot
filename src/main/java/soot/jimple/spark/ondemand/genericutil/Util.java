@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -42,15 +41,18 @@ public class Util {
   /** Factorial */
   public static long fact(long n_) {
     long result = 1;
-    for (long i = 1; i <= n_; i++) result *= i;
+    for (long i = 1; i <= n_; i++) {
+      result *= i;
+    }
     return result;
   }
 
   /** Factorial */
   public static BigInteger fact(BigInteger n_) {
     BigInteger result = BigInteger.ONE;
-    for (BigInteger i = BigInteger.ONE; i.compareTo(n_) <= 0; i = i.add(BigInteger.ONE))
+    for (BigInteger i = BigInteger.ONE; i.compareTo(n_) <= 0; i = i.add(BigInteger.ONE)) {
       result = result.multiply(i);
+    }
     return result;
   }
 
@@ -64,28 +66,36 @@ public class Util {
   public static double fact(double n_) {
     n_ += 1e-6;
     double result = 1.0;
-    for (double i = 1; i <= n_; i += 1.0) result *= i;
+    for (double i = 1; i <= n_; i += 1.0) {
+      result *= i;
+    }
     return result;
   }
 
   /** Factorial */
   public static int fact(int n_) {
     int result = 1;
-    for (int i = 1; i <= n_; i++) result *= i;
+    for (int i = 1; i <= n_; i++) {
+      result *= i;
+    }
     return result;
   }
 
   /** Binary log: finds the smallest power k such that 2^k>=n */
   public static int binaryLogUp(int n_) {
     int k = 0;
-    while ((1 << k) < n_) k++;
+    while ((1 << k) < n_) {
+      k++;
+    }
     return k;
   }
 
   /** Binary log: finds the smallest power k such that 2^k>=n */
   public static int binaryLogUp(long n_) {
     int k = 0;
-    while ((1L << k) < n_) k++;
+    while ((1L << k) < n_) {
+      k++;
+    }
     return k;
   }
 
@@ -94,7 +104,9 @@ public class Util {
     StringBuffer s = new StringBuffer();
     s.append("[");
     for (int i = 0; i < ints_.length; i++) {
-      if (i > 0) s.append(", ");
+      if (i > 0) {
+        s.append(", ");
+      }
       s.append(ints_[i]);
     }
     s.append("]");
@@ -110,7 +122,9 @@ public class Util {
     s.append(start);
     for (int i = 0; i < o.length; i++) {
       if (o[i] != null) {
-        if (i > 0) s.append(sep);
+        if (i > 0) {
+          s.append(sep);
+        }
         s.append(o[i].toString());
       }
     }
@@ -148,9 +162,10 @@ public class Util {
    * @return The first element satisfying the predicate; otherwise null.
    */
   public static <T> T find(Collection<T> c_, Predicate<T> p_) {
-    for (Iterator<T> iter = c_.iterator(); iter.hasNext(); ) {
-      T obj = iter.next();
-      if (p_.test(obj)) return obj;
+    for (T obj : c_) {
+      if (p_.test(obj)) {
+        return obj;
+      }
     }
 
     return null;
@@ -163,11 +178,12 @@ public class Util {
    * @return All the elements satisfying the predicate
    */
   public static <T> Collection<T> findAll(Collection<T> c_, Predicate<T> p_) {
-    Collection<T> result = new LinkedList<T>();
+    Collection<T> result = new LinkedList<>();
 
-    for (Iterator<T> iter = c_.iterator(); iter.hasNext(); ) {
-      T obj = iter.next();
-      if (p_.test(obj)) result.add(obj);
+    for (T obj : c_) {
+      if (p_.test(obj)) {
+        result.add(obj);
+      }
     }
 
     return result;
@@ -179,7 +195,9 @@ public class Util {
    */
   public static <T> boolean forAll(Collection<T> c_, Predicate<T> p_) {
     for (T t : c_) {
-      if (!p_.test(t)) return false;
+      if (!p_.test(t)) {
+        return false;
+      }
     }
     return true;
   }
@@ -191,7 +209,9 @@ public class Util {
    * @param v_ the visitor defining the action
    */
   public static <T> void doForAll(Collection<T> c_, ObjectVisitor<T> v_) {
-    for (Iterator<T> iter = c_.iterator(); iter.hasNext(); ) v_.visit(iter.next());
+    for (T t : c_) {
+      v_.visit(t);
+    }
   }
 
   /**
@@ -201,9 +221,10 @@ public class Util {
    * implementations, so it's best to avoid it.
    */
   public static <T, U> List<U> map(List<T> srcList, Mapper<T, U> mapper_) {
-    ArrayList<U> result = new ArrayList<U>();
-    for (Iterator<T> srcIter = srcList.iterator(); srcIter.hasNext(); )
-      result.add(mapper_.map(srcIter.next()));
+    ArrayList<U> result = new ArrayList<>();
+    for (T t : srcList) {
+      result.add(mapper_.map(t));
+    }
     return result;
   }
 
@@ -215,10 +236,11 @@ public class Util {
    * it.
    */
   public static <T> List<T> filter(Collection<T> src_, Predicate<T> pred_) {
-    ArrayList<T> result = new ArrayList<T>();
-    for (Iterator<T> srcIter = src_.iterator(); srcIter.hasNext(); ) {
-      T curElem = srcIter.next();
-      if (pred_.test(curElem)) result.add(curElem);
+    ArrayList<T> result = new ArrayList<>();
+    for (T curElem : src_) {
+      if (pred_.test(curElem)) {
+        result.add(curElem);
+      }
     }
     return result;
   }
@@ -245,9 +267,10 @@ public class Util {
    * so it's best to avoid it.
    */
   public static <T, U> Set<U> mapToSet(Collection<T> srcSet, Mapper<T, U> mapper_) {
-    HashSet<U> result = new HashSet<U>();
-    for (Iterator<T> srcIter = srcSet.iterator(); srcIter.hasNext(); )
-      result.add(mapper_.map(srcIter.next()));
+    HashSet<U> result = new HashSet<>();
+    for (T t : srcSet) {
+      result.add(mapper_.map(t));
+    }
     return result;
   }
 
@@ -260,7 +283,9 @@ public class Util {
       int[] newData = new int[newSize_];
       System.arraycopy(data_, 0, newData, 0, data_.length);
       return newData;
-    } else return data_;
+    } else {
+      return data_;
+    }
   }
 
   /** Clear a {@link BitSet}. */
@@ -270,11 +295,15 @@ public class Util {
 
   /** Replace all occurrences of a given substring in a given {@link String}. */
   public static String replaceAll(String str_, String sub_, String newSub_) {
-    if (str_.indexOf(sub_) == -1) return str_;
+    if (str_.indexOf(sub_) == -1) {
+      return str_;
+    }
     int subLen = sub_.length();
     int idx;
     StringBuffer result = new StringBuffer(str_);
-    while ((idx = result.toString().indexOf(sub_)) >= 0) result.replace(idx, idx + subLen, newSub_);
+    while ((idx = result.toString().indexOf(sub_)) >= 0) {
+      result.replace(idx, idx + subLen, newSub_);
+    }
     return result.toString();
   }
 
@@ -292,6 +321,7 @@ public class Util {
     SecurityManager oldsecurity = System.getSecurityManager();
     System.setSecurityManager(
         new SecurityManager() {
+          @Override
           public void checkPermission(Permission perm) {}
         });
 
@@ -301,7 +331,9 @@ public class Util {
     while (c != Object.class) {
       Field[] fields = c.getDeclaredFields();
 
-      if (fields.length > 0) buf = buf.append(" (");
+      if (fields.length > 0) {
+        buf = buf.append(" (");
+      }
 
       for (int i = 0; i < fields.length; i++) {
         // Make this field accessible
@@ -336,7 +368,9 @@ public class Util {
 
   /** Remove the package name from a fully qualified class name */
   public static String removePackageName(String fully_qualified_name_) {
-    if (fully_qualified_name_ == null) return null;
+    if (fully_qualified_name_ == null) {
+      return null;
+    }
 
     int lastdot = fully_qualified_name_.lastIndexOf('.');
 
@@ -351,8 +385,8 @@ public class Util {
   public static int hashArray(Object[] objs) {
     // stolen from java.util.AbstractList
     int ret = 1;
-    for (int i = 0; i < objs.length; i++) {
-      ret = 31 * ret + (objs[i] == null ? 0 : objs[i].hashCode());
+    for (Object obj : objs) {
+      ret = 31 * ret + (obj == null ? 0 : obj.hashCode());
     }
     return ret;
   }
@@ -360,7 +394,9 @@ public class Util {
   public static boolean arrayContains(Object[] arr, Object obj, int size) {
     assert obj != null;
     for (int i = 0; i < size; i++) {
-      if (arr[i] != null && arr[i].equals(obj)) return true;
+      if (arr[i] != null && arr[i].equals(obj)) {
+        return true;
+      }
     }
     return false;
   }
@@ -380,6 +416,7 @@ public class Util {
     return forSome(
         s1,
         new Predicate<T>() {
+          @Override
           public boolean test(T obj) {
             return s2.contains(obj);
           }
@@ -417,7 +454,7 @@ public class Util {
     if (vals.size() <= n) {
       return vals;
     }
-    HashSet<T> elems = new HashSet<T>();
+    HashSet<T> elems = new HashSet<>();
     Random rand = new Random(seed);
     for (int i = 0; i < n; i++) {
       boolean added = true;
@@ -426,6 +463,6 @@ public class Util {
         added = elems.add(vals.get(randIndex));
       } while (!added);
     }
-    return new ArrayList<T>(elems);
+    return new ArrayList<>(elems);
   }
 } // class Util

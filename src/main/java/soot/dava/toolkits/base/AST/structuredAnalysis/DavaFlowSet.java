@@ -33,13 +33,6 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import soot.dava.internal.AST.ASTNode;
-import soot.dava.internal.SET.SETNodeLabel;
-import soot.dava.internal.javaRep.DAbruptStmt;
-import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
-import soot.toolkits.scalar.AbstractFlowSet;
-import soot.toolkits.scalar.FlowSet;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +40,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.internal.javaRep.DAbruptStmt;
+import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
+import soot.toolkits.scalar.AbstractFlowSet;
+import soot.toolkits.scalar.FlowSet;
 
 public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
@@ -90,10 +90,10 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     maxElements = DEFAULT_SIZE;
     elements = (T[]) new Object[DEFAULT_SIZE];
     numElements = 0;
-    breakList = new HashMap<Serializable, List<DavaFlowSet<T>>>();
-    continueList = new HashMap<Serializable, List<DavaFlowSet<T>>>();
-    implicitBreaks = new HashMap<Serializable, List<DavaFlowSet<T>>>();
-    implicitContinues = new HashMap<Serializable, List<DavaFlowSet<T>>>();
+    breakList = new HashMap<>();
+    continueList = new HashMap<>();
+    implicitBreaks = new HashMap<>();
+    implicitContinues = new HashMap<>();
   }
 
   public DavaFlowSet(DavaFlowSet<T> other) {
@@ -112,27 +112,33 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     return (flowSet instanceof DavaFlowSet);
   }
 
+  @Override
   public DavaFlowSet<T> clone() {
-    return new DavaFlowSet<T>(this);
+    return new DavaFlowSet<>(this);
   }
 
+  @Override
   public FlowSet<T> emptySet() {
-    return new DavaFlowSet<T>();
+    return new DavaFlowSet<>();
   }
 
+  @Override
   public void clear() {
     numElements = 0;
   }
 
+  @Override
   public int size() {
     return numElements;
   }
 
+  @Override
   public boolean isEmpty() {
     return numElements == 0;
   }
 
   /** Returns a unbacked list of elements in this set. */
+  @Override
   public List<T> toList() {
     @SuppressWarnings("unchecked")
     T[] copiedElements = (T[]) new Object[numElements];
@@ -151,7 +157,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     // Add element
     if (!contains(e)) {
       // Expand array if necessary
-      if (numElements == maxElements) doubleCapacity();
+      if (numElements == maxElements) {
+        doubleCapacity();
+      }
       elements[numElements++] = e;
     }
   }
@@ -169,11 +177,12 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
   @Override
   public void remove(Object obj) {
-    for (int i = 0; i < numElements; i++)
+    for (int i = 0; i < numElements; i++) {
       if (elements[i].equals(obj)) {
         remove(i);
         break;
       }
+    }
   }
 
   public void remove(int idx) {
@@ -185,6 +194,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
    * information regarding abrupt control flow This should also be merged using the
    * copyInternalDataFrom method
    */
+  @Override
   public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
     if (sameType(otherFlow) && sameType(destFlow)) {
       DavaFlowSet<T> other = (DavaFlowSet<T>) otherFlow;
@@ -192,16 +202,24 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
       // For the special case that dest == other
       if (dest == other) {
-        for (int i = 0; i < this.numElements; i++) dest.add(this.elements[i]);
+        for (int i = 0; i < this.numElements; i++) {
+          dest.add(this.elements[i]);
+        }
       }
 
       // Else, force that dest starts with contents of this
       else {
-        if (this != dest) copy(dest);
+        if (this != dest) {
+          copy(dest);
+        }
 
-        for (int i = 0; i < other.numElements; i++) dest.add(other.elements[i]);
+        for (int i = 0; i < other.numElements; i++) {
+          dest.add(other.elements[i]);
+        }
       }
-    } else super.union(otherFlow, destFlow);
+    } else {
+      super.union(otherFlow, destFlow);
+    }
   }
 
   /**
@@ -209,6 +227,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
    * contains information regarding abrupt control flow This should also be merged using the
    * copyInternalDataFrom method
    */
+  @Override
   public void intersection(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
     // System.out.println("DAVA FLOWSET INTERSECTION INVOKED!!!");
     if (sameType(otherFlow) && sameType(destFlow)) {
@@ -216,42 +235,62 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
       DavaFlowSet<T> dest = (DavaFlowSet<T>) destFlow;
       DavaFlowSet<T> workingSet;
 
-      if (dest == other || dest == this) workingSet = new DavaFlowSet<T>();
-      else {
+      if (dest == other || dest == this) {
+        workingSet = new DavaFlowSet<>();
+      } else {
         workingSet = dest;
         workingSet.clear();
       }
 
       for (int i = 0; i < this.numElements; i++) {
-        if (other.contains(this.elements[i])) workingSet.add(this.elements[i]);
+        if (other.contains(this.elements[i])) {
+          workingSet.add(this.elements[i]);
+        }
       }
 
-      if (workingSet != dest) workingSet.copy(dest);
-    } else super.intersection(otherFlow, destFlow);
+      if (workingSet != dest) {
+        workingSet.copy(dest);
+      }
+    } else {
+      super.intersection(otherFlow, destFlow);
+    }
   }
 
+  @Override
   public void difference(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
     if (sameType(otherFlow) && sameType(destFlow)) {
       DavaFlowSet<T> other = (DavaFlowSet<T>) otherFlow;
       DavaFlowSet<T> dest = (DavaFlowSet<T>) destFlow;
       DavaFlowSet<T> workingSet;
 
-      if (dest == other || dest == this) workingSet = new DavaFlowSet<T>();
-      else {
+      if (dest == other || dest == this) {
+        workingSet = new DavaFlowSet<>();
+      } else {
         workingSet = dest;
         workingSet.clear();
       }
 
       for (int i = 0; i < this.numElements; i++) {
-        if (!other.contains(this.elements[i])) workingSet.add(this.elements[i]);
+        if (!other.contains(this.elements[i])) {
+          workingSet.add(this.elements[i]);
+        }
       }
 
-      if (workingSet != dest) workingSet.copy(dest);
-    } else super.difference(otherFlow, destFlow);
+      if (workingSet != dest) {
+        workingSet.copy(dest);
+      }
+    } else {
+      super.difference(otherFlow, destFlow);
+    }
   }
 
+  @Override
   public boolean contains(Object obj) {
-    for (int i = 0; i < numElements; i++) if (elements[i].equals(obj)) return true;
+    for (int i = 0; i < numElements; i++) {
+      if (elements[i].equals(obj)) {
+        return true;
+      }
+    }
 
     return false;
   }
@@ -261,17 +300,24 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
    * DavaFlowSet also contains information regarding abrupt control flow This should also be checked
    * by invoking the internalDataMatchesTo method
    */
+  @Override
   public boolean equals(Object otherFlow) {
     if (sameType(otherFlow)) {
       @SuppressWarnings("unchecked")
       DavaFlowSet<T> other = (DavaFlowSet<T>) otherFlow;
 
-      if (other.numElements != this.numElements) return false;
+      if (other.numElements != this.numElements) {
+        return false;
+      }
 
       int size = this.numElements;
 
       // Make sure that thisFlow is contained in otherFlow
-      for (int i = 0; i < size; i++) if (!other.contains(this.elements[i])) return false;
+      for (int i = 0; i < size; i++) {
+        if (!other.contains(this.elements[i])) {
+          return false;
+        }
+      }
 
       /*
        * both arrays have the same size, no element appears twice in one
@@ -282,20 +328,29 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
        */
 
       return true;
-    } else return super.equals(otherFlow);
+    } else {
+      return super.equals(otherFlow);
+    }
   }
 
+  @Override
   public void copy(FlowSet<T> destFlow) {
-    if (this == destFlow) return;
+    if (this == destFlow) {
+      return;
+    }
     if (sameType(destFlow)) {
       DavaFlowSet<T> dest = (DavaFlowSet<T>) destFlow;
 
-      while (dest.maxElements < this.maxElements) dest.doubleCapacity();
+      while (dest.maxElements < this.maxElements) {
+        dest.doubleCapacity();
+      }
 
       dest.numElements = this.numElements;
 
       System.arraycopy(this.elements, 0, dest.elements, 0, this.numElements);
-    } else super.copy(destFlow);
+    } else {
+      super.copy(destFlow);
+    }
   }
 
   /** A private method used to add an element into a List if it is NOT a duplicate */
@@ -311,7 +366,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
         break;
       }
     }
-    if (!found) into.add(addThis);
+    if (!found) {
+      into.add(addThis);
+    }
     return into;
   }
 
@@ -322,7 +379,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   public void addToBreakList(String labelBroken, DavaFlowSet<T> set) {
     List<DavaFlowSet<T>> labelsBreakList = breakList.get(labelBroken);
     if (labelsBreakList == null) {
-      labelsBreakList = new ArrayList<DavaFlowSet<T>>();
+      labelsBreakList = new ArrayList<>();
       labelsBreakList.add(set);
       breakList.put(labelBroken, labelsBreakList);
       // System.out.println("ADDED"+labelBroken+" with"+set.toString());
@@ -340,7 +397,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   public void addToContinueList(String labelContinued, DavaFlowSet<T> set) {
     List<DavaFlowSet<T>> labelsContinueList = continueList.get(labelContinued);
     if (labelsContinueList == null) {
-      labelsContinueList = new ArrayList<DavaFlowSet<T>>();
+      labelsContinueList = new ArrayList<>();
       labelsContinueList.add(set);
       continueList.put(labelContinued, labelsContinueList);
     } else {
@@ -354,7 +411,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
    */
   private boolean checkImplicit(DAbruptStmt ab) {
     SETNodeLabel label = ab.getLabel();
-    if (label == null) return true;
+    if (label == null) {
+      return true;
+    }
     return label.toString() == null;
   }
 
@@ -366,12 +425,14 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
    * added to the list within the appropriate hashmap
    */
   public void addToImplicitBreaks(DAbruptStmt ab, DavaFlowSet<T> set) {
-    if (!checkImplicit(ab))
+    if (!checkImplicit(ab)) {
       throw new RuntimeException("Tried to add explicit break statement in the implicit list in");
+    }
 
-    if (!ab.is_Break())
+    if (!ab.is_Break()) {
       throw new RuntimeException(
           "Tried to add continue statement in the break list in DavaFlowSet.addToImplicitBreaks");
+    }
 
     // okkay so its an implicit break
     // get the targetted node, use the ClosestAbruptTargetFinder
@@ -379,18 +440,22 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
     // get the list of flow sets already stored for this node
     List<DavaFlowSet<T>> listSets = implicitBreaks.get(node);
-    if (listSets == null) listSets = new ArrayList<DavaFlowSet<T>>();
+    if (listSets == null) {
+      listSets = new ArrayList<>();
+    }
 
     // if set is not already present in listSets add it and update hashMap
     implicitBreaks.put(node, addIfNotDuplicate(listSets, set));
   }
 
   public void addToImplicitContinues(DAbruptStmt ab, DavaFlowSet<T> set) {
-    if (!checkImplicit(ab))
+    if (!checkImplicit(ab)) {
       throw new RuntimeException("Tried to add explicit continue statement in the implicit list ");
+    }
 
-    if (!ab.is_Continue())
+    if (!ab.is_Continue()) {
       throw new RuntimeException("Tried to add break statement in the continue list");
+    }
 
     // okkay so its an implicit continue
     // get the targetted node, use the ClosestAbruptTargetFinder
@@ -398,7 +463,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
     // get the list of flow sets already stored for this node
     List<DavaFlowSet<T>> listSets = implicitContinues.get(node);
-    if (listSets == null) listSets = new ArrayList<DavaFlowSet<T>>();
+    if (listSets == null) {
+      listSets = new ArrayList<>();
+    }
 
     // if set is not already present in listSets add it and update hashMap
     implicitContinues.put(node, addIfNotDuplicate(listSets, set));
@@ -422,13 +489,17 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
   public List<DavaFlowSet<T>> getImplicitlyBrokenSets(ASTNode node) {
     List<DavaFlowSet<T>> toReturn = implicitBreaks.get(node);
-    if (toReturn != null) return toReturn;
+    if (toReturn != null) {
+      return toReturn;
+    }
     return null;
   }
 
   public List<DavaFlowSet<T>> getImplicitlyContinuedSets(ASTNode node) {
     List<DavaFlowSet<T>> toReturn = implicitContinues.get(node);
-    if (toReturn != null) return toReturn;
+    if (toReturn != null) {
+      return toReturn;
+    }
     return null;
   }
 
@@ -458,7 +529,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   public void copyInternalDataFrom(DavaFlowSet<T> fromThis) {
-    if (!sameType(fromThis)) return;
+    if (!sameType(fromThis)) {
+      return;
+    }
 
     // copy elements of breaklist
     {
@@ -555,8 +628,12 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   private <X> boolean compareLists(List<X> listOne, List<X> listTwo) {
-    if (listOne == null && listTwo == null) return true;
-    if (listOne == null || listTwo == null) return false;
+    if (listOne == null && listTwo == null) {
+      return true;
+    }
+    if (listOne == null || listTwo == null) {
+      return false;
+    }
 
     // compare elements of the list
     if (listOne.size() != listTwo.size()) {
@@ -589,22 +666,30 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   public boolean internalDataMatchesTo(Object otherObj) {
-    if (!(otherObj instanceof DavaFlowSet)) return false;
+    if (!(otherObj instanceof DavaFlowSet)) {
+      return false;
+    }
 
     @SuppressWarnings("unchecked")
     DavaFlowSet<T> other = (DavaFlowSet<T>) otherObj;
 
     // check if same break list
     HashMap<Serializable, List<DavaFlowSet<T>>> otherMap = other.getBreakList();
-    if (!compareHashMaps(breakList, otherMap)) return false;
+    if (!compareHashMaps(breakList, otherMap)) {
+      return false;
+    }
 
     // check if same continue list
     otherMap = other.getContinueList();
-    if (!compareHashMaps(continueList, otherMap)) return false;
+    if (!compareHashMaps(continueList, otherMap)) {
+      return false;
+    }
 
     // check implicitBreaks match
     otherMap = other.getImplicitBreaks();
-    if (!compareHashMaps(implicitBreaks, otherMap)) return false;
+    if (!compareHashMaps(implicitBreaks, otherMap)) {
+      return false;
+    }
 
     // check implicitContinues match
     otherMap = other.getImplicitContinues();
@@ -614,7 +699,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   private boolean compareHashMaps(
       HashMap<Serializable, List<DavaFlowSet<T>>> thisMap,
       HashMap<Serializable, List<DavaFlowSet<T>>> otherMap) {
-    List<String> otherKeyList = new ArrayList<String>();
+    List<String> otherKeyList = new ArrayList<>();
 
     Iterator<Serializable> keys = otherMap.keySet().iterator();
     while (keys.hasNext()) {
@@ -666,11 +751,14 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     return breakList.remove(label);
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     b.append(" SET={");
     for (int i = 0; i < this.numElements; i++) {
-      if (i != 0) b.append(" , ");
+      if (i != 0) {
+        b.append(" , ");
+      }
 
       b.append(this.elements[i].toString());
     }

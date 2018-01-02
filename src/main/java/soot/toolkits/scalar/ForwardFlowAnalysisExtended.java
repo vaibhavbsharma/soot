@@ -25,16 +25,16 @@
 
 package soot.toolkits.scalar;
 
-import soot.Timers;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.Orderer;
-import soot.toolkits.graph.PseudoTopologicalOrderer;
-
 import java.util.BitSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import soot.Timers;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.Orderer;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
 
 /**
  * Abstract class that provides a fixed-point iteration for forward flow analyses that need to
@@ -60,8 +60,8 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
   /** Construct the analysis from a DirectedGraph representation of a Body. */
   public ForwardFlowAnalysisExtended(DirectedGraph<N> graph) {
     this.graph = graph;
-    this.unitToBeforeFlow = new IdentityHashMap<N, Map<N, A>>(graph.size() * 2 + 1);
-    this.unitToAfterFlow = new IdentityHashMap<N, Map<N, A>>(graph.size() * 2 + 1);
+    this.unitToBeforeFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
+    this.unitToAfterFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
   }
 
   /**
@@ -70,7 +70,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
    * @return an Orderer to order the nodes for the fixed-point iteration
    */
   protected Orderer<N> constructOrderer() {
-    return new PseudoTopologicalOrderer<N>();
+    return new PseudoTopologicalOrderer<>();
   }
 
   /** Returns the flow object corresponding to the initial values for each graph node. */
@@ -107,14 +107,16 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 
   public A getFromMap(Map<N, Map<N, A>> map, N s, N t) {
     Map<N, A> m = map.get(s);
-    if (m == null) return null;
+    if (m == null) {
+      return null;
+    }
     return m.get(t);
   }
 
   public void putToMap(Map<N, Map<N, A>> map, N s, N t, A val) {
     Map<N, A> m = map.get(s);
     if (m == null) {
-      m = new IdentityHashMap<N, A>();
+      m = new IdentityHashMap<>();
       map.put(s, m);
     }
     m.put(t, val);
@@ -128,7 +130,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
     BitSet work = new BitSet(n);
     work.set(0, n);
 
-    final Map<N, Integer> index = new IdentityHashMap<N, Integer>(n * 2 + 1);
+    final Map<N, Integer> index = new IdentityHashMap<>(n * 2 + 1);
     {
       int i = 0;
       for (N s : orderedUnits) {
@@ -148,7 +150,9 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
       head.set(index.get(s));
 
       // this is a forward flow analysis
-      for (N v : graph.getSuccsOf(s)) putToMap(unitToBeforeFlow, s, v, entryInitialFlow());
+      for (N v : graph.getSuccsOf(s)) {
+        putToMap(unitToBeforeFlow, s, v, entryInitialFlow());
+      }
     }
 
     int numComputations = 0;

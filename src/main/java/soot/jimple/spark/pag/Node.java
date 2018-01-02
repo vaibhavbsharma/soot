@@ -32,10 +32,12 @@ import soot.util.Numberable;
  * @author Ondrej Lhotak
  */
 public class Node implements ReferenceVariable, Numberable {
+  @Override
   public final int hashCode() {
     return number;
   }
 
+  @Override
   public final boolean equals(Object other) {
     return this == other;
   }
@@ -45,7 +47,9 @@ public class Node implements ReferenceVariable, Numberable {
   }
   /** Sets the declared type of this node, null for unknown. */
   public void setType(Type type) {
-    if (TypeManager.isUnresolved(type)) throw new RuntimeException("Unresolved type " + type);
+    if (TypeManager.isUnresolved(type)) {
+      throw new RuntimeException("Unresolved type " + type);
+    }
     this.type = type;
   }
   /**
@@ -64,7 +68,9 @@ public class Node implements ReferenceVariable, Numberable {
       throw new RuntimeException("Shouldn't happen");
     }
     Node myRep = getReplacement();
-    if (other == myRep) return;
+    if (other == myRep) {
+      return;
+    }
     other.replacement = myRep;
     if (other.p2set != p2set && other.p2set != null && !other.p2set.isEmpty()) {
       if (myRep.p2set == null || myRep.p2set.isEmpty()) {
@@ -77,14 +83,17 @@ public class Node implements ReferenceVariable, Numberable {
     pag.mergedWith(myRep, other);
     if ((other instanceof VarNode)
         && (myRep instanceof VarNode)
-        && ((VarNode) other).isInterProcTarget()) ((VarNode) myRep).setInterProcTarget();
+        && ((VarNode) other).isInterProcTarget()) {
+      ((VarNode) myRep).setInterProcTarget();
+    }
   }
   /** Returns the points-to set for this node. */
   public PointsToSetInternal getP2Set() {
     if (p2set != null) {
-      if (replacement != this)
+      if (replacement != this) {
         throw new RuntimeException(
             "Node " + this + " has replacement " + replacement + " but has p2set");
+      }
       return p2set;
     }
     Node rep = getReplacement();
@@ -96,9 +105,10 @@ public class Node implements ReferenceVariable, Numberable {
   /** Returns the points-to set for this node, makes it if necessary. */
   public PointsToSetInternal makeP2Set() {
     if (p2set != null) {
-      if (replacement != this)
+      if (replacement != this) {
         throw new RuntimeException(
             "Node " + this + " has replacement " + replacement + " but has p2set");
+      }
       return p2set;
     }
     Node rep = getReplacement();
@@ -126,7 +136,9 @@ public class Node implements ReferenceVariable, Numberable {
 
   /** Creates a new node of pointer assignment graph pag, with type type. */
   Node(PAG pag, Type type) {
-    if (TypeManager.isUnresolved(type)) throw new RuntimeException("Unresolved type " + type);
+    if (TypeManager.isUnresolved(type)) {
+      throw new RuntimeException("Unresolved type " + type);
+    }
     this.type = type;
     this.pag = pag;
     replacement = this;
@@ -134,10 +146,12 @@ public class Node implements ReferenceVariable, Numberable {
 
   /* End of package methods. */
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }

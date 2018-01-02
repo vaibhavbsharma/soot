@@ -42,10 +42,12 @@ public class SourceFileTag implements Tag {
 
   public SourceFileTag() {}
 
+  @Override
   public String getName() {
     return "SourceFileTag";
   }
 
+  @Override
   public byte[] getValue() {
     try {
       return sourceFile.getBytes("UTF8");
@@ -70,6 +72,7 @@ public class SourceFileTag implements Tag {
     return absolutePath;
   }
 
+  @Override
   public String toString() {
     return sourceFile;
   }

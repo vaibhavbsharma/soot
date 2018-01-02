@@ -19,17 +19,17 @@
 
 package soot.dava.toolkits.base.finders;
 
-import soot.G;
-import soot.SootClass;
-import soot.dava.internal.asg.AugmentedStmt;
-import soot.dava.internal.asg.AugmentedStmtGraph;
-import soot.util.IterableSet;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import soot.G;
+import soot.SootClass;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.asg.AugmentedStmtGraph;
+import soot.util.IterableSet;
 
 public class ExceptionNode {
   private final IterableSet<AugmentedStmt> body;
@@ -48,7 +48,7 @@ public class ExceptionNode {
     this.exception = exception;
     this.handlerAugmentedStmt = handlerAugmentedStmt;
 
-    body = new IterableSet<AugmentedStmt>(tryBody);
+    body = new IterableSet<>(tryBody);
 
     dirty = true;
     exitList = null;
@@ -58,13 +58,19 @@ public class ExceptionNode {
   }
 
   public boolean add_TryStmts(Collection<AugmentedStmt> c) {
-    for (AugmentedStmt as : c) if (add_TryStmt(as) == false) return false;
+    for (AugmentedStmt as : c) {
+      if (add_TryStmt(as) == false) {
+        return false;
+      }
+    }
 
     return true;
   }
 
   public boolean add_TryStmt(AugmentedStmt as) {
-    if ((body.contains(as)) || (tryBody.contains(as))) return false;
+    if ((body.contains(as)) || (tryBody.contains(as))) {
+      return false;
+    }
 
     body.add(as);
     tryBody.add(as);
@@ -73,7 +79,9 @@ public class ExceptionNode {
   }
 
   public void refresh_CatchBody(ExceptionFinder ef) {
-    if (catchBody != null) body.removeAll(catchBody);
+    if (catchBody != null) {
+      body.removeAll(catchBody);
+    }
 
     catchBody = ef.get_CatchBody(handlerAugmentedStmt);
     body.addAll(catchBody);
@@ -92,13 +100,18 @@ public class ExceptionNode {
   }
 
   public boolean remove(AugmentedStmt as) {
-    if (body.contains(as) == false) return false;
+    if (body.contains(as) == false) {
+      return false;
+    }
 
-    if (tryBody.contains(as)) tryBody.remove(as);
-    else if ((catchBody != null) && (catchBody.contains(as))) {
+    if (tryBody.contains(as)) {
+      tryBody.remove(as);
+    } else if ((catchBody != null) && (catchBody.contains(as))) {
       catchBody.remove(as);
       dirty = true;
-    } else return false;
+    } else {
+      return false;
+    }
 
     body.remove(as);
 
@@ -106,18 +119,21 @@ public class ExceptionNode {
   }
 
   public List<AugmentedStmt> get_CatchExits() {
-    if (catchBody == null) return null;
+    if (catchBody == null) {
+      return null;
+    }
 
     if (dirty) {
-      exitList = new LinkedList<AugmentedStmt>();
+      exitList = new LinkedList<>();
       dirty = false;
 
       for (AugmentedStmt as : catchBody) {
-        for (AugmentedStmt succ : as.bsuccs)
+        for (AugmentedStmt succ : as.bsuccs) {
           if (catchBody.contains(succ) == false) {
             exitList.add(as);
             break;
           }
+        }
       }
     }
 
@@ -128,23 +144,29 @@ public class ExceptionNode {
       IterableSet<AugmentedStmt> newTryBody,
       AugmentedStmtGraph asg,
       IterableSet<ExceptionNode> enlist) {
-    IterableSet<AugmentedStmt> oldTryBody = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> oldTryBody = new IterableSet<>();
     oldTryBody.addAll(tryBody);
 
-    IterableSet<AugmentedStmt> oldBody = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> oldBody = new IterableSet<>();
     oldBody.addAll(body);
 
     for (AugmentedStmt as : newTryBody) {
       if (remove(as) == false) {
 
         StringBuffer b = new StringBuffer();
-        for (AugmentedStmt auBody : newTryBody) b.append("\n" + auBody.toString());
+        for (AugmentedStmt auBody : newTryBody) {
+          b.append("\n" + auBody.toString());
+        }
         b.append("\n-");
 
-        for (AugmentedStmt auBody : oldTryBody) b.append("\n" + auBody.toString());
+        for (AugmentedStmt auBody : oldTryBody) {
+          b.append("\n" + auBody.toString());
+        }
         b.append("\n-");
 
-        for (AugmentedStmt auBody : oldBody) b.append("\n" + auBody.toString());
+        for (AugmentedStmt auBody : oldBody) {
+          b.append("\n" + auBody.toString());
+        }
         b.append("\n-");
 
         throw new RuntimeException(
@@ -171,13 +193,17 @@ public class ExceptionNode {
     }
 
     for (ExceptionNode en : enlist) {
-      if (this == en) continue;
+      if (this == en) {
+        continue;
+      }
 
       if (catchBody.isSupersetOf(en.get_Body())) {
 
-        IterableSet<AugmentedStmt> clonedTryBody = new IterableSet<AugmentedStmt>();
+        IterableSet<AugmentedStmt> clonedTryBody = new IterableSet<>();
 
-        for (AugmentedStmt au : en.get_TryBody()) clonedTryBody.add(asg.get_CloneOf(au));
+        for (AugmentedStmt au : en.get_TryBody()) {
+          clonedTryBody.add(asg.get_CloneOf(au));
+        }
 
         enlist.addLast(
             new ExceptionNode(
@@ -187,7 +213,9 @@ public class ExceptionNode {
 
     enlist.addLast(new ExceptionNode(newTryBody, exception, asg.get_CloneOf(handlerAugmentedStmt)));
 
-    for (ExceptionNode en : enlist) en.refresh_CatchBody(ExceptionFinder.v());
+    for (ExceptionNode en : enlist) {
+      en.refresh_CatchBody(ExceptionFinder.v());
+    }
 
     asg.find_Dominators();
   }
@@ -205,10 +233,10 @@ public class ExceptionNode {
 
   public void add_CatchBody(IterableSet<AugmentedStmt> newCatchBody, SootClass except) {
     if (catchList == null) {
-      catchList = new LinkedList<IterableSet<AugmentedStmt>>();
+      catchList = new LinkedList<>();
       catchList.addLast(catchBody);
 
-      catch2except = new HashMap<IterableSet<AugmentedStmt>, SootClass>();
+      catch2except = new HashMap<>();
       catch2except.put(catchBody, exception);
     }
 
@@ -221,7 +249,7 @@ public class ExceptionNode {
     List<IterableSet<AugmentedStmt>> l = catchList;
 
     if (l == null) {
-      l = new LinkedList<IterableSet<AugmentedStmt>>();
+      l = new LinkedList<>();
       l.add(catchBody);
     }
 
@@ -232,7 +260,7 @@ public class ExceptionNode {
     Map<IterableSet<AugmentedStmt>, SootClass> m = catch2except;
 
     if (m == null) {
-      m = new HashMap<IterableSet<AugmentedStmt>, SootClass>();
+      m = new HashMap<>();
       m.put(catchBody, exception);
     }
 
@@ -244,20 +272,26 @@ public class ExceptionNode {
   }
 
   public SootClass get_Exception(IterableSet<AugmentedStmt> catchBody) {
-    if (catch2except == null) return exception;
+    if (catch2except == null) {
+      return exception;
+    }
 
     return catch2except.get(catchBody);
   }
 
   public void dump() {
     G.v().out.println("try {");
-    for (AugmentedStmt au : get_TryBody()) G.v().out.println("\t" + au);
+    for (AugmentedStmt au : get_TryBody()) {
+      G.v().out.println("\t" + au);
+    }
     G.v().out.println("}");
 
     for (IterableSet<AugmentedStmt> catchBody : get_CatchList()) {
       G.v().out.println("catch " + get_ExceptionMap().get(catchBody) + " {");
 
-      for (AugmentedStmt au : catchBody) G.v().out.println("\t" + au);
+      for (AugmentedStmt au : catchBody) {
+        G.v().out.println("\t" + au);
+      }
       G.v().out.println("}");
     }
   }

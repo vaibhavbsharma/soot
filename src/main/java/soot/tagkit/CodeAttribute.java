@@ -25,12 +25,6 @@
 
 package soot.tagkit;
 
-import soot.G;
-import soot.Unit;
-import soot.UnitBox;
-import soot.baf.Baf;
-import soot.options.Options;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -38,6 +32,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import soot.G;
+import soot.Unit;
+import soot.UnitBox;
+import soot.baf.Baf;
+import soot.options.Options;
 
 /**
  * A CodeAttribute object holds PC -> Tag pairs. It represents abstracted attributes of
@@ -66,24 +66,31 @@ public class CodeAttribute extends JasminAttribute {
   }
 
   /** Returns the name. */
+  @Override
   public String toString() {
     return name;
   }
 
   /** Returns the attribute name. */
+  @Override
   public String getName() {
     return name;
   }
 
   /** Only used by SOOT to read in an existing attribute without interpret it. */
+  @Override
   public void setValue(byte[] v) {
     this.value = v;
   }
 
   /** Also only used as setValue(). */
+  @Override
   public byte[] getValue() throws AttributeValueException {
-    if (value == null) throw new AttributeValueException();
-    else return value;
+    if (value == null) {
+      throw new AttributeValueException();
+    } else {
+      return value;
+    }
   }
 
   /** Generates Jasmin Value String */
@@ -93,7 +100,9 @@ public class CodeAttribute extends JasminAttribute {
     // the possible buffer size.
     StringBuffer buf = new StringBuffer();
 
-    if (mTags.size() != mUnits.size()) throw new RuntimeException("Sizes must match!");
+    if (mTags.size() != mUnits.size()) {
+      throw new RuntimeException("Sizes must match!");
+    }
 
     Iterator<Tag> tagIt = mTags.iterator();
     Iterator<Unit> unitIt = mUnits.iterator();
@@ -110,7 +119,7 @@ public class CodeAttribute extends JasminAttribute {
 
   /** Returns a list of unit boxes that have tags attached. */
   public List<UnitBox> getUnitBoxes() {
-    List<UnitBox> unitBoxes = new ArrayList<UnitBox>(mUnits.size());
+    List<UnitBox> unitBoxes = new ArrayList<>(mUnits.size());
 
     Iterator<Unit> it = mUnits.iterator();
 
@@ -123,14 +132,18 @@ public class CodeAttribute extends JasminAttribute {
 
   @Override
   public byte[] decode(String attr, Hashtable<String, Integer> labelToPc) {
-    if (Options.v().verbose()) G.v().out.println("[] JasminAttribute decode...");
+    if (Options.v().verbose()) {
+      G.v().out.println("[] JasminAttribute decode...");
+    }
 
-    List<byte[]> attributeHunks = new LinkedList<byte[]>();
+    List<byte[]> attributeHunks = new LinkedList<>();
     int attributeSize = 0;
 
     StringTokenizer st = new StringTokenizer(attr, "%");
     boolean isLabel = false;
-    if (attr.startsWith("%")) isLabel = true;
+    if (attr.startsWith("%")) {
+      isLabel = true;
+    }
 
     int tablesize = 0;
 
@@ -140,12 +153,15 @@ public class CodeAttribute extends JasminAttribute {
       if (isLabel) {
         Integer pc = labelToPc.get(token);
 
-        if (pc == null) throw new RuntimeException("PC is null, the token is " + token);
+        if (pc == null) {
+          throw new RuntimeException("PC is null, the token is " + token);
+        }
 
         int pcvalue = pc.intValue();
-        if (pcvalue > 65535)
+        if (pcvalue > 65535) {
           throw new RuntimeException(
               "PC great than 65535, the token is " + token + " : " + pcvalue);
+        }
 
         pcArray = new byte[2];
 
@@ -182,11 +198,14 @@ public class CodeAttribute extends JasminAttribute {
       }
     }
 
-    if (index != (attributeSize))
+    if (index != (attributeSize)) {
       throw new RuntimeException(
           "Index does not euqal to attrubute size :" + index + " -- " + attributeSize);
+    }
 
-    if (Options.v().verbose()) G.v().out.println("[] Jasmin.decode finished...");
+    if (Options.v().verbose()) {
+      G.v().out.println("[] Jasmin.decode finished...");
+    }
 
     return attributeValue;
   }

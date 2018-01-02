@@ -24,11 +24,15 @@
 
 package soot.dexpler.instructions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+
 import soot.ArrayType;
 import soot.IntType;
 import soot.Local;
@@ -42,9 +46,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
   public NewArrayInstruction(Instruction instruction, int codeAdress) {
@@ -54,9 +55,10 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
   @Override
   public void jimplify(DexBody body) {
 
-    if (!(instruction instanceof Instruction22c))
+    if (!(instruction instanceof Instruction22c)) {
       throw new IllegalArgumentException(
           "Expected Instruction22c but got: " + instruction.getClass());
+    }
 
     Instruction22c newArray = (Instruction22c) instruction;
     int dest = newArray.getRegisterA();
@@ -93,7 +95,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
   public Set<Type> introducedTypes() {
     ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-    Set<Type> types = new HashSet<Type>();
+    Set<Type> types = new HashSet<>();
     types.add(DexType.toSoot((TypeReference) i.getReference()));
     return types;
   }

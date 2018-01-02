@@ -44,7 +44,9 @@ public interface ArrayRef extends ConcreteRef {
 
   ValueBox getIndexBox();
 
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

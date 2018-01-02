@@ -31,6 +31,7 @@ public class ReturnStmtChecker extends polyglot.visit.NodeVisitor {
     hasReturn = false;
   }
 
+  @Override
   public polyglot.ast.Node leave(
       polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
 

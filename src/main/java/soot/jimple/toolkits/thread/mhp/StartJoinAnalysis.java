@@ -1,5 +1,13 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Hierarchy;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -27,14 +35,6 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 // StartJoinFinder written by Richard L. Halpert, 2006-12-04
 // This can be used as an alternative to PegGraph and PegChain
 // if only thread start, join, and type information is needed
@@ -55,14 +55,14 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
   public StartJoinAnalysis(UnitGraph g, SootMethod sm, CallGraph callGraph, PAG pag) {
     super(g);
 
-    startStatements = new HashSet<Stmt>();
-    joinStatements = new HashSet<Stmt>();
+    startStatements = new HashSet<>();
+    joinStatements = new HashSet<>();
 
     hierarchy = Scene.v().getActiveHierarchy();
 
-    startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
-    startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
-    startToJoin = new HashMap<Stmt, Stmt>();
+    startToRunMethods = new HashMap<>();
+    startToAllocNodes = new HashMap<>();
+    startToJoin = new HashMap<>();
 
     // Get lists of start and join statements
     doFlowInsensitiveSingleIterationAnalysis();
@@ -84,17 +84,19 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
         Stmt start = startIt.next();
 
         List<SootMethod> runMethodsList =
-            new ArrayList<SootMethod>(); // will be a list of possible run methods called by
+            new ArrayList<>(); // will be a list of possible run methods called by
         // this start stmt
         List<AllocNode> allocNodesList =
-            new ArrayList<AllocNode>(); // will be a list of possible allocation nodes for the
+            new ArrayList<>(); // will be a list of possible allocation nodes for the
         // thread object that's getting started
 
         // Get possible thread objects (may alias)
         Value startObject = ((InstanceInvokeExpr) (start).getInvokeExpr()).getBase();
         PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local) startObject);
         List<AllocNode> mayAlias = getMayAliasList(pts);
-        if (mayAlias.size() < 1) continue; // If the may alias is empty, this must be dead code
+        if (mayAlias.size() < 1) {
+          continue; // If the may alias is empty, this must be dead code
+        }
 
         // For each possible thread object, get run method
         Iterator<MethodOrMethodContext> mayRunIt =
@@ -178,10 +180,11 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
   }
 
   private List<AllocNode> getMayAliasList(PointsToSetInternal pts) {
-    List<AllocNode> list = new ArrayList<AllocNode>();
-    final HashSet<AllocNode> ret = new HashSet<AllocNode>();
+    List<AllocNode> list = new ArrayList<>();
+    final HashSet<AllocNode> ret = new HashSet<>();
     pts.forall(
         new P2SetVisitor() {
+          @Override
           public void visit(Node n) {
 
             ret.add((AllocNode) n);
@@ -223,6 +226,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     }
   }
 
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = (FlowSet) in1;
     FlowSet inSet2 = (FlowSet) in2;
@@ -231,6 +235,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     Stmt stmt = (Stmt) unit;
 
@@ -275,7 +280,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             while (it.hasNext()) {
               if (it.next().getName().equals("java.lang.Thread")) {
                 // This is a Thread.start()
-                if (!startStatements.contains(stmt)) startStatements.add(stmt);
+                if (!startStatements.contains(stmt)) {
+                  startStatements.add(stmt);
+                }
 
                 // Flow this Thread.start() down
                 //						out.add(stmt);
@@ -298,7 +305,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             while (it.hasNext()) {
               if (it.next().getName().equals("java.lang.Thread")) {
                 // This is a Thread.join()
-                if (!joinStatements.contains(stmt)) joinStatements.add(stmt);
+                if (!joinStatements.contains(stmt)) {
+                  joinStatements.add(stmt);
+                }
               }
             }
           }
@@ -307,6 +316,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     }
   }
 
+  @Override
   protected void copy(Object source, Object dest) {
 
     FlowSet sourceSet = (FlowSet) source;
@@ -315,10 +325,12 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     sourceSet.copy(destSet);
   }
 
+  @Override
   protected Object entryInitialFlow() {
     return new ArraySparseSet();
   }
 
+  @Override
   protected Object newInitialFlow() {
     return new ArraySparseSet();
   }

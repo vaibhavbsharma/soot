@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -22,9 +25,6 @@ import soot.jimple.MulExpr;
 import soot.jimple.OrExpr;
 import soot.jimple.SubExpr;
 
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * Transformer that eliminates unnecessary logic operations such as
  *
@@ -46,8 +46,7 @@ public class IdentityOperationEliminator extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    for (Iterator<Unit> unitIt = b.getUnits().iterator(); unitIt.hasNext(); ) {
-      Unit u = unitIt.next();
+    for (Unit u : b.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt assignStmt = (AssignStmt) u;
 
@@ -55,32 +54,41 @@ public class IdentityOperationEliminator extends BodyTransformer {
         // a = 0 + b --> a = b
         if (assignStmt.getRightOp() instanceof AddExpr) {
           BinopExpr aer = (BinopExpr) assignStmt.getRightOp();
-          if (isConstZero(aer.getOp1())) assignStmt.setRightOp(aer.getOp2());
-          else if (isConstZero(aer.getOp2())) assignStmt.setRightOp(aer.getOp1());
+          if (isConstZero(aer.getOp1())) {
+            assignStmt.setRightOp(aer.getOp2());
+          } else if (isConstZero(aer.getOp2())) {
+            assignStmt.setRightOp(aer.getOp1());
+          }
         }
 
         // a = b - 0 --> a = b
         if (assignStmt.getRightOp() instanceof SubExpr) {
           BinopExpr aer = (BinopExpr) assignStmt.getRightOp();
-          if (isConstZero(aer.getOp2())) assignStmt.setRightOp(aer.getOp1());
+          if (isConstZero(aer.getOp2())) {
+            assignStmt.setRightOp(aer.getOp1());
+          }
         }
 
         // a = b * 0 --> a = 0
         // a = 0 * b --> a = 0
         if (assignStmt.getRightOp() instanceof MulExpr) {
           BinopExpr aer = (BinopExpr) assignStmt.getRightOp();
-          if (isConstZero(aer.getOp1()))
+          if (isConstZero(aer.getOp1())) {
             assignStmt.setRightOp(getZeroConst(assignStmt.getLeftOp().getType()));
-          else if (isConstZero(aer.getOp2()))
+          } else if (isConstZero(aer.getOp2())) {
             assignStmt.setRightOp(getZeroConst(assignStmt.getLeftOp().getType()));
+          }
         }
 
         // a = b | 0 --> a = b
         // a = 0 | b --> a = b
         if (assignStmt.getRightOp() instanceof OrExpr) {
           OrExpr orExpr = (OrExpr) assignStmt.getRightOp();
-          if (isConstZero(orExpr.getOp1())) assignStmt.setRightOp(orExpr.getOp2());
-          else if (isConstZero(orExpr.getOp2())) assignStmt.setRightOp(orExpr.getOp1());
+          if (isConstZero(orExpr.getOp1())) {
+            assignStmt.setRightOp(orExpr.getOp2());
+          } else if (isConstZero(orExpr.getOp2())) {
+            assignStmt.setRightOp(orExpr.getOp1());
+          }
         }
       }
     }
@@ -90,7 +98,9 @@ public class IdentityOperationEliminator extends BodyTransformer {
       Unit u = unitIt.next();
       if (u instanceof AssignStmt) {
         AssignStmt assignStmt = (AssignStmt) u;
-        if (assignStmt.getLeftOp() == assignStmt.getRightOp()) unitIt.remove();
+        if (assignStmt.getLeftOp() == assignStmt.getRightOp()) {
+          unitIt.remove();
+        }
       }
     }
   }
@@ -102,10 +112,15 @@ public class IdentityOperationEliminator extends BodyTransformer {
    * @return The constant zero value of the given type
    */
   private Value getZeroConst(Type type) {
-    if (type instanceof IntType) return IntConstant.v(0);
-    else if (type instanceof LongType) return LongConstant.v(0);
-    else if (type instanceof FloatType) return FloatConstant.v(0);
-    else if (type instanceof DoubleType) return DoubleConstant.v(0);
+    if (type instanceof IntType) {
+      return IntConstant.v(0);
+    } else if (type instanceof LongType) {
+      return LongConstant.v(0);
+    } else if (type instanceof FloatType) {
+      return FloatConstant.v(0);
+    } else if (type instanceof DoubleType) {
+      return DoubleConstant.v(0);
+    }
 
     throw new RuntimeException("Unsupported numeric type");
   }

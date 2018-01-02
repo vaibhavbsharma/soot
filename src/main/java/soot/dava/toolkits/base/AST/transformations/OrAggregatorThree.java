@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -37,10 +41,6 @@ import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -179,7 +179,7 @@ public class OrAggregatorThree {
     }
 
     // create a new SubBody
-    List<Object> newSubBody = new ArrayList<Object>();
+    List<Object> newSubBody = new ArrayList<>();
 
     // this is an iterator of ASTNodes
     Iterator<Object> it = oldSubBody.iterator();
@@ -304,7 +304,8 @@ public class OrAggregatorThree {
     } else if (s1 instanceof ReturnStmt && s2 instanceof ReturnStmt) {
       // takes care of return <var>
       return true;
-    } else // takes care of return;
+    } else {
       return s1 instanceof ReturnVoidStmt && s2 instanceof ReturnVoidStmt;
+    }
   }
 }

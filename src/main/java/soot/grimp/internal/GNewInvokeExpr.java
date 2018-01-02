@@ -26,6 +26,9 @@
 
 package soot.grimp.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.RefType;
 import soot.SootMethodRef;
 import soot.Type;
@@ -39,22 +42,22 @@ import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr, Precedence {
   RefType type;
 
   public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args) {
     super(methodRef, new ExprBox[args.size()]);
 
-    if (methodRef != null && methodRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    if (methodRef != null && methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
 
     this.methodRef = methodRef;
     this.type = type;
 
-    for (int i = 0; i < args.size(); i++)
+    for (int i = 0; i < args.size(); i++) {
       this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    }
   }
 
   /*
@@ -65,22 +68,27 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
   }
   */
 
+  @Override
   public RefType getBaseType() {
     return type;
   }
 
+  @Override
   public void setBaseType(RefType type) {
     this.type = type;
   }
 
+  @Override
   public Type getType() {
     return type;
   }
 
+  @Override
   public int getPrecedence() {
     return 850;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
@@ -88,7 +96,9 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) buffer.append(", ");
+        if (i != 0) {
+          buffer.append(", ");
+        }
 
         buffer.append(argBoxes[i].getValue().toString());
       }
@@ -99,6 +109,7 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("new");
     up.literal(" ");
@@ -107,7 +118,9 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) up.literal(", ");
+        if (i != 0) {
+          up.literal(", ");
+        }
 
         argBoxes[i].toString(up);
       }
@@ -116,10 +129,12 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
     up.literal(")");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((GrimpValueSwitch) sw).caseNewInvokeExpr(this);
   }
 
+  @Override
   public Object clone() {
     ArrayList clonedArgs = new ArrayList(getArgCount());
 
@@ -130,15 +145,21 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
     return new GNewInvokeExpr(getBaseType(), methodRef, clonedArgs);
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof GNewInvokeExpr) {
       GNewInvokeExpr ie = (GNewInvokeExpr) o;
       if (!(getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) return false;
+              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+        return false;
+      }
       if (argBoxes != null) {
-        for (ValueBox element : argBoxes)
-          if (!(element.getValue().equivTo(element.getValue()))) return false;
+        for (ValueBox element : argBoxes) {
+          if (!(element.getValue().equivTo(element.getValue()))) {
+            return false;
+          }
+        }
       }
       return type.equals(ie.type);
     }
@@ -146,6 +167,7 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return getMethod().equivHashCode();
   }

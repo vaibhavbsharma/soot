@@ -35,13 +35,17 @@ public class NullCheckTag implements OneByteCodeTag {
   private byte value = 0;
 
   public NullCheckTag(boolean needCheck) {
-    if (needCheck) value = 0x04;
+    if (needCheck) {
+      value = 0x04;
+    }
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public byte[] getValue() {
     byte[] bv = new byte[1];
     bv[0] = value;
@@ -52,6 +56,7 @@ public class NullCheckTag implements OneByteCodeTag {
     return value != 0;
   }
 
+  @Override
   public String toString() {
     return ((value == 0) ? "[not null]" : "[unknown]");
   }

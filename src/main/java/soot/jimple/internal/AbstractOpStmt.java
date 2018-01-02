@@ -1,10 +1,10 @@
 package soot.jimple.internal;
 
-import soot.Value;
-import soot.ValueBox;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.Value;
+import soot.ValueBox;
 
 @SuppressWarnings("serial")
 public abstract class AbstractOpStmt extends AbstractStmt {
@@ -29,7 +29,7 @@ public abstract class AbstractOpStmt extends AbstractStmt {
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     list.addAll(opBox.getValue().getUseBoxes());
     list.add(opBox);

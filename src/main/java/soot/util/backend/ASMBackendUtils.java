@@ -2,6 +2,7 @@ package soot.util.backend;
 
 import org.objectweb.asm.ByteVector;
 import org.objectweb.asm.ClassWriter;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -75,53 +76,65 @@ public class ASMBackendUtils {
     type.apply(
         new TypeSwitch() {
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid type " + t.toString());
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             sb.append('D');
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             sb.append('F');
           }
 
+          @Override
           public void caseIntType(IntType t) {
             sb.append('I');
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             sb.append('B');
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             sb.append('S');
           }
 
+          @Override
           public void caseCharType(CharType t) {
             sb.append('C');
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             sb.append('Z');
           }
 
+          @Override
           public void caseLongType(LongType t) {
             sb.append('J');
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             sb.append('[');
             t.getElementType().apply(this);
           }
 
+          @Override
           public void caseRefType(RefType t) {
             sb.append('L');
             sb.append(slashify(t.getClassName()));
             sb.append(';');
           }
 
+          @Override
           public void caseVoidType(VoidType t) {
             sb.append('V');
           }
@@ -179,9 +192,13 @@ public class ASMBackendUtils {
    * @return Size in words
    */
   public static int sizeOfType(Type t) {
-    if (t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType) return 2;
-    else if (t instanceof VoidType) return 0;
-    else return 1;
+    if (t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType) {
+      return 2;
+    } else if (t instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
 
   /**

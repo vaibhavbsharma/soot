@@ -31,6 +31,7 @@ public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
 
   private boolean allNotBothEnds = false;
 
+  @Override
   public boolean runNewPass() {
     if (!allNotBothEnds) {
       allNotBothEnds = true;
@@ -64,6 +65,7 @@ public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
         "java.util.LinkedList$Entry", /*"ca.mcgill.sable.util.LinkedList$Node"*/
       };
 
+  @Override
   public boolean validateMatchesForField(SparkField field) {
     if (field instanceof ArrayElement) {
       return true;
@@ -78,6 +80,7 @@ public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
     return false;
   }
 
+  @Override
   public boolean validFromBothEnds(SparkField field) {
     if (allNotBothEnds) {
       return false;

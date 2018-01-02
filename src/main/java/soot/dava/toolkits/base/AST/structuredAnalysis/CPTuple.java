@@ -25,6 +25,7 @@ public class CPTuple {
    * Dont care about className and variable but the CONSTANT VALUE HAS TO BE A NEW ONE
    * otherwise the clone of the flowset keeps pointing to the same bloody constant value
    */
+  @Override
   public CPTuple clone() {
     if (isTop()) {
       return new CPTuple(sootClass, variable, true);
@@ -38,7 +39,9 @@ public class CPTuple {
       return new CPTuple(sootClass, variable, new Boolean(((Boolean) constant).booleanValue()));
     } else if (isValueAInteger()) {
       return new CPTuple(sootClass, variable, new Integer(((Integer) constant).intValue()));
-    } else throw new RuntimeException("illegal Constant Type...report to developer" + constant);
+    } else {
+      throw new RuntimeException("illegal Constant Type...report to developer" + constant);
+    }
   }
 
   public CPTuple(String sootClass, CPVariable variable, Object constant) {
@@ -47,9 +50,10 @@ public class CPTuple {
         || constant instanceof Double
         || constant instanceof Long
         || constant instanceof Boolean
-        || constant instanceof Integer))
+        || constant instanceof Integer)) {
       throw new DavaFlowAnalysisException(
           "Third argument of VariableValuePair not an acceptable constant value...report to developer");
+    }
 
     this.sootClass = sootClass;
     this.variable = variable;
@@ -115,9 +119,10 @@ public class CPTuple {
         || constant instanceof Double
         || constant instanceof Long
         || constant instanceof Boolean
-        || constant instanceof Integer))
+        || constant instanceof Integer)) {
       throw new DavaFlowAnalysisException(
           "argument to setValue not an acceptable constant value...report to developer");
+    }
 
     this.constant = constant;
     TOP = new Boolean(false);
@@ -131,6 +136,7 @@ public class CPTuple {
     return variable;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof CPTuple) {
       CPTuple var = (CPTuple) other;
@@ -143,7 +149,9 @@ public class CPTuple {
       }
 
       // if any one is top thats no good
-      if (isTop() || var.isTop()) return false;
+      if (isTop() || var.isTop()) {
+        return false;
+      }
 
       if (sootClass.equals(var.getSootClassName())
           && variable.equals(var.getVariable())
@@ -156,10 +164,14 @@ public class CPTuple {
     return false;
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
-    if (isTop()) b.append("<" + sootClass + ", " + variable.toString() + ", TOP>");
-    else b.append("<" + sootClass + ", " + variable.toString() + "," + constant.toString() + ">");
+    if (isTop()) {
+      b.append("<" + sootClass + ", " + variable.toString() + ", TOP>");
+    } else {
+      b.append("<" + sootClass + ", " + variable.toString() + "," + constant.toString() + ">");
+    }
     return b.toString();
   }
 }

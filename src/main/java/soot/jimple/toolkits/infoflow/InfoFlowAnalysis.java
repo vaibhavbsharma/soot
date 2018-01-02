@@ -1,5 +1,10 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.G;
 import soot.Local;
@@ -23,11 +28,6 @@ import soot.toolkits.graph.HashMutableDirectedGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphConstants;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 // InfoFlowAnalysis written by Richard L. Halpert, 2007-02-24
 // Constructs data flow tables for each method of every application class.  Ignores indirect flow.
@@ -54,7 +54,7 @@ public class InfoFlowAnalysis {
     this.includePrimitiveInfoFlow = includePrimitiveDataFlow;
     this.includeInnerFields = includeInnerFields;
     this.printDebug = printDebug;
-    classToClassInfoFlowAnalysis = new HashMap<SootClass, ClassInfoFlowAnalysis>();
+    classToClassInfoFlowAnalysis = new HashMap<>();
   }
 
   public boolean includesPrimitiveInfoFlow() {
@@ -230,11 +230,16 @@ public class InfoFlowAnalysis {
       if (target.getSubSignature().equals(subSig)) {
         HashMutableDirectedGraph<EquivalentValue> ifs =
             getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
-        if (ret == null) ret = ifs;
-        else {
+        if (ret == null) {
+          ret = ifs;
+        } else {
           for (EquivalentValue node : ifs.getNodes()) {
-            if (!ret.containsNode(node)) ret.addNode(node);
-            for (EquivalentValue succ : ifs.getSuccsOf(node)) ret.addEdge(node, succ);
+            if (!ret.containsNode(node)) {
+              ret.addNode(node);
+            }
+            for (EquivalentValue succ : ifs.getSuccsOf(node)) {
+              ret.addEdge(node, succ);
+            }
           }
         }
       }
@@ -253,10 +258,14 @@ public class InfoFlowAnalysis {
   }
 
   public static void printInfoFlowSummary(DirectedGraph<EquivalentValue> g) {
-    if (g.size() > 0) G.v().out.println("    " + " --> ");
+    if (g.size() > 0) {
+      G.v().out.println("    " + " --> ");
+    }
     for (EquivalentValue node : g) {
       List<EquivalentValue> sources = g.getPredsOf(node);
-      if (sources.isEmpty()) continue;
+      if (sources.isEmpty()) {
+        continue;
+      }
       G.v().out.print("    [ ");
       int sourcesnamelength = 0;
       int lastnamelength = 0;
@@ -267,22 +276,32 @@ public class InfoFlowAnalysis {
           FieldRef fr = (FieldRef) v;
           String name = fr.getFieldRef().name();
           lastnamelength = name.length();
-          if (lastnamelength > sourcesnamelength) sourcesnamelength = lastnamelength;
+          if (lastnamelength > sourcesnamelength) {
+            sourcesnamelength = lastnamelength;
+          }
           G.v().out.print(name);
         } else if (v instanceof ParameterRef) {
           ParameterRef pr = (ParameterRef) v;
           lastnamelength = 11;
-          if (lastnamelength > sourcesnamelength) sourcesnamelength = lastnamelength;
+          if (lastnamelength > sourcesnamelength) {
+            sourcesnamelength = lastnamelength;
+          }
           G.v().out.print("@parameter" + pr.getIndex());
         } else {
           String name = v.toString();
           lastnamelength = name.length();
-          if (lastnamelength > sourcesnamelength) sourcesnamelength = lastnamelength;
+          if (lastnamelength > sourcesnamelength) {
+            sourcesnamelength = lastnamelength;
+          }
           G.v().out.print(name);
         }
-        if ((idx++) < sources.size()) G.v().out.print("\n      ");
+        if ((idx++) < sources.size()) {
+          G.v().out.print("\n      ");
+        }
       }
-      for (int i = 0; i < sourcesnamelength - lastnamelength; i++) G.v().out.print(" ");
+      for (int i = 0; i < sourcesnamelength - lastnamelength; i++) {
+        G.v().out.print(" ");
+      }
       G.v().out.println(" ] --> " + node.toString());
     }
   }

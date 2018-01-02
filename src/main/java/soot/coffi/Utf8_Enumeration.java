@@ -80,6 +80,7 @@ public class Utf8_Enumeration implements Enumeration {
   }
 
   /** <i>true</i> if the entire string hasn't been enumerated yet. */
+  @Override
   public boolean hasMoreElements() {
     return curindex < length;
   }
@@ -90,6 +91,7 @@ public class Utf8_Enumeration implements Enumeration {
    * @return <i>this</i>
    * @see Utf8_Enumeration#c
    */
+  @Override
   public Object nextElement() {
     byte b;
     b = bytes[curindex++];

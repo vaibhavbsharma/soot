@@ -1,5 +1,10 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.ValueBox;
 import soot.jimple.DefinitionStmt;
@@ -8,11 +13,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 // EqualLocalsAnalysis written by Richard L. Halpert, 2006-12-04
 // Finds all values at the given statement from which all of the listed uses
@@ -40,11 +40,14 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis {
 
     FlowSet fs = (FlowSet) getFlowAfter(s);
     List ancestorList = new ArrayList(fs.size());
-    for (Object o : fs) ancestorList.add(o);
+    for (Object o : fs) {
+      ancestorList.add(o);
+    }
 
     return ancestorList;
   }
 
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = (FlowSet) in1;
     FlowSet inSet2 = (FlowSet) in2;
@@ -54,6 +57,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis {
     //		inSet1.union(inSet2, outSet);
   }
 
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue;
     FlowSet out = (FlowSet) outValue;
@@ -62,7 +66,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis {
     in.copy(out);
 
     // get list of definitions at this unit
-    List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
+    List<EquivalentValue> newDefs = new ArrayList<>();
     Iterator newDefBoxesIt = stmt.getDefBoxes().iterator();
     while (newDefBoxesIt.hasNext()) {
       newDefs.add(new EquivalentValue(((ValueBox) newDefBoxesIt.next()).getValue()));
@@ -74,16 +78,21 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis {
       out.clear();
       List aliases = (List) unitToAliasSet.get(stmt);
       Iterator aliasIt = aliases.iterator();
-      while (aliasIt.hasNext()) out.add(aliasIt.next());
+      while (aliasIt.hasNext()) {
+        out.add(aliasIt.next());
+      }
     } else if (stmt instanceof DefinitionStmt) {
       Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-      while (newDefsIt.hasNext()) out.remove(newDefsIt.next());
-      // to be smarter, we could also add the right side to the list of aliases...
+      while (newDefsIt.hasNext()) {
+        out.remove(newDefsIt.next());
+        // to be smarter, we could also add the right side to the list of aliases...
+      }
     }
 
     //		G.v().out.println(stmt + " HAS ALIASES in" + in + " out" + out);
   }
 
+  @Override
   protected void copy(Object source, Object dest) {
 
     FlowSet sourceSet = (FlowSet) source;
@@ -92,10 +101,12 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis {
     sourceSet.copy(destSet);
   }
 
+  @Override
   protected Object entryInitialFlow() {
     return new ArraySparseSet(); // should be a full set, not an empty one
   }
 
+  @Override
   protected Object newInitialFlow() {
     return new ArraySparseSet(); // should be a full set, not an empty one
   }

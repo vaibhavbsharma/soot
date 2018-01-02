@@ -19,6 +19,14 @@
 
 package soot.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.Unit;
@@ -30,14 +38,6 @@ import soot.util.Cons;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Analysis that computes live locals, local defs, and local uses all at once.
  *
@@ -47,15 +47,14 @@ import java.util.Map;
 public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<ValueBox>>
     implements CombinedAnalysis, LocalDefs, LocalUses, LiveLocals {
   // Implementations of our interfaces...
-  private final Map<Cons<Local, Unit>, List<Unit>> defsOfAt =
-      new HashMap<Cons<Local, Unit>, List<Unit>>();
+  private final Map<Cons<Local, Unit>, List<Unit>> defsOfAt = new HashMap<>();
 
   @Override
   public List<Unit> getDefsOfAt(Local l, Unit s) {
-    Cons<Local, Unit> cons = new Cons<Local, Unit>(l, s);
+    Cons<Local, Unit> cons = new Cons<>(l, s);
     List<Unit> ret = defsOfAt.get(cons);
     if (ret == null) {
-      defsOfAt.put(cons, ret = new ArrayList<Unit>());
+      defsOfAt.put(cons, ret = new ArrayList<>());
     }
     return ret;
   }
@@ -65,9 +64,9 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     throw new RuntimeException("Not implemented");
   }
 
-  private final Map<Unit, List<UnitValueBoxPair>> usesOf =
-      new HashMap<Unit, List<UnitValueBoxPair>>();
+  private final Map<Unit, List<UnitValueBoxPair>> usesOf = new HashMap<>();
 
+  @Override
   public List<UnitValueBoxPair> getUsesOf(Unit u) {
     List<UnitValueBoxPair> ret = usesOf.get(u);
     if (ret == null) {
@@ -75,9 +74,11 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
       if (def == null) {
         usesOf.put(u, ret = Collections.emptyList());
       } else {
-        usesOf.put(u, ret = new ArrayList<UnitValueBoxPair>());
+        usesOf.put(u, ret = new ArrayList<>());
         for (ValueBox vb : getFlowAfter(u)) {
-          if (vb.getValue() != def) continue;
+          if (vb.getValue() != def) {
+            continue;
+          }
           ret.add(new UnitValueBoxPair(useBoxToUnit.get(vb), vb));
         }
       }
@@ -85,69 +86,76 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     return ret;
   }
 
-  private final Map<Unit, List<Local>> liveLocalsBefore = new HashMap<Unit, List<Local>>();
+  private final Map<Unit, List<Local>> liveLocalsBefore = new HashMap<>();
 
+  @Override
   public List<Local> getLiveLocalsBefore(Unit u) {
     List<Local> ret = liveLocalsBefore.get(u);
     if (ret == null) {
-      HashSet<Local> hs = new HashSet<Local>();
+      HashSet<Local> hs = new HashSet<>();
       for (ValueBox vb : getFlowBefore(u)) {
         hs.add((Local) vb.getValue());
       }
-      liveLocalsBefore.put(u, ret = new ArrayList<Local>(hs));
+      liveLocalsBefore.put(u, ret = new ArrayList<>(hs));
     }
     return ret;
   }
 
-  private final Map<Unit, List<Local>> liveLocalsAfter = new HashMap<Unit, List<Local>>();
+  private final Map<Unit, List<Local>> liveLocalsAfter = new HashMap<>();
 
+  @Override
   public List<Local> getLiveLocalsAfter(Unit u) {
     List<Local> ret = liveLocalsAfter.get(u);
     if (ret == null) {
-      HashSet<Local> hs = new HashSet<Local>();
+      HashSet<Local> hs = new HashSet<>();
       for (ValueBox vb : getFlowAfter(u)) {
         hs.add((Local) vb.getValue());
       }
-      liveLocalsAfter.put(u, ret = new ArrayList<Local>(hs));
+      liveLocalsAfter.put(u, ret = new ArrayList<>(hs));
     }
     return ret;
   }
 
   // The actual analysis is below.
 
-  private final Map<ValueBox, Unit> useBoxToUnit = new HashMap<ValueBox, Unit>();
-  private final Map<Unit, Value> unitToLocalDefed = new HashMap<Unit, Value>();
+  private final Map<ValueBox, Unit> useBoxToUnit = new HashMap<>();
+  private final Map<Unit, Value> unitToLocalDefed = new HashMap<>();
 
   private Local localDefed(Unit u) {
     return (Local) unitToLocalDefed.get(u);
   }
 
-  private final Map<Unit, ArraySparseSet<ValueBox>> unitToLocalUseBoxes =
-      new HashMap<Unit, ArraySparseSet<ValueBox>>();
-  private final MultiMap<Value, ValueBox> localToUseBoxes = new HashMultiMap<Value, ValueBox>();
+  private final Map<Unit, ArraySparseSet<ValueBox>> unitToLocalUseBoxes = new HashMap<>();
+  private final MultiMap<Value, ValueBox> localToUseBoxes = new HashMultiMap<>();
 
   public CombinedDUAnalysis(UnitGraph graph) {
     super(graph);
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
               "["
                   + graph.getBody().getMethod().getName()
                   + "]     Constructing CombinedDUAnalysis...");
+    }
 
     for (Unit u : graph) {
       List<Value> defs = localsInBoxes(u.getDefBoxes());
-      if (defs.size() == 1) unitToLocalDefed.put(u, defs.get(0));
-      else if (defs.size() != 0)
+      if (defs.size() == 1) {
+        unitToLocalDefed.put(u, defs.get(0));
+      } else if (defs.size() != 0) {
         throw new RuntimeException("Locals defed in " + u + ": " + defs.size());
-      ArraySparseSet<ValueBox> localUseBoxes = new ArraySparseSet<ValueBox>();
+      }
+      ArraySparseSet<ValueBox> localUseBoxes = new ArraySparseSet<>();
       for (ValueBox vb : u.getUseBoxes()) {
         Value v = vb.getValue();
-        if (!(v instanceof Local)) continue;
+        if (!(v instanceof Local)) {
+          continue;
+        }
         localUseBoxes.add(vb);
-        if (useBoxToUnit.containsKey(vb))
+        if (useBoxToUnit.containsKey(vb)) {
           throw new RuntimeException("Aliased ValueBox " + vb + " in Unit " + u);
+        }
         useBoxToUnit.put(vb, u);
         localToUseBoxes.put(v, vb);
       }
@@ -158,25 +166,32 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
 
     for (Unit defUnit : graph) {
       Local localDefed = localDefed(defUnit);
-      if (localDefed == null) continue;
+      if (localDefed == null) {
+        continue;
+      }
       for (ValueBox vb : getFlowAfter(defUnit)) {
-        if (vb.getValue() != localDefed) continue;
+        if (vb.getValue() != localDefed) {
+          continue;
+        }
         Unit useUnit = useBoxToUnit.get(vb);
         getDefsOfAt(localDefed, useUnit).add(defUnit);
       }
     }
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
               "[" + graph.getBody().getMethod().getName() + "]     Finished CombinedDUAnalysis...");
+    }
   }
 
   private List<Value> localsInBoxes(List<ValueBox> boxes) {
-    List<Value> ret = new ArrayList<Value>();
+    List<Value> ret = new ArrayList<>();
     for (ValueBox vb : boxes) {
       Value v = vb.getValue();
-      if (!(v instanceof Local)) continue;
+      if (!(v instanceof Local)) {
+        continue;
+      }
       ret.add(v);
     }
     return ret;
@@ -198,19 +213,23 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     inout.union(in);
   }
 
+  @Override
   protected void merge(FlowSet<ValueBox> in1, FlowSet<ValueBox> in2, FlowSet<ValueBox> out) {
     in1.union(in2, out);
   }
 
   // STEP 5: Define flow equations.
   // in(s) = ( out(s) minus boxes(def(s)) ) union useboxes(s)
+  @Override
   protected void flowThrough(FlowSet<ValueBox> out, Unit u, FlowSet<ValueBox> in) {
     Local def = localDefed(u);
     out.copy(in);
     if (def != null) {
       Collection<ValueBox> boxesDefed = localToUseBoxes.get(def);
       for (ValueBox vb : in) {
-        if (boxesDefed.contains(vb)) in.remove(vb);
+        if (boxesDefed.contains(vb)) {
+          in.remove(vb);
+        }
       }
     }
     in.union(unitToLocalUseBoxes.get(u));
@@ -221,14 +240,17 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
   //
   // end node:              empty set
   // initial approximation: empty set
+  @Override
   protected FlowSet<ValueBox> entryInitialFlow() {
-    return new ArraySparseSet<ValueBox>();
+    return new ArraySparseSet<>();
   }
 
+  @Override
   protected FlowSet<ValueBox> newInitialFlow() {
-    return new ArraySparseSet<ValueBox>();
+    return new ArraySparseSet<>();
   }
 
+  @Override
   protected void copy(FlowSet<ValueBox> source, FlowSet<ValueBox> dest) {
     source.copy(dest);
   }

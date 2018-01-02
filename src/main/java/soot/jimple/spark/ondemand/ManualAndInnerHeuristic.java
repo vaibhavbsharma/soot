@@ -30,14 +30,17 @@ public class ManualAndInnerHeuristic implements FieldCheckHeuristic {
     inner = new InnerTypesIncrementalHeuristic(tm, maxPasses);
   }
 
+  @Override
   public boolean runNewPass() {
     return inner.runNewPass();
   }
 
+  @Override
   public boolean validateMatchesForField(SparkField field) {
     return manual.validateMatchesForField(field) || inner.validateMatchesForField(field);
   }
 
+  @Override
   public boolean validFromBothEnds(SparkField field) {
     return inner.validFromBothEnds(field);
   }

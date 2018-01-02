@@ -25,10 +25,7 @@
 
 package soot;
 
-import com.google.common.base.Joiner;
-import soot.options.CGOptions;
-import soot.options.Options;
-import soot.toolkits.astmetrics.ClassData;
+import static java.net.URLEncoder.encode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -40,7 +37,11 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-import static java.net.URLEncoder.encode;
+import com.google.common.base.Joiner;
+
+import soot.options.CGOptions;
+import soot.options.Options;
+import soot.toolkits.astmetrics.ClassData;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main {
@@ -85,7 +86,9 @@ public class Main {
 
   private void processCmdLine(String[] args) {
 
-    if (!Options.v().parse(args)) throw new OptionsParseException("Option parse error");
+    if (!Options.v().parse(args)) {
+      throw new OptionsParseException("Option parse error");
+    }
 
     if (PackManager.v().onlyStandardPacks()) {
       for (Pack pack : PackManager.v().allPacks()) {
@@ -288,17 +291,24 @@ public class Main {
       }
 
       PackManager.v().runPacks();
-      if (!Options.v().oaat()) PackManager.v().writeOutput();
+      if (!Options.v().oaat()) {
+        PackManager.v().writeOutput();
+      }
 
       Timers.v().totalTimer.end();
 
       // Print out time stats.
-      if (Options.v().time()) Timers.v().printProfilingInformation();
+      if (Options.v().time()) {
+        Timers.v().printProfilingInformation();
+      }
 
     } catch (CompilationDeathException e) {
       Timers.v().totalTimer.end();
-      if (e.getStatus() != CompilationDeathException.COMPILATION_SUCCEEDED) throw e;
-      else return;
+      if (e.getStatus() != CompilationDeathException.COMPILATION_SUCCEEDED) {
+        throw e;
+      } else {
+        return;
+      }
     }
 
     finish = new Date();
@@ -317,7 +327,9 @@ public class Main {
 
   public void autoSetOptions() {
     // when no-bodies-for-excluded is enabled, also enable phantom refs
-    if (Options.v().no_bodies_for_excluded()) Options.v().set_allow_phantom_refs(true);
+    if (Options.v().no_bodies_for_excluded()) {
+      Options.v().set_allow_phantom_refs(true);
+    }
 
     // when reflection log is enabled, also enable phantom refs
     CGOptions cgOptions = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));

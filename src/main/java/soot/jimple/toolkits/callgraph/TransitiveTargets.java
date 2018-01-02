@@ -19,13 +19,13 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.MethodOrMethodContext;
-import soot.Unit;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import soot.MethodOrMethodContext;
+import soot.Unit;
 
 /**
  * Extends a TargetsOfMethod or TargetsOfUnit to include edges transitively reachable from any
@@ -47,9 +47,11 @@ public class TransitiveTargets {
   }
 
   public Iterator<MethodOrMethodContext> iterator(Unit u) {
-    ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
+    ArrayList<MethodOrMethodContext> methods = new ArrayList<>();
     Iterator<Edge> it = cg.edgesOutOf(u);
-    if (filter != null) it = filter.wrap(it);
+    if (filter != null) {
+      it = filter.wrap(it);
+    }
     while (it.hasNext()) {
       Edge e = it.next();
       methods.add(e.getTgt());
@@ -58,9 +60,11 @@ public class TransitiveTargets {
   }
 
   public Iterator<MethodOrMethodContext> iterator(MethodOrMethodContext momc) {
-    ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
+    ArrayList<MethodOrMethodContext> methods = new ArrayList<>();
     Iterator<Edge> it = cg.edgesOutOf(momc);
-    if (filter != null) it = filter.wrap(it);
+    if (filter != null) {
+      it = filter.wrap(it);
+    }
     while (it.hasNext()) {
       Edge e = it.next();
       methods.add(e.getTgt());
@@ -70,11 +74,13 @@ public class TransitiveTargets {
 
   public Iterator<MethodOrMethodContext> iterator(
       Iterator<? extends MethodOrMethodContext> methods) {
-    Set<MethodOrMethodContext> s = new HashSet<MethodOrMethodContext>();
-    ArrayList<MethodOrMethodContext> worklist = new ArrayList<MethodOrMethodContext>();
+    Set<MethodOrMethodContext> s = new HashSet<>();
+    ArrayList<MethodOrMethodContext> worklist = new ArrayList<>();
     while (methods.hasNext()) {
       MethodOrMethodContext method = methods.next();
-      if (s.add(method)) worklist.add(method);
+      if (s.add(method)) {
+        worklist.add(method);
+      }
     }
     return iterator(s, worklist);
   }
@@ -84,10 +90,14 @@ public class TransitiveTargets {
     for (int i = 0; i < worklist.size(); i++) {
       MethodOrMethodContext method = worklist.get(i);
       Iterator<Edge> it = cg.edgesOutOf(method);
-      if (filter != null) it = filter.wrap(it);
+      if (filter != null) {
+        it = filter.wrap(it);
+      }
       while (it.hasNext()) {
         Edge e = it.next();
-        if (s.add(e.getTgt())) worklist.add(e.getTgt());
+        if (s.add(e.getTgt())) {
+          worklist.add(e.getTgt());
+        }
       }
     }
     return worklist.iterator();

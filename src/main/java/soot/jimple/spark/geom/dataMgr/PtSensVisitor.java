@@ -18,6 +18,11 @@
  */
 package soot.jimple.spark.geom.dataMgr;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.PointsToSet;
 import soot.Scene;
 import soot.jimple.spark.geom.dataRep.ContextVar;
@@ -25,11 +30,6 @@ import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A container for storing context sensitive querying result of geomPTA. Similar to the class
@@ -48,10 +48,10 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
   protected GeomPointsTo ptsProvider = (GeomPointsTo) Scene.v().getPointsToAnalysis();
 
   // The list view
-  public List<VarType> outList = new ArrayList<VarType>();
+  public List<VarType> outList = new ArrayList<>();
 
   // The table view (cannot be accessed directly outside)
-  protected Map<Node, List<VarType>> tableView = new HashMap<Node, List<VarType>>();
+  protected Map<Node, List<VarType>> tableView = new HashMap<>();
 
   /** Called before each round of collection. */
   public void prepare() {
@@ -66,7 +66,9 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
       readyToUse = true;
       outList.clear();
 
-      if (tableView.size() == 0) return;
+      if (tableView.size() == 0) {
+        return;
+      }
 
       for (Map.Entry<Node, List<VarType>> entry : tableView.entrySet()) {
         List<VarType> resList = entry.getValue();
@@ -96,10 +98,16 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
       Node var = entry.getKey();
       List<VarType> list1 = entry.getValue();
       List<VarType> list2 = other.getCSList(var);
-      if (list1.size() == 0 || list2.size() == 0) continue;
+      if (list1.size() == 0 || list2.size() == 0) {
+        continue;
+      }
 
       for (VarType cv1 : list1) {
-        for (VarType cv2 : list2) if (cv1.intersect(cv2)) return true;
+        for (VarType cv2 : list2) {
+          if (cv1.intersect(cv2)) {
+            return true;
+          }
+        }
       }
     }
 
@@ -124,7 +132,9 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
    * @return
    */
   public PointsToSet toSparkCompatiableResult(VarNode vn) {
-    if (!readyToUse) finish();
+    if (!readyToUse) {
+      finish();
+    }
 
     PointsToSetInternal ptset = vn.makeP2Set();
 
@@ -137,7 +147,9 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
 
   /** Print the objects. */
   public void debugPrint() {
-    if (!readyToUse) finish();
+    if (!readyToUse) {
+      finish();
+    }
 
     for (VarType cv : outList) {
       System.out.printf("\t%s\n", cv.toString());

@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.dava.internal.AST.ASTAndCondition;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTIfElseNode;
@@ -33,10 +37,6 @@ import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
 Nomair A. Naeem 18-FEB-2005
@@ -133,7 +133,7 @@ public class StrengthenByIfElse {
               if (newWhileNode == null) {
                 return null;
               }
-              List<ASTNode> toReturn = new ArrayList<ASTNode>();
+              List<ASTNode> toReturn = new ArrayList<>();
               toReturn.add(newWhileNode);
 
               // Add the statementSequenceNode AFTER the whileNode
@@ -143,7 +143,7 @@ public class StrengthenByIfElse {
                 // stmt
 
                 Iterator<AugmentedStmt> tempIt = statements.iterator();
-                List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>();
+                List<AugmentedStmt> newStmts = new ArrayList<>();
                 while (tempIt.hasNext()) {
                   AugmentedStmt tempStmt = tempIt.next();
                   if (tempIt.hasNext()) {
@@ -173,11 +173,11 @@ public class StrengthenByIfElse {
         if (newWhileNode == null) {
           return null;
         }
-        List<ASTNode> toReturn = new ArrayList<ASTNode>();
+        List<ASTNode> toReturn = new ArrayList<>();
         toReturn.add(newWhileNode);
 
         // Add the statementSequenceNode AFTER the whileNode
-        List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>(statements);
+        List<AugmentedStmt> newStmts = new ArrayList<>(statements);
         toReturn.add(new ASTStatementSequenceNode(newStmts));
         return toReturn;
       } // if stmt was a return stmt

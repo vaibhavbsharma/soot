@@ -46,11 +46,13 @@ public abstract class AbstractGrimpIntBinopExpr extends AbstractIntBinopExpr imp
     this.op2Box = op2Box;
   }
 
+  @Override
   public abstract int getPrecedence();
 
   private String toString(Value op1, Value op2, String leftOp, String rightOp) {
-    if (op1 instanceof Precedence && ((Precedence) op1).getPrecedence() < getPrecedence())
+    if (op1 instanceof Precedence && ((Precedence) op1).getPrecedence() < getPrecedence()) {
       leftOp = "(" + leftOp + ")";
+    }
 
     if (op2 instanceof Precedence) {
       int opPrec = ((Precedence) op2).getPrecedence(), myPrec = getPrecedence();
@@ -61,12 +63,15 @@ public abstract class AbstractGrimpIntBinopExpr extends AbstractIntBinopExpr imp
                   || (this instanceof DivExpr)
                   || (this instanceof DCmpExpr)
                   || (this instanceof DCmpgExpr)
-                  || (this instanceof DCmplExpr)))) rightOp = "(" + rightOp + ")";
+                  || (this instanceof DCmplExpr)))) {
+        rightOp = "(" + rightOp + ")";
+      }
     }
 
     return leftOp + getSymbol() + rightOp;
   }
 
+  @Override
   public String toString() {
     Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
     String leftOp = op1.toString(), rightOp = op2.toString();

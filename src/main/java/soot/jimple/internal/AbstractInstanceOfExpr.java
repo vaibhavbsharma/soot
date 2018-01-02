@@ -25,6 +25,9 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.BooleanType;
 import soot.Type;
 import soot.UnitPrinter;
@@ -34,9 +37,6 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
 import soot.util.Switch;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
@@ -48,6 +48,7 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
     this.checkType = checkType;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractInstanceOfExpr) {
       AbstractInstanceOfExpr aie = (AbstractInstanceOfExpr) o;
@@ -57,16 +58,20 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode() * 101 + checkType.hashCode() * 17;
   }
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public String toString() {
     return opBox.getValue().toString() + " " + Jimple.INSTANCEOF + " " + checkType.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     opBox.toString(up);
     up.literal(" ");
@@ -92,7 +97,7 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     list.addAll(opBox.getValue().getUseBoxes());
     list.add(opBox);
@@ -100,18 +105,22 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
     return list;
   }
 
+  @Override
   public Type getType() {
     return BooleanType.v();
   }
 
+  @Override
   public Type getCheckType() {
     return checkType;
   }
 
+  @Override
   public void setCheckType(Type checkType) {
     this.checkType = checkType;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseInstanceOfExpr(this);
   }

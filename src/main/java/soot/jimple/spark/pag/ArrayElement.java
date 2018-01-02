@@ -41,14 +41,17 @@ public class ArrayElement implements SparkField {
     Scene.v().getFieldNumberer().add(this);
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }
 
+  @Override
   public Type getType() {
     return RefType.v("java.lang.Object");
   }

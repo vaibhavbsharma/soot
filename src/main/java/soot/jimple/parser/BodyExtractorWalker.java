@@ -25,6 +25,10 @@
 
 package soot.jimple.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.SootClass;
 import soot.SootMethod;
@@ -37,10 +41,6 @@ import soot.jimple.parser.node.AFullMethodBody;
 import soot.jimple.parser.node.AMethodMember;
 import soot.jimple.parser.node.PModifier;
 import soot.options.Options;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Walks a jimple AST and constructs the method bodies for all the methods of the SootClass
@@ -68,6 +68,7 @@ public class BodyExtractorWalker extends Walker {
    * file = modifier* file_type class_name extends_clause? implements_clause?
    * file_body;
    */
+  @Override
   public void caseAFile(AFile node) {
     inAFile(node);
     {
@@ -84,8 +85,9 @@ public class BodyExtractorWalker extends Walker {
     }
 
     String className = (String) mProductions.removeLast();
-    if (!className.equals(mSootClass.getName()))
+    if (!className.equals(mSootClass.getName())) {
       throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
+    }
 
     if (node.getExtendsClause() != null) {
       node.getExtendsClause().apply(this);
@@ -99,10 +101,15 @@ public class BodyExtractorWalker extends Walker {
     outAFile(node);
   }
 
+  @Override
   public void outAFile(AFile node) {
-    if (node.getImplementsClause() != null) mProductions.removeLast(); // implements_clause
+    if (node.getImplementsClause() != null) {
+      mProductions.removeLast(); // implements_clause
+    }
 
-    if (node.getExtendsClause() != null) mProductions.removeLast(); // extends_clause
+    if (node.getExtendsClause() != null) {
+      mProductions.removeLast(); // extends_clause
+    }
 
     mProductions.removeLast(); // file_type
     mProductions.addLast(mSootClass);
@@ -112,34 +119,42 @@ public class BodyExtractorWalker extends Walker {
    * member = {field} modifier* type name semicolon | {method} modifier* type
    * name l_paren parameter_list? r_paren throws_clause? method_body;
    */
+  @Override
   public void outAFieldMember(AFieldMember node) {
     mProductions.removeLast(); // name
     mProductions.removeLast(); // type
   }
 
+  @Override
   public void outAMethodMember(AMethodMember node) {
     Type type;
     String name;
-    List<Type> parameterList = new ArrayList<Type>();
+    List<Type> parameterList = new ArrayList<>();
     List throwsClause = null;
     JimpleBody methodBody = null;
 
-    if (node.getMethodBody() instanceof AFullMethodBody)
+    if (node.getMethodBody() instanceof AFullMethodBody) {
       methodBody = (JimpleBody) mProductions.removeLast();
+    }
 
-    if (node.getThrowsClause() != null) throwsClause = (List) mProductions.removeLast();
+    if (node.getThrowsClause() != null) {
+      throwsClause = (List) mProductions.removeLast();
+    }
 
-    if (node.getParameterList() != null) parameterList = (List) mProductions.removeLast();
+    if (node.getParameterList() != null) {
+      parameterList = (List) mProductions.removeLast();
+    }
 
     name = (String) mProductions.removeLast(); // name
     type = (Type) mProductions.removeLast(); // type
     SootMethod sm =
         mSootClass.getMethodUnsafe(SootMethod.getSubSignature(name, parameterList, type));
     if (sm != null) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v()
             .out
             .println("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
+      }
     } else {
       G.v()
           .out
@@ -153,13 +168,16 @@ public class BodyExtractorWalker extends Walker {
     }
 
     if (sm.isConcrete() && methodBody != null) {
-      if (Options.v().verbose()) G.v().out.println("[Parsed] " + sm.getDeclaration());
+      if (Options.v().verbose()) {
+        G.v().out.println("[Parsed] " + sm.getDeclaration());
+      }
 
       methodBody.setMethod(sm);
       methodToParsedBodyMap.put(sm, methodBody);
     } else if (node.getMethodBody() instanceof AFullMethodBody) {
-      if (sm.isPhantom() && Options.v().verbose())
+      if (sm.isPhantom() && Options.v().verbose()) {
         G.v().out.println("[jimple parser] phantom method!");
+      }
       throw new RuntimeException("Impossible: !concrete => ! instanceof " + sm.getName());
     }
   }

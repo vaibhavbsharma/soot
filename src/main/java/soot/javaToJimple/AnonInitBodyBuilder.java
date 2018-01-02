@@ -19,6 +19,10 @@
 
 package soot.javaToJimple;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import soot.Scene;
@@ -26,10 +30,6 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethodRef;
 import soot.VoidType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class AnonInitBodyBuilder extends JimpleBodyBuilder {
 

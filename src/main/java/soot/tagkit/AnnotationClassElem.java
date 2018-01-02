@@ -40,6 +40,7 @@ public class AnnotationClassElem extends AnnotationElem {
     this.desc = s;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " decription: " + desc;
   }

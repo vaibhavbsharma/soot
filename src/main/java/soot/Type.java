@@ -25,11 +25,11 @@
 
 package soot;
 
+import java.io.Serializable;
+
 import soot.util.Numberable;
 import soot.util.Switch;
 import soot.util.Switchable;
-
-import java.io.Serializable;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
 @SuppressWarnings("serial")
@@ -38,6 +38,7 @@ public abstract class Type implements Switchable, Serializable, Numberable {
     Scene.v().getTypeNumberer().add(this);
   }
   /** Returns a textual representation of this type. */
+  @Override
   public abstract String toString();
 
   /**
@@ -64,7 +65,9 @@ public abstract class Type implements Switchable, Serializable, Numberable {
         || t.equals(BooleanType.v())
         || t.equals(CharType.v())) {
       return IntType.v();
-    } else return t;
+    } else {
+      return t;
+    }
   }
 
   /** Returns the least common superclass of this type and other. */
@@ -74,6 +77,7 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   }
 
   /** Method required for use of Switchable. */
+  @Override
   public void apply(Switch sw) {}
 
   public void setArrayType(ArrayType at) {
@@ -97,10 +101,12 @@ public abstract class Type implements Switchable, Serializable, Numberable {
     return false;
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }

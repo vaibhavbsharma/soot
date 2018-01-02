@@ -68,7 +68,9 @@ public class MergeChecker {
     for (final VarNode src : pag.getVarNodeNumberer()) {
       for (FieldRefNode fr : src.getAllFieldRefs()) {
         for (VarNode dst : fieldToBase.get(fr.getField())) {
-          if (!src.getP2Set().hasNonEmptyIntersection(dst.getP2Set())) continue;
+          if (!src.getP2Set().hasNonEmptyIntersection(dst.getP2Set())) {
+            continue;
+          }
           FieldRefNode fr2 = dst.dot(fr.getField());
           if (fr2.getReplacement() != fr.getReplacement()) {
             G.v().out.println("Check failure: " + fr + " should be merged with " + fr2);
@@ -84,6 +86,7 @@ public class MergeChecker {
   protected void checkAll(final Node container, PointsToSetInternal nodes, final Node upstream) {
     nodes.forall(
         new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
             checkNode(container, n, upstream);
           }
@@ -91,10 +94,12 @@ public class MergeChecker {
   }
 
   protected void checkNode(Node container, Node n, Node upstream) {
-    if (container.getReplacement() != container)
+    if (container.getReplacement() != container) {
       throw new RuntimeException("container " + container + " is illegal");
-    if (upstream.getReplacement() != upstream)
+    }
+    if (upstream.getReplacement() != upstream) {
       throw new RuntimeException("upstream " + upstream + " is illegal");
+    }
     PointsToSetInternal p2set = container.getP2Set();
     FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
     if (!p2set.contains(n)
@@ -117,7 +122,9 @@ public class MergeChecker {
 
   protected void handleSimples(VarNode src) {
     PointsToSetInternal srcSet = src.getP2Set();
-    if (srcSet.isEmpty()) return;
+    if (srcSet.isEmpty()) {
+      return;
+    }
     final Node[] simpleTargets = pag.simpleLookup(src);
     for (Node element : simpleTargets) {
       checkAll(element, srcSet, src);
@@ -126,7 +133,9 @@ public class MergeChecker {
 
   protected void handleStores(final VarNode src) {
     final PointsToSetInternal srcSet = src.getP2Set();
-    if (srcSet.isEmpty()) return;
+    if (srcSet.isEmpty()) {
+      return;
+    }
     Node[] storeTargets = pag.storeLookup(src);
     for (Node element : storeTargets) {
       final FieldRefNode fr = (FieldRefNode) element;
@@ -137,7 +146,9 @@ public class MergeChecker {
   protected void handleLoads(final FieldRefNode src) {
     final Node[] loadTargets = pag.loadLookup(src);
     PointsToSetInternal set = src.getP2Set();
-    if (set.isEmpty()) return;
+    if (set.isEmpty()) {
+      return;
+    }
     for (Node element : loadTargets) {
       VarNode target = (VarNode) element;
       checkAll(target, set, src);
@@ -145,5 +156,5 @@ public class MergeChecker {
   }
 
   protected PAG pag;
-  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<SparkField, VarNode>();
+  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<>();
 }

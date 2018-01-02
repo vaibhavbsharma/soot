@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 public class ClassLiteralMethodSource implements soot.MethodSource {
 
+  @Override
   public soot.Body getBody(soot.SootMethod sootMethod, String phaseName) {
 
     soot.Body classBody = soot.jimple.Jimple.v().newBody(sootMethod);

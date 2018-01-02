@@ -1,10 +1,10 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.Map;
+
 import soot.G;
 import soot.SceneTransformer;
 import soot.Singletons;
-
-import java.util.Map;
 
 /** */
 public class MhpTransformer extends SceneTransformer {
@@ -16,12 +16,15 @@ public class MhpTransformer extends SceneTransformer {
 
   MhpTester mhpTester;
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
     getMhpTester().printMhpSummary();
   }
 
   public MhpTester getMhpTester() {
-    if (mhpTester == null) mhpTester = new SynchObliviousMhpAnalysis();
+    if (mhpTester == null) {
+      mhpTester = new SynchObliviousMhpAnalysis();
+    }
     return mhpTester;
   }
 

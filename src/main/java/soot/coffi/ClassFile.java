@@ -25,10 +25,6 @@
 
 package soot.coffi;
 
-import soot.G;
-import soot.Timers;
-import soot.options.Options;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -36,6 +32,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import soot.G;
+import soot.Timers;
+import soot.options.Options;
 
 /**
  * A ClassFile object represents the contents of a <tt>.class</tt> file.
@@ -189,6 +189,7 @@ public class ClassFile {
   }
 
   /** Returns the name of this Class. */
+  @Override
   public String toString() {
     return (constant_pool[this_class].toString(constant_pool));
   }
@@ -203,7 +204,9 @@ public class ClassFile {
 
     byte[] data;
 
-    if (Options.v().time()) Timers.v().readTimer.start();
+    if (Options.v().time()) {
+      Timers.v().readTimer.start();
+    }
 
     try {
       DataInputStream classDataStream = new DataInputStream(classFileStream);
@@ -214,7 +217,9 @@ public class ClassFile {
     } catch (IOException e) {
     }
 
-    if (Options.v().time()) Timers.v().readTimer.end();
+    if (Options.v().time()) {
+      Timers.v().readTimer.end();
+    }
 
     d = new DataInputStream(f);
     b = readClass(d);
@@ -222,13 +227,17 @@ public class ClassFile {
     try {
       classFileStream.close();
       d.close();
-      if (f != null) f.close();
+      if (f != null) {
+        f.close();
+      }
     } catch (IOException e) {
       G.v().out.println("IOException with " + fn + ": " + e.getMessage());
       return false;
     }
 
-    if (!b) return false;
+    if (!b) {
+      return false;
+    }
     // parse();        // parse all methods & builds CFGs
     // G.v().out.println("-- Read " + cf + " --");
     return true;
@@ -289,68 +298,107 @@ public class ClassFile {
       hasone = true;
     }
     if ((af & ACC_PRIVATE) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "private";
     }
     if ((af & ACC_PROTECTED) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "protected";
     }
     if ((af & ACC_STATIC) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "static";
     }
     if ((af & ACC_FINAL) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "final";
     }
     if ((af & ACC_SUPER) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "super";
     }
     if ((af & ACC_VOLATILE) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "volatile";
     }
     if ((af & ACC_TRANSIENT) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "transient";
     }
     if ((af & ACC_INTERFACE) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "interface";
     }
     if ((af & ACC_ABSTRACT) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "abstract";
     }
     if ((af & ACC_STRICT) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "strict";
     }
     if ((af & ACC_ANNOTATION) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "annotation";
     }
     if ((af & ACC_ENUM) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "enum";
     }
     if ((af & ACC_UNKNOWN) != 0) {
-      if (hasone) s = s + separator;
-      else hasone = true;
+      if (hasone) {
+        s = s + separator;
+      } else {
+        hasone = true;
+      }
       s = s + "unknown";
     }
     return s;
@@ -374,7 +422,9 @@ public class ClassFile {
       major_version = d.readUnsignedShort();
       constant_pool_count = d.readUnsignedShort();
 
-      if (!readConstantPool(d)) return false;
+      if (!readConstantPool(d)) {
+        return false;
+      }
 
       access_flags = d.readUnsignedShort();
       this_class = d.readUnsignedShort();
@@ -383,30 +433,44 @@ public class ClassFile {
       if (interfaces_count > 0) {
         interfaces = new int[interfaces_count];
         int j;
-        for (j = 0; j < interfaces_count; j++) interfaces[j] = d.readUnsignedShort();
+        for (j = 0; j < interfaces_count; j++) {
+          interfaces[j] = d.readUnsignedShort();
+        }
       }
 
-      if (Options.v().time()) Timers.v().fieldTimer.start();
+      if (Options.v().time()) {
+        Timers.v().fieldTimer.start();
+      }
 
       fields_count = d.readUnsignedShort();
       readFields(d);
 
-      if (Options.v().time()) Timers.v().fieldTimer.end();
+      if (Options.v().time()) {
+        Timers.v().fieldTimer.end();
+      }
 
-      if (Options.v().time()) Timers.v().methodTimer.start();
+      if (Options.v().time()) {
+        Timers.v().methodTimer.start();
+      }
       methods_count = d.readUnsignedShort();
       readMethods(d);
 
-      if (Options.v().time()) Timers.v().methodTimer.end();
+      if (Options.v().time()) {
+        Timers.v().methodTimer.end();
+      }
 
-      if (Options.v().time()) Timers.v().attributeTimer.start();
+      if (Options.v().time()) {
+        Timers.v().attributeTimer.start();
+      }
 
       attributes_count = d.readUnsignedShort();
       if (attributes_count > 0) {
         attributes = new attribute_info[attributes_count];
         readAttributes(d, attributes_count, attributes);
       }
-      if (Options.v().time()) Timers.v().attributeTimer.end();
+      if (Options.v().time()) {
+        Timers.v().attributeTimer.end();
+      }
 
     } catch (IOException e) {
       throw new RuntimeException("IOException with " + fn + ": " + e.getMessage(), e);
@@ -442,48 +506,60 @@ public class ClassFile {
         case cp_info.CONSTANT_Class:
           cp = new CONSTANT_Class_info();
           ((CONSTANT_Class_info) cp).name_index = d.readUnsignedShort();
-          if (debug) G.v().out.println("Constant pool[" + i + "]: Class");
+          if (debug) {
+            G.v().out.println("Constant pool[" + i + "]: Class");
+          }
           break;
         case cp_info.CONSTANT_Fieldref:
           cp = new CONSTANT_Fieldref_info();
           ((CONSTANT_Fieldref_info) cp).class_index = d.readUnsignedShort();
           ((CONSTANT_Fieldref_info) cp).name_and_type_index = d.readUnsignedShort();
-          if (debug) G.v().out.println("Constant pool[" + i + "]: Fieldref");
+          if (debug) {
+            G.v().out.println("Constant pool[" + i + "]: Fieldref");
+          }
           break;
         case cp_info.CONSTANT_Methodref:
           cp = new CONSTANT_Methodref_info();
           ((CONSTANT_Methodref_info) cp).class_index = d.readUnsignedShort();
           ((CONSTANT_Methodref_info) cp).name_and_type_index = d.readUnsignedShort();
-          if (debug) G.v().out.println("Constant pool[" + i + "]: Methodref");
+          if (debug) {
+            G.v().out.println("Constant pool[" + i + "]: Methodref");
+          }
           break;
         case cp_info.CONSTANT_InterfaceMethodref:
           cp = new CONSTANT_InterfaceMethodref_info();
           ((CONSTANT_InterfaceMethodref_info) cp).class_index = d.readUnsignedShort();
           ((CONSTANT_InterfaceMethodref_info) cp).name_and_type_index = d.readUnsignedShort();
-          if (debug) G.v().out.println("Constant pool[" + i + "]: MethodHandle");
+          if (debug) {
+            G.v().out.println("Constant pool[" + i + "]: MethodHandle");
+          }
           break;
         case cp_info.CONSTANT_String:
           cp = new CONSTANT_String_info();
           ((CONSTANT_String_info) cp).string_index = d.readUnsignedShort();
-          if (debug) G.v().out.println("Constant pool[" + i + "]: String");
+          if (debug) {
+            G.v().out.println("Constant pool[" + i + "]: String");
+          }
           break;
         case cp_info.CONSTANT_Integer:
           cp = new CONSTANT_Integer_info();
           ((CONSTANT_Integer_info) cp).bytes = d.readInt();
-          if (debug)
+          if (debug) {
             G.v()
                 .out
                 .println(
                     "Constant pool[" + i + "]: Integer = " + ((CONSTANT_Integer_info) cp).bytes);
+          }
           break;
         case cp_info.CONSTANT_Float:
           cp = new CONSTANT_Float_info();
           ((CONSTANT_Float_info) cp).bytes = d.readInt();
-          if (debug)
+          if (debug) {
             G.v()
                 .out
                 .println(
                     "Constant pool[" + i + "]: Float = " + ((CONSTANT_Float_info) cp).convert());
+          }
           break;
         case cp_info.CONSTANT_Long:
           cp = new CONSTANT_Long_info();
@@ -504,26 +580,30 @@ public class ClassFile {
           cp = new CONSTANT_Double_info();
           ((CONSTANT_Double_info) cp).high = d.readInt() & 0xFFFFFFFFL;
           ((CONSTANT_Double_info) cp).low = d.readInt() & 0xFFFFFFFFL;
-          if (debug)
+          if (debug) {
             G.v()
                 .out
                 .println(
                     "Constant pool[" + i + "]: Double = " + ((CONSTANT_Double_info) cp).convert());
+          }
           skipone = true; // next entry needs to be skipped
           break;
         case cp_info.CONSTANT_NameAndType:
           cp = new CONSTANT_NameAndType_info();
           ((CONSTANT_NameAndType_info) cp).name_index = d.readUnsignedShort();
           ((CONSTANT_NameAndType_info) cp).descriptor_index = d.readUnsignedShort();
-          if (debug) G.v().out.println("Constant pool[" + i + "]: Name and Type");
+          if (debug) {
+            G.v().out.println("Constant pool[" + i + "]: Name and Type");
+          }
           break;
         case cp_info.CONSTANT_Utf8:
           CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info(d);
           // If an equivalent CONSTANT_Utf8 already exists, we return
           // the pre-existing one and allow cputf8 to be GC'd.
           cp = CONSTANT_Utf8_collector.v().add(cputf8);
-          if (debug)
+          if (debug) {
             G.v().out.println("Constant pool[" + i + "]: Utf8 = \"" + cputf8.convert() + "\"");
+          }
           break;
         case cp_info.CONSTANT_MethodHandle:
           cp = new CONSTANT_MethodHandle_info();
@@ -615,8 +695,9 @@ public class ClassFile {
         if (ea.number_of_exceptions > 0) {
           int k;
           ea.exception_index_table = new int[ea.number_of_exceptions];
-          for (k = 0; k < ea.number_of_exceptions; k++)
+          for (k = 0; k < ea.number_of_exceptions; k++) {
             ea.exception_index_table[k] = d.readUnsignedShort();
+          }
         }
         a = ea;
       } else if (s.compareTo(attribute_info.LineNumberTable) == 0) {
@@ -1060,13 +1141,17 @@ public class ClassFile {
           dd.writeShort(e.catch_type);
         }
         dd.writeShort(ca.attributes_count);
-        if (ca.attributes_count > 0) writeAttributes(dd, ca.attributes_count, ca.attributes);
+        if (ca.attributes_count > 0) {
+          writeAttributes(dd, ca.attributes_count, ca.attributes);
+        }
       } else if (a instanceof Exception_attribute) {
         Exception_attribute ea = (Exception_attribute) a;
         dd.writeShort(ea.number_of_exceptions);
         if (ea.number_of_exceptions > 0) {
           int k;
-          for (k = 0; k < ea.number_of_exceptions; k++) dd.writeShort(ea.exception_index_table[k]);
+          for (k = 0; k < ea.number_of_exceptions; k++) {
+            dd.writeShort(ea.exception_index_table[k]);
+          }
         }
       } else if (a instanceof LineNumberTable_attribute) {
         LineNumberTable_attribute la = (LineNumberTable_attribute) a;
@@ -1167,7 +1252,9 @@ public class ClassFile {
       dd.writeShort(major_version);
       dd.writeShort(constant_pool_count);
 
-      if (!writeConstantPool(dd)) return false;
+      if (!writeConstantPool(dd)) {
+        return false;
+      }
 
       dd.writeShort(access_flags);
       dd.writeShort(this_class);
@@ -1175,7 +1262,9 @@ public class ClassFile {
       dd.writeShort(interfaces_count);
       if (interfaces_count > 0) {
         int j;
-        for (j = 0; j < interfaces_count; j++) dd.writeShort(interfaces[j]);
+        for (j = 0; j < interfaces_count; j++) {
+          dd.writeShort(interfaces[j]);
+        }
       }
 
       dd.writeShort(fields_count);
@@ -1217,7 +1306,9 @@ public class ClassFile {
     bc = new ByteCode();
 
     ca = m.locate_code_attribute();
-    if (ca == null) return null;
+    if (ca == null) {
+      return null;
+    }
 
     j = 0;
     while (j < ca.code_length) {
@@ -1230,14 +1321,15 @@ public class ClassFile {
         G.v()
             .out
             .println("Unknown instruction in \"" + m.toName(constant_pool) + "\" at offset " + j);
-        G.v().out.println(" bytecode = " + (((int) (inst.code)) & 0xff));
+        G.v().out.println(" bytecode = " + (((inst.code)) & 0xff));
       }
       // G.v().out.println("before: " + j);
       j = inst.nextOffset(j);
       // G.v().out.println("after: " + j);
 
-      if (head == null) head = inst;
-      else {
+      if (head == null) {
+        head = inst;
+      } else {
         tail.next = inst;
         inst.prev = tail;
       }
@@ -1251,10 +1343,15 @@ public class ClassFile {
     for (j = 0; j < ca.exception_table_length; j++) {
       e = ca.exception_table[j];
       e.start_inst = bc.locateInst(e.start_pc);
-      if (e.end_pc == ca.code_length) e.end_inst = null;
-      else e.end_inst = bc.locateInst(e.end_pc);
+      if (e.end_pc == ca.code_length) {
+        e.end_inst = null;
+      } else {
+        e.end_inst = bc.locateInst(e.end_pc);
+      }
       e.handler_inst = bc.locateInst(e.handler_pc);
-      if (e.handler_inst != null) e.handler_inst.labelled = true;
+      if (e.handler_inst != null) {
+        e.handler_inst.labelled = true;
+      }
     }
 
     m.instructions = head;
@@ -1341,7 +1438,9 @@ public class ClassFile {
       codesize = i.compile(bc, codesize);
       i = i.next;
     }
-    if (codesize != bc.length) G.v().out.println("Warning: code size doesn't match array length!");
+    if (codesize != bc.length) {
+      G.v().out.println("Warning: code size doesn't match array length!");
+    }
 
     return bc;
   }
@@ -1363,7 +1462,9 @@ public class ClassFile {
       mi = methods[i];
       // locate code attribute
       ca = mi.locate_code_attribute();
-      if (ca == null) continue;
+      if (ca == null) {
+        continue;
+      }
       bc = unparseMethod(mi);
       if (bc == null) {
         G.v().out.println("Recompile of " + mi.toName(constant_pool) + " failed!");
@@ -1374,8 +1475,11 @@ public class ClassFile {
         for (j = 0; j < ca.exception_table_length; j++) {
           e = ca.exception_table[j];
           e.start_pc = (e.start_inst.label);
-          if (e.end_inst != null) e.end_pc = (e.end_inst.label);
-          else e.end_pc = (int) (ca.code_length);
+          if (e.end_inst != null) {
+            e.end_pc = (e.end_inst.label);
+          } else {
+            e.end_pc = (int) (ca.code_length);
+          }
           e.handler_pc = (e.handler_inst.label);
         }
       }
@@ -1465,7 +1569,9 @@ public class ClassFile {
           G.v().out.println("Warning: Parse error -- can't find a ; in " + desc.substring(i + 1));
           param = "<error>";
         } else {
-          if (j - i > 10 && desc.substring(i + 1, i + 11).compareTo("java/lang/") == 0) i = i + 10;
+          if (j - i > 10 && desc.substring(i + 1, i + 11).compareTo("java/lang/") == 0) {
+            i = i + 10;
+          }
           param = desc.substring(i + 1, j);
           // replace '/'s with '.'s
           param = param.replace('/', '.');
@@ -1474,7 +1580,9 @@ public class ClassFile {
       } else {
         param = "???";
       }
-      if (didone) params = params + sep;
+      if (didone) {
+        params = params + sep;
+      }
       params = params + param;
       while (arraylevel > 0) {
         params = params + "[]";
@@ -1591,10 +1699,14 @@ public class ClassFile {
       if (m.compareTo(methods[i].toName(constant_pool)) == 0) {
         mthd = methods[i];
         if (i > pos) {
-          for (j = i; j > pos && j > 0; j--) methods[j] = methods[j - 1];
+          for (j = i; j > pos && j > 0; j--) {
+            methods[j] = methods[j - 1];
+          }
           methods[pos] = mthd;
         } else if (i < pos) {
-          for (j = i; j < pos && j < methods_count - 1; j++) methods[j] = methods[j + 1];
+          for (j = i; j < pos && j < methods_count - 1; j++) {
+            methods[j] = methods[j + 1];
+          }
           methods[pos] = mthd;
         }
         return;
@@ -1626,10 +1738,14 @@ public class ClassFile {
     cp_info cf;
     int i;
     cf = constant_pool[super_class];
-    if (cf.toString(constant_pool).compareTo(cname) == 0) return true;
+    if (cf.toString(constant_pool).compareTo(cname) == 0) {
+      return true;
+    }
     for (i = 0; i < interfaces_count; i++) {
       cf = constant_pool[interfaces[i]];
-      if (cf.toString(constant_pool).compareTo(cname) == 0) return true;
+      if (cf.toString(constant_pool).compareTo(cname) == 0) {
+        return true;
+      }
     }
     return false;
   }

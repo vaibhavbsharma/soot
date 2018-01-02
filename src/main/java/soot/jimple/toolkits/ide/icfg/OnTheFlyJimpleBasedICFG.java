@@ -1,7 +1,18 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 import soot.ArrayType;
@@ -26,16 +37,6 @@ import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
 import soot.options.Options;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This is an implementation of AbstractJimpleBasedICFG that computes the ICFG on-the-fly. In other
@@ -118,7 +119,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
           });
 
   @SynchronizedBy("explicit lock on data structure")
-  protected Map<SootMethod, Set<Unit>> methodToCallers = new HashMap<SootMethod, Set<Unit>>();
+  protected Map<SootMethod, Set<Unit>> methodToCallers = new HashMap<>();
 
   public OnTheFlyJimpleBasedICFG(SootMethod... entryPoints) {
     this(Arrays.asList(entryPoints));
@@ -176,7 +177,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     synchronized (methodToCallers) {
       Set<Unit> callers = methodToCallers.get(target);
       if (callers == null) {
-        callers = new HashSet<Unit>();
+        callers = new HashSet<>();
         methodToCallers.put(target, callers);
       }
       callers.add(callSite);
@@ -210,14 +211,16 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 
                   @Override
                   protected void internalTransform(String phaseName, Map<String, String> options) {
-                    if (Scene.v().hasCallGraph()) throw new RuntimeException("call graph present!");
+                    if (Scene.v().hasCallGraph()) {
+                      throw new RuntimeException("call graph present!");
+                    }
 
                     loadAllClassesOnClassPathToSignatures();
 
                     SootMethod mainMethod = Scene.v().getMainMethod();
                     OnTheFlyJimpleBasedICFG icfg = new OnTheFlyJimpleBasedICFG(mainMethod);
-                    Set<SootMethod> worklist = new LinkedHashSet<SootMethod>();
-                    Set<SootMethod> visited = new HashSet<SootMethod>();
+                    Set<SootMethod> worklist = new LinkedHashSet<>();
+                    Set<SootMethod> visited = new HashSet<>();
                     worklist.add(mainMethod);
                     int monomorphic = 0, polymorphic = 0;
                     while (!worklist.isEmpty()) {
@@ -229,15 +232,20 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
                       // MUST call this method to initialize ICFG for every
                       // method
                       Body body = currMethod.getActiveBody();
-                      if (body == null) continue;
+                      if (body == null) {
+                        continue;
+                      }
                       for (Unit u : body.getUnits()) {
                         Stmt s = (Stmt) u;
                         if (s.containsInvokeExpr()) {
                           Set<SootMethod> calleesOfCallAt = icfg.getCalleesOfCallAt(s);
                           if (s.getInvokeExpr() instanceof VirtualInvokeExpr
                               || s.getInvokeExpr() instanceof InterfaceInvokeExpr) {
-                            if (calleesOfCallAt.size() <= 1) monomorphic++;
-                            else polymorphic++;
+                            if (calleesOfCallAt.size() <= 1) {
+                              monomorphic++;
+                            } else {
+                              polymorphic++;
+                            }
                             System.err.println("mono: " + monomorphic + "   poly: " + polymorphic);
                           }
                           for (SootMethod callee : calleesOfCallAt) {

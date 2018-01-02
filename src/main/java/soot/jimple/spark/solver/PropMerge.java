@@ -19,6 +19,9 @@
 
 package soot.jimple.spark.solver;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import soot.G;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
@@ -30,9 +33,6 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 /**
  * Propagates points-to sets along pointer assignment graph using a merging of field reference (Red)
  * nodes to improve scalability.
@@ -40,13 +40,14 @@ import java.util.TreeSet;
  * @author Ondrej Lhotak
  */
 public final class PropMerge extends Propagator {
-  protected final Set<Node> varNodeWorkList = new TreeSet<Node>();
+  protected final Set<Node> varNodeWorkList = new TreeSet<>();
 
   public PropMerge(PAG pag) {
     this.pag = pag;
   }
 
   /** Actually does the propagation. */
+  @Override
   public final void propagate() {
     new TopoSorter(pag, false).sort();
     for (Object object : pag.allocSources()) {
@@ -118,14 +119,18 @@ public final class PropMerge extends Propagator {
   protected final boolean handleVarNode(final VarNode src) {
     boolean ret = false;
 
-    if (src.getReplacement() != src) return ret;
-    /*
-     * throw new RuntimeException(
-     * "Got bad node "+src+" with rep "+src.getReplacement() );
-     */
+    if (src.getReplacement() != src) {
+      return ret;
+      /*
+       * throw new RuntimeException(
+       * "Got bad node "+src+" with rep "+src.getReplacement() );
+       */
+    }
 
     final PointsToSetInternal newP2Set = src.getP2Set();
-    if (newP2Set.isEmpty()) return false;
+    if (newP2Set.isEmpty()) {
+      return false;
+    }
 
     Node[] simpleTargets = pag.simpleLookup(src);
     for (Node element : simpleTargets) {
@@ -148,6 +153,7 @@ public final class PropMerge extends Propagator {
       ret =
           newP2Set.forall(
                   new P2SetVisitor() {
+                    @Override
                     public final void visit(Node n) {
                       AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
                       Node nDotFNode = nDotF.getReplacement();

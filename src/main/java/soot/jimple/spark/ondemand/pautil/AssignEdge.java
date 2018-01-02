@@ -81,6 +81,7 @@ public final class AssignEdge {
     callSite = i;
   }
 
+  @Override
   public String toString() {
     String ret = src + " -> " + dst;
     if (isReturnEdge()) {

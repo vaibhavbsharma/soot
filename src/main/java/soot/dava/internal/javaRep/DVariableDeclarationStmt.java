@@ -34,6 +34,10 @@
  */
 package soot.dava.internal.javaRep;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.AbstractUnit;
 import soot.Local;
 import soot.Type;
@@ -50,10 +54,6 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
   Type declarationType = null;
@@ -64,9 +64,9 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
   DavaBody davaBody = null;
 
   public DVariableDeclarationStmt(Type decType, DavaBody davaBody) {
-    if (declarationType != null)
+    if (declarationType != null) {
       throw new RuntimeException("creating a VariableDeclaration which has already been created");
-    else {
+    } else {
       declarationType = decType;
       declarations = new ArrayList();
       this.davaBody = davaBody;
@@ -101,6 +101,7 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
     return type.toString().compareTo(declarationType.toString()) == 0;
   }
 
+  @Override
   public Object clone() {
     DVariableDeclarationStmt temp = new DVariableDeclarationStmt(declarationType, davaBody);
     Iterator it = declarations.iterator();
@@ -108,20 +109,28 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
       Local obj = (Local) it.next();
 
       Value temp1 = Grimp.cloneIfNecessary(obj);
-      if (temp1 instanceof Local) temp.addLocal((Local) temp1);
+      if (temp1 instanceof Local) {
+        temp.addLocal((Local) temp1);
+      }
     }
     return temp;
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
-    if (declarations.size() == 0) return b.toString();
+    if (declarations.size() == 0) {
+      return b.toString();
+    }
 
     String type = declarationType.toString();
 
-    if (type.equals("null_type")) b.append("Object");
-    else b.append(type);
+    if (type.equals("null_type")) {
+      b.append("Object");
+    } else {
+      b.append(type);
+    }
     b.append(" ");
 
     Iterator decIt = declarations.iterator();
@@ -129,25 +138,33 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
       Local tempDec = (Local) decIt.next();
       b.append(tempDec.getName());
 
-      if (decIt.hasNext()) b.append(", ");
+      if (decIt.hasNext()) {
+        b.append(", ");
+      }
     }
     return b.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    if (declarations.size() == 0) return;
+    if (declarations.size() == 0) {
+      return;
+    }
 
-    if (!(up instanceof DavaUnitPrinter))
+    if (!(up instanceof DavaUnitPrinter)) {
       throw new RuntimeException("DavaBody should always be printed using the DavaUnitPrinter");
-    else {
+    } else {
       DavaUnitPrinter dup = (DavaUnitPrinter) up;
 
       String type = declarationType.toString();
 
-      if (type.equals("null_type")) dup.printString("Object");
-      else {
+      if (type.equals("null_type")) {
+        dup.printString("Object");
+      } else {
         IterableSet importSet = davaBody.getImportList();
-        if (!importSet.contains(type)) davaBody.addToImportList(type);
+        if (!importSet.contains(type)) {
+          davaBody.addToImportList(type);
+        }
 
         type =
             RemoveFullyQualifiedName.getReducedName(
@@ -161,7 +178,9 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
       while (decIt.hasNext()) {
         Local tempDec = (Local) decIt.next();
         dup.printString(tempDec.getName());
-        if (decIt.hasNext()) dup.printString(", ");
+        if (decIt.hasNext()) {
+          dup.printString(", ");
+        }
       }
     }
   }
@@ -172,46 +191,57 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
   */
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
 
+  @Override
   public boolean containsInvokeExpr() {
     return false;
   }
 
+  @Override
   public InvokeExpr getInvokeExpr() {
     throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
   }
 
+  @Override
   public ValueBox getInvokeExprBox() {
     throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
   }
 
+  @Override
   public boolean containsArrayRef() {
     return false;
   }
 
+  @Override
   public ArrayRef getArrayRef() {
     throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
   }
 
+  @Override
   public ValueBox getArrayRefBox() {
     throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
   }
 
+  @Override
   public boolean containsFieldRef() {
     return false;
   }
 
+  @Override
   public FieldRef getFieldRef() {
     throw new RuntimeException("getFieldRef() called with no FieldRef present!");
   }
 
+  @Override
   public ValueBox getFieldRefBox() {
     throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
   }

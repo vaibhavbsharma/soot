@@ -18,9 +18,12 @@
  */
 package soot.asm;
 
+import java.util.ArrayList;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationClassElem;
@@ -33,8 +36,6 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 
-import java.util.ArrayList;
-
 /**
  * Annotation element builder.
  *
@@ -46,7 +47,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 
   AnnotationElemBuilder(int expected) {
     super(Opcodes.ASM5);
-    this.elems = new ArrayList<AnnotationElem>(expected);
+    this.elems = new ArrayList<>(expected);
   }
 
   AnnotationElemBuilder() {
@@ -77,42 +78,55 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
       Type t = (Type) value;
       elem = new AnnotationClassElem(t.getDescriptor(), 'c', name);
     } else if (value.getClass().isArray()) {
-      ArrayList<AnnotationElem> annotationArray = new ArrayList<AnnotationElem>();
+      ArrayList<AnnotationElem> annotationArray = new ArrayList<>();
       if (value instanceof byte[]) {
-        for (Object element : (byte[]) value)
+        for (Object element : (byte[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof boolean[]) {
-        for (Object element : (boolean[]) value)
+        for (Object element : (boolean[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof char[]) {
-        for (Object element : (char[]) value)
+        for (Object element : (char[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof short[]) {
-        for (Object element : (short[]) value)
+        for (Object element : (short[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof int[]) {
-        for (Object element : (int[]) value)
+        for (Object element : (int[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof long[]) {
-        for (Object element : (long[]) value)
+        for (Object element : (long[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof float[]) {
-        for (Object element : (float[]) value)
+        for (Object element : (float[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof double[]) {
-        for (Object element : (double[]) value)
+        for (Object element : (double[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof String[]) {
-        for (Object element : (String[]) value)
+        for (Object element : (String[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
+        }
       } else if (value instanceof Type[]) {
-        for (Object element : (Type[]) value)
+        for (Object element : (Type[]) value) {
           annotationArray.add(getAnnotationElement(name, element));
-      } else
+        }
+      } else {
         throw new UnsupportedOperationException(
             "Unsupported array value type: " + value.getClass());
+      }
       elem = new AnnotationArrayElem(annotationArray, '[', name);
-    } else throw new UnsupportedOperationException("Unsupported value type: " + value.getClass());
+    } else {
+      throw new UnsupportedOperationException("Unsupported value type: " + value.getClass());
+    }
     return (elem);
   }
 
@@ -133,7 +147,9 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
       @Override
       public void visitEnd() {
         String ename = name;
-        if (ename == null) ename = "default";
+        if (ename == null) {
+          ename = "default";
+        }
         AnnotationElemBuilder.this.elems.add(new AnnotationArrayElem(this.elems, '[', ename));
       }
     };

@@ -61,13 +61,17 @@ public class AbstractHost implements Host {
 
   /** search for tag named <code>aName</code> */
   private int searchForTag(String aName) {
-    if (mTagList == null) return -1;
+    if (mTagList == null) {
+      return -1;
+    }
 
     int i = 0;
     Iterator<Tag> it = mTagList.iterator();
     while (it.hasNext()) {
       Tag tag = it.next();
-      if (tag != null && tag.getName().equals(aName)) return i;
+      if (tag != null && tag.getName().equals(aName)) {
+        return i;
+      }
       i++;
     }
     return -1;
@@ -93,7 +97,9 @@ public class AbstractHost implements Host {
   /** add tag <code>t</code> to this host */
   @Override
   public void addTag(Tag t) {
-    if (mTagList == null) mTagList = new ArrayList<Tag>(1);
+    if (mTagList == null) {
+      mTagList = new ArrayList<>(1);
+    }
     mTagList.add(t);
   }
 
@@ -107,10 +113,12 @@ public class AbstractHost implements Host {
   @Override
   public void addAllTagsOf(Host h) {
     List<Tag> tags = h.getTags();
-    if (tags.isEmpty()) return;
+    if (tags.isEmpty()) {
+      return;
+    }
 
     if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(tags.size());
+      mTagList = new ArrayList<>(tags.size());
     }
 
     mTagList.addAll(tags);
@@ -128,7 +136,9 @@ public class AbstractHost implements Host {
         LineNumberTag tag2 = (LineNumberTag) getTag("LineNumberTag");
         if (tag2 != null) {
           line = tag2.getLineNumber();
-        } else line = -1;
+        } else {
+          line = -1;
+        }
       }
     }
     return line;
@@ -141,7 +151,9 @@ public class AbstractHost implements Host {
       SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
       if (tag != null) {
         col = tag.startPos();
-      } else col = -1;
+      } else {
+        col = -1;
+      }
     }
     return col;
   }

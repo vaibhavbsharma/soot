@@ -1,6 +1,9 @@
 package soot.jimple;
 
-import com.google.common.io.Files;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassWriter;
@@ -8,12 +11,11 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+
+import com.google.common.io.Files;
+
 import soot.G;
 import soot.Main;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 
 public class MethodHandleTest {
 

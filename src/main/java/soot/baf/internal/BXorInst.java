@@ -36,30 +36,37 @@ public class BXorInst extends AbstractOpTypeInst implements XorInst {
     super(opType);
   }
 
+  @Override
   public int getInCount() {
     return 2;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public Object clone() {
     return new BXorInst(getOpType());
   }
 
+  @Override
   public int getInMachineCount() {
     return 2 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public final String getName() {
     return "xor";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseXorInst(this);
   }

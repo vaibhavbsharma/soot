@@ -19,6 +19,10 @@
 
 package soot.jimple.spark.solver;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+
 import soot.G;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
@@ -29,10 +33,6 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.util.LargeNumberedMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-
 /**
  * Propagates points-to sets using an on-line cycle detection algorithm based on Heintze and
  * Tardieu, PLDI 2000.
@@ -42,18 +42,19 @@ import java.util.HashSet;
 public final class PropCycle extends Propagator {
   public PropCycle(PAG pag) {
     this.pag = pag;
-    varNodeToIteration = new LargeNumberedMap<VarNode, Integer>(pag.getVarNodeNumberer());
+    varNodeToIteration = new LargeNumberedMap<>(pag.getVarNodeNumberer());
   }
 
   /** Actually does the propagation. */
+  @Override
   public final void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     boolean verbose = pag.getOpts().verbose();
-    Collection<VarNode> bases = new HashSet<VarNode>();
+    Collection<VarNode> bases = new HashSet<>();
     for (FieldRefNode frn : pag.getFieldRefNodeNumberer()) {
       bases.add(frn.getBase());
     }
-    bases = new ArrayList<VarNode>(bases);
+    bases = new ArrayList<>(bases);
     int iteration = 0;
     boolean changed;
     boolean finalIter = false;
@@ -61,12 +62,18 @@ public final class PropCycle extends Propagator {
       changed = false;
       iteration++;
       currentIteration = new Integer(iteration);
-      if (verbose) G.v().out.println("Iteration: " + iteration);
+      if (verbose) {
+        G.v().out.println("Iteration: " + iteration);
+      }
       for (VarNode v : bases) {
         changed = computeP2Set((VarNode) v.getReplacement(), new ArrayList<VarNode>()) | changed;
       }
-      if (ofcg != null) throw new RuntimeException("NYI");
-      if (verbose) G.v().out.println("Processing stores");
+      if (ofcg != null) {
+        throw new RuntimeException("NYI");
+      }
+      if (verbose) {
+        G.v().out.println("Processing stores");
+      }
       for (Object object : pag.storeSources()) {
         final VarNode src = (VarNode) object;
         Node[] targets = pag.storeLookup(src);
@@ -78,6 +85,7 @@ public final class PropCycle extends Propagator {
                       .makeP2Set()
                       .forall(
                           new P2SetVisitor() {
+                            @Override
                             public final void visit(Node n) {
                               AllocDotField nDotF =
                                   pag.makeAllocDotField((AllocNode) n, target.getField());
@@ -89,8 +97,10 @@ public final class PropCycle extends Propagator {
       }
       if (!changed && !finalIter) {
         finalIter = true;
-        if (verbose) G.v().out.println("Doing full graph");
-        bases = new ArrayList<VarNode>(pag.getVarNodeNumberer().size());
+        if (verbose) {
+          G.v().out.println("Doing full graph");
+        }
+        bases = new ArrayList<>(pag.getVarNodeNumberer().size());
         for (VarNode v : pag.getVarNodeNumberer()) {
           bases.add(v);
         }
@@ -146,6 +156,7 @@ public final class PropCycle extends Propagator {
                     .getP2Set()
                     .forall(
                         new P2SetVisitor() {
+                          @Override
                           public final void visit(Node n) {
                             AllocNode an = (AllocNode) n;
                             AllocDotField adf = pag.makeAllocDotField(an, src.getField());

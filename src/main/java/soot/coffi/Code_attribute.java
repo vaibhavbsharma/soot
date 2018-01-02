@@ -71,8 +71,9 @@ class Code_attribute extends attribute_info {
   public LocalVariableTable_attribute findLocalVariableTable() {
     int i;
     for (i = 0; i < attributes_count; i++) {
-      if (attributes[i] instanceof LocalVariableTable_attribute)
+      if (attributes[i] instanceof LocalVariableTable_attribute) {
         return (LocalVariableTable_attribute) (attributes[i]);
+      }
     }
     return null;
   }
@@ -87,8 +88,9 @@ class Code_attribute extends attribute_info {
   public LocalVariableTypeTable_attribute findLocalVariableTypeTable() {
     int i;
     for (i = 0; i < attributes_count; i++) {
-      if (attributes[i] instanceof LocalVariableTypeTable_attribute)
+      if (attributes[i] instanceof LocalVariableTypeTable_attribute) {
         return (LocalVariableTypeTable_attribute) (attributes[i]);
+      }
     }
     return null;
   }

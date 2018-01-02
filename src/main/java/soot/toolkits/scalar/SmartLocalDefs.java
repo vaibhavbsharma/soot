@@ -19,6 +19,15 @@
 
 package soot.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.G;
 import soot.Local;
 import soot.Timers;
@@ -31,15 +40,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Cons;
 import soot.util.LocalBitSetPacker;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
@@ -76,11 +76,11 @@ public class SmartLocalDefs implements LocalDefs {
     }
 
     if (a.size() < b.size()) {
-      List<T> c = new ArrayList<T>(a);
+      List<T> c = new ArrayList<>(a);
       c.retainAll(b);
       return c;
     } else {
-      List<T> c = new ArrayList<T>(b);
+      List<T> c = new ArrayList<>(b);
       c.retainAll(a);
       return c;
     }
@@ -89,19 +89,22 @@ public class SmartLocalDefs implements LocalDefs {
   public SmartLocalDefs(UnitGraph g, LiveLocals live) {
     this.graph = g;
 
-    if (Options.v().time()) Timers.v().defsTimer.start();
+    if (Options.v().time()) {
+      Timers.v().defsTimer.start();
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
               "[" + g.getBody().getMethod().getName() + "]     Constructing SmartLocalDefs...");
+    }
 
     final LocalBitSetPacker localPacker = new LocalBitSetPacker(g.getBody());
     localPacker.pack();
 
-    localToDefs = new HashMap<Local, Set<Unit>>();
-    liveLocalsAfter = new HashMap<Unit, BitSet>();
+    localToDefs = new HashMap<>();
+    liveLocalsAfter = new HashMap<>();
     for (Unit u : graph) {
       // translate locals to bits
       BitSet set = new BitSet(localPacker.getLocalCount());
@@ -111,27 +114,33 @@ public class SmartLocalDefs implements LocalDefs {
       liveLocalsAfter.put(u, set);
 
       Local l = localDef(u);
-      if (l == null) continue;
+      if (l == null) {
+        continue;
+      }
 
       addDefOf(l, u);
     }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println("[" + g.getBody().getMethod().getName() + "]        done localToDefs map...");
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println("[" + g.getBody().getMethod().getName() + "]        done unitToMask map...");
+    }
 
     analysis = new LocalDefsAnalysis(graph);
 
-    answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
+    answer = new HashMap<>();
     for (Unit u : graph) {
       Set<Unit> s1 = analysis.getFlowBefore(u);
-      if (s1 == null || s1.isEmpty()) continue;
+      if (s1 == null || s1.isEmpty()) {
+        continue;
+      }
 
       for (ValueBox vb : u.getUseBoxes()) {
         Value v = vb.getValue();
@@ -139,12 +148,16 @@ public class SmartLocalDefs implements LocalDefs {
           Local l = (Local) v;
 
           Set<Unit> s2 = defsOf(l);
-          if (s2 == null || s2.isEmpty()) continue;
+          if (s2 == null || s2.isEmpty()) {
+            continue;
+          }
 
           List<Unit> lst = asList(s1, s2);
-          if (lst.isEmpty()) continue;
+          if (lst.isEmpty()) {
+            continue;
+          }
 
-          Cons<Unit, Local> key = new Cons<Unit, Local>(u, l);
+          Cons<Unit, Local> key = new Cons<>(u, l);
           if (!answer.containsKey(key)) {
             answer.put(key, lst);
           }
@@ -154,32 +167,45 @@ public class SmartLocalDefs implements LocalDefs {
 
     localPacker.unpack();
 
-    if (Options.v().time()) Timers.v().defsTimer.end();
+    if (Options.v().time()) {
+      Timers.v().defsTimer.end();
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + g.getBody().getMethod().getName() + "]     SmartLocalDefs finished.");
+    }
   }
 
   private Local localDef(Unit u) {
     List<ValueBox> defBoxes = u.getDefBoxes();
     int size = defBoxes.size();
-    if (size == 0) return null;
-    if (size != 1) throw new RuntimeException();
+    if (size == 0) {
+      return null;
+    }
+    if (size != 1) {
+      throw new RuntimeException();
+    }
     ValueBox vb = defBoxes.get(0);
     Value v = vb.getValue();
-    if (!(v instanceof Local)) return null;
+    if (!(v instanceof Local)) {
+      return null;
+    }
     return (Local) v;
   }
 
   private Set<Unit> defsOf(Local l) {
     Set<Unit> s = localToDefs.get(l);
-    if (s == null) return Collections.emptySet();
+    if (s == null) {
+      return Collections.emptySet();
+    }
     return s;
   }
 
   private void addDefOf(Local l, Unit u) {
     Set<Unit> s = localToDefs.get(l);
-    if (s == null) localToDefs.put(l, s = new HashSet<Unit>());
+    if (s == null) {
+      localToDefs.put(l, s = new HashSet<>());
+    }
     s.add(u);
   }
 
@@ -221,22 +247,29 @@ public class SmartLocalDefs implements LocalDefs {
 
         boolean isExceptionalTarget = false;
         if (exGraph != null) {
-          for (ExceptionDest ed : exGraph.getExceptionDests(u))
-            if (ed.getTrap() != null && ed.getTrap().getHandlerUnit() == succ)
+          for (ExceptionDest ed : exGraph.getExceptionDests(u)) {
+            if (ed.getTrap() != null && ed.getTrap().getHandlerUnit() == succ) {
               isExceptionalTarget = true;
+            }
+          }
         }
 
         for (Unit inU : in) {
-          if (liveLocals.get(localDef(inU).getNumber()))
+          if (liveLocals.get(localDef(inU).getNumber())) {
             // If we have a = foo and foo can throw an exception, we
             // must keep the old definition of a.
-            if (isExceptionalTarget || !allDefUnits.contains(inU)) out.add(inU);
+            if (isExceptionalTarget || !allDefUnits.contains(inU)) {
+              out.add(inU);
+            }
+          }
         }
 
         assert isExceptionalTarget || !out.removeAll(allDefUnits);
 
         if (liveLocals.get(l.getNumber())) {
-          if (!isExceptionalTarget) out.add(u);
+          if (!isExceptionalTarget) {
+            out.add(u);
+          }
         }
       }
     }
@@ -249,27 +282,32 @@ public class SmartLocalDefs implements LocalDefs {
 
     @Override
     protected Set<Unit> newInitialFlow() {
-      return new HashSet<Unit>();
+      return new HashSet<>();
     }
 
     @Override
     protected Set<Unit> entryInitialFlow() {
-      return new HashSet<Unit>();
+      return new HashSet<>();
     }
   }
 
   @Override
   public List<Unit> getDefsOfAt(Local l, Unit s) {
-    List<Unit> lst = answer.get(new Cons<Unit, Local>(s, l));
-    if (lst == null) return Collections.emptyList();
+    List<Unit> lst = answer.get(new Cons<>(s, l));
+    if (lst == null) {
+      return Collections.emptyList();
+    }
     return lst;
   }
 
   @Override
   public List<Unit> getDefsOf(Local l) {
-    List<Unit> result = new ArrayList<Unit>();
-    for (Cons<Unit, Local> cons : answer.keySet())
-      if (cons.cdr() == l) result.addAll(answer.get(cons));
+    List<Unit> result = new ArrayList<>();
+    for (Cons<Unit, Local> cons : answer.keySet()) {
+      if (cons.cdr() == l) {
+        result.addAll(answer.get(cons));
+      }
+    }
     return result;
   }
 

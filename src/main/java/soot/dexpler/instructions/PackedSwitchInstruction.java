@@ -24,9 +24,13 @@
 
 package soot.dexpler.instructions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.SwitchElement;
 import org.jf.dexlib2.iface.instruction.formats.PackedSwitchPayload;
+
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -37,9 +41,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PackedSwitchInstruction extends SwitchInstruction {
 
@@ -56,8 +57,8 @@ public class PackedSwitchInstruction extends SwitchInstruction {
     int defaultTargetAddress = codeAddress + instruction.getCodeUnits();
     Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
 
-    List<IntConstant> lookupValues = new ArrayList<IntConstant>();
-    List<Unit> targets = new ArrayList<Unit>();
+    List<IntConstant> lookupValues = new ArrayList<>();
+    List<Unit> targets = new ArrayList<>();
     for (SwitchElement se : seList) {
       lookupValues.add(IntConstant.v(se.getKey()));
       int offset = se.getOffset();

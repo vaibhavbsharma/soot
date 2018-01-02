@@ -38,15 +38,18 @@ public class OneCFAContextManager implements ContextManager {
     this.cg = cg;
   }
 
+  @Override
   public void addStaticEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind) {
     cg.addEdge(new Edge(src, srcUnit, MethodContext.v(target, srcUnit), kind));
   }
 
+  @Override
   public void addVirtualEdge(
       MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind, Context typeContext) {
     cg.addEdge(new Edge(src, srcUnit, MethodContext.v(target, srcUnit), kind));
   }
 
+  @Override
   public CallGraph callGraph() {
     return cg;
   }

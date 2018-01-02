@@ -33,6 +33,7 @@ public class JjBinary_c extends Binary_c {
     super(pos, left, op, right);
   }
 
+  @Override
   public Type childExpectedType(Expr child, AscriptionVisitor av) {
     Expr other;
 

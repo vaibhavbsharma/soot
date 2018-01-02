@@ -19,6 +19,13 @@
 
 package soot.javaToJimple;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
@@ -31,13 +38,6 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.options.Options;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 public class ClassResolver {
 
@@ -193,8 +193,12 @@ public class ClassResolver {
 
     for (Type type : typeListBuilder.getList()) {
 
-      if (type.isPrimitive()) continue;
-      if (!type.isClass()) continue;
+      if (type.isPrimitive()) {
+        continue;
+      }
+      if (!type.isClass()) {
+        continue;
+      }
       polyglot.types.ClassType classType = (polyglot.types.ClassType) type;
       soot.Type sootClassType = Util.getSootType(classType);
       references.add(sootClassType);
@@ -275,7 +279,7 @@ public class ClassResolver {
     // add as param for init
     for (SootMethod meth : sootClass.getMethods()) {
       if (meth.getName().equals("<init>")) {
-        List<soot.Type> newParams = new ArrayList<soot.Type>();
+        List<soot.Type> newParams = new ArrayList<>();
         newParams.addAll(meth.getParameterTypes());
         newParams.add(Util.getSootType(li.type()));
         meth.setParameterTypes(newParams);
@@ -299,12 +303,12 @@ public class ClassResolver {
       ArrayList<IdentityKey> finalLocalsAvail,
       polyglot.types.ClassType nodeKeyType,
       AnonLocalClassInfo info) {
-    ArrayList<SootField> finalFields = new ArrayList<SootField>();
+    ArrayList<SootField> finalFields = new ArrayList<>();
 
     LocalUsesChecker luc = new LocalUsesChecker();
     cBody.visit(luc);
     /* Iterator localsNeededIt = luc.getLocals().iterator(); */
-    ArrayList<IdentityKey> localsUsed = new ArrayList<IdentityKey>();
+    ArrayList<IdentityKey> localsUsed = new ArrayList<>();
     /*
      * while (localsNeededIt.hasNext()){ polyglot.types.LocalInstance li =
      * (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)
@@ -560,7 +564,9 @@ public class ClassResolver {
     // find any asserts in class body but not in inner class bodies
     AssertStmtChecker asc = new AssertStmtChecker();
     cBody.visit(asc);
-    if (!asc.isHasAssert()) return;
+    if (!asc.isHasAssert()) {
+      return;
+    }
 
     // two extra fields
 
@@ -835,7 +841,9 @@ public class ClassResolver {
             && InitialResolver.v().getAnonClassMap().containsVal(simpleName)) {
           polyglot.ast.New aNew =
               (polyglot.ast.New) InitialResolver.v().getAnonClassMap().getKey(simpleName);
-          if (aNew == null) throw new RuntimeException("Could resolve class: " + simpleName);
+          if (aNew == null) {
+            throw new RuntimeException("Could resolve class: " + simpleName);
+          }
 
           createAnonClassDecl(aNew);
           findReferences(aNew.body());
@@ -977,7 +985,7 @@ public class ClassResolver {
           addConstValTag(field, sootField);
         } else {
           if (staticFieldInits == null) {
-            staticFieldInits = new ArrayList<FieldDecl>();
+            staticFieldInits = new ArrayList<>();
           }
           staticFieldInits.add(field);
         }
@@ -985,7 +993,7 @@ public class ClassResolver {
     } else {
       if (field.init() != null) {
         if (fieldInits == null) {
-          fieldInits = new ArrayList<FieldDecl>();
+          fieldInits = new ArrayList<>();
         }
         fieldInits.add(field);
       }
@@ -1020,7 +1028,7 @@ public class ClassResolver {
 
   /** creates soot exceptions from polyglot throws */
   private ArrayList<SootClass> createExceptions(polyglot.ast.ProcedureDecl procedure) {
-    ArrayList<SootClass> exceptions = new ArrayList<SootClass>();
+    ArrayList<SootClass> exceptions = new ArrayList<>();
     Iterator throwsIt = procedure.throwTypes().iterator();
     while (throwsIt.hasNext()) {
       polyglot.types.Type throwType = ((polyglot.ast.TypeNode) throwsIt.next()).type();
@@ -1048,12 +1056,12 @@ public class ClassResolver {
   private void createInitializer(polyglot.ast.Initializer initializer) {
     if (initializer.flags().isStatic()) {
       if (staticInitializerBlocks == null) {
-        staticInitializerBlocks = new ArrayList<Block>();
+        staticInitializerBlocks = new ArrayList<>();
       }
       staticInitializerBlocks.add(initializer.body());
     } else {
       if (initializerBlocks == null) {
-        initializerBlocks = new ArrayList<Block>();
+        initializerBlocks = new ArrayList<>();
       }
       initializerBlocks.add(initializer.body());
     }

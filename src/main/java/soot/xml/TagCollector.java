@@ -19,6 +19,10 @@
 
 package soot.xml;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import soot.Body;
 import soot.SootClass;
 import soot.SootField;
@@ -32,18 +36,14 @@ import soot.tagkit.KeyTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class TagCollector {
 
   private final ArrayList<Attribute> attributes;
   private final ArrayList<Key> keys;
 
   public TagCollector() {
-    attributes = new ArrayList<Attribute>();
-    keys = new ArrayList<Key>();
+    attributes = new ArrayList<>();
+    keys = new ArrayList<>();
   }
 
   public boolean isEmpty() {
@@ -74,7 +74,9 @@ public class TagCollector {
     for (SootMethod sm : sc.getMethods()) {
       collectMethodTags(sm);
 
-      if (!includeBodies || !sm.hasActiveBody()) continue;
+      if (!includeBodies || !sm.hasActiveBody()) {
+        continue;
+      }
       Body b = sm.getActiveBody();
       collectBodyTags(b);
     }
@@ -100,7 +102,9 @@ public class TagCollector {
   }
 
   private void addAttribute(Attribute a) {
-    if (!a.isEmpty()) attributes.add(a);
+    if (!a.isEmpty()) {
+      attributes.add(a);
+    }
   }
 
   private void collectHostTags(Host h) {
@@ -112,7 +116,9 @@ public class TagCollector {
     if (!h.getTags().isEmpty()) {
       Attribute a = new Attribute();
       for (Tag t : h.getTags()) {
-        if (include.test(t)) a.addTag(t);
+        if (include.test(t)) {
+          a.addTag(t);
+        }
       }
       addAttribute(a);
     }
@@ -124,6 +130,7 @@ public class TagCollector {
     // other information (like the name of the XML file).
     Predicate<Tag> noSFTags =
         new Predicate<Tag>() {
+          @Override
           public boolean test(Tag t) {
             return !(t instanceof SourceFileTag);
           }
@@ -136,7 +143,9 @@ public class TagCollector {
   }
 
   public void collectMethodTags(SootMethod sm) {
-    if (sm.hasActiveBody()) collectHostTags(sm);
+    if (sm.hasActiveBody()) {
+      collectHostTags(sm);
+    }
   }
 
   public synchronized void collectBodyTags(Body b) {

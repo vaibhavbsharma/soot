@@ -25,6 +25,17 @@
 
 package soot.jimple.toolkits.typing;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -49,17 +60,6 @@ import soot.jimple.Stmt;
 import soot.options.Options;
 import soot.toolkits.scalar.LocalDefs;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 /**
  * This class resolves the type of local variables.
  *
@@ -71,10 +71,10 @@ public class TypeResolver {
   private final ClassHierarchy hierarchy;
 
   /** All type variable instances * */
-  private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
+  private final List<TypeVariable> typeVariableList = new ArrayList<>();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariable * */
-  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
+  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<>();
 
   private final JimpleBody stmtBody;
 
@@ -233,8 +233,8 @@ public class TypeResolver {
   private void debug_body() {
     if (DEBUG) {
       G.v().out.println("-- Body Start --");
-      for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
-        final Stmt stmt = (Stmt) stmtIt.next();
+      for (Unit unit : stmtBody.getUnits()) {
+        final Stmt stmt = (Stmt) unit;
         G.v().out.println(stmt);
       }
       G.v().out.println("-- Body End --");
@@ -309,9 +309,9 @@ public class TypeResolver {
   private void collect_constraints_1_2() {
     ConstraintCollector collector = new ConstraintCollector(this, true);
 
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for (Unit unit : stmtBody.getUnits()) {
 
-      final Stmt stmt = (Stmt) stmtIt.next();
+      final Stmt stmt = (Stmt) unit;
       if (DEBUG) {
         G.v().out.print("stmt: ");
       }
@@ -325,9 +325,9 @@ public class TypeResolver {
   private void collect_constraints_3() {
     ConstraintCollector collector = new ConstraintCollector(this, false);
 
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for (Unit unit : stmtBody.getUnits()) {
 
-      final Stmt stmt = (Stmt) stmtIt.next();
+      final Stmt stmt = (Stmt) unit;
       if (DEBUG) {
         G.v().out.print("stmt: ");
       }
@@ -372,7 +372,7 @@ public class TypeResolver {
     @SuppressWarnings("unchecked")
     LinkedList<TypeVariable>[] lists = new LinkedList[max + 1];
     for (int i = 0; i <= max; i++) {
-      lists[i] = new LinkedList<TypeVariable>();
+      lists[i] = new LinkedList<>();
     }
 
     for (TypeVariable var : typeVariableList) {
@@ -438,7 +438,7 @@ public class TypeResolver {
 
   private void merge_connected_components() throws TypeException {
     refresh_solved();
-    List<TypeVariable> list = new LinkedList<TypeVariable>();
+    List<TypeVariable> list = new LinkedList<>();
     list.addAll(solved);
     list.addAll(unsolved);
 
@@ -447,7 +447,7 @@ public class TypeResolver {
 
   private void remove_transitive_constraints() throws TypeException {
     refresh_solved();
-    List<TypeVariable> list = new LinkedList<TypeVariable>();
+    List<TypeVariable> list = new LinkedList<>();
     list.addAll(solved);
     list.addAll(unsolved);
 
@@ -546,7 +546,7 @@ public class TypeResolver {
       multiple_children:
       for (TypeVariable var : multiple_children) {
         TypeNode lca = null;
-        List<TypeVariable> children_to_remove = new LinkedList<TypeVariable>();
+        List<TypeVariable> children_to_remove = new LinkedList<>();
 
         var.fixChildren();
 
@@ -592,7 +592,7 @@ public class TypeResolver {
 
       for (TypeVariable var : multiple_parents) {
 
-        LinkedList<TypeVariable> hp = new LinkedList<TypeVariable>(); // hard parents
+        LinkedList<TypeVariable> hp = new LinkedList<>(); // hard parents
 
         var.fixParents();
 
@@ -628,8 +628,7 @@ public class TypeResolver {
   }
 
   private void assign_types_1_2() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-      final Local local = localIt.next();
+    for (Local local : stmtBody.getLocals()) {
       TypeVariable var = typeVariable(local);
 
       if (var == null) {
@@ -683,8 +682,7 @@ public class TypeResolver {
   }
 
   private void assign_types_3() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-      final Local local = localIt.next();
+    for (Local local : stmtBody.getLocals()) {
       TypeVariable var = typeVariable(local);
 
       if (var == null || var.approx() == null || var.approx().type() == null) {
@@ -703,9 +701,9 @@ public class TypeResolver {
       s = new StringBuffer("Checking:\n");
     }
 
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for (Unit unit : stmtBody.getUnits()) {
 
-      final Stmt stmt = (Stmt) stmtIt.next();
+      final Stmt stmt = (Stmt) unit;
       if (DEBUG) {
         s.append(" " + stmt + "\n");
       }
@@ -747,7 +745,7 @@ public class TypeResolver {
   }
 
   private void compute_approximate_types() throws TypeException {
-    TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
+    TreeSet<TypeVariable> workList = new TreeSet<>();
 
     for (TypeVariable var : typeVariableList) {
 
@@ -769,8 +767,8 @@ public class TypeResolver {
   }
 
   private void compute_solved() {
-    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
-    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>();
+    Set<TypeVariable> unsolved_set = new TreeSet<>();
+    Set<TypeVariable> solved_set = new TreeSet<>();
 
     for (TypeVariable var : typeVariableList) {
 
@@ -783,13 +781,13 @@ public class TypeResolver {
       }
     }
 
-    solved = new LinkedList<TypeVariable>(solved_set);
-    unsolved = new LinkedList<TypeVariable>(unsolved_set);
+    solved = new LinkedList<>(solved_set);
+    unsolved = new LinkedList<>(unsolved_set);
   }
 
   private void refresh_solved() throws TypeException {
-    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
-    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>(solved);
+    Set<TypeVariable> unsolved_set = new TreeSet<>();
+    Set<TypeVariable> solved_set = new TreeSet<>(solved);
 
     for (TypeVariable var : unsolved) {
 
@@ -802,8 +800,8 @@ public class TypeResolver {
       }
     }
 
-    solved = new LinkedList<TypeVariable>(solved_set);
-    unsolved = new LinkedList<TypeVariable>(unsolved_set);
+    solved = new LinkedList<>(solved_set);
+    unsolved = new LinkedList<>(unsolved_set);
 
     // validate();
   }
@@ -811,12 +809,12 @@ public class TypeResolver {
   private void categorize() throws TypeException {
     refresh_solved();
 
-    single_soft_parent = new LinkedList<TypeVariable>();
-    single_hard_parent = new LinkedList<TypeVariable>();
-    multiple_parents = new LinkedList<TypeVariable>();
-    single_child_not_null = new LinkedList<TypeVariable>();
-    single_null_child = new LinkedList<TypeVariable>();
-    multiple_children = new LinkedList<TypeVariable>();
+    single_soft_parent = new LinkedList<>();
+    single_hard_parent = new LinkedList<>();
+    multiple_parents = new LinkedList<>();
+    single_child_not_null = new LinkedList<>();
+    single_null_child = new LinkedList<>();
+    multiple_children = new LinkedList<>();
 
     for (TypeVariable var : unsolved) {
       // parent category

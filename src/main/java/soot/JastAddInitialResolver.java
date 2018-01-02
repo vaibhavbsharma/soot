@@ -19,6 +19,12 @@
  */
 package soot;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import soot.JastAddJ.BodyDecl;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.ConstructorDecl;
@@ -26,12 +32,6 @@ import soot.JastAddJ.MethodDecl;
 import soot.JastAddJ.Program;
 import soot.JastAddJ.TypeDecl;
 import soot.javaToJimple.IInitialResolver;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An {@link IInitialResolver} for the JastAdd frontend.
@@ -47,18 +47,20 @@ public class JastAddInitialResolver implements IInitialResolver {
     return soot.G.v().soot_JastAddInitialResolver();
   }
 
-  protected Map<String, CompilationUnit> classNameToCU = new HashMap<String, CompilationUnit>();
+  protected Map<String, CompilationUnit> classNameToCU = new HashMap<>();
 
+  @Override
   public void formAst(String fullPath, List<String> locations, String className) {
     Program program = SootResolver.v().getProgram();
     CompilationUnit u = program.getCachedOrLoadCompilationUnit(fullPath);
     if (u != null && !u.isResolved) {
       u.isResolved = true;
-      java.util.ArrayList<soot.JastAddJ.Problem> errors =
-          new java.util.ArrayList<soot.JastAddJ.Problem>();
+      java.util.ArrayList<soot.JastAddJ.Problem> errors = new java.util.ArrayList<>();
       u.errorCheck(errors);
       if (!errors.isEmpty()) {
-        for (soot.JastAddJ.Problem p : errors) G.v().out.println(p);
+        for (soot.JastAddJ.Problem p : errors) {
+          G.v().out.println(p);
+        }
         // die
         throw new CompilationDeathException(
             CompilationDeathException.COMPILATION_ABORTED,
@@ -67,10 +69,17 @@ public class JastAddInitialResolver implements IInitialResolver {
       u.transformation();
       u.jimplify1phase1();
       u.jimplify1phase2();
-      HashSet<SootClass> types = new HashSet<SootClass>();
-      for (TypeDecl typeDecl : u.getTypeDecls()) collectTypeDecl(typeDecl, types);
-      if (types.isEmpty()) classNameToCU.put(className, u);
-      else for (SootClass sc : types) classNameToCU.put(sc.getName(), u);
+      HashSet<SootClass> types = new HashSet<>();
+      for (TypeDecl typeDecl : u.getTypeDecls()) {
+        collectTypeDecl(typeDecl, types);
+      }
+      if (types.isEmpty()) {
+        classNameToCU.put(className, u);
+      } else {
+        for (SootClass sc : types) {
+          classNameToCU.put(sc.getName(), u);
+        }
+      }
     }
   }
 
@@ -84,22 +93,28 @@ public class JastAddInitialResolver implements IInitialResolver {
 
   @SuppressWarnings("unchecked")
   private TypeDecl findNestedTypeDecl(TypeDecl typeDecl, SootClass sc) {
-    if (typeDecl.sootClass() == sc) return typeDecl;
+    if (typeDecl.sootClass() == sc) {
+      return typeDecl;
+    }
     for (TypeDecl nestedType : (Collection<TypeDecl>) typeDecl.nestedTypes()) {
       TypeDecl t = findNestedTypeDecl(nestedType, sc);
-      if (t != null) return t;
+      if (t != null) {
+        return t;
+      }
     }
     return null;
   }
 
+  @Override
   public Dependencies resolveFromJavaFile(SootClass sootclass) {
     CompilationUnit u = classNameToCU.get(sootclass.getName());
 
-    if (u == null)
+    if (u == null) {
       throw new RuntimeException(
           "Error: couldn't find class: " + sootclass.getName() + " are the packages set properly?");
+    }
 
-    HashSet<SootClass> types = new HashSet<SootClass>();
+    HashSet<SootClass> types = new HashSet<>();
     for (TypeDecl typeDecl : u.getTypeDecls()) {
       collectTypeDecl(typeDecl, types);
     }
@@ -111,6 +126,7 @@ public class JastAddInitialResolver implements IInitialResolver {
       for (SootMethod m : sc.getMethods()) {
         m.setSource(
             new MethodSource() {
+              @Override
               public Body getBody(SootMethod m, String phaseName) {
                 SootClass sc = m.getDeclaringClass();
                 CompilationUnit u = classNameToCU.get(sc.getName());

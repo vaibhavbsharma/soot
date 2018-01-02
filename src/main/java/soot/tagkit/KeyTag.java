@@ -101,10 +101,12 @@ public class KeyTag implements Tag {
     return analysisType;
   }
 
+  @Override
   public String getName() {
     return "KeyTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[4];
     return v;

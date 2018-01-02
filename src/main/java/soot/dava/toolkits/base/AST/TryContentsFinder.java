@@ -19,6 +19,11 @@
 
 package soot.dava.toolkits.base.AST;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.Local;
 import soot.RefType;
@@ -35,11 +40,6 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.ThrowStmt;
 import soot.util.IterableSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 public class TryContentsFinder extends ASTAnalysis {
   public TryContentsFinder(Singletons.Global g) {}
 
@@ -48,8 +48,9 @@ public class TryContentsFinder extends ASTAnalysis {
   }
 
   private IterableSet curExceptionSet = new IterableSet();
-  private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<Object, IterableSet>();
+  private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<>();
 
+  @Override
   public int getAnalysisDepth() {
     return ANALYSE_VALUES;
   }
@@ -66,31 +67,40 @@ public class TryContentsFinder extends ASTAnalysis {
     this.curExceptionSet = curExceptionSet;
   }
 
+  @Override
   public void analyseThrowStmt(ThrowStmt s) {
     Value op = (s).getOp();
 
-    if (op instanceof Local) add_ThrownType(op.getType());
-    else if (op instanceof FieldRef) add_ThrownType(op.getType());
+    if (op instanceof Local) {
+      add_ThrownType(op.getType());
+    } else if (op instanceof FieldRef) {
+      add_ThrownType(op.getType());
+    }
   }
 
   private void add_ThrownType(Type t) {
-    if (t instanceof RefType) curExceptionSet.add(((RefType) t).getSootClass());
+    if (t instanceof RefType) {
+      curExceptionSet.add(((RefType) t).getSootClass());
+    }
   }
 
+  @Override
   public void analyseInvokeExpr(InvokeExpr ie) {
     curExceptionSet.addAll(ie.getMethod().getExceptions());
   }
 
+  @Override
   public void analyseInstanceInvokeExpr(InstanceInvokeExpr iie) {
     analyseInvokeExpr(iie);
   }
 
+  @Override
   public void analyseASTNode(ASTNode n) {
     if (n instanceof ASTTryNode) {
 
       ASTTryNode tryNode = (ASTTryNode) n;
 
-      ArrayList<Object> toRemove = new ArrayList<Object>();
+      ArrayList<Object> toRemove = new ArrayList<>();
       IterableSet tryExceptionSet = node2ExceptionSet.get(tryNode.get_TryBodyContainer());
       if (tryExceptionSet == null) {
         tryExceptionSet = new IterableSet();
@@ -106,7 +116,9 @@ public class TryContentsFinder extends ASTAnalysis {
         SootClass exception = (SootClass) tryNode.get_ExceptionMap().get(catchBody);
 
         if ((catches_Exception(tryExceptionSet, exception) == false)
-            && (catches_RuntimeException(exception) == false)) toRemove.add(catchBody);
+            && (catches_RuntimeException(exception) == false)) {
+          toRemove.add(catchBody);
+        }
       }
 
       Iterator<Object> trit = toRemove.iterator();
@@ -119,17 +131,23 @@ public class TryContentsFinder extends ASTAnalysis {
 
       IterableSet passingSet = (IterableSet) tryExceptionSet.clone();
       cit = catchBodies.iterator();
-      while (cit.hasNext()) passingSet.remove(tryNode.get_ExceptionMap().get(cit.next()));
+      while (cit.hasNext()) {
+        passingSet.remove(tryNode.get_ExceptionMap().get(cit.next()));
+      }
 
       cit = catchBodies.iterator();
-      while (cit.hasNext()) passingSet.addAll(get_ExceptionSet(cit.next()));
+      while (cit.hasNext()) {
+        passingSet.addAll(get_ExceptionSet(cit.next()));
+      }
 
       node2ExceptionSet.put(n, passingSet);
     } else {
       Iterator<Object> sbit = n.get_SubBodies().iterator();
       while (sbit.hasNext()) {
         Iterator it = ((List) sbit.next()).iterator();
-        while (it.hasNext()) add_ExceptionSet(n, get_ExceptionSet(it.next()));
+        while (it.hasNext()) {
+          add_ExceptionSet(n, get_ExceptionSet(it.next()));
+        }
       }
     }
 
@@ -162,9 +180,13 @@ public class TryContentsFinder extends ASTAnalysis {
       SootClass thrownException = (SootClass) it.next();
 
       while (true) {
-        if (thrownException == c) return true;
+        if (thrownException == c) {
+          return true;
+        }
 
-        if (thrownException.hasSuperclass() == false) break;
+        if (thrownException.hasSuperclass() == false) {
+          break;
+        }
 
         thrownException = thrownException.getSuperclass();
       }
@@ -175,15 +197,21 @@ public class TryContentsFinder extends ASTAnalysis {
 
   private boolean catches_RuntimeException(SootClass c) {
     if ((c == Scene.v().getSootClass("java.lang.Throwable"))
-        || (c == Scene.v().getSootClass("java.lang.Exception"))) return true;
+        || (c == Scene.v().getSootClass("java.lang.Exception"))) {
+      return true;
+    }
 
     SootClass caughtException = c,
         runtimeException = Scene.v().getSootClass("java.lang.RuntimeException");
 
     while (true) {
-      if (caughtException == runtimeException) return true;
+      if (caughtException == runtimeException) {
+        return true;
+      }
 
-      if (caughtException.hasSuperclass() == false) return false;
+      if (caughtException.hasSuperclass() == false) {
+        return false;
+      }
 
       caughtException = caughtException.getSuperclass();
     }

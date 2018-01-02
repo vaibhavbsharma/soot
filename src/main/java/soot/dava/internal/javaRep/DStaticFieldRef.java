@@ -27,6 +27,7 @@ import soot.jimple.StaticFieldRef;
 public class DStaticFieldRef extends StaticFieldRef {
   private boolean supressDeclaringClass;
 
+  @Override
   public void toString(UnitPrinter up) {
     if (!supressDeclaringClass) {
       up.type(fieldRef.declaringClass().getType());
@@ -45,6 +46,7 @@ public class DStaticFieldRef extends StaticFieldRef {
     this.supressDeclaringClass = supressDeclaringClass;
   }
 
+  @Override
   public Object clone() {
     return new DStaticFieldRef(fieldRef, supressDeclaringClass);
   }

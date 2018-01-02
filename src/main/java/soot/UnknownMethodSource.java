@@ -34,6 +34,7 @@ package soot;
 public class UnknownMethodSource implements MethodSource {
   UnknownMethodSource() {}
 
+  @Override
   public Body getBody(SootMethod m, String phaseName) {
     // we ignore options here.
     // actually we should have default option verbatim,

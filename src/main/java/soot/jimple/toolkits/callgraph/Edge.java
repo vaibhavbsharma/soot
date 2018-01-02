@@ -44,13 +44,19 @@ public final class Edge {
   private MethodOrMethodContext src;
 
   public SootMethod src() {
-    if (src == null) return null;
-    else return src.method();
+    if (src == null) {
+      return null;
+    } else {
+      return src.method();
+    }
   }
 
   public Context srcCtxt() {
-    if (src == null) return null;
-    else return src.context();
+    if (src == null) {
+      return null;
+    } else {
+      return src.context();
+    }
   }
 
   public MethodOrMethodContext getSrc() {
@@ -111,11 +117,17 @@ public final class Edge {
   }
 
   public static Kind ieToKind(InvokeExpr ie) {
-    if (ie instanceof VirtualInvokeExpr) return Kind.VIRTUAL;
-    else if (ie instanceof SpecialInvokeExpr) return Kind.SPECIAL;
-    else if (ie instanceof InterfaceInvokeExpr) return Kind.INTERFACE;
-    else if (ie instanceof StaticInvokeExpr) return Kind.STATIC;
-    else throw new RuntimeException();
+    if (ie instanceof VirtualInvokeExpr) {
+      return Kind.VIRTUAL;
+    } else if (ie instanceof SpecialInvokeExpr) {
+      return Kind.SPECIAL;
+    } else if (ie instanceof InterfaceInvokeExpr) {
+      return Kind.INTERFACE;
+    } else if (ie instanceof StaticInvokeExpr) {
+      return Kind.STATIC;
+    } else {
+      throw new RuntimeException();
+    }
   }
 
   /** Returns true if the call is due to an explicit invoke statement. */
@@ -153,22 +165,37 @@ public final class Edge {
     return kind.passesParameters();
   }
 
+  @Override
   public int hashCode() {
     int ret = (tgt.hashCode() + 20) + kind.getNumber();
-    if (src != null) ret = ret * 32 + src.hashCode();
-    if (srcUnit != null) ret = ret * 32 + srcUnit.hashCode();
+    if (src != null) {
+      ret = ret * 32 + src.hashCode();
+    }
+    if (srcUnit != null) {
+      ret = ret * 32 + srcUnit.hashCode();
+    }
     return ret;
   }
 
+  @Override
   public boolean equals(Object other) {
     Edge o = (Edge) other;
-    if (o == null) return false;
-    if (o.src != src) return false;
-    if (o.srcUnit != srcUnit) return false;
-    if (o.tgt != tgt) return false;
+    if (o == null) {
+      return false;
+    }
+    if (o.src != src) {
+      return false;
+    }
+    if (o.srcUnit != srcUnit) {
+      return false;
+    }
+    if (o.tgt != tgt) {
+      return false;
+    }
     return o.kind == kind;
   }
 
+  @Override
   public String toString() {
     return kind.toString() + " edge: " + srcUnit + " in " + src + " ==> " + tgt;
   }

@@ -25,15 +25,15 @@
 
 package soot.coffi;
 
-import soot.G;
-import soot.Value;
-import soot.jimple.StringConstant;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import soot.G;
+import soot.Value;
+import soot.jimple.StringConstant;
 
 /**
  * A constant pool entry of type CONSTANT_Utf8; note this is <b>not</b> multithread safe. It is,
@@ -58,7 +58,9 @@ public class CONSTANT_Utf8_info extends cp_info {
     bytes[1] = (byte) (len & 0xff);
     if (len > 0) {
       int j;
-      for (j = 0; j < len; j++) bytes[j + 2] = (byte) d.readUnsignedByte();
+      for (j = 0; j < len; j++) {
+        bytes[j + 2] = (byte) d.readUnsignedByte();
+      }
     }
   }
   /** For writing out the byte stream for this utf8 properly (incl size). */
@@ -78,6 +80,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
+  @Override
   public int size() {
     return length() + 3;
   }
@@ -105,7 +108,9 @@ public class CONSTANT_Utf8_info extends cp_info {
    * convert(); we verify hashCodes() to spot-check this. No user-visible effects.
    */
   public void fixConversion(String rep) {
-    if (sHashCode != rep.hashCode()) throw new RuntimeException("bad use of fixConversion!");
+    if (sHashCode != rep.hashCode()) {
+      throw new RuntimeException("bad use of fixConversion!");
+    }
 
     if (s == null) {
       s = rep;
@@ -120,9 +125,13 @@ public class CONSTANT_Utf8_info extends cp_info {
   public boolean equals(CONSTANT_Utf8_info cu) {
     int i, j;
     j = bytes.length;
-    if (j != cu.bytes.length) return false;
+    if (j != cu.bytes.length) {
+      return false;
+    }
     for (i = 0; i < j; i++) {
-      if (bytes[i] != cu.bytes[i]) return false;
+      if (bytes[i] != cu.bytes[i]) {
+        return false;
+      }
     }
     return true;
   }
@@ -137,6 +146,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @see cp_info#compareTo
    * @see CONSTANT_Utf8_info#compareTo(cp_info)
    */
+  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     return compareTo(cp);
   }
@@ -151,20 +161,31 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @see CONSTANT_Utf8_info#compareTo(cp_info[],cp_info,cp_info[])
    */
   public int compareTo(cp_info cp) {
-    if (tag != cp.tag) return tag - cp.tag;
+    if (tag != cp.tag) {
+      return tag - cp.tag;
+    }
     CONSTANT_Utf8_info cu = (CONSTANT_Utf8_info) cp;
     G.v().coffi_CONSTANT_Utf8_info_e1.reset(bytes);
     G.v().coffi_CONSTANT_Utf8_info_e2.reset(cu.bytes);
     for (;
         G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements()
-            && G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements(); ) {
+            && G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements();
+        ) {
       G.v().coffi_CONSTANT_Utf8_info_e1.nextElement();
       G.v().coffi_CONSTANT_Utf8_info_e2.nextElement();
-      if (G.v().coffi_CONSTANT_Utf8_info_e1.c < G.v().coffi_CONSTANT_Utf8_info_e2.c) return -1;
-      if (G.v().coffi_CONSTANT_Utf8_info_e2.c < G.v().coffi_CONSTANT_Utf8_info_e1.c) return 1;
+      if (G.v().coffi_CONSTANT_Utf8_info_e1.c < G.v().coffi_CONSTANT_Utf8_info_e2.c) {
+        return -1;
+      }
+      if (G.v().coffi_CONSTANT_Utf8_info_e2.c < G.v().coffi_CONSTANT_Utf8_info_e1.c) {
+        return 1;
+      }
     }
-    if (G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements()) return -1;
-    if (G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements()) return 1;
+    if (G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements()) {
+      return -1;
+    }
+    if (G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements()) {
+      return 1;
+    }
     return 0;
   }
   /**
@@ -191,6 +212,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @return String representation of this entry.
    * @see cp_info#toString
    */
+  @Override
   public String toString(cp_info constant_pool[]) {
     return convert();
   }
@@ -200,10 +222,12 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @return the String "utf8".
    * @see cp_info#typeName
    */
+  @Override
   public String typeName() {
     return "utf8";
   }
 
+  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     return StringConstant.v(convert());
   }

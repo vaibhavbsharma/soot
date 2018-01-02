@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -35,10 +39,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
   Nomair A. Naeem 18-FEB-2005
@@ -78,11 +78,15 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
+  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     String label = node.get_Label().toString();
-    if (label == null) return;
+    if (label == null) {
+      return;
+    }
 
     List<Object> subBodies = node.get_SubBodies();
     List<Object> newBody = matchPattern(label, subBodies);
@@ -98,9 +102,12 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     UselessLabelFinder.v().findAndKill(node);
   }
 
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     String label = node.get_Label().toString();
-    if (label == null) return;
+    if (label == null) {
+      return;
+    }
 
     List<Object> subBodies = node.get_SubBodies();
     List<Object> newBody = matchPattern(label, subBodies);
@@ -116,9 +123,12 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     UselessLabelFinder.v().findAndKill(node);
   }
 
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     String label = node.get_Label().toString();
-    if (label == null) return;
+    if (label == null) {
+      return;
+    }
 
     List<Object> subBodies = node.get_SubBodies();
     List<Object> newBody = matchPattern(label, subBodies);
@@ -133,9 +143,12 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     UselessLabelFinder.v().findAndKill(node);
   }
 
+  @Override
   public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     String label = node.get_Label().toString();
-    if (label == null) return;
+    if (label == null) {
+      return;
+    }
 
     List<Object> subBodies = node.get_SubBodies();
     List<Object> newBody = matchPattern(label, subBodies);
@@ -207,7 +220,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
 
   private List<Object> createWhileBody(List subBody, List labeledBlocksSubBody, int nodeNumber) {
     // create BodyA, Nodes from 0 to nodeNumber
-    List<Object> bodyA = new ArrayList<Object>();
+    List<Object> bodyA = new ArrayList<>();
 
     // this is an iterator of ASTNodes
     Iterator it = subBody.iterator();
@@ -232,13 +245,16 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     ASTCondition newCond = null;
     while (condIt.hasNext()) {
       ASTCondition next = condIt.next();
-      if (newCond == null) newCond = next;
-      else newCond = new ASTOrCondition(newCond, next);
+      if (newCond == null) {
+        newCond = next;
+      } else {
+        newCond = new ASTOrCondition(newCond, next);
+      }
     }
 
     // create BodyB
     it.next(); // this skips the LabeledBlockNode
-    List<Object> bodyB = new ArrayList<Object>();
+    List<Object> bodyB = new ArrayList<>();
     while (it.hasNext()) {
       bodyB.add(it.next());
     }
@@ -257,7 +273,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
      All nodes are ASTIFNodes
   */
   private List<ASTCondition> getConditions(Iterator it) {
-    List<ASTCondition> toReturn = new ArrayList<ASTCondition>();
+    List<ASTCondition> toReturn = new ArrayList<>();
     while (it.hasNext()) {
       // safe cast since we know these are all ASTIfNodes
       ASTIfNode node = (ASTIfNode) it.next();
@@ -319,11 +335,15 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     SETNodeLabel label = abStmt.getLabel();
     String abruptLabel = label.toString();
 
-    if (abruptLabel == null) return false;
+    if (abruptLabel == null) {
+      return false;
+    }
 
     if (abStmt.is_Break() && abruptLabel.compareTo(innerLabel) == 0 && hasNext) {
       return true;
-    } else return abStmt.is_Continue() && abruptLabel.compareTo(outerLabel) == 0 && !hasNext;
+    } else {
+      return abStmt.is_Continue() && abruptLabel.compareTo(outerLabel) == 0 && !hasNext;
+    }
   }
 
   private Stmt isIfNodeWithOneStatement(ASTNode secondLabelsBody) {

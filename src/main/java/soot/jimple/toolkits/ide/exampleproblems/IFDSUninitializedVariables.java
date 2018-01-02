@@ -18,6 +18,14 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -40,14 +48,6 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class IFDSUninitializedVariables
     extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {
 
@@ -68,10 +68,11 @@ public class IFDSUninitializedVariables
             @Override
             public Set<Local> computeTargets(Local source) {
               if (source == zeroValue()) {
-                Set<Local> res = new LinkedHashSet<Local>();
+                Set<Local> res = new LinkedHashSet<>();
                 res.addAll(m.getActiveBody().getLocals());
-                for (int i = 0; i < m.getParameterCount(); i++)
+                for (int i = 0; i < m.getParameterCount(); i++) {
                   res.remove(m.getActiveBody().getParameterLocal(i));
+                }
                 return res;
               }
               return Collections.emptySet();
@@ -91,14 +92,16 @@ public class IFDSUninitializedVariables
                 List<ValueBox> useBoxes = definition.getUseBoxes();
                 for (ValueBox valueBox : useBoxes) {
                   if (valueBox.getValue().equivTo(source)) {
-                    LinkedHashSet<Local> res = new LinkedHashSet<Local>();
+                    LinkedHashSet<Local> res = new LinkedHashSet<>();
                     res.add(source);
                     res.add(leftOpLocal);
                     return res;
                   }
                 }
 
-                if (leftOp.equivTo(source)) return Collections.emptySet();
+                if (leftOp.equivTo(source)) {
+                  return Collections.emptySet();
+                }
 
                 return Collections.singleton(source);
               }
@@ -116,8 +119,12 @@ public class IFDSUninitializedVariables
         InvokeExpr invokeExpr = stmt.getInvokeExpr();
         final List<Value> args = invokeExpr.getArgs();
 
-        final List<Local> localArguments = new ArrayList<Local>();
-        for (Value value : args) if (value instanceof Local) localArguments.add((Local) value);
+        final List<Local> localArguments = new ArrayList<>();
+        for (Value value : args) {
+          if (value instanceof Local) {
+            localArguments.add((Local) value);
+          }
+        }
 
         return new FlowFunction<Local>() {
 
@@ -125,8 +132,9 @@ public class IFDSUninitializedVariables
           public Set<Local> computeTargets(final Local source) {
             // Do not map parameters for <clinit> edges
             if (destinationMethod.getName().equals("<clinit>")
-                || destinationMethod.getSubSignature().equals("void run()"))
+                || destinationMethod.getSubSignature().equals("void run()")) {
               return Collections.emptySet();
+            }
 
             for (Local localArgument : localArguments) {
               if (source.equivTo(localArgument)) {
@@ -140,7 +148,7 @@ public class IFDSUninitializedVariables
             if (source == zeroValue()) {
               // gen all locals that are not parameter locals
               Collection<Local> locals = destinationMethod.getActiveBody().getLocals();
-              LinkedHashSet<Local> uninitializedLocals = new LinkedHashSet<Local>(locals);
+              LinkedHashSet<Local> uninitializedLocals = new LinkedHashSet<>(locals);
               for (int i = 0; i < destinationMethod.getParameterCount(); i++) {
                 uninitializedLocals.remove(destinationMethod.getActiveBody().getParameterLocal(i));
               }
@@ -165,7 +173,9 @@ public class IFDSUninitializedVariables
 
                 @Override
                 public Set<Local> computeTargets(Local source) {
-                  if (returnStmt.getOp().equivTo(source)) return Collections.singleton(leftOpLocal);
+                  if (returnStmt.getOp().equivTo(source)) {
+                    return Collections.singleton(leftOpLocal);
+                  }
                   return Collections.emptySet();
                 }
               };
@@ -175,8 +185,11 @@ public class IFDSUninitializedVariables
 
                 @Override
                 public Set<Local> computeTargets(final Local source) {
-                  if (source == zeroValue()) return Collections.singleton(leftOpLocal);
-                  else return Collections.emptySet();
+                  if (source == zeroValue()) {
+                    return Collections.singleton(leftOpLocal);
+                  } else {
+                    return Collections.emptySet();
+                  }
                 }
               };
             }
@@ -192,7 +205,7 @@ public class IFDSUninitializedVariables
           DefinitionStmt definition = (DefinitionStmt) callSite;
           if (definition.getLeftOp() instanceof Local) {
             final Local leftOpLocal = (Local) definition.getLeftOp();
-            return new Kill<Local>(leftOpLocal);
+            return new Kill<>(leftOpLocal);
           }
         }
         return Identity.v();
@@ -200,6 +213,7 @@ public class IFDSUninitializedVariables
     };
   }
 
+  @Override
   public Map<Unit, Set<Local>> initialSeeds() {
     return DefaultSeeds.make(
         Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),

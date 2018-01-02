@@ -37,11 +37,13 @@ public class AnnotationDefaultTag implements Tag {
   }
 
   // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
     return "Annotation Default: " + defaultVal;
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "AnnotationDefaultTag";
   }
@@ -55,6 +57,7 @@ public class AnnotationDefaultTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("AnnotationDefaultTag has no value for bytecode");
   }

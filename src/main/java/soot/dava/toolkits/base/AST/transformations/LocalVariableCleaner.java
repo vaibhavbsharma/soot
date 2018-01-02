@@ -27,6 +27,12 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Local;
 import soot.Value;
 import soot.dava.DavaBody;
@@ -41,12 +47,6 @@ import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * The class is aimed to target cleaning up of unused local variables. Should be invoked after
@@ -86,6 +86,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
    * If the local is defined BUT never used then you may remove it IF AND ONLY IF
    *    The definition is either a copy stmt or an assignment of a constant (i.e. no side effects)
    */
+  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     boolean redo = false;
 
@@ -95,7 +96,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
     // get all local variables declared in this method
     Iterator decIt = node.getDeclaredLocals().iterator();
 
-    ArrayList<Local> removeList = new ArrayList<Local>();
+    ArrayList<Local> removeList = new ArrayList<>();
     while (decIt.hasNext()) {
       // going through each local declared
 
@@ -149,10 +150,16 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
           System.out.println("Locals are:" + body.getLocals());
         }
         Collection<Local> localChain = body.getLocals();
-        if (removeLocal != null && localChain != null) localChain.remove(removeLocal);
-      } else throw new DecompilationException("found AST which is not a methodNode");
+        if (removeLocal != null && localChain != null) {
+          localChain.remove(removeLocal);
+        }
+      } else {
+        throw new DecompilationException("found AST which is not a methodNode");
+      }
 
-      if (DEBUG) System.out.println("Removed" + removeLocal);
+      if (DEBUG) {
+        System.out.println("Removed" + removeLocal);
+      }
       redo = true;
     }
 
@@ -170,18 +177,19 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
   public boolean canRemoveDef(DefinitionStmt ds) {
     List uses = useDefs.getDUChain(ds);
 
-    if (uses.size() != 0) return false;
+    if (uses.size() != 0) {
+      return false;
+    }
 
     // there is no use of this def, we can remove it if it is copy stmt or a constant assignment
     return ds.getRightOp() instanceof Local || ds.getRightOp() instanceof Constant;
-
   }
 
   /*
    * This method looks up all defs and returns those of this local
    */
   public List<DefinitionStmt> getDefs(Local var) {
-    List<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
+    List<DefinitionStmt> toReturn = new ArrayList<>();
 
     HashMap<Object, List> dU = useDefs.getDUHashMap();
     Iterator<Object> it = dU.keySet().iterator();
@@ -189,7 +197,9 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
       DefinitionStmt s = (DefinitionStmt) it.next();
       Value left = s.getLeftOp();
       if (left instanceof Local) {
-        if (((Local) left).getName().compareTo(var.getName()) == 0) toReturn.add(s);
+        if (((Local) left).getName().compareTo(var.getName()) == 0) {
+          toReturn.add(s);
+        }
       }
     }
     return toReturn;
@@ -212,7 +222,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
     }
     ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-    ArrayList<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
+    ArrayList<AugmentedStmt> newSequence = new ArrayList<>();
     int size = parentNode.getStatements().size();
     for (AugmentedStmt as : parentNode.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -224,6 +234,5 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
     // System.out.println("STMT REMOVED---------------->"+stmt);
     parentNode.setStatements(newSequence);
     return newSequence.size() < size;
-
   }
 }

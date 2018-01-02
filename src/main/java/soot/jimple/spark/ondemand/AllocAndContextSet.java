@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.ClassConstant;
@@ -31,12 +34,10 @@ import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public final class AllocAndContextSet extends ArraySet<AllocAndContext>
     implements EqualsSupportingPointsToSet {
 
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     if (other instanceof AllocAndContextSet) {
       return nonEmptyHelper((AllocAndContextSet) other);
@@ -79,8 +80,9 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext>
     return false;
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
-    Set<ClassConstant> res = new HashSet<ClassConstant>();
+    Set<ClassConstant> res = new HashSet<>();
     for (AllocAndContext allocAndContext : this) {
       AllocNode n = allocAndContext.alloc;
       if (n instanceof ClassConstantNode) {
@@ -92,8 +94,9 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext>
     return res;
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
-    Set<String> res = new HashSet<String>();
+    Set<String> res = new HashSet<>();
     for (AllocAndContext allocAndContext : this) {
       AllocNode n = allocAndContext.alloc;
       if (n instanceof StringConstantNode) {
@@ -105,6 +108,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext>
     return res;
   }
 
+  @Override
   public Set<Type> possibleTypes() {
     Set res = new HashSet<Type>();
     for (AllocAndContext allocAndContext : this) {
@@ -117,6 +121,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext>
    * Computes a hash code based on the contents of the points-to set. Note that hashCode() is not
    * overwritten on purpose. This is because Spark relies on comparison by object identity.
    */
+  @Override
   public int pointsToSetHashCode() {
     final int PRIME = 31;
     int result = 1;
@@ -131,6 +136,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext>
    * equals() is not overwritten on purpose. This is because Spark relies on comparison by object
    * identity.
    */
+  @Override
   public boolean pointsToSetEquals(Object other) {
     if (this == other) {
       return true;

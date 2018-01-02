@@ -25,9 +25,9 @@
 
 package soot.baf;
 
-import soot.Type;
-
 import java.util.List;
+
+import soot.Type;
 
 public interface DupInst extends Inst {
   List<Type> getOpTypes();

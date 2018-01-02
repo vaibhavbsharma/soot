@@ -41,7 +41,9 @@ public interface CastExpr extends Expr {
 
   void setCastType(Type castType);
 
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

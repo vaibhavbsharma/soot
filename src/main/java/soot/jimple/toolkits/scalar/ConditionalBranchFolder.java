@@ -25,6 +25,8 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -39,8 +41,6 @@ import soot.jimple.StmtBody;
 import soot.options.Options;
 import soot.util.Chain;
 
-import java.util.Map;
-
 public class ConditionalBranchFolder extends BodyTransformer {
   public ConditionalBranchFolder(Singletons.Global g) {}
 
@@ -48,13 +48,15 @@ public class ConditionalBranchFolder extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_ConditionalBranchFolder();
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     StmtBody stmtBody = (StmtBody) body;
 
     int numTrue = 0, numFalse = 0;
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + stmtBody.getMethod().getName() + "] Folding conditional branches...");
+    }
 
     Chain<Unit> units = stmtBody.getUnits();
 
@@ -71,7 +73,9 @@ public class ConditionalBranchFolder extends BodyTransformer {
             Stmt newStmt = Jimple.v().newGotoStmt(ifs.getTarget());
             units.insertAfter(newStmt, stmt);
             numTrue++;
-          } else numFalse++;
+          } else {
+            numFalse++;
+          }
 
           // remove if
           units.remove(stmt);
@@ -79,7 +83,7 @@ public class ConditionalBranchFolder extends BodyTransformer {
       }
     }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
@@ -90,5 +94,6 @@ public class ConditionalBranchFolder extends BodyTransformer {
                   + " true, "
                   + numFalse
                   + " conditional branches");
+    }
   } // foldBranches
 } // BranchFolder

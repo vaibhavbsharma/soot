@@ -19,12 +19,12 @@
 
 package soot.dava.toolkits.base.finders;
 
-import soot.toolkits.graph.DirectedGraph;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import soot.toolkits.graph.DirectedGraph;
 
 class SwitchNodeGraph implements DirectedGraph {
   private LinkedList body;
@@ -49,38 +49,50 @@ class SwitchNodeGraph implements DirectedGraph {
     }
 
     it = body.iterator();
-    while (it.hasNext()) ((SwitchNode) it.next()).setup_Graph(binding);
+    while (it.hasNext()) {
+      ((SwitchNode) it.next()).setup_Graph(binding);
+    }
 
     it = body.iterator();
     while (it.hasNext()) {
       SwitchNode sn = (SwitchNode) it.next();
 
-      if (sn.get_Preds().isEmpty()) heads.add(sn);
+      if (sn.get_Preds().isEmpty()) {
+        heads.add(sn);
+      }
 
-      if (sn.get_Succs().isEmpty()) tails.add(sn);
+      if (sn.get_Succs().isEmpty()) {
+        tails.add(sn);
+      }
     }
   }
 
+  @Override
   public int size() {
     return body.size();
   }
 
+  @Override
   public List getHeads() {
     return heads;
   }
 
+  @Override
   public List getTails() {
     return tails;
   }
 
+  @Override
   public List getPredsOf(Object o) {
     return ((SwitchNode) o).get_Preds();
   }
 
+  @Override
   public List getSuccsOf(Object o) {
     return ((SwitchNode) o).get_Succs();
   }
 
+  @Override
   public Iterator iterator() {
     return body.iterator();
   }

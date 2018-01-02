@@ -32,12 +32,14 @@ import java.util.Map;
  */
 public final class MethodToContexts {
   private final Map<SootMethod, List<MethodOrMethodContext>> map =
-      new HashMap<SootMethod, List<MethodOrMethodContext>>();
+      new HashMap<>();
 
   public void add(MethodOrMethodContext momc) {
     SootMethod m = momc.method();
     List<MethodOrMethodContext> l = map.get(m);
-    if (l == null) map.put(m, l = new ArrayList<MethodOrMethodContext>());
+    if (l == null) {
+      map.put(m, l = new ArrayList<>());
+    }
     l.add(momc);
   }
 
@@ -56,7 +58,9 @@ public final class MethodToContexts {
 
   public List<MethodOrMethodContext> get(SootMethod m) {
     List<MethodOrMethodContext> ret = map.get(m);
-    if (ret == null) ret = new ArrayList<MethodOrMethodContext>();
+    if (ret == null) {
+      ret = new ArrayList<>();
+    }
     return ret;
   }
 }

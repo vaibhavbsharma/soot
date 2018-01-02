@@ -20,28 +20,32 @@
 
 package soot.dava.internal.javaRep;
 
+import java.util.ArrayList;
+
 import soot.SootMethodRef;
 import soot.UnitPrinter;
 import soot.grimp.Grimp;
 import soot.grimp.internal.GStaticInvokeExpr;
-
-import java.util.ArrayList;
 
 public class DStaticInvokeExpr extends GStaticInvokeExpr {
   public DStaticInvokeExpr(SootMethodRef methodRef, java.util.List args) {
     super(methodRef, args);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.type(methodRef.declaringClass().getType());
     up.literal(".");
     super.toString(up);
   }
 
+  @Override
   public Object clone() {
     ArrayList clonedArgs = new ArrayList(getArgCount());
 
-    for (int i = 0; i < getArgCount(); i++) clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    }
 
     return new DStaticInvokeExpr(methodRef, clonedArgs);
   }

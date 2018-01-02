@@ -1,5 +1,13 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.EquivalentValue;
 import soot.G;
@@ -27,14 +35,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.Pair;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 // ClassLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the given scope.
@@ -92,8 +92,7 @@ public class ClassLocalObjectsAnalysis {
     this.uf = uf;
     this.sootClass = sootClass;
 
-    this.methodToMethodLocalObjectsAnalysis =
-        new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
+    this.methodToMethodLocalObjectsAnalysis = new HashMap<>();
     this.methodToContext = null;
 
     this.allMethods = null;
@@ -148,16 +147,22 @@ public class ClassLocalObjectsAnalysis {
     // Get list of external methods
     externalMethods = uf.getExtMethods(sootClass);
     SootClass superclass = sootClass;
-    if (superclass.hasSuperclass()) superclass = superclass.getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = superclass.getSuperclass();
+    }
     while (superclass.hasSuperclass()) {
-      if (superclass.isApplicationClass()) externalMethods.addAll(uf.getExtMethods(superclass));
+      if (superclass.isApplicationClass()) {
+        externalMethods.addAll(uf.getExtMethods(superclass));
+      }
       superclass = superclass.getSuperclass();
     }
 
     // Get list of internal methods
-    internalMethods = new ArrayList<SootMethod>();
+    internalMethods = new ArrayList<>();
     for (SootMethod method : allMethods) {
-      if (!externalMethods.contains(method)) internalMethods.add(method);
+      if (!externalMethods.contains(method)) {
+        internalMethods.add(method);
+      }
     }
 
     // Get list of all fields
@@ -166,16 +171,22 @@ public class ClassLocalObjectsAnalysis {
     // Get list of external fields
     externalFields = uf.getExtFields(sootClass);
     superclass = sootClass;
-    if (superclass.hasSuperclass()) superclass = superclass.getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = superclass.getSuperclass();
+    }
     while (superclass.hasSuperclass()) {
-      if (superclass.isApplicationClass()) externalFields.addAll(uf.getExtFields(superclass));
+      if (superclass.isApplicationClass()) {
+        externalFields.addAll(uf.getExtFields(superclass));
+      }
       superclass = superclass.getSuperclass();
     }
 
     // Get list of internal fields
-    internalFields = new ArrayList<SootField>();
+    internalFields = new ArrayList<>();
     for (SootField field : allFields) {
-      if (!externalFields.contains(field)) internalFields.add(field);
+      if (!externalFields.contains(field)) {
+        internalFields.add(field);
+      }
     }
   }
 
@@ -184,22 +195,28 @@ public class ClassLocalObjectsAnalysis {
     ReachableMethods rm = Scene.v().getReachableMethods();
 
     // Get list of reachable methods declared in this class
-    List<SootMethod> allMethods = new ArrayList<SootMethod>();
+    List<SootMethod> allMethods = new ArrayList<>();
     Iterator methodsIt = sc.methodIterator();
     while (methodsIt.hasNext()) {
       SootMethod method = (SootMethod) methodsIt.next();
-      if (rm.contains(method)) allMethods.add(method);
+      if (rm.contains(method)) {
+        allMethods.add(method);
+      }
     }
 
     // Add reachable methods declared in superclasses
     SootClass superclass = sc;
-    if (superclass.hasSuperclass()) superclass = superclass.getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = superclass.getSuperclass();
+    }
     while (superclass.hasSuperclass()) // we don't want to process Object
     {
       Iterator scMethodsIt = superclass.methodIterator();
       while (scMethodsIt.hasNext()) {
         SootMethod scMethod = (SootMethod) scMethodsIt.next();
-        if (rm.contains(scMethod)) allMethods.add(scMethod);
+        if (rm.contains(scMethod)) {
+          allMethods.add(scMethod);
+        }
       }
       superclass = superclass.getSuperclass();
     }
@@ -210,14 +227,16 @@ public class ClassLocalObjectsAnalysis {
   public static List<SootField> getAllFields(SootClass sc) {
     // Get list of reachable methods declared in this class
     // Also get list of fields declared in this class
-    List<SootField> allFields = new ArrayList<SootField>();
+    List<SootField> allFields = new ArrayList<>();
     for (SootField field : sc.getFields()) {
       allFields.add(field);
     }
 
     // Add reachable methods and fields declared in superclasses
     SootClass superclass = sc;
-    if (superclass.hasSuperclass()) superclass = superclass.getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = superclass.getSuperclass();
+    }
     while (superclass.hasSuperclass()) // we don't want to process Object
     {
       for (SootField scField : superclass.getFields()) {
@@ -239,18 +258,21 @@ public class ClassLocalObjectsAnalysis {
     // This is repeated until no fields move for a complete iteration.
 
     // Populate localFields and sharedFields with fields of this class
-    localFields = new ArrayList<SootField>();
-    sharedFields = new ArrayList<SootField>();
+    localFields = new ArrayList<>();
+    sharedFields = new ArrayList<>();
     Iterator<SootField> fieldsIt = allFields.iterator();
     while (fieldsIt.hasNext()) {
       SootField field = fieldsIt.next();
-      if (fieldIsInitiallyLocal(field)) localFields.add(field);
-      else sharedFields.add(field);
+      if (fieldIsInitiallyLocal(field)) {
+        localFields.add(field);
+      } else {
+        sharedFields.add(field);
+      }
     }
 
     // Add inner fields to localFields and sharedFields, if present
-    localInnerFields = new ArrayList<SootField>();
-    sharedInnerFields = new ArrayList<SootField>();
+    localInnerFields = new ArrayList<>();
+    sharedInnerFields = new ArrayList<>();
     Iterator<SootMethod> methodsIt = allMethods.iterator();
     while (methodsIt.hasNext()) {
       SootMethod method = methodsIt.next();
@@ -329,7 +351,9 @@ public class ClassLocalObjectsAnalysis {
         SootMethod method = methodsIt.next();
         // we can't learn anything from non-concrete methods, and statics can't write
         // non-static fields
-        if (method.isStatic() || !method.isConcrete()) continue;
+        if (method.isStatic() || !method.isConcrete()) {
+          continue;
+        }
 
         ListIterator<SootField> localFieldsIt = localFields.listIterator();
         while (localFieldsIt.hasNext()) {
@@ -337,8 +361,11 @@ public class ClassLocalObjectsAnalysis {
           List sourcesAndSinks = new ArrayList();
 
           MutableDirectedGraph dataFlowSummary;
-          if (primitiveDfa != null) dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
-          else dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
+          if (primitiveDfa != null) {
+            dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
+          } else {
+            dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
+          }
 
           EquivalentValue node = InfoFlowAnalysis.getNodeForFieldRef(method, localField);
           if (dataFlowSummary.containsNode(node)) {
@@ -392,16 +419,18 @@ public class ClassLocalObjectsAnalysis {
           }
         }
 
-        ListIterator<SootField> localInnerFieldsIt =
-            localInnerFields.listIterator();
+        ListIterator<SootField> localInnerFieldsIt = localInnerFields.listIterator();
         //				boolean printedMethodHeading = false;
         while (!changed && localInnerFieldsIt.hasNext()) {
           SootField localInnerField = localInnerFieldsIt.next();
           List sourcesAndSinks = new ArrayList();
 
           MutableDirectedGraph dataFlowSummary;
-          if (primitiveDfa != null) dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
-          else dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
+          if (primitiveDfa != null) {
+            dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
+          } else {
+            dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
+          }
 
           EquivalentValue node = InfoFlowAnalysis.getNodeForFieldRef(method, localInnerField);
           if (dataFlowSummary.containsNode(node)) {
@@ -465,42 +494,44 @@ public class ClassLocalObjectsAnalysis {
       Iterator<SootField> localsToPrintIt = localFields.iterator();
       while (localsToPrintIt.hasNext()) {
         SootField localToPrint = localsToPrintIt.next();
-        if (localToPrint.getDeclaringClass().isApplicationClass())
+        if (localToPrint.getDeclaringClass().isApplicationClass()) {
           G.v().out.println("                  " + localToPrint);
+        }
       }
       G.v().out.println("          Shared fields: ");
       Iterator<SootField> sharedsToPrintIt = sharedFields.iterator();
       while (sharedsToPrintIt.hasNext()) {
         SootField sharedToPrint = sharedsToPrintIt.next();
-        if (sharedToPrint.getDeclaringClass().isApplicationClass())
+        if (sharedToPrint.getDeclaringClass().isApplicationClass()) {
           G.v().out.println("                  " + sharedToPrint);
+        }
       }
       G.v().out.println("          Local inner fields: ");
       localsToPrintIt = localInnerFields.iterator();
       while (localsToPrintIt.hasNext()) {
         SootField localToPrint = localsToPrintIt.next();
-        if (localToPrint.getDeclaringClass().isApplicationClass())
+        if (localToPrint.getDeclaringClass().isApplicationClass()) {
           G.v().out.println("                  " + localToPrint);
+        }
       }
       G.v().out.println("          Shared inner fields: ");
       sharedsToPrintIt = sharedInnerFields.iterator();
       while (sharedsToPrintIt.hasNext()) {
         SootField sharedToPrint = sharedsToPrintIt.next();
-        if (sharedToPrint.getDeclaringClass().isApplicationClass())
+        if (sharedToPrint.getDeclaringClass().isApplicationClass()) {
           G.v().out.println("                  " + sharedToPrint);
+        }
       }
     }
   }
 
   private void propagate() {
     // Initialize worklist
-    ArrayList<SootMethod> worklist = new ArrayList<SootMethod>();
+    ArrayList<SootMethod> worklist = new ArrayList<>();
     worklist.addAll(entryMethods);
 
     // Initialize set of contexts
-    methodToContext =
-        new HashMap<
-            SootMethod, CallLocalityContext>(); // TODO: add the ability to share a map with another
+    methodToContext = new HashMap<>(); // TODO: add the ability to share a map with another
     // CLOA to save memory (be careful of
     // context-sensitive call graph)
     for (SootMethod method : worklist) {
@@ -509,24 +540,30 @@ public class ClassLocalObjectsAnalysis {
 
     // Propagate
     Date start = new Date();
-    if (dfa.printDebug()) G.v().out.println("CLOA: Starting Propagation at " + start);
+    if (dfa.printDebug()) {
+      G.v().out.println("CLOA: Starting Propagation at " + start);
+    }
     while (worklist.size() > 0) {
-      ArrayList<SootMethod> newWorklist = new ArrayList<SootMethod>();
+      ArrayList<SootMethod> newWorklist = new ArrayList<>();
       for (SootMethod containingMethod : worklist) {
         CallLocalityContext containingContext = methodToContext.get(containingMethod);
 
-        if (dfa.printDebug())
+        if (dfa.printDebug()) {
           G.v()
               .out
               .println(
                   "      " + containingMethod.getName() + " " + containingContext.toShortString());
+        }
 
         // Calculate the context for each invoke stmt in the containingMethod
-        Map<Stmt, CallLocalityContext> invokeToContext = new HashMap<Stmt, CallLocalityContext>();
+        Map<Stmt, CallLocalityContext> invokeToContext = new HashMap<>();
         for (Iterator edgesIt = Scene.v().getCallGraph().edgesOutOf(containingMethod);
-            edgesIt.hasNext(); ) {
+            edgesIt.hasNext();
+            ) {
           Edge e = (Edge) edgesIt.next();
-          if (!e.src().getDeclaringClass().isApplicationClass() || e.srcStmt() == null) continue;
+          if (!e.src().getDeclaringClass().isApplicationClass() || e.srcStmt() == null) {
+            continue;
+          }
           CallLocalityContext invokeContext;
           if (!invokeToContext.containsKey(e.srcStmt())) {
             invokeContext = getContextFor(e, containingMethod, containingContext);
@@ -547,7 +584,9 @@ public class ClassLocalObjectsAnalysis {
             // be from different DFAs.  If so,
             // primitive version might be
             // bigger.
-            if (causedChange) newWorklist.add(e.tgt());
+            if (causedChange) {
+              newWorklist.add(e.tgt());
+            }
           }
         }
       }
@@ -555,11 +594,15 @@ public class ClassLocalObjectsAnalysis {
     }
     long longTime = ((new Date()).getTime() - start.getTime()) / 100;
     float time = (longTime) / 10.0f;
-    if (dfa.printDebug()) G.v().out.println("CLOA: Ending Propagation after " + time + "s");
+    if (dfa.printDebug()) {
+      G.v().out.println("CLOA: Ending Propagation after " + time + "s");
+    }
   }
 
   public CallLocalityContext getMergedContext(SootMethod method) {
-    if (methodToContext.containsKey(method)) return methodToContext.get(method);
+    if (methodToContext.containsKey(method)) {
+      return methodToContext.get(method);
+    }
 
     return null;
   }
@@ -568,8 +611,11 @@ public class ClassLocalObjectsAnalysis {
       Edge e, SootMethod containingMethod, CallLocalityContext containingContext) {
     // get new called method and calling context
     InvokeExpr ie;
-    if (e.srcStmt().containsInvokeExpr()) ie = e.srcStmt().getInvokeExpr();
-    else ie = null;
+    if (e.srcStmt().containsInvokeExpr()) {
+      ie = e.srcStmt().getInvokeExpr();
+    } else {
+      ie = null;
+    }
 
     SootMethod callingMethod = e.tgt();
     CallLocalityContext callingContext =
@@ -594,12 +640,14 @@ public class ClassLocalObjectsAnalysis {
               EquivalentValue newRefEqVal =
                   InfoFlowAnalysis.getNodeForFieldRef(
                       callingMethod, ((FieldRef) r).getFieldRef().resolve());
-              if (callingContext.containsField(
-                  newRefEqVal)) // if not, then we're probably calling a parent
+              if (callingContext.containsField(newRefEqVal)) {
                 // class's method, so some fields are missing
                 callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method
-              // getting called
-            } else if (r instanceof ThisRef) callingContext.setThisLocal();
+                // getting called
+              }
+            } else if (r instanceof ThisRef) {
+              callingContext.setThisLocal();
+            }
           }
         } else if (SmartMethodLocalObjectsAnalysis.isObjectLocal(
             dfa, containingMethod, containingContext, iie.getBase())) {
@@ -617,13 +665,16 @@ public class ClassLocalObjectsAnalysis {
       }
 
       // check args
-      if (ie == null) callingContext.setAllParamsShared();
-      else {
+      if (ie == null) {
+        callingContext.setAllParamsShared();
+      } else {
         for (int param = 0; param < ie.getArgCount(); param++) {
           if (SmartMethodLocalObjectsAnalysis.isObjectLocal(
-              dfa, containingMethod, containingContext, ie.getArg(param)))
+              dfa, containingMethod, containingContext, ie.getArg(param))) {
             callingContext.setParamLocal(param);
-          else callingContext.setParamShared(param);
+          } else {
+            callingContext.setParamShared(param);
+          }
         }
       }
     } else {
@@ -643,9 +694,11 @@ public class ClassLocalObjectsAnalysis {
   private CallLocalityContext getContextFor(
       SootMethod sm, boolean includePrimitiveDataFlowIfAvailable) {
     CallLocalityContext context;
-    if (includePrimitiveDataFlowIfAvailable)
+    if (includePrimitiveDataFlowIfAvailable) {
       context = new CallLocalityContext(primitiveDfa.getMethodInfoFlowSummary(sm).getNodes());
-    else context = new CallLocalityContext(dfa.getMethodInfoFlowSummary(sm).getNodes());
+    } else {
+      context = new CallLocalityContext(dfa.getMethodInfoFlowSummary(sm).getNodes());
+    }
 
     // Set context for every parameter that is shared
     for (int i = 0; i < sm.getParameterCount(); i++) // no need to worry about return value...
@@ -680,23 +733,28 @@ public class ClassLocalObjectsAnalysis {
       return false;
     }
 
-    if (dfa.printDebug())
+    if (dfa.printDebug()) {
       G.v().out.println("      CLOA testing if " + localOrRef + " is local in " + sm);
+    }
 
     SmartMethodLocalObjectsAnalysis smloa =
         getMethodLocalObjectsAnalysis(sm, includePrimitiveDataFlowIfAvailable);
     if (localOrRef instanceof InstanceFieldRef) {
       InstanceFieldRef ifr = (InstanceFieldRef) localOrRef;
-      if (ifr.getBase().equivTo(smloa.getThisLocal()))
+      if (ifr.getBase().equivTo(smloa.getThisLocal())) {
         return isFieldLocal(ifr.getFieldRef().resolve());
-      else {
+      } else {
         // if referred object is local, then find out if field is local in that object
         if (isObjectLocal(ifr.getBase(), sm, includePrimitiveDataFlowIfAvailable)) {
           boolean retval = loa.isFieldLocalToParent(ifr.getFieldRef().resolve());
-          if (dfa.printDebug()) G.v().out.println("      " + (retval ? "local" : "shared"));
+          if (dfa.printDebug()) {
+            G.v().out.println("      " + (retval ? "local" : "shared"));
+          }
           return retval;
         } else {
-          if (dfa.printDebug()) G.v().out.println("      shared");
+          if (dfa.printDebug()) {
+            G.v().out.println("      shared");
+          }
           return false;
         }
       }
@@ -705,7 +763,9 @@ public class ClassLocalObjectsAnalysis {
     CallLocalityContext context = getContextFor(sm);
 
     boolean retval = smloa.isObjectLocal(localOrRef, context);
-    if (dfa.printDebug()) G.v().out.println("      " + (retval ? "local" : "shared"));
+    if (dfa.printDebug()) {
+      G.v().out.println("      " + (retval ? "local" : "shared"));
+    }
     return retval;
   }
 
@@ -769,16 +829,18 @@ public class ClassLocalObjectsAnalysis {
       SootMethod method,
       EquivalentValue parameterRef,
       boolean includePrimitiveDataFlowIfAvailable) {
-    if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
+    if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass()) {
       G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
+    }
 
     // Check if param is primitive or ref type
     ParameterRef param = (ParameterRef) parameterRef.getValue();
     if (!(param.getType() instanceof RefLikeType)
         && (!dfa.includesPrimitiveInfoFlow() || method.getName().equals("<init>"))) // TODO fix
     {
-      if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
+      if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass()) {
         G.v().out.println("          PARAM is local (primitive)");
+      }
       return true; // primitive params are always considered local
     }
 
@@ -789,8 +851,9 @@ public class ClassLocalObjectsAnalysis {
       Pair extCall = (Pair) extClassCallsIt.next();
       Stmt s = (Stmt) extCall.getO2();
       if (s.getInvokeExpr().getMethodRef().resolve() == method) {
-        if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
+        if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass()) {
           G.v().out.println("          PARAM is shared (external access)");
+        }
         return false; // If so, assume it's params are shared
       }
     }
@@ -811,8 +874,9 @@ public class ClassLocalObjectsAnalysis {
               includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS
           // INFINITE RECURSION!
           {
-            if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
+            if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass()) {
               G.v().out.println("          PARAM is shared (internal propagation)");
+            }
             return false; // if arg is shared for any internal call, then param is
             // shared
           }
@@ -825,8 +889,9 @@ public class ClassLocalObjectsAnalysis {
                 includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS
             // INFINITE RECURSION!
             {
-              if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
+              if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass()) {
                 G.v().out.println("          PARAM is shared (internal propagation)");
+              }
               return false; // if arg is shared for any internal call, then param is
               // shared
             }
@@ -834,8 +899,9 @@ public class ClassLocalObjectsAnalysis {
         }
       }
     }
-    if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
+    if (dfa.printDebug() && method.getDeclaringClass().isApplicationClass()) {
       G.v().out.println("          PARAM is local SO FAR (internal propagation)");
+    }
     return true; // if argument is always local, then parameter is local
   }
 

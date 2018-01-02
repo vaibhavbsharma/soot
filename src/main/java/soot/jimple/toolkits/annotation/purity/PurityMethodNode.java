@@ -25,10 +25,10 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import soot.SootMethod;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import soot.SootMethod;
 
 /**
  * Kind of Stmt inside node, but global to the method. Used for synthetic summary of unalysed
@@ -39,7 +39,7 @@ public class PurityMethodNode implements PurityNode {
   private SootMethod id;
 
   /** gives a unique id, for pretty-printing purposes */
-  private static final Map<SootMethod, Integer> nMap = new HashMap<SootMethod, Integer>();
+  private static final Map<SootMethod, Integer> nMap = new HashMap<>();
 
   private static int n = 0;
 
@@ -51,30 +51,38 @@ public class PurityMethodNode implements PurityNode {
     }
   }
 
+  @Override
   public String toString() {
     return "M_" + nMap.get(id);
     // return ""+id;
   }
 
+  @Override
   public int hashCode() {
     return id.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof PurityMethodNode) {
       PurityMethodNode oo = (PurityMethodNode) o;
       return id.equals(oo.id);
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
+  @Override
   public boolean isInside() {
     return true;
   }
 
+  @Override
   public boolean isLoad() {
     return false;
   }
 
+  @Override
   public boolean isParam() {
     return false;
   }

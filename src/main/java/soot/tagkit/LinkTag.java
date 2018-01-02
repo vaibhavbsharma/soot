@@ -42,6 +42,7 @@ public class LinkTag extends StringTag {
     this.className = className;
   }
 
+  @Override
   public String toString() {
     return s;
   }
@@ -55,11 +56,13 @@ public class LinkTag extends StringTag {
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "StringTag";
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("StringTag has no value for bytecode");
   }

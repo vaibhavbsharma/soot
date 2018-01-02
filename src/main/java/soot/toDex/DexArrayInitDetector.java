@@ -1,5 +1,13 @@
 package soot.toDex;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
@@ -8,14 +16,6 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.NewArrayExpr;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Detector class that identifies array initializations and packs them into a single instruction:
@@ -30,8 +30,8 @@ import java.util.Set;
  */
 public class DexArrayInitDetector {
 
-  private Map<Unit, List<Value>> arrayInitToFillValues = new HashMap<Unit, List<Value>>();
-  private Set<Unit> ignoreUnits = new HashSet<Unit>();
+  private Map<Unit, List<Value>> arrayInitToFillValues = new HashMap<>();
+  private Set<Unit> ignoreUnits = new HashSet<>();
 
   /**
    * Constructs packed array initializations from the individual element assignments in the given
@@ -57,9 +57,9 @@ public class DexArrayInitDetector {
         NewArrayExpr newArrayExp = (NewArrayExpr) assignStmt.getRightOp();
         if (newArrayExp.getSize() instanceof IntConstant) {
           IntConstant intConst = (IntConstant) newArrayExp.getSize();
-          arrayValues = new ArrayList<Value>();
+          arrayValues = new ArrayList<>();
           arraySize = intConst.value;
-          curIgnoreUnits = new HashSet<Unit>();
+          curIgnoreUnits = new HashSet<>();
         } else {
           arrayValues = null;
         }
@@ -71,12 +71,15 @@ public class DexArrayInitDetector {
           IntConstant intConst = (IntConstant) aref.getIndex();
           if (intConst.value == arrayValues.size()) {
             arrayValues.add(assignStmt.getRightOp());
-            if (intConst.value == 0) arrayInitStmt = u;
-            else if (intConst.value == arraySize - 1) {
+            if (intConst.value == 0) {
+              arrayInitStmt = u;
+            } else if (intConst.value == arraySize - 1) {
               curIgnoreUnits.add(u);
               checkAndSave(arrayInitStmt, arrayValues, arraySize, curIgnoreUnits);
               arrayValues = null;
-            } else curIgnoreUnits.add(u);
+            } else {
+              curIgnoreUnits.add(u);
+            }
           } else {
             arrayValues = null;
           }
@@ -128,7 +131,9 @@ public class DexArrayInitDetector {
         }
 
         // The trap must start no earlier than the initial array filling
-        if (arrayInitToFillValues.containsKey(beginUnit)) break;
+        if (arrayInitToFillValues.containsKey(beginUnit)) {
+          break;
+        }
       }
       while (ignoreUnits.contains(endUnit)) {
         endUnit = activeBody.getUnits().getSuccOf(endUnit);

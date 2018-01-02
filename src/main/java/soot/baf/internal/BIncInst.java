@@ -25,6 +25,9 @@
 
 package soot.baf.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.Local;
 import soot.UnitPrinter;
 import soot.ValueBox;
@@ -32,9 +35,6 @@ import soot.baf.IncInst;
 import soot.baf.InstSwitch;
 import soot.jimple.Constant;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 public class BIncInst extends AbstractInst implements IncInst {
   final ValueBox localBox;
@@ -53,55 +53,68 @@ public class BIncInst extends AbstractInst implements IncInst {
     mDefBoxes = Collections.singletonList(defLocalBox);
   }
 
+  @Override
   public int getInCount() {
     return 0;
   }
 
+  @Override
   public Object clone() {
     return new BIncInst(getLocal(), getConstant());
   }
 
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public Constant getConstant() {
     return mConstant;
   }
 
+  @Override
   public void setConstant(Constant aConstant) {
     mConstant = aConstant;
   }
 
+  @Override
   public final String getName() {
     return "inc.i";
   }
 
+  @Override
   final String getParameters() {
     return " " + localBox.getValue().toString();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     localBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIncInst(this);
   }
 
+  @Override
   public void setLocal(Local l) {
     localBox.setValue(l);
   }
 
+  @Override
   public Local getLocal() {
     return (Local) localBox.getValue();
   }
@@ -116,10 +129,12 @@ public class BIncInst extends AbstractInst implements IncInst {
     return mDefBoxes;
   }
 
+  @Override
   public String toString() {
     return "inc.i" + " " + getLocal() + " " + getConstant();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("inc.i");
     up.literal(" ");

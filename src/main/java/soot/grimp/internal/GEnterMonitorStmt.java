@@ -34,6 +34,7 @@ public class GEnterMonitorStmt extends JEnterMonitorStmt {
     super(Grimp.v().newExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new GEnterMonitorStmt(Grimp.cloneIfNecessary(getOp()));
   }

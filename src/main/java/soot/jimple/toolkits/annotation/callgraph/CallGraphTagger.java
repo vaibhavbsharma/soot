@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -33,9 +36,6 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.tagkit.Host;
 import soot.tagkit.LinkTag;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class CallGraphTagger extends BodyTransformer {
 
   public CallGraphTagger(Singletons.Global g) {}
@@ -46,6 +46,7 @@ public class CallGraphTagger extends BodyTransformer {
 
   private MethodToContexts methodToContexts;
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 
     CallGraph cg = Scene.v().getCallGraph();
@@ -74,8 +75,8 @@ public class CallGraphTagger extends BodyTransformer {
     }
 
     SootMethod m = b.getMethod();
-    for (Iterator momcIt = methodToContexts.get(m).iterator(); momcIt.hasNext(); ) {
-      final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
+    for (Object element : methodToContexts.get(m)) {
+      final MethodOrMethodContext momc = (MethodOrMethodContext) element;
       Iterator callerEdges = cg.edgesInto(momc);
       while (callerEdges.hasNext()) {
         Edge callEdge = (Edge) callerEdges.next();

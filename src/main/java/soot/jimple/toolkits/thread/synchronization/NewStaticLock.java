@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.NullType;
 import soot.SootClass;
 import soot.Type;
@@ -7,9 +10,6 @@ import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 // Written by Richard L. Halpert on August 11, 2007
 // Acts as a dummy value that gets put in a transaction's lockset,
@@ -36,6 +36,7 @@ public class NewStaticLock implements Value {
   }
 
   /** Clones the object. Not implemented here. */
+  @Override
   public Object clone() {
     return new NewStaticLock(sc);
   }
@@ -44,10 +45,12 @@ public class NewStaticLock implements Value {
    * Returns true if this object is structurally equivalent to c. AbstractDataSources are equal and
    * equivalent if their sourcename is the same
    */
+  @Override
   public boolean equivTo(Object c) {
     return equals(c);
   }
 
+  @Override
   public boolean equals(Object c) {
     if (c instanceof NewStaticLock) {
       return ((NewStaticLock) c).idnum == idnum;
@@ -56,24 +59,30 @@ public class NewStaticLock implements Value {
   }
 
   /** Returns a hash code consistent with structural equality for this object. */
+  @Override
   public int equivHashCode() {
     return hashCode();
   }
 
+  @Override
   public int hashCode() {
     return idnum;
   }
 
+  @Override
   public void toString(UnitPrinter up) {}
 
+  @Override
   public Type getType() {
     return NullType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     throw new RuntimeException("Not Implemented");
   }
 
+  @Override
   public String toString() {
     return "<new static lock in " + sc.toString() + ">";
   }

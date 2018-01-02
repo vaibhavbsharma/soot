@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.toolkits;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -32,9 +35,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class CondTransformer extends BodyTransformer {
   public CondTransformer(Singletons.Global g) {}
 
@@ -46,6 +46,7 @@ public class CondTransformer extends BodyTransformer {
   private Stmt[] stmtSeq = new Stmt[SEQ_LENGTH];
   private boolean sameGoto = true;
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 
     // G.v().out.println("running cond and/or transformer");

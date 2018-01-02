@@ -30,19 +30,23 @@ public class SETLabeledBlockNode extends SETNode {
     add_SubBody(body);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     return ((SETNode) body2childChain.get(subBodies.get(0)).getLast()).get_NaturalExits();
   }
 
+  @Override
   public ASTNode emit_AST() {
     return new ASTLabeledBlockNode(
         get_Label(), emit_ASTBody(body2childChain.get(subBodies.get(0))));
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return ((SETNode) body2childChain.get(subBodies.get(0)).getFirst()).get_EntryStmt();
   }
 
+  @Override
   protected boolean resolve(SETNode parent) {
     throw new RuntimeException("Attempting auto-nest a SETLabeledBlockNode.");
   }

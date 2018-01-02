@@ -35,10 +35,12 @@ class WeightedDirectedEdge {
     this.weight = weight;
   }
 
+  @Override
   public int hashCode() {
     return from.hashCode() + to.hashCode() + weight;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof WeightedDirectedEdge) {
       WeightedDirectedEdge another = (WeightedDirectedEdge) other;
@@ -49,6 +51,7 @@ class WeightedDirectedEdge {
     return false;
   }
 
+  @Override
   public String toString() {
     return from + "->" + to + "=" + weight;
   }

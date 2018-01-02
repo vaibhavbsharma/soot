@@ -1,12 +1,5 @@
 package soot.toolkits.exceptions;
 
-import soot.AnySubType;
-import soot.RefLikeType;
-import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
-import soot.options.Options;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,6 +7,13 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import soot.AnySubType;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.options.Options;
 
 /** Class which packages together some objects useful in unit tests of exception handling. */
 public class ExceptionTestUtility {
@@ -203,7 +203,7 @@ public class ExceptionTestUtility {
 
     VM_ERRORS =
         Collections.unmodifiableSet(
-            new ExceptionHashSet<RefLikeType>(
+            new ExceptionHashSet<>(
                 Arrays.asList(
                     new RefLikeType[] {
                       THREAD_DEATH,
@@ -213,103 +213,103 @@ public class ExceptionTestUtility {
                       UNKNOWN_ERROR,
                     })));
 
-    Set<RefLikeType> temp = new ExceptionHashSet<RefLikeType>(VM_ERRORS);
+    Set<RefLikeType> temp = new ExceptionHashSet<>(VM_ERRORS);
     temp.add(VIRTUAL_MACHINE_ERROR);
     temp.add(ERROR);
     temp.add(THROWABLE);
     VM_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_ERRORS);
+    temp = new ExceptionHashSet<>(VM_ERRORS);
     temp.add(CLASS_CIRCULARITY_ERROR);
     temp.add(ILLEGAL_ACCESS_ERROR);
     temp.add(INCOMPATIBLE_CLASS_CHANGE_ERROR);
     temp.add(LINKAGE_ERROR);
     temp.add(NO_CLASS_DEF_FOUND_ERROR);
     temp.add(VERIFY_ERROR);
-    Set<RefLikeType> tempForRep = new ExceptionHashSet<RefLikeType>(temp);
+    Set<RefLikeType> tempForRep = new ExceptionHashSet<>(temp);
     tempForRep.add(AnySubType.v(CLASS_FORMAT_ERROR));
     VM_AND_RESOLVE_CLASS_ERRORS_REP = Collections.unmodifiableSet(tempForRep);
     temp.add(CLASS_FORMAT_ERROR);
     temp.add(UNSUPPORTED_CLASS_VERSION_ERROR);
     VM_AND_RESOLVE_CLASS_ERRORS = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_CLASS_ERRORS);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_CLASS_ERRORS);
     temp.add(VIRTUAL_MACHINE_ERROR);
     temp.add(ERROR);
     temp.add(THROWABLE);
     VM_AND_RESOLVE_CLASS_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_CLASS_ERRORS_REP);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_CLASS_ERRORS_REP);
     temp.add(NO_SUCH_FIELD_ERROR);
     VM_AND_RESOLVE_FIELD_ERRORS_REP = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_CLASS_ERRORS);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_CLASS_ERRORS);
     temp.add(NO_SUCH_FIELD_ERROR);
     VM_AND_RESOLVE_FIELD_ERRORS = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_FIELD_ERRORS);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_FIELD_ERRORS);
     temp.add(VIRTUAL_MACHINE_ERROR);
     temp.add(ERROR);
     temp.add(THROWABLE);
     VM_AND_RESOLVE_FIELD_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_CLASS_ERRORS_REP);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_CLASS_ERRORS_REP);
     temp.add(ABSTRACT_METHOD_ERROR);
     temp.add(NO_SUCH_METHOD_ERROR);
     temp.add(UNSATISFIED_LINK_ERROR);
     VM_AND_RESOLVE_METHOD_ERRORS_REP = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_CLASS_ERRORS);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_CLASS_ERRORS);
     temp.add(ABSTRACT_METHOD_ERROR);
     temp.add(NO_SUCH_METHOD_ERROR);
     temp.add(UNSATISFIED_LINK_ERROR);
     VM_AND_RESOLVE_METHOD_ERRORS = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_METHOD_ERRORS);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_METHOD_ERRORS);
     temp.add(VIRTUAL_MACHINE_ERROR);
     temp.add(ERROR);
     temp.add(THROWABLE);
     VM_AND_RESOLVE_METHOD_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_METHOD_ERRORS_PLUS_SUPERTYPES);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_METHOD_ERRORS_PLUS_SUPERTYPES);
     temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
     ALL_ERRORS_REP = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_AND_RESOLVE_METHOD_ERRORS);
+    temp = new ExceptionHashSet<>(VM_AND_RESOLVE_METHOD_ERRORS);
     temp.add(NO_SUCH_FIELD_ERROR);
     temp.add(EXCEPTION_IN_INITIALIZER_ERROR);
     temp.add(INSTANTIATION_ERROR);
     temp.add(AWT_ERROR);
     ALL_TEST_ERRORS = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(ALL_TEST_ERRORS);
+    temp = new ExceptionHashSet<>(ALL_TEST_ERRORS);
     temp.add(VIRTUAL_MACHINE_ERROR);
     temp.add(ERROR);
     temp.add(THROWABLE);
     ALL_TEST_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_ERRORS);
+    temp = new ExceptionHashSet<>(VM_ERRORS);
     temp.add(ILLEGAL_MONITOR_STATE_EXCEPTION);
     temp.add(NULL_POINTER_EXCEPTION);
     PERENNIAL_THROW_EXCEPTIONS = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(VM_ERRORS_PLUS_SUPERTYPES);
+    temp = new ExceptionHashSet<>(VM_ERRORS_PLUS_SUPERTYPES);
     temp.add(ILLEGAL_MONITOR_STATE_EXCEPTION);
     temp.add(NULL_POINTER_EXCEPTION);
     temp.add(RUNTIME_EXCEPTION);
     temp.add(EXCEPTION);
     PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(PERENNIAL_THROW_EXCEPTIONS);
+    temp = new ExceptionHashSet<>(PERENNIAL_THROW_EXCEPTIONS);
     temp.add(INCOMPATIBLE_CLASS_CHANGE_ERROR);
     THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES);
+    temp = new ExceptionHashSet<>(PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES);
     temp.add(INCOMPATIBLE_CLASS_CHANGE_ERROR);
     temp.add(LINKAGE_ERROR);
     THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE);
+    temp = new ExceptionHashSet<>(THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE);
     temp.add(ABSTRACT_METHOD_ERROR);
     temp.add(ILLEGAL_ACCESS_ERROR);
     temp.add(INSTANTIATION_ERROR);
@@ -317,7 +317,7 @@ public class ExceptionTestUtility {
     temp.add(NO_SUCH_METHOD_ERROR);
     THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES = Collections.unmodifiableSet(temp);
 
-    temp = new ExceptionHashSet<RefLikeType>(THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUPERTYPES);
+    temp = new ExceptionHashSet<>(THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUPERTYPES);
     temp.add(ABSTRACT_METHOD_ERROR);
     temp.add(ILLEGAL_ACCESS_ERROR);
     temp.add(INSTANTIATION_ERROR);
@@ -327,7 +327,7 @@ public class ExceptionTestUtility {
         Collections.unmodifiableSet(temp);
 
     ExceptionHashSet<RefType> tempTest =
-        new ExceptionHashSet<RefType>(
+        new ExceptionHashSet<>(
             Arrays.asList(
                 THROWABLE,
                 EXCEPTION,
@@ -367,7 +367,7 @@ public class ExceptionTestUtility {
                 UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION));
     ALL_TEST_THROWABLES = Collections.unmodifiableSet(tempTest);
 
-    temp = new ExceptionHashSet<RefLikeType>();
+    temp = new ExceptionHashSet<>();
     temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
     ALL_THROWABLES_REP = Collections.unmodifiableSet(temp);
   }
@@ -429,7 +429,7 @@ public class ExceptionTestUtility {
    * @param thrownSet <code>ThrowableSet</code> representing some set of possible exceptions.
    */
   public Set<RefType> catchableSubset(ThrowableSet thrownSet) {
-    Set<RefType> result = new ExceptionHashSet<RefType>(ALL_TEST_THROWABLES.size());
+    Set<RefType> result = new ExceptionHashSet<>(ALL_TEST_THROWABLES.size());
     for (RefType e : ALL_TEST_THROWABLES) {
       if (thrownSet.catchableAs(e)) {
         result.add(e);
@@ -492,11 +492,13 @@ public class ExceptionTestUtility {
       super(initialCapacity);
     }
 
+    @Override
     public String toString() {
       StringBuffer result = new StringBuffer();
       RefLikeType[] contents = (RefLikeType[]) this.toArray();
       Comparator<RefLikeType> comparator =
           new Comparator<RefLikeType>() {
+            @Override
             public int compare(RefLikeType o1, RefLikeType o2) {
               // The order doesn't matter, so long as it is consistent.
               return o1.toString().compareTo(o2.toString());
@@ -504,11 +506,11 @@ public class ExceptionTestUtility {
           };
       Arrays.sort(contents, comparator);
       result.append("\nExceptionHashSet<");
-      for (int i = 0; i < contents.length; i++) {
+      for (RefLikeType content : contents) {
         result.append("\n\t");
-        result.append(contents[i].toString());
+        result.append(content.toString());
         result.append("<");
-        result.append(Integer.toHexString(contents[i].hashCode()));
+        result.append(Integer.toHexString(content.hashCode()));
         result.append(">");
       }
       result.append("\n>ExceptionHashSet");

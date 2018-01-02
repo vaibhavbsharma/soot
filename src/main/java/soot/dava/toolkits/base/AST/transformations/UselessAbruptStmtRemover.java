@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -37,9 +40,6 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 import soot.dava.toolkits.base.AST.traversals.LabelToNodeMapper;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
-import java.util.List;
 
 /*
  * It has been seen that a lot of times there are break statements targeting
@@ -78,12 +78,14 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
     finder = null;
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     methodNode = node;
     mapper = new LabelToNodeMapper();
     methodNode.apply(mapper);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
     Iterator<AugmentedStmt> it = node.getStatements().iterator();
     AugmentedStmt remove = null;
@@ -127,24 +129,29 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
         methodNode.apply(finder);
       }
 
-      if (DEBUG) System.out.println("Starting useless check for abrupt stmt: " + abrupt);
+      if (DEBUG) {
+        System.out.println("Starting useless check for abrupt stmt: " + abrupt);
+      }
 
       // start condition is that ancestor is the stmt seq node
       ASTNode ancestor = node;
 
       while (ancestor != target) {
         Object tempParent = finder.getParentOf(ancestor);
-        if (tempParent == null)
+        if (tempParent == null) {
           throw new DecompilationException("Parent found was null!!. Report to Developer");
+        }
 
         ASTNode ancestorsParent = (ASTNode) tempParent;
-        if (DEBUG)
+        if (DEBUG) {
           System.out.println("\tCurrent ancestorsParent has type" + ancestorsParent.getClass());
+        }
 
         // ancestor should be last child of ancestorsParent
         if (!checkChildLastInParent(ancestor, ancestorsParent)) {
-          if (DEBUG)
+          if (DEBUG) {
             System.out.println("\t\tCurrent ancestorParent has more children after this ancestor");
+          }
 
           // return from the method since this is the last stmt and we cant do anything
           return;
@@ -156,14 +163,17 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
             || ancestorsParent instanceof ASTUnconditionalLoopNode
             || ancestorsParent instanceof ASTForLoopNode
             || ancestorsParent instanceof ASTSwitchNode) {
-          if (DEBUG)
+          if (DEBUG) {
             System.out.println("\t\tAncestorsParent is a loop shouldnt remove abrupt stmt");
+          }
           return;
         }
         ancestor = ancestorsParent;
       }
 
-      if (DEBUG) System.out.println("\tGot to target without returning means we can remove stmt");
+      if (DEBUG) {
+        System.out.println("\tGot to target without returning means we can remove stmt");
+      }
 
       remove = as;
     } // end of while going through the statement sequence
@@ -171,10 +181,14 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
     if (remove != null) {
       List<AugmentedStmt> stmts = node.getStatements();
       stmts.remove(remove);
-      if (DEBUG) System.out.println("\tRemoved abrupt stmt");
+      if (DEBUG) {
+        System.out.println("\tRemoved abrupt stmt");
+      }
 
       if (target != null) {
-        if (DEBUG) System.out.println("Invoking findAndKill on the target");
+        if (DEBUG) {
+          System.out.println("Invoking findAndKill on the target");
+        }
         UselessLabelFinder.v().findAndKill(target);
       }
       // TODO what if we just emptied a stmt seq block??
@@ -192,8 +206,11 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 
     while (it.hasNext()) {
       List subBody = null;
-      if (parent instanceof ASTTryNode) subBody = (List) ((ASTTryNode.container) it.next()).o;
-      else subBody = (List) it.next();
+      if (parent instanceof ASTTryNode) {
+        subBody = (List) ((ASTTryNode.container) it.next()).o;
+      } else {
+        subBody = (List) it.next();
+      }
 
       if (subBody.contains(child)) {
         return subBody.indexOf(child) == subBody.size() - 1;

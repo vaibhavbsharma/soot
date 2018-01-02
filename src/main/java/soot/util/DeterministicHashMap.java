@@ -38,7 +38,7 @@ import java.util.Set;
  * <p>This is quite useful for maps of Locals, to avoid nondeterministic local-name drift.
  */
 public class DeterministicHashMap<K, V> extends HashMap<K, V> {
-  Set<K> keys = new TrustingMonotonicArraySet<K>();
+  Set<K> keys = new TrustingMonotonicArraySet<>();
 
   /** Constructs a DeterministicHashMap with the given initial capacity. */
   public DeterministicHashMap(int initialCapacity) {
@@ -53,7 +53,9 @@ public class DeterministicHashMap<K, V> extends HashMap<K, V> {
   /** Inserts a mapping in this HashMap from <code>key</code> to <code>value</code>. */
   @Override
   public V put(K key, V value) {
-    if (!containsKey(key)) keys.add(key);
+    if (!containsKey(key)) {
+      keys.add(key);
+    }
 
     return super.put(key, value);
   }
@@ -90,15 +92,23 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
   public TrustingMonotonicArraySet(T[] elements) {
     this();
 
-    for (T element : elements) add(element);
+    for (T element : elements) {
+      add(element);
+    }
   }
 
+  @Override
   public void clear() {
     numElements = 0;
   }
 
+  @Override
   public boolean contains(Object obj) {
-    for (int i = 0; i < numElements; i++) if (elements[i].equals(obj)) return true;
+    for (int i = 0; i < numElements; i++) {
+      if (elements[i].equals(obj)) {
+        return true;
+      }
+    }
 
     return false;
   }
@@ -106,7 +116,9 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
   @Override
   public boolean add(T e) {
     // Expand array if necessary
-    if (numElements == maxElements) doubleCapacity();
+    if (numElements == maxElements) {
+      doubleCapacity();
+    }
 
     // Add element
     elements[numElements++] = e;
@@ -130,21 +142,25 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
       nextIndex = 0;
     }
 
+    @Override
     public boolean hasNext() {
       return nextIndex < numElements;
     }
 
     @Override
     public T next() throws NoSuchElementException {
-      if (!(nextIndex < numElements)) throw new NoSuchElementException();
+      if (!(nextIndex < numElements)) {
+        throw new NoSuchElementException();
+      }
 
       return elements[nextIndex++];
     }
 
     @Override
     public void remove() throws NoSuchElementException {
-      if (nextIndex == 0) throw new NoSuchElementException();
-      else {
+      if (nextIndex == 0) {
+        throw new NoSuchElementException();
+      } else {
         removeElementAt(nextIndex - 1);
         nextIndex = nextIndex - 1;
       }

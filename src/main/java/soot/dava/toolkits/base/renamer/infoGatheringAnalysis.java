@@ -19,6 +19,11 @@
 
 package soot.dava.toolkits.base.renamer;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.BooleanType;
 import soot.Local;
 import soot.RefType;
@@ -55,11 +60,6 @@ import soot.jimple.NeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.internal.AbstractInstanceFieldRef;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 
 public class infoGatheringAnalysis extends DepthFirstAdapter {
 
@@ -127,7 +127,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     while (localIt.hasNext()) {
       Local local = (Local) localIt.next();
 
-      if (params.contains(local) || thisLocals.contains(local)) continue;
+      if (params.contains(local) || thisLocals.contains(local)) {
+        continue;
+      }
       localList.add(local);
     }
 
@@ -171,6 +173,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   The method sets the inDefinitionStmt flag to true and if this is a local assignment
   The ref to the local is stored in definedLocal
   */
+  @Override
   public void inDefinitionStmt(DefinitionStmt s) {
     inDefinitionStmt = true;
     // System.out.println(s);
@@ -183,14 +186,18 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
        * Need not be renamed. So we check whether definedLocal is present in the info set
        * if it is we set this other wise we dont
        */
-      if (info.contains((Local) v)) definedLocal = (Local) v;
-      else definedLocal = null;
+      if (info.contains((Local) v)) {
+        definedLocal = (Local) v;
+      } else {
+        definedLocal = null;
+      }
 
     } else {
       // System.out.println("Not a local"+v);
     }
   }
 
+  @Override
   public void outDefinitionStmt(DefinitionStmt s) {
     // checking casting here because we want to see if the expr
     // on the right of def stmt is a cast expr not whether it contains a cast expr
@@ -207,6 +214,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   int local = field
   int local = class.field
   */
+  @Override
   public void inStaticFieldRef(StaticFieldRef sfr) {
     if (inDefinitionStmt && (definedLocal != null)) {
       SootField field = sfr.getField();
@@ -220,6 +228,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   or int local = obj.field
   */
 
+  @Override
   public void inInstanceFieldRef(InstanceFieldRef ifr) {
     if (ifr instanceof AbstractInstanceFieldRef) {
       if (inDefinitionStmt && (definedLocal != null)) {
@@ -236,6 +245,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
    * If it is a newInvoke expr we know that the name of the class can come in handy
    * while renaming because this could be a subtype
    */
+  @Override
   public void outInvokeExpr(InvokeExpr ie) {
     // If this is within a definitionStmt of a local
     if (inDefinitionStmt && (definedLocal != null)) {
@@ -260,27 +270,38 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   This is the object for a flag use in a conditional
   If the value is a local set the appropriate heuristic
   */
+  @Override
   public void inASTUnaryCondition(ASTUnaryCondition uc) {
     Value val = uc.getValue();
     if (val instanceof Local) {
-      if (inIf) info.setHeuristic((Local) val, infoGatheringAnalysis.IF);
-      if (inWhile) info.setHeuristic((Local) val, infoGatheringAnalysis.WHILE);
+      if (inIf) {
+        info.setHeuristic((Local) val, infoGatheringAnalysis.IF);
+      }
+      if (inWhile) {
+        info.setHeuristic((Local) val, infoGatheringAnalysis.WHILE);
+      }
     }
   }
 
+  @Override
   public void inASTBinaryCondition(ASTBinaryCondition bc) {
     ConditionExpr condition = bc.getConditionExpr();
 
     Local local = checkBooleanUse(condition);
     if (local != null) {
-      if (inIf) info.setHeuristic(local, infoGatheringAnalysis.IF);
-      if (inWhile) info.setHeuristic(local, infoGatheringAnalysis.WHILE);
+      if (inIf) {
+        info.setHeuristic(local, infoGatheringAnalysis.IF);
+      }
+      if (inWhile) {
+        info.setHeuristic(local, infoGatheringAnalysis.WHILE);
+      }
     }
   }
 
   /*
   Setting if to true in inASTIfNode so that later we know whether this is a flag use in an if
   */
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     inIf = true;
   }
@@ -288,6 +309,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   Going out of if set flag to false
   */
+  @Override
   public void outASTIfNode(ASTIfNode node) {
     inIf = false;
   }
@@ -295,6 +317,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   Setting if to true in inASTIfElseNode so that later we know whether this is a flag use in an ifElse
   */
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     inIf = true;
   }
@@ -302,6 +325,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   Going out of ifElse set flag to false
   */
+  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     inIf = false;
   }
@@ -309,6 +333,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   Setting if to true in inASTWhileNode so that later we know whether this is a flag use in a WhileNode
   */
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     inWhile = true;
   }
@@ -316,6 +341,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   setting flag to false
   */
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     inWhile = false;
   }
@@ -323,6 +349,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   Setting if to true in inASTDoWhileNode so that later we know whether this is a flag use in a WhileNode
   */
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     inWhile = true;
   }
@@ -330,6 +357,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   setting flag to false
   */
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     inWhile = false;
   }
@@ -337,21 +365,29 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   Check the key of the switch statement to see if its a local
   */
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value key = node.get_Key();
-    if (key instanceof Local) info.setHeuristic((Local) key, infoGatheringAnalysis.SWITCH);
+    if (key instanceof Local) {
+      info.setHeuristic((Local) key, infoGatheringAnalysis.SWITCH);
+    }
   }
 
+  @Override
   public void inArrayRef(ArrayRef ar) {
     Value index = ar.getIndex();
-    if (index instanceof Local) info.setHeuristic((Local) index, infoGatheringAnalysis.ARRAYINDEX);
+    if (index instanceof Local) {
+      info.setHeuristic((Local) index, infoGatheringAnalysis.ARRAYINDEX);
+    }
   }
 
+  @Override
   public void inASTTryNode(ASTTryNode node) {}
 
   /*
   setting flag to true
   */
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     inFor = true;
     for (AugmentedStmt as : node.getUpdate()) {
@@ -368,6 +404,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
   setting flag to false
   */
+  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     inFor = false;
   }
@@ -376,6 +413,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   If there are any locals at this point who do not have any className set
   it might be a good idea to store that information
   */
+  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     if (DEBUG) {
       System.out.println("SET START");
@@ -398,17 +436,26 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
       Value op2 = condition.getOp2();
       if (op1 instanceof DIntConstant) {
         Type op1Type = ((DIntConstant) op1).type;
-        if (op1Type instanceof BooleanType) booleanUse = true;
+        if (op1Type instanceof BooleanType) {
+          booleanUse = true;
+        }
       } else if (op2 instanceof DIntConstant) {
         Type op2Type = ((DIntConstant) op2).type;
-        if (op2Type instanceof BooleanType) booleanUse = true;
+        if (op2Type instanceof BooleanType) {
+          booleanUse = true;
+        }
       }
       if (booleanUse) {
         // at this point we know that one of the values op1 or op2 was a boolean
         // check whether the other is a local
-        if (op1 instanceof Local) return (Local) op1;
-        else if (op2 instanceof Local) return (Local) op2;
-      } else return null; // meaning no local used as boolean found
+        if (op1 instanceof Local) {
+          return (Local) op1;
+        } else if (op2 instanceof Local) {
+          return (Local) op2;
+        }
+      } else {
+        return null; // meaning no local used as boolean found
+      }
     }
     return null; // meaning no local used as boolean found
   }
@@ -419,6 +466,8 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 
   public void debug(String methodName, String debug) {
 
-    if (DEBUG) System.out.println(methodName + "    DEBUG: " + debug);
+    if (DEBUG) {
+      System.out.println(methodName + "    DEBUG: " + debug);
+    }
   }
 }

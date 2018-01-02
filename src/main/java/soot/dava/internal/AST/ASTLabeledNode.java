@@ -41,6 +41,7 @@ public abstract class ASTLabeledNode extends ASTNode {
     this.label = label;
   }
 
+  @Override
   public void perform_Analysis(ASTAnalysis a) {
     perform_AnalysisOnSubBodies(a);
   }
@@ -54,8 +55,9 @@ public abstract class ASTLabeledNode extends ASTNode {
   }
 
   public String label_toString() {
-    if (label.toString() == null) return new String();
-    else {
+    if (label.toString() == null) {
+      return new String();
+    } else {
       StringBuffer b = new StringBuffer();
 
       b.append(label.toString());

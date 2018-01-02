@@ -19,6 +19,10 @@
 
 package soot.jbco.util;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.PatchingChain;
 import soot.Trap;
@@ -27,19 +31,17 @@ import soot.baf.JSRInst;
 import soot.baf.TableSwitchInst;
 import soot.baf.TargetArgInst;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 public class Debugger {
 
   public static void printBaf(Body b) {
 
     System.out.println(b.getMethod().getName() + "\n");
     int i = 0;
-    Map<Unit, Integer> index = new HashMap<Unit, Integer>();
+    Map<Unit, Integer> index = new HashMap<>();
     Iterator<Unit> it = b.getUnits().iterator();
-    while (it.hasNext()) index.put(it.next(), new Integer(i++));
+    while (it.hasNext()) {
+      index.put(it.next(), new Integer(i++));
+    }
     it = b.getUnits().iterator();
     while (it.hasNext()) {
       Object o = it.next();
@@ -57,10 +59,12 @@ public class Debugger {
 
   public static void printUnits(Body b, String msg) {
     int i = 0;
-    Map<Unit, Integer> numbers = new HashMap<Unit, Integer>();
+    Map<Unit, Integer> numbers = new HashMap<>();
     PatchingChain<Unit> u = b.getUnits();
     Iterator<Unit> it = u.snapshotIterator();
-    while (it.hasNext()) numbers.put(it.next(), new Integer(i++));
+    while (it.hasNext()) {
+      numbers.put(it.next(), new Integer(i++));
+    }
 
     int jsr = 0;
     System.out.println("\r\r" + b.getMethod().getName() + "  " + msg);
@@ -69,10 +73,14 @@ public class Debugger {
       Unit unit = udit.next();
       Integer numb = numbers.get(unit);
 
-      if (numb.intValue() == 149) System.out.println("hi");
+      if (numb.intValue() == 149) {
+        System.out.println("hi");
+      }
 
       if (unit instanceof TargetArgInst) {
-        if (unit instanceof JSRInst) jsr++;
+        if (unit instanceof JSRInst) {
+          jsr++;
+        }
         TargetArgInst ti = (TargetArgInst) unit;
         if (ti.getTarget() == null) {
           System.out.println(unit + " null null null null null null null null null");
@@ -94,7 +102,7 @@ public class Debugger {
                 + "  "
                 + numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
-        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++)
+        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
           System.out.println(
               "\t "
                   + x
@@ -102,6 +110,7 @@ public class Debugger {
                   + tswi.getTarget(index)
                   + "  "
                   + numbers.get(tswi.getTarget(index++)).toString());
+        }
         continue;
       }
       System.out.println(numb.toString() + " " + unit);
@@ -123,14 +132,18 @@ public class Debugger {
               + " "
               + t.getHandlerUnit());
     }
-    if (jsr > 0) System.out.println("\r\tJSR Instructions: " + jsr);
+    if (jsr > 0) {
+      System.out.println("\r\tJSR Instructions: " + jsr);
+    }
   }
 
   public static void printUnits(PatchingChain<Unit> u, String msg) {
     int i = 0;
-    HashMap<Unit, Integer> numbers = new HashMap<Unit, Integer>();
+    HashMap<Unit, Integer> numbers = new HashMap<>();
     Iterator<Unit> it = u.snapshotIterator();
-    while (it.hasNext()) numbers.put(it.next(), new Integer(i++));
+    while (it.hasNext()) {
+      numbers.put(it.next(), new Integer(i++));
+    }
 
     System.out.println("\r\r***********  " + msg);
     Iterator<Unit> udit = u.snapshotIterator();
@@ -138,7 +151,9 @@ public class Debugger {
       Unit unit = udit.next();
       Integer numb = numbers.get(unit);
 
-      if (numb.intValue() == 149) System.out.println("hi");
+      if (numb.intValue() == 149) {
+        System.out.println("hi");
+      }
 
       if (unit instanceof TargetArgInst) {
         TargetArgInst ti = (TargetArgInst) unit;
@@ -162,7 +177,7 @@ public class Debugger {
                 + "  "
                 + numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
-        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++)
+        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
           System.out.println(
               "\t "
                   + x
@@ -170,6 +185,7 @@ public class Debugger {
                   + tswi.getTarget(index)
                   + "  "
                   + numbers.get(tswi.getTarget(index++)).toString());
+        }
         continue;
       }
       System.out.println(numb.toString() + " " + unit);

@@ -42,6 +42,7 @@ public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpres
     super(dg);
   }
 
+  @Override
   protected FlowSet<Value> newInitialFlow() {
     FlowSet<Value> newSet = emptySet.clone();
     // ((ToppedSet)newSet).setTop(true);

@@ -38,11 +38,14 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
     Iterator it = methodInst.formalTypes().iterator();
     while (it.hasNext()) {
       soot.Type compareType = Util.getSootType((polyglot.types.Type) it.next());
-      if (compareType.equals(sootType)) return true;
+      if (compareType.equals(sootType)) {
+        return true;
+      }
     }
     return false;
   }
 
+  @Override
   public soot.Body getBody(soot.SootMethod sootMethod, String phaseName) {
 
     soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);

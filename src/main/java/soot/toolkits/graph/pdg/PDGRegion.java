@@ -18,6 +18,12 @@
  */
 package soot.toolkits.graph.pdg;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.G;
 import soot.SootClass;
 import soot.SootMethod;
@@ -25,12 +31,6 @@ import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This represents a region of control dependence obtained by constructing a program dependence
@@ -53,7 +53,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   // relation between regions.
   private IRegion m_parent = null;
   // The following keeps the child regions
-  private List<IRegion> m_children = new ArrayList<IRegion>();
+  private List<IRegion> m_children = new ArrayList<>();
 
   public PDGRegion(int id, SootMethod m, SootClass c, UnitGraph ug, PDGNode node) {
     this(id, new ArrayList<PDGNode>(), m, c, ug, node);
@@ -70,7 +70,9 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     this.m_units = null;
     this.m_corrspondingPDGNode = node;
 
-    if (Options.v().verbose()) G.v().out.println("New pdg region create: " + id);
+    if (Options.v().verbose()) {
+      G.v().out.println("New pdg region create: " + id);
+    }
   }
 
   public PDGRegion(PDGNode node) {
@@ -87,6 +89,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return this.m_corrspondingPDGNode;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Object clone() {
     PDGRegion r =
@@ -97,10 +100,12 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return r;
   }
 
+  @Override
   public SootMethod getSootMethod() {
     return this.m_method;
   }
 
+  @Override
   public SootClass getSootClass() {
     return this.m_class;
   }
@@ -109,6 +114,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return this.m_nodes;
   }
 
+  @Override
   public UnitGraph getUnitGraph() {
     return this.m_unitGraph;
   }
@@ -127,12 +133,18 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
       m_list = list;
     }
 
+    @Override
     public boolean hasNext() {
-      if (beginning) if (m_list.size() > 0) return true;
+      if (beginning) {
+        if (m_list.size() > 0) {
+          return true;
+        }
+      }
 
       return (m_current != null && m_current.getNext() != null);
     }
 
+    @Override
     public PDGNode next() {
 
       if (beginning) {
@@ -151,7 +163,9 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
          * PDGNodes or CFG nodes.)
          *
          */
-        while (m_current.getPrev() != null) m_current = m_current.getPrev();
+        while (m_current.getPrev() != null) {
+          m_current = m_current.getPrev();
+        }
 
         if (m_current.getType() != PDGNode.Type.CFGNODE
             && m_current.getAttrib() != PDGNode.Attribute.LOOPHEADER) {
@@ -161,13 +175,14 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
            *
            */
 
-          for (Iterator<PDGNode> depItr = m_list.iterator(); depItr.hasNext(); ) {
-            PDGNode dep = depItr.next();
+          for (PDGNode dep : m_list) {
             if (dep.getType() == PDGNode.Type.CFGNODE
                 || dep.getAttrib() == PDGNode.Attribute.LOOPHEADER) {
               m_current = dep;
               // go to the beginning of the flow
-              while (m_current.getPrev() != null) m_current = m_current.getPrev();
+              while (m_current.getPrev() != null) {
+                m_current = m_current.getPrev();
+              }
               break;
             }
           }
@@ -175,11 +190,14 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
         return m_current;
       }
 
-      if (!hasNext()) throw new RuntimeException("No more nodes!");
+      if (!hasNext()) {
+        throw new RuntimeException("No more nodes!");
+      }
       m_current = m_current.getNext();
       return m_current;
     }
 
+    @Override
     public void remove() {}
   }
 
@@ -188,18 +206,18 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
    * a ChildPDGFlowIterator that only iterates through the dependent nodes that contribute to the
    * units that belong to a region as defined by a weak region.
    */
+  @Override
   public Iterator<PDGNode> iterator() {
     return new ChildPDGFlowIterator(this.m_nodes);
   }
 
+  @Override
   public List<Unit> getUnits() {
     if (this.m_units == null) {
-      this.m_units = new LinkedList<Unit>();
-      this.m_unit2pdgnode = new LinkedHashMap<Unit, PDGNode>();
+      this.m_units = new LinkedList<>();
+      this.m_unit2pdgnode = new LinkedHashMap<>();
 
-      for (Iterator<PDGNode> itr = this.iterator(); itr.hasNext(); ) {
-        PDGNode node = itr.next();
-
+      for (PDGNode node : this) {
         if (node.getType() == PDGNode.Type.REGION) {
           // Actually, we should only get here if a loop header region is in this region's
           // children list.
@@ -211,8 +229,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
             LoopedPDGNode n = (LoopedPDGNode) node;
             PDGNode header = n.getHeader();
             Block headerBlock = (Block) header.getNode();
-            for (Iterator<Unit> itr1 = headerBlock.iterator(); itr1.hasNext(); ) {
-              Unit u = itr1.next();
+            for (Unit u : headerBlock) {
               ((LinkedList<Unit>) this.m_units).addLast(u);
               this.m_unit2pdgnode.put(u, header);
             }
@@ -220,15 +237,15 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
 
         } else if (node.getType() == PDGNode.Type.CFGNODE) {
           Block b = (Block) node.getNode();
-          for (Iterator<Unit> itr1 = b.iterator(); itr1.hasNext(); ) {
-            Unit u = itr1.next();
+          for (Unit u : b) {
             ((LinkedList<Unit>) this.m_units).addLast(u);
             this.m_unit2pdgnode.put(u, node);
           }
 
-        } else
+        } else {
           throw new RuntimeException(
               "Exception in PDGRegion.getUnits: PDGNode's type is undefined!");
+        }
       }
     }
     return this.m_units;
@@ -239,81 +256,107 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
    * @return The PDGNode that contains that unit, if this unit is in this region.
    */
   public PDGNode unit2PDGNode(Unit u) {
-    if (this.m_unit2pdgnode.containsKey(u)) return this.m_unit2pdgnode.get(u);
-    else return null;
+    if (this.m_unit2pdgnode.containsKey(u)) {
+      return this.m_unit2pdgnode.get(u);
+    } else {
+      return null;
+    }
   }
 
+  @Override
   public List<Unit> getUnits(Unit from, Unit to) {
 
     return m_units.subList(m_units.indexOf(from), m_units.indexOf(to));
   }
 
+  @Override
   public Unit getLast() {
-    if (this.m_units != null)
-      if (this.m_units.size() > 0) return ((LinkedList<Unit>) this.m_units).getLast();
+    if (this.m_units != null) {
+      if (this.m_units.size() > 0) {
+        return ((LinkedList<Unit>) this.m_units).getLast();
+      }
+    }
 
     return null;
   }
 
+  @Override
   public Unit getFirst() {
-    if (this.m_units != null)
-      if (this.m_units.size() > 0) return ((LinkedList<Unit>) this.m_units).getFirst();
+    if (this.m_units != null) {
+      if (this.m_units.size() > 0) {
+        return ((LinkedList<Unit>) this.m_units).getFirst();
+      }
+    }
 
     return null;
   }
 
   // FIXME: return the real list of blocks
+  @Override
   public List<Block> getBlocks() {
-    return new ArrayList<Block>();
+    return new ArrayList<>();
   }
 
   public void addPDGNode(PDGNode node) {
     this.m_nodes.add(node);
   }
 
+  @Override
   public int getID() {
     return this.m_id;
   }
 
+  @Override
   public boolean occursBefore(Unit u1, Unit u2) {
     int i = this.m_units.lastIndexOf(u1);
     int j = this.m_units.lastIndexOf(u2);
 
-    if (i == -1 || j == -1) throw new RuntimeException("These units don't exist in the region!");
+    if (i == -1 || j == -1) {
+      throw new RuntimeException("These units don't exist in the region!");
+    }
 
     return i < j;
   }
 
+  @Override
   public void setParent(IRegion pr) {
     this.m_parent = pr;
   }
 
+  @Override
   public IRegion getParent() {
     return this.m_parent;
   }
 
+  @Override
   public void addChildRegion(IRegion chr) {
-    if (!this.m_children.contains(chr)) this.m_children.add(chr);
+    if (!this.m_children.contains(chr)) {
+      this.m_children.add(chr);
+    }
   }
 
+  @Override
   public List<IRegion> getChildRegions() {
     return this.m_children;
   }
 
+  @Override
   public String toString() {
     String str = new String();
     str += "Begin-----------PDGRegion:  " + this.m_id + "-------------\n";
-    if (this.m_parent != null) str += "Parent is: " + this.m_parent.getID() + "----\n";
+    if (this.m_parent != null) {
+      str += "Parent is: " + this.m_parent.getID() + "----\n";
+    }
     str += "Children Regions are: ";
 
-    for (Iterator<IRegion> ritr = this.m_children.iterator(); ritr.hasNext(); )
-      str += ritr.next().getID() + ", ";
+    for (IRegion iRegion : this.m_children) {
+      str += iRegion.getID() + ", ";
+    }
 
     str += "\nUnits are: \n";
 
     List<Unit> regionUnits = this.getUnits();
-    for (Iterator<Unit> itr = regionUnits.iterator(); itr.hasNext(); ) {
-      Unit u = itr.next();
+    for (Unit u : regionUnits) {
       str += u + "\n";
     }
     str += "End of PDG Region " + this.m_id + " -----------------------------\n";

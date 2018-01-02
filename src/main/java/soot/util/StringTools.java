@@ -48,7 +48,9 @@ public class StringTools {
     cr = lineSeparator.charAt(0);
     lf = -1;
 
-    if (lineSeparator.length() == 2) lf = lineSeparator.charAt(1);
+    if (lineSeparator.length() == 2) {
+      lf = lineSeparator.charAt(1);
+    }
 
     for (char element : fromStringArray) {
       ch = element;
@@ -61,7 +63,9 @@ public class StringTools {
       mini.setLength(0);
       mini.append(Integer.toHexString(ch));
 
-      while (mini.length() < 4) mini.insert(0, "0");
+      while (mini.length() < 4) {
+        mini.insert(0, "0");
+      }
 
       mini.insert(0, "\\u");
       whole.append(mini.toString());
@@ -111,7 +115,9 @@ public class StringTools {
         toStringBuffer.append("\\f");
       } else if (ch >= 32 && ch <= 126) {
         toStringBuffer.append(ch);
-      } else toStringBuffer.append(getUnicodeStringFromChar(ch));
+      } else {
+        toStringBuffer.append(getUnicodeStringFromChar(ch));
+      }
     }
 
     toStringBuffer.append("\"");
@@ -153,16 +159,21 @@ public class StringTools {
     CharacterIterator iter = new StringCharacterIterator(str);
 
     for (char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
-      if (ch != '\\') buf.append(ch);
-      else { // enter escaped mode
+      if (ch != '\\') {
+        buf.append(ch);
+      } else { // enter escaped mode
         ch = iter.next();
         char format;
 
-        if (ch == '\\') buf.append(ch);
-        else if ((format = getCFormatChar(ch)) != '\0') buf.append(format);
-        else if (ch == 'u') { // enter unicode mode
+        if (ch == '\\') {
+          buf.append(ch);
+        } else if ((format = getCFormatChar(ch)) != '\0') {
+          buf.append(format);
+        } else if (ch == 'u') { // enter unicode mode
           StringBuffer mini = new StringBuffer(4);
-          for (int i = 0; i < 4; i++) mini.append(iter.next());
+          for (int i = 0; i < 4; i++) {
+            mini.append(iter.next());
+          }
 
           ch = (char) Integer.parseInt(mini.toString(), 16);
           buf.append(ch);

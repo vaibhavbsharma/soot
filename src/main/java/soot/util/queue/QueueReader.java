@@ -39,37 +39,51 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     this.index = index;
   }
   /** Returns (and removes) the next object in the queue, or null if there are none. */
+  @Override
   @SuppressWarnings("unchecked")
   public final E next() {
-    if (q[index] == null) throw new NoSuchElementException();
+    if (q[index] == null) {
+      throw new NoSuchElementException();
+    }
     if (index == q.length - 1) {
       q = (E[]) q[index];
       index = 0;
-      if (q[index] == null) throw new NoSuchElementException();
+      if (q[index] == null) {
+        throw new NoSuchElementException();
+      }
     }
     E ret = q[index];
-    if (ret == ChunkedQueue.NULL_CONST) ret = null;
+    if (ret == ChunkedQueue.NULL_CONST) {
+      ret = null;
+    }
     index++;
     return ret;
   }
 
   /** Returns true iff there is currently another object in the queue. */
+  @Override
   @SuppressWarnings("unchecked")
   public final boolean hasNext() {
-    if (q[index] == null) return false;
+    if (q[index] == null) {
+      return false;
+    }
     if (index == q.length - 1) {
       q = (E[]) q[index];
       index = 0;
-      if (q[index] == null) return false;
+      if (q[index] == null) {
+        return false;
+      }
     }
     return true;
   }
 
+  @Override
   public final void remove() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public final QueueReader<E> clone() {
-    return new QueueReader<E>(q, index);
+    return new QueueReader<>(q, index);
   }
 }

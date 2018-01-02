@@ -89,6 +89,7 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
   /** Any other statement */
   protected void caseUninterestingStmt(Stmt s) {}
 
+  @Override
   public final void caseAssignStmt(AssignStmt s) {
     statement = s;
     Value lhs = s.getLeftOp();
@@ -130,30 +131,41 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
         }
       } else if (rhs instanceof Constant) {
         caseAssignConstStmt(lhs, (Constant) rhs);
-      } else throw new RuntimeException("unhandled stmt " + s);
+      } else {
+        throw new RuntimeException("unhandled stmt " + s);
+      }
     } else if (lhs instanceof InstanceFieldRef) {
       if (rhs instanceof Local) {
         caseStoreStmt((InstanceFieldRef) lhs, (Local) rhs);
       } else if (rhs instanceof Constant) {
         caseAssignConstStmt(lhs, (Constant) rhs);
-      } else throw new RuntimeException("unhandled stmt " + s);
+      } else {
+        throw new RuntimeException("unhandled stmt " + s);
+      }
     } else if (lhs instanceof ArrayRef) {
       if (rhs instanceof Local) {
         caseArrayStoreStmt((ArrayRef) lhs, (Local) rhs);
       } else if (rhs instanceof Constant) {
         caseAssignConstStmt(lhs, (Constant) rhs);
-      } else throw new RuntimeException("unhandled stmt " + s);
+      } else {
+        throw new RuntimeException("unhandled stmt " + s);
+      }
     } else if (lhs instanceof StaticFieldRef) {
       if (rhs instanceof Local) {
         caseGlobalStoreStmt((StaticFieldRef) lhs, (Local) rhs);
       } else if (rhs instanceof Constant) {
         caseAssignConstStmt(lhs, (Constant) rhs);
-      } else throw new RuntimeException("unhandled stmt " + s);
+      } else {
+        throw new RuntimeException("unhandled stmt " + s);
+      }
     } else if (rhs instanceof Constant) {
       caseAssignConstStmt(lhs, (Constant) rhs);
-    } else throw new RuntimeException("unhandled stmt " + s);
+    } else {
+      throw new RuntimeException("unhandled stmt " + s);
+    }
   }
 
+  @Override
   public final void caseReturnStmt(ReturnStmt s) {
     statement = s;
     Value op = s.getOp();
@@ -168,16 +180,19 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public final void caseReturnVoidStmt(ReturnVoidStmt s) {
     statement = s;
     caseReturnStmt((Local) null);
   }
 
+  @Override
   public final void caseInvokeStmt(InvokeStmt s) {
     statement = s;
     caseInvokeStmt(null, s.getInvokeExpr());
   }
 
+  @Override
   public final void caseIdentityStmt(IdentityStmt s) {
     statement = s;
     Value lhs = s.getLeftOp();
@@ -195,6 +210,7 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public final void caseThrowStmt(ThrowStmt s) {
     statement = s;
     caseThrowStmt((Local) s.getOp());

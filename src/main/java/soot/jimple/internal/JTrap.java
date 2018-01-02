@@ -45,10 +45,12 @@ public class JTrap extends AbstractTrap {
     super(exception, beginStmt, endStmt, handlerStmt);
   }
 
+  @Override
   public Object clone() {
     return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
   }
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer("Trap :");
     buf.append("\nbegin  : ");

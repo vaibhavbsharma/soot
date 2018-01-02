@@ -17,16 +17,18 @@ public class CPVariable {
     this.field = field;
     this.local = null;
 
-    if (!(field.getType() instanceof PrimType))
+    if (!(field.getType() instanceof PrimType)) {
       throw new DavaFlowAnalysisException("Variables managed for CP should only be primitives");
+    }
   }
 
   public CPVariable(Local local) {
     this.field = null;
     this.local = local;
 
-    if (!(local.getType() instanceof PrimType))
+    if (!(local.getType() instanceof PrimType)) {
       throw new DavaFlowAnalysisException("Variables managed for CP should only be primitives");
+    }
   }
 
   public boolean containsLocal() {
@@ -38,15 +40,20 @@ public class CPVariable {
   }
 
   public SootField getSootField() {
-    if (containsSootField()) return field;
-    else
+    if (containsSootField()) {
+      return field;
+    } else {
       throw new DavaFlowAnalysisException(
           "getsootField invoked when variable is not a sootfield!!!");
+    }
   }
 
   public Local getLocal() {
-    if (containsLocal()) return local;
-    else throw new DavaFlowAnalysisException("getLocal invoked when variable is not a local");
+    if (containsLocal()) {
+      return local;
+    } else {
+      throw new DavaFlowAnalysisException("getLocal invoked when variable is not a local");
+    }
   }
 
   /*
@@ -71,9 +78,14 @@ public class CPVariable {
     return false;
   }
 
+  @Override
   public String toString() {
-    if (containsLocal()) return "Local: " + getLocal().getName();
-    else if (containsSootField()) return "SootField: " + getSootField().getName();
-    else return "UNKNOWN CONSTANT_PROPAGATION_VARIABLE";
+    if (containsLocal()) {
+      return "Local: " + getLocal().getName();
+    } else if (containsSootField()) {
+      return "SootField: " + getSootField().getName();
+    } else {
+      return "UNKNOWN CONSTANT_PROPAGATION_VARIABLE";
+    }
   }
 }

@@ -32,6 +32,6 @@ public class ArraySetDupesMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   protected Set<V> createSet() {
-    return new ArraySet<V>(1, false);
+    return new ArraySet<>(1, false);
   }
 }

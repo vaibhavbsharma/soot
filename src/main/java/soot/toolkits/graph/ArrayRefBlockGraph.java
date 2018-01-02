@@ -25,14 +25,13 @@
 
 package soot.toolkits.graph;
 
+import java.util.Set;
+
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
 import soot.baf.Inst;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * A CFG where the nodes are {@link Block} instances, and where {@link Unit}s which include array
@@ -83,6 +82,7 @@ public class ArrayRefBlockGraph extends BlockGraph {
    * @param unitGraph is the <tt>Unit</tt>-level CFG which is to be split into basic blocks.
    * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which are block leaders.
    */
+  @Override
   protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
     Body body = unitGraph.getBody();
     if (body != mBody) {
@@ -91,8 +91,7 @@ public class ArrayRefBlockGraph extends BlockGraph {
     }
     Set<Unit> leaders = super.computeLeaders(unitGraph);
 
-    for (Iterator<Unit> it = body.getUnits().iterator(); it.hasNext(); ) {
-      Unit unit = it.next();
+    for (Unit unit : body.getUnits()) {
       if (((unit instanceof Stmt) && ((Stmt) unit).containsArrayRef())
           || ((unit instanceof Inst) && ((Inst) unit).containsArrayRef())) {
         leaders.add(unit);

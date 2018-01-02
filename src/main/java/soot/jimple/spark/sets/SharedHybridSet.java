@@ -1,12 +1,12 @@
 package soot.jimple.spark.sets;
 
+import java.util.List;
+
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
-
-import java.util.List;
 
 /*
  * Possible sources of inefficiency:
@@ -57,6 +57,7 @@ public class SharedHybridSet extends PointsToSetInternal {
    * When the overflow list overflows, the maximum number of elements that may remain in the
    * overflow list (the rest are moved into the base bit vector)
    */
+  @Override
   public boolean contains(Node n) {
     // Which should be checked first, bitVector or overflow? (for
     // performance)
@@ -64,13 +65,15 @@ public class SharedHybridSet extends PointsToSetInternal {
     // elements
 
     // Check the bit vector
-    if (bitVector != null && bitVector.contains(n)) return true;
+    if (bitVector != null && bitVector.contains(n)) {
+      return true;
+    }
 
     // Check overflow
     return overflow.contains(n);
-
   }
 
+  @Override
   public boolean isEmpty() {
     return numElements == 0;
   }
@@ -117,7 +120,9 @@ public class SharedHybridSet extends PointsToSetInternal {
     } else {
       for (int overFlowSize = 0; overFlowSize < OVERFLOW_THRESHOLD; ++overFlowSize) {
         int bitVectorCardinality = numElements - overFlowSize;
-        if (bitVectorCardinality < 0) break; // We might be trying to add a bitvector
+        if (bitVectorCardinality < 0) {
+          break; // We might be trying to add a bitvector
+        }
         // with <OVERFLOW_THRESHOLD ones (in fact, there might be bitvectors with 0
         // ones).  This results from merging bitvectors and masking out certain values.
         if (bitVectorCardinality < AllSharedHybridNodes.v().lookupMap.map.length
@@ -159,12 +164,15 @@ public class SharedHybridSet extends PointsToSetInternal {
     bitVector = newBitVector;
   }
 
+  @Override
   public boolean add(Node n) {
     /*
      * This algorithm is described in the paper "IBM Research Report: Fast
      * Pointer Analysis" by Hirzel, Dincklage, Diwan, and Hind, pg. 11
      */
-    if (contains(n)) return false;
+    if (contains(n)) {
+      return false;
+    }
     ++numElements;
 
     if (!overflow.full()) {
@@ -173,9 +181,11 @@ public class SharedHybridSet extends PointsToSetInternal {
 
       // Put everything in the bitvector
       PointsToBitVector newBitVector;
-      if (bitVector == null)
+      if (bitVector == null) {
         newBitVector = new PointsToBitVector(pag.getAllocNodeNumberer().size());
-      else newBitVector = new PointsToBitVector(bitVector);
+      } else {
+        newBitVector = new PointsToBitVector(bitVector);
+      }
       newBitVector.add(n); // add n to it
       add(newBitVector, overflow);
 
@@ -218,7 +228,9 @@ public class SharedHybridSet extends PointsToSetInternal {
       // It's possible at this point that exclude could have been passed in non-null,
       // but with no elements.  Simplify the rest of the algorithm by setting it to null
       // in that case.
-      else if (exclude.bitVector == null) exclude = null;
+      else if (exclude.bitVector == null) {
+        exclude = null;
+      }
     }
 
     int originalSize = size(),
@@ -253,8 +265,12 @@ public class SharedHybridSet extends PointsToSetInternal {
         numElements = otherBitVectorSize;
         if (exclude != null || mask != null) {
           PointsToBitVector result = new PointsToBitVector(bitVector);
-          if (exclude != null) result.andNot(exclude.bitVector);
-          if (mask != null) result.and(mask);
+          if (exclude != null) {
+            result.andNot(exclude.bitVector);
+          }
+          if (mask != null) {
+            result.and(mask);
+          }
           if (!result.equals(bitVector)) {
             add(result, toReAdd);
             int newBitVectorSize = result.cardinality();
@@ -276,8 +292,12 @@ public class SharedHybridSet extends PointsToSetInternal {
     } else if (other.bitVector != null) {
       // Now both bitvectors are non-null; merge them
       PointsToBitVector newBitVector = new PointsToBitVector(other.bitVector);
-      if (exclude != null) newBitVector.andNot(exclude.bitVector);
-      if (mask != null) newBitVector.and(mask);
+      if (exclude != null) {
+        newBitVector.andNot(exclude.bitVector);
+      }
+      if (mask != null) {
+        newBitVector.and(mask);
+      }
 
       newBitVector.or(bitVector);
 
@@ -304,8 +324,12 @@ public class SharedHybridSet extends PointsToSetInternal {
         if (other.overflow.size() != 0) {
           PointsToBitVector toAdd = new PointsToBitVector(newBitVector.size());
           add(toAdd, other.overflow);
-          if (mask != null) toAdd.and(mask);
-          if (exclude != null) toAdd.andNot(exclude.bitVector);
+          if (mask != null) {
+            toAdd.and(mask);
+          }
+          if (exclude != null) {
+            toAdd.andNot(exclude.bitVector);
+          }
           newBitVector.or(toAdd);
         }
         // At this point newBitVector is still bitVector + some new bits
@@ -365,13 +389,15 @@ public class SharedHybridSet extends PointsToSetInternal {
     // assert size <= arr.length;
     int retVal = 0;
     for (OverflowList.ListNode i = arr.overflow; i != null; i = i.next) {
-      if (p.add(i.elem)) ++retVal;
-      /*			int num = arr[i].getNumber();
-      if (!get(num))
-      {
-      	set(num);
-      	++retVal;
-      }*/
+      if (p.add(i.elem)) {
+        ++retVal;
+        /*			int num = arr[i].getNumber();
+        if (!get(num))
+        {
+        	set(num);
+        	++retVal;
+        }*/
+      }
     }
     return retVal;
   }
@@ -390,10 +416,13 @@ public class SharedHybridSet extends PointsToSetInternal {
   }
   */
 
+  @Override
   public boolean addAll(PointsToSetInternal other, final PointsToSetInternal exclude) {
     // Look at the sort of craziness we have to do just because of a lack of
     // multimethods
-    if (other == null) return false;
+    if (other == null) {
+      return false;
+    }
     if ((!(other instanceof SharedHybridSet))
         || (exclude != null && !(exclude instanceof SharedHybridSet))) {
       return super.addAll(other, exclude);
@@ -402,6 +431,7 @@ public class SharedHybridSet extends PointsToSetInternal {
     }
   }
 
+  @Override
   public boolean forall(P2SetVisitor v) {
     // Iterate through the bit vector. Ripped from BitPointsToSet again.
     // It seems there should be a way to share code between BitPointsToSet
@@ -423,6 +453,7 @@ public class SharedHybridSet extends PointsToSetInternal {
   // used to construct SharedHybridSets
   public static final P2SetFactory getFactory() {
     return new P2SetFactory() {
+      @Override
       public final PointsToSetInternal newSet(Type type, PAG pag) {
         return new SharedHybridSet(type, pag);
       }
@@ -439,6 +470,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 
   private int numElements = 0; // # of elements in the set
 
+  @Override
   public int size() {
     return numElements;
   }
@@ -468,7 +500,9 @@ public class SharedHybridSet extends PointsToSetInternal {
     }
 
     public void add(Node n) {
-      if (full()) throw new RuntimeException("Can't add an element to a full overflow list.");
+      if (full()) {
+        throw new RuntimeException("Can't add an element to a full overflow list.");
+      }
       overflow = new ListNode(n, overflow);
       ++overflowElements;
     }
@@ -483,7 +517,9 @@ public class SharedHybridSet extends PointsToSetInternal {
 
     public boolean contains(Node n) {
       for (ListNode l = overflow; l != null; l = l.next) {
-        if (n == l.elem) return true;
+        if (n == l.elem) {
+          return true;
+        }
       }
       return false;
     }

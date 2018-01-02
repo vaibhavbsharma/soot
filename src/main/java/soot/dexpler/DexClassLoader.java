@@ -1,9 +1,12 @@
 package soot.dexpler;
 
+import java.util.Iterator;
+
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
+
 import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
@@ -15,8 +18,6 @@ import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
-
-import java.util.Iterator;
 
 /** Class for loading methods from dex files */
 public class DexClassLoader {
@@ -32,8 +33,9 @@ public class DexClassLoader {
   private void loadMethod(
       DexFile dexFile, Method method, SootClass declaringClass, DexAnnotation annotations) {
     SootMethod sm = DexMethod.makeSootMethod(dexFile, method, declaringClass);
-    if (declaringClass.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
+    if (declaringClass.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType())) {
       return;
+    }
     declaringClass.addMethod(sm);
     annotations.handleMethodAnnotation(sm, method);
   }
@@ -64,7 +66,9 @@ public class DexClassLoader {
     if (defItem.getInterfaces() != null) {
       for (String interfaceName : defItem.getInterfaces()) {
         String interfaceClassName = Util.dottedClassName(interfaceName);
-        if (sc.implementsInterface(interfaceClassName)) continue;
+        if (sc.implementsInterface(interfaceClassName)) {
+          continue;
+        }
 
         SootClass interfaceClass = SootResolver.v().makeClassRef(interfaceClassName);
         interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
@@ -80,13 +84,17 @@ public class DexClassLoader {
 
     // get the fields of the class
     for (Field sf : defItem.getStaticFields()) {
-      if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType()))) continue;
+      if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType()))) {
+        continue;
+      }
       SootField sootField = DexField.makeSootField(sf);
       sootField = sc.getOrAddField(sootField);
       da.handleFieldAnnotation(sootField, sf);
     }
     for (Field f : defItem.getInstanceFields()) {
-      if (sc.declaresField(f.getName(), DexType.toSoot(f.getType()))) continue;
+      if (sc.declaresField(f.getName(), DexType.toSoot(f.getType()))) {
+        continue;
+      }
       SootField sootField = DexField.makeSootField(f);
       sootField = sc.getOrAddField(sootField);
       da.handleFieldAnnotation(sootField, f);
@@ -125,7 +133,9 @@ public class DexClassLoader {
 
           // If the tag is already associated with the outer class,
           // we leave it as it is
-          if (outer.equals(sc.getName())) continue;
+          if (outer.equals(sc.getName())) {
+            continue;
+          }
 
           // Check the inner class to make sure that this tag actually
           // refers to the current class as the inner class
@@ -137,9 +147,13 @@ public class DexClassLoader {
 
           SootClass osc = SootResolver.v().makeClassRef(outer);
           if (osc == sc) {
-            if (!sc.hasOuterClass()) continue;
+            if (!sc.hasOuterClass()) {
+              continue;
+            }
             osc = sc.getOuterClass();
-          } else deps.typesToHierarchy.add(osc.getType());
+          } else {
+            deps.typesToHierarchy.add(osc.getType());
+          }
 
           // Get the InnerClassAttribute of the outer class
           InnerClassAttribute icat = (InnerClassAttribute) osc.getTag("InnerClassAttribute");

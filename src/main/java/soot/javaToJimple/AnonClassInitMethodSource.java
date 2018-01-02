@@ -102,6 +102,7 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
     return anonType;
   }
 
+  @Override
   public soot.Body getBody(soot.SootMethod sootMethod, String phaseName) {
     AnonInitBodyBuilder aibb = new AnonInitBodyBuilder();
     soot.jimple.JimpleBody body = aibb.createBody(sootMethod);

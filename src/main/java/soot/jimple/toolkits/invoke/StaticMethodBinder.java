@@ -25,6 +25,13 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Hierarchy;
@@ -62,13 +69,6 @@ import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.options.SMBOptions;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 /** Uses the Scene's currently-active InvokeGraph to statically bind monomorphic call sites. */
 public class StaticMethodBinder extends SceneTransformer {
   public StaticMethodBinder(Singletons.Global g) {}
@@ -77,6 +77,7 @@ public class StaticMethodBinder extends SceneTransformer {
     return G.v().soot_jimple_toolkits_invoke_StaticMethodBinder();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map opts) {
     Filter instanceInvokesFilter = new Filter(new InstanceInvokeEdgesPred());
     SMBOptions options = new SMBOptions(opts);
@@ -98,37 +99,55 @@ public class StaticMethodBinder extends SceneTransformer {
       while (!methodsList.isEmpty()) {
         SootMethod container = (SootMethod) methodsList.removeFirst();
 
-        if (!container.isConcrete()) continue;
+        if (!container.isConcrete()) {
+          continue;
+        }
 
-        if (!instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) continue;
+        if (!instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
+          continue;
+        }
 
         JimpleBody b = (JimpleBody) container.getActiveBody();
 
-        List<Unit> unitList = new ArrayList<Unit>();
+        List<Unit> unitList = new ArrayList<>();
         unitList.addAll(b.getUnits());
         Iterator<Unit> unitIt = unitList.iterator();
 
         while (unitIt.hasNext()) {
           Stmt s = (Stmt) unitIt.next();
-          if (!s.containsInvokeExpr()) continue;
+          if (!s.containsInvokeExpr()) {
+            continue;
+          }
 
           InvokeExpr ie = s.getInvokeExpr();
 
-          if (ie instanceof StaticInvokeExpr || ie instanceof SpecialInvokeExpr) continue;
+          if (ie instanceof StaticInvokeExpr || ie instanceof SpecialInvokeExpr) {
+            continue;
+          }
 
           Iterator targets = new Targets(instanceInvokesFilter.wrap(cg.edgesOutOf(s)));
-          if (!targets.hasNext()) continue;
+          if (!targets.hasNext()) {
+            continue;
+          }
           SootMethod target = (SootMethod) targets.next();
-          if (targets.hasNext()) continue;
+          if (targets.hasNext()) {
+            continue;
+          }
 
           // Ok, we have an Interface or VirtualInvoke going to 1.
 
-          if (!AccessManager.ensureAccess(container, target, modifierOptions)) continue;
+          if (!AccessManager.ensureAccess(container, target, modifierOptions)) {
+            continue;
+          }
 
-          if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete()) continue;
+          if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete()) {
+            continue;
+          }
 
           // Don't modify java.lang.Object
-          if (target.getDeclaringClass() == Scene.v().getSootClass("java.lang.Object")) continue;
+          if (target.getDeclaringClass() == Scene.v().getSootClass("java.lang.Object")) {
+            continue;
+          }
 
           if (!instanceToStaticMap.containsKey(target)) {
             List newParameterTypes = new ArrayList();
@@ -140,8 +159,9 @@ public class StaticMethodBinder extends SceneTransformer {
             String newName = target.getName() + "_static";
             while (target
                 .getDeclaringClass()
-                .declaresMethod(newName, newParameterTypes, target.getReturnType()))
+                .declaresMethod(newName, newParameterTypes, target.getReturnType())) {
               newName = newName + "_static";
+            }
 
             SootMethod ct =
                 Scene.v()

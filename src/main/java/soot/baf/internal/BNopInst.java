@@ -32,30 +32,37 @@ import soot.util.Switch;
 public class BNopInst extends AbstractInst implements NopInst {
   public BNopInst() {}
 
+  @Override
   public int getInCount() {
     return 0;
   }
 
+  @Override
   public Object clone() {
     return new BNopInst();
   }
 
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public final String getName() {
     return "nop";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseNopInst(this);
   }

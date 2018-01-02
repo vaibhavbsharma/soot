@@ -17,7 +17,9 @@ public class UnmodifiableIterableSet<E> extends IterableSet<E> {
    * @param original The original set to copy
    */
   public UnmodifiableIterableSet(IterableSet<E> original) {
-    for (E e : original) super.add(e);
+    for (E e : original) {
+      super.add(e);
+    }
   }
 
   @Override

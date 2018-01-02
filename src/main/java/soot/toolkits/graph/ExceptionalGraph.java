@@ -25,12 +25,12 @@
 
 package soot.toolkits.graph;
 
+import java.util.Collection;
+import java.util.List;
+
 import soot.Body;
 import soot.Trap;
 import soot.toolkits.exceptions.ThrowableSet;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Defines the interface for navigating a control flow graph which distinguishes exceptional control

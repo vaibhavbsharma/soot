@@ -29,6 +29,7 @@ public class AssertStmtChecker extends polyglot.visit.NodeVisitor {
 
   public AssertStmtChecker() {}
 
+  @Override
   public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n) {
     if (n instanceof polyglot.ast.ClassDecl) {
       return n;
@@ -39,6 +40,7 @@ public class AssertStmtChecker extends polyglot.visit.NodeVisitor {
     return null;
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
 
     if (n instanceof polyglot.ast.Assert) {

@@ -19,6 +19,12 @@
 
 package soot.dava.toolkits.base.finders;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.TreeSet;
+
 import soot.G;
 import soot.Singletons;
 import soot.Value;
@@ -34,12 +40,6 @@ import soot.jimple.Stmt;
 import soot.jimple.TableSwitchStmt;
 import soot.util.IterableSet;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.TreeSet;
-
 public class SwitchFinder implements FactFinder {
   public SwitchFinder(Singletons.Global g) {}
 
@@ -52,6 +52,7 @@ public class SwitchFinder implements FactFinder {
   private LinkedList targetList, snTargetList, tSuccList;
   private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
 
+  @Override
   public void find(DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET)
       throws RetriggerAnalysisException {
     Dava.v().log("SwitchFinder::find()");
@@ -64,8 +65,9 @@ public class SwitchFinder implements FactFinder {
 
       Stmt s = as.get_Stmt();
 
-      if (((s instanceof TableSwitchStmt) == false) && ((s instanceof LookupSwitchStmt) == false))
+      if (((s instanceof TableSwitchStmt) == false) && ((s instanceof LookupSwitchStmt) == false)) {
         continue;
+      }
 
       Value key = null;
 
@@ -85,9 +87,10 @@ public class SwitchFinder implements FactFinder {
         TableSwitchStmt tss = (TableSwitchStmt) s;
 
         int target_count = tss.getHighIndex() - tss.getLowIndex() + 1;
-        for (int i = 0; i < target_count; i++)
+        for (int i = 0; i < target_count; i++) {
           build_Bindings(
               as, new Integer(i + tss.getLowIndex()), asg.get_AugStmt((Stmt) tss.getTarget(i)));
+        }
 
         build_Bindings(as, defaultStr, asg.get_AugStmt((Stmt) tss.getDefaultTarget()));
         key = tss.getKey();
@@ -95,9 +98,10 @@ public class SwitchFinder implements FactFinder {
         LookupSwitchStmt lss = (LookupSwitchStmt) s;
 
         int target_count = lss.getTargetCount();
-        for (int i = 0; i < target_count; i++)
+        for (int i = 0; i < target_count; i++) {
           build_Bindings(
               as, new Integer(lss.getLookupValue(i)), asg.get_AugStmt((Stmt) lss.getTarget(i)));
+        }
 
         build_Bindings(as, defaultStr, asg.get_AugStmt((Stmt) lss.getDefaultTarget()));
         key = lss.getKey();
@@ -142,10 +146,14 @@ public class SwitchFinder implements FactFinder {
           while (sit.hasNext()) {
             SwitchNode ssn = (SwitchNode) sit.next();
 
-            if ((champ == null) || (champ.get_Score() < ssn.get_Score())) champ = ssn;
+            if ((champ == null) || (champ.get_Score() < ssn.get_Score())) {
+              champ = ssn;
+            }
           }
 
-          if ((champ != null) && (champ.get_Score() > 0)) worklist.addLast(champ);
+          if ((champ != null) && (champ.get_Score() > 0)) {
+            worklist.addLast(champ);
+          }
         }
 
         Iterator kit = killBodies.iterator();
@@ -161,7 +169,7 @@ public class SwitchFinder implements FactFinder {
         targetHeads.addAll(sng.getHeads());
       }
 
-      LinkedList<SwitchNode> switchNodeList = new LinkedList<SwitchNode>();
+      LinkedList<SwitchNode> switchNodeList = new LinkedList<>();
 
       // Now, merge the targetHeads list and the killBodies list, keeping bundles of case fall
       // throughs from the node graph.
@@ -185,7 +193,9 @@ public class SwitchFinder implements FactFinder {
             while (true) {
               switchNodeList.addLast(nextNode);
 
-              if (nextNode.get_Succs().isEmpty()) break;
+              if (nextNode.get_Succs().isEmpty()) {
+                break;
+              }
 
               nextNode = (SwitchNode) nextNode.get_Succs().get(0);
             }
@@ -236,7 +246,7 @@ public class SwitchFinder implements FactFinder {
 
   private IterableSet find_SubBody(AugmentedStmt switchAS, AugmentedStmt branchS) {
     IterableSet subBody = new IterableSet();
-    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
+    LinkedList<AugmentedStmt> worklist = new LinkedList<>();
 
     subBody.add(branchS);
     branchS = branchS.bsuccs.get(0);
@@ -266,7 +276,9 @@ public class SwitchFinder implements FactFinder {
   private void build_Bindings(AugmentedStmt swAs, Object index, AugmentedStmt target) {
     AugmentedStmt tSucc = target.bsuccs.get(0);
 
-    if (targetSet.add(tSucc)) targetList.addLast(tSucc);
+    if (targetSet.add(tSucc)) {
+      targetList.addLast(tSucc);
+    }
 
     index2target.put(index, target);
 
@@ -283,10 +295,14 @@ public class SwitchFinder implements FactFinder {
       // break all edges between the junk body and any of it's successors
 
       Iterator sit = target.bsuccs.iterator();
-      while (sit.hasNext()) ((AugmentedStmt) sit.next()).bpreds.remove(target);
+      while (sit.hasNext()) {
+        ((AugmentedStmt) sit.next()).bpreds.remove(target);
+      }
 
       sit = target.csuccs.iterator();
-      while (sit.hasNext()) ((AugmentedStmt) sit.next()).cpreds.remove(target);
+      while (sit.hasNext()) {
+        ((AugmentedStmt) sit.next()).cpreds.remove(target);
+      }
 
       target.bsuccs.clear();
       target.csuccs.clear();

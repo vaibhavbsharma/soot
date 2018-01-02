@@ -45,6 +45,7 @@ public class BoundedPriorityList implements Collection {
     this.worklist = new ArrayList(list);
   }
 
+  @Override
   public boolean isEmpty() {
     return worklist.isEmpty();
   }
@@ -53,6 +54,7 @@ public class BoundedPriorityList implements Collection {
     return worklist.remove(0);
   }
 
+  @Override
   public boolean add(Object toadd) {
     if (contains(toadd)) {
       return false;
@@ -76,6 +78,7 @@ public class BoundedPriorityList implements Collection {
   // rest is only necessary to implement the Collection interface
 
   /** {@inheritDoc} */
+  @Override
   public boolean addAll(Collection c) {
     boolean addedSomething = false;
     for (Iterator iter = c.iterator(); iter.hasNext(); ) {
@@ -92,66 +95,79 @@ public class BoundedPriorityList implements Collection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void clear() {
     worklist.clear();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean contains(Object o) {
     return worklist.contains(o);
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean containsAll(Collection c) {
     return worklist.containsAll(c);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Iterator iterator() {
     return worklist.iterator();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean remove(Object o) {
     return worklist.remove(o);
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean removeAll(Collection c) {
     return worklist.removeAll(c);
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean retainAll(Collection c) {
     return worklist.retainAll(c);
   }
 
   /** {@inheritDoc} */
+  @Override
   public int size() {
     return worklist.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public Object[] toArray() {
     return worklist.toArray();
   }
 
   /** {@inheritDoc} */
+  @Override
   public Object[] toArray(Object[] a) {
     return worklist.toArray(a);
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return worklist.toString();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean equals(Object obj) {
     return worklist.equals(obj);
   }
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode() {
     return worklist.hashCode();
   }

@@ -19,11 +19,11 @@
 
 package soot.javaToJimple;
 
-import polyglot.ast.Node;
-import polyglot.util.IdentityKey;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import polyglot.ast.Node;
+import polyglot.util.IdentityKey;
 
 public class MethodFinalsChecker extends polyglot.visit.NodeVisitor {
 
@@ -49,12 +49,13 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor {
   }
 
   public MethodFinalsChecker() {
-    finalLocals = new ArrayList<IdentityKey>();
-    inners = new ArrayList<IdentityKey>();
-    ccallList = new ArrayList<Node>();
-    typeToLocalsUsed = new HashMap<IdentityKey, ArrayList<IdentityKey>>();
+    finalLocals = new ArrayList<>();
+    inners = new ArrayList<>();
+    ccallList = new ArrayList<>();
+    typeToLocalsUsed = new HashMap<>();
   }
 
+  @Override
   public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n) {
     if (n instanceof polyglot.ast.LocalClassDecl) {
       inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl) n).decl().type()));
@@ -79,6 +80,7 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor {
     return null;
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
 
     if (n instanceof polyglot.ast.LocalDecl) {

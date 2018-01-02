@@ -29,25 +29,32 @@ public class FakeJimpleLocal extends JimpleLocal {
   }
 
   /** Returns true if the given object is structurally equal to this one. */
+  @Override
   public boolean equivTo(Object o) {
-    if (o == null) return false;
+    if (o == null) {
+      return false;
+    }
     if (o instanceof JimpleLocal) {
-      if (getName() != null && getType() != null)
+      if (getName() != null && getType() != null) {
         return getName().equals(((Local) o).getName()) && getType().equals(((Local) o).getType());
-      else if (getName() != null)
+      } else if (getName() != null) {
         return getName().equals(((Local) o).getName()) && ((Local) o).getType() == null;
-      else if (getType() != null)
+      } else if (getType() != null) {
         return ((Local) o).getName() == null && getType().equals(((Local) o).getType());
-      else return ((Local) o).getName() == null && ((Local) o).getType() == null;
+      } else {
+        return ((Local) o).getName() == null && ((Local) o).getType() == null;
+      }
     }
     return false;
   }
 
+  @Override
   public boolean equals(Object o) {
     return equivTo(o);
   }
 
   /** Returns a clone of the current JimpleLocal. */
+  @Override
   public Object clone() {
     return new FakeJimpleLocal(getName(), getType(), realLocal, info);
   }

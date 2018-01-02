@@ -19,6 +19,14 @@
 
 package soot.jimple.toolkits.reflection;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -76,14 +84,6 @@ import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.HashChain;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ReflectiveCallsInliner extends SceneTransformer {
   // caching currently does not work because it adds fields to Class, Method
@@ -157,7 +157,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                   BooleanType.v(),
                   true);
 
-      if (useCaching) addCaching();
+      if (useCaching) {
+        addCaching();
+      }
 
       initializeReflectiveCallsTable();
 
@@ -174,7 +176,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         Set<String> classForNameClassNames = RTI.classForNameClassNames(m);
         if (!classForNameClassNames.isEmpty()) {
           inlineRelectiveCalls(m, classForNameClassNames, ReflectionTraceInfo.Kind.ClassForName);
-          if (Options.v().validate()) b.validate();
+          if (Options.v().validate()) {
+            b.validate();
+          }
         }
       }
       {
@@ -182,7 +186,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         if (!classNewInstanceClassNames.isEmpty()) {
           inlineRelectiveCalls(
               m, classNewInstanceClassNames, ReflectionTraceInfo.Kind.ClassNewInstance);
-          if (Options.v().validate()) b.validate();
+          if (Options.v().validate()) {
+            b.validate();
+          }
         }
       }
       {
@@ -190,28 +196,36 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         if (!constructorNewInstanceSignatures.isEmpty()) {
           inlineRelectiveCalls(
               m, constructorNewInstanceSignatures, ReflectionTraceInfo.Kind.ConstructorNewInstance);
-          if (Options.v().validate()) b.validate();
+          if (Options.v().validate()) {
+            b.validate();
+          }
         }
       }
       {
         Set<String> methodInvokeSignatures = RTI.methodInvokeSignatures(m);
         if (!methodInvokeSignatures.isEmpty()) {
           inlineRelectiveCalls(m, methodInvokeSignatures, ReflectionTraceInfo.Kind.MethodInvoke);
-          if (Options.v().validate()) b.validate();
+          if (Options.v().validate()) {
+            b.validate();
+          }
         }
       }
       {
         Set<String> fieldSetSignatures = RTI.fieldSetSignatures(m);
         if (!fieldSetSignatures.isEmpty()) {
           inlineRelectiveCalls(m, fieldSetSignatures, ReflectionTraceInfo.Kind.FieldSet);
-          if (Options.v().validate()) b.validate();
+          if (Options.v().validate()) {
+            b.validate();
+          }
         }
       }
       {
         Set<String> fieldGetSignatures = RTI.fieldGetSignatures(m);
         if (!fieldGetSignatures.isEmpty()) {
           inlineRelectiveCalls(m, fieldGetSignatures, ReflectionTraceInfo.Kind.FieldGet);
-          if (Options.v().validate()) b.validate();
+          if (Options.v().validate()) {
+            b.validate();
+          }
         }
       }
       // clean up after us
@@ -234,7 +248,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     Body body = clinit.retrieveActiveBody();
     PatchingChain<Unit> units = body.getUnits();
     LocalGenerator localGen = new LocalGenerator(body);
-    Chain<Unit> newUnits = new HashChain<Unit>();
+    Chain<Unit> newUnits = new HashChain<>();
     SootClass setClass = Scene.v().getSootClass("java.util.Set");
     SootMethodRef addMethodRef = setClass.getMethodByName("add").makeRef();
     for (SootMethod m : RTI.methodsContainingReflectiveCalls()) {
@@ -313,7 +327,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     Unit secondLastStmt = units.getPredOf(units.getLast());
     units.insertAfter(newUnits, secondLastStmt);
 
-    if (Options.v().validate()) body.validate();
+    if (Options.v().validate()) {
+      body.validate();
+    }
   }
 
   private void addCaching() {
@@ -364,7 +380,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
     Stmt jumpTarget = Jimple.v().newNopStmt();
 
-    Chain<Unit> newUnits = new HashChain<Unit>();
+    Chain<Unit> newUnits = new HashChain<>();
 
     // alreadyCheckedLocal = m.alreadyChecked
     InstanceFieldRef fieldRef =
@@ -396,11 +412,15 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
     body.getUnits().insertAfter(newUnits, firstStmt);
 
-    if (Options.v().validate()) body.validate();
+    if (Options.v().validate()) {
+      body.validate();
+    }
   }
 
   private void inlineRelectiveCalls(SootMethod m, Set<String> targets, Kind callKind) {
-    if (!m.hasActiveBody()) m.retrieveActiveBody();
+    if (!m.hasActiveBody()) {
+      m.retrieveActiveBody();
+    }
     Body b = m.getActiveBody();
     PatchingChain<Unit> units = b.getUnits();
     Iterator<Unit> iter = units.snapshotIterator();
@@ -408,7 +428,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
     // for all units
     while (iter.hasNext()) {
-      Chain<Unit> newUnits = new HashChain<Unit>();
+      Chain<Unit> newUnits = new HashChain<>();
       Stmt s = (Stmt) iter.next();
 
       // if we have an invoke expression, test to see if it is a
@@ -550,7 +570,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
           }
         }
 
-        if (!found) continue;
+        if (!found) {
+          continue;
+        }
 
         NopStmt endLabel = Jimple.v().newNopStmt();
 
@@ -569,7 +591,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
           SootMethod newMethod = createNewMethod(callKind, target, fieldSetGetType);
 
-          List<Value> args = new LinkedList<Value>();
+          List<Value> args = new LinkedList<>();
           switch (callKind) {
             case ClassForName:
             case ClassNewInstance:
@@ -629,7 +651,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
   @SuppressWarnings("unchecked")
   private SootMethod createNewMethod(Kind callKind, String target, Type fieldSetGetType) {
-    List<Type> parameterTypes = new LinkedList<Type>();
+    List<Type> parameterTypes = new LinkedList<>();
     Type returnType = null;
     switch (callKind) {
       case ClassForName:
@@ -831,14 +853,15 @@ public class ReflectiveCallsInliner extends SceneTransformer {
           // add: freshLocal=recv.<target>(a0,...,an);
           SootMethod method = Scene.v().getMethod(target);
           InvokeExpr invokeExpr;
-          if (method.isStatic())
+          if (method.isStatic()) {
             invokeExpr =
                 Jimple.v().newStaticInvokeExpr(method.makeRef(), Arrays.asList(paramLocals));
-          else
+          } else {
             invokeExpr =
                 Jimple.v()
                     .newVirtualInvokeExpr(
                         freshLocal, method.makeRef(), Arrays.<Value>asList(paramLocals));
+          }
           if (method.getReturnType().equals(VoidType.v())) {
             // method returns null; simply invoke it and return null
             InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(invokeExpr);
@@ -897,9 +920,13 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         }
     }
 
-    if (!returnType.equals(VoidType.v())) newUnits.add(Jimple.v().newReturnStmt(retLocal));
+    if (!returnType.equals(VoidType.v())) {
+      newUnits.add(Jimple.v().newReturnStmt(retLocal));
+    }
 
-    if (Options.v().validate()) newBody.validate();
+    if (Options.v().validate()) {
+      newBody.validate();
+    }
 
     cleanup(newBody);
 

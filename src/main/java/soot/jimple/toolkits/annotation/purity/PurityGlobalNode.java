@@ -31,26 +31,32 @@ public class PurityGlobalNode implements PurityNode {
 
   public static PurityGlobalNode node = new PurityGlobalNode();
 
+  @Override
   public String toString() {
     return "GBL";
   }
 
+  @Override
   public int hashCode() {
     return 0;
   }
 
+  @Override
   public boolean equals(Object o) {
     return o instanceof PurityGlobalNode;
   }
 
+  @Override
   public boolean isInside() {
     return false;
   }
 
+  @Override
   public boolean isLoad() {
     return false;
   }
 
+  @Override
   public boolean isParam() {
     return false;
   }

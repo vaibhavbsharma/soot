@@ -45,20 +45,24 @@ public class DNotExpr extends AbstractUnopExpr {
     super(Grimp.v().newExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new DNotExpr(Grimp.cloneIfNecessary(getOpBox().getValue()));
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(" ! (");
     getOpBox().toString(up);
     up.literal(")");
   }
 
+  @Override
   public String toString() {
     return " ! (" + (getOpBox().getValue()).toString() + ")";
   }
 
+  @Override
   public Type getType() {
     Value op = getOpBox().getValue();
 
@@ -66,19 +70,27 @@ public class DNotExpr extends AbstractUnopExpr {
         || op.getType().equals(ByteType.v())
         || op.getType().equals(ShortType.v())
         || op.getType().equals(BooleanType.v())
-        || op.getType().equals(CharType.v())) return IntType.v();
-    else if (op.getType().equals(LongType.v())) return LongType.v();
-    else if (op.getType().equals(DoubleType.v())) return DoubleType.v();
-    else if (op.getType().equals(FloatType.v())) return FloatType.v();
-    else return UnknownType.v();
+        || op.getType().equals(CharType.v())) {
+      return IntType.v();
+    } else if (op.getType().equals(LongType.v())) {
+      return LongType.v();
+    } else if (op.getType().equals(DoubleType.v())) {
+      return DoubleType.v();
+    } else if (op.getType().equals(FloatType.v())) {
+      return FloatType.v();
+    } else {
+      return UnknownType.v();
+    }
   }
 
   /*
     NOTE THIS IS AN EMPTY IMPLEMENTATION OF APPLY METHOD
   */
+  @Override
   public void apply(Switch sw) {}
 
   /** Compares the specified object with this one for structural equality. */
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof DNotExpr) {
       return getOpBox().getValue().equivTo(((DNotExpr) o).getOpBox().getValue());
@@ -87,6 +99,7 @@ public class DNotExpr extends AbstractUnopExpr {
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return getOpBox().getValue().equivHashCode();
   }

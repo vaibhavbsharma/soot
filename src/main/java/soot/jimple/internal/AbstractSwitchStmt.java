@@ -1,14 +1,14 @@
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.SwitchStmt;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
@@ -27,7 +27,7 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
     this.targetBoxes = targetBoxes;
 
     // Build up stmtBoxes
-    List<UnitBox> list = new ArrayList<UnitBox>();
+    List<UnitBox> list = new ArrayList<>();
     stmtBoxes = Collections.unmodifiableList(list);
 
     Collections.addAll(list, targetBoxes);
@@ -66,7 +66,7 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     list.addAll(keyBox.getValue().getUseBoxes());
     list.add(keyBox);
@@ -95,19 +95,25 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
 
   @Override
   public final List<Unit> getTargets() {
-    List<Unit> targets = new ArrayList<Unit>();
+    List<Unit> targets = new ArrayList<>();
 
-    for (UnitBox element : targetBoxes) targets.add(element.getUnit());
+    for (UnitBox element : targetBoxes) {
+      targets.add(element.getUnit());
+    }
 
     return targets;
   }
 
   public final void setTargets(List<? extends Unit> targets) {
-    for (int i = 0; i < targets.size(); i++) targetBoxes[i].setUnit(targets.get(i));
+    for (int i = 0; i < targets.size(); i++) {
+      targetBoxes[i].setUnit(targets.get(i));
+    }
   }
 
   public final void setTargets(Unit[] targets) {
-    for (int i = 0; i < targets.length; i++) targetBoxes[i].setUnit(targets[i]);
+    for (int i = 0; i < targets.length; i++) {
+      targetBoxes[i].setUnit(targets[i]);
+    }
   }
 
   @Override

@@ -19,6 +19,9 @@
 
 package soot.jimple.spark.solver;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import soot.G;
 import soot.Type;
 import soot.jimple.spark.internal.TypeManager;
@@ -27,10 +30,6 @@ import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Collapses nodes that are members of simple trees (EBBs) in the pointer assignment graph.
@@ -72,10 +71,18 @@ public class EBBCollapser {
       VarNode firstSucc = null;
       for (Node element0 : succs) {
         VarNode succ = (VarNode) element0;
-        if (pag.allocInvLookup(succ).length > 1) continue;
-        if (pag.loadInvLookup(succ).length > 0) continue;
-        if (pag.simpleInvLookup(succ).length > 0) continue;
-        if (ofcg && succ.isInterProcTarget()) continue;
+        if (pag.allocInvLookup(succ).length > 1) {
+          continue;
+        }
+        if (pag.loadInvLookup(succ).length > 0) {
+          continue;
+        }
+        if (pag.simpleInvLookup(succ).length > 0) {
+          continue;
+        }
+        if (ofcg && succ.isInterProcTarget()) {
+          continue;
+        }
         if (firstSucc == null) {
           firstSucc = succ;
         } else {
@@ -94,19 +101,28 @@ public class EBBCollapser {
     boolean change;
     do {
       change = false;
-      for (Iterator<Object> nIt = new ArrayList<Object>(pag.simpleSources()).iterator();
-          nIt.hasNext(); ) {
-        final VarNode n = (VarNode) nIt.next();
+      for (Object object : new ArrayList<Object>(pag.simpleSources())) {
+        final VarNode n = (VarNode) object;
         Type nType = n.getType();
         Node[] succs = pag.simpleLookup(n);
         for (Node element : succs) {
           VarNode succ = (VarNode) element;
           Type sType = succ.getType();
-          if (!typeManager.castNeverFails(nType, sType)) continue;
-          if (pag.allocInvLookup(succ).length > 0) continue;
-          if (pag.loadInvLookup(succ).length > 0) continue;
-          if (pag.simpleInvLookup(succ).length > 1) continue;
-          if (ofcg && (succ.isInterProcTarget() || n.isInterProcSource())) continue;
+          if (!typeManager.castNeverFails(nType, sType)) {
+            continue;
+          }
+          if (pag.allocInvLookup(succ).length > 0) {
+            continue;
+          }
+          if (pag.loadInvLookup(succ).length > 0) {
+            continue;
+          }
+          if (pag.simpleInvLookup(succ).length > 1) {
+            continue;
+          }
+          if (ofcg && (succ.isInterProcTarget() || n.isInterProcSource())) {
+            continue;
+          }
           n.mergeWith(succ);
           change = true;
           numCollapsed++;
@@ -118,20 +134,27 @@ public class EBBCollapser {
   protected void collapseLoad() {
     final boolean ofcg = (pag.getOnFlyCallGraph() != null);
     final TypeManager typeManager = pag.getTypeManager();
-    for (Iterator<Object> nIt = new ArrayList<Object>(pag.loadSources()).iterator();
-        nIt.hasNext(); ) {
-      final FieldRefNode n = (FieldRefNode) nIt.next();
+    for (Object object : new ArrayList<Object>(pag.loadSources())) {
+      final FieldRefNode n = (FieldRefNode) object;
       Type nType = n.getType();
       Node[] succs = pag.loadLookup(n);
       Node firstSucc = null;
-      HashMap<Type, VarNode> typeToSucc = new HashMap<Type, VarNode>();
+      HashMap<Type, VarNode> typeToSucc = new HashMap<>();
       for (Node element : succs) {
         VarNode succ = (VarNode) element;
         Type sType = succ.getType();
-        if (pag.allocInvLookup(succ).length > 0) continue;
-        if (pag.loadInvLookup(succ).length > 1) continue;
-        if (pag.simpleInvLookup(succ).length > 0) continue;
-        if (ofcg && succ.isInterProcTarget()) continue;
+        if (pag.allocInvLookup(succ).length > 0) {
+          continue;
+        }
+        if (pag.loadInvLookup(succ).length > 1) {
+          continue;
+        }
+        if (pag.simpleInvLookup(succ).length > 0) {
+          continue;
+        }
+        if (ofcg && succ.isInterProcTarget()) {
+          continue;
+        }
         if (typeManager.castNeverFails(nType, sType)) {
           if (firstSucc == null) {
             firstSucc = succ;

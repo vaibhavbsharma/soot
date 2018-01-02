@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,9 +38,6 @@ import soot.tagkit.Tag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class NullPointerColorer extends BodyTransformer {
 
   public NullPointerColorer(Singletons.Global g) {}
@@ -46,6 +46,7 @@ public class NullPointerColorer extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(b));

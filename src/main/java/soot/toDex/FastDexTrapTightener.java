@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Singletons;
@@ -8,9 +11,6 @@ import soot.Unit;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Tries may not start or end at units which have no corresponding Dalvik instructions such as
@@ -33,11 +33,15 @@ public class FastDexTrapTightener extends BodyTransformer {
       Trap t = trapIt.next();
 
       Unit beginUnit;
-      while (!isDexInstruction(beginUnit = t.getBeginUnit()) && t.getBeginUnit() != t.getEndUnit())
+      while (!isDexInstruction(beginUnit = t.getBeginUnit())
+          && t.getBeginUnit() != t.getEndUnit()) {
         t.setBeginUnit(b.getUnits().getSuccOf(beginUnit));
+      }
 
       // If the trap is empty, we remove it
-      if (t.getBeginUnit() == t.getEndUnit()) trapIt.remove();
+      if (t.getBeginUnit() == t.getEndUnit()) {
+        trapIt.remove();
+      }
     }
   }
 

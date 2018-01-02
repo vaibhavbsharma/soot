@@ -1,13 +1,13 @@
 package soot.dava.internal.javaRep;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.Expr;
 import soot.util.Switch;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DShortcutIf implements Expr {
   ValueBox testExprBox;
@@ -21,11 +21,13 @@ public class DShortcutIf implements Expr {
     falseExprBox = right;
   }
 
+  @Override
   public Object clone() {
     // does not work
     return this;
   }
 
+  @Override
   public List getUseBoxes() {
     List toReturn = new ArrayList();
     toReturn.addAll(testExprBox.getValue().getUseBoxes());
@@ -37,10 +39,12 @@ public class DShortcutIf implements Expr {
     return toReturn;
   }
 
+  @Override
   public Type getType() {
     return exprType;
   }
 
+  @Override
   public String toString() {
     String toReturn = "";
     toReturn += testExprBox.getValue().toString();
@@ -51,6 +55,7 @@ public class DShortcutIf implements Expr {
     return toReturn;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     testExprBox.getValue().toString(up);
     up.literal(" ? ");
@@ -59,16 +64,19 @@ public class DShortcutIf implements Expr {
     falseExprBox.getValue().toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public boolean equivTo(Object o) {
     // TODO Auto-generated method stub
     return false;
   }
 
+  @Override
   public int equivHashCode() {
     int toReturn = 0;
     toReturn += testExprBox.getValue().equivHashCode();

@@ -28,6 +28,10 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -55,10 +59,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-
 /*
 	ArrayRef
 	GetField
@@ -83,6 +83,7 @@ public class NullPointerChecker extends BodyTransformer {
 
   private boolean enableOther = true;
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     isProfiling = PhaseOptions.getBoolean(options, "profiling");
     enableOther = !PhaseOptions.getBoolean(options, "onlyarrayref");
@@ -90,7 +91,7 @@ public class NullPointerChecker extends BodyTransformer {
     {
       Date start = new Date();
 
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v()
             .out
             .println(
@@ -98,6 +99,7 @@ public class NullPointerChecker extends BodyTransformer {
                     + body.getMethod().getName()
                     + " started on "
                     + start);
+      }
 
       BranchedRefVarsAnalysis analysis =
           new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(body));
@@ -189,7 +191,9 @@ public class NullPointerChecker extends BodyTransformer {
 
           if (isProfiling) {
             int whichCounter = 5;
-            if (!needCheck) whichCounter = 6;
+            if (!needCheck) {
+              whichCounter = 6;
+            }
 
             units.insertBefore(
                 Jimple.v()

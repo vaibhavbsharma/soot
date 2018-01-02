@@ -1,14 +1,14 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.scalar.ArraySparseSet;
-import soot.toolkits.scalar.FlowSet;
-import soot.util.Chain;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.util.Chain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -26,7 +26,7 @@ public class DominatorsFinder {
   private final DirectedGraph peg;
 
   DominatorsFinder(Chain chain, DirectedGraph pegGraph) {
-    unitToDominators = new HashMap<Object, FlowSet>();
+    unitToDominators = new HashMap<>();
     peg = pegGraph;
     find(chain);
     // testUnitToDominators();
@@ -61,7 +61,9 @@ public class DominatorsFinder {
       chainIt = chain.iterator();
       while (chainIt.hasNext()) {
         Object n = chainIt.next();
-        if (heads.contains(n)) continue;
+        if (heads.contains(n)) {
+          continue;
+        }
         FlowSet domin = new ArraySparseSet();
         fullSet.copy(domin);
         unitToDominators.put(n, domin);
@@ -77,8 +79,9 @@ public class DominatorsFinder {
       Iterator it = chain.iterator();
       while (it.hasNext()) {
         Object n = it.next();
-        if (heads.contains(n)) continue;
-        else {
+        if (heads.contains(n)) {
+          continue;
+        } else {
           fullSet.copy(temp);
 
           Iterator predsIt = peg.getPredsOf(n).iterator();
@@ -102,7 +105,9 @@ public class DominatorsFinder {
   }
 
   public FlowSet getDominatorsOf(Object s) {
-    if (!unitToDominators.containsKey(s)) throw new RuntimeException("Invalid stmt" + s);
+    if (!unitToDominators.containsKey(s)) {
+      throw new RuntimeException("Invalid stmt" + s);
+    }
     return unitToDominators.get(s);
   }
 }

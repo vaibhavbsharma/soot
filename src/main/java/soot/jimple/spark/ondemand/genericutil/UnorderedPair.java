@@ -33,6 +33,7 @@ public class UnorderedPair<U, V> {
    *
    * @see java.lang.Object#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object obj) {
     if (obj != null && obj.getClass() == UnorderedPair.class) {
       UnorderedPair u = (UnorderedPair) obj;
@@ -46,10 +47,12 @@ public class UnorderedPair<U, V> {
    *
    * @see java.lang.Object#hashCode()
    */
+  @Override
   public int hashCode() {
     return o1.hashCode() + o2.hashCode();
   }
 
+  @Override
   public String toString() {
     return "{" + o1.toString() + ", " + o2.toString() + "}";
   }

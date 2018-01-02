@@ -67,14 +67,17 @@ class Instruction_Invokeinterface extends Instruction_intindex {
   public byte nargs;
   public byte reserved;
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool) + argsep + nargs + argsep + "(reserved " + reserved + ")";
   }
 
+  @Override
   public int nextOffset(int curr) {
     return super.nextOffset(curr) + 2;
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     index = super.parse(bc, index);
     nargs = bc[index];
@@ -83,6 +86,7 @@ class Instruction_Invokeinterface extends Instruction_intindex {
     return index + 1;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     index = super.compile(bc, index);
     bc[index++] = nargs;

@@ -28,10 +28,10 @@
 
 package soot.tagkit;
 
-import soot.UnitBox;
-
 import java.util.Collections;
 import java.util.List;
+
+import soot.UnitBox;
 
 /**
  * Represents a general attribute which can be attached to implementations of Host. It can be
@@ -44,23 +44,29 @@ public class GenericAttribute implements Attribute {
   private byte[] mValue;
 
   public GenericAttribute(String name, byte[] value) {
-    if (value == null) value = new byte[0];
+    if (value == null) {
+      value = new byte[0];
+    }
     mName = name;
     mValue = value;
   }
 
+  @Override
   public String getName() {
     return mName;
   }
 
+  @Override
   public byte[] getValue() {
     return mValue;
   }
 
+  @Override
   public String toString() {
     return mName + " " + Base64.encode(mValue).toString();
   }
 
+  @Override
   public void setValue(byte[] value) {
     mValue = value;
   }

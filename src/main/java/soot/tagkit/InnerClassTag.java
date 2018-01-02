@@ -38,23 +38,26 @@ public class InnerClassTag implements Tag {
     this.outerClass = outerClass;
     this.name = name;
     this.accessFlags = accessFlags;
-    if (innerClass != null && (innerClass.startsWith("L") && innerClass.endsWith(";")))
+    if (innerClass != null && (innerClass.startsWith("L") && innerClass.endsWith(";"))) {
       throw new RuntimeException(
           "InnerClass annotation type string must "
               + "be of the form a/b/ClassName not '"
               + innerClass
               + "'");
-    if (outerClass != null && (outerClass.startsWith("L") && outerClass.endsWith(";")))
+    }
+    if (outerClass != null && (outerClass.startsWith("L") && outerClass.endsWith(";"))) {
       throw new RuntimeException(
           "OuterType annotation type string must "
               + "be of the form a/b/ClassName not '"
               + innerClass
               + "'");
+    }
     if (name != null && name.endsWith(";")) {
       throw new RuntimeException("InnerClass name cannot end with ';', got '" + name + "'");
     }
   }
 
+  @Override
   public String getName() {
     return "InnerClassTag";
   }
@@ -63,6 +66,7 @@ public class InnerClassTag implements Tag {
    * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[]
    * encoding for this attribute because it contains embedded constant pool indicies.
    */
+  @Override
   public byte[] getValue() {
     try {
       return innerClass.getBytes("UTF8");
@@ -87,6 +91,7 @@ public class InnerClassTag implements Tag {
     return accessFlags;
   }
 
+  @Override
   public String toString() {
     return "[inner="
         + innerClass

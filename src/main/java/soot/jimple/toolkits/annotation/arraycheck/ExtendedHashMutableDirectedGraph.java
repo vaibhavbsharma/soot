@@ -25,10 +25,10 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import soot.toolkits.graph.HashMutableDirectedGraph;
-
 import java.util.Iterator;
 import java.util.List;
+
+import soot.toolkits.graph.HashMutableDirectedGraph;
 
 /**
  * add skipNode method to direct all predecessor edges to successors.
@@ -39,19 +39,28 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
   public ExtendedHashMutableDirectedGraph() {}
 
   /** If nodes are not in the graph, add them into graph first. */
+  @Override
   public void addEdge(Object from, Object to) {
-    if (!super.containsNode(from)) super.addNode(from);
+    if (!super.containsNode(from)) {
+      super.addNode(from);
+    }
 
-    if (!super.containsNode(to)) super.addNode(to);
+    if (!super.containsNode(to)) {
+      super.addNode(to);
+    }
 
     super.addEdge(from, to);
   }
 
   /** Add mutual edge to the graph. It should be optimized in the future. */
   public void addMutualEdge(Object from, Object to) {
-    if (!super.containsNode(from)) super.addNode(from);
+    if (!super.containsNode(from)) {
+      super.addNode(from);
+    }
 
-    if (!super.containsNode(to)) super.addNode(to);
+    if (!super.containsNode(to)) {
+      super.addNode(to);
+    }
 
     super.addEdge(from, to);
     super.addEdge(to, from);
@@ -59,14 +68,18 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
 
   /** Bypass the in edge to out edge. Not delete the node */
   public void skipNode(Object node) {
-    if (!super.containsNode(node)) return;
+    if (!super.containsNode(node)) {
+      return;
+    }
 
     Object[] preds = getPredsOf(node).toArray();
     Object[] succs = getSuccsOf(node).toArray();
 
     for (Object element : preds) {
       for (Object element0 : succs) {
-        if (element != element0) super.addEdge(element, element0);
+        if (element != element0) {
+          super.addEdge(element, element0);
+        }
       }
     }
 
@@ -101,6 +114,7 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
     }
   }
 
+  @Override
   public String toString() {
     String rtn = "Graph:\n";
 

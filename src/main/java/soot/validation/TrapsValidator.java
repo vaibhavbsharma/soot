@@ -1,11 +1,11 @@
 package soot.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.PatchingChain;
 import soot.Trap;
 import soot.Unit;
-
-import java.util.List;
 
 public enum TrapsValidator implements BodyValidator {
   INSTANCE;
@@ -20,20 +20,23 @@ public enum TrapsValidator implements BodyValidator {
     PatchingChain<Unit> units = body.getUnits();
 
     for (Trap t : body.getTraps()) {
-      if (!units.contains(t.getBeginUnit()))
+      if (!units.contains(t.getBeginUnit())) {
         exception.add(
             new ValidationException(
                 t.getBeginUnit(), "begin not in chain" + " in " + body.getMethod()));
+      }
 
-      if (!units.contains(t.getEndUnit()))
+      if (!units.contains(t.getEndUnit())) {
         exception.add(
             new ValidationException(
                 t.getEndUnit(), "end not in chain" + " in " + body.getMethod()));
+      }
 
-      if (!units.contains(t.getHandlerUnit()))
+      if (!units.contains(t.getHandlerUnit())) {
         exception.add(
             new ValidationException(
                 t.getHandlerUnit(), "handler not in chain" + " in " + body.getMethod()));
+      }
     }
   }
 

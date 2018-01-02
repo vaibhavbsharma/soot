@@ -25,9 +25,9 @@
 
 package soot.jimple;
 
-import soot.Unit;
-
 import java.util.List;
+
+import soot.Unit;
 
 public interface TableSwitchStmt extends SwitchStmt {
   void setLowIndex(int lowIndex);

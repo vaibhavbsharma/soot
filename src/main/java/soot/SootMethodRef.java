@@ -19,9 +19,9 @@
 
 package soot;
 
-import soot.util.NumberedString;
-
 import java.util.List;
+
+import soot.util.NumberedString;
 
 /**
  * Representation of a reference to a method as it appears in a class file. Note that the method

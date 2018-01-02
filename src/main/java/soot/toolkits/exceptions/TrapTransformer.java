@@ -1,5 +1,10 @@
 package soot.toolkits.exceptions;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.Value;
@@ -8,11 +13,6 @@ import soot.jimple.ExitMonitorStmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Common abstract base class for all body transformers that change the trap list to, e.g., minimize
@@ -50,12 +50,20 @@ public abstract class TrapTransformer extends BodyTransformer {
       }
 
       // Copy over the monitors from the predecessors
-      for (Unit pred : ug.getPredsOf(curUnit))
-        for (Value v : unitMonitors.get(pred))
-          if (v != exitValue) if (unitMonitors.put(curUnit, v)) hasChanged = true;
+      for (Unit pred : ug.getPredsOf(curUnit)) {
+        for (Value v : unitMonitors.get(pred)) {
+          if (v != exitValue) {
+            if (unitMonitors.put(curUnit, v)) {
+              hasChanged = true;
+            }
+          }
+        }
+      }
 
       // Work on the successors
-      if (doneSet.add(curUnit) || hasChanged) workList.addAll(ug.getSuccsOf(curUnit));
+      if (doneSet.add(curUnit) || hasChanged) {
+        workList.addAll(ug.getSuccsOf(curUnit));
+      }
     }
 
     return unitMonitors.keySet();

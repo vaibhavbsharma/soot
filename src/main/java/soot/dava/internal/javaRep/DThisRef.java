@@ -27,10 +27,12 @@ public class DThisRef extends ThisRef {
     super(thisType);
   }
 
+  @Override
   public String toString() {
     return "this: " + getType();
   }
 
+  @Override
   public Object clone() {
     return new DThisRef((RefType) getType());
   }

@@ -26,6 +26,9 @@
 
 package soot.grimp.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.SootMethodRef;
 import soot.UnitPrinter;
 import soot.Value;
@@ -34,17 +37,16 @@ import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.internal.AbstractSpecialInvokeExpr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Precedence {
   public GSpecialInvokeExpr(Value base, SootMethodRef methodRef, List args) {
     super(Grimp.v().newObjExprBox(base), methodRef, new ExprBox[args.size()]);
 
-    for (int i = 0; i < args.size(); i++)
+    for (int i = 0; i < args.size(); i++) {
       this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    }
   }
 
+  @Override
   public int getPrecedence() {
     return 950;
   }
@@ -53,10 +55,13 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Pre
     String leftOp = opString;
 
     if (getBase() instanceof Precedence
-        && ((Precedence) getBase()).getPrecedence() < getPrecedence()) leftOp = "(" + leftOp + ")";
+        && ((Precedence) getBase()).getPrecedence() < getPrecedence()) {
+      leftOp = "(" + leftOp + ")";
+    }
     return leftOp + rightString;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
@@ -64,7 +69,9 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Pre
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) buffer.append(", ");
+        if (i != 0) {
+          buffer.append(", ");
+        }
 
         buffer.append(argBoxes[i].getValue().toString());
       }
@@ -75,17 +82,24 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Pre
     return toString(getBase(), getBase().toString(), buffer.toString());
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal("(");
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal("(");
+    }
     baseBox.toString(up);
-    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal(")");
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal(")");
+    }
     up.literal(".");
     up.methodRef(methodRef);
     up.literal("(");
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) up.literal(", ");
+        if (i != 0) {
+          up.literal(", ");
+        }
 
         argBoxes[i].toString(up);
       }
@@ -94,6 +108,7 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr implements Pre
     up.literal(")");
   }
 
+  @Override
   public Object clone() {
     ArrayList clonedArgs = new ArrayList(getArgCount());
 

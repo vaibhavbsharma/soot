@@ -1,14 +1,14 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.EquivalentValue;
 import soot.G;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Value;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.Iterator;
-import java.util.List;
 
 // SimpleMethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the scope of the LocalObjectsScopeAnalysis
@@ -47,17 +47,19 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
       addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
     }
 
-    if (printMessages)
+    if (printMessages) {
       G.v()
           .out
           .println(
               "----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+    }
     doFlowInsensitiveAnalysis();
-    if (printMessages)
+    if (printMessages) {
       G.v()
           .out
           .println(
               "----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+    }
   }
 
   public SimpleMethodLocalObjectsAnalysis(
@@ -91,19 +93,22 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
       G.v().out.println("found " + sharedRefs.size() + " shared refs in context.");
     }
     doFlowInsensitiveAnalysis();
-    if (printMessages)
+    if (printMessages) {
       G.v()
           .out
           .println(
               "----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+    }
   }
 
   // Interesting sources are summarized (and possibly printed)
+  @Override
   public boolean isInterestingSource(Value source) {
     return (source instanceof AbstractDataSource);
   }
 
   // Interesting sinks are possibly printed
+  @Override
   public boolean isInterestingSink(Value sink) {
     return true; // (sink instanceof Local); // we're interested in all values
   }
@@ -116,7 +121,7 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
         new CachedEquivalentValue(new AbstractDataSource(new String("SHARED")));
     if (infoFlowGraph.containsNode(source)) {
       List sinks = infoFlowGraph.getSuccsOf(source);
-      if (printMessages)
+      if (printMessages) {
         G.v()
             .out
             .println(
@@ -127,13 +132,15 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
                     + " in "
                     + sm
                     + " ");
+      }
       return !sinks.contains(new CachedEquivalentValue(local));
     } else {
-      if (printMessages)
+      if (printMessages) {
         G.v()
             .out
             .println(
                 "      Requested value " + local + " is Local (LIKE ALL VALUES) in " + sm + " ");
+      }
       return true; // no shared data in this method
     }
   }

@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.util.IdentityKey;
-
 import java.util.ArrayList;
+
+import polyglot.util.IdentityKey;
 
 public class PrivateInstancesAvailable extends polyglot.visit.NodeVisitor {
 
@@ -32,9 +32,10 @@ public class PrivateInstancesAvailable extends polyglot.visit.NodeVisitor {
   }
 
   public PrivateInstancesAvailable() {
-    list = new ArrayList<IdentityKey>();
+    list = new ArrayList<>();
   }
 
+  @Override
   public polyglot.ast.Node leave(
       polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
 

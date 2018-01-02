@@ -26,16 +26,16 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInvokeExpr implements InvokeExpr {
@@ -47,53 +47,67 @@ public abstract class AbstractInvokeExpr implements InvokeExpr {
     this.argBoxes = argBoxes.length == 0 ? null : argBoxes;
   }
 
+  @Override
   public void setMethodRef(SootMethodRef methodRef) {
     this.methodRef = methodRef;
   }
 
+  @Override
   public SootMethodRef getMethodRef() {
     return methodRef;
   }
 
+  @Override
   public SootMethod getMethod() {
     return methodRef.resolve();
   }
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public Value getArg(int index) {
     return argBoxes[index].getValue();
   }
 
+  @Override
   public List<Value> getArgs() {
     List<Value> l = new ArrayList<>();
     if (argBoxes != null) {
-      for (ValueBox element : argBoxes) l.add(element.getValue());
+      for (ValueBox element : argBoxes) {
+        l.add(element.getValue());
+      }
     }
     return l;
   }
 
+  @Override
   public int getArgCount() {
     return argBoxes == null ? 0 : argBoxes.length;
   }
 
+  @Override
   public void setArg(int index, Value arg) {
     argBoxes[index].setValue(arg);
   }
 
+  @Override
   public ValueBox getArgBox(int index) {
     return argBoxes[index];
   }
 
+  @Override
   public Type getType() {
     return methodRef.returnType();
   }
 
   @Override
   public List<ValueBox> getUseBoxes() {
-    if (argBoxes == null) return Collections.emptyList();
+    if (argBoxes == null) {
+      return Collections.emptyList();
+    }
 
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
     Collections.addAll(list, argBoxes);
 
     for (ValueBox element : argBoxes) {

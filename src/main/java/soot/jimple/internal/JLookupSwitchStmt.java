@@ -25,6 +25,10 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -40,10 +44,6 @@ import soot.jimple.LookupSwitchStmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitchStmt {
   /**
    * List of lookup values from the corresponding bytecode instruction, represented as IntConstants.
@@ -53,14 +53,16 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
   // This method is necessary to deal with constructor-must-be-first-ism.
   private static UnitBox[] getTargetBoxesArray(List<? extends Unit> targets) {
     UnitBox[] targetBoxes = new UnitBox[targets.size()];
-    for (int i = 0; i < targetBoxes.length; i++)
+    for (int i = 0; i < targetBoxes.length; i++) {
       targetBoxes[i] = Jimple.v().newStmtBox(targets.get(i));
+    }
     return targetBoxes;
   }
 
+  @Override
   public Object clone() {
     int lookupValueCount = lookupValues.size();
-    List<IntConstant> clonedLookupValues = new ArrayList<IntConstant>(lookupValueCount);
+    List<IntConstant> clonedLookupValues = new ArrayList<>(lookupValueCount);
 
     for (int i = 0; i < lookupValueCount; i++) {
       clonedLookupValues.add(i, IntConstant.v(getLookupValue(i)));
@@ -101,6 +103,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
     setLookupValues(lookupValues);
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     String endOfLine = " ";
@@ -140,6 +143,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.LOOKUPSWITCH);
     up.literal("(");
@@ -172,28 +176,34 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
     up.literal("}");
   }
 
+  @Override
   public void setLookupValues(List<IntConstant> lookupValues) {
-    this.lookupValues = new ArrayList<IntConstant>(lookupValues);
+    this.lookupValues = new ArrayList<>(lookupValues);
   }
 
+  @Override
   public void setLookupValue(int index, int value) {
     lookupValues.set(index, IntConstant.v(value));
   }
 
+  @Override
   public int getLookupValue(int index) {
     return lookupValues.get(index).value;
   }
 
+  @Override
   public List<IntConstant> getLookupValues() {
     return Collections.unmodifiableList(lookupValues);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseLookupSwitchStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
-    List<PlaceholderInst> targetPlaceholders = new ArrayList<PlaceholderInst>();
+    List<PlaceholderInst> targetPlaceholders = new ArrayList<>();
 
     ((ConvertToBaf) getKey()).convertToBaf(context, out);
 

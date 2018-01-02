@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Value;
@@ -9,10 +13,6 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.CheckRecursiveCalls;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -28,7 +28,7 @@ import java.util.Set;
 public class MethodExtentBuilder {
 
   // private List inlineSites = new ArrayList();
-  private final Set<Object> methodsNeedingInlining = new HashSet<Object>();
+  private final Set<Object> methodsNeedingInlining = new HashSet<>();
 
   public MethodExtentBuilder(Body unitBody, PegCallGraph pcg, CallGraph cg) {
     // testCallGraph(cg);
@@ -120,13 +120,14 @@ public class MethodExtentBuilder {
      * use DFS to find out if it's parents need inlining.
      * If so, add it to methodsNeedingInlining
      */
-    Set<Object> gray = new HashSet<Object>();
+    Set<Object> gray = new HashSet<>();
     Iterator it = cg.iterator();
 
     while (it.hasNext()) {
       Object o = it.next();
-      if (methodsNeedingInlining.contains(o)) continue;
-      else if (!gray.contains(o)) {
+      if (methodsNeedingInlining.contains(o)) {
+        continue;
+      } else if (!gray.contains(o)) {
         // System.out.println("visit: "+o);
         if (visitNode(o, gray, cg)) {
           methodsNeedingInlining.add(o);

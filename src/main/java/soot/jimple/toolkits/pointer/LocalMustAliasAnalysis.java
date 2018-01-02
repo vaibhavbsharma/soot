@@ -19,6 +19,14 @@
  */
 package soot.jimple.toolkits.pointer;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.EquivalentValue;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -39,14 +47,6 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * LocalMustAliasAnalysis attempts to determine if two local variables (at two potentially different
@@ -114,19 +114,21 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
   public LocalMustAliasAnalysis(UnitGraph g, boolean tryTrackFieldAssignments) {
     super(g);
     this.container = g.getBody().getMethod();
-    this.localsAndFieldRefs = new HashSet<Value>();
+    this.localsAndFieldRefs = new HashSet<>();
 
     // add all locals
     for (Local l : g.getBody().getLocals()) {
-      if (l.getType() instanceof RefLikeType) this.localsAndFieldRefs.add(l);
+      if (l.getType() instanceof RefLikeType) {
+        this.localsAndFieldRefs.add(l);
+      }
     }
 
     if (tryTrackFieldAssignments) {
       this.localsAndFieldRefs.addAll(trackableFields());
     }
 
-    this.rhsToNumber = new HashMap<Value, Integer>();
-    this.mergePointToValueToNumber = new HashMap<Unit, Map<Value, Integer>>();
+    this.rhsToNumber = new HashMap<>();
+    this.mergePointToValueToNumber = new HashMap<>();
 
     doAnalysis();
 
@@ -140,7 +142,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    * method but not set by the method or any method transitively called by this method.
    */
   private Set<Value> trackableFields() {
-    Set<Value> usedFieldRefs = new HashSet<Value>();
+    Set<Value> usedFieldRefs = new HashSet<>();
     // add all field references that are in use boxes
     for (Unit unit : this.graph) {
       Stmt s = (Stmt) unit;
@@ -149,8 +151,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         Value val = useBox.getValue();
         if (val instanceof FieldRef) {
           FieldRef fieldRef = (FieldRef) val;
-          if (fieldRef.getType() instanceof RefLikeType)
+          if (fieldRef.getType() instanceof RefLikeType) {
             usedFieldRefs.add(new EquivalentValue(fieldRef));
+          }
         }
       }
     }
@@ -167,7 +170,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
           new ReachableMethods(cg, Collections.<MethodOrMethodContext>singletonList(container));
       reachableMethods.update();
       for (Iterator<MethodOrMethodContext> iterator = reachableMethods.listener();
-          iterator.hasNext(); ) {
+          iterator.hasNext();
+          ) {
         SootMethod m = (SootMethod) iterator.next();
         if (m.hasActiveBody()
             &&
@@ -199,10 +203,13 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
       HashMap<Value, Integer> outMap) {
     for (Value l : localsAndFieldRefs) {
       Integer i1 = inMap1.get(l), i2 = inMap2.get(l);
-      if (i1 == null) outMap.put(l, i2);
-      else if (i2 == null) outMap.put(l, i1);
-      else if (i1.equals(i2)) outMap.put(l, i1);
-      else {
+      if (i1 == null) {
+        outMap.put(l, i2);
+      } else if (i2 == null) {
+        outMap.put(l, i1);
+      } else if (i1.equals(i2)) {
+        outMap.put(l, i1);
+      } else {
         /* Merging two different values is tricky...
          * A naive approach would be to assign UNKNOWN. However, that would lead to imprecision in the following case:
          *
@@ -225,9 +232,11 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
         Integer number = null;
         if (valueToNumber == null) {
-          valueToNumber = new HashMap<Value, Integer>();
+          valueToNumber = new HashMap<>();
           mergePointToValueToNumber.put(succUnit, valueToNumber);
-        } else number = valueToNumber.get(l);
+        } else {
+          number = valueToNumber.get(l);
+        }
 
         if (number == null) {
           number = nextNumber++;
@@ -263,7 +272,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         if (rhs instanceof Local) {
           // local-assignment - must be aliased...
           Integer val = in.get(rhs);
-          if (val != null) out.put(lhs, val);
+          if (val != null) {
+            out.put(lhs, val);
+          }
         } else if (rhs instanceof ThisRef) {
           // ThisRef can never change; assign unique number
           out.put(lhs, thisRefNumber());
@@ -313,13 +324,13 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
   /** Initial most conservative value: We leave it away to save memory, implicitly UNKNOWN. */
   @Override
   protected HashMap<Value, Integer> entryInitialFlow() {
-    return new HashMap<Value, Integer>();
+    return new HashMap<>();
   }
 
   /** Initial bottom value: objects have no definitions. */
   @Override
   protected HashMap<Value, Integer> newInitialFlow() {
-    return new HashMap<Value, Integer>();
+    return new HashMap<>();
   }
 
   /**
@@ -331,7 +342,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    */
   public String instanceKeyString(Local l, Stmt s) {
     Object ln = getFlowBefore(s).get(l);
-    if (ln == null) return null;
+    if (ln == null) {
+      return null;
+    }
     return ln.toString();
   }
 
@@ -354,7 +367,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     Object l1n = getFlowBefore(s1).get(l1);
     Object l2n = getFlowBefore(s2).get(l2);
 
-    if (l1n == null || l2n == null) return false;
+    if (l1n == null || l2n == null) {
+      return false;
+    }
 
     return l1n == l2n;
   }
@@ -369,8 +384,11 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     for (Value val : in2.keySet()) {
       Integer i1 = in1.get(val);
       Integer i2 = in2.get(val);
-      if (i2.equals(i1)) out.put(val, i2);
-      else throw new RuntimeException("Merge of different IDs not supported");
+      if (i2.equals(i1)) {
+        out.put(val, i2);
+      } else {
+        throw new RuntimeException("Merge of different IDs not supported");
+      }
     }
   }
 }

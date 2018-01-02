@@ -18,10 +18,10 @@
  */
 package soot.jimple.spark.geom.dataMgr;
 
-import soot.jimple.spark.geom.dataRep.SimpleInterval;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.jimple.spark.geom.dataRep.SimpleInterval;
 
 /**
  * Manage context intervals.
@@ -42,8 +42,8 @@ public class ContextsCollector {
   protected int nBudget = -1;
 
   public ContextsCollector() {
-    bars = new ArrayList<SimpleInterval>();
-    backupList = new ArrayList<SimpleInterval>();
+    bars = new ArrayList<>();
+    backupList = new ArrayList<>();
     tmp_si = new SimpleInterval();
   }
 
@@ -72,8 +72,12 @@ public class ContextsCollector {
         return false;
       }
       if (!tmp_si.merge(old_si)) {
-        if (old_si.L < minL) minL = old_si.L;
-        if (old_si.R > maxR) maxR = old_si.R;
+        if (old_si.L < minL) {
+          minL = old_si.L;
+        }
+        if (old_si.R > maxR) {
+          maxR = old_si.R;
+        }
         backupList.add(old_si);
       }
     }

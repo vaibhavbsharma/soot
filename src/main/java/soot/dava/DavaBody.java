@@ -20,6 +20,14 @@
 
 package soot.dava;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.G;
 import soot.IntType;
@@ -142,14 +150,6 @@ import soot.toolkits.graph.TrapUnitGraph;
 import soot.util.IterableSet;
 import soot.util.Switchable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*
  * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method
  *             These are now invoked as a very last staged (just before generating decompiled
@@ -206,15 +206,15 @@ public class DavaBody extends Body {
   DavaBody(SootMethod m) {
     super(m);
 
-    pMap = new HashMap<Integer, Value>();
-    consumedConditions = new HashSet<Object>();
-    thisLocals = new HashSet<Object>();
-    synchronizedBlockFacts = new IterableSet<ExceptionNode>();
-    exceptionFacts = new IterableSet<ExceptionNode>();
-    monitorFacts = new IterableSet<AugmentedStmt>();
-    importList = new IterableSet<String>();
+    pMap = new HashMap<>();
+    consumedConditions = new HashSet<>();
+    thisLocals = new HashSet<>();
+    synchronizedBlockFacts = new IterableSet<>();
+    exceptionFacts = new IterableSet<>();
+    monitorFacts = new IterableSet<>();
+    importList = new IterableSet<>();
     // packagesUsed = new IterableSet();
-    caughtrefs = new LinkedList<CaughtExceptionRef>();
+    caughtrefs = new LinkedList<>();
 
     controlLocal = null;
     constructorExpr = null;
@@ -269,6 +269,7 @@ public class DavaBody extends Body {
     consumedConditions.add(as);
   }
 
+  @Override
   public Object clone() {
     Body b = Dava.v().newBody(getMethod());
     b.importBodyContentsFrom(this);
@@ -298,13 +299,14 @@ public class DavaBody extends Body {
     Dava.v().log("\nstart method " + body.getMethod().toString());
 
     if (DEBUG) {
-      if (body.getMethod().getExceptions().size() != 0)
+      if (body.getMethod().getExceptions().size() != 0) {
         debug(
             "DavaBody",
             "printing NON EMPTY exception list for "
                 + body.getMethod().toString()
                 + " "
                 + body.getMethod().getExceptions().toString());
+      }
     }
     // copy and "convert" the grimp representation
     // DEBUG=true;
@@ -331,7 +333,7 @@ public class DavaBody extends Body {
         AbruptEdgeFinder.v().find(this, asg, SET);
       } catch (RetriggerAnalysisException rae) {
         SET = new SETTopNode(asg.get_ChainView());
-        consumedConditions = new HashSet<Object>();
+        consumedConditions = new HashSet<>();
         continue;
       }
       break;
@@ -653,8 +655,9 @@ public class DavaBody extends Body {
    */
 
   private void copy_Body(Body body) {
-    if (!(body instanceof GrimpBody))
+    if (!(body instanceof GrimpBody)) {
       throw new RuntimeException("You can only create a DavaBody from a GrimpBody!");
+    }
 
     GrimpBody grimpBody = (GrimpBody) body;
 
@@ -663,8 +666,8 @@ public class DavaBody extends Body {
      */
 
     {
-      HashMap<Switchable, Switchable> bindings = new HashMap<Switchable, Switchable>();
-      HashMap<Unit, Unit> reverse_binding = new HashMap<Unit, Unit>();
+      HashMap<Switchable, Switchable> bindings = new HashMap<>();
+      HashMap<Unit, Unit> reverse_binding = new HashMap<>();
 
       // Clone units in body's statement list
       for (Unit original : grimpBody.getUnits()) {
@@ -690,11 +693,12 @@ public class DavaBody extends Body {
           TableSwitchStmt original_switch = (TableSwitchStmt) reverse_binding.get(u);
           ts.setDefaultTarget((Unit) bindings.get(original_switch.getDefaultTarget()));
 
-          LinkedList<Unit> new_target_list = new LinkedList<Unit>();
+          LinkedList<Unit> new_target_list = new LinkedList<>();
 
           int target_count = ts.getHighIndex() - ts.getLowIndex() + 1;
-          for (int i = 0; i < target_count; i++)
+          for (int i = 0; i < target_count; i++) {
             new_target_list.add((Unit) bindings.get(original_switch.getTarget(i)));
+          }
           ts.setTargets(new_target_list);
         }
         if (s instanceof LookupSwitchStmt) {
@@ -704,8 +708,9 @@ public class DavaBody extends Body {
           ls.setDefaultTarget((Unit) bindings.get(original_switch.getDefaultTarget()));
 
           Unit[] new_target_list = new Unit[original_switch.getTargetCount()];
-          for (int i = 0; i < original_switch.getTargetCount(); i++)
+          for (int i = 0; i < original_switch.getTargetCount(); i++) {
             new_target_list[i] = (Unit) (bindings.get(original_switch.getTarget(i)));
+          }
           ls.setTargets(new_target_list);
 
           ls.setLookupValues(original_switch.getLookupValues());
@@ -728,12 +733,16 @@ public class DavaBody extends Body {
 
         // if we have a reference to an old object, replace it
         // it's clone.
-        if ((newObject = (Unit) bindings.get(oldObject)) != null) box.setUnit(newObject);
+        if ((newObject = (Unit) bindings.get(oldObject)) != null) {
+          box.setUnit(newObject);
+        }
       }
 
       // backpatch all local variables.
       for (ValueBox vb : getUseAndDefBoxes()) {
-        if (vb.getValue() instanceof Local) vb.setValue((Value) bindings.get(vb.getValue()));
+        if (vb.getValue() instanceof Local) {
+          vb.setValue((Value) bindings.get(vb.getValue()));
+        }
       }
 
       // clone the traps
@@ -824,9 +833,10 @@ public class DavaBody extends Body {
           if (className.lastIndexOf('.') > 0) { // 0 doesnt make sense
             classPackageName = className.substring(0, className.lastIndexOf('.'));
           }
-          if (!packageName.equals(classPackageName))
+          if (!packageName.equals(classPackageName)) {
             throw new DecompilationException(
                 "Unable to retrieve package name for identifier. Please report to developer.");
+          }
 
           addToImportList(className);
 
@@ -837,32 +847,42 @@ public class DavaBody extends Body {
       for (Unit u : getUnits()) {
         Stmt s = (Stmt) u;
 
-        if (s instanceof IfStmt) javafy(((IfStmt) s).getConditionBox());
-        else if (s instanceof ThrowStmt) javafy(((ThrowStmt) s).getOpBox());
-        else if (s instanceof TableSwitchStmt) javafy(((TableSwitchStmt) s).getKeyBox());
-        else if (s instanceof LookupSwitchStmt) javafy(((LookupSwitchStmt) s).getKeyBox());
-        else if (s instanceof MonitorStmt) javafy(((MonitorStmt) s).getOpBox());
-        else if (s instanceof DefinitionStmt) {
+        if (s instanceof IfStmt) {
+          javafy(((IfStmt) s).getConditionBox());
+        } else if (s instanceof ThrowStmt) {
+          javafy(((ThrowStmt) s).getOpBox());
+        } else if (s instanceof TableSwitchStmt) {
+          javafy(((TableSwitchStmt) s).getKeyBox());
+        } else if (s instanceof LookupSwitchStmt) {
+          javafy(((LookupSwitchStmt) s).getKeyBox());
+        } else if (s instanceof MonitorStmt) {
+          javafy(((MonitorStmt) s).getOpBox());
+        } else if (s instanceof DefinitionStmt) {
           DefinitionStmt ds = (DefinitionStmt) s;
 
           javafy(ds.getRightOpBox());
           javafy(ds.getLeftOpBox());
 
-          if (ds.getRightOp() instanceof IntConstant)
+          if (ds.getRightOp() instanceof IntConstant) {
             ds.getRightOpBox()
                 .setValue(
                     DIntConstant.v(
                         ((IntConstant) ds.getRightOp()).value, ds.getLeftOp().getType()));
+          }
         } else if (s instanceof ReturnStmt) {
           ReturnStmt rs = (ReturnStmt) s;
 
-          if (rs.getOp() instanceof IntConstant)
+          if (rs.getOp() instanceof IntConstant) {
             rs.getOpBox()
                 .setValue(
                     DIntConstant.v(
                         ((IntConstant) rs.getOp()).value, body.getMethod().getReturnType()));
-          else javafy(rs.getOpBox());
-        } else if (s instanceof InvokeStmt) javafy(s.getInvokeExprBox());
+          } else {
+            javafy(rs.getOpBox());
+          }
+        } else if (s instanceof InvokeStmt) {
+          javafy(s.getInvokeExprBox());
+        }
       }
     }
 
@@ -891,10 +911,13 @@ public class DavaBody extends Body {
           DefinitionStmt ds = (DefinitionStmt) s;
           Value rightOp = ds.getRightOp();
 
-          if (rightOp instanceof ParameterRef)
+          if (rightOp instanceof ParameterRef) {
             pMap.put(((ParameterRef) rightOp).getIndex(), ds.getLeftOp());
+          }
 
-          if (rightOp instanceof CaughtExceptionRef) caughtrefs.add((CaughtExceptionRef) rightOp);
+          if (rightOp instanceof CaughtExceptionRef) {
+            caughtrefs.add((CaughtExceptionRef) rightOp);
+          }
         }
       }
     }
@@ -924,8 +947,9 @@ public class DavaBody extends Body {
               if ((name.equals(SootMethod.constructorName))
                   || (name.equals(SootMethod.staticInitializerName))) {
 
-                if (constructorUnit != null)
+                if (constructorUnit != null) {
                   throw new RuntimeException("More than one candidate for constructor found.");
+                }
 
                 constructorExpr = iie;
                 constructorUnit = s;
@@ -945,23 +969,37 @@ public class DavaBody extends Body {
   private void javafy(ValueBox vb) {
     Value v = vb.getValue();
 
-    if (v instanceof Expr) javafy_expr(vb);
-    else if (v instanceof Ref) javafy_ref(vb);
-    else if (v instanceof Local) javafy_local(vb);
-    else if (v instanceof Constant) javafy_constant(vb);
+    if (v instanceof Expr) {
+      javafy_expr(vb);
+    } else if (v instanceof Ref) {
+      javafy_ref(vb);
+    } else if (v instanceof Local) {
+      javafy_local(vb);
+    } else if (v instanceof Constant) {
+      javafy_constant(vb);
+    }
   }
 
   private void javafy_expr(ValueBox vb) {
     Expr e = (Expr) vb.getValue();
 
-    if (e instanceof BinopExpr) javafy_binop_expr(vb);
-    else if (e instanceof UnopExpr) javafy_unop_expr(vb);
-    else if (e instanceof CastExpr) javafy_cast_expr(vb);
-    else if (e instanceof NewArrayExpr) javafy_newarray_expr(vb);
-    else if (e instanceof NewMultiArrayExpr) javafy_newmultiarray_expr(vb);
-    else if (e instanceof InstanceOfExpr) javafy_instanceof_expr(vb);
-    else if (e instanceof InvokeExpr) javafy_invoke_expr(vb);
-    else if (e instanceof NewExpr) javafy_new_expr(vb);
+    if (e instanceof BinopExpr) {
+      javafy_binop_expr(vb);
+    } else if (e instanceof UnopExpr) {
+      javafy_unop_expr(vb);
+    } else if (e instanceof CastExpr) {
+      javafy_cast_expr(vb);
+    } else if (e instanceof NewArrayExpr) {
+      javafy_newarray_expr(vb);
+    } else if (e instanceof NewMultiArrayExpr) {
+      javafy_newmultiarray_expr(vb);
+    } else if (e instanceof InstanceOfExpr) {
+      javafy_instanceof_expr(vb);
+    } else if (e instanceof InvokeExpr) {
+      javafy_invoke_expr(vb);
+    } else if (e instanceof NewExpr) {
+      javafy_new_expr(vb);
+    }
   }
 
   private void javafy_ref(ValueBox vb) {
@@ -979,9 +1017,10 @@ public class DavaBody extends Body {
       if (className.lastIndexOf('.') > 0) { // 0 doesnt make sense
         classPackageName = className.substring(0, className.lastIndexOf('.'));
       }
-      if (!packageName.equals(classPackageName))
+      if (!packageName.equals(classPackageName)) {
         throw new DecompilationException(
             "Unable to retrieve package name for identifier. Please report to developer.");
+      }
 
       addToImportList(className);
 
@@ -1019,17 +1058,21 @@ public class DavaBody extends Body {
         javafy(leftOpBox);
         leftOp = leftOpBox.getValue();
 
-        if (boe instanceof ConditionExpr)
+        if (boe instanceof ConditionExpr) {
           rightOpBox.setValue(DIntConstant.v(((IntConstant) rightOp).value, leftOp.getType()));
-        else rightOpBox.setValue(DIntConstant.v(((IntConstant) rightOp).value, null));
+        } else {
+          rightOpBox.setValue(DIntConstant.v(((IntConstant) rightOp).value, null));
+        }
       }
     } else if (leftOp instanceof IntConstant) {
       javafy(rightOpBox);
       rightOp = rightOpBox.getValue();
 
-      if (boe instanceof ConditionExpr)
+      if (boe instanceof ConditionExpr) {
         leftOpBox.setValue(DIntConstant.v(((IntConstant) leftOp).value, rightOp.getType()));
-      else leftOpBox.setValue(DIntConstant.v(((IntConstant) leftOp).value, null));
+      } else {
+        leftOpBox.setValue(DIntConstant.v(((IntConstant) leftOp).value, null));
+      }
     } else {
       javafy(rightOpBox);
       rightOp = rightOpBox.getValue();
@@ -1038,9 +1081,13 @@ public class DavaBody extends Body {
       leftOp = leftOpBox.getValue();
     }
 
-    if (boe instanceof CmpExpr) vb.setValue(new DCmpExpr(leftOp, rightOp));
-    else if (boe instanceof CmplExpr) vb.setValue(new DCmplExpr(leftOp, rightOp));
-    else if (boe instanceof CmpgExpr) vb.setValue(new DCmpgExpr(leftOp, rightOp));
+    if (boe instanceof CmpExpr) {
+      vb.setValue(new DCmpExpr(leftOp, rightOp));
+    } else if (boe instanceof CmplExpr) {
+      vb.setValue(new DCmplExpr(leftOp, rightOp));
+    } else if (boe instanceof CmpgExpr) {
+      vb.setValue(new DCmpgExpr(leftOp, rightOp));
+    }
   }
 
   private void javafy_unop_expr(ValueBox vb) {
@@ -1048,8 +1095,11 @@ public class DavaBody extends Body {
 
     javafy(uoe.getOpBox());
 
-    if (uoe instanceof LengthExpr) vb.setValue(new DLengthExpr(uoe.getOp()));
-    else if (uoe instanceof NegExpr) vb.setValue(new DNegExpr(uoe.getOp()));
+    if (uoe instanceof LengthExpr) {
+      vb.setValue(new DLengthExpr(uoe.getOp()));
+    } else if (uoe instanceof NegExpr) {
+      vb.setValue(new DNegExpr(uoe.getOp()));
+    }
   }
 
   private void javafy_cast_expr(ValueBox vb) {
@@ -1065,7 +1115,9 @@ public class DavaBody extends Body {
 
   private void javafy_newmultiarray_expr(ValueBox vb) {
     NewMultiArrayExpr nmae = (NewMultiArrayExpr) vb.getValue();
-    for (int i = 0; i < nmae.getSizeCount(); i++) javafy(nmae.getSizeBox(i));
+    for (int i = 0; i < nmae.getSizeCount(); i++) {
+      javafy(nmae.getSizeBox(i));
+    }
     vb.setValue(new DNewMultiArrayExpr(nmae.getBaseType(), nmae.getSizes()));
   }
 
@@ -1083,20 +1135,23 @@ public class DavaBody extends Body {
     if (className.lastIndexOf('.') > 0) { // 0 doesnt make sense
       classPackageName = className.substring(0, className.lastIndexOf('.'));
     }
-    if (!packageName.equals(classPackageName))
+    if (!packageName.equals(classPackageName)) {
       throw new DecompilationException(
           "Unable to retrieve package name for identifier. Please report to developer.");
+    }
 
     addToImportList(className);
 
     for (int i = 0; i < ie.getArgCount(); i++) {
       Value arg = ie.getArg(i);
 
-      if (arg instanceof IntConstant)
+      if (arg instanceof IntConstant) {
         ie.getArgBox(i)
             .setValue(
                 DIntConstant.v(((IntConstant) arg).value, ie.getMethodRef().parameterType(i)));
-      else javafy(ie.getArgBox(i));
+      } else {
+        javafy(ie.getArgBox(i));
+      }
     }
 
     if (ie instanceof InstanceInvokeExpr) {
@@ -1112,7 +1167,9 @@ public class DavaBody extends Body {
       } else if (ie instanceof InterfaceInvokeExpr) {
         InterfaceInvokeExpr iie = (InterfaceInvokeExpr) ie;
         vb.setValue(new DInterfaceInvokeExpr(iie.getBase(), iie.getMethodRef(), iie.getArgs()));
-      } else throw new RuntimeException("InstanceInvokeExpr " + ie + " not javafied correctly");
+      } else {
+        throw new RuntimeException("InstanceInvokeExpr " + ie + " not javafied correctly");
+      }
     } else if (ie instanceof StaticInvokeExpr) {
       StaticInvokeExpr sie = (StaticInvokeExpr) ie;
 
@@ -1129,9 +1186,10 @@ public class DavaBody extends Body {
         if (className.lastIndexOf('.') > 0) { // 0 doesnt make sense
           classPackageName = className.substring(0, className.lastIndexOf('.'));
         }
-        if (!packageName.equals(classPackageName))
+        if (!packageName.equals(classPackageName)) {
           throw new DecompilationException(
               "Unable to retrieve package name for identifier. Please report to developer.");
+        }
 
         addToImportList(className);
         vb.setValue(new DNewInvokeExpr((RefType) nie.getType(), nie.getMethodRef(), nie.getArgs()));
@@ -1145,16 +1203,19 @@ public class DavaBody extends Body {
         if (className.lastIndexOf('.') > 0) { // 0 doesnt make sense
           classPackageName = className.substring(0, className.lastIndexOf('.'));
         }
-        if (!packageName.equals(classPackageName))
+        if (!packageName.equals(classPackageName)) {
           throw new DecompilationException(
               "Unable to retrieve package name for identifier. Please report to developer.");
+        }
 
         addToImportList(className);
 
         // addPackage(methodRef.declaringClass().getJavaPackageName());
         vb.setValue(new DStaticInvokeExpr(methodRef, sie.getArgs()));
       }
-    } else throw new RuntimeException("InvokeExpr " + ie + " not javafied correctly");
+    } else {
+      throw new RuntimeException("InvokeExpr " + ie + " not javafied correctly");
+    }
   }
 
   private void javafy_new_expr(ValueBox vb) {
@@ -1168,18 +1229,23 @@ public class DavaBody extends Body {
     if (className.lastIndexOf('.') > 0) { // 0 doesnt make sense
       classPackageName = className.substring(0, className.lastIndexOf('.'));
     }
-    if (!packageName.equals(classPackageName))
+    if (!packageName.equals(classPackageName)) {
       throw new DecompilationException(
           "Unable to retrieve package name for identifier. Please report to developer.");
+    }
 
     addToImportList(className);
   }
 
   public void addToImportList(String className) {
-    if (!className.isEmpty()) importList.add(className);
+    if (!className.isEmpty()) {
+      importList.add(className);
+    }
   }
 
   public void debug(String methodName, String debug) {
-    if (DEBUG) System.out.println(methodName + "    DEBUG: " + debug);
+    if (DEBUG) {
+      System.out.println(methodName + "    DEBUG: " + debug);
+    }
   }
 }

@@ -59,69 +59,101 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
 public interface GrimpExprSwitch extends ExprSwitch {
+  @Override
   void caseAddExpr(AddExpr v);
 
+  @Override
   void caseAndExpr(AndExpr v);
 
+  @Override
   void caseCmpExpr(CmpExpr v);
 
+  @Override
   void caseCmpgExpr(CmpgExpr v);
 
+  @Override
   void caseCmplExpr(CmplExpr v);
 
+  @Override
   void caseDivExpr(DivExpr v);
 
+  @Override
   void caseEqExpr(EqExpr v);
 
+  @Override
   void caseNeExpr(NeExpr v);
 
+  @Override
   void caseGeExpr(GeExpr v);
 
+  @Override
   void caseGtExpr(GtExpr v);
 
+  @Override
   void caseLeExpr(LeExpr v);
 
+  @Override
   void caseLtExpr(LtExpr v);
 
+  @Override
   void caseMulExpr(MulExpr v);
 
+  @Override
   void caseOrExpr(OrExpr v);
 
+  @Override
   void caseRemExpr(RemExpr v);
 
+  @Override
   void caseShlExpr(ShlExpr v);
 
+  @Override
   void caseShrExpr(ShrExpr v);
 
+  @Override
   void caseUshrExpr(UshrExpr v);
 
+  @Override
   void caseSubExpr(SubExpr v);
 
+  @Override
   void caseXorExpr(XorExpr v);
 
+  @Override
   void caseInterfaceInvokeExpr(InterfaceInvokeExpr v);
 
+  @Override
   void caseSpecialInvokeExpr(SpecialInvokeExpr v);
 
+  @Override
   void caseStaticInvokeExpr(StaticInvokeExpr v);
 
+  @Override
   void caseVirtualInvokeExpr(VirtualInvokeExpr v);
 
   void caseNewInvokeExpr(NewInvokeExpr v);
 
+  @Override
   void caseCastExpr(CastExpr v);
 
+  @Override
   void caseInstanceOfExpr(InstanceOfExpr v);
 
+  @Override
   void caseNewArrayExpr(NewArrayExpr v);
 
+  @Override
   void caseNewMultiArrayExpr(NewMultiArrayExpr v);
 
+  @Override
   void caseNewExpr(NewExpr v);
 
+  @Override
   void caseLengthExpr(LengthExpr v);
 
+  @Override
   void caseNegExpr(NegExpr v);
 
+  @Override
   void defaultCase(Object obj);
 }

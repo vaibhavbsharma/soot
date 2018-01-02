@@ -36,18 +36,22 @@ public class GLtExpr extends AbstractGrimpIntBinopExpr implements LtExpr {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " < ";
   }
 
+  @Override
   public final int getPrecedence() {
     return 600;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseLtExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GLtExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }

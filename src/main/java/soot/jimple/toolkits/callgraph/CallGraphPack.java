@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.EntryPoints;
 import soot.PhaseOptions;
 import soot.RadioScenePack;
@@ -26,9 +29,6 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.options.CGOptions;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A radio pack implementation for the call graph pack that calls the intra-procedural clinit
@@ -39,6 +39,7 @@ public class CallGraphPack extends RadioScenePack {
     super(name);
   }
 
+  @Override
   protected void internalApply() {
     CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions(this));
     if (!Scene.v().hasCustomEntryPoints()) {
@@ -46,7 +47,7 @@ public class CallGraphPack extends RadioScenePack {
         Scene.v().setEntryPoints(EntryPoints.v().application());
       }
       if (options.all_reachable()) {
-        List<SootMethod> entryPoints = new ArrayList<SootMethod>();
+        List<SootMethod> entryPoints = new ArrayList<>();
         entryPoints.addAll(EntryPoints.v().all());
         entryPoints.addAll(EntryPoints.v().methodsOfApplicationClasses());
         Scene.v().setEntryPoints(entryPoints);

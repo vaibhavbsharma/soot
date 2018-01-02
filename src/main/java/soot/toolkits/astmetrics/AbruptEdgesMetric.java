@@ -52,6 +52,7 @@ public class AbruptEdgesMetric extends ASTMetric {
    * Implementation of the abstract method which is
    * invoked by parent constructor and whenever the classDecl in the polyglot changes
    */
+  @Override
   public void reset() {
     iBreaks = eBreaks = iContinues = eContinues = 0;
   }
@@ -61,6 +62,7 @@ public class AbruptEdgesMetric extends ASTMetric {
    *
    * Should add the metrics to the data object sent
    */
+  @Override
   public void addMetrics(ClassData data) {
 
     data.addMetric(new MetricData("Total-breaks", new Integer(iBreaks + eBreaks)));
@@ -78,15 +80,22 @@ public class AbruptEdgesMetric extends ASTMetric {
   /*
    * A branch in polyglot is either a break or continue
    */
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     if (n instanceof Branch) {
       Branch branch = (Branch) n;
       if (branch.kind().equals(Branch.BREAK)) {
-        if (branch.label() != null) eBreaks++;
-        else iBreaks++;
+        if (branch.label() != null) {
+          eBreaks++;
+        } else {
+          iBreaks++;
+        }
       } else if (branch.kind().equals(Branch.CONTINUE)) {
-        if (branch.label() != null) eContinues++;
-        else iContinues++;
+        if (branch.label() != null) {
+          eContinues++;
+        } else {
+          iContinues++;
+        }
       } else {
         System.out.println("\t Error:'" + branch.toString() + "'");
       }

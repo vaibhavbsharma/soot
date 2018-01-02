@@ -25,6 +25,11 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import soot.SideEffectTester;
 import soot.SootMethod;
 import soot.Unit;
@@ -42,11 +47,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implements an available expressions analysis on local variables. The current implementation is
@@ -71,13 +71,13 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     // LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
     // maps an rhs to its containing stmt. object equality in rhs.
-    rhsToContainingStmt = new HashMap<Value, Unit>();
+    rhsToContainingStmt = new HashMap<>();
 
-    emptySet = new ToppedSet<Value>(new ArraySparseSet<Value>());
+    emptySet = new ToppedSet<>(new ArraySparseSet<Value>());
 
     // Create generate sets
     {
-      unitToGenerateSet = new HashMap<Unit, FlowSet<Value>>(g.size() * 2 + 1, 0.7f);
+      unitToGenerateSet = new HashMap<>(g.size() * 2 + 1, 0.7f);
 
       for (Unit s : g) {
         FlowSet<Value> genSet = emptySet.clone();
@@ -92,11 +92,17 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
             boolean cantAdd = false;
             if (gen instanceof NewExpr
                 || gen instanceof NewArrayExpr
-                || gen instanceof NewMultiArrayExpr) cantAdd = true;
-            if (gen instanceof InvokeExpr) cantAdd = true;
+                || gen instanceof NewMultiArrayExpr) {
+              cantAdd = true;
+            }
+            if (gen instanceof InvokeExpr) {
+              cantAdd = true;
+            }
 
             // Whee, double negative!
-            if (!cantAdd) genSet.add(gen, genSet);
+            if (!cantAdd) {
+              genSet.add(gen, genSet);
+            }
           }
         }
 
@@ -107,19 +113,24 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     doAnalysis();
   }
 
+  @Override
   protected FlowSet<Value> newInitialFlow() {
     FlowSet<Value> newSet = emptySet.clone();
     ((ToppedSet<Value>) newSet).setTop(true);
     return newSet;
   }
 
+  @Override
   protected FlowSet<Value> entryInitialFlow() {
     return emptySet.clone();
   }
 
+  @Override
   protected void flowThrough(FlowSet<Value> in, Unit u, FlowSet<Value> out) {
     in.copy(out);
-    if (((ToppedSet<Value>) in).isTop()) return;
+    if (((ToppedSet<Value>) in).isTop()) {
+      return;
+    }
 
     // Perform generation
     out.union(unitToGenerateSet.get(u), out);
@@ -129,7 +140,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
       throw new RuntimeException("trying to kill on topped set!");
     }
 
-    List<Value> l = new LinkedList<Value>(out.toList());
+    List<Value> l = new LinkedList<>(out.toList());
 
     // iterate over things (avail) in out set.
     for (Value avail : l) {
@@ -148,10 +159,12 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     }
   }
 
+  @Override
   protected void merge(FlowSet<Value> inSet1, FlowSet<Value> inSet2, FlowSet<Value> outSet) {
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   protected void copy(FlowSet<Value> sourceSet, FlowSet<Value> destSet) {
     sourceSet.copy(destSet);
   }

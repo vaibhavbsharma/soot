@@ -32,30 +32,37 @@ import soot.util.Switch;
 public class BEnterMonitorInst extends AbstractInst implements EnterMonitorInst {
   public BEnterMonitorInst() {}
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public final String getName() {
     return "entermonitor";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseEnterMonitorInst(this);
   }
 
+  @Override
   public Object clone() {
     return new BEnterMonitorInst();
   }

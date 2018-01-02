@@ -19,14 +19,14 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.MethodOrMethodContext;
-import soot.util.queue.ChunkedQueue;
-import soot.util.queue.QueueReader;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import soot.MethodOrMethodContext;
+import soot.util.queue.ChunkedQueue;
+import soot.util.queue.QueueReader;
 
 /**
  * Keeps track of the methods transitively reachable from the specified entry points through the
@@ -37,9 +37,8 @@ import java.util.Set;
 public class ReachableMethods {
   private CallGraph cg;
   private Iterator<Edge> edgeSource;
-  private final ChunkedQueue<MethodOrMethodContext> reachables =
-      new ChunkedQueue<MethodOrMethodContext>();
-  private final Set<MethodOrMethodContext> set = new HashSet<MethodOrMethodContext>();
+  private final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<>();
+  private final Set<MethodOrMethodContext> set = new HashSet<>();
   private QueueReader<MethodOrMethodContext> unprocessedMethods;
   private final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
   private Filter filter;
@@ -55,7 +54,9 @@ public class ReachableMethods {
     addMethods(entryPoints);
     unprocessedMethods = reachables.reader();
     this.edgeSource = graph.listener();
-    if (filter != null) this.edgeSource = filter.wrap(this.edgeSource);
+    if (filter != null) {
+      this.edgeSource = filter.wrap(this.edgeSource);
+    }
   }
 
   public ReachableMethods(
@@ -64,7 +65,9 @@ public class ReachableMethods {
   }
 
   private void addMethods(Iterator<? extends MethodOrMethodContext> methods) {
-    while (methods.hasNext()) addMethod(methods.next());
+    while (methods.hasNext()) {
+      addMethod(methods.next());
+    }
   }
 
   private void addMethod(MethodOrMethodContext m) {
@@ -79,12 +82,16 @@ public class ReachableMethods {
   public void update() {
     while (edgeSource.hasNext()) {
       Edge e = edgeSource.next();
-      if (set.contains(e.getSrc())) addMethod(e.getTgt());
+      if (set.contains(e.getSrc())) {
+        addMethod(e.getTgt());
+      }
     }
     while (unprocessedMethods.hasNext()) {
       MethodOrMethodContext m = unprocessedMethods.next();
       Iterator<Edge> targets = cg.edgesOutOf(m);
-      if (filter != null) targets = filter.wrap(targets);
+      if (filter != null) {
+        targets = filter.wrap(targets);
+      }
       addMethods(new Targets(targets));
     }
   }

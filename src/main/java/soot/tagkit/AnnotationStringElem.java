@@ -40,6 +40,7 @@ public class AnnotationStringElem extends AnnotationElem {
     this.value = s;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " value: " + value;
   }

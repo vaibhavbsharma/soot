@@ -19,10 +19,10 @@
 
 package soot.javaToJimple;
 
+import java.util.HashMap;
+
 import polyglot.frontend.Job;
 import polyglot.frontend.Source;
-
-import java.util.HashMap;
 
 public class SaveASTVisitor extends polyglot.frontend.AbstractPass {
 
@@ -38,6 +38,7 @@ public class SaveASTVisitor extends polyglot.frontend.AbstractPass {
     this.extInfo = extInfo;
   }
 
+  @Override
   public boolean run() {
     if (extInfo instanceof soot.javaToJimple.jj.ExtensionInfo) {
       soot.javaToJimple.jj.ExtensionInfo jjInfo = (soot.javaToJimple.jj.ExtensionInfo) extInfo;

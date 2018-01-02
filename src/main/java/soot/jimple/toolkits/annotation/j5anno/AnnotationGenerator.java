@@ -18,6 +18,15 @@
  */
 package soot.jimple.toolkits.annotation.j5anno;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import soot.G;
 import soot.Singletons.Global;
 import soot.SootClass;
@@ -29,15 +38,6 @@ import soot.tagkit.AnnotationTag;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
-
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * AnnotationGenerator is a singleton class that wraps up Soot's support for Java 5 annotations in a
@@ -145,7 +145,9 @@ public class AnnotationGenerator {
    */
   public void annotate(Host h, String annotationName, int visibility, List<AnnotationElem> elems) {
     annotationName = annotationName.replace('.', '/');
-    if (!annotationName.endsWith(";")) annotationName = "L" + annotationName + ';';
+    if (!annotationName.endsWith(";")) {
+      annotationName = "L" + annotationName + ';';
+    }
     VisibilityAnnotationTag tagToAdd = findOrAdd(h, visibility);
     AnnotationTag at = new AnnotationTag(annotationName, elems);
     tagToAdd.addAnnotation(at);
@@ -160,12 +162,14 @@ public class AnnotationGenerator {
    * @return
    */
   private VisibilityAnnotationTag findOrAdd(Host h, int visibility) {
-    ArrayList<VisibilityAnnotationTag> va_tags = new ArrayList<VisibilityAnnotationTag>();
+    ArrayList<VisibilityAnnotationTag> va_tags = new ArrayList<>();
 
     for (Tag t : h.getTags()) {
       if (t instanceof VisibilityAnnotationTag) {
         VisibilityAnnotationTag vat = (VisibilityAnnotationTag) t;
-        if (vat.getVisibility() == visibility) va_tags.add(vat);
+        if (vat.getVisibility() == visibility) {
+          va_tags.add(vat);
+        }
       }
     }
 

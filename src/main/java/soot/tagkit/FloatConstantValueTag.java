@@ -38,6 +38,7 @@ public class FloatConstantValueTag extends ConstantValueTag {
     return value;
   }
 
+  @Override
   public String toString() {
     return "ConstantValue: " + Float.toString(value);
   }
@@ -57,9 +58,15 @@ public class FloatConstantValueTag extends ConstantValueTag {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (!super.equals(obj)) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     FloatConstantValueTag other = (FloatConstantValueTag) obj;
     return Float.floatToIntBits(value) == Float.floatToIntBits(other.value);
   }

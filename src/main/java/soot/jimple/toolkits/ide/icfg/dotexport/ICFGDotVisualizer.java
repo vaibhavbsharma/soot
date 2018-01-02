@@ -1,17 +1,17 @@
 package soot.jimple.toolkits.ide.icfg.dotexport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import heros.InterproceduralCFG;
 import soot.G;
 import soot.SootMethod;
 import soot.Unit;
 import soot.util.dot.DotGraph;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ICFGDotVisualizer {
   private DotGraph dotIcfg = new DotGraph("");
-  private ArrayList<Unit> visited = new ArrayList<Unit>();
+  private ArrayList<Unit> visited = new ArrayList<>();
   String fileName;
   Unit startPoint;
   InterproceduralCFG<Unit, SootMethod> icfg;

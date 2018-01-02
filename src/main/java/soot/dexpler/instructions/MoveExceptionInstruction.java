@@ -26,6 +26,7 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -68,9 +69,10 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction
 
   @Override
   public void retype(Body body) {
-    if (realType == null)
+    if (realType == null) {
       throw new RuntimeException(
           "Real type of this instruction has not been set or was already retyped: " + this);
+    }
     if (body.getUnits().contains(stmtToRetype)) {
       Local l = (Local) (stmtToRetype.getLeftOp());
       l.setType(realType);

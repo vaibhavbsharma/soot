@@ -19,11 +19,11 @@
 
 package soot.javaToJimple;
 
-import soot.Scene;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import soot.Scene;
 
 public class Util {
 
@@ -381,8 +381,12 @@ public class Util {
 
   public static boolean isSubType(
       polyglot.types.ClassType type, polyglot.types.ClassType superType) {
-    if (type.equals(superType)) return true;
-    if (type.superType() == null) return false;
+    if (type.equals(superType)) {
+      return true;
+    }
+    if (type.superType() == null) {
+      return false;
+    }
     return isSubType((polyglot.types.ClassType) type.superType(), superType);
   }
 

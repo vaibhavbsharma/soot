@@ -25,11 +25,11 @@
 
 package soot.coffi;
 
+import java.io.PrintStream;
+
 import soot.ArrayType;
 import soot.RefType;
 import soot.Type;
-
-import java.io.PrintStream;
 
 class TypeArray {
   private Type[] types;
@@ -42,7 +42,9 @@ class TypeArray {
 
     newArray.types = new Type[size];
 
-    for (int i = 0; i < size; i++) newArray.types[i] = UnusuableType.v();
+    for (int i = 0; i < size; i++) {
+      newArray.types[i] = UnusuableType.v();
+    }
 
     return newArray;
   }
@@ -60,29 +62,40 @@ class TypeArray {
     return newArray;
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (obj instanceof TypeArray) {
       TypeArray other = (TypeArray) obj;
 
-      if (types.length != other.types.length) return false;
+      if (types.length != other.types.length) {
+        return false;
+      }
 
-      for (Type element : types) if (!element.equals(element)) return false;
+      for (Type element : types) {
+        if (!element.equals(element)) {
+          return false;
+        }
+      }
 
       return true;
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
   public TypeArray merge(TypeArray otherArray) {
     TypeArray newArray = new TypeArray();
 
-    if (types.length != otherArray.types.length)
+    if (types.length != otherArray.types.length) {
       throw new RuntimeException("Merging of type arrays failed; unequal array length");
+    }
 
     newArray.types = new Type[types.length];
 
     for (int i = 0; i < types.length; i++) {
-      if (types[i].equals(otherArray.types[i])) newArray.types[i] = types[i];
-      else if ((types[i] instanceof ArrayType || types[i] instanceof RefType)
+      if (types[i].equals(otherArray.types[i])) {
+        newArray.types[i] = types[i];
+      } else if ((types[i] instanceof ArrayType || types[i] instanceof RefType)
           && (otherArray.types[i] instanceof ArrayType || otherArray.types[i] instanceof RefType)) {
         // This type merge does not need to be accurate, because it is not really used
 
@@ -95,6 +108,8 @@ class TypeArray {
   }
 
   public void print(PrintStream out) {
-    for (int i = 0; i < types.length; i++) out.println(i + ": " + types[i].toString());
+    for (int i = 0; i < types.length; i++) {
+      out.println(i + ": " + types[i].toString());
+    }
   }
 }

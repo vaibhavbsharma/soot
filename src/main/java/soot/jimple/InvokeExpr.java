@@ -26,13 +26,13 @@
 
 package soot.jimple;
 
+import java.util.List;
+
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
-
-import java.util.List;
 
 public interface InvokeExpr extends Expr {
   void setMethodRef(SootMethodRef smr);
@@ -51,5 +51,6 @@ public interface InvokeExpr extends Expr {
 
   ValueBox getArgBox(int index);
 
+  @Override
   Type getType();
 }

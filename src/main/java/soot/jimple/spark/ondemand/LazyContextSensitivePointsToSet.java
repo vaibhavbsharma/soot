@@ -1,12 +1,12 @@
 package soot.jimple.spark.ondemand;
 
+import java.util.Set;
+
 import soot.Local;
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
-
-import java.util.Set;
 
 /**
  * This is a <i>lazy</i> points-to set that is potentially context sensitive. It is created by the
@@ -43,11 +43,14 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     this.isContextSensitive = false;
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     PointsToSet otherInner;
-    if (other instanceof LazyContextSensitivePointsToSet)
+    if (other instanceof LazyContextSensitivePointsToSet) {
       otherInner = ((LazyContextSensitivePointsToSet) other).delegate;
-    else otherInner = other;
+    } else {
+      otherInner = other;
+    }
 
     if (delegate.hasNonEmptyIntersection(otherInner)) {
       if (other instanceof LazyContextSensitivePointsToSet) {
@@ -69,27 +72,35 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     }
   }
 
+  @Override
   public boolean isEmpty() {
     return delegate.isEmpty();
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
     return delegate.possibleClassConstants();
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
     return delegate.possibleStringConstants();
   }
 
+  @Override
   public Set<Type> possibleTypes() {
     return delegate.possibleTypes();
   }
 
+  @Override
   public boolean pointsToSetEquals(Object other) {
-    if (!(other instanceof LazyContextSensitivePointsToSet)) return false;
+    if (!(other instanceof LazyContextSensitivePointsToSet)) {
+      return false;
+    }
     return ((LazyContextSensitivePointsToSet) other).delegate.equals(delegate);
   }
 
+  @Override
   public int pointsToSetHashCode() {
     return delegate.pointsToSetHashCode();
   }

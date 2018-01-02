@@ -31,27 +31,39 @@ public class DLengthExpr extends AbstractLengthExpr implements Precedence {
     super(Grimp.v().newObjExprBox(op));
   }
 
+  @Override
   public int getPrecedence() {
     return 950;
   }
 
+  @Override
   public Object clone() {
     return new DLengthExpr(Grimp.cloneIfNecessary(getOp()));
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    if (PrecedenceTest.needsBrackets(getOpBox(), this)) up.literal("(");
+    if (PrecedenceTest.needsBrackets(getOpBox(), this)) {
+      up.literal("(");
+    }
     getOpBox().toString(up);
-    if (PrecedenceTest.needsBrackets(getOpBox(), this)) up.literal(")");
+    if (PrecedenceTest.needsBrackets(getOpBox(), this)) {
+      up.literal(")");
+    }
     up.literal(".");
     up.literal("length");
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
-    if (PrecedenceTest.needsBrackets(getOpBox(), this)) b.append("(");
+    if (PrecedenceTest.needsBrackets(getOpBox(), this)) {
+      b.append("(");
+    }
     b.append(getOpBox().getValue().toString());
-    if (PrecedenceTest.needsBrackets(getOpBox(), this)) b.append(")");
+    if (PrecedenceTest.needsBrackets(getOpBox(), this)) {
+      b.append(")");
+    }
     b.append(".length");
 
     return b.toString();

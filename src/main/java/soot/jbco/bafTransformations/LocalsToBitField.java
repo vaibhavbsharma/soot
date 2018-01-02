@@ -19,6 +19,12 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -46,12 +52,6 @@ import soot.jimple.LongConstant;
 import soot.jimple.ParameterRef;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class LocalsToBitField extends BodyTransformer implements IJbcoTransform {
 
   int replaced = 0;
@@ -60,33 +60,39 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
   public static String dependancies[] =
       new String[] {"jtp.jbco_jl", "bb.jbco_plvb", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_plvb";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Local fields inserted into bitfield: " + replaced);
     out.println("Original number of locals: " + locals);
   }
 
+  @Override
   @SuppressWarnings("fallthrough")
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     //  build mapping of baf locals to jimple locals
     Chain<Local> bLocals = b.getLocals();
     PatchingChain<Unit> u = b.getUnits();
 
     Unit first = null;
-    List<Value> params = new ArrayList<Value>();
+    List<Value> params = new ArrayList<>();
     Iterator<Unit> uit = u.iterator();
     while (uit.hasNext()) {
       Unit unit = uit.next();
@@ -103,7 +109,7 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
     }
 
     //  build mapping of baf locals to jimple locals
-    Map<Local, Local> bafToJLocals = new HashMap<Local, Local>();
+    Map<Local, Local> bafToJLocals = new HashMap<>();
     Iterator<Local> jlocIt = soot.jbco.Main.methods2JLocals.get(b.getMethod()).iterator();
     while (jlocIt.hasNext()) {
       Local jl = jlocIt.next();
@@ -117,15 +123,17 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
       }
     }
 
-    List<Local> booleans = new ArrayList<Local>();
-    List<Local> bytes = new ArrayList<Local>();
-    List<Local> chars = new ArrayList<Local>();
-    List<Local> ints = new ArrayList<Local>();
-    Map<Local, Integer> sizes = new HashMap<Local, Integer>();
+    List<Local> booleans = new ArrayList<>();
+    List<Local> bytes = new ArrayList<>();
+    List<Local> chars = new ArrayList<>();
+    List<Local> ints = new ArrayList<>();
+    Map<Local, Integer> sizes = new HashMap<>();
     Iterator<Local> blocs = bLocals.iterator();
     while (blocs.hasNext()) {
       Local bl = blocs.next();
-      if (params.contains(bl)) continue;
+      if (params.contains(bl)) {
+        continue;
+      }
 
       locals++;
       Local jlocal = bafToJLocals.get(bl);
@@ -152,15 +160,15 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
     }
 
     int count = 0;
-    Map<Local, Local> bafToNewLocs = new HashMap<Local, Local>();
+    Map<Local, Local> bafToNewLocs = new HashMap<>();
     int total = booleans.size() + bytes.size() * 8 + chars.size() * 16 + ints.size() * 32;
-    Map<Local, Map<Local, Integer>> newLocs = new HashMap<Local, Map<Local, Integer>>();
+    Map<Local, Map<Local, Integer>> newLocs = new HashMap<>();
     while (total >= 32 && booleans.size() + bytes.size() + chars.size() + ints.size() > 2) {
       Local nloc =
           Baf.v()
               .newLocal("newDumby" + count++, LongType.v()); // soot.jbco.util.Rand.getInt(2) > 0 ?
       // DoubleType.v() : LongType.v());
-      Map<Local, Integer> nlocMap = new HashMap<Local, Integer>();
+      Map<Local, Integer> nlocMap = new HashMap<>();
 
       boolean done = false;
       int index = 0;
@@ -206,7 +214,9 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
               break;
             }
         } // end switch
-        if (max == index) done = true;
+        if (max == index) {
+          done = true;
+        }
       }
       newLocs.put(nloc, nlocMap);
       bLocals.add(nloc);
@@ -220,7 +230,9 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
       total = booleans.size() + bytes.size() * 8 + chars.size() * 16 + ints.size() * 32;
     }
 
-    if (bafToNewLocs.size() == 0) return;
+    if (bafToNewLocs.size() == 0) {
+      return;
+    }
 
     Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext()) {
@@ -273,8 +285,9 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
           Type origType = bafToJLocals.get(bafLoc).getType();
           Type t = getType(origType);
           u.insertBefore(Baf.v().newPrimitiveCastInst(LongType.v(), t), unit);
-          if (!(origType instanceof IntType) && !(origType instanceof BooleanType))
+          if (!(origType instanceof IntType) && !(origType instanceof BooleanType)) {
             u.insertBefore(Baf.v().newPrimitiveCastInst(t, origType), unit);
+          }
           u.remove(unit);
         }
       } else if (unit instanceof IncInst) {
@@ -331,23 +344,34 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
     if (t instanceof BooleanType
         || t instanceof CharType
         || t instanceof ShortType
-        || t instanceof ByteType) return IntType.v();
-    else return t;
+        || t instanceof ByteType) {
+      return IntType.v();
+    } else {
+      return t;
+    }
   }
 
   private int getNewIndex(
       int index, List<Local> ints, List<Local> chars, List<Local> bytes, List<Local> booleans) {
     int max = 0;
-    if (booleans.size() > 0 && index < 63) max = 64;
-    else if (bytes.size() > 0 && index < 56) max = 57;
-    else if (chars.size() > 0 && index < 48) max = 49;
-    else if (ints.size() > 0 && index < 32) max = 33;
+    if (booleans.size() > 0 && index < 63) {
+      max = 64;
+    } else if (bytes.size() > 0 && index < 56) {
+      max = 57;
+    } else if (chars.size() > 0 && index < 48) {
+      max = 49;
+    } else if (ints.size() > 0 && index < 32) {
+      max = 33;
+    }
 
     if (max != 0) {
       int rand = Rand.getInt(4);
       max = max - index;
-      if (max > rand) max = rand;
-      else if (max != 1) max = Rand.getInt(max);
+      if (max > rand) {
+        max = rand;
+      } else if (max != 1) {
+        max = Rand.getInt(max);
+      }
       index += max;
     }
     return index;

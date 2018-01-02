@@ -74,7 +74,9 @@ public class XMLAttributesPrinter {
     tc.collectTags(c, includeBodyTags);
 
     // If there are no attributes, then the attribute file is not created.
-    if (tc.isEmpty()) return;
+    if (tc.isEmpty()) {
+      return;
+    }
     initFile();
     tc.printTags(writerOut);
     tc.printKeys(writerOut);

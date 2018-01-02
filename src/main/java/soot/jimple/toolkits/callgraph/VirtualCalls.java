@@ -19,6 +19,12 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -42,13 +48,6 @@ import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Resolves virtual calls.
  *
@@ -64,7 +63,7 @@ public class VirtualCalls {
   }
 
   private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
-      new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>(Scene.v().getTypeNumberer());
+      new LargeNumberedMap<>(Scene.v().getTypeNumberer());
 
   public SootMethod resolveSpecial(
       SpecialInvokeExpr iie, NumberedString subSig, SootMethod container) {
@@ -97,12 +96,16 @@ public class VirtualCalls {
   public SootMethod resolveNonSpecial(RefType t, NumberedString subSig, boolean appOnly) {
     SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get(t);
     if (vtbl == null) {
-      typeToVtbl.put(t, vtbl = new SmallNumberedMap<SootMethod>());
+      typeToVtbl.put(t, vtbl = new SmallNumberedMap<>());
     }
     SootMethod ret = vtbl.get(subSig);
-    if (ret != null) return ret;
+    if (ret != null) {
+      return ret;
+    }
     SootClass cls = t.getSootClass();
-    if (appOnly && cls.isLibraryClass()) return null;
+    if (appOnly && cls.isLibraryClass()) {
+      return null;
+    }
 
     SootMethod m = cls.getMethodUnsafe(subSig);
     if (m != null) {
@@ -118,10 +121,9 @@ public class VirtualCalls {
     return ret;
   }
 
-  protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<Type, Type>();
+  protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<>();
   protected MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>
-      baseToPossibleSubTypes =
-          new HashMultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>();
+      baseToPossibleSubTypes = new HashMultiMap<>();
 
   public void resolve(
       Type t,
@@ -160,9 +162,15 @@ public class VirtualCalls {
       SootMethod container,
       ChunkedQueue<SootMethod> targets,
       boolean appOnly) {
-    if (declaredType instanceof ArrayType) declaredType = RefType.v("java.lang.Object");
-    if (sigType instanceof ArrayType) sigType = RefType.v("java.lang.Object");
-    if (t instanceof ArrayType) t = RefType.v("java.lang.Object");
+    if (declaredType instanceof ArrayType) {
+      declaredType = RefType.v("java.lang.Object");
+    }
+    if (sigType instanceof ArrayType) {
+      sigType = RefType.v("java.lang.Object");
+    }
+    if (t instanceof ArrayType) {
+      t = RefType.v("java.lang.Object");
+    }
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
     if (declaredType != null && !fastHierachy.canStoreType(t, declaredType)) {
       return;
@@ -172,7 +180,9 @@ public class VirtualCalls {
     }
     if (t instanceof RefType) {
       SootMethod target = resolveNonSpecial((RefType) t, subSig, appOnly);
-      if (target != null) targets.add(target);
+      if (target != null) {
+        targets.add(target);
+      }
     } else if (t instanceof AnySubType) {
       RefType base = ((AnySubType) t).getBase();
 
@@ -228,28 +238,31 @@ public class VirtualCalls {
     Set<Type> newSubTypes = new HashSet<>();
     newSubTypes.add(base);
 
-    LinkedList<SootClass> worklist = new LinkedList<SootClass>();
-    HashSet<SootClass> workset = new HashSet<SootClass>();
+    LinkedList<SootClass> worklist = new LinkedList<>();
+    HashSet<SootClass> workset = new HashSet<>();
     FastHierarchy fh = fastHierachy;
     SootClass cl = base.getSootClass();
 
-    if (workset.add(cl)) worklist.add(cl);
+    if (workset.add(cl)) {
+      worklist.add(cl);
+    }
     while (!worklist.isEmpty()) {
       cl = worklist.removeFirst();
       if (cl.isInterface()) {
-        for (Iterator<SootClass> cIt = fh.getAllImplementersOfInterface(cl).iterator();
-            cIt.hasNext(); ) {
-          final SootClass c = cIt.next();
-          if (workset.add(c)) worklist.add(c);
+        for (SootClass c : fh.getAllImplementersOfInterface(cl)) {
+          if (workset.add(c)) {
+            worklist.add(c);
+          }
         }
       } else {
         if (cl.isConcrete()) {
           resolve(cl.getType(), declaredType, sigType, subSig, container, targets, appOnly);
           newSubTypes.add(cl.getType());
         }
-        for (Iterator<SootClass> cIt = fh.getSubclassesOf(cl).iterator(); cIt.hasNext(); ) {
-          final SootClass c = cIt.next();
-          if (workset.add(c)) worklist.add(c);
+        for (SootClass c : fh.getSubclassesOf(cl)) {
+          if (workset.add(c)) {
+            worklist.add(c);
+          }
         }
       }
     }
@@ -268,7 +281,7 @@ public class VirtualCalls {
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
 
     assert (declaredType instanceof RefType);
-    Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
+    Pair<Type, NumberedString> pair = new Pair<>(base, subSig);
     {
       Set<Pair<Type, NumberedString>> types = baseToPossibleSubTypes.get(pair);
       // if this type and method has been resolved earlier we can
@@ -286,14 +299,14 @@ public class VirtualCalls {
       }
     }
 
-    Set<Pair<Type, NumberedString>> types = new HashSet<Pair<Type, NumberedString>>();
+    Set<Pair<Type, NumberedString>> types = new HashSet<>();
 
     // get return type; method name; parameter types
     String[] split = subSig.getString().replaceAll("(.*) (.*)\\((.*)\\)", "$1;$2;$3").split(";");
 
     Type declaredReturnType = Scene.v().getType(split[0]);
     String declaredName = split[1];
-    List<Type> declaredParamTypes = new ArrayList<Type>();
+    List<Type> declaredParamTypes = new ArrayList<>();
 
     // separate the parameter types
     if (split.length == 3) {
@@ -308,16 +321,22 @@ public class VirtualCalls {
         if (sm.isConcrete() || sm.isNative()) {
 
           // method name has to match
-          if (!sm.getName().equals(declaredName)) continue;
+          if (!sm.getName().equals(declaredName)) {
+            continue;
+          }
 
           // the return type has to be a the declared return
           // type or a sub type of it
-          if (!fastHierachy.canStoreType(sm.getReturnType(), declaredReturnType)) continue;
+          if (!fastHierachy.canStoreType(sm.getReturnType(), declaredReturnType)) {
+            continue;
+          }
           List<Type> paramTypes = sm.getParameterTypes();
 
           // method parameters have to match to the declared
           // ones (same type or super type).
-          if (declaredParamTypes.size() != paramTypes.size()) continue;
+          if (declaredParamTypes.size() != paramTypes.size()) {
+            continue;
+          }
           boolean check = true;
           for (int i = 0; i < paramTypes.size(); i++) {
             if (!fastHierachy.canStoreType(declaredParamTypes.get(i), paramTypes.get(i))) {
@@ -334,11 +353,11 @@ public class VirtualCalls {
               if (!sc.isFinal()) {
                 NumberedString newSubSig = sm.getNumberedSubSignature();
                 resolve(st, st, sigType, newSubSig, container, targets, appOnly);
-                types.add(new Pair<Type, NumberedString>(st, newSubSig));
+                types.add(new Pair<>(st, newSubSig));
               }
             } else {
               resolve(st, declaredType, sigType, subSig, container, targets, appOnly);
-              types.add(new Pair<Type, NumberedString>(st, subSig));
+              types.add(new Pair<>(st, subSig));
             }
           }
         }

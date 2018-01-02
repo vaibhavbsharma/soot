@@ -1,11 +1,11 @@
 package soot.jimple.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.List;
 
 public enum MethodValidator implements BodyValidator {
   INSTANCE;

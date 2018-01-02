@@ -46,13 +46,17 @@ public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
         || t.equals(BooleanType.v());
   }
 
+  @Override
   public Type getType() {
     Value op1 = op1Box.getValue();
     Value op2 = op2Box.getValue();
 
-    if (isIntLikeType(op1.getType()) && isIntLikeType(op2.getType())) return IntType.v();
-    else if (op1.getType().equals(LongType.v()) && op2.getType().equals(LongType.v()))
+    if (isIntLikeType(op1.getType()) && isIntLikeType(op2.getType())) {
+      return IntType.v();
+    } else if (op1.getType().equals(LongType.v()) && op2.getType().equals(LongType.v())) {
       return LongType.v();
-    else return UnknownType.v();
+    } else {
+      return UnknownType.v();
+    }
   }
 }

@@ -25,26 +25,29 @@
 
 package soot.tagkit;
 
-import soot.jimple.Constant;
-
 import java.util.Arrays;
+
+import soot.jimple.Constant;
 
 public abstract class ConstantValueTag implements Tag {
   protected byte[] bytes; // encoded constant
 
   protected ConstantValueTag() {}
 
+  @Override
   public String getName() {
     String className = getClass().getName();
     return className.substring(className.lastIndexOf('.') + 1);
   }
 
+  @Override
   public byte[] getValue() {
     return bytes;
   }
 
   public abstract Constant getConstant();
 
+  @Override
   public abstract String toString();
 
   @Override
@@ -57,9 +60,15 @@ public abstract class ConstantValueTag implements Tag {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     ConstantValueTag other = (ConstantValueTag) obj;
     return Arrays.equals(bytes, other.bytes);
   }

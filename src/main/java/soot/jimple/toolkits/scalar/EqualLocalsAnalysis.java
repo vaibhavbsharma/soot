@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.EquivalentValue;
 import soot.Local;
 import soot.Value;
@@ -11,10 +15,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 // EqualLocalsAnalysis written by Richard L. Halpert, 2006-12-04
 // Finds equal/equavalent/aliasing locals to a given local at a given statement, on demand
@@ -45,12 +45,17 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
 
     FlowSet fs = (FlowSet) getFlowBefore(s);
     List aliasList = new ArrayList(fs.size());
-    for (Object o : fs) aliasList.add(o);
+    for (Object o : fs) {
+      aliasList.add(o);
+    }
 
-    if (aliasList.contains(new EquivalentValue(l))) return aliasList;
+    if (aliasList.contains(new EquivalentValue(l))) {
+      return aliasList;
+    }
     return new ArrayList();
   }
 
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = (FlowSet) in1;
     FlowSet inSet2 = (FlowSet) in2;
@@ -59,6 +64,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue;
     FlowSet out = (FlowSet) outValue;
@@ -67,7 +73,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
     in.copy(out);
 
     // get list of definitions at this unit
-    List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
+    List<EquivalentValue> newDefs = new ArrayList<>();
     Iterator newDefBoxesIt = stmt.getDefBoxes().iterator();
     while (newDefBoxesIt.hasNext()) {
       newDefs.add(new EquivalentValue(((ValueBox) newDefBoxesIt.next()).getValue()));
@@ -76,15 +82,19 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
     // If the local of interest was defined in this statement, then we must
     // generate a new list of aliases to it starting here
     if (newDefs.contains(new EquivalentValue(l))) {
-      List<Object> existingDefStmts = new ArrayList<Object>();
+      List<Object> existingDefStmts = new ArrayList<>();
       Iterator outIt = out.iterator();
       while (outIt.hasNext()) {
         Object o = outIt.next();
-        if (o instanceof Stmt) existingDefStmts.add(o);
+        if (o instanceof Stmt) {
+          existingDefStmts.add(o);
+        }
       }
       out.clear();
       Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-      while (newDefsIt.hasNext()) out.add(newDefsIt.next());
+      while (newDefsIt.hasNext()) {
+        out.add(newDefsIt.next());
+      }
       if (stmt instanceof DefinitionStmt) {
         if (!stmt.containsInvokeExpr() && !(stmt instanceof IdentityStmt)) {
           out.add(new EquivalentValue(((DefinitionStmt) stmt).getRightOp()));
@@ -103,10 +113,14 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
         if (s instanceof DefinitionStmt) {
           if (out.contains(new EquivalentValue(((DefinitionStmt) s).getRightOp()))) {
             Iterator sNewDefsIt = sNewDefs.iterator();
-            while (sNewDefsIt.hasNext()) out.add(new EquivalentValue((Value) sNewDefsIt.next()));
+            while (sNewDefsIt.hasNext()) {
+              out.add(new EquivalentValue((Value) sNewDefsIt.next()));
+            }
           } else {
             Iterator sNewDefsIt = sNewDefs.iterator();
-            while (sNewDefsIt.hasNext()) out.remove(new EquivalentValue((Value) sNewDefsIt.next()));
+            while (sNewDefsIt.hasNext()) {
+              out.remove(new EquivalentValue((Value) sNewDefsIt.next()));
+            }
           }
         }
       }
@@ -115,10 +129,14 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
         if (out.contains(new EquivalentValue(l))) {
           if (out.contains(new EquivalentValue(((DefinitionStmt) stmt).getRightOp()))) {
             Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-            while (newDefsIt.hasNext()) out.add(newDefsIt.next());
+            while (newDefsIt.hasNext()) {
+              out.add(newDefsIt.next());
+            }
           } else {
             Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-            while (newDefsIt.hasNext()) out.remove(newDefsIt.next());
+            while (newDefsIt.hasNext()) {
+              out.remove(newDefsIt.next());
+            }
           }
         } else // before finding a def for l, just keep track of all definition statements
         // note that if l is redefined, then we'll miss existing values that then
@@ -130,6 +148,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
     }
   }
 
+  @Override
   protected void copy(Object source, Object dest) {
 
     FlowSet sourceSet = (FlowSet) source;
@@ -138,10 +157,12 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
     sourceSet.copy(destSet);
   }
 
+  @Override
   protected Object entryInitialFlow() {
     return new ArraySparseSet();
   }
 
+  @Override
   protected Object newInitialFlow() {
     return new ArraySparseSet();
   }

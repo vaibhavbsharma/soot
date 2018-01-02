@@ -19,14 +19,14 @@
 
 package soot.dava.toolkits.base.AST;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.Singletons;
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTTryNode;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class UselessTryRemover extends ASTAnalysis {
   public UselessTryRemover(Singletons.Global g) {}
@@ -35,19 +35,24 @@ public class UselessTryRemover extends ASTAnalysis {
     return G.v().soot_dava_toolkits_base_AST_UselessTryRemover();
   }
 
+  @Override
   public int getAnalysisDepth() {
     return ANALYSE_AST;
   }
 
+  @Override
   public void analyseASTNode(ASTNode n) {
     Iterator<Object> sbit = n.get_SubBodies().iterator();
 
     while (sbit.hasNext()) {
 
-      List<Object> subBody = null, toRemove = new ArrayList<Object>();
+      List<Object> subBody = null, toRemove = new ArrayList<>();
 
-      if (n instanceof ASTTryNode) subBody = (List<Object>) ((ASTTryNode.container) sbit.next()).o;
-      else subBody = (List<Object>) sbit.next();
+      if (n instanceof ASTTryNode) {
+        subBody = (List<Object>) ((ASTTryNode.container) sbit.next()).o;
+      } else {
+        subBody = (List<Object>) sbit.next();
+      }
 
       Iterator<Object> cit = subBody.iterator();
       while (cit.hasNext()) {
@@ -58,7 +63,9 @@ public class UselessTryRemover extends ASTAnalysis {
 
           tryNode.perform_Analysis(TryContentsFinder.v());
 
-          if ((tryNode.get_CatchList().isEmpty()) || (tryNode.isEmpty())) toRemove.add(tryNode);
+          if ((tryNode.get_CatchList().isEmpty()) || (tryNode.isEmpty())) {
+            toRemove.add(tryNode);
+          }
         }
       }
 
@@ -70,7 +77,9 @@ public class UselessTryRemover extends ASTAnalysis {
         subBody.remove(tryNode);
       }
 
-      if (toRemove.isEmpty() == false) G.v().ASTAnalysis_modified = true;
+      if (toRemove.isEmpty() == false) {
+        G.v().ASTAnalysis_modified = true;
+      }
     }
   }
 }

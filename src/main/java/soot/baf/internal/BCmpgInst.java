@@ -36,30 +36,37 @@ public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst {
     super(opType);
   }
 
+  @Override
   public int getInCount() {
     return 2;
   }
 
+  @Override
   public Object clone() {
     return new BCmpgInst(getOpType());
   }
 
+  @Override
   public int getInMachineCount() {
     return 2 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   public final String getName() {
     return "cmpg";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseCmpgInst(this);
   }

@@ -25,6 +25,7 @@
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
+
 import soot.dexpler.DexBody;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnVoidStmt;
@@ -35,6 +36,7 @@ public class ReturnVoidInstruction extends DexlibAbstractInstruction {
     super(instruction, codeAdress);
   }
 
+  @Override
   public void jimplify(DexBody body) {
     ReturnVoidStmt returnStmt = Jimple.v().newReturnVoidStmt();
     setUnit(returnStmt);

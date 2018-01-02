@@ -49,6 +49,7 @@ public class LongConstantValueTag extends ConstantValueTag {
     return value;
   }
 
+  @Override
   public String toString() {
     return "ConstantValue: " + Long.toString(value);
   }
@@ -68,9 +69,15 @@ public class LongConstantValueTag extends ConstantValueTag {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (!super.equals(obj)) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     LongConstantValueTag other = (LongConstantValueTag) obj;
     return value == other.value;
   }

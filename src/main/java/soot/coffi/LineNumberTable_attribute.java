@@ -43,6 +43,7 @@ public class LineNumberTable_attribute extends attribute_info {
    */
   public line_number_table_entry line_number_table[];
 
+  @Override
   public String toString() {
     String sv = "LineNumberTable : " + line_number_table_length + "\n";
     for (int i = 0; i < line_number_table_length; i++) {

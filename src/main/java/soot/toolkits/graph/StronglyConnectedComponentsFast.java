@@ -37,8 +37,8 @@ import java.util.Stack;
  *     large graphs
  */
 public class StronglyConnectedComponentsFast<N> {
-  protected final List<List<N>> componentList = new ArrayList<List<N>>();
-  protected final List<List<N>> trueComponentList = new ArrayList<List<N>>();
+  protected final List<List<N>> componentList = new ArrayList<>();
+  protected final List<List<N>> trueComponentList = new ArrayList<>();
 
   protected int index = 0;
 
@@ -54,18 +54,21 @@ public class StronglyConnectedComponentsFast<N> {
    */
   public StronglyConnectedComponentsFast(DirectedGraph<N> g) {
     this.g = g;
-    s = new Stack<N>();
+    s = new Stack<>();
 
-    indexForNode = new HashMap<N, Integer>();
-    lowlinkForNode = new HashMap<N, Integer>();
+    indexForNode = new HashMap<>();
+    lowlinkForNode = new HashMap<>();
 
     for (N node : g) {
       if (!indexForNode.containsKey(node)) {
         // If the graph is too big, we cannot use a recursive algorithm
         // because it will blow up our stack space. The cut-off value when
         // to switch is more or less random, though.
-        if (g.size() > 1000) iterate(node);
-        else recurse(node);
+        if (g.size() > 1000) {
+          iterate(node);
+        } else {
+          recurse(node);
+        }
       }
     }
 
@@ -94,7 +97,7 @@ public class StronglyConnectedComponentsFast<N> {
       }
     }
     if (lowLinkForNodeV == indexForNode.get(v).intValue()) {
-      List<N> scc = new ArrayList<N>();
+      List<N> scc = new ArrayList<>();
       N v2;
       do {
         v2 = s.pop();
@@ -105,14 +108,16 @@ public class StronglyConnectedComponentsFast<N> {
         trueComponentList.add(scc);
       } else {
         N n = scc.get(0);
-        if (g.getSuccsOf(n).contains(n)) trueComponentList.add(scc);
+        if (g.getSuccsOf(n).contains(n)) {
+          trueComponentList.add(scc);
+        }
       }
     }
   }
 
   protected void iterate(N x) {
-    List<N> workList = new ArrayList<N>();
-    List<N> backtrackList = new ArrayList<N>();
+    List<N> workList = new ArrayList<>();
+    List<N> backtrackList = new ArrayList<>();
     workList.add(x);
     while (!workList.isEmpty()) {
       N v = workList.remove(0);
@@ -144,13 +149,16 @@ public class StronglyConnectedComponentsFast<N> {
         }
       }
 
-      if (hasChildren) backtrackList.add(0, v);
-      else {
-        if (!backtrackList.isEmpty()) workList.add(0, backtrackList.remove(0));
+      if (hasChildren) {
+        backtrackList.add(0, v);
+      } else {
+        if (!backtrackList.isEmpty()) {
+          workList.add(0, backtrackList.remove(0));
+        }
 
         int lowLinkForNodeV = lowlinkForNode.get(v);
         if (lowLinkForNodeV == indexForNode.get(v).intValue()) {
-          List<N> scc = new ArrayList<N>();
+          List<N> scc = new ArrayList<>();
           N v2;
           do {
             v2 = s.pop();
@@ -161,7 +169,9 @@ public class StronglyConnectedComponentsFast<N> {
             trueComponentList.add(scc);
           } else {
             N n = scc.get(0);
-            if (g.getSuccsOf(n).contains(n)) trueComponentList.add(scc);
+            if (g.getSuccsOf(n).contains(n)) {
+              trueComponentList.add(scc);
+            }
           }
         }
       }

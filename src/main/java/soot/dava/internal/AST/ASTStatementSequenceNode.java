@@ -20,6 +20,8 @@
 
 package soot.dava.internal.AST;
 
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.dava.internal.asg.AugmentedStmt;
@@ -27,8 +29,6 @@ import soot.dava.toolkits.base.AST.ASTAnalysis;
 import soot.dava.toolkits.base.AST.ASTWalker;
 import soot.dava.toolkits.base.AST.TryContentsFinder;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
-
-import java.util.List;
 
 public class ASTStatementSequenceNode extends ASTNode {
   private List<AugmentedStmt> statementSequence;
@@ -39,14 +39,18 @@ public class ASTStatementSequenceNode extends ASTNode {
     this.statementSequence = statementSequence;
   }
 
+  @Override
   public Object clone() {
     return new ASTStatementSequenceNode(statementSequence);
   }
 
+  @Override
   public void perform_Analysis(ASTAnalysis a) {
     if (a.getAnalysisDepth() > ASTAnalysis.ANALYSE_AST) {
 
-      for (AugmentedStmt as : statementSequence) ASTWalker.v().walk_stmt(a, as.get_Stmt());
+      for (AugmentedStmt as : statementSequence) {
+        ASTWalker.v().walk_stmt(a, as.get_Stmt());
+      }
     }
 
     if (a instanceof TryContentsFinder) {
@@ -54,6 +58,7 @@ public class ASTStatementSequenceNode extends ASTNode {
     }
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     for (AugmentedStmt as : statementSequence) {
       // System.out.println("Stmt is:"+as.get_Stmt());
@@ -66,6 +71,7 @@ public class ASTStatementSequenceNode extends ASTNode {
     }
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -86,6 +92,7 @@ public class ASTStatementSequenceNode extends ASTNode {
     return statementSequence;
   }
 
+  @Override
   public void apply(Analysis a) {
     a.caseASTStatementSequenceNode(this);
   }

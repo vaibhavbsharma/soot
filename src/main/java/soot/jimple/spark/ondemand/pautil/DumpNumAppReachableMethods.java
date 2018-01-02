@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.G;
 import soot.PackManager;
 import soot.Scene;
@@ -25,11 +28,9 @@ import soot.SceneTransformer;
 import soot.SootMethod;
 import soot.Transform;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class DumpNumAppReachableMethods extends SceneTransformer {
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
     int numAppMethods = 0;
     for (Iterator mIt = Scene.v().getReachableMethods().listener(); mIt.hasNext(); ) {

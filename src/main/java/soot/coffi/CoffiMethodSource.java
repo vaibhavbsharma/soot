@@ -25,6 +25,8 @@
 
 package soot.coffi;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.MethodSource;
@@ -37,8 +39,6 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
 
-import java.util.Map;
-
 public class CoffiMethodSource implements MethodSource {
   public ClassFile coffiClass;
   public method_info coffiMethod;
@@ -48,13 +48,16 @@ public class CoffiMethodSource implements MethodSource {
     this.coffiMethod = coffiMethod;
   }
 
+  @Override
   public Body getBody(SootMethod m, String phaseName) {
     JimpleBody jb = Jimple.v().newBody(m);
 
     Map options = PhaseOptions.v().getPhaseOptions(phaseName);
     boolean useOriginalNames = PhaseOptions.getBoolean(options, "use-original-names");
 
-    if (useOriginalNames) soot.coffi.Util.v().setFaithfulNaming(true);
+    if (useOriginalNames) {
+      soot.coffi.Util.v().setFaithfulNaming(true);
+    }
 
     /*
         I need to set these to null to free Coffi structures.
@@ -62,32 +65,42 @@ public class CoffiMethodSource implements MethodSource {
     bafBody.coffiMethod = null;
 
     */
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + m.getName() + "] Constructing JimpleBody from coffi...");
+    }
 
-    if (m.isAbstract() || m.isNative() || m.isPhantom()) return jb;
+    if (m.isAbstract() || m.isNative() || m.isPhantom()) {
+      return jb;
+    }
 
-    if (Options.v().time()) Timers.v().conversionTimer.start();
+    if (Options.v().time()) {
+      Timers.v().conversionTimer.start();
+    }
 
     if (coffiMethod.instructions == null) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v().out.println("[" + m.getName() + "]     Parsing Coffi instructions...");
+      }
 
       coffiClass.parseMethod(coffiMethod);
     }
 
     if (coffiMethod.cfg == null) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v().out.println("[" + m.getName() + "]     Building Coffi CFG...");
+      }
 
       new soot.coffi.CFG(coffiMethod);
 
       // if just computing metrics, we don't need to actually return body
-      if (soot.jbco.Main.metrics) return null;
+      if (soot.jbco.Main.metrics) {
+        return null;
+      }
     }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + m.getName() + "]     Producing naive Jimple...");
+    }
 
     boolean oldPhantomValue = Scene.v().getPhantomRefs();
 
@@ -99,7 +112,9 @@ public class CoffiMethodSource implements MethodSource {
         jb);
     Scene.v().setPhantomRefs(oldPhantomValue);
 
-    if (Options.v().time()) Timers.v().conversionTimer.end();
+    if (Options.v().time()) {
+      Timers.v().conversionTimer.end();
+    }
 
     coffiMethod.instructions = null;
     coffiMethod.cfg = null;

@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.annotation.fields;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -33,10 +37,6 @@ import soot.jimple.FieldRef;
 import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 /** A scene transformer that adds tags to unused fields. */
 public class UnreachableFieldsTagger extends SceneTransformer {
   public UnreachableFieldsTagger(Singletons.Global g) {}
@@ -45,10 +45,11 @@ public class UnreachableFieldsTagger extends SceneTransformer {
     return G.v().soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
 
     // make list of all fields
-    ArrayList<SootField> fieldList = new ArrayList<SootField>();
+    ArrayList<SootField> fieldList = new ArrayList<>();
 
     Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
     while (getClassesIt.hasNext()) {
@@ -70,8 +71,12 @@ public class UnreachableFieldsTagger extends SceneTransformer {
       while (mIt.hasNext()) {
         SootMethod sm = (SootMethod) mIt.next();
         // System.out.println("checking method: "+sm.getName());
-        if (!sm.hasActiveBody()) continue;
-        if (!Scene.v().getReachableMethods().contains(sm)) continue;
+        if (!sm.hasActiveBody()) {
+          continue;
+        }
+        if (!Scene.v().getReachableMethods().contains(sm)) {
+          continue;
+        }
         Body b = sm.getActiveBody();
 
         Iterator usesIt = b.getUseBoxes().iterator();

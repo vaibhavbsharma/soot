@@ -19,6 +19,8 @@
 
 package soot.dava.toolkits.base.finders;
 
+import java.util.Iterator;
+
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -32,8 +34,6 @@ import soot.dava.internal.asg.AugmentedStmtGraph;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.util.IterableSet;
 
-import java.util.Iterator;
-
 public class AbruptEdgeFinder implements FactFinder {
   public AbruptEdgeFinder(Singletons.Global g) {}
 
@@ -41,6 +41,7 @@ public class AbruptEdgeFinder implements FactFinder {
     return G.v().soot_dava_toolkits_base_finders_AbruptEdgeFinder();
   }
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET)
       throws RetriggerAnalysisException {
     Dava.v().log("AbruptEdgeFinder::find()");
@@ -49,7 +50,9 @@ public class AbruptEdgeFinder implements FactFinder {
   }
 
   public void find_Continues(SETNode SETParent, IterableSet body, IterableSet children) {
-    if ((SETParent instanceof SETCycleNode) == false) return;
+    if ((SETParent instanceof SETCycleNode) == false) {
+      return;
+    }
 
     SETCycleNode scn = (SETCycleNode) SETParent;
     IterableSet naturalPreds = ((SETNode) children.getLast()).get_NaturalExits();
@@ -58,9 +61,10 @@ public class AbruptEdgeFinder implements FactFinder {
     while (pit.hasNext()) {
       AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-      if ((body.contains(pas)) && (naturalPreds.contains(pas) == false))
+      if ((body.contains(pas)) && (naturalPreds.contains(pas) == false)) {
         ((SETStatementSequenceNode) pas.myNode)
             .insert_AbruptStmt(new DAbruptStmt("continue", scn.get_Label()));
+      }
     }
   }
 
@@ -71,7 +75,9 @@ public class AbruptEdgeFinder implements FactFinder {
     while (pit.hasNext()) {
       AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-      if (prev.get_Body().contains(pas) == false) continue;
+      if (prev.get_Body().contains(pas) == false) {
+        continue;
+      }
 
       if (naturalPreds.contains(pas) == false) {
         Object temp = pas.myNode;

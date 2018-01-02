@@ -31,8 +31,8 @@ public class QueuedSet<E> {
   private LinkedList<E> ll;
 
   public QueuedSet() {
-    this.hs = new HashSet<E>();
-    this.ll = new LinkedList<E>();
+    this.hs = new HashSet<>();
+    this.ll = new LinkedList<>();
   }
 
   public QueuedSet(List<E> os) {
@@ -62,7 +62,11 @@ public class QueuedSet<E> {
 
   public int addLast(List<E> os) {
     int r = 0;
-    for (E o : os) if (this.addLast(o)) r++;
+    for (E o : os) {
+      if (this.addLast(o)) {
+        r++;
+      }
+    }
     return r;
   }
 

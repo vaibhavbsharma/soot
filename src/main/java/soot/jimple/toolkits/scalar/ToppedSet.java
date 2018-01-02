@@ -25,12 +25,12 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.toolkits.scalar.AbstractFlowSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Represents information for flow analysis, adding a top element to a lattice. A FlowSet is an
@@ -53,29 +53,38 @@ public class ToppedSet<T> extends AbstractFlowSet<T> {
     underlyingSet = under;
   }
 
+  @Override
   public ToppedSet<T> clone() {
-    ToppedSet<T> newSet = new ToppedSet<T>(underlyingSet.clone());
+    ToppedSet<T> newSet = new ToppedSet<>(underlyingSet.clone());
     newSet.setTop(isTop());
     return newSet;
   }
 
+  @Override
   public void copy(FlowSet<T> d) {
-    if (this == d) return;
+    if (this == d) {
+      return;
+    }
 
     ToppedSet<T> dest = (ToppedSet<T>) d;
     dest.isTop = isTop;
-    if (!isTop) underlyingSet.copy(dest.underlyingSet);
+    if (!isTop) {
+      underlyingSet.copy(dest.underlyingSet);
+    }
   }
 
+  @Override
   public FlowSet<T> emptySet() {
-    return new ToppedSet<T>(underlyingSet.emptySet());
+    return new ToppedSet<>(underlyingSet.emptySet());
   }
 
+  @Override
   public void clear() {
     isTop = false;
     underlyingSet.clear();
   }
 
+  @Override
   public void union(FlowSet<T> o, FlowSet<T> d) {
     if (o instanceof ToppedSet && d instanceof ToppedSet) {
       ToppedSet<T> other = (ToppedSet<T>) o;
@@ -86,14 +95,18 @@ public class ToppedSet<T> extends AbstractFlowSet<T> {
         return;
       }
 
-      if (other.isTop()) other.copy(dest);
-      else {
+      if (other.isTop()) {
+        other.copy(dest);
+      } else {
         underlyingSet.union(other.underlyingSet, dest.underlyingSet);
         dest.setTop(false);
       }
-    } else super.union(o, d);
+    } else {
+      super.union(o, d);
+    }
   }
 
+  @Override
   public void intersection(FlowSet<T> o, FlowSet<T> d) {
     if (isTop()) {
       o.copy(d);
@@ -111,67 +124,103 @@ public class ToppedSet<T> extends AbstractFlowSet<T> {
     }
   }
 
+  @Override
   public void difference(FlowSet<T> o, FlowSet<T> d) {
     ToppedSet<T> other = (ToppedSet<T>) o, dest = (ToppedSet<T>) d;
 
     if (isTop()) {
-      if (other.isTop()) dest.clear();
-      else if (other.underlyingSet instanceof BoundedFlowSet)
+      if (other.isTop()) {
+        dest.clear();
+      } else if (other.underlyingSet instanceof BoundedFlowSet) {
         ((BoundedFlowSet<T>) other.underlyingSet).complement(dest);
-      else throw new RuntimeException("can't take difference!");
+      } else {
+        throw new RuntimeException("can't take difference!");
+      }
     } else {
-      if (other.isTop()) dest.clear();
-      else underlyingSet.difference(other.underlyingSet, dest.underlyingSet);
+      if (other.isTop()) {
+        dest.clear();
+      } else {
+        underlyingSet.difference(other.underlyingSet, dest.underlyingSet);
+      }
     }
   }
 
+  @Override
   public boolean isEmpty() {
-    if (isTop()) return false;
+    if (isTop()) {
+      return false;
+    }
     return underlyingSet.isEmpty();
   }
 
+  @Override
   public int size() {
-    if (isTop()) throw new UnsupportedOperationException();
+    if (isTop()) {
+      throw new UnsupportedOperationException();
+    }
     return underlyingSet.size();
   }
 
+  @Override
   public void add(T obj) {
-    if (isTop()) return;
+    if (isTop()) {
+      return;
+    }
     underlyingSet.add(obj);
   }
 
+  @Override
   public void remove(T obj) {
-    if (isTop()) return;
+    if (isTop()) {
+      return;
+    }
     underlyingSet.remove(obj);
   }
 
+  @Override
   public boolean contains(T obj) {
-    if (isTop()) return true;
+    if (isTop()) {
+      return true;
+    }
     return underlyingSet.contains(obj);
   }
 
+  @Override
   public List<T> toList() {
-    if (isTop()) throw new UnsupportedOperationException();
+    if (isTop()) {
+      throw new UnsupportedOperationException();
+    }
     return underlyingSet.toList();
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (!(o instanceof ToppedSet)) return false;
+    if (!(o instanceof ToppedSet)) {
+      return false;
+    }
 
     @SuppressWarnings("unchecked")
     ToppedSet<T> other = (ToppedSet<T>) o;
-    if (other.isTop() != isTop()) return false;
+    if (other.isTop() != isTop()) {
+      return false;
+    }
     return underlyingSet.equals(other.underlyingSet);
   }
 
+  @Override
   public String toString() {
-    if (isTop()) return "{TOP}";
-    else return underlyingSet.toString();
+    if (isTop()) {
+      return "{TOP}";
+    } else {
+      return underlyingSet.toString();
+    }
   }
 
   @Override
   public Iterator<T> iterator() {
-    if (isTop()) throw new UnsupportedOperationException();
+    if (isTop()) {
+      throw new UnsupportedOperationException();
+    }
     return underlyingSet.iterator();
   }
 }

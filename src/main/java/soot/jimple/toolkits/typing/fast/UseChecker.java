@@ -20,6 +20,8 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.Iterator;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.IntType;
@@ -88,8 +90,6 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
-import java.util.Iterator;
-
 /**
  * This checks all uses against the rules in Jimple, except some uses are not checked where the
  * bytecode verifier guarantees use validity.
@@ -112,10 +112,14 @@ public class UseChecker extends AbstractStmtSwitch {
   public void check(Typing tg, IUseVisitor uv) {
     this.tg = tg;
     this.uv = uv;
-    if (this.tg == null) throw new RuntimeException("null typing passed to useChecker");
+    if (this.tg == null) {
+      throw new RuntimeException("null typing passed to useChecker");
+    }
 
     for (Iterator<Unit> i = this.jb.getUnits().snapshotIterator(); i.hasNext(); ) {
-      if (uv.finish()) return;
+      if (uv.finish()) {
+        return;
+      }
       i.next().apply(this);
     }
   }
@@ -128,8 +132,9 @@ public class UseChecker extends AbstractStmtSwitch {
       iie.setBase(this.uv.visit(iie.getBase(), m.declaringClass().getType(), stmt));
     }
 
-    for (int i = 0; i < ie.getArgCount(); i++)
+    for (int i = 0; i < ie.getArgCount(); i++) {
       ie.setArg(i, this.uv.visit(ie.getArg(i), m.parameterType(i), stmt));
+    }
   }
 
   private void handleBinopExpr(BinopExpr be, Stmt stmt, Type tlhs) {
@@ -176,19 +181,23 @@ public class UseChecker extends AbstractStmtSwitch {
     ifr.setBase(this.uv.visit(ifr.getBase(), ifr.getFieldRef().declaringClass().getType(), stmt));
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {}
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     this.handleInvokeExpr(stmt.getInvokeExpr(), stmt);
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     Value lhs = stmt.getLeftOp();
     Value rhs = stmt.getRightOp();
     Type tlhs = null;
 
-    if (lhs instanceof Local) tlhs = this.tg.get((Local) lhs);
-    else if (lhs instanceof ArrayRef) {
+    if (lhs instanceof Local) {
+      tlhs = this.tg.get((Local) lhs);
+    } else if (lhs instanceof ArrayRef) {
       ArrayRef aref = (ArrayRef) lhs;
       Local base = (Local) aref.getBase();
 
@@ -196,8 +205,9 @@ public class UseChecker extends AbstractStmtSwitch {
       // element type of the right side array reference.
       ArrayType at = null;
       Type tgType = this.tg.get(base);
-      if (tgType instanceof ArrayType) at = (ArrayType) tgType;
-      else {
+      if (tgType instanceof ArrayType) {
+        at = (ArrayType) tgType;
+      } else {
         // If the right-hand side is a primitive and the left-side type
         // is java.lang.Object
         if (tgType == Scene.v().getObjectType() && rhs instanceof Local) {
@@ -221,7 +231,9 @@ public class UseChecker extends AbstractStmtSwitch {
           }
         }
 
-        if (at == null) at = tgType.makeArrayType();
+        if (at == null) {
+          at = tgType.makeArrayType();
+        }
       }
       tlhs = at.getElementType();
 
@@ -232,24 +244,27 @@ public class UseChecker extends AbstractStmtSwitch {
       stmt.setLeftOp(this.uv.visit(lhs, tlhs, stmt));
     } else if (lhs instanceof FieldRef) {
       tlhs = ((FieldRef) lhs).getFieldRef().type();
-      if (lhs instanceof InstanceFieldRef)
+      if (lhs instanceof InstanceFieldRef) {
         this.handleInstanceFieldRef((InstanceFieldRef) lhs, stmt);
+      }
     }
 
     // They may have been changed above
     lhs = stmt.getLeftOp();
     rhs = stmt.getRightOp();
 
-    if (rhs instanceof Local) stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
-    else if (rhs instanceof ArrayRef) {
+    if (rhs instanceof Local) {
+      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+    } else if (rhs instanceof ArrayRef) {
       ArrayRef aref = (ArrayRef) rhs;
       Local base = (Local) aref.getBase();
 
       // try to force Type integrity
       ArrayType at = null;
       Type et = null;
-      if (this.tg.get(base) instanceof ArrayType) at = (ArrayType) this.tg.get(base);
-      else {
+      if (this.tg.get(base) instanceof ArrayType) {
+        at = (ArrayType) this.tg.get(base);
+      } else {
         Type bt = this.tg.get(base);
 
         // If we have a type of java.lang.Object and access it like an object,
@@ -287,11 +302,16 @@ public class UseChecker extends AbstractStmtSwitch {
                 if (ifStmt.getCondition() instanceof EqExpr) {
                   EqExpr expr = (EqExpr) ifStmt.getCondition();
                   final Value other;
-                  if (expr.getOp1() == usePair.getValueBox().getValue()) other = expr.getOp2();
-                  else other = expr.getOp1();
+                  if (expr.getOp1() == usePair.getValueBox().getValue()) {
+                    other = expr.getOp2();
+                  } else {
+                    other = expr.getOp1();
+                  }
 
                   Type newEt = getTargetType(other);
-                  if (newEt != null) et = newEt;
+                  if (newEt != null) {
+                    et = newEt;
+                  }
                 }
               } else if (useStmt instanceof AssignStmt) {
                 // For binary expressions, we can look for type information in the
@@ -300,18 +320,25 @@ public class UseChecker extends AbstractStmtSwitch {
                 if (useAssignStmt.getRightOp() instanceof BinopExpr) {
                   BinopExpr binOp = (BinopExpr) useAssignStmt.getRightOp();
                   final Value other;
-                  if (binOp.getOp1() == usePair.getValueBox().getValue()) other = binOp.getOp2();
-                  else other = binOp.getOp1();
+                  if (binOp.getOp1() == usePair.getValueBox().getValue()) {
+                    other = binOp.getOp2();
+                  } else {
+                    other = binOp.getOp1();
+                  }
 
                   Type newEt = getTargetType(other);
-                  if (newEt != null) et = newEt;
+                  if (newEt != null) {
+                    et = newEt;
+                  }
                 }
               }
             }
           }
         }
 
-        if (at == null) at = et.makeArrayType();
+        if (at == null) {
+          at = et.makeArrayType();
+        }
       }
       Type trhs = at.getElementType();
 
@@ -322,12 +349,14 @@ public class UseChecker extends AbstractStmtSwitch {
     } else if (rhs instanceof InstanceFieldRef) {
       this.handleInstanceFieldRef((InstanceFieldRef) rhs, stmt);
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
-    } else if (rhs instanceof BinopExpr) this.handleBinopExpr((BinopExpr) rhs, stmt, tlhs);
-    else if (rhs instanceof InvokeExpr) {
+    } else if (rhs instanceof BinopExpr) {
+      this.handleBinopExpr((BinopExpr) rhs, stmt, tlhs);
+    } else if (rhs instanceof InvokeExpr) {
       this.handleInvokeExpr((InvokeExpr) rhs, stmt);
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
-    } else if (rhs instanceof CastExpr) stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
-    else if (rhs instanceof InstanceOfExpr) {
+    } else if (rhs instanceof CastExpr) {
+      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+    } else if (rhs instanceof InstanceOfExpr) {
       InstanceOfExpr ioe = (InstanceOfExpr) rhs;
       ioe.setOp(this.uv.visit(ioe.getOp(), RefType.v("java.lang.Object"), stmt));
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
@@ -337,15 +366,19 @@ public class UseChecker extends AbstractStmtSwitch {
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof NewMultiArrayExpr) {
       NewMultiArrayExpr nmae = (NewMultiArrayExpr) rhs;
-      for (int i = 0; i < nmae.getSizeCount(); i++)
+      for (int i = 0; i < nmae.getSizeCount(); i++) {
         nmae.setSize(i, this.uv.visit(nmae.getSize(i), IntType.v(), stmt));
+      }
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof LengthExpr) {
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof NegExpr) {
       ((NegExpr) rhs).setOp(this.uv.visit(((NegExpr) rhs).getOp(), tlhs, stmt));
-    } else if (rhs instanceof Constant)
-      if (!(rhs instanceof NullConstant)) stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+    } else if (rhs instanceof Constant) {
+      if (!(rhs instanceof NullConstant)) {
+        stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      }
+    }
   }
 
   private Type getTargetType(final Value other) {
@@ -362,38 +395,49 @@ public class UseChecker extends AbstractStmtSwitch {
     return null;
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {}
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Object"), stmt));
   }
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Object"), stmt));
   }
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {}
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     this.handleBinopExpr((BinopExpr) stmt.getCondition(), stmt, BooleanType.v());
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     stmt.setKey(this.uv.visit(stmt.getKey(), IntType.v(), stmt));
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {}
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), this.jb.getMethod().getReturnType(), stmt));
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     stmt.setKey(this.uv.visit(stmt.getKey(), IntType.v(), stmt));
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Throwable"), stmt));
   }

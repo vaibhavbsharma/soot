@@ -69,6 +69,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<N> newList(DirectedGraph<N> g, boolean reverse) {
     this.mIsReversed = reverse;
     return computeOrder(g, !mIsReversed);
@@ -94,12 +95,18 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 
     // Visit each node
     for (N s : g) {
-      if (visited.add(s)) visitNode(s);
+      if (visited.add(s)) {
+        visitNode(s);
+      }
 
-      if (orderLength == n) break;
+      if (orderLength == n) {
+        break;
+      }
     }
 
-    if (reverse) reverseArray(order);
+    if (reverse) {
+      reverseArray(order);
+    }
 
     List<N> o = Arrays.asList(order);
 

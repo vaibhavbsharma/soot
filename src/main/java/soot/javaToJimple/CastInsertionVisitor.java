@@ -26,6 +26,7 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     super(job, ts, nf);
   }
 
+  @Override
   public polyglot.ast.Expr ascribe(polyglot.ast.Expr e, polyglot.types.Type toType) {
 
     // System.out.println("expr: "+e);
@@ -81,6 +82,7 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     return e;
   }
 
+  @Override
   public polyglot.ast.Node leaveCall(
       polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor v)
       throws polyglot.types.SemanticException {

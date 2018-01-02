@@ -25,10 +25,10 @@
 
 package soot.coffi;
 
+import java.util.HashMap;
+
 import soot.G;
 import soot.Singletons;
-
-import java.util.HashMap;
 
 /** Provides sharing for Utf8_info string objects reused in different contexts. */
 public class CONSTANT_Utf8_collector {
@@ -42,7 +42,7 @@ public class CONSTANT_Utf8_collector {
 
   synchronized CONSTANT_Utf8_info add(CONSTANT_Utf8_info _Utf8_info) {
     if (hash == null) {
-      hash = new HashMap<String, CONSTANT_Utf8_info>();
+      hash = new HashMap<>();
     }
 
     String Utf8_str_key = _Utf8_info.convert();

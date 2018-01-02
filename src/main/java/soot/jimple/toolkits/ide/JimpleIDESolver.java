@@ -18,20 +18,21 @@
  */
 package soot.jimple.toolkits.ide;
 
-import com.google.common.collect.Table.Cell;
-import heros.IDETabulationProblem;
-import heros.InterproceduralCFG;
-import heros.solver.IDESolver;
-import soot.PatchingChain;
-import soot.SootMethod;
-import soot.Unit;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.google.common.collect.Table.Cell;
+
+import heros.IDETabulationProblem;
+import heros.InterproceduralCFG;
+import heros.solver.IDESolver;
+import soot.PatchingChain;
+import soot.SootMethod;
+import soot.Unit;
 
 public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod>>
     extends IDESolver<Unit, D, SootMethod, V, I> {
@@ -51,7 +52,9 @@ public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod
   @Override
   public void solve() {
     super.solve();
-    if (DUMP_RESULTS) dumpResults();
+    if (DUMP_RESULTS) {
+      dumpResults();
+    }
   }
 
   public void dumpResults() {
@@ -59,13 +62,15 @@ public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod
       PrintWriter out =
           new PrintWriter(
               new FileOutputStream("ideSolverDump" + System.currentTimeMillis() + ".csv"));
-      List<String> res = new ArrayList<String>();
+      List<String> res = new ArrayList<>();
       for (Cell<Unit, D, V> entry : val.cellSet()) {
         SootMethod methodOf = icfg.getMethodOf(entry.getRowKey());
         PatchingChain<Unit> units = methodOf.getActiveBody().getUnits();
         int i = 0;
         for (Unit unit : units) {
-          if (unit == entry.getRowKey()) break;
+          if (unit == entry.getRowKey()) {
+            break;
+          }
           i++;
         }
 

@@ -24,11 +24,16 @@
 
 package soot.dexpler.instructions;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
 import org.jf.dexlib2.iface.reference.TypeReference;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -53,10 +58,6 @@ import soot.jimple.LongConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.Stmt;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class FillArrayDataInstruction extends PseudoInstruction {
 
   public FillArrayDataInstruction(Instruction instruction, int codeAdress) {
@@ -65,9 +66,10 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction31t))
+    if (!(instruction instanceof Instruction31t)) {
       throw new IllegalArgumentException(
           "Expected Instruction31t but got: " + instruction.getClass());
+    }
 
     Instruction31t fillArrayInstr = (Instruction31t) instruction;
     int destRegister = fillArrayInstr.getRegisterA();
@@ -94,9 +96,10 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     for (int i = 0; i < numElements; i++) {
       ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
       NumericConstant element = getArrayElement(elements.get(i), body, destRegister);
-      if (element == null) // array was not defined -> element type can not be found (obfuscated
+      if (element == null) {
         // bytecode?)
         break;
+      }
       AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
       addTags(assign);
       body.add(assign);
@@ -119,15 +122,17 @@ public class FillArrayDataInstruction extends PseudoInstruction {
   private NumericConstant getArrayElement(Number element, DexBody body, int arrayRegister) {
 
     List<DexlibAbstractInstruction> instructions = body.instructionsBefore(this);
-    Set<Integer> usedRegisters = new HashSet<Integer>();
+    Set<Integer> usedRegisters = new HashSet<>();
     usedRegisters.add(arrayRegister);
 
     Type elementType = null;
     Outer:
     for (DexlibAbstractInstruction i : instructions) {
-      if (usedRegisters.isEmpty()) break;
+      if (usedRegisters.isEmpty()) {
+        break;
+      }
 
-      for (int reg : usedRegisters)
+      for (int reg : usedRegisters) {
         if (i instanceof NewArrayInstruction) {
           NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
           Instruction22c instruction22c = (Instruction22c) newArrayInstruction.instruction;
@@ -138,6 +143,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
             break Outer;
           }
         }
+      }
 
       //        // look for obsolete registers
       //        for (int reg : usedRegisters) {
@@ -196,9 +202,10 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
   @Override
   public void computeDataOffsets(DexBody body) {
-    if (!(instruction instanceof Instruction31t))
+    if (!(instruction instanceof Instruction31t)) {
       throw new IllegalArgumentException(
           "Expected Instruction31t but got: " + instruction.getClass());
+    }
 
     Instruction31t fillArrayInstr = (Instruction31t) instruction;
     int offset = fillArrayInstr.getCodeOffset();

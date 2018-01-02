@@ -25,14 +25,14 @@
 
 package soot.jimple.internal;
 
+import java.util.List;
+
 import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
-
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr
@@ -42,6 +42,7 @@ public abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBino
     this.op2Box = Jimple.v().newArgBox(op2);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
     ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);

@@ -49,11 +49,13 @@ public class ArrayType extends RefLikeType {
   private ArrayType(Type baseType, int numDimensions) {
     if (!(baseType instanceof PrimType
         || baseType instanceof RefType
-        || baseType instanceof NullType))
+        || baseType instanceof NullType)) {
       throw new RuntimeException(
           "oops,  base type must be PrimType or RefType but not '" + baseType + "'");
-    if (numDimensions < 1)
+    }
+    if (numDimensions < 1) {
       throw new RuntimeException("attempt to create array with " + numDimensions + " dimensions");
+    }
     this.baseType = baseType;
     this.numDimensions = numDimensions;
   }
@@ -66,8 +68,9 @@ public class ArrayType extends RefLikeType {
    * @return an ArrayType parametrized accrodingly.
    */
   public static ArrayType v(Type baseType, int numDimensions) {
-    if (numDimensions < 0)
+    if (numDimensions < 0) {
       throw new RuntimeException("Invalid number of array dimensions: " + numDimensions);
+    }
 
     int orgDimensions = numDimensions;
     Type elementType = baseType;
@@ -91,6 +94,7 @@ public class ArrayType extends RefLikeType {
    * @param t object to test for equality
    * @return true if t is an ArrayType and is parametrized identically to this.
    */
+  @Override
   public boolean equals(Object t) {
     return t == this;
     /*
@@ -109,15 +113,20 @@ public class ArrayType extends RefLikeType {
   public void toString(UnitPrinter up) {
     up.type(baseType);
 
-    for (int i = 0; i < numDimensions; i++) up.literal("[]");
+    for (int i = 0; i < numDimensions; i++) {
+      up.literal("[]");
+    }
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
     buffer.append(baseType.toString());
 
-    for (int i = 0; i < numDimensions; i++) buffer.append("[]");
+    for (int i = 0; i < numDimensions; i++) {
+      buffer.append("[]");
+    }
 
     return buffer.toString();
   }
@@ -132,15 +141,19 @@ public class ArrayType extends RefLikeType {
 
     buffer.append(baseType.toQuotedString());
 
-    for (int i = 0; i < numDimensions; i++) buffer.append("[]");
+    for (int i = 0; i < numDimensions; i++) {
+      buffer.append("[]");
+    }
 
     return buffer.toString();
   }
 
+  @Override
   public int hashCode() {
     return baseType.hashCode() + 0x432E0341 * numDimensions;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseArrayType(this);
   }
@@ -152,6 +165,7 @@ public class ArrayType extends RefLikeType {
    * the same as getElementType(). But t could also be Object, Serializable, or Cloneable, which can
    * all hold any array, so then the answer is Object.
    */
+  @Override
   public Type getArrayElementType() {
     return getElementType();
   }
@@ -168,10 +182,12 @@ public class ArrayType extends RefLikeType {
     }
   }
 
+  @Override
   public ArrayType makeArrayType() {
     return ArrayType.v(baseType, numDimensions + 1);
   }
 
+  @Override
   public boolean isAllowedInFinalCode() {
     return true;
   }

@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.thread;
 
+import java.util.Iterator;
+
 import soot.IntType;
 import soot.RefLikeType;
 import soot.Type;
@@ -7,8 +9,6 @@ import soot.jimple.FieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.Iterator;
 
 // EncapsulatedMethodAnalysis written by Richard L. Halpert, 2006-12-26
 

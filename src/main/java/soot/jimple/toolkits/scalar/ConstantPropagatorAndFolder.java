@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -47,9 +50,6 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Does constant propagation and folding. Constant folding is the compile-time evaluation of
  * constant expressions (i.e. 2 * 3).
@@ -61,18 +61,20 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int numFolded = 0;
     int numPropagated = 0;
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + b.getMethod().getName() + "] Propagating and folding constants...");
+    }
 
     UnitGraph g = new ExceptionalUnitGraph(b);
     LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(g);
 
     // Perform a constant/local propagation pass.
-    Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
+    Orderer<Unit> orderer = new PseudoTopologicalOrderer<>();
 
     // go through each use box in each statement
     for (Unit u : orderer.newList(g, false)) {
@@ -119,7 +121,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
       }
     }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
@@ -129,5 +131,6 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
                   + numPropagated
                   + ", Folded:  "
                   + numFolded);
+    }
   } // optimizeConstants
 }

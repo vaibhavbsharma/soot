@@ -36,18 +36,22 @@ public class GOrExpr extends AbstractGrimpIntLongBinopExpr implements OrExpr {
     super(op1, op2);
   }
 
+  @Override
   public String getSymbol() {
     return " | ";
   }
 
+  @Override
   public int getPrecedence() {
     return 350;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseOrExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GOrExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }

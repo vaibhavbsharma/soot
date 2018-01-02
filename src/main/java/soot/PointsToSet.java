@@ -19,9 +19,9 @@
 
 package soot;
 
-import soot.jimple.ClassConstant;
-
 import java.util.Set;
+
+import soot.jimple.ClassConstant;
 
 /**
  * A generic interface to some set of runtime objects computed by a pointer analysis.

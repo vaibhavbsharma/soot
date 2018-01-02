@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -37,9 +40,6 @@ import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.util.Chain;
 
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 15-Feb-2006
@@ -51,16 +51,19 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
 
   public static String dependancies[] = new String[] {"jtp.jbco_gia"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "jtp.jbco_gia";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Gotos Instrumented " + gotosInstrumented);
     out.println("Traps Added " + trapsAdded);
@@ -68,11 +71,16 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
 
   static boolean verbose = G.v().soot_options_Options().verbose();
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (b.getMethod().getName().indexOf("<init>") >= 0) return;
+    if (b.getMethod().getName().indexOf("<init>") >= 0) {
+      return;
+    }
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     PatchingChain<Unit> units = b.getUnits();
     int size = units.size();
@@ -83,26 +91,39 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
       if (o instanceof IdentityStmt) {
         first = o;
         size--;
-      } else break;
+      } else {
+        break;
+      }
     }
 
-    if (size < 8) return;
+    if (size < 8) {
+      return;
+    }
 
-    if (first == null) first = units.getFirst();
+    if (first == null) {
+      first = units.getFirst();
+    }
 
     Chain<Trap> traps = b.getTraps();
     int i = 0, rand = 0;
     while (i++ < 10) {
       rand = Rand.getInt(size);
-      if (rand < 1) rand = 1;
-      else if (rand == size - 1) rand = size - 2;
+      if (rand < 1) {
+        rand = 1;
+      } else if (rand == size - 1) {
+        rand = size - 2;
+      }
 
-      if (isExceptionCaughtAt(units, rand + (units.size() - size), traps.iterator())) continue;
+      if (isExceptionCaughtAt(units, rand + (units.size() - size), traps.iterator())) {
+        continue;
+      }
       break;
     }
 
     // if 10 tries, we give up
-    if (i >= 10) return;
+    if (i >= 10) {
+      return;
+    }
 
     i = 0;
 
@@ -121,14 +142,18 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     Unit u = first;
     do {
       Object toU[] = u.getBoxesPointingToThis().toArray();
-      for (Object element : toU) u.removeBoxPointingToThis((UnitBox) element);
+      for (Object element : toU) {
+        u.removeBoxPointingToThis((UnitBox) element);
+      }
 
       // unit box targets stay with a unit even if the unit is removed.
       Unit u2 = units.getSuccOf(u);
       units.remove(u);
       units.add(u);
 
-      for (Object element : toU) u.addBoxPointingToThis((UnitBox) element);
+      for (Object element : toU) {
+        u.addBoxPointingToThis((UnitBox) element);
+      }
 
       u = u2;
     } while (++i < rand);
@@ -138,15 +163,19 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     if (first instanceof GotoStmt) {
       oldFirst = ((GotoStmt) first).getTargetBox().getUnit();
       first = Jimple.v().newGotoStmt(((GotoStmt) first).getTargetBox().getUnit());
-    } else first = Jimple.v().newGotoStmt(first);
+    } else {
+      first = Jimple.v().newGotoStmt(first);
+    }
     units.insertBeforeNoRedirect(first, u);
 
     // add goto as LAST unit to point to new position of second chunk
     if (units.getLast().fallsThrough()) {
       Stmt gtS = null;
-      if (u instanceof GotoStmt)
+      if (u instanceof GotoStmt) {
         gtS = Jimple.v().newGotoStmt(((GotoStmt) u).getTargetBox().getUnit());
-      else gtS = Jimple.v().newGotoStmt(u);
+      } else {
+        gtS = Jimple.v().newGotoStmt(u);
+      }
 
       units.add(gtS);
     }
@@ -162,16 +191,14 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
 
     Unit trapEnd = units.getSuccOf(oldFirst);
     try {
-      while (trapEnd instanceof IdentityStmt) trapEnd = units.getSuccOf(trapEnd);
+      while (trapEnd instanceof IdentityStmt) {
+        trapEnd = units.getSuccOf(trapEnd);
+      }
       trapEnd = units.getSuccOf(trapEnd);
       b.getTraps()
           .add(
               Jimple.v()
-                  .newTrap(
-                      throwable.getSootClass(),
-                      units.getPredOf(oldFirst),
-                      trapEnd,
-                      handler));
+                  .newTrap(throwable.getSootClass(), units.getPredOf(oldFirst), trapEnd, handler));
       trapsAdded++;
     } catch (Exception exc) {
     }
@@ -189,14 +216,22 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
       it.next();
     }
 
-    if (u == null) return false;
+    if (u == null) {
+      return false;
+    }
 
     // System.out.println("\r\tselected unit is "+u);
     while (trapsIt.hasNext()) {
       Trap t = trapsIt.next();
       it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
-      while (it.hasNext()) if (u.equals(it.next())) return true;
-      if (t.getEndUnit().equals(u)) return true;
+      while (it.hasNext()) {
+        if (u.equals(it.next())) {
+          return true;
+        }
+      }
+      if (t.getEndUnit().equals(u)) {
+        return true;
+      }
     }
 
     return false;

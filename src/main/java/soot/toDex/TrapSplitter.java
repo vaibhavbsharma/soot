@@ -1,13 +1,13 @@
 package soot.toDex;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
 import soot.jimple.Jimple;
-
-import java.util.Map;
 
 /**
  * Transformer that splits nested traps for Dalvik which does not support hierarchies of traps. If
@@ -39,7 +39,9 @@ public class TrapSplitter extends BodyTransformer {
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // If we have less then two traps, there's nothing to do here
-    if (b.getTraps().size() < 2) return;
+    if (b.getTraps().size() < 2) {
+      return;
+    }
 
     // Look for overlapping traps
     TrapOverlap to;
@@ -69,8 +71,9 @@ public class TrapSplitter extends BodyTransformer {
       // (t1start, t2start) ... t1end ... t2end
       else if (to.t1.getBeginUnit() == to.t2.getBeginUnit()) {
         Unit firstEndUnit = to.t1.getBeginUnit();
-        while (firstEndUnit != to.t1.getEndUnit() && firstEndUnit != to.t2.getEndUnit())
+        while (firstEndUnit != to.t1.getEndUnit() && firstEndUnit != to.t2.getEndUnit()) {
           firstEndUnit = b.getUnits().getSuccOf(firstEndUnit);
+        }
 
         if (firstEndUnit == to.t1.getEndUnit()) {
           if (to.t1.getException() != to.t2.getException()) {
@@ -157,8 +160,11 @@ public class TrapSplitter extends BodyTransformer {
   private void safeAddTrap(Body b, Trap newTrap, Trap position) {
     // Do not create any empty traps
     if (newTrap.getBeginUnit() != newTrap.getEndUnit()) {
-      if (position != null) b.getTraps().insertAfter(newTrap, position);
-      else b.getTraps().add(newTrap);
+      if (position != null) {
+        b.getTraps().insertAfter(newTrap, position);
+      } else {
+        b.getTraps().add(newTrap);
+      }
     }
   }
   /**
@@ -174,12 +180,13 @@ public class TrapSplitter extends BodyTransformer {
       for (Unit splitUnit = t1.getBeginUnit();
           splitUnit != t1.getEndUnit();
           splitUnit = b.getUnits().getSuccOf(splitUnit)) {
-        for (Trap t2 : b.getTraps())
+        for (Trap t2 : b.getTraps()) {
           if (t1 != t2
               && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException())
               && t2.getBeginUnit() == splitUnit) {
             return new TrapOverlap(t1, t2, t2.getBeginUnit());
           }
+        }
       }
     }
     return null;

@@ -35,6 +35,7 @@ public class VariableBox extends AbstractValueBox {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof Local || value instanceof ConcreteRef;
   }

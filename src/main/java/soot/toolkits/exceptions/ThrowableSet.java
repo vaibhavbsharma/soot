@@ -19,7 +19,17 @@
 
 package soot.toolkits.exceptions;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.cache.CacheBuilder;
+
 import soot.AnySubType;
 import soot.FastHierarchy;
 import soot.G;
@@ -29,15 +39,6 @@ import soot.Scene;
 import soot.Singletons;
 import soot.Unit;
 import soot.options.Options;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A class for representing the set of exceptions that an instruction may throw.
@@ -193,11 +194,11 @@ public final class ThrowableSet {
 
       EMPTY = registerSetIfNew(null, null);
 
-      Set<RefLikeType> allThrowablesSet = new HashSet<RefLikeType>();
+      Set<RefLikeType> allThrowablesSet = new HashSet<>();
       allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
       ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
 
-      Set<RefLikeType> vmErrorSet = new HashSet<RefLikeType>();
+      Set<RefLikeType> vmErrorSet = new HashSet<>();
       vmErrorSet.add(Scene.v().getRefType("java.lang.InternalError"));
       vmErrorSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
       vmErrorSet.add(Scene.v().getRefType("java.lang.StackOverflowError"));
@@ -210,15 +211,16 @@ public final class ThrowableSet {
 
       VM_ERRORS = registerSetIfNew(vmErrorSet, null);
 
-      Set<RefLikeType> resolveClassErrorSet = new HashSet<RefLikeType>();
+      Set<RefLikeType> resolveClassErrorSet = new HashSet<>();
       resolveClassErrorSet.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
       // We add AnySubType(ClassFormatError) so that we can
       // avoid adding its subclass,
       // UnsupportedClassVersionError, explicitly. This is a
       // hack to allow Soot to analyze older class libraries
       // (UnsupportedClassVersionError was added in JDK 1.2).
-      if (!Options.v().j2me())
+      if (!Options.v().j2me()) {
         resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+      }
 
       resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
       resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
@@ -227,11 +229,11 @@ public final class ThrowableSet {
       resolveClassErrorSet.add(Scene.v().getRefType("java.lang.VerifyError"));
       RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
 
-      Set<RefLikeType> resolveFieldErrorSet = new HashSet<RefLikeType>(resolveClassErrorSet);
+      Set<RefLikeType> resolveFieldErrorSet = new HashSet<>(resolveClassErrorSet);
       resolveFieldErrorSet.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
       RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
 
-      Set<RefLikeType> resolveMethodErrorSet = new HashSet<RefLikeType>(resolveClassErrorSet);
+      Set<RefLikeType> resolveMethodErrorSet = new HashSet<>(resolveClassErrorSet);
       resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
       resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
       resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
@@ -242,7 +244,7 @@ public final class ThrowableSet {
       // RuntimeException---it would be replaced by an
       // ExceptionInInitializerError):
       //
-      Set<RefLikeType> initializationErrorSet = new HashSet<RefLikeType>();
+      Set<RefLikeType> initializationErrorSet = new HashSet<>();
       initializationErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
       INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
     }
@@ -373,7 +375,7 @@ public final class ThrowableSet {
 
   private void addToMemoizedAdds(Object key, ThrowableSet value) {
     if (memoizedAdds == null) {
-      memoizedAdds = new HashMap<Object, ThrowableSet>();
+      memoizedAdds = new HashMap<>();
     }
     memoizedAdds.put(key, value);
   }
@@ -400,8 +402,12 @@ public final class ThrowableSet {
   }
 
   private static <T> Set<T> getImmutable(Set<T> in) {
-    if ((null == in) || in.isEmpty()) return Collections.emptySet();
-    if (1 == in.size()) return Collections.singleton(in.iterator().next());
+    if ((null == in) || in.isEmpty()) {
+      return Collections.emptySet();
+    }
+    if (1 == in.size()) {
+      return Collections.singleton(in.iterator().next());
+    }
     return Collections.unmodifiableSet(in);
   }
 
@@ -481,7 +487,7 @@ public final class ThrowableSet {
 
     // If this is a real class, we need to check whether we already have it
     // in the list through subtyping.
-    if (!e.getSootClass().isPhantom())
+    if (!e.getSootClass().isPhantom()) {
       for (RefLikeType incumbent : exceptionsIncluded) {
         if (incumbent instanceof AnySubType) {
           // Need to use incumbent.getBase() because
@@ -500,7 +506,8 @@ public final class ThrowableSet {
                   + " is neither a RefType nor an AnySubType.");
         }
       }
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+    }
+    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     resultSet.add(e);
     result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
     addToMemoizedAdds(e, result);
@@ -601,7 +608,7 @@ public final class ThrowableSet {
 
     int changes = 0;
     boolean addNewException = true;
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>();
+    Set<RefLikeType> resultSet = new HashSet<>();
 
     for (RefLikeType incumbent : this.exceptionsIncluded) {
       if (incumbent instanceof RefType) {
@@ -614,7 +621,9 @@ public final class ThrowableSet {
       } else if (incumbent instanceof AnySubType) {
         RefType incumbentBase = ((AnySubType) incumbent).getBase();
         if (newBase.getSootClass().isPhantom()) {
-          if (!incumbentBase.equals(newBase)) resultSet.add(incumbent);
+          if (!incumbentBase.equals(newBase)) {
+            resultSet.add(incumbent);
+          }
         }
         // We have to use the base types in these hierarchy
         // calls
@@ -696,7 +705,7 @@ public final class ThrowableSet {
    *     set.
    */
   private ThrowableSet add(Set<RefLikeType> addedExceptions) {
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     int changes = 0;
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
 
@@ -792,17 +801,26 @@ public final class ThrowableSet {
    */
   private ThrowableSet remove(Set<RefLikeType> removedExceptions) {
     // Is there anything to remove?
-    if (removedExceptions.isEmpty()) return this;
+    if (removedExceptions.isEmpty()) {
+      return this;
+    }
 
     int changes = 0;
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     for (RefLikeType tp : removedExceptions) {
-      if (tp instanceof RefType) if (resultSet.remove(tp)) changes++;
+      if (tp instanceof RefType) {
+        if (resultSet.remove(tp)) {
+          changes++;
+        }
+      }
     }
 
     ThrowableSet result = null;
-    if (changes > 0) result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
-    else result = this;
+    if (changes > 0) {
+      result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
+    } else {
+      result = this;
+    }
     return result;
   }
 
@@ -850,7 +868,9 @@ public final class ThrowableSet {
       }
       for (AnySubType exclusion : exceptionsExcluded) {
         if (catcher.getSootClass().isPhantom()) {
-          if (exclusion.getBase().equals(catcher)) return false;
+          if (exclusion.getBase().equals(catcher)) {
+            return false;
+          }
         } else if (h.canStoreType(catcher, exclusion.getBase())) {
           return false;
         }
@@ -886,7 +906,9 @@ public final class ThrowableSet {
           RefType thrownBase = ((AnySubType) thrownType).getBase();
           if (catcher.getSootClass().isPhantom()) {
             if (thrownBase.equals(catcher)
-                || thrownBase.getClassName().equals("java.lang.Throwable")) return true;
+                || thrownBase.getClassName().equals("java.lang.Throwable")) {
+              return true;
+            }
           }
           // At runtime, thrownType might be instantiated by any
           // of thrownBase's subtypes, so:
@@ -928,8 +950,9 @@ public final class ThrowableSet {
       RefType exclusionBase = exclusion.getBase();
 
       // Is the current type explicitly excluded?
-      if (catcher.getSootClass().isPhantom() && exclusionBase.equals(catcher))
+      if (catcher.getSootClass().isPhantom() && exclusionBase.equals(catcher)) {
         return new Pair(ThrowableSet.Manager.v().EMPTY, this);
+      }
 
       if (h.canStoreType(catcher, exclusionBase)) {
         // Because the add() operations ban additions to sets
@@ -952,9 +975,11 @@ public final class ThrowableSet {
         // If the current type is a phantom type, we catch it if and
         // only if it is in the inclusion list and ignore any hierarchy.
         if (catcher.getSootClass().isPhantom()) {
-          if (inclusion.equals(catcher))
+          if (inclusion.equals(catcher)) {
             caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
-          else uncaughtIncluded = addExceptionToSet(inclusion, uncaughtIncluded);
+          } else {
+            uncaughtIncluded = addExceptionToSet(inclusion, uncaughtIncluded);
+          }
         } else if (h.canStoreType(inclusion, catcher)) {
           caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
         } else {
@@ -965,10 +990,12 @@ public final class ThrowableSet {
         // If the current type is a phantom type, we catch it if and
         // only if it is in the inclusion list and ignore any hierarchy.
         if (catcher.getSootClass().isPhantom()) {
-          if (base.equals(catcher)) caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
-          else {
-            if (base.getClassName().equals("java.lang.Throwable"))
+          if (base.equals(catcher)) {
+            caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
+          } else {
+            if (base.getClassName().equals("java.lang.Throwable")) {
               caughtIncluded = addExceptionToSet(catcher, caughtIncluded);
+            }
             uncaughtIncluded = addExceptionToSet(inclusion, uncaughtIncluded);
           }
         } else if (h.canStoreType(base, catcher)) {
@@ -1070,7 +1097,7 @@ public final class ThrowableSet {
    */
   private <T> Set<T> addExceptionToSet(T e, Set<T> set) {
     if (set == null) {
-      set = new HashSet<T>();
+      set = new HashSet<>();
     }
     set.add(e);
     return set;
@@ -1216,7 +1243,9 @@ public final class ThrowableSet {
         buf.append(connector);
         buf.append('(');
         baseType = ((AnySubType) reflikeType).getBase();
-      } else throw new RuntimeException("Unsupported type " + reflikeType.getClass().getName());
+      } else {
+        throw new RuntimeException("Unsupported type " + reflikeType.getClass().getName());
+      }
       String typeName = baseType.toString();
       int start = 0;
       int end = typeName.length();
@@ -1275,9 +1304,15 @@ public final class ThrowableSet {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     ThrowableSet other = (ThrowableSet) obj;
 
     return exceptionsIncluded.equals(other.exceptionsIncluded)

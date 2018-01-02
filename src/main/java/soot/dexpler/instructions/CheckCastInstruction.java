@@ -24,10 +24,14 @@
 
 package soot.dexpler.instructions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+
 import soot.Local;
 import soot.Type;
 import soot.dexpler.DexBody;
@@ -38,9 +42,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
   public CheckCastInstruction(Instruction instruction, int codeAdress) {
@@ -49,9 +50,10 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction21c))
+    if (!(instruction instanceof Instruction21c)) {
       throw new IllegalArgumentException(
           "Expected Instruction21c but got: " + instruction.getClass());
+    }
 
     Instruction21c checkCastInstr = (Instruction21c) instruction;
 
@@ -77,7 +79,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
   public Set<Type> introducedTypes() {
     ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-    Set<Type> types = new HashSet<Type>();
+    Set<Type> types = new HashSet<>();
     types.add(DexType.toSoot((TypeReference) i.getReference()));
     return types;
   }

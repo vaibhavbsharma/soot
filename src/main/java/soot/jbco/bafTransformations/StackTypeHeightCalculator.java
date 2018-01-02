@@ -19,6 +19,13 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
@@ -115,13 +122,6 @@ import soot.baf.XorInst;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 3-May-2006
@@ -135,198 +135,247 @@ public class StackTypeHeightCalculator {
     public Type remove_types[] = null;
     public Type add_types[] = null;
 
+    @Override
     public void caseReturnInst(ReturnInst i) {
       remove_types = new Type[] {i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseReturnVoidInst(ReturnVoidInst i) {
       remove_types = null;
       add_types = null;
     }
 
+    @Override
     public void caseNopInst(NopInst i) {
       remove_types = null;
       add_types = null;
     }
 
+    @Override
     public void caseGotoInst(GotoInst i) {
       remove_types = null;
       add_types = null;
     }
 
+    @Override
     public void caseJSRInst(JSRInst i) {
       remove_types = null;
       // add_types=new Type[]{RefType.v()};
       add_types = new Type[] {StmtAddressType.v()};
     }
 
+    @Override
     public void casePushInst(PushInst i) {
       remove_types = null;
       add_types = new Type[] {i.getConstant().getType()};
     }
 
+    @Override
     public void casePopInst(PopInst i) {
       remove_types = new Type[] {((soot.baf.internal.BPopInst) i).getType()};
       add_types = null;
     }
 
+    @Override
     public void caseIdentityInst(IdentityInst i) {
       remove_types = null;
       add_types = null;
     }
 
+    @Override
     public void caseStoreInst(StoreInst i) {
       remove_types = new Type[] {i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseLoadInst(LoadInst i) {
       remove_types = null;
       add_types = null;
       if (bafToJLocals != null) {
         Local jl = bafToJLocals.get(i.getLocal());
-        if (jl != null) add_types = new Type[] {jl.getType()};
+        if (jl != null) {
+          add_types = new Type[] {jl.getType()};
+        }
       }
 
-      if (add_types == null) add_types = new Type[] {i.getOpType()};
+      if (add_types == null) {
+        add_types = new Type[] {i.getOpType()};
+      }
     }
 
+    @Override
     public void caseArrayWriteInst(ArrayWriteInst i) {
       // RefType replaces the arraytype
       remove_types = new Type[] {RefType.v(), IntType.v(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseArrayReadInst(ArrayReadInst i) {
       remove_types = new Type[] {RefType.v(), IntType.v()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseIfNullInst(IfNullInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = null;
     }
 
+    @Override
     public void caseIfNonNullInst(IfNonNullInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = null;
     }
 
+    @Override
     public void caseIfEqInst(IfEqInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseIfNeInst(IfNeInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseIfGtInst(IfGtInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseIfGeInst(IfGeInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseIfLtInst(IfLtInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseIfLeInst(IfLeInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseIfCmpEqInst(IfCmpEqInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseIfCmpNeInst(IfCmpNeInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseIfCmpGtInst(IfCmpGtInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseIfCmpGeInst(IfCmpGeInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseIfCmpLtInst(IfCmpLtInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseIfCmpLeInst(IfCmpLeInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = null;
     }
 
+    @Override
     public void caseStaticGetInst(StaticGetInst i) {
       remove_types = null;
       add_types = new Type[] {i.getField().getType()};
     }
 
+    @Override
     public void caseStaticPutInst(StaticPutInst i) {
       remove_types = new Type[] {i.getField().getType()};
       add_types = null;
     }
 
+    @Override
     public void caseFieldGetInst(FieldGetInst i) {
       remove_types = new Type[] {i.getField().getDeclaringClass().getType()};
       add_types = new Type[] {i.getField().getType()};
     }
 
+    @Override
     public void caseFieldPutInst(FieldPutInst i) {
       remove_types =
           new Type[] {i.getField().getDeclaringClass().getType(), i.getField().getType()};
       add_types = null;
     }
 
+    @Override
     public void caseInstanceCastInst(InstanceCastInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = new Type[] {i.getCastType()};
     }
 
+    @Override
     public void caseInstanceOfInst(InstanceOfInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = new Type[] {IntType.v()};
     }
 
+    @Override
     public void casePrimitiveCastInst(PrimitiveCastInst i) {
       remove_types = new Type[] {i.getFromType()};
       add_types = new Type[] {i.getToType()};
     }
 
+    @Override
     public void caseDynamicInvokeInst(DynamicInvokeInst i) {
       SootMethod m = i.getMethod();
       Object args[] = m.getParameterTypes().toArray();
       remove_types = new Type[args.length];
-      for (int ii = 0; ii < args.length; ii++) remove_types[ii] = (Type) args[ii];
+      for (int ii = 0; ii < args.length; ii++) {
+        remove_types[ii] = (Type) args[ii];
+      }
 
-      if (m.getReturnType() instanceof VoidType) add_types = null;
-      else add_types = new Type[] {m.getReturnType()};
+      if (m.getReturnType() instanceof VoidType) {
+        add_types = null;
+      } else {
+        add_types = new Type[] {m.getReturnType()};
+      }
     }
 
+    @Override
     public void caseStaticInvokeInst(StaticInvokeInst i) {
       SootMethod m = i.getMethod();
       Object args[] = m.getParameterTypes().toArray();
       remove_types = new Type[args.length];
-      for (int ii = 0; ii < args.length; ii++) remove_types[ii] = (Type) args[ii];
+      for (int ii = 0; ii < args.length; ii++) {
+        remove_types[ii] = (Type) args[ii];
+      }
 
-      if (m.getReturnType() instanceof VoidType) add_types = null;
-      else add_types = new Type[] {m.getReturnType()};
+      if (m.getReturnType() instanceof VoidType) {
+        add_types = null;
+      } else {
+        add_types = new Type[] {m.getReturnType()};
+      }
     }
 
     private void instanceinvoke(MethodArgInst i) {
@@ -337,27 +386,35 @@ public class StackTypeHeightCalculator {
       remove_types[0] = RefType.v();
       System.arraycopy(m.getParameterTypes().toArray(), 0, remove_types, 1, length);
 
-      if (m.getReturnType() instanceof VoidType) add_types = null;
-      else add_types = new Type[] {m.getReturnType()};
+      if (m.getReturnType() instanceof VoidType) {
+        add_types = null;
+      } else {
+        add_types = new Type[] {m.getReturnType()};
+      }
     }
 
+    @Override
     public void caseVirtualInvokeInst(VirtualInvokeInst i) {
       instanceinvoke(i);
     }
 
+    @Override
     public void caseInterfaceInvokeInst(InterfaceInvokeInst i) {
       instanceinvoke(i);
     }
 
+    @Override
     public void caseSpecialInvokeInst(SpecialInvokeInst i) {
       instanceinvoke(i);
     }
 
+    @Override
     public void caseThrowInst(ThrowInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Throwable")};
       add_types = null;
     }
 
+    @Override
     public void caseAddInst(AddInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
@@ -368,98 +425,118 @@ public class StackTypeHeightCalculator {
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseAndInst(AndInst i) {
       bitOps(i);
     }
 
+    @Override
     public void caseOrInst(OrInst i) {
       bitOps(i);
     }
 
+    @Override
     public void caseXorInst(XorInst i) {
       bitOps(i);
     }
 
+    @Override
     public void caseArrayLengthInst(ArrayLengthInst i) {
       remove_types = new Type[] {RefType.v()};
       add_types = new Type[] {IntType.v()};
     }
 
+    @Override
     public void caseCmpInst(CmpInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {IntType.v()};
     }
 
+    @Override
     public void caseCmpgInst(CmpgInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {IntType.v()};
     }
 
+    @Override
     public void caseCmplInst(CmplInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {IntType.v()};
     }
 
+    @Override
     public void caseDivInst(DivInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseIncInst(IncInst i) {
       remove_types = null;
       add_types = null;
     }
 
+    @Override
     public void caseMulInst(MulInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseRemInst(RemInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseSubInst(SubInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseShlInst(ShlInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseShrInst(ShrInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseUshrInst(UshrInst i) {
       remove_types = new Type[] {i.getOpType(), i.getOpType()};
       add_types = new Type[] {i.getOpType()};
     }
 
+    @Override
     public void caseNewInst(NewInst i) {
       remove_types = null;
       add_types = new Type[] {i.getBaseType()};
     }
 
+    @Override
     public void caseNegInst(NegInst i) {
       remove_types = null;
       add_types = null;
     }
 
+    @Override
     public void caseSwapInst(SwapInst i) {
       remove_types = new Type[] {i.getFromType(), i.getToType()};
       add_types = new Type[] {i.getToType(), i.getFromType()};
     }
 
+    @Override
     public void caseDup1Inst(Dup1Inst i) {
       remove_types = new Type[] {i.getOp1Type()};
       add_types = new Type[] {i.getOp1Type(), i.getOp1Type()};
     }
 
+    @Override
     public void caseDup2Inst(Dup2Inst i) {
       if (!(i.getOp1Type() instanceof DoubleType || i.getOp1Type() instanceof LongType)) {
         add_types = new Type[] {i.getOp2Type(), i.getOp1Type()};
@@ -470,11 +547,13 @@ public class StackTypeHeightCalculator {
       }
     }
 
+    @Override
     public void caseDup1_x1Inst(Dup1_x1Inst i) {
       remove_types = new Type[] {i.getUnder1Type(), i.getOp1Type()};
       add_types = new Type[] {i.getOp1Type(), i.getUnder1Type(), i.getOp1Type()};
     }
 
+    @Override
     public void caseDup1_x2Inst(Dup1_x2Inst i) {
       Type u1 = i.getUnder1Type();
       if (u1 instanceof DoubleType || u1 instanceof LongType) {
@@ -486,6 +565,7 @@ public class StackTypeHeightCalculator {
       }
     }
 
+    @Override
     public void caseDup2_x1Inst(Dup2_x1Inst i) {
       Type ot = i.getOp1Type();
       if (ot instanceof DoubleType || ot instanceof LongType) {
@@ -497,6 +577,7 @@ public class StackTypeHeightCalculator {
       }
     }
 
+    @Override
     public void caseDup2_x2Inst(Dup2_x2Inst i) {
       Type u1 = i.getUnder1Type();
       Type o1 = i.getOp1Type();
@@ -517,32 +598,40 @@ public class StackTypeHeightCalculator {
       }
     }
 
+    @Override
     public void caseNewArrayInst(NewArrayInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = new Type[] {RefType.v()};
     }
 
+    @Override
     public void caseNewMultiArrayInst(NewMultiArrayInst i) {
       remove_types = new Type[i.getDimensionCount()];
-      for (int ii = 0; ii < remove_types.length; ii++) remove_types[ii] = IntType.v();
+      for (int ii = 0; ii < remove_types.length; ii++) {
+        remove_types[ii] = IntType.v();
+      }
       add_types = new Type[] {RefType.v()};
     }
 
+    @Override
     public void caseLookupSwitchInst(LookupSwitchInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseTableSwitchInst(TableSwitchInst i) {
       remove_types = new Type[] {IntType.v()};
       add_types = null;
     }
 
+    @Override
     public void caseEnterMonitorInst(EnterMonitorInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = null;
     }
 
+    @Override
     public void caseExitMonitorInst(ExitMonitorInst i) {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = null;
@@ -563,10 +652,12 @@ public class StackTypeHeightCalculator {
   }
 
   public static Map<Unit, Stack<Type>> calculateStackHeights(Body b, boolean jimpleLocals) {
-    if (!(b instanceof BafBody)) throw new java.lang.RuntimeException("Expecting Baf Body");
-    // System.out.println("\n"+b.getMethod().getName());
+    if (!(b instanceof BafBody)) {
+      throw new java.lang.RuntimeException("Expecting Baf Body");
+      // System.out.println("\n"+b.getMethod().getName());
+    }
 
-    Map<Unit, Stack<Type>> results = new HashMap<Unit, Stack<Type>>();
+    Map<Unit, Stack<Type>> results = new HashMap<>();
     bug = new BriefUnitGraph(b);
     List<Unit> heads = bug.getHeads();
     for (int i = 0; i < heads.size(); i++) {
@@ -574,15 +665,18 @@ public class StackTypeHeightCalculator {
       RefType handlerExc = isHandlerUnit(b.getTraps(), h);
       Stack<Type> stack = results.get(h);
       if (stack != null) {
-        if (stack.size() != (handlerExc != null ? 1 : 0))
+        if (stack.size() != (handlerExc != null ? 1 : 0)) {
           throw new java.lang.RuntimeException(
               "Problem with stack height - head expects ZERO or one if handler");
+        }
         continue;
       }
 
-      List<Unit> worklist = new ArrayList<Unit>();
-      stack = new Stack<Type>();
-      if (handlerExc != null) stack.push(handlerExc);
+      List<Unit> worklist = new ArrayList<>();
+      stack = new Stack<>();
+      if (handlerExc != null) {
+        stack.push(handlerExc);
+      }
       results.put(h, stack);
       worklist.add(h);
       while (!worklist.isEmpty()) {
@@ -632,20 +726,27 @@ public class StackTypeHeightCalculator {
         String exc = "Expecting values on stack: ";
         for (Type element : sw.remove_types) {
           String type = element.toString();
-          if (type.trim().length() == 0) type = element instanceof RefLikeType ? "L" : "U";
+          if (type.trim().length() == 0) {
+            type = element instanceof RefLikeType ? "L" : "U";
+          }
 
           exc += type + "  ";
         }
         exc += "\n\tbut only found: ";
         for (int i = 0; i < clone.size(); i++) {
           String type = clone.get(i).toString();
-          if (type.trim().length() == 0) type = clone.get(i) instanceof RefLikeType ? "L" : "U";
+          if (type.trim().length() == 0) {
+            type = clone.get(i) instanceof RefLikeType ? "L" : "U";
+          }
 
           exc += type + "  ";
         }
 
-        if (sw.shouldThrow) throw new RuntimeException(exc);
-        else G.v().out.println(exc);
+        if (sw.shouldThrow) {
+          throw new RuntimeException(exc);
+        } else {
+          G.v().out.println(exc);
+        }
       }
       for (int i = sw.remove_types.length - 1; i >= 0; i--) {
         try {
@@ -661,24 +762,37 @@ public class StackTypeHeightCalculator {
       }
     }
 
-    if (sw.add_types != null) for (Type element : sw.add_types) clone.push(element);
+    if (sw.add_types != null) {
+      for (Type element : sw.add_types) {
+        clone.push(element);
+      }
+    }
 
     return clone;
   }
 
   private static boolean checkTypes(Type t1, Type t2) {
-    if (t1 == t2) return true;
+    if (t1 == t2) {
+      return true;
+    }
 
-    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) return true;
+    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
+      return true;
+    }
 
-    if (t1 instanceof IntegerType && t2 instanceof IntegerType) return true;
+    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
+      return true;
+    }
 
-    if (t1 instanceof LongType && t2 instanceof LongType) return true;
+    if (t1 instanceof LongType && t2 instanceof LongType) {
+      return true;
+    }
 
-    if (t1 instanceof DoubleType && t2 instanceof DoubleType) return true;
+    if (t1 instanceof DoubleType && t2 instanceof DoubleType) {
+      return true;
+    }
 
     return t1 instanceof FloatType && t2 instanceof FloatType;
-
   }
 
   public static void printStack(
@@ -686,9 +800,11 @@ public class StackTypeHeightCalculator {
 
     int count = 0;
     sw.shouldThrow = false;
-    Map<Unit, Integer> indexes = new HashMap<Unit, Integer>();
+    Map<Unit, Integer> indexes = new HashMap<>();
     Iterator<Unit> it = units.snapshotIterator();
-    while (it.hasNext()) indexes.put(it.next(), new Integer(count++));
+    while (it.hasNext()) {
+      indexes.put(it.next(), new Integer(count++));
+    }
     it = units.snapshotIterator();
     while (it.hasNext()) {
       String s = "";
@@ -701,7 +817,7 @@ public class StackTypeHeightCalculator {
         s +=
             "\r\tdefault: " + tswi.getDefaultTarget() + "  " + indexes.get(tswi.getDefaultTarget());
         int index = 0;
-        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++)
+        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
           s +=
               "\r\t "
                   + x
@@ -709,6 +825,7 @@ public class StackTypeHeightCalculator {
                   + tswi.getTarget(index)
                   + "  "
                   + indexes.get(tswi.getTarget(index++));
+        }
       }
       try {
         s = indexes.get(unit) + " " + unit + "  " + s + "   [";
@@ -726,8 +843,12 @@ public class StackTypeHeightCalculator {
             return;
           }
         }
-        for (int i = 0; i < stack.size(); i++) s += printType(stack.get(i));
-      } else s += "***missing***";
+        for (int i = 0; i < stack.size(); i++) {
+          s += printType(stack.get(i));
+        }
+      } else {
+        s += "***missing***";
+      }
       System.out.println(s + "]");
     }
     sw.shouldThrow = true;
@@ -757,7 +878,9 @@ public class StackTypeHeightCalculator {
     Iterator<Trap> it = traps.iterator();
     while (it.hasNext()) {
       Trap t = it.next();
-      if (t.getHandlerUnit() == h) return t.getException().getType();
+      if (t.getHandlerUnit() == h) {
+        return t.getException().getType();
+      }
     }
     return null;
   }

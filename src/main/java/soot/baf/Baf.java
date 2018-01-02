@@ -26,6 +26,10 @@
 
 package soot.baf;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -132,10 +136,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.jimple.internal.IdentityRefBox;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 public class Baf {
   public Baf(Singletons.Global g) {}
 
@@ -144,8 +144,9 @@ public class Baf {
   }
 
   public static Type getDescriptorTypeOf(Type opType) {
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
       opType = RefType.v();
+    }
 
     return opType;
   }
@@ -487,42 +488,52 @@ public class Baf {
     type.apply(
         sw =
             new TypeSwitch() {
+              @Override
               public void caseBooleanType(BooleanType t) {
                 setResult("b");
               }
 
+              @Override
               public void caseByteType(ByteType t) {
                 setResult("b");
               }
 
+              @Override
               public void caseCharType(CharType t) {
                 setResult("c");
               }
 
+              @Override
               public void caseDoubleType(DoubleType t) {
                 setResult("d");
               }
 
+              @Override
               public void caseFloatType(FloatType t) {
                 setResult("f");
               }
 
+              @Override
               public void caseIntType(IntType t) {
                 setResult("i");
               }
 
+              @Override
               public void caseLongType(LongType t) {
                 setResult("l");
               }
 
+              @Override
               public void caseShortType(ShortType t) {
                 setResult("s");
               }
 
+              @Override
               public void defaultCase(Type t) {
                 throw new RuntimeException("Invalid type: " + t);
               }
 
+              @Override
               public void caseRefType(RefType t) {
                 setResult("r");
               }

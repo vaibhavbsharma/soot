@@ -25,12 +25,12 @@
 
 package soot;
 
+import java.io.Serializable;
+import java.util.List;
+
 import soot.tagkit.Host;
 import soot.util.Chain;
 import soot.util.Switchable;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * A code fragment (eg Stmt or Inst), used within Body classes. Intermediate representations must

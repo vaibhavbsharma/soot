@@ -35,7 +35,9 @@ public class EmptyChain implements Chain {
   private static EmptyChain instance = null;
 
   public static EmptyChain v() {
-    if (instance == null) instance = new EmptyChain();
+    if (instance == null) {
+      instance = new EmptyChain();
+    }
     return instance;
   }
 

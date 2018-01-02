@@ -74,8 +74,11 @@ class LocalVariableTable_attribute extends attribute_info {
 
         if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info) {
           String n = ((CONSTANT_Utf8_info) (constant_pool[e.name_index])).convert();
-          if (Util.v().isValidJimpleName(n)) return n;
-          else return null;
+          if (Util.v().isValidJimpleName(n)) {
+            return n;
+          } else {
+            return null;
+          }
         } else {
           throw new RuntimeException(
               "What? A local variable table " + "name_index isn't a UTF8 entry?");
@@ -109,8 +112,11 @@ class LocalVariableTable_attribute extends attribute_info {
       local_variable_table_entry e = local_variable_table[entryIndex];
       if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info) {
         String n = ((CONSTANT_Utf8_info) (constant_pool[e.name_index])).convert();
-        if (Util.v().isValidJimpleName(n)) return n;
-        else return null;
+        if (Util.v().isValidJimpleName(n)) {
+          return n;
+        } else {
+          return null;
+        }
       } else {
         throw new RuntimeException("name_index not addressing an UTF8 entry.");
       }
@@ -119,6 +125,7 @@ class LocalVariableTable_attribute extends attribute_info {
     }
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 

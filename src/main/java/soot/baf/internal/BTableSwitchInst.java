@@ -25,6 +25,10 @@
 
 package soot.baf.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -32,10 +36,6 @@ import soot.baf.Baf;
 import soot.baf.InstSwitch;
 import soot.baf.TableSwitchInst;
 import soot.util.Switch;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
   UnitBox defaultTargetBox;
@@ -48,8 +48,9 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
 
     this.targetBoxes = new UnitBox[targets.size()];
 
-    for (int i = 0; i < targetBoxes.length; i++)
+    for (int i = 0; i < targetBoxes.length; i++) {
       this.targetBoxes[i] = Baf.v().newInstBox((Unit) targets.get(i));
+    }
 
     this.lowIndex = lowIndex;
     this.highIndex = highIndex;
@@ -58,13 +59,16 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
     {
       unitBoxes = new ArrayList();
 
-      for (UnitBox element : targetBoxes) unitBoxes.add(element);
+      for (UnitBox element : targetBoxes) {
+        unitBoxes.add(element);
+      }
 
       unitBoxes.add(defaultTargetBox);
       unitBoxes = Collections.unmodifiableList(unitBoxes);
     }
   }
 
+  @Override
   public Object clone() {
     List list = new ArrayList();
     for (UnitBox element : targetBoxes) {
@@ -74,46 +78,57 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
     return new BTableSwitchInst(defaultTargetBox.getUnit(), lowIndex, highIndex, list);
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public Unit getDefaultTarget() {
     return defaultTargetBox.getUnit();
   }
 
+  @Override
   public void setDefaultTarget(Unit defaultTarget) {
     defaultTargetBox.setUnit(defaultTarget);
   }
 
+  @Override
   public UnitBox getDefaultTargetBox() {
     return defaultTargetBox;
   }
 
+  @Override
   public void setLowIndex(int lowIndex) {
     this.lowIndex = lowIndex;
   }
 
+  @Override
   public void setHighIndex(int highIndex) {
     this.highIndex = highIndex;
   }
 
+  @Override
   public int getLowIndex() {
     return lowIndex;
   }
 
+  @Override
   public int getHighIndex() {
     return highIndex;
   }
@@ -122,34 +137,45 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
     return targetBoxes.length;
   }
 
+  @Override
   public Unit getTarget(int index) {
     return targetBoxes[index].getUnit();
   }
 
+  @Override
   public void setTarget(int index, Unit target) {
     targetBoxes[index].setUnit(target);
   }
 
+  @Override
   public void setTargets(List<Unit> targets) {
-    for (int i = 0; i < targets.size(); i++) targetBoxes[i].setUnit(targets.get(i));
+    for (int i = 0; i < targets.size(); i++) {
+      targetBoxes[i].setUnit(targets.get(i));
+    }
   }
 
+  @Override
   public UnitBox getTargetBox(int index) {
     return targetBoxes[index];
   }
 
+  @Override
   public List getTargets() {
     List targets = new ArrayList();
 
-    for (UnitBox element : targetBoxes) targets.add(element.getUnit());
+    for (UnitBox element : targetBoxes) {
+      targets.add(element.getUnit());
+    }
 
     return targets;
   }
 
+  @Override
   public String getName() {
     return "tableswitch";
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     String endOfLine = " ";
@@ -172,6 +198,7 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("tableswitch");
     up.newline();
@@ -201,18 +228,22 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
     up.newline();
   }
 
+  @Override
   public List getUnitBoxes() {
     return unitBoxes;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseTableSwitchInst(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return true;
   }

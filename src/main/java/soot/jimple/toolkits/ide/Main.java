@@ -18,6 +18,8 @@
  */
 package soot.jimple.toolkits.ide;
 
+import java.util.Map;
+
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
 import soot.PackManager;
@@ -27,8 +29,6 @@ import soot.Transform;
 import soot.Unit;
 import soot.jimple.toolkits.ide.exampleproblems.IFDSPossibleTypes;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
-
-import java.util.Map;
 
 public class Main {
 
@@ -41,6 +41,7 @@ public class Main {
             new Transform(
                 "wjtp.ifds",
                 new SceneTransformer() {
+                  @Override
                   protected void internalTransform(
                       String phaseName, @SuppressWarnings("rawtypes") Map options) {
 

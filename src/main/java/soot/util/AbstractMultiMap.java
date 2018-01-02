@@ -1,11 +1,11 @@
 package soot.util;
 
-import heros.solver.Pair;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import heros.solver.Pair;
 
 public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializable {
 
@@ -19,7 +19,9 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
 
     @Override
     public boolean hasNext() {
-      if (valueIterator != null && valueIterator.hasNext()) return true;
+      if (valueIterator != null && valueIterator.hasNext()) {
+        return true;
+      }
 
       // Prepare for the next key
       valueIterator = null;
@@ -34,14 +36,15 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
         currentKey = keyIterator.next();
         valueIterator = get(currentKey).iterator();
       }
-      return new Pair<K, V>(currentKey, valueIterator.next());
+      return new Pair<>(currentKey, valueIterator.next());
     }
 
     @Override
     public void remove() {
-      if (valueIterator == null)
+      if (valueIterator == null) {
         // Removing an element twice or removing no valid element does not make sense
         return;
+      }
       valueIterator.remove();
 
       if (get(currentKey).isEmpty()) {
@@ -55,14 +58,22 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
   @Override
   public boolean putAll(MultiMap<K, V> m) {
     boolean hasNew = false;
-    for (K key : m.keySet()) if (putAll(key, m.get(key))) hasNew = true;
+    for (K key : m.keySet()) {
+      if (putAll(key, m.get(key))) {
+        hasNew = true;
+      }
+    }
     return hasNew;
   }
 
   @Override
   public boolean putAll(Map<K, Set<V>> m) {
     boolean hasNew = false;
-    for (K key : m.keySet()) if (putAll(key, m.get(key))) hasNew = true;
+    for (K key : m.keySet()) {
+      if (putAll(key, m.get(key))) {
+        hasNew = true;
+      }
+    }
     return hasNew;
   }
 
@@ -74,7 +85,9 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
   @Override
   public boolean contains(K key, V value) {
     Set<V> set = get(key);
-    if (set == null) return false;
+    if (set == null) {
+      return false;
+    }
     return set.contains(value);
   }
 

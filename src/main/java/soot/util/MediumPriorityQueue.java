@@ -1,12 +1,12 @@
 /** */
 package soot.util;
 
+import static java.lang.Long.numberOfTrailingZeros;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.Long.numberOfTrailingZeros;
 
 /** @author Steven Lambeth */
 class MediumPriorityQueue<E> extends PriorityQueue<E> {
@@ -17,6 +17,7 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
   private long[] data;
   private long lookup = 0;
 
+  @Override
   void addAll() {
     size = N;
     Arrays.fill(data, -1);
@@ -56,10 +57,14 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
 
       // the expected index m1 in t1 is set (optional test if NOTZ is
       // expensive)
-      if ((t1 & -m1) != 0) return fromIndex;
+      if ((t1 & -m1) != 0) {
+        return fromIndex;
+      }
 
       // some bits are left in t1, so we can finish
-      if (t1 != 0) return (bb << 6) + numberOfTrailingZeros(t1);
+      if (t1 != 0) {
+        return (bb << 6) + numberOfTrailingZeros(t1);
+      }
 
       // we know the previous block is empty, so we start our lookup on
       // the next one
@@ -67,7 +72,9 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
       long t0 = lookup & m0;
 
       // find next used block
-      if ((t0 & -m0) == 0) bb = numberOfTrailingZeros(t0);
+      if ((t0 & -m0) == 0) {
+        bb = numberOfTrailingZeros(t0);
+      }
 
       // re-assign new search index
       fromIndex = bb << 6;
@@ -82,7 +89,9 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
     int bucket = ordinal >>> 6;
     long prv = data[bucket];
     long now = prv | (1L << ordinal);
-    if (prv == now) return false;
+    if (prv == now) {
+      return false;
+    }
     data[bucket] = now;
     lookup |= (1L << bucket);
     size++;
@@ -107,16 +116,22 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
     long old = data[bucket];
     long now = old & ~(1L << index);
 
-    if (old == now) return false;
+    if (old == now) {
+      return false;
+    }
 
-    if (0 == now) lookup &= ~(1L << bucket);
+    if (0 == now) {
+      lookup &= ~(1L << bucket);
+    }
 
     size--;
     modCount++;
 
     data[bucket] = now;
 
-    if (min == index) min = nextSetBit(min + 1);
+    if (min == index) {
+      min = nextSetBit(min + 1);
+    }
 
     return true;
   }

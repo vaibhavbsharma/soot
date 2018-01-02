@@ -32,10 +32,12 @@ public class AllocAndContext {
     this.context = context;
   }
 
+  @Override
   public String toString() {
     return alloc + ", context " + context;
   }
 
+  @Override
   public int hashCode() {
     final int PRIME = 31;
     int result = 1;
@@ -44,12 +46,21 @@ public class AllocAndContext {
     return result;
   }
 
+  @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     final AllocAndContext other = (AllocAndContext) obj;
-    if (!alloc.equals(other.alloc)) return false;
+    if (!alloc.equals(other.alloc)) {
+      return false;
+    }
     return context.equals(other.context);
   }
 }

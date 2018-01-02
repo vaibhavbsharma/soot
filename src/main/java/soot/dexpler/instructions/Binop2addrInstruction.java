@@ -28,6 +28,7 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
+
 import soot.Local;
 import soot.Value;
 import soot.dexpler.DexBody;
@@ -46,9 +47,10 @@ public class Binop2addrInstruction extends TaggedInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction12x))
+    if (!(instruction instanceof Instruction12x)) {
       throw new IllegalArgumentException(
           "Expected Instruction12x but got: " + instruction.getClass());
+    }
 
     Instruction12x binOp2AddrInstr = (Instruction12x) instruction;
     int dest = binOp2AddrInstr.getRegisterA();

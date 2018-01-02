@@ -18,6 +18,10 @@
  */
 package soot.toolkits.graph.pdg;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
 import soot.Body;
 import soot.G;
 import soot.SootClass;
@@ -36,11 +40,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.MHGPostDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This class computes the set of weak regions for a given method. It is based on the algorithm
@@ -61,7 +60,7 @@ public class RegionAnalysis {
   protected UnitGraph m_reverseCFG;
   protected BlockGraph m_blockCFG;
   protected BlockGraph m_reverseBlockCFG;
-  protected Hashtable<Integer, Region> m_regions = new Hashtable<Integer, Region>();
+  protected Hashtable<Integer, Region> m_regions = new Hashtable<>();
   protected List<Region> m_regionsList = null;
   private int m_regCount = 0;
   private MHGDominatorTree<Block> m_dom;
@@ -76,18 +75,20 @@ public class RegionAnalysis {
     this.m_method = m;
     this.m_class = c;
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
               "[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: "
                   + m.getName()
                   + " ~~~~~~~~~~~~~~~~~~~~");
+    }
     this.findWeakRegions();
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
+    }
   }
 
   private void findWeakRegions() {
@@ -98,21 +99,25 @@ public class RegionAnalysis {
      * is done on the block CFG.
      */
 
-    if (this.m_cfg instanceof ExceptionalUnitGraph)
+    if (this.m_cfg instanceof ExceptionalUnitGraph) {
       this.m_blockCFG = new ExceptionalBlockGraph((ExceptionalUnitGraph) this.m_cfg);
-    else if (this.m_cfg instanceof EnhancedUnitGraph)
+    } else if (this.m_cfg instanceof EnhancedUnitGraph) {
       this.m_blockCFG = new EnhancedBlockGraph((EnhancedUnitGraph) this.m_cfg);
-    else if (this.m_cfg instanceof BriefUnitGraph)
+    } else if (this.m_cfg instanceof BriefUnitGraph) {
       this.m_blockCFG = new BriefBlockGraph((BriefUnitGraph) this.m_cfg);
-    else throw new RuntimeException("Unsupported CFG passed into the RegionAnalyis constructor!");
+    } else {
+      throw new RuntimeException("Unsupported CFG passed into the RegionAnalyis constructor!");
+    }
 
-    this.m_dom = new MHGDominatorTree<Block>(new MHGDominatorsFinder<Block>(this.m_blockCFG));
+    this.m_dom = new MHGDominatorTree<>(new MHGDominatorsFinder<>(this.m_blockCFG));
 
     try {
 
-      this.m_pdom = new MHGDominatorTree<Block>(new MHGPostDominatorsFinder<Block>(m_blockCFG));
+      this.m_pdom = new MHGDominatorTree<>(new MHGPostDominatorsFinder<>(m_blockCFG));
 
-      if (Options.v().verbose()) G.v().out.println("[RegionAnalysis] PostDominator tree: ");
+      if (Options.v().verbose()) {
+        G.v().out.println("[RegionAnalysis] PostDominator tree: ");
+      }
 
       this.m_regCount = -1;
 
@@ -141,11 +146,12 @@ public class RegionAnalysis {
         this.weakRegionDFS(this.m_blockCFG.getTails().get(0), this.m_regCount);
 
       } else {
-        if (Options.v().verbose())
+        if (Options.v().verbose()) {
           G.v()
               .out
               .println(
                   "WARNING: RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
+        }
 
         for (int i = 0; i < this.m_blockCFG.getTails().size(); i++) {
           this.m_regCount++;
@@ -231,21 +237,20 @@ public class RegionAnalysis {
   }
 
   public List<Region> getRegions() {
-    if (this.m_regionsList == null)
-      this.m_regionsList = new ArrayList<Region>(this.m_regions.values());
+    if (this.m_regionsList == null) {
+      this.m_regionsList = new ArrayList<>(this.m_regions.values());
+    }
 
     return this.m_regionsList;
   }
 
   public Hashtable<Unit, Region> getUnit2RegionMap() {
-    Hashtable<Unit, Region> unit2region = new Hashtable<Unit, Region>();
+    Hashtable<Unit, Region> unit2region = new Hashtable<>();
     List<Region> regions = this.getRegions();
 
-    for (Iterator<Region> itr = regions.iterator(); itr.hasNext(); ) {
-      Region r = itr.next();
+    for (Region r : regions) {
       List<Unit> units = r.getUnits();
-      for (Iterator<Unit> itr1 = units.iterator(); itr1.hasNext(); ) {
-        Unit u = itr1.next();
+      for (Unit u : units) {
         unit2region.put(u, r);
       }
     }
@@ -255,15 +260,13 @@ public class RegionAnalysis {
 
   public Hashtable<Block, Region> getBlock2RegionMap() {
     if (this.m_block2region == null) {
-      this.m_block2region = new Hashtable<Block, Region>();
+      this.m_block2region = new Hashtable<>();
 
       List<Region> regions = this.getRegions();
 
-      for (Iterator<Region> itr = regions.iterator(); itr.hasNext(); ) {
-        Region r = itr.next();
+      for (Region r : regions) {
         List<Block> blocks = r.getBlocks();
-        for (Iterator<Block> itr1 = blocks.iterator(); itr1.hasNext(); ) {
-          Block u = itr1.next();
+        for (Block u : blocks) {
           m_block2region.put(u, r);
         }
       }
@@ -296,7 +299,9 @@ public class RegionAnalysis {
   /** Create a region */
   protected Region createRegion(int id) {
     Region region = new Region(id, this.m_method, this.m_class, this.m_cfg);
-    if (id == 0) this.m_topLevelRegion = region;
+    if (id == 0) {
+      this.m_topLevelRegion = region;
+    }
 
     return region;
   }
@@ -311,21 +316,20 @@ public class RegionAnalysis {
     for (Block node : cfg) {
       s += "Node = " + node.toShortString() + "\n";
       s += "Preds:\n";
-      for (Iterator<Block> predsIt = cfg.getPredsOf(node).iterator(); predsIt.hasNext(); ) {
+      for (Block block : cfg.getPredsOf(node)) {
         s += "     ";
-        s += predsIt.next().toShortString() + "\n";
+        s += block.toShortString() + "\n";
       }
       s += "Succs:\n";
-      for (Iterator<Block> succsIt = cfg.getSuccsOf(node).iterator(); succsIt.hasNext(); ) {
+      for (Block block : cfg.getSuccsOf(node)) {
         s += "     ";
-        s += succsIt.next().toShortString() + "\n";
+        s += block.toShortString() + "\n";
       }
     }
 
     if (blockDetail) {
       s += "Blocks Detail:";
-      for (Iterator<Block> it = cfg.iterator(); it.hasNext(); ) {
-        Block node = it.next();
+      for (Block node : cfg) {
         s += node + "\n";
       }
     }

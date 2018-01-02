@@ -19,16 +19,16 @@
 
 package soot.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This utility class can convert any BlockGraph to a single-headed and single-tailed graph by
@@ -50,9 +50,13 @@ public class BlockGraphConverter {
     {
       List<Block> heads = graph.getHeads();
 
-      if (heads.size() == 0) break ADDSTART;
+      if (heads.size() == 0) {
+        break ADDSTART;
+      }
 
-      if ((heads.size() == 1) && (heads.get(0) instanceof DummyBlock)) break ADDSTART;
+      if ((heads.size() == 1) && (heads.get(0) instanceof DummyBlock)) {
+        break ADDSTART;
+      }
 
       List<Block> blocks = graph.getBlocks();
       DummyBlock head = new DummyBlock(graph.getBody(), 0);
@@ -64,7 +68,7 @@ public class BlockGraphConverter {
         block.setIndexInMethod(block.getIndexInMethod() + 1);
       }
 
-      List<Block> newBlocks = new ArrayList<Block>();
+      List<Block> newBlocks = new ArrayList<>();
       newBlocks.add(head);
       newBlocks.addAll(blocks);
       graph.mBlocks = newBlocks;
@@ -74,9 +78,13 @@ public class BlockGraphConverter {
     {
       List<Block> tails = graph.getTails();
 
-      if (tails.size() == 0) break ADDSTOP;
+      if (tails.size() == 0) {
+        break ADDSTOP;
+      }
 
-      if ((tails.size() == 1) && (tails.get(0) instanceof DummyBlock)) break ADDSTOP;
+      if ((tails.size() == 1) && (tails.get(0) instanceof DummyBlock)) {
+        break ADDSTOP;
+      }
 
       List<Block> blocks = graph.getBlocks();
       DummyBlock tail = new DummyBlock(graph.getBody(), blocks.size());
@@ -101,8 +109,7 @@ public class BlockGraphConverter {
     //        When are two Blocks from two different BlockGraphs
     //        equal?
 
-    for (Iterator<Block> blocksIt = graph.getBlocks().iterator(); blocksIt.hasNext(); ) {
-      Block block = blocksIt.next();
+    for (Block block : graph.getBlocks()) {
       List<Block> succs = block.getSuccs();
       List<Block> preds = block.getPreds();
       block.setSuccs(preds);
@@ -112,8 +119,8 @@ public class BlockGraphConverter {
     List<Block> heads = graph.getHeads();
     List<Block> tails = graph.getTails();
 
-    graph.mHeads = new ArrayList<Block>(tails);
-    graph.mTails = new ArrayList<Block>(heads);
+    graph.mHeads = new ArrayList<>(tails);
+    graph.mTails = new ArrayList<>(heads);
   }
 
   public static void main(String[] args) {
@@ -144,17 +151,19 @@ class DummyBlock extends Block {
 
   void makeHeadBlock(List<Block> oldHeads) {
     setPreds(new ArrayList<Block>());
-    setSuccs(new ArrayList<Block>(oldHeads));
+    setSuccs(new ArrayList<>(oldHeads));
 
     Iterator<Block> headsIt = oldHeads.iterator();
     while (headsIt.hasNext()) {
       Block oldHead = headsIt.next();
 
-      List<Block> newPreds = new ArrayList<Block>();
+      List<Block> newPreds = new ArrayList<>();
       newPreds.add(this);
 
       List<Block> oldPreds = oldHead.getPreds();
-      if (oldPreds != null) newPreds.addAll(oldPreds);
+      if (oldPreds != null) {
+        newPreds.addAll(oldPreds);
+      }
 
       oldHead.setPreds(newPreds);
     }
@@ -162,22 +171,25 @@ class DummyBlock extends Block {
 
   void makeTailBlock(List<Block> oldTails) {
     setSuccs(new ArrayList<Block>());
-    setPreds(new ArrayList<Block>(oldTails));
+    setPreds(new ArrayList<>(oldTails));
 
     Iterator<Block> tailsIt = oldTails.iterator();
     while (tailsIt.hasNext()) {
       Block oldTail = tailsIt.next();
 
-      List<Block> newSuccs = new ArrayList<Block>();
+      List<Block> newSuccs = new ArrayList<>();
       newSuccs.add(this);
 
       List<Block> oldSuccs = oldTail.getSuccs();
-      if (oldSuccs != null) newSuccs.addAll(oldSuccs);
+      if (oldSuccs != null) {
+        newSuccs.addAll(oldSuccs);
+      }
 
       oldTail.setSuccs(newSuccs);
     }
   }
 
+  @Override
   public Iterator<Unit> iterator() {
     List<Unit> s = Collections.emptyList();
     return s.iterator();

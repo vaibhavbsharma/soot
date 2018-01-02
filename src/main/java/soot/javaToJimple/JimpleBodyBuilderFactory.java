@@ -21,6 +21,7 @@ package soot.javaToJimple;
 
 public class JimpleBodyBuilderFactory extends AbstractJBBFactory {
 
+  @Override
   protected AbstractJimpleBodyBuilder createJimpleBodyBuilder() {
     return new JimpleBodyBuilder();
   }

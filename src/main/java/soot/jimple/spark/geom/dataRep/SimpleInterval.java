@@ -56,13 +56,17 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   @Override
   public int hashCode() {
     int ans = (int) ((L + R) % Integer.MAX_VALUE);
-    if (ans < 0) ans = -ans;
+    if (ans < 0) {
+      ans = -ans;
+    }
     return ans;
   }
 
   @Override
   public int compareTo(SimpleInterval o) {
-    if (L == o.L) return R < o.R ? -1 : 1;
+    if (L == o.L) {
+      return R < o.R ? -1 : 1;
+    }
 
     return L < o.L ? -1 : 1;
   }
@@ -78,12 +82,16 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
     if (osi.L < L) {
       if (L <= osi.R) {
         L = osi.L;
-        if (R < osi.R) R = osi.R;
+        if (R < osi.R) {
+          R = osi.R;
+        }
         return true;
       }
     } else {
       if (osi.L <= R) {
-        if (R < osi.R) R = osi.R;
+        if (R < osi.R) {
+          R = osi.R;
+        }
         return true;
       }
     }
@@ -94,7 +102,9 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   public boolean intersect(SimpleInterval o) {
     SimpleInterval osi = o;
 
-    if (L <= osi.L && osi.L < R) return true;
+    if (L <= osi.L && osi.L < R) {
+      return true;
+    }
     return osi.L <= L && L < osi.R;
   }
 }

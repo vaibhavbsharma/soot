@@ -54,10 +54,11 @@ public class SegmentNode implements Comparable<SegmentNode> {
   }
 
   public boolean equals(SegmentNode other) {
-    if (other instanceof RectangleNode) return false;
+    if (other instanceof RectangleNode) {
+      return false;
+    }
 
     return I1 == other.I1 && I2 == other.I2 && L == other.L;
-
   }
 
   @Override
@@ -65,17 +66,25 @@ public class SegmentNode implements Comparable<SegmentNode> {
     long d;
 
     d = I1 - o.I1;
-    if (d != 0) return d < 0 ? -1 : 1;
+    if (d != 0) {
+      return d < 0 ? -1 : 1;
+    }
 
     d = I2 - o.I2;
-    if (d != 0) return d < 0 ? -1 : 1;
+    if (d != 0) {
+      return d < 0 ? -1 : 1;
+    }
 
     d = L - o.L;
-    if (d != 0) return d < 0 ? -1 : 1;
+    if (d != 0) {
+      return d < 0 ? -1 : 1;
+    }
 
     if (this instanceof RectangleNode && o instanceof RectangleNode) {
       d = ((RectangleNode) this).L_prime - ((RectangleNode) o).L_prime;
-      if (d != 0) return d < 0 ? -1 : 1;
+      if (d != 0) {
+        return d < 0 ? -1 : 1;
+      }
     }
 
     return 0;
@@ -99,14 +108,19 @@ public class SegmentNode implements Comparable<SegmentNode> {
    */
   public boolean intersect(SegmentNode q) {
     // Intersection with a rectangle is tested in the overrode method
-    if (q instanceof RectangleNode) return q.intersect(this);
+    if (q instanceof RectangleNode) {
+      return q.intersect(this);
+    }
 
     SegmentNode p = this;
 
     if ((p.I2 - p.I1) == (q.I2 - q.I1)) {
       // Two segments have the same offset, so they are on the same line
-      if (p.I1 <= q.I1) return q.I1 < p.I1 + p.L;
-      else return p.I1 < q.I1 + q.L;
+      if (p.I1 <= q.I1) {
+        return q.I1 < p.I1 + p.L;
+      } else {
+        return p.I1 < q.I1 + q.L;
+      }
     }
 
     return false;
@@ -118,7 +132,9 @@ public class SegmentNode implements Comparable<SegmentNode> {
     long qy1 = q.I2;
     long qy2 = q.yEnd();
 
-    if (py1 <= qy1) return qy1 < py2;
+    if (py1 <= qy1) {
+      return qy1 < py2;
+    }
 
     return py1 < qy2;
   }

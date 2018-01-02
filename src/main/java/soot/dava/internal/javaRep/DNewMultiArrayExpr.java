@@ -19,6 +19,10 @@
 
 package soot.dava.internal.javaRep;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.UnitPrinter;
 import soot.Value;
@@ -26,18 +30,16 @@ import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.jimple.internal.AbstractNewMultiArrayExpr;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
   public DNewMultiArrayExpr(ArrayType type, List sizes) {
     super(type, new ValueBox[sizes.size()]);
 
-    for (int i = 0; i < sizes.size(); i++)
+    for (int i = 0; i < sizes.size(); i++) {
       sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
+    }
   }
 
+  @Override
   public Object clone() {
     List clonedSizes = new ArrayList(getSizeCount());
 
@@ -48,6 +50,7 @@ public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
     return new DNewMultiArrayExpr(getBaseType(), clonedSizes);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("new");
     up.literal(" ");
@@ -58,18 +61,25 @@ public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
       up.literal("]");
     }
 
-    for (int i = getSizeCount(); i < getBaseType().numDimensions; i++) up.literal("[]");
+    for (int i = getSizeCount(); i < getBaseType().numDimensions; i++) {
+      up.literal("[]");
+    }
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
     buffer.append("new " + getBaseType().baseType);
     List sizes = getSizes();
     Iterator it = getSizes().iterator();
-    while (it.hasNext()) buffer.append("[" + it.next().toString() + "]");
+    while (it.hasNext()) {
+      buffer.append("[" + it.next().toString() + "]");
+    }
 
-    for (int i = getSizeCount(); i < getBaseType().numDimensions; i++) buffer.append("[]");
+    for (int i = getSizeCount(); i < getBaseType().numDimensions; i++) {
+      buffer.append("[]");
+    }
 
     return buffer.toString();
   }

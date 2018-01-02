@@ -18,12 +18,12 @@
  */
 package soot.jimple.spark.geom.utils;
 
-import soot.util.IterableNumberer;
-import soot.util.Numberable;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import soot.util.IterableNumberer;
+import soot.util.Numberable;
 
 /**
  * Similar to the ArrayNumberer class in soot. But, this class counts the objects from zero. And, we
@@ -42,17 +42,20 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   public ZArrayNumberer() {
     // With default initialize size
     numberToObj = new Numberable[1023];
-    objContainer = new HashMap<E, E>(1023);
+    objContainer = new HashMap<>(1023);
   }
 
   public ZArrayNumberer(int initSize) {
     numberToObj = new Numberable[initSize];
-    objContainer = new HashMap<E, E>(initSize);
+    objContainer = new HashMap<>(initSize);
   }
 
+  @Override
   public void add(E o) {
     // We check if this object is already put into the set
-    if (o.getNumber() != -1 && numberToObj[o.getNumber()] == o) return;
+    if (o.getNumber() != -1 && numberToObj[o.getNumber()] == o) {
+      return;
+    }
 
     numberToObj[lastNumber] = o;
     o.setNumber(lastNumber);
@@ -70,7 +73,9 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   /** Clear the reference to the objects to help the garbage collection */
   public void clear() {
 
-    for (int i = 0; i < lastNumber; ++i) numberToObj[i] = null;
+    for (int i = 0; i < lastNumber; ++i) {
+      numberToObj[i] = null;
+    }
 
     lastNumber = 0;
     filledCells = 0;
@@ -78,11 +83,15 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   }
 
   /** Input object o should be added to this container previously. */
+  @Override
   public long get(E o) {
-    if (o == null) return -1;
+    if (o == null) {
+      return -1;
+    }
     return o.getNumber();
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public E get(long number) {
     E ret = (E) numberToObj[(int) number];
@@ -101,8 +110,12 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
 
   public boolean remove(E o) {
     int id = o.getNumber();
-    if (id < 0) return false;
-    if (numberToObj[id] != o) return false;
+    if (id < 0) {
+      return false;
+    }
+    if (numberToObj[id] != o) {
+      return false;
+    }
 
     numberToObj[id] = null;
     o.setNumber(-1);
@@ -111,6 +124,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   }
 
   /** Return how many objects are in the container but not the capacity of the container. */
+  @Override
   public int size() {
     return filledCells;
   }
@@ -123,14 +137,20 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     int i, j;
 
     for (i = 0, j = lastNumber - 1; i < j; ++i) {
-      if (numberToObj[i] != null) continue;
+      if (numberToObj[i] != null) {
+        continue;
+      }
 
       while (j > i) {
-        if (numberToObj[j] != null) break;
+        if (numberToObj[j] != null) {
+          break;
+        }
         --j;
       }
 
-      if (i == j) break;
+      if (i == j) {
+        break;
+      }
 
       numberToObj[i] = numberToObj[j];
       numberToObj[i].setNumber(i);
@@ -150,9 +170,12 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     E lastElement = null;
 
     /** We locate the next non-null item. */
+    @Override
     public final boolean hasNext() {
       while (cur < lastNumber) {
-        if (numberToObj[cur] != null) break;
+        if (numberToObj[cur] != null) {
+          break;
+        }
         ++cur;
       }
 
@@ -163,12 +186,14 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
      * We move on until a none null pointer found. In this way, the clients don't need to be aware
      * of the empty slots.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final E next() {
       lastElement = (E) numberToObj[cur++];
       return lastElement;
     }
 
+    @Override
     public final void remove() {
       ZArrayNumberer.this.remove(lastElement);
     }

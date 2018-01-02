@@ -28,12 +28,14 @@ public class DIdentityStmt extends GIdentityStmt {
     super(local, identityValue);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     getLeftOpBox().toString(up);
     up.literal(" := ");
     getRightOpBox().toString(up);
   }
 
+  @Override
   public String toString() {
     return getLeftOpBox().getValue().toString() + " = " + getRightOpBox().getValue().toString();
   }

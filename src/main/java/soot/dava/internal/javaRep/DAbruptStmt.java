@@ -38,18 +38,22 @@ public class DAbruptStmt extends AbstractStmt {
     surpressDestinationLabel = false;
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
 
+  @Override
   public Object clone() {
     return new DAbruptStmt(command, label);
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -63,6 +67,7 @@ public class DAbruptStmt extends AbstractStmt {
     return b.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(command);
     if ((surpressDestinationLabel == false) && (label.toString() != null)) {

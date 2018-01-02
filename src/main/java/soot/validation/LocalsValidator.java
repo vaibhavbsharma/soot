@@ -1,11 +1,11 @@
 package soot.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
-
-import java.util.List;
 
 public enum LocalsValidator implements BodyValidator {
   INSTANCE;
@@ -28,10 +28,11 @@ public enum LocalsValidator implements BodyValidator {
   private void validateLocal(Body body, ValueBox vb, List<ValidationException> exception) {
     Value value;
     if ((value = vb.getValue()) instanceof Local) {
-      if (!body.getLocals().contains(value))
+      if (!body.getLocals().contains(value)) {
         exception.add(
             new ValidationException(
                 value, "Local not in chain : " + value + " in " + body.getMethod()));
+      }
     }
   }
 

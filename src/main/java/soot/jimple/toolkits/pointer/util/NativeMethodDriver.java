@@ -25,6 +25,8 @@
  */
 package soot.jimple.toolkits.pointer.util;
 
+import java.util.HashMap;
+
 import soot.G;
 import soot.SootMethod;
 import soot.jimple.toolkits.pointer.nativemethods.JavaIoFileDescriptorNative;
@@ -70,8 +72,6 @@ import soot.jimple.toolkits.pointer.nativemethods.SunMiscSignalHandlerNative;
 import soot.jimple.toolkits.pointer.nativemethods.SunMiscSignalNative;
 import soot.jimple.toolkits.pointer.nativemethods.SunMiscUnsafeNative;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
-
-import java.util.HashMap;
 
 public class NativeMethodDriver {
   public NativeMethodDriver(NativeHelper helper) {
@@ -128,7 +128,7 @@ public class NativeMethodDriver {
   }
 
   private final HashMap<String, NativeMethodClass> cnameToSim =
-      new HashMap<String, NativeMethodClass>(100);
+      new HashMap<>(100);
   private final boolean DEBUG = false;
 
   /**

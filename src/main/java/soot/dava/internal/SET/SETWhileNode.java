@@ -35,6 +35,7 @@ public class SETWhileNode extends SETCycleNode {
     add_SubBody(subBody);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
 
@@ -43,6 +44,7 @@ public class SETWhileNode extends SETCycleNode {
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
     return new ASTWhileNode(
         get_Label(),
@@ -50,6 +52,7 @@ public class SETWhileNode extends SETCycleNode {
         emit_ASTBody(body2childChain.get(subBodies.get(0))));
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return get_CharacterizingStmt();
   }

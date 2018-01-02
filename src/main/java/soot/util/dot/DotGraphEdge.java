@@ -102,12 +102,13 @@ public class DotGraphEdge implements Renderable {
    */
   public void setAttribute(DotGraphAttribute attr) {
     if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
+      this.attributes = new LinkedList<>();
     }
 
     this.attributes.add(attr);
   }
 
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
     StringBuffer line = new StringBuffer(start.getName());
     line.append((this.isDirected) ? "->" : "--");

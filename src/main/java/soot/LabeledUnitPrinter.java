@@ -19,13 +19,13 @@
 
 package soot;
 
-import soot.jimple.IdentityRef;
-import soot.util.Chain;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import soot.jimple.IdentityRef;
+import soot.util.Chain;
 
 /**
  * UnitPrinter implementation for representations that have labelled stmts, such as Jimple, Grimp,
@@ -51,16 +51,22 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
     return references;
   }
 
+  @Override
   public abstract void literal(String s);
 
+  @Override
   public abstract void methodRef(SootMethodRef m);
 
+  @Override
   public abstract void fieldRef(SootFieldRef f);
 
+  @Override
   public abstract void identityRef(IdentityRef r);
 
+  @Override
   public abstract void type(Type t);
 
+  @Override
   public void unitRef(Unit u, boolean branchTarget) {
     String oldIndent = getIndent();
 
@@ -94,12 +100,12 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
   private void createLabelMaps(Body body) {
     Chain<Unit> units = body.getUnits();
 
-    labels = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
-    references = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
+    labels = new HashMap<>(units.size() * 2 + 1, 0.7f);
+    references = new HashMap<>(units.size() * 2 + 1, 0.7f);
 
     // Create statement name table
-    Set<Unit> labelStmts = new HashSet<Unit>();
-    Set<Unit> refStmts = new HashSet<Unit>();
+    Set<Unit> labelStmts = new HashSet<>();
+    Set<Unit> refStmts = new HashSet<>();
 
     // Build labelStmts and refStmts
     for (UnitBox box : body.getAllUnitBoxes()) {
@@ -123,9 +129,13 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
 
     // Traverse the stmts and assign a label if necessary
     for (Unit s : units) {
-      if (labelStmts.contains(s)) labels.put(s, String.format(formatString, ++labelCount));
+      if (labelStmts.contains(s)) {
+        labels.put(s, String.format(formatString, ++labelCount));
+      }
 
-      if (refStmts.contains(s)) references.put(s, Integer.toString(refCount++));
+      if (refStmts.contains(s)) {
+        references.put(s, Integer.toString(refCount++));
+      }
     }
   }
 }

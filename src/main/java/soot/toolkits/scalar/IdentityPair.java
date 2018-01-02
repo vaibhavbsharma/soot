@@ -54,11 +54,19 @@ public class IdentityPair<T, U> {
   @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     final IdentityPair other = (IdentityPair) obj;
-    if (o1 != other.o1) return false;
+    if (o1 != other.o1) {
+      return false;
+    }
     return o2 == other.o2;
   }
 
@@ -70,6 +78,7 @@ public class IdentityPair<T, U> {
     return o2;
   }
 
+  @Override
   public String toString() {
     return "IdentityPair " + o1 + "," + o2;
   }

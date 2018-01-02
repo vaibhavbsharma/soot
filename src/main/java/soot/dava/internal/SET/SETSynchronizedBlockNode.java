@@ -19,14 +19,14 @@
 
 package soot.dava.internal.SET;
 
+import java.util.Iterator;
+
 import soot.Value;
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTSynchronizedBlockNode;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.toolkits.base.finders.ExceptionNode;
 import soot.util.IterableSet;
-
-import java.util.Iterator;
 
 public class SETSynchronizedBlockNode extends SETNode {
   private Value local;
@@ -40,26 +40,32 @@ public class SETSynchronizedBlockNode extends SETNode {
     this.local = local;
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     return ((SETNode) body2childChain.get(subBodies.get(0)).getLast()).get_NaturalExits();
   }
 
+  @Override
   public ASTNode emit_AST() {
     return new ASTSynchronizedBlockNode(
         get_Label(), emit_ASTBody(body2childChain.get(subBodies.get(0))), local);
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return ((SETNode) body2childChain.get(subBodies.get(0)).getFirst()).get_EntryStmt();
   }
 
+  @Override
   protected boolean resolve(SETNode parent) {
     Iterator<IterableSet> sbit = parent.get_SubBodies().iterator();
 
     while (sbit.hasNext()) {
       IterableSet subBody = sbit.next();
 
-      if (subBody.intersects(get_Body())) return subBody.isSupersetOf(get_Body());
+      if (subBody.intersects(get_Body())) {
+        return subBody.isSupersetOf(get_Body());
+      }
     }
 
     return true;

@@ -1,5 +1,7 @@
 package soot.dexpler.instructions;
 
+import java.util.List;
+
 import org.jf.dexlib2.AccessFlags;
 import org.jf.dexlib2.analysis.AnalyzedInstruction;
 import org.jf.dexlib2.analysis.ClassPath;
@@ -12,9 +14,8 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35mi;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rmi;
 import org.jf.dexlib2.iface.reference.MethodReference;
-import soot.dexpler.DexBody;
 
-import java.util.List;
+import soot.dexpler.DexBody;
 
 public class ExecuteInlineInstruction extends MethodInvocationInstruction
     implements OdexInstruction {
@@ -27,8 +28,9 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction
 
   @Override
   public void deOdex(DexFile parentFile, Method method, ClassPath cp) {
-    if (!(parentFile instanceof DexBackedOdexFile))
+    if (!(parentFile instanceof DexBackedOdexFile)) {
       throw new RuntimeException("ODEX instruction in non-ODEX file");
+    }
     DexBackedOdexFile odexFile = (DexBackedOdexFile) parentFile;
 
     InlineMethodResolver inlineMethodResolver =
@@ -47,9 +49,13 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction
   @Override
   public void jimplify(DexBody body) {
     int acccessFlags = targetMethod.getAccessFlags();
-    if (AccessFlags.STATIC.isSet(acccessFlags)) jimplifyStatic(body);
-    else if (AccessFlags.PRIVATE.isSet(acccessFlags)) jimplifySpecial(body);
-    else jimplifyVirtual(body);
+    if (AccessFlags.STATIC.isSet(acccessFlags)) {
+      jimplifyStatic(body);
+    } else if (AccessFlags.PRIVATE.isSet(acccessFlags)) {
+      jimplifySpecial(body);
+    } else {
+      jimplifyVirtual(body);
+    }
   }
 
   /**
@@ -57,11 +63,13 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction
    *
    * @return a list of register indices
    */
+  @Override
   protected List<Integer> getUsedRegistersNums() {
-    if (instruction instanceof Instruction35mi)
+    if (instruction instanceof Instruction35mi) {
       return getUsedRegistersNums((Instruction35mi) instruction);
-    else if (instruction instanceof Instruction3rmi)
+    } else if (instruction instanceof Instruction3rmi) {
       return getUsedRegistersNums((Instruction3rmi) instruction);
+    }
     throw new RuntimeException("Instruction is not an ExecuteInline");
   }
 }

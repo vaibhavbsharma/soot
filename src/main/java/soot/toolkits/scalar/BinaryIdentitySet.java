@@ -53,12 +53,20 @@ public class BinaryIdentitySet<T> {
   @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     final BinaryIdentitySet other = (BinaryIdentitySet) obj;
     // must be commutative
-    if (o1 != other.o1 && o1 != other.o2) return false;
+    if (o1 != other.o1 && o1 != other.o2) {
+      return false;
+    }
     return o2 == other.o2 || o2 == other.o1;
   }
 
@@ -70,6 +78,7 @@ public class BinaryIdentitySet<T> {
     return o2;
   }
 
+  @Override
   public String toString() {
     return "IdentityPair " + o1 + "," + o2;
   }

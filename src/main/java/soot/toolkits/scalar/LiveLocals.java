@@ -25,11 +25,11 @@
 
 package soot.toolkits.scalar;
 
+import java.util.List;
+
 import soot.Local;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.List;
 
 /**
  * Provides an interface for querying for the list of Locals that are live before an after a given

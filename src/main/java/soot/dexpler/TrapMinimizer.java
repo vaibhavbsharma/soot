@@ -1,5 +1,11 @@
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Singletons;
 import soot.Trap;
@@ -9,12 +15,6 @@ import soot.options.Options;
 import soot.toolkits.exceptions.TrapTransformer;
 import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Transformer that splits traps for Dalvik whenever a statements within the trap cannot reach the
@@ -41,17 +41,19 @@ public class TrapMinimizer extends TrapTransformer {
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // If we have less then two traps, there's nothing to do here
-    if (b.getTraps().size() == 0) return;
+    if (b.getTraps().size() == 0) {
+      return;
+    }
 
     ExceptionalUnitGraph eug =
         new ExceptionalUnitGraph(
             b, DalvikThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
     Set<Unit> unitsWithMonitor = getUnitsWithMonitor(eug);
 
-    Map<Trap, List<Trap>> replaceTrapBy = new HashMap<Trap, List<Trap>>(b.getTraps().size());
+    Map<Trap, List<Trap>> replaceTrapBy = new HashMap<>(b.getTraps().size());
     boolean updateTrap = false;
     for (Trap tr : b.getTraps()) {
-      List<Trap> newTraps = new ArrayList<Trap>(); // will contain the new
+      List<Trap> newTraps = new ArrayList<>(); // will contain the new
       // traps
       Unit firstTrapStmt = tr.getBeginUnit(); // points to the first unit
       // in the trap
@@ -72,11 +74,13 @@ public class TrapMinimizer extends TrapTransformer {
         // If this is the catch-all block and the current unit has an,
         // active monitor, we need to keep the block
         if (tr.getException().getName().equals("java.lang.Throwable")
-            && unitsWithMonitor.contains(u)) goesToHandler = true;
+            && unitsWithMonitor.contains(u)) {
+          goesToHandler = true;
+        }
 
         // check if the current unit has an edge to the current trap's
         // handler
-        if (!goesToHandler)
+        if (!goesToHandler) {
           if (DalvikThrowAnalysis.v().mightThrow(u).catchableAs(tr.getException().getType())) {
             // We need to be careful here. The ExceptionalUnitGraph
             // will
@@ -92,6 +96,7 @@ public class TrapMinimizer extends TrapTransformer {
               }
             }
           }
+        }
 
         if (!goesToHandler) {
           // if the current unit does not have an edge to the current
@@ -100,9 +105,10 @@ public class TrapMinimizer extends TrapTransformer {
           // unit before the
           // current unit 'u'.
           updateTrap = true;
-          if (firstTrapStmt == u) // do not add an empty trap, but set
+          if (firstTrapStmt == u) {
             // updateTrap to true
             continue;
+          }
           Trap t = Jimple.v().newTrap(tr.getException(), firstTrapStmt, u, tr.getHandlerUnit());
           newTraps.add(t);
         } else {

@@ -62,6 +62,7 @@ class Instruction_Jsr extends Instruction_intbranch {
     name = "jsr";
   }
 
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[1];
     i[0] = target;

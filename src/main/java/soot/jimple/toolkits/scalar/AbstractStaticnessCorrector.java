@@ -20,7 +20,9 @@ public abstract class AbstractStaticnessCorrector extends BodyTransformer {
   protected boolean isTypeLoaded(Type tp) {
     if (tp instanceof RefType) {
       RefType rt = (RefType) tp;
-      if (rt.hasSootClass()) return isClassLoaded(rt.getSootClass());
+      if (rt.hasSootClass()) {
+        return isClassLoaded(rt.getSootClass());
+      }
     }
     return false;
   }

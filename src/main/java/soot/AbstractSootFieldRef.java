@@ -19,9 +19,9 @@
 
 package soot;
 
-import soot.options.Options;
-
 import java.util.ArrayDeque;
+
+import soot.options.Options;
 
 /**
  * Representation of a reference to a field as it appears in a class file. Note that the field
@@ -35,10 +35,15 @@ class AbstractSootFieldRef implements SootFieldRef {
     this.name = name;
     this.type = type;
     this.isStatic = isStatic;
-    if (declaringClass == null)
+    if (declaringClass == null) {
       throw new RuntimeException("Attempt to create SootFieldRef with null class");
-    if (name == null) throw new RuntimeException("Attempt to create SootFieldRef with null name");
-    if (type == null) throw new RuntimeException("Attempt to create SootFieldRef with null type");
+    }
+    if (name == null) {
+      throw new RuntimeException("Attempt to create SootFieldRef with null name");
+    }
+    if (type == null) {
+      throw new RuntimeException("Attempt to create SootFieldRef with null type");
+    }
   }
 
   private final SootClass declaringClass;
@@ -46,22 +51,27 @@ class AbstractSootFieldRef implements SootFieldRef {
   private final Type type;
   private final boolean isStatic;
 
+  @Override
   public SootClass declaringClass() {
     return declaringClass;
   }
 
+  @Override
   public String name() {
     return name;
   }
 
+  @Override
   public Type type() {
     return type;
   }
 
+  @Override
   public boolean isStatic() {
     return isStatic;
   }
 
+  @Override
   public String getSignature() {
     return SootField.getSignature(declaringClass, name, type);
   }
@@ -81,6 +91,7 @@ class AbstractSootFieldRef implements SootFieldRef {
               + "; failed to resolve in superclasses and interfaces");
     }
 
+    @Override
     public String toString() {
       StringBuffer ret = new StringBuffer();
       ret.append(super.toString());
@@ -89,6 +100,7 @@ class AbstractSootFieldRef implements SootFieldRef {
     }
   }
 
+  @Override
   public SootField resolve() {
     return resolve(null);
   }
@@ -107,8 +119,9 @@ class AbstractSootFieldRef implements SootFieldRef {
   private SootField resolve(StringBuffer trace) {
     SootClass cl = declaringClass;
     while (true) {
-      if (trace != null)
+      if (trace != null) {
         trace.append("Looking in " + cl + " which has fields " + cl.getFields() + "\n");
+      }
 
       // Check whether we have the field in the current class
       SootField clField = cl.getFieldUnsafe(name, type);
@@ -128,7 +141,9 @@ class AbstractSootFieldRef implements SootFieldRef {
 
           // Make sure that we don't have a conflicting field
           SootField existingField = cl.getFieldByNameUnsafe(name);
-          if (existingField != null) return handleFieldTypeMismatch(clField);
+          if (existingField != null) {
+            return handleFieldTypeMismatch(clField);
+          }
 
           // Create the phantom field
           SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
@@ -138,14 +153,17 @@ class AbstractSootFieldRef implements SootFieldRef {
         }
       } else {
         // Since this class is not phantom, we look at its interfaces
-        ArrayDeque<SootClass> queue = new ArrayDeque<SootClass>();
+        ArrayDeque<SootClass> queue = new ArrayDeque<>();
         queue.addAll(cl.getInterfaces());
         while (true) {
           SootClass iface = queue.poll();
-          if (iface == null) break;
+          if (iface == null) {
+            break;
+          }
 
-          if (trace != null)
+          if (trace != null) {
             trace.append("Looking in " + iface + " which has fields " + iface.getFields() + "\n");
+          }
           SootField ifaceField = iface.getFieldUnsafe(name, type);
           if (ifaceField != null) {
             return checkStatic(ifaceField);
@@ -155,8 +173,11 @@ class AbstractSootFieldRef implements SootFieldRef {
 
         // If we have not found a suitable field in the current class,
         // try the superclass
-        if (cl.hasSuperclass()) cl = cl.getSuperclass();
-        else break;
+        if (cl.hasSuperclass()) {
+          cl = cl.getSuperclass();
+        } else {
+          break;
+        }
       }
     }
 
@@ -169,8 +190,11 @@ class AbstractSootFieldRef implements SootFieldRef {
         // field in the meantime, so better check twice.
         SootField clField = declaringClass.getFieldByNameUnsafe(name);
         if (clField != null) {
-          if (clField.getType().equals(type)) return checkStatic(clField);
-          else return handleFieldTypeMismatch(clField);
+          if (clField.getType().equals(type)) {
+            return checkStatic(clField);
+          } else {
+            return handleFieldTypeMismatch(clField);
+          }
         } else {
           // Add the new phantom field
           declaringClass.addField(sf);
@@ -181,8 +205,11 @@ class AbstractSootFieldRef implements SootFieldRef {
 
     if (trace == null) {
       FieldResolutionFailedException e = new FieldResolutionFailedException();
-      if (Options.v().ignore_resolution_errors()) G.v().out.println(e.getMessage());
-      else throw e;
+      if (Options.v().ignore_resolution_errors()) {
+        G.v().out.println(e.getMessage());
+      } else {
+        throw e;
+      }
     }
     return null;
   }
@@ -202,6 +229,7 @@ class AbstractSootFieldRef implements SootFieldRef {
             Options.v().field_type_mismatches()));
   }
 
+  @Override
   public String toString() {
     return getSignature();
   }
@@ -219,20 +247,40 @@ class AbstractSootFieldRef implements SootFieldRef {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     AbstractSootFieldRef other = (AbstractSootFieldRef) obj;
     if (declaringClass == null) {
-      if (other.declaringClass != null) return false;
-    } else if (!declaringClass.equals(other.declaringClass)) return false;
-    if (isStatic != other.isStatic) return false;
+      if (other.declaringClass != null) {
+        return false;
+      }
+    } else if (!declaringClass.equals(other.declaringClass)) {
+      return false;
+    }
+    if (isStatic != other.isStatic) {
+      return false;
+    }
     if (name == null) {
-      if (other.name != null) return false;
-    } else if (!name.equals(other.name)) return false;
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
+    }
     if (type == null) {
-      if (other.type != null) return false;
-    } else if (!type.equals(other.type)) return false;
+      if (other.type != null) {
+        return false;
+      }
+    } else if (!type.equals(other.type)) {
+      return false;
+    }
     return true;
   }
 }

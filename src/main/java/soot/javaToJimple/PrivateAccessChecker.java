@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.types.MemberInstance;
-
 import java.util.ArrayList;
+
+import polyglot.types.MemberInstance;
 
 public class PrivateAccessChecker extends polyglot.visit.NodeVisitor {
 
@@ -32,9 +32,10 @@ public class PrivateAccessChecker extends polyglot.visit.NodeVisitor {
   }
 
   public PrivateAccessChecker() {
-    list = new ArrayList<MemberInstance>();
+    list = new ArrayList<>();
   }
 
+  @Override
   public polyglot.ast.Node leave(
       polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
 

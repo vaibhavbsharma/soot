@@ -37,14 +37,18 @@ public class FixedMethods {
    * @see #clientOverwriteable(SootMethod)
    */
   private static boolean clientOverwriteableOverwrites(SootMethod m) {
-    if (clientOverwriteable(m)) return true;
+    if (clientOverwriteable(m)) {
+      return true;
+    }
 
     SootClass c = m.getDeclaringClass();
     // TODO could use PTA and call graph to filter subclasses further
     for (SootClass cPrime : Scene.v().getFastHierarchy().getSubclassesOf(c)) {
       SootMethod mPrime = cPrime.getMethodUnsafe(m.getSubSignature());
       if (mPrime != null) {
-        if (clientOverwriteable(mPrime)) return true;
+        if (clientOverwriteable(mPrime)) {
+          return true;
+        }
       }
     }
     return false;
@@ -70,7 +74,9 @@ public class FixedMethods {
    */
   private static boolean clientCanInstantiate(SootClass cPrime) {
     // subtypes of interface types can always be instantiated
-    if (cPrime.isInterface()) return true;
+    if (cPrime.isInterface()) {
+      return true;
+    }
 
     for (SootMethod m : cPrime.getMethods()) {
       if (m.getName().equals(SootMethod.constructorName)) {

@@ -33,18 +33,22 @@ public class PurityThisNode extends PurityParamNode {
 
   public static PurityThisNode node = new PurityThisNode();
 
+  @Override
   public String toString() {
     return "this";
   }
 
+  @Override
   public boolean isInside() {
     return false;
   }
 
+  @Override
   public boolean isLoad() {
     return false;
   }
 
+  @Override
   public boolean isParam() {
     return true;
   }

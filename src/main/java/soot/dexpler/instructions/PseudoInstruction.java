@@ -21,6 +21,7 @@
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
+
 import soot.dexpler.DexBody;
 
 public abstract class PseudoInstruction extends DexlibAbstractInstruction {
@@ -52,7 +53,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataFirstByte() {
-    if (dataFirstByte == -1) throw new RuntimeException("Error: dataFirstByte was not set!");
+    if (dataFirstByte == -1) {
+      throw new RuntimeException("Error: dataFirstByte was not set!");
+    }
     return dataFirstByte;
   }
 
@@ -61,7 +64,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataLastByte() {
-    if (dataLastByte == -1) throw new RuntimeException("Error: dataLastByte was not set!");
+    if (dataLastByte == -1) {
+      throw new RuntimeException("Error: dataLastByte was not set!");
+    }
     return dataLastByte;
   }
 
@@ -70,7 +75,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataSize() {
-    if (dataSize == -1) throw new RuntimeException("Error: dataFirstByte was not set!");
+    if (dataSize == -1) {
+      throw new RuntimeException("Error: dataFirstByte was not set!");
+    }
     return dataSize;
   }
 

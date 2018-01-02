@@ -34,6 +34,7 @@ public class GIdentityStmt extends JIdentityStmt {
     super(Grimp.v().newLocalBox(local), Grimp.v().newIdentityRefBox(identityValue));
   }
 
+  @Override
   public Object clone() {
     return new GIdentityStmt(
         Grimp.cloneIfNecessary(getLeftOp()), Grimp.cloneIfNecessary(getRightOp()));

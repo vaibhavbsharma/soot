@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.EquivalentValue;
 import soot.G;
 import soot.Local;
@@ -38,10 +42,6 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.toolkits.scalar.Pair;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 // SimpleMethodInfoFlowAnalysis written by Richard L. Halpert, 2007-02-25
 // Constructs a data flow table for the given method.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -78,40 +78,54 @@ public class SimpleMethodInfoFlowAnalysis
     // Add every parameter of this method
     for (int i = 0; i < sm.getParameterCount(); i++) {
       EquivalentValue parameterRefEqVal = InfoFlowAnalysis.getNodeForParameterRef(sm, i);
-      if (!infoFlowGraph.containsNode(parameterRefEqVal)) infoFlowGraph.addNode(parameterRefEqVal);
+      if (!infoFlowGraph.containsNode(parameterRefEqVal)) {
+        infoFlowGraph.addNode(parameterRefEqVal);
+      }
     }
 
     // Add every field of this class
     for (SootField sf : sm.getDeclaringClass().getFields()) {
       EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
-      if (!infoFlowGraph.containsNode(fieldRefEqVal)) infoFlowGraph.addNode(fieldRefEqVal);
+      if (!infoFlowGraph.containsNode(fieldRefEqVal)) {
+        infoFlowGraph.addNode(fieldRefEqVal);
+      }
     }
 
     // Add every field of this class's superclasses
     SootClass superclass = sm.getDeclaringClass();
-    if (superclass.hasSuperclass()) superclass = sm.getDeclaringClass().getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = sm.getDeclaringClass().getSuperclass();
+    }
     while (superclass.hasSuperclass()) // we don't want to process Object
     {
       for (SootField scField : superclass.getFields()) {
         EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
-        if (!infoFlowGraph.containsNode(fieldRefEqVal)) infoFlowGraph.addNode(fieldRefEqVal);
+        if (!infoFlowGraph.containsNode(fieldRefEqVal)) {
+          infoFlowGraph.addNode(fieldRefEqVal);
+        }
       }
       superclass = superclass.getSuperclass();
     }
 
     // Add thisref of this class
     EquivalentValue thisRefEqVal = InfoFlowAnalysis.getNodeForThisRef(sm);
-    if (!infoFlowGraph.containsNode(thisRefEqVal)) infoFlowGraph.addNode(thisRefEqVal);
+    if (!infoFlowGraph.containsNode(thisRefEqVal)) {
+      infoFlowGraph.addNode(thisRefEqVal);
+    }
 
     // Add returnref of this method
     EquivalentValue returnRefEqVal = new CachedEquivalentValue(returnRef);
-    if (!infoFlowGraph.containsNode(returnRefEqVal)) infoFlowGraph.addNode(returnRefEqVal);
+    if (!infoFlowGraph.containsNode(returnRefEqVal)) {
+      infoFlowGraph.addNode(returnRefEqVal);
+    }
 
-    if (printMessages)
+    if (printMessages) {
       G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+    }
     doFlowInsensitiveAnalysis();
-    if (printMessages)
+    if (printMessages) {
       G.v().out.println("ENDING   ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+    }
   }
 
   /** A constructor that doesn't run the analysis */
@@ -122,17 +136,20 @@ public class SimpleMethodInfoFlowAnalysis
       boolean dummyDontRunAnalysisYet) {
     super(g);
     this.sm = g.getBody().getMethod();
-    if (sm.isStatic()) this.thisLocal = null;
-    else this.thisLocal = g.getBody().getThisLocal();
+    if (sm.isStatic()) {
+      this.thisLocal = null;
+    } else {
+      this.thisLocal = g.getBody().getThisLocal();
+    }
     this.dfa = dfa;
     this.refOnly = ignoreNonRefTypeFlow;
 
-    this.infoFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
+    this.infoFlowGraph = new MemoryEfficientGraph<>();
     this.returnRef =
         new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 
-    this.entrySet = new ArraySparseSet<Pair<EquivalentValue, EquivalentValue>>();
-    this.emptySet = new ArraySparseSet<Pair<EquivalentValue, EquivalentValue>>();
+    this.entrySet = new ArraySparseSet<>();
+    this.emptySet = new ArraySparseSet<>();
 
     printMessages = false;
   }
@@ -155,6 +172,7 @@ public class SimpleMethodInfoFlowAnalysis
     return infoFlowGraph;
   }
 
+  @Override
   protected void merge(
       FlowSet<Pair<EquivalentValue, EquivalentValue>> in1,
       FlowSet<Pair<EquivalentValue, EquivalentValue>> in2,
@@ -192,12 +210,14 @@ public class SimpleMethodInfoFlowAnalysis
 
   private ArrayList<Value> getDirectSources(
       Value v, FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
-    ArrayList<Value> ret = new ArrayList<Value>(); // of "interesting sources"
+    ArrayList<Value> ret = new ArrayList<>(); // of "interesting sources"
     EquivalentValue vEqVal = new CachedEquivalentValue(v);
     Iterator<Pair<EquivalentValue, EquivalentValue>> fsIt = fs.iterator();
     while (fsIt.hasNext()) {
       Pair<EquivalentValue, EquivalentValue> pair = fsIt.next();
-      if (pair.getO1().equals(vEqVal)) ret.add(pair.getO2().getValue());
+      if (pair.getO1().equals(vEqVal)) {
+        ret.add(pair.getO2().getValue());
+      }
     }
     return ret;
   }
@@ -205,26 +225,37 @@ public class SimpleMethodInfoFlowAnalysis
   // For when data flows to a local
   protected void handleFlowsToValue(
       Value sink, Value initialSource, FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
-    if (!isTrackableSink(sink)) return;
+    if (!isTrackableSink(sink)) {
+      return;
+    }
 
     List<Value> sources =
         getDirectSources(initialSource, fs); // list of Refs... returns all other sources
-    if (isTrackableSource(initialSource)) sources.add(initialSource);
+    if (isTrackableSource(initialSource)) {
+      sources.add(initialSource);
+    }
     Iterator<Value> sourcesIt = sources.iterator();
     while (sourcesIt.hasNext()) {
       Value source = sourcesIt.next();
       EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
       EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
-      if (sinkEqVal.equals(sourceEqVal)) continue;
-      Pair<EquivalentValue, EquivalentValue> pair =
-          new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
+      if (sinkEqVal.equals(sourceEqVal)) {
+        continue;
+      }
+      Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
       if (!fs.contains(pair)) {
         fs.add(pair);
         if (isInterestingSource(source) && isInterestingSink(sink)) {
-          if (!infoFlowGraph.containsNode(sinkEqVal)) infoFlowGraph.addNode(sinkEqVal);
-          if (!infoFlowGraph.containsNode(sourceEqVal)) infoFlowGraph.addNode(sourceEqVal);
+          if (!infoFlowGraph.containsNode(sinkEqVal)) {
+            infoFlowGraph.addNode(sinkEqVal);
+          }
+          if (!infoFlowGraph.containsNode(sourceEqVal)) {
+            infoFlowGraph.addNode(sourceEqVal);
+          }
           infoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
-          if (printMessages) G.v().out.println("      Found " + source + " flows to " + sink);
+          if (printMessages) {
+            G.v().out.println("      Found " + source + " flows to " + sink);
+          }
         }
       }
     }
@@ -234,9 +265,13 @@ public class SimpleMethodInfoFlowAnalysis
   protected void handleFlowsToDataStructure(
       Value base, Value initialSource, FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
     List<Value> sinks = getDirectSources(base, fs);
-    if (isTrackableSink(base)) sinks.add(base);
+    if (isTrackableSink(base)) {
+      sinks.add(base);
+    }
     List<Value> sources = getDirectSources(initialSource, fs);
-    if (isTrackableSource(initialSource)) sources.add(initialSource);
+    if (isTrackableSource(initialSource)) {
+      sources.add(initialSource);
+    }
     Iterator<Value> sourcesIt = sources.iterator();
     while (sourcesIt.hasNext()) {
       Value source = sourcesIt.next();
@@ -244,18 +279,27 @@ public class SimpleMethodInfoFlowAnalysis
       Iterator<Value> sinksIt = sinks.iterator();
       while (sinksIt.hasNext()) {
         Value sink = sinksIt.next();
-        if (!isTrackableSink(sink)) continue;
+        if (!isTrackableSink(sink)) {
+          continue;
+        }
         EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
-        if (sinkEqVal.equals(sourceEqVal)) continue;
-        Pair<EquivalentValue, EquivalentValue> pair =
-            new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
+        if (sinkEqVal.equals(sourceEqVal)) {
+          continue;
+        }
+        Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
         if (!fs.contains(pair)) {
           fs.add(pair);
           if (isInterestingSource(source) && isInterestingSink(sink)) {
-            if (!infoFlowGraph.containsNode(sinkEqVal)) infoFlowGraph.addNode(sinkEqVal);
-            if (!infoFlowGraph.containsNode(sourceEqVal)) infoFlowGraph.addNode(sourceEqVal);
+            if (!infoFlowGraph.containsNode(sinkEqVal)) {
+              infoFlowGraph.addNode(sinkEqVal);
+            }
+            if (!infoFlowGraph.containsNode(sourceEqVal)) {
+              infoFlowGraph.addNode(sourceEqVal);
+            }
             infoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
-            if (printMessages) G.v().out.println("      Found " + source + " flows to " + sink);
+            if (printMessages) {
+              G.v().out.println("      Found " + source + " flows to " + sink);
+            }
           }
         }
       }
@@ -296,17 +340,18 @@ public class SimpleMethodInfoFlowAnalysis
     //			ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowGraph);
     //		}
 
-    List<Value> returnValueSources = new ArrayList<Value>();
+    List<Value> returnValueSources = new ArrayList<>();
 
     Iterator<EquivalentValue> nodeIt = dataFlowGraph.getNodes().iterator();
     while (nodeIt.hasNext()) {
       EquivalentValue nodeEqVal = nodeIt.next();
 
-      if (!(nodeEqVal.getValue() instanceof Ref))
+      if (!(nodeEqVal.getValue() instanceof Ref)) {
         throw new RuntimeException(
             "Illegal node type in data flow graph:"
                 + nodeEqVal.getValue()
                 + " should be an object of type Ref.");
+      }
 
       Ref node = (Ref) nodeEqVal.getValue();
 
@@ -314,7 +359,9 @@ public class SimpleMethodInfoFlowAnalysis
 
       if (node instanceof ParameterRef) {
         ParameterRef param = (ParameterRef) node;
-        if (param.getIndex() == -1) continue;
+        if (param.getIndex() == -1) {
+          continue;
+        }
         source = ie.getArg(param.getIndex()); // Immediate
       } else if (node instanceof StaticFieldRef) {
         source = node; // StaticFieldRef
@@ -347,15 +394,17 @@ public class SimpleMethodInfoFlowAnalysis
     return returnValueSources;
   }
 
+  @Override
   protected void flowThrough(
       FlowSet<Pair<EquivalentValue, EquivalentValue>> in,
       Unit unit,
       FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
     Stmt stmt = (Stmt) unit;
 
-    if (in != out) // this method is reused for flow insensitive analysis, which uses the same
+    if (in != out) {
       // FlowSet for in and out
       in.copy(out);
+    }
     FlowSet<Pair<EquivalentValue, EquivalentValue>> changedFlow = out;
 
     // Calculate the minimum subset of the flow set that we need to consider - OBSELETE
@@ -452,7 +501,7 @@ public class SimpleMethodInfoFlowAnalysis
         }
       }
 
-      List<Value> sources = new ArrayList<Value>();
+      List<Value> sources = new ArrayList<>();
       boolean interestingFlow = true;
 
       if (rv instanceof Local) {
@@ -508,9 +557,13 @@ public class SimpleMethodInfoFlowAnalysis
 
       if (interestingFlow) {
         if (flowsToDataStructure) {
-          for (Value source : sources) handleFlowsToDataStructure(sink, source, changedFlow);
+          for (Value source : sources) {
+            handleFlowsToDataStructure(sink, source, changedFlow);
+          }
         } else {
-          for (Value source : sources) handleFlowsToValue(sink, source, changedFlow);
+          for (Value source : sources) {
+            handleFlowsToValue(sink, source, changedFlow);
+          }
         }
       }
     } else if (stmt
@@ -523,16 +576,19 @@ public class SimpleMethodInfoFlowAnalysis
     //		changedFlow.union(out, out); - OBSELETE optimization
   }
 
+  @Override
   protected void copy(
       FlowSet<Pair<EquivalentValue, EquivalentValue>> source,
       FlowSet<Pair<EquivalentValue, EquivalentValue>> dest) {
     source.copy(dest);
   }
 
+  @Override
   protected FlowSet<Pair<EquivalentValue, EquivalentValue>> entryInitialFlow() {
     return entrySet.clone();
   }
 
+  @Override
   protected FlowSet<Pair<EquivalentValue, EquivalentValue>> newInitialFlow() {
     return emptySet.clone();
   }
@@ -540,9 +596,10 @@ public class SimpleMethodInfoFlowAnalysis
   public void addToEntryInitialFlow(Value source, Value sink) {
     EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
     EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
-    if (sinkEqVal.equals(sourceEqVal)) return;
-    Pair<EquivalentValue, EquivalentValue> pair =
-        new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
+    if (sinkEqVal.equals(sourceEqVal)) {
+      return;
+    }
+    Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
     if (!entrySet.contains(pair)) {
       entrySet.add(pair);
     }
@@ -551,9 +608,10 @@ public class SimpleMethodInfoFlowAnalysis
   public void addToNewInitialFlow(Value source, Value sink) {
     EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
     EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
-    if (sinkEqVal.equals(sourceEqVal)) return;
-    Pair<EquivalentValue, EquivalentValue> pair =
-        new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
+    if (sinkEqVal.equals(sourceEqVal)) {
+      return;
+    }
+    Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
     if (!emptySet.contains(pair)) {
       emptySet.add(pair);
     }

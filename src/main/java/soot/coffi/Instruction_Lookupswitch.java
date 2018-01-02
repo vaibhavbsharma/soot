@@ -73,6 +73,7 @@ class Instruction_Lookupswitch extends Instruction {
   public Instruction default_inst;
   public Instruction match_insts[];
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     // first figure out padding to next 4-byte quantity
     String args;
@@ -80,22 +81,27 @@ class Instruction_Lookupswitch extends Instruction {
     args = super.toString(constant_pool) + argsep + "(" + Integer.toString(pad) + ")";
     args = args + argsep + Integer.toString(default_inst.label);
     args = args + argsep + Integer.toString(npairs) + ": ";
-    for (i = 0; i < npairs; i++)
+    for (i = 0; i < npairs; i++) {
       args =
           args
               + "case "
               + Integer.toString(match_offsets[i * 2])
               + ": label_"
               + Integer.toString(match_insts[i].label);
+    }
     return args;
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     // first figure out padding to next 4-byte quantity
     int i, j;
     i = index % 4;
-    if (i != 0) pad = (byte) (4 - i);
-    else pad = (byte) 0;
+    if (i != 0) {
+      pad = (byte) (4 - i);
+    } else {
+      pad = (byte) 0;
+    }
     index += pad;
     default_offset = getInt(bc, index);
     index += 4;
@@ -116,36 +122,51 @@ class Instruction_Lookupswitch extends Instruction {
     return index;
   }
 
+  @Override
   public int nextOffset(int curr) {
     int i, siz = 0;
     i = (curr + 1) % 4;
-    if (i != 0) siz = (4 - i);
+    if (i != 0) {
+      siz = (4 - i);
+    }
     return (curr + siz + 9 + npairs * 8);
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     int i;
     bc[index++] = code;
     // insert padding so next instruction is on a 4-byte boundary
-    for (i = 0; i < pad; i++) bc[index++] = 0;
-    if (default_inst != null) index = intToBytes(default_inst.label - label, bc, index);
-    else index = intToBytes(default_offset, bc, index);
+    for (i = 0; i < pad; i++) {
+      bc[index++] = 0;
+    }
+    if (default_inst != null) {
+      index = intToBytes(default_inst.label - label, bc, index);
+    } else {
+      index = intToBytes(default_offset, bc, index);
+    }
     index = intToBytes(npairs, bc, index);
     for (i = 0; i < npairs; i++) {
       index = intToBytes(match_offsets[i * 2], bc, index);
-      if (match_insts[i] != null) index = intToBytes((match_insts[i]).label - label, bc, index);
-      else index = intToBytes(match_offsets[i * 2 + 1], bc, index);
+      if (match_insts[i] != null) {
+        index = intToBytes((match_insts[i]).label - label, bc, index);
+      } else {
+        index = intToBytes(match_offsets[i * 2 + 1], bc, index);
+      }
     }
     return index;
   }
 
+  @Override
   public void offsetToPointer(ByteCode bc) {
     int i;
     default_inst = bc.locateInst(default_offset + label);
     if (default_inst == null) {
       G.v().out.println("Warning: can't locate target of instruction");
       G.v().out.println(" which should be at byte address " + (label + default_offset));
-    } else default_inst.labelled = true;
+    } else {
+      default_inst.labelled = true;
+    }
     if (npairs > 0) {
       match_insts = new Instruction[npairs];
       for (i = 0; i < npairs; i++) {
@@ -155,16 +176,21 @@ class Instruction_Lookupswitch extends Instruction {
           G.v()
               .out
               .println(" which should be at byte address " + (label + match_offsets[i * 2 + 1]));
-        } else match_insts[i].labelled = true;
+        } else {
+          match_insts[i].labelled = true;
+        }
       }
     }
   }
 
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[npairs + 1];
     int j;
     i[0] = default_inst;
-    for (j = 1; j < npairs + 1; j++) i[j] = match_insts[j - 1];
+    for (j = 1; j < npairs + 1; j++) {
+      i[j] = match_insts[j - 1];
+    }
     return i;
   }
 }

@@ -25,6 +25,10 @@
 
 package soot.jimple.toolkits.typing;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.G;
 import soot.NullType;
@@ -34,11 +38,6 @@ import soot.SootClass;
 import soot.Type;
 import soot.options.Options;
 import soot.util.BitVector;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /** Each instance of this class represents one type in the class hierarchy (or basic types). */
 class TypeNode {
@@ -83,11 +82,14 @@ class TypeNode {
 
     {
       SootClass sClass = type.getSootClass();
-      if (sClass == null) throw new RuntimeException("Oops, forgot to load " + type);
-      if (sClass.isPhantomClass())
+      if (sClass == null) {
+        throw new RuntimeException("Oops, forgot to load " + type);
+      }
+      if (sClass.isPhantomClass()) {
         throw new RuntimeException(
             "Jimplification requires " + sClass + ", but it is a phantom ref.");
-      List<TypeNode> plist = new LinkedList<TypeNode>();
+      }
+      List<TypeNode> plist = new LinkedList<>();
 
       if (sClass.hasSuperclass() && !sClass.getName().equals("java.lang.Object")) {
         TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getName()));
@@ -95,8 +97,8 @@ class TypeNode {
         parentClass = parent;
       }
 
-      for (Iterator<SootClass> i = sClass.getInterfaces().iterator(); i.hasNext(); ) {
-        TypeNode parent = hierarchy.typeNode(RefType.v((i.next()).getName()));
+      for (SootClass sootClass : sClass.getInterfaces()) {
+        TypeNode parent = hierarchy.typeNode(RefType.v((sootClass).getName()));
         plist.add(parent);
       }
 
@@ -106,9 +108,8 @@ class TypeNode {
     descendants.set(hierarchy.NULL.id);
     hierarchy.NULL.ancestors.set(id);
 
-    for (Iterator<TypeNode> parentIt = parents.iterator(); parentIt.hasNext(); ) {
+    for (TypeNode parent : parents) {
 
-      final TypeNode parent = parentIt.next();
       ancestors.set(parent.id);
       ancestors.or(parent.ancestors);
       parent.fixDescendants(id);
@@ -137,7 +138,7 @@ class TypeNode {
     }
 
     {
-      List<TypeNode> plist = new LinkedList<TypeNode>();
+      List<TypeNode> plist = new LinkedList<>();
       if (type.baseType instanceof RefType) {
         RefType baseType = (RefType) type.baseType;
         SootClass sClass = baseType.getSootClass();
@@ -175,9 +176,9 @@ class TypeNode {
               hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1));
         }
 
-        for (Iterator<SootClass> i = sClass.getInterfaces().iterator(); i.hasNext(); ) {
+        for (SootClass sootClass : sClass.getInterfaces()) {
           TypeNode parent =
-              hierarchy.typeNode(ArrayType.v(RefType.v((i.next()).getName()), type.numDimensions));
+              hierarchy.typeNode(ArrayType.v(RefType.v((sootClass).getName()), type.numDimensions));
           plist.add(parent);
         }
       } else if (type.numDimensions == 1) {
@@ -211,9 +212,8 @@ class TypeNode {
     descendants.set(hierarchy.NULL.id);
     hierarchy.NULL.ancestors.set(id);
 
-    for (Iterator<TypeNode> parentIt = parents.iterator(); parentIt.hasNext(); ) {
+    for (TypeNode parent : parents) {
 
-      final TypeNode parent = parentIt.next();
       ancestors.set(parent.id);
       ancestors.or(parent.ancestors);
       parent.fixDescendants(id);
@@ -226,9 +226,8 @@ class TypeNode {
       return;
     }
 
-    for (Iterator<TypeNode> parentIt = parents.iterator(); parentIt.hasNext(); ) {
+    for (TypeNode parent : parents) {
 
-      final TypeNode parent = parentIt.next();
       parent.fixDescendants(id);
     }
 
@@ -250,7 +249,9 @@ class TypeNode {
   }
 
   public boolean hasAncestorOrSelf(TypeNode typeNode) {
-    if (typeNode == this) return true;
+    if (typeNode == this) {
+      return true;
+    }
 
     return ancestors.get(typeNode.id);
   }
@@ -260,7 +261,9 @@ class TypeNode {
   }
 
   public boolean hasDescendantOrSelf(TypeNode typeNode) {
-    if (typeNode == this) return true;
+    if (typeNode == this) {
+      return true;
+    }
 
     return descendants.get(typeNode.id);
   }
@@ -273,6 +276,7 @@ class TypeNode {
     return parentClass;
   }
 
+  @Override
   public String toString() {
     return type.toString() + "(" + id + ")";
   }
@@ -301,7 +305,9 @@ class TypeNode {
         try {
           TypeVariable.error("Type Error(12)");
         } catch (TypeException e) {
-          if (DEBUG) e.printStackTrace();
+          if (DEBUG) {
+            e.printStackTrace();
+          }
           throw e;
         }
       }
@@ -335,8 +341,8 @@ class TypeNode {
       } else {
         if (DEBUG) {
           G.v().out.println("lca " + initial + " (" + type + ") & " + this + " =");
-          for (Iterator<TypeNode> i = type.parents.iterator(); i.hasNext(); ) {
-            G.v().out.println("  " + i.next());
+          for (TypeNode typeNode : type.parents) {
+            G.v().out.println("  " + typeNode);
           }
         }
         return null;
@@ -379,23 +385,19 @@ class TypeNode {
 
   public boolean isNull() {
     return type instanceof NullType;
-
   }
 
   public boolean isClass() {
     return type instanceof ArrayType
         || type instanceof NullType
         || (type instanceof RefType && !((RefType) type).getSootClass().isInterface());
-
   }
 
   public boolean isClassOrInterface() {
     return type instanceof ArrayType || type instanceof NullType || type instanceof RefType;
-
   }
 
   public boolean isArray() {
     return type instanceof ArrayType || type instanceof NullType;
-
   }
 }

@@ -29,30 +29,45 @@ public class ASTAndCondition extends ASTAggregatedCondition {
     super(left, right);
   }
 
+  @Override
   public void apply(Analysis a) {
     a.caseASTAndCondition(this);
   }
 
+  @Override
   public String toString() {
     if (left instanceof ASTUnaryBinaryCondition) {
       if (right instanceof ASTUnaryBinaryCondition) {
-        if (not) return "!(" + left.toString() + " && " + right.toString() + ")";
-        else return left.toString() + " && " + right.toString();
+        if (not) {
+          return "!(" + left.toString() + " && " + right.toString() + ")";
+        } else {
+          return left.toString() + " && " + right.toString();
+        }
       } else { // right is ASTAggregatedCondition
-        if (not) return "!(" + left.toString() + " && (" + right.toString() + " ))";
-        else return left.toString() + " && (" + right.toString() + " )";
+        if (not) {
+          return "!(" + left.toString() + " && (" + right.toString() + " ))";
+        } else {
+          return left.toString() + " && (" + right.toString() + " )";
+        }
       }
     } else { // left is ASTAggregatedCondition
       if (right instanceof ASTUnaryBinaryCondition) {
-        if (not) return "!(( " + left.toString() + ") && " + right.toString() + ")";
-        else return "( " + left.toString() + ") && " + right.toString();
+        if (not) {
+          return "!(( " + left.toString() + ") && " + right.toString() + ")";
+        } else {
+          return "( " + left.toString() + ") && " + right.toString();
+        }
       } else { // right is ASTAggregatedCondition also
-        if (not) return "!(( " + left.toString() + ") && (" + right.toString() + " ))";
-        else return "( " + left.toString() + ") && (" + right.toString() + " )";
+        if (not) {
+          return "!(( " + left.toString() + ") && (" + right.toString() + " ))";
+        } else {
+          return "( " + left.toString() + ") && (" + right.toString() + " )";
+        }
       }
     }
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     if (up instanceof DavaUnitPrinter) {
 
@@ -109,6 +124,8 @@ public class ASTAndCondition extends ASTAggregatedCondition {
         // print right paren
         ((DavaUnitPrinter) up).addRightParen();
       }
-    } else throw new RuntimeException();
+    } else {
+      throw new RuntimeException();
+    }
   }
 }

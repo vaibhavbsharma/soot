@@ -1,5 +1,13 @@
 package soot.jbco.gui;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -25,13 +33,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free
@@ -189,8 +190,11 @@ public class JBCOViewer extends javax.swing.JFrame {
             RadioVerbose.setBounds(7, 9, 130, 26);
             RadioVerbose.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
-                    if (RadioVerbose.isSelected()) RadioSummary.setSelected(false);
+                    if (RadioVerbose.isSelected()) {
+                      RadioSummary.setSelected(false);
+                    }
                   }
                 });
           }
@@ -201,8 +205,11 @@ public class JBCOViewer extends javax.swing.JFrame {
             RadioSummary.setBounds(147, 7, 140, 28);
             RadioSummary.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
-                    if (RadioSummary.isSelected()) RadioVerbose.setSelected(false);
+                    if (RadioSummary.isSelected()) {
+                      RadioVerbose.setSelected(false);
+                    }
                   }
                 });
           }
@@ -297,7 +304,9 @@ public class JBCOViewer extends javax.swing.JFrame {
                     || arguments[i].equals("-classpath") && arguments.length > (i + 1)) {
                   StringTokenizer cptokenizer = new StringTokenizer(arguments[i + 1], ":");
                   String cp = cptokenizer.nextToken();
-                  while (cptokenizer.hasMoreTokens()) cp += "\n:" + cptokenizer.nextToken();
+                  while (cptokenizer.hasMoreTokens()) {
+                    cp += "\n:" + cptokenizer.nextToken();
+                  }
                   DefaultClassPathPane.setText(arguments[i + 1]);
                 }
               }
@@ -352,10 +361,14 @@ public class JBCOViewer extends javax.swing.JFrame {
                   BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 0, 0)));
               AvoidList.addListSelectionListener(
                   new ListSelectionListener() {
+                    @Override
                     public void valueChanged(ListSelectionEvent evt) {
                       int length = AvoidList.getSelectedIndices().length;
-                      if (length < 1) ButtonRemove.setEnabled(false);
-                      else ButtonRemove.setEnabled(true);
+                      if (length < 1) {
+                        ButtonRemove.setEnabled(false);
+                      } else {
+                        ButtonRemove.setEnabled(true);
+                      }
                     }
                   });
             }
@@ -371,6 +384,7 @@ public class JBCOViewer extends javax.swing.JFrame {
               ButtonRemove.setBounds(231, 77, 133, 28);
               ButtonRemove.addActionListener(
                   new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent evt) {
                       int index[] = AvoidList.getSelectedIndices();
                       if (index.length < 1) {
@@ -380,8 +394,12 @@ public class JBCOViewer extends javax.swing.JFrame {
 
                       Object o[] = new Object[index.length];
                       DefaultComboBoxModel lm = (DefaultComboBoxModel) AvoidList.getModel();
-                      for (int i = 0; i < index.length; i++) o[i] = lm.getElementAt(index[i]);
-                      for (int i = 0; i < index.length; i++) lm.removeElement(o[i]);
+                      for (int i = 0; i < index.length; i++) {
+                        o[i] = lm.getElementAt(index[i]);
+                      }
+                      for (int i = 0; i < index.length; i++) {
+                        lm.removeElement(o[i]);
+                      }
 
                       models[previousSelected] = lm;
                     }
@@ -418,9 +436,12 @@ public class JBCOViewer extends javax.swing.JFrame {
               ComboBoxDefWeight.setBounds(308, 7, 56, 28);
               ComboBoxDefWeight.addActionListener(
                   new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent evt) {
                       int index = ListTransforms.getSelectedIndex();
-                      if (index < 0) return;
+                      if (index < 0) {
+                        return;
+                      }
 
                       DefaultComboBoxModel lm = (DefaultComboBoxModel) ListTransforms.getModel();
                       lm.removeElementAt(index);
@@ -437,6 +458,7 @@ public class JBCOViewer extends javax.swing.JFrame {
               ButtonAddItem.setBounds(91, 77, 133, 28);
               ButtonAddItem.addActionListener(
                   new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent evt) {
                       String text = TextFieldConstraint.getText();
                       if (text == null || text.trim().length() == 0) {
@@ -485,8 +507,9 @@ public class JBCOViewer extends javax.swing.JFrame {
           }
           {
             DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-            for (int i = 0; i < optionStrings[0].length; i++)
+            for (int i = 0; i < optionStrings[0].length; i++) {
               ListTransformsModel.addElement(optionStrings[0][i] + " - 9");
+            }
 
             ListTransforms = new JList();
             PanelTransforms.add(ListTransforms);
@@ -494,6 +517,7 @@ public class JBCOViewer extends javax.swing.JFrame {
             ListTransforms.setBounds(7, 49, 238, 329);
             ListTransforms.addListSelectionListener(
                 new ListSelectionListener() {
+                  @Override
                   public void valueChanged(ListSelectionEvent evt) {
                     int selected[] = ListTransforms.getSelectedIndices();
                     if (selected.length > 1) {
@@ -503,7 +527,9 @@ public class JBCOViewer extends javax.swing.JFrame {
                     }
 
                     String val = (String) ListTransforms.getSelectedValue();
-                    if (ListTransforms.getSelectedIndex() == previousSelected) return;
+                    if (ListTransforms.getSelectedIndex() == previousSelected) {
+                      return;
+                    }
                     previousSelected = ListTransforms.getSelectedIndex();
 
                     if (val.indexOf("-") > 0) {
@@ -512,7 +538,9 @@ public class JBCOViewer extends javax.swing.JFrame {
 
                       try {
                         int w = Integer.parseInt(weight);
-                        if (w < 0 || w > 10) weight = "0";
+                        if (w < 0 || w > 10) {
+                          weight = "0";
+                        }
                       } catch (NumberFormatException nfe) {
                         weight = "0";
                       }
@@ -522,7 +550,9 @@ public class JBCOViewer extends javax.swing.JFrame {
                     LabelTransformHeading.setText(val);
 
                     DefaultComboBoxModel lm = (DefaultComboBoxModel) models[previousSelected];
-                    if (lm == null) lm = new DefaultComboBoxModel(new String[0]);
+                    if (lm == null) {
+                      lm = new DefaultComboBoxModel(new String[0]);
+                    }
                     AvoidList.setModel(lm);
                   }
                 });
@@ -540,18 +570,24 @@ public class JBCOViewer extends javax.swing.JFrame {
             ButtonSaveOutput.setBounds(7, 382, 182, 28);
             ButtonSaveOutput.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     String file = TextFieldOutputFolder.getText();
-                    if (file.startsWith("~"))
+                    if (file.startsWith("~")) {
                       file = System.getProperty("user.home") + file.substring(1);
+                    }
 
                     try {
                       File f = new File(file);
-                      if (!f.getParentFile().exists() || !f.getParentFile().isDirectory())
+                      if (!f.getParentFile().exists() || !f.getParentFile().isDirectory()) {
                         throw new Exception("Directory does not appear to exist");
-                      if (f.exists() && f.isDirectory())
+                      }
+                      if (f.exists() && f.isDirectory()) {
                         throw new Exception("File points to a directory");
-                      if (f.exists()) f.delete();
+                      }
+                      if (f.exists()) {
+                        f.delete();
+                      }
                       f.createNewFile();
                       RandomAccessFile rf = new RandomAccessFile(f, "rw");
                       try {
@@ -596,11 +632,13 @@ public class JBCOViewer extends javax.swing.JFrame {
             speedMenuItem.setText("Use Speed-Tuned Combo");
             speedMenuItem.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-                    for (int i = 0; i < optionStrings[0].length; i++)
+                    for (int i = 0; i < optionStrings[0].length; i++) {
                       ListTransformsModel.addElement(
                           optionStrings[0][i] + " - " + defaultWeights[0][i]);
+                    }
 
                     ListTransforms.setModel(ListTransformsModel);
                   }
@@ -611,11 +649,13 @@ public class JBCOViewer extends javax.swing.JFrame {
             sizeMenuItem.setText("Use Size-Tuned Combo");
             sizeMenuItem.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-                    for (int i = 0; i < optionStrings[0].length; i++)
+                    for (int i = 0; i < optionStrings[0].length; i++) {
                       ListTransformsModel.addElement(
                           optionStrings[0][i] + " - " + defaultWeights[1][i]);
+                    }
 
                     ListTransforms.setModel(ListTransformsModel);
                   }
@@ -626,11 +666,13 @@ public class JBCOViewer extends javax.swing.JFrame {
             protMenuItem.setText("Use Protection-Tuned Combo");
             protMenuItem.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-                    for (int i = 0; i < optionStrings[0].length; i++)
+                    for (int i = 0; i < optionStrings[0].length; i++) {
                       ListTransformsModel.addElement(
                           optionStrings[0][i] + " - " + defaultWeights[2][i]);
+                    }
 
                     ListTransforms.setModel(ListTransformsModel);
                   }
@@ -641,6 +683,7 @@ public class JBCOViewer extends javax.swing.JFrame {
             newFileMenuItem.setText("Execute");
             newFileMenuItem.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     String main = TextFieldMain.getText().trim();
                     if (main.length() == 0) {
@@ -653,7 +696,9 @@ public class JBCOViewer extends javax.swing.JFrame {
                       StringTokenizer cptokenizer =
                           new StringTokenizer(DefaultClassPathPane.getText());
                       cp = cptokenizer.nextToken();
-                      while (cptokenizer.hasMoreTokens()) cp += cptokenizer.nextToken();
+                      while (cptokenizer.hasMoreTokens()) {
+                        cp += cptokenizer.nextToken();
+                      }
                     }
 
                     Integer min = null, max = null;
@@ -668,22 +713,27 @@ public class JBCOViewer extends javax.swing.JFrame {
                       max = null;
                     }
 
-                    Vector<String> tmp = new Vector<String>();
+                    Vector<String> tmp = new Vector<>();
                     String args = TextFieldJVMArgs.getText();
                     StringTokenizer st = new StringTokenizer(args, ",");
-                    while (st.hasMoreTokens()) tmp.add(st.nextToken());
+                    while (st.hasMoreTokens()) {
+                      tmp.add(st.nextToken());
+                    }
 
                     boolean customclasspath = false;
                     String vmargs[] =
                         new String[tmp.size() + (min == null ? 0 : 1) + +(max == null ? 0 : 1)];
                     for (int i = 0; i < tmp.size(); i++) {
                       vmargs[i] = tmp.get(i);
-                      if (vmargs[i].startsWith("-cp") || vmargs[i].startsWith("-classpath"))
+                      if (vmargs[i].startsWith("-cp") || vmargs[i].startsWith("-classpath")) {
                         customclasspath = true;
+                      }
                     }
                     if (min != null) {
                       vmargs[tmp.size()] = "-Xms" + min.intValue() + "m";
-                      if (max != null) vmargs[tmp.size() + 1] = "-Xmx" + max.intValue() + "m";
+                      if (max != null) {
+                        vmargs[tmp.size() + 1] = "-Xmx" + max.intValue() + "m";
+                      }
                     } else if (max != null) {
                       vmargs[tmp.size()] = "-Xmx" + max.intValue() + "m";
                     }
@@ -692,7 +742,7 @@ public class JBCOViewer extends javax.swing.JFrame {
                     ListModel lmy = ListTransforms.getModel();
                     for (int i = 0; i < lmy.getSize(); i++) {
                       String text = (String) lmy.getElementAt(i);
-                      for (int j = 0; j < optionStrings[0].length; j++)
+                      for (int j = 0; j < optionStrings[0].length; j++) {
                         if (text.startsWith(optionStrings[0][j])) {
                           String weight = "9";
                           if (text.lastIndexOf("-") > 0) {
@@ -717,6 +767,7 @@ public class JBCOViewer extends javax.swing.JFrame {
                           }
                           break;
                         }
+                      }
                     }
                     String[] transforms = new String[trans.size()];
                     trans.copyInto(transforms);
@@ -749,16 +800,22 @@ public class JBCOViewer extends javax.swing.JFrame {
                     }
                     cmdarray[vmargs.length + index++] = "-app";
                     cmdarray[vmargs.length + index++] = main;
-                    if (RadioSummary.isSelected())
+                    if (RadioSummary.isSelected()) {
                       cmdarray[vmargs.length + index++] = "-jbco:silent";
-                    if (RadioVerbose.isSelected())
+                    }
+                    if (RadioVerbose.isSelected()) {
                       cmdarray[vmargs.length + index++] = "-jbco:verbose";
-                    if (DebugRadio.isSelected()) cmdarray[vmargs.length + index++] = "-jbco:debug";
+                    }
+                    if (DebugRadio.isSelected()) {
+                      cmdarray[vmargs.length + index++] = "-jbco:debug";
+                    }
                     System.arraycopy(
                         transforms, 0, cmdarray, vmargs.length + index, transforms.length);
 
                     String output = "";
-                    for (String element : cmdarray) output += element + " ";
+                    for (String element : cmdarray) {
+                      output += element + " ";
+                    }
                     output += "\n";
 
                     TextAreaOutput.setText(output);
@@ -786,6 +843,7 @@ public class JBCOViewer extends javax.swing.JFrame {
             openFileMenuItem.setText("Stop");
             openFileMenuItem.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     if (runner != null) {
                       synchronized (runner) {
@@ -832,6 +890,7 @@ public class JBCOViewer extends javax.swing.JFrame {
             exitMenuItem.setText("Exit");
             exitMenuItem.addActionListener(
                 new ActionListener() {
+                  @Override
                   public void actionPerformed(ActionEvent evt) {
                     System.exit(0);
                   }

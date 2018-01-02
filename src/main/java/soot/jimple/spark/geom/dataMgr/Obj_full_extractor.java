@@ -18,11 +18,11 @@
  */
 package soot.jimple.spark.geom.dataMgr;
 
-import soot.jimple.spark.geom.dataRep.IntervalContextVar;
-import soot.jimple.spark.pag.Node;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.jimple.spark.geom.dataRep.IntervalContextVar;
+import soot.jimple.spark.pag.Node;
 
 /**
  * Extracts the full context sensitive points-to result.
@@ -30,18 +30,20 @@ import java.util.List;
  * @author xiao
  */
 public class Obj_full_extractor extends PtSensVisitor<IntervalContextVar> {
-  private List<IntervalContextVar> backupList = new ArrayList<IntervalContextVar>();
+  private List<IntervalContextVar> backupList = new ArrayList<>();
   private IntervalContextVar tmp_icv = new IntervalContextVar();
 
   @Override
   public boolean visit(Node var, long L, long R, int sm_int) {
-    if (readyToUse) return false;
+    if (readyToUse) {
+      return false;
+    }
 
     List<IntervalContextVar> resList = tableView.get(var);
 
     if (resList == null) {
       // The first time this object is inserted
-      resList = new ArrayList<IntervalContextVar>();
+      resList = new ArrayList<>();
     } else {
       // We search the list and merge the context sensitive objects
       backupList.clear();
@@ -57,7 +59,9 @@ public class Obj_full_extractor extends PtSensVisitor<IntervalContextVar> {
            */
           return false;
         }
-        if (!tmp_icv.merge(old_cv)) backupList.add(old_cv);
+        if (!tmp_icv.merge(old_cv)) {
+          backupList.add(old_cv);
+        }
       }
 
       // We switch the backup list with the original list

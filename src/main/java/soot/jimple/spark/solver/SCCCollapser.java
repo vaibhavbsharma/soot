@@ -19,15 +19,15 @@
 
 package soot.jimple.spark.solver;
 
+import java.util.HashSet;
+import java.util.TreeSet;
+
 import soot.G;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
-
-import java.util.HashSet;
-import java.util.TreeSet;
 
 /**
  * Collapses VarNodes (green) forming strongly-connected components in the pointer assignment graph.
@@ -45,7 +45,7 @@ public class SCCCollapser {
     }
 
     new TopoSorter(pag, ignoreTypes).sort();
-    TreeSet<VarNode> s = new TreeSet<VarNode>();
+    TreeSet<VarNode> s = new TreeSet<>();
     for (final VarNode v : pag.getVarNodeNumberer()) {
       s.add(v);
     }
@@ -70,12 +70,14 @@ public class SCCCollapser {
 
   protected int numCollapsed = 0;
   protected PAG pag;
-  protected HashSet<VarNode> visited = new HashSet<VarNode>();
+  protected HashSet<VarNode> visited = new HashSet<>();
   protected boolean ignoreTypes;
   protected TypeManager typeManager;
 
   protected final void dfsVisit(VarNode v, VarNode rootOfSCC) {
-    if (visited.contains(v)) return;
+    if (visited.contains(v)) {
+      return;
+    }
     visited.add(v);
     Node[] succs = pag.simpleInvLookup(v);
     for (Node element : succs) {

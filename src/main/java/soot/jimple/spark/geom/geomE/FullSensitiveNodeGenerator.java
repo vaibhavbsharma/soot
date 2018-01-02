@@ -30,8 +30,6 @@ import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
 
-import java.util.Iterator;
-
 /**
  * Build the initial encoding of the assignment graph in full geometric encoding.
  *
@@ -55,7 +53,9 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker {
     n_legal_cons = 0;
 
     for (PlainConstraint cons : ptAnalyzer.constraints) {
-      if (!cons.isActive) continue;
+      if (!cons.isActive) {
+        continue;
+      }
 
       my_lhs = cons.getLHS().getRepresentative();
       my_rhs = cons.getRHS().getRepresentative();
@@ -92,8 +92,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker {
 
           if (cons.interCallEdges != null) {
             // Inter-procedural assignment (parameter passing, function return)
-            for (Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext(); ) {
-              Edge sEdge = it.next();
+            for (Edge sEdge : cons.interCallEdges) {
               CgEdge q = ptAnalyzer.getInternalEdgeFromSootEdge(sEdge);
               if (q.is_obsoleted == true) {
                 continue;

@@ -25,14 +25,14 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InstanceInvokeExpr;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
@@ -45,21 +45,24 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
     this.baseBox = baseBox;
   }
 
+  @Override
   public Value getBase() {
     return baseBox.getValue();
   }
 
+  @Override
   public ValueBox getBaseBox() {
     return baseBox;
   }
 
+  @Override
   public void setBase(Value base) {
     baseBox.setValue(base);
   }
 
   @Override
   public List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
     if (argBoxes != null) {
       Collections.addAll(list, argBoxes);
       for (ValueBox element : argBoxes) {

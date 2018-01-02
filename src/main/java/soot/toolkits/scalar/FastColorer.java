@@ -25,16 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.Body;
-import soot.Local;
-import soot.Unit;
-import soot.Value;
-import soot.ValueBox;
-import soot.options.Options;
-import soot.toolkits.exceptions.PedanticThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.util.ArraySet;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -45,6 +35,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import soot.Body;
+import soot.Local;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.options.Options;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.ArraySet;
 
 /**
  * Provides methods for register coloring. Jimple uses these methods to assign the local slots
@@ -72,7 +72,7 @@ public class FastColorer {
     UnitInterferenceGraph intGraph =
         new UnitInterferenceGraph(unitBody, localToGroup, liveLocals, unitGraph);
 
-    Map<Local, String> localToOriginalName = new HashMap<Local, String>();
+    Map<Local, String> localToOriginalName = new HashMap<>();
 
     // Map each local variable to its original name
     {
@@ -83,12 +83,13 @@ public class FastColorer {
 
         if (signIndex != -1) {
           localToOriginalName.put(local, local.getName().substring(0, signIndex));
-        } else localToOriginalName.put(local, local.getName());
+        } else {
+          localToOriginalName.put(local, local.getName());
+        }
       }
     }
 
-    Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors =
-        new HashMap<StringGroupPair, List<Integer>>();
+    Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors = new HashMap<>();
     // maps an original name to the colors being used for it
 
     // Assign a color for each local.
@@ -103,19 +104,22 @@ public class FastColorer {
         Object group = localToGroup.get(local);
         int colorCount = groupToColorCount.get(group).intValue();
 
-        if (freeColors.length < colorCount)
+        if (freeColors.length < colorCount) {
           freeColors = new int[Math.max(freeColors.length * 2, colorCount)];
+        }
 
         // Set all colors to free.
         {
-          for (int i = 0; i < colorCount; i++) freeColors[i] = 1;
+          for (int i = 0; i < colorCount; i++) {
+            freeColors[i] = 1;
+          }
         }
 
         // Remove unavailable colors for this local
         {
           Local[] interferences = intGraph.getInterferencesOf(local);
 
-          if (interferences != null)
+          if (interferences != null) {
             for (Local element : interferences) {
               if (localToColor.containsKey(element)) {
                 int usedColor = localToColor.get(element).intValue();
@@ -123,6 +127,7 @@ public class FastColorer {
                 freeColors[usedColor] = 0;
               }
             }
+          }
         }
 
         // Assign a color to this local.
@@ -132,7 +137,7 @@ public class FastColorer {
               originalNameAndGroupToColors.get(new StringGroupPair(originalName, group));
 
           if (originalNameColors == null) {
-            originalNameColors = new ArrayList<Integer>();
+            originalNameColors = new ArrayList<>();
             originalNameAndGroupToColors.put(
                 new StringGroupPair(originalName, group), originalNameColors);
           }
@@ -190,7 +195,7 @@ public class FastColorer {
       // Sort the locals first to maximize the locals per color. We first
       // assign those locals that have many conflicts and then assign the
       // easier ones to those color groups.
-      List<Local> sortedLocals = new ArrayList<Local>(intGraph.getLocals());
+      List<Local> sortedLocals = new ArrayList<>(intGraph.getLocals());
       Collections.sort(
           sortedLocals,
           new Comparator<Local>() {
@@ -218,7 +223,7 @@ public class FastColorer {
         {
           Local[] interferences = intGraph.getInterferencesOf(local);
 
-          if (interferences != null)
+          if (interferences != null) {
             for (Local element : interferences) {
               if (localToColor.containsKey(element)) {
                 int usedColor = localToColor.get(element).intValue();
@@ -226,17 +231,19 @@ public class FastColorer {
                 blockedColors.set(usedColor);
               }
             }
+          }
         }
 
         // Assign a color to this local.
         {
           int assignedColor = -1;
 
-          for (int i = 0; i < colorCount; i++)
+          for (int i = 0; i < colorCount; i++) {
             if (!blockedColors.get(i)) {
               assignedColor = i;
               break;
             }
+          }
 
           if (assignedColor < 0) {
             assignedColor = colorCount++;
@@ -264,12 +271,12 @@ public class FastColorer {
         Map<Local, Object> localToGroup,
         LiveLocals liveLocals,
         ExceptionalUnitGraph unitGraph) {
-      locals = new ArrayList<Local>();
+      locals = new ArrayList<>();
       locals.addAll(body.getLocals());
 
       // Initialize localToLocals
       {
-        localToLocals = new HashMap<Local, Set<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
+        localToLocals = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
       }
 
       // Go through code, noting interferences
@@ -280,7 +287,9 @@ public class FastColorer {
           // Note interferences if this stmt is a definition
           if (!defBoxes.isEmpty()) {
             // Only one def box is supported
-            if (!(defBoxes.size() == 1)) throw new RuntimeException("invalid number of def boxes");
+            if (!(defBoxes.size() == 1)) {
+              throw new RuntimeException("invalid number of def boxes");
+            }
 
             // Remove those locals that are only live on exceptional flows.
             // If we have code like this:
@@ -293,7 +302,7 @@ public class FastColorer {
             //		catch -> print(a)
             // If an exception is thrown, at the second assignment, the
             // assignment will not actually happen and "a" will be unchanged.
-            Set<Local> liveLocalsAtUnit = new HashSet<Local>();
+            Set<Local> liveLocalsAtUnit = new HashSet<>();
             for (Unit succ : unitGraph.getUnexceptionalSuccsOf(unit)) {
               List<Local> beforeSucc = liveLocals.getLiveLocalsBefore(succ);
               liveLocalsAtUnit.addAll(beforeSucc);
@@ -303,8 +312,9 @@ public class FastColorer {
             if (defValue instanceof Local) {
               Local defLocal = (Local) defValue;
               for (Local otherLocal : liveLocalsAtUnit) {
-                if (localToGroup.get(otherLocal).equals(localToGroup.get(defLocal)))
+                if (localToGroup.get(otherLocal).equals(localToGroup.get(defLocal))) {
                   setInterference(defLocal, otherLocal);
+                }
               }
             }
           }
@@ -317,7 +327,7 @@ public class FastColorer {
       // l1 -> l2
       Set<Local> locals = localToLocals.get(l1);
       if (locals == null) {
-        locals = new ArraySet<Local>();
+        locals = new ArraySet<>();
         localToLocals.put(l1, locals);
       }
       locals.add(l2);
@@ -325,7 +335,7 @@ public class FastColorer {
       // l2 -> l1
       locals = localToLocals.get(l2);
       if (locals == null) {
-        locals = new ArraySet<Local>();
+        locals = new ArraySet<>();
         localToLocals.put(l2, locals);
       }
       locals.add(l1);
@@ -338,7 +348,9 @@ public class FastColorer {
 
     Local[] getInterferencesOf(Local l) {
       Set<Local> localSet = localToLocals.get(l);
-      if (localSet == null) return null;
+      if (localSet == null) {
+        return null;
+      }
 
       return localSet.toArray(new Local[localSet.size()]);
     }
@@ -355,6 +367,7 @@ class StringGroupPair {
     group = g;
   }
 
+  @Override
   public boolean equals(Object p) {
     if (p instanceof StringGroupPair) {
       return ((StringGroupPair) p).string.equals(this.string)
@@ -364,6 +377,7 @@ class StringGroupPair {
     return false;
   }
 
+  @Override
   public int hashCode() {
     return string.hashCode() * 101 + group.hashCode() + 17;
   }

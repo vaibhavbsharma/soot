@@ -34,6 +34,7 @@ public class AllocDotField extends Node {
     return field;
   }
 
+  @Override
   public String toString() {
     return "AllocDotField " + getNumber() + " " + base + "." + field;
   }
@@ -42,7 +43,9 @@ public class AllocDotField extends Node {
 
   AllocDotField(PAG pag, AllocNode base, SparkField field) {
     super(pag, null);
-    if (field == null) throw new RuntimeException("null field");
+    if (field == null) {
+      throw new RuntimeException("null field");
+    }
     this.base = base;
     this.field = field;
     base.addField(this, field);

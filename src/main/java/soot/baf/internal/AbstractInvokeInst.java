@@ -25,14 +25,14 @@
 
 package soot.baf.internal;
 
+import java.util.Iterator;
+
 import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.VoidType;
-
-import java.util.Iterator;
 
 abstract class AbstractInvokeInst extends AbstractInst {
   SootMethodRef methodRef;
@@ -49,30 +49,40 @@ abstract class AbstractInvokeInst extends AbstractInst {
     return methodRef.returnType();
   }
 
+  @Override
   public String toString() {
     return getName() + getParameters();
   }
 
+  @Override
   public abstract String getName();
 
+  @Override
   String getParameters() {
     return " " + methodRef.getSignature();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     up.methodRef(methodRef);
   }
 
+  @Override
   public int getInCount() {
     return getMethodRef().parameterTypes().size();
   }
 
+  @Override
   public int getOutCount() {
-    if (getMethodRef().returnType() instanceof VoidType) return 0;
-    else return 1;
+    if (getMethodRef().returnType() instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
 
+  @Override
   public int getInMachineCount() {
     int count = 0;
 
@@ -83,11 +93,16 @@ abstract class AbstractInvokeInst extends AbstractInst {
     return count;
   }
 
+  @Override
   public int getOutMachineCount() {
-    if (getMethodRef().returnType() instanceof VoidType) return 0;
-    else return AbstractJasminClass.sizeOfType(getMethodRef().returnType());
+    if (getMethodRef().returnType() instanceof VoidType) {
+      return 0;
+    } else {
+      return AbstractJasminClass.sizeOfType(getMethodRef().returnType());
+    }
   }
 
+  @Override
   public boolean containsInvokeExpr() {
     return true;
   }

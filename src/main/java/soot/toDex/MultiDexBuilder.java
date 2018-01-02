@@ -1,15 +1,15 @@
 package soot.toDex;
 
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.writer.io.FileDataStore;
-import org.jf.dexlib2.writer.pool.DexPool;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jf.dexlib2.Opcodes;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.writer.io.FileDataStore;
+import org.jf.dexlib2.writer.pool.DexPool;
 
 /** @author Manuel Benz created on 26.09.17 */
 public class MultiDexBuilder {
@@ -47,7 +47,9 @@ public class MultiDexBuilder {
   }
 
   private boolean hasOverflowed() {
-    if (!curPool.hasOverflowed()) return false;
+    if (!curPool.hasOverflowed()) {
+      return false;
+    }
     // We only support splitting for api versions since Lollipop (22).
     // Since Api 22, Art runtime is used which needs to extract all dex files anyway. Thus,
     // we can pack classes arbitrarily and do not need to care about which classes need to go
@@ -60,9 +62,10 @@ public class MultiDexBuilder {
     // pack those explicitly in the first dex file.
     // (https://developer.android.com/studio/build/multidex.html,
     // http://www.fasteque.com/deep-dive-into-android-multidex/)
-    if (!opcodes.isArt())
+    if (!opcodes.isArt()) {
       throw new RuntimeException(
           "Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
+    }
 
     return true;
   }

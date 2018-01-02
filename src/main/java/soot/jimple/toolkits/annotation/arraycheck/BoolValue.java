@@ -36,8 +36,11 @@ class BoolValue {
   }
 
   public static BoolValue v(boolean v) {
-    if (v) return trueValue;
-    else return falseValue;
+    if (v) {
+      return trueValue;
+    } else {
+      return falseValue;
+    }
   }
 
   public boolean getValue() {
@@ -45,33 +48,46 @@ class BoolValue {
   }
 
   public boolean or(BoolValue other) {
-    if (other.getValue()) isRectangular = true;
+    if (other.getValue()) {
+      isRectangular = true;
+    }
 
     return isRectangular;
   }
 
   public boolean or(boolean other) {
-    if (other) isRectangular = true;
+    if (other) {
+      isRectangular = true;
+    }
     return isRectangular;
   }
 
   public boolean and(BoolValue other) {
-    if (!other.getValue()) isRectangular = false;
+    if (!other.getValue()) {
+      isRectangular = false;
+    }
 
     return isRectangular;
   }
 
   public boolean and(boolean other) {
-    if (!other) isRectangular = false;
+    if (!other) {
+      isRectangular = false;
+    }
 
     return isRectangular;
   }
 
+  @Override
   public int hashCode() {
-    if (isRectangular) return 1;
-    else return 0;
+    if (isRectangular) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof BoolValue) {
       return isRectangular == ((BoolValue) other).getValue();
@@ -80,6 +96,7 @@ class BoolValue {
     return false;
   }
 
+  @Override
   public String toString() {
     return "[" + isRectangular + "]";
   }

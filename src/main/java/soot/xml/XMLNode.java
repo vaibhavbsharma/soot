@@ -51,11 +51,16 @@ public class XMLNode extends XMLRoot {
       attributes = node.attributes;
       values = node.values;
 
-      if (node.child != null) this.child = (XMLNode) node.child.clone();
-      if (node.next != null) this.next = (XMLNode) node.next.clone();
+      if (node.child != null) {
+        this.child = (XMLNode) node.child.clone();
+      }
+      if (node.next != null) {
+        this.next = (XMLNode) node.next.clone();
+      }
     }
   }
 
+  @Override
   public Object clone() {
     return new XMLNode(this);
   }
@@ -65,8 +70,11 @@ public class XMLNode extends XMLRoot {
   }
 
   public String toPostString(String indent) {
-    if (next != null) return this.toString(indent) + next.toPostString(indent);
-    else return this.toString(indent);
+    if (next != null) {
+      return this.toString(indent) + next.toPostString(indent);
+    } else {
+      return this.toString(indent);
+    }
   }
 
   // returns the number of children
@@ -102,6 +110,7 @@ public class XMLNode extends XMLRoot {
 
   // XML Printing and formatting
   //
+  @Override
   public String toString() {
     return toString("");
   }
@@ -151,10 +160,18 @@ public class XMLNode extends XMLRoot {
     // return ( prev.toString() + beginTag.toString() + value.toString() + child.toString() +
     // endTag.toString() + next.toString() );
     String returnStr = indent + beginTag.toString();
-    if (value.length() > 0) returnStr += value.toString();
-    if (child != null) returnStr += "\n" + child.toPostString(indent + "  ");
-    if (child != null) returnStr += indent;
-    if (endTag.length() > 0) returnStr += endTag.toString();
+    if (value.length() > 0) {
+      returnStr += value.toString();
+    }
+    if (child != null) {
+      returnStr += "\n" + child.toPostString(indent + "  ");
+    }
+    if (child != null) {
+      returnStr += indent;
+    }
+    if (endTag.length() > 0) {
+      returnStr += endTag.toString();
+    }
     return (returnStr);
   }
 
@@ -202,33 +219,41 @@ public class XMLNode extends XMLRoot {
     newnode.child = null;
     newnode.parent = this.parent;
     newnode.prev = this.prev;
-    if (newnode.prev != null) newnode.prev.next = newnode;
+    if (newnode.prev != null) {
+      newnode.prev.next = newnode;
+    }
     this.prev = newnode;
     newnode.next = this;
     return newnode;
   }
 
   // add element to end of tree
+  @Override
   public XMLNode addElement(String name) {
     return addElement(name, "", "", "");
   }
 
+  @Override
   public XMLNode addElement(String name, String value) {
     return addElement(name, value, "", "");
   }
 
+  @Override
   public XMLNode addElement(String name, String value, String[] attributes) {
     return addElement(name, value, attributes, null);
   }
 
+  @Override
   public XMLNode addElement(String name, String[] attributes, String[] values) {
     return addElement(name, "", attributes, values);
   }
 
+  @Override
   public XMLNode addElement(String name, String value, String attribute, String attributeValue) {
     return addElement(name, value, new String[] {attribute}, new String[] {attributeValue});
   }
 
+  @Override
   public XMLNode addElement(String name, String value, String[] attributes, String[] values) {
     XMLNode newnode = new XMLNode(name, value, attributes, values);
     return addElement(newnode);

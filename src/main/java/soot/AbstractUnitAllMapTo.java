@@ -35,10 +35,12 @@ public class AbstractUnitAllMapTo<K, V> extends AbstractMap<K, V> {
     this.dest = dest;
   }
 
+  @Override
   public V get(Object key) {
     return dest;
   }
 
+  @Override
   public Set<Entry<K, V>> entrySet() {
     throw new UnsupportedOperationException();
   }

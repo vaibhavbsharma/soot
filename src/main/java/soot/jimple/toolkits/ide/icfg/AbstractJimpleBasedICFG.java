@@ -1,7 +1,17 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
 import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
@@ -16,21 +26,12 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit, SootMethod> {
 
   protected final boolean enableExceptions;
 
   @DontSynchronize("written by single thread; read afterwards")
-  protected final Map<Unit, Body> unitToOwner = new HashMap<Unit, Body>();
+  protected final Map<Unit, Body> unitToOwner = new HashMap<>();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
   protected final LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph =
@@ -61,7 +62,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
               Set<Unit> res = null;
               for (Unit u : m.getActiveBody().getUnits()) {
                 if (isCallStmt(u)) {
-                  if (res == null) res = new LinkedHashSet<Unit>();
+                  if (res == null) {
+                    res = new LinkedHashSet<>();
+                  }
                   res.add(u);
                 }
               }
@@ -87,7 +90,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   @Override
   public List<Unit> getSuccsOf(Unit u) {
     Body body = unitToOwner.get(u);
-    if (body == null) return Collections.emptyList();
+    if (body == null) {
+      return Collections.emptyList();
+    }
     DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
     return unitGraph.getSuccsOf(u);
   }
@@ -124,7 +129,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   @Override
   public boolean isFallThroughSuccessor(Unit u, Unit succ) {
     assert getSuccsOf(u).contains(succ);
-    if (!u.fallsThrough()) return false;
+    if (!u.fallsThrough()) {
+      return false;
+    }
     Body body = unitToOwner.get(u);
     return body.getUnits().getSuccOf(u) == succ;
   }
@@ -132,13 +139,18 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   @Override
   public boolean isBranchTarget(Unit u, Unit succ) {
     assert getSuccsOf(u).contains(succ);
-    if (!u.branches()) return false;
+    if (!u.branches()) {
+      return false;
+    }
     for (UnitBox ub : u.getUnitBoxes()) {
-      if (ub.getUnit() == succ) return true;
+      if (ub.getUnit() == succ) {
+        return true;
+      }
     }
     return false;
   }
 
+  @Override
   public List<Value> getParameterRefs(SootMethod m) {
     return methodToParameterRefs.getUnchecked(m);
   }
@@ -160,20 +172,24 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   @Override
   public Set<Unit> allNonCallStartNodes() {
-    Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
+    Set<Unit> res = new LinkedHashSet<>(unitToOwner.keySet());
     for (Iterator<Unit> iter = res.iterator(); iter.hasNext(); ) {
       Unit u = iter.next();
-      if (isStartPoint(u) || isCallStmt(u)) iter.remove();
+      if (isStartPoint(u) || isCallStmt(u)) {
+        iter.remove();
+      }
     }
     return res;
   }
 
   @Override
   public Set<Unit> allNonCallEndNodes() {
-    Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
+    Set<Unit> res = new LinkedHashSet<>(unitToOwner.keySet());
     for (Iterator<Unit> iter = res.iterator(); iter.hasNext(); ) {
       Unit u = iter.next();
-      if (isExitStmt(u) || isCallStmt(u)) iter.remove();
+      if (isExitStmt(u) || isCallStmt(u)) {
+        iter.remove();
+      }
     }
     return res;
   }
@@ -213,7 +229,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   @Override
   public boolean isReturnSite(Unit n) {
-    for (Unit pred : getPredsOf(n)) if (isCallStmt(pred)) return true;
+    for (Unit pred : getPredsOf(n)) {
+      if (isCallStmt(pred)) {
+        return true;
+      }
+    }
     return false;
   }
 

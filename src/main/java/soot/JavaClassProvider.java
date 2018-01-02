@@ -46,6 +46,7 @@ public class JavaClassProvider implements ClassProvider {
    * Look for the specified class. Return a ClassSource for it if found, or null if it was not
    * found.
    */
+  @Override
   public ClassSource find(String className) {
 
     if (Options.v().polyglot()
@@ -77,14 +78,18 @@ public class JavaClassProvider implements ClassProvider {
         }
         /* 04.04.2006 mbatch	end */
 
-        if (file == null) return null;
+        if (file == null) {
+          return null;
+        }
 
         if (file.isZipFile()) {
           throw new JarException(className);
         }
         return new JavaClassSource(className, file.getFile());
       } finally {
-        if (file != null) file.close();
+        if (file != null) {
+          file.close();
+        }
       }
     }
   }

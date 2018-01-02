@@ -27,6 +27,10 @@
 
 package soot.jimple.parser;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Modifier;
 import soot.Scene;
 import soot.SootClass;
@@ -37,10 +41,6 @@ import soot.jimple.parser.node.AFile;
 import soot.jimple.parser.node.AMethodMember;
 import soot.jimple.parser.node.AThrowsClause;
 import soot.jimple.parser.node.PModifier;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
    Walks a jimple AST and extracts the fields, and method signatures and produces
@@ -56,6 +56,7 @@ public class SkeletonExtractorWalker extends Walker {
     super(aResolver);
   }
 
+  @Override
   public void caseAFile(AFile node) {
     inAFile(node);
     {
@@ -77,9 +78,10 @@ public class SkeletonExtractorWalker extends Walker {
       mSootClass = new SootClass(className);
       mSootClass.setResolvingLevel(SootClass.SIGNATURES);
     } else {
-      if (!className.equals(mSootClass.getName()))
+      if (!className.equals(mSootClass.getName())) {
         throw new RuntimeException(
             "expected:  " + className + ", but got: " + mSootClass.getName());
+      }
     }
 
     if (node.getExtendsClause() != null) {
@@ -94,6 +96,7 @@ public class SkeletonExtractorWalker extends Walker {
     outAFile(node);
   }
 
+  @Override
   public void outAFile(AFile node) {
     List implementsList = null;
     String superClass = null;
@@ -110,7 +113,9 @@ public class SkeletonExtractorWalker extends Walker {
 
     int modifierFlags = processModifiers(node.getModifier());
 
-    if (classType.equals("interface")) modifierFlags |= Modifier.INTERFACE;
+    if (classType.equals("interface")) {
+      modifierFlags |= Modifier.INTERFACE;
+    }
 
     mSootClass.setModifiers(modifierFlags);
 
@@ -134,6 +139,7 @@ public class SkeletonExtractorWalker extends Walker {
    * name l_paren parameter_list? r_paren throws_clause? method_body;
    */
 
+  @Override
   public void caseAMethodMember(AMethodMember node) {
     inAMethodMember(node);
     {
@@ -167,13 +173,16 @@ public class SkeletonExtractorWalker extends Walker {
     outAMethodMember(node);
   }
 
+  @Override
   public void outAMethodMember(AMethodMember node) {
     int modifier = 0;
     Type type;
     String name;
     List parameterList = null;
     List<SootClass> throwsClause = null;
-    if (node.getThrowsClause() != null) throwsClause = (List<SootClass>) mProductions.removeLast();
+    if (node.getThrowsClause() != null) {
+      throwsClause = (List<SootClass>) mProductions.removeLast();
+    }
 
     if (node.getParameterList() != null) {
       parameterList = (List) mProductions.removeLast();
@@ -189,9 +198,11 @@ public class SkeletonExtractorWalker extends Walker {
 
     SootMethod method;
 
-    if (throwsClause != null)
+    if (throwsClause != null) {
       method = Scene.v().makeSootMethod(name, parameterList, type, modifier, throwsClause);
-    else method = Scene.v().makeSootMethod(name, parameterList, type, modifier);
+    } else {
+      method = Scene.v().makeSootMethod(name, parameterList, type, modifier);
+    }
 
     mSootClass.addMethod(method);
   }
@@ -199,11 +210,12 @@ public class SkeletonExtractorWalker extends Walker {
   /*
    * throws_clause = throws class_name_list;
    */
+  @Override
   public void outAThrowsClause(AThrowsClause node) {
     List l = (List) mProductions.removeLast();
 
     Iterator it = l.iterator();
-    List<SootClass> exceptionClasses = new ArrayList<SootClass>(l.size());
+    List<SootClass> exceptionClasses = new ArrayList<>(l.size());
 
     while (it.hasNext()) {
       String className = (String) it.next();

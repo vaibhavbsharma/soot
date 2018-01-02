@@ -1,5 +1,9 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.Local;
 import soot.Type;
@@ -21,10 +25,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.Stmt;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class ShortcutArrayInit extends DepthFirstAdapter {
   public static boolean DEBUG = false;
   ASTMethodNode methodNode;
@@ -35,28 +35,36 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     methodNode = node;
   }
 
   public void debug(String msg) {
-    if (DEBUG) System.out.println("[SHortcutArrayInit]  DEBUG" + msg);
+    if (DEBUG) {
+      System.out.println("[SHortcutArrayInit]  DEBUG" + msg);
+    }
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     debug("inASTStatementSequenceNode");
     boolean success = false;
-    ArrayList<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
+    ArrayList<AugmentedStmt> toRemove = new ArrayList<>();
     for (AugmentedStmt as : node.getStatements()) {
       success = false;
       Stmt s = as.get_Stmt();
-      if (!(s instanceof DefinitionStmt)) continue;
+      if (!(s instanceof DefinitionStmt)) {
+        continue;
+      }
 
       DefinitionStmt ds = (DefinitionStmt) s;
       ValueBox right = ds.getRightOpBox();
       Value rightValue = right.getValue();
 
-      if (!(rightValue instanceof NewArrayExpr)) continue;
+      if (!(rightValue instanceof NewArrayExpr)) {
+        continue;
+      }
 
       debug("Found a new ArrayExpr" + rightValue);
       debug("Type of array is:" + rightValue.getType());
@@ -67,21 +75,27 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
       // get size....need to know this statically for sure!!!
       Value size = ((NewArrayExpr) rightValue).getSize();
 
-      if (!(size instanceof IntConstant)) continue;
+      if (!(size instanceof IntConstant)) {
+        continue;
+      }
 
       if (((IntConstant) size).value == 0) {
         debug("Size of array is 0 dont do anything");
         continue;
       }
 
-      if (DEBUG) System.out.println("Size of array is: " + ((IntConstant) size).value);
+      if (DEBUG) {
+        System.out.println("Size of array is: " + ((IntConstant) size).value);
+      }
 
       Iterator<AugmentedStmt> tempIt = node.getStatements().iterator();
       // get to the array creation stmt
       while (tempIt.hasNext()) {
         AugmentedStmt tempAs = tempIt.next();
         Stmt tempS = tempAs.get_Stmt();
-        if (tempS.equals(s)) break;
+        if (tempS.equals(s)) {
+          break;
+        }
       }
       // have the size have the type, tempIt is poised at the current def
       // stmt
@@ -93,7 +107,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 
         if (!tempIt.hasNext()) {
           // since its end of the stmt seq node just return
-          if (DEBUG) System.out.println("returning");
+          if (DEBUG) {
+            System.out.println("returning");
+          }
           return;
         }
 
@@ -102,12 +118,16 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         if (!isInSequenceAssignment(augS, ds.getLeftOp(), i)) {
           // cant create shortcut since we dont have all necessary
           // initializations
-          if (DEBUG) System.out.println("Out of order assignment aborting attempt");
+          if (DEBUG) {
+            System.out.println("Out of order assignment aborting attempt");
+          }
 
           success = false;
           break;
         } else {
-          if (DEBUG) System.out.println("Assignment stmt in order adding to array");
+          if (DEBUG) {
+            System.out.println("Assignment stmt in order adding to array");
+          }
           // the augS is the next assignment in the sequence add to
           // ValueBox array
           array[i] = ((DefinitionStmt) augS).getRightOpBox();
@@ -125,7 +145,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         // from start of method to this point there is no use
         // or def of this array then only can we create this decl/init
         // stmt
-        if (DEBUG) System.out.println("Created new DAssignStmt and replacing it");
+        if (DEBUG) {
+          System.out.println("Created new DAssignStmt and replacing it");
+        }
 
         InitializationDeclarationShortcut shortcutChecker =
             new InitializationDeclarationShortcut(as);
@@ -133,7 +155,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         boolean possible = shortcutChecker.isShortcutPossible();
 
         if (possible) {
-          if (DEBUG) System.out.println("Shortcut is possible");
+          if (DEBUG) {
+            System.out.println("Shortcut is possible");
+          }
 
           // create shortcut stmt
           DShortcutAssignStmt newShortcutStmt = new DShortcutAssignStmt(newStmt, arrayType);
@@ -147,7 +171,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     } // end going through stmt seq node
     if (success) {
       // means we did a transformation remove the stmts
-      List<AugmentedStmt> newStmtList = new ArrayList<AugmentedStmt>();
+      List<AugmentedStmt> newStmtList = new ArrayList<>();
       for (AugmentedStmt as : node.getStatements()) {
         if (toRemove.contains(as)) {
           toRemove.remove(as);
@@ -172,11 +196,15 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
    */
   public boolean isInSequenceAssignment(Stmt s, Value leftOp, int index) {
     // DEBUG=false;
-    if (!(s instanceof DefinitionStmt)) return false;
+    if (!(s instanceof DefinitionStmt)) {
+      return false;
+    }
 
     DefinitionStmt ds = (DefinitionStmt) s;
     Value leftValue = ds.getLeftOp();
-    if (!(leftValue instanceof ArrayRef)) return false;
+    if (!(leftValue instanceof ArrayRef)) {
+      return false;
+    }
 
     if (DEBUG) {
       System.out.println("Stmt number " + index + " is an array ref assignment" + leftValue);
@@ -185,18 +213,24 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 
     ArrayRef leftRef = (ArrayRef) leftValue;
     if (!(leftOp.equals(leftRef.getBase()))) {
-      if (DEBUG) System.out.println("Not assigning to same array");
+      if (DEBUG) {
+        System.out.println("Not assigning to same array");
+      }
       return false;
     }
 
     if (!(leftRef.getIndex() instanceof IntConstant)) {
-      if (DEBUG) System.out.println("Cant determine index of assignment");
+      if (DEBUG) {
+        System.out.println("Cant determine index of assignment");
+      }
       return false;
     }
 
     IntConstant leftIndex = (IntConstant) leftRef.getIndex();
     if (leftIndex.value != index) {
-      if (DEBUG) System.out.println("Out of order assignment");
+      if (DEBUG) {
+        System.out.println("Out of order assignment");
+      }
       return false;
     }
 
@@ -209,17 +243,21 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
    */
   public void secondPattern(ASTStatementSequenceNode node) {
     boolean success = false;
-    ArrayList<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
+    ArrayList<AugmentedStmt> toRemove = new ArrayList<>();
     for (AugmentedStmt as : node.getStatements()) {
       success = false;
       Stmt s = as.get_Stmt();
-      if (!(s instanceof DefinitionStmt)) continue;
+      if (!(s instanceof DefinitionStmt)) {
+        continue;
+      }
 
       DefinitionStmt ds = (DefinitionStmt) s;
       ValueBox right = ds.getRightOpBox();
       Value rightValue = right.getValue();
 
-      if (!(rightValue instanceof NewArrayExpr)) continue;
+      if (!(rightValue instanceof NewArrayExpr)) {
+        continue;
+      }
 
       if (DEBUG) {
         System.out.println("Found a new ArrayExpr" + rightValue);
@@ -232,20 +270,26 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
       // get size....need to know this statically for sure!!!
       Value size = ((NewArrayExpr) rightValue).getSize();
 
-      if (!(size instanceof IntConstant)) continue;
+      if (!(size instanceof IntConstant)) {
+        continue;
+      }
 
       if (((IntConstant) size).value == 0) {
         debug("Found value to be 0 doing nothing");
         continue;
       }
-      if (DEBUG) System.out.println("Size of array is: " + ((IntConstant) size).value);
+      if (DEBUG) {
+        System.out.println("Size of array is: " + ((IntConstant) size).value);
+      }
 
       Iterator<AugmentedStmt> tempIt = node.getStatements().iterator();
       // get to the array creation stmt
       while (tempIt.hasNext()) {
         AugmentedStmt tempAs = tempIt.next();
         Stmt tempS = tempAs.get_Stmt();
-        if (tempS.equals(s)) break;
+        if (tempS.equals(s)) {
+          break;
+        }
       }
       // have the size have the type, tempIt is poised at the current def
       // stmt
@@ -256,7 +300,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         // a DefinitionStmt
         if (!tempIt.hasNext()) {
           // since its end of the stmt seq node just return
-          if (DEBUG) System.out.println("returning");
+          if (DEBUG) {
+            System.out.println("returning");
+          }
           return;
         }
 
@@ -265,7 +311,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 
         if (!tempIt.hasNext()) {
           // since its end of the stmt seq node just return
-          if (DEBUG) System.out.println("returning");
+          if (DEBUG) {
+            System.out.println("returning");
+          }
           return;
         }
 
@@ -275,11 +323,15 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         if (!isInSequenceAssignmentPatternTwo(augSOne, augSTwo, ds.getLeftOp(), i)) {
           // cant create shortcut since we dont have all necessary
           // initializations
-          if (DEBUG) System.out.println("Out of order assignment aborting attempt");
+          if (DEBUG) {
+            System.out.println("Out of order assignment aborting attempt");
+          }
           success = false;
           break;
         } else {
-          if (DEBUG) System.out.println("Assignment stmt in order adding to array");
+          if (DEBUG) {
+            System.out.println("Assignment stmt in order adding to array");
+          }
           // the RHS of augSOne is the next assignment in the sequence
           // add to ValueBox array
           array[i] = ((DShortcutAssignStmt) augSOne).getRightOpBox();
@@ -298,7 +350,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         // from start of method to this point there is no use
         // or def of this array then only can we create this decl/init
         // stmt
-        if (DEBUG) System.out.println("Created new DAssignStmt and replacing it");
+        if (DEBUG) {
+          System.out.println("Created new DAssignStmt and replacing it");
+        }
 
         InitializationDeclarationShortcut shortcutChecker =
             new InitializationDeclarationShortcut(as);
@@ -306,7 +360,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
         boolean possible = shortcutChecker.isShortcutPossible();
 
         if (possible) {
-          if (DEBUG) System.out.println("Shortcut is possible");
+          if (DEBUG) {
+            System.out.println("Shortcut is possible");
+          }
 
           // create shortcut stmt
           DShortcutAssignStmt newShortcutStmt = new DShortcutAssignStmt(newStmt, arrayType);
@@ -321,7 +377,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     } // end going through stmt seq node
     if (success) {
       // means we did a transformation remove the stmts
-      List<AugmentedStmt> newStmtList = new ArrayList<AugmentedStmt>();
+      List<AugmentedStmt> newStmtList = new ArrayList<>();
       for (AugmentedStmt as : node.getStatements()) {
         if (toRemove.contains(as)) {
           toRemove.remove(as);
@@ -342,32 +398,44 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
    * two is a definition of leftOp at index location
    */
   public boolean isInSequenceAssignmentPatternTwo(Stmt one, Stmt two, Value leftOp, int index) {
-    if (!(two instanceof DefinitionStmt)) return false;
+    if (!(two instanceof DefinitionStmt)) {
+      return false;
+    }
 
     DefinitionStmt ds = (DefinitionStmt) two;
     Value leftValue = ds.getLeftOp();
-    if (!(leftValue instanceof ArrayRef)) return false;
+    if (!(leftValue instanceof ArrayRef)) {
+      return false;
+    }
 
     ArrayRef leftRef = (ArrayRef) leftValue;
     if (!(leftOp.equals(leftRef.getBase()))) {
-      if (DEBUG) System.out.println("Not assigning to same array");
+      if (DEBUG) {
+        System.out.println("Not assigning to same array");
+      }
       return false;
     }
 
     if (!(leftRef.getIndex() instanceof IntConstant)) {
-      if (DEBUG) System.out.println("Cant determine index of assignment");
+      if (DEBUG) {
+        System.out.println("Cant determine index of assignment");
+      }
       return false;
     }
 
     IntConstant leftIndex = (IntConstant) leftRef.getIndex();
     if (leftIndex.value != index) {
-      if (DEBUG) System.out.println("Out of order assignment");
+      if (DEBUG) {
+        System.out.println("Out of order assignment");
+      }
       return false;
     }
 
     Value rightOp = ds.getRightOp();
 
-    if (!(one instanceof DShortcutAssignStmt)) return false;
+    if (!(one instanceof DShortcutAssignStmt)) {
+      return false;
+    }
 
     DShortcutAssignStmt shortcut = (DShortcutAssignStmt) one;
     Value shortcutVar = shortcut.getLeftOp();
@@ -382,8 +450,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
   // list of all
   // declared locals in the method
   public void markLocal(Value shortcutLocal) {
-    if (!(shortcutLocal instanceof Local))
+    if (!(shortcutLocal instanceof Local)) {
       throw new DecompilationException("Found non local. report to developer.");
+    }
 
     methodNode.addToDontPrintLocalsList((Local) shortcutLocal);
   }

@@ -19,6 +19,14 @@
 
 package soot.shimple.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -29,14 +37,6 @@ import soot.shimple.ShimpleBody;
 import soot.shimple.toolkits.graph.ValueGraph.Node;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.CompleteBlockGraph;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected BlockGraph cfg;
@@ -49,8 +49,8 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   public SimpleGlobalValueNumberer(BlockGraph cfg) {
     this.cfg = cfg;
     vg = new ValueGraph(cfg);
-    partitions = new HashSet<Partition>(); // not deterministic
-    nodeToPartition = new HashMap<Node, Partition>();
+    partitions = new HashSet<>(); // not deterministic
+    nodeToPartition = new HashMap<>();
     currentPartitionNumber = 0;
 
     initPartition();
@@ -71,11 +71,13 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
     System.out.println(sgvn);
   }
 
+  @Override
   public int getGlobalValueNumber(Local local) {
     Node node = vg.getNode(local);
     return nodeToPartition.get(node).getPartitionNumber();
   }
 
+  @Override
   public boolean areEqual(Local local1, Local local2) {
     Node node1 = vg.getNode(local1);
     Node node2 = vg.getNode(local2);
@@ -84,7 +86,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   }
 
   protected void initPartition() {
-    Map<String, Partition> labelToPartition = new HashMap<String, Partition>();
+    Map<String, Partition> labelToPartition = new HashMap<>();
 
     Iterator<Node> topNodesIt = vg.getTopNodes().iterator();
     while (topNodesIt.hasNext()) {
@@ -106,7 +108,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected List<Partition> newPartitions;
 
   protected void iterPartition() {
-    newPartitions = new ArrayList<Partition>();
+    newPartitions = new ArrayList<>();
 
     Iterator<Partition> partitionsIt = partitions.iterator();
     while (partitionsIt.hasNext()) {
@@ -120,7 +122,9 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected void processPartition(Partition partition) {
     int size = partition.size();
 
-    if (size == 0) return;
+    if (size == 0) {
+      return;
+    }
 
     Node firstNode = (Node) partition.get(0);
     Partition newPartition = new Partition();
@@ -139,24 +143,32 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
       }
     }
 
-    if (processNewPartition) processPartition(newPartition);
+    if (processNewPartition) {
+      processPartition(newPartition);
+    }
   }
 
   protected boolean childrenAreInSamePartition(Node node1, Node node2) {
     boolean ordered = node1.isOrdered();
-    if (ordered != node2.isOrdered()) throw new RuntimeException("Assertion failed.");
+    if (ordered != node2.isOrdered()) {
+      throw new RuntimeException("Assertion failed.");
+    }
 
     List<Node> children1 = node1.getChildren();
     List<Node> children2 = node2.getChildren();
 
     int numberOfChildren = children1.size();
-    if (children2.size() != numberOfChildren) return false;
+    if (children2.size() != numberOfChildren) {
+      return false;
+    }
 
     if (ordered) {
       for (int i = 0; i < numberOfChildren; i++) {
         Node child1 = children1.get(i);
         Node child2 = children2.get(i);
-        if (nodeToPartition.get(child1) != nodeToPartition.get(child2)) return false;
+        if (nodeToPartition.get(child1) != nodeToPartition.get(child2)) {
+          return false;
+        }
       }
     } else {
       for (int i = 0; i < numberOfChildren; i++) {
@@ -173,7 +185,9 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
           }
 
           // last iteration, no match
-          if ((j + 1) == numberOfChildren) return false;
+          if ((j + 1) == numberOfChildren) {
+            return false;
+          }
         }
       }
     }
@@ -181,6 +195,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
     return true;
   }
 
+  @Override
   public String toString() {
     StringBuffer tmp = new StringBuffer();
 

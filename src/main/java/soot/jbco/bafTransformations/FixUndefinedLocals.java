@@ -19,6 +19,11 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -52,11 +57,6 @@ import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.toolkits.scalar.GuaranteedDefs;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 16-Jun-2006
@@ -67,27 +67,31 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
 
   public static String dependancies[] = new String[] {"bb.jbco_j2bl", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ful";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Undefined Locals fixed with pre-initializers: " + undefined);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     //  deal with locals not defined at all used points
 
     int icount = 0;
     boolean passedIDs = false;
     Map<Local, Local> bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
-    ArrayList<Value> initialized = new ArrayList<Value>();
+    ArrayList<Value> initialized = new ArrayList<>();
     PatchingChain<Unit> units = b.getUnits();
     GuaranteedDefs gd = new GuaranteedDefs(new soot.toolkits.graph.ExceptionalUnitGraph(b));
     Iterator<Unit> unitIt = units.snapshotIterator();
@@ -115,7 +119,9 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
       Iterator<ValueBox> useIt = u.getUseBoxes().iterator();
       while (useIt.hasNext()) {
         Value v = useIt.next().getValue();
-        if (!(v instanceof Local) || defs.contains(v) || initialized.contains(v)) continue;
+        if (!(v instanceof Local) || defs.contains(v) || initialized.contains(v)) {
+          continue;
+        }
 
         Type t = null;
         Local l = (Local) v;
@@ -132,7 +138,9 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
           } else if (u instanceof AbstractOpTypeInst) {
             AbstractOpTypeInst ota = (AbstractOpTypeInst) u;
             t = ota.getOpType();
-          } else if (u instanceof IncInst) t = IntType.v();
+          } else if (u instanceof IncInst) {
+            t = IntType.v();
+          }
 
           if (t instanceof DoubleWordType || t instanceof WordType) {
             throw new RuntimeException(
@@ -162,7 +170,9 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
       }
     }
 
-    if (after instanceof NopInst) units.remove(after);
+    if (after instanceof NopInst) {
+      units.remove(after);
+    }
     undefined += initialized.size() - icount;
   }
 

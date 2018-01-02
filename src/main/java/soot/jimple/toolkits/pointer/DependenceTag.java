@@ -41,10 +41,12 @@ public class DependenceTag implements Tag {
     write = s;
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public byte[] getValue() {
     byte[] ret = new byte[5];
     ret[0] = (byte) ((read >> 8) & 0xff);
@@ -55,11 +57,18 @@ public class DependenceTag implements Tag {
     return ret;
   }
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
-    if (callsNative) buf.append("SECallsNative\n");
-    if (read >= 0) buf.append("SEReads : " + read + "\n");
-    if (write >= 0) buf.append("SEWrites: " + write + "\n");
+    if (callsNative) {
+      buf.append("SECallsNative\n");
+    }
+    if (read >= 0) {
+      buf.append("SEReads : " + read + "\n");
+    }
+    if (write >= 0) {
+      buf.append("SEWrites: " + write + "\n");
+    }
     return buf.toString();
   }
 }

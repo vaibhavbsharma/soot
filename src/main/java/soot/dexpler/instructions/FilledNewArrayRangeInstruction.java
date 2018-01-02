@@ -24,9 +24,12 @@
 
 package soot.dexpler.instructions;
 
+import static soot.dexpler.Util.isFloatLike;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.TypeReference;
+
 import soot.ArrayType;
 import soot.Local;
 import soot.Type;
@@ -40,8 +43,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 
-import static soot.dexpler.Util.isFloatLike;
-
 public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 
   public FilledNewArrayRangeInstruction(Instruction instruction, int codeAdress) {
@@ -50,9 +51,10 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction3rc))
+    if (!(instruction instanceof Instruction3rc)) {
       throw new IllegalArgumentException(
           "Expected Instruction3rc but got: " + instruction.getClass());
+    }
 
     Instruction3rc filledNewArrayInstr = (Instruction3rc) instruction;
 

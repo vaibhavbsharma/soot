@@ -19,13 +19,6 @@
 
 package soot.dava.toolkits.base.misc;
 
-import soot.G;
-import soot.Scene;
-import soot.Singletons;
-import soot.SootClass;
-import soot.dava.Dava;
-import soot.util.IterableSet;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +26,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
+
+import soot.G;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.dava.Dava;
+import soot.util.IterableSet;
 
 public class PackageNamer {
   public PackageNamer(Singletons.Global g) {}
@@ -46,12 +46,18 @@ public class PackageNamer {
   }
 
   public boolean use_ShortName(String fixedPackageName, String fixedShortClassName) {
-    if (fixed == false) return false;
+    if (fixed == false) {
+      return false;
+    }
 
-    if (fixedPackageName.equals(Dava.v().get_CurrentPackage())) return true;
+    if (fixedPackageName.equals(Dava.v().get_CurrentPackage())) {
+      return true;
+    }
 
     IterableSet packageContext = Dava.v().get_CurrentPackageContext();
-    if (packageContext == null) return true;
+    if (packageContext == null) {
+      return true;
+    }
 
     packageContext = patch_PackageContext(packageContext);
 
@@ -61,37 +67,49 @@ public class PackageNamer {
       String classpathDir = st.nextToken();
 
       Iterator packIt = packageContext.iterator();
-      while (packIt.hasNext())
-        if (package_ContainsClass(classpathDir, (String) packIt.next(), fixedShortClassName))
-          if (++count > 1) return false;
+      while (packIt.hasNext()) {
+        if (package_ContainsClass(classpathDir, (String) packIt.next(), fixedShortClassName)) {
+          if (++count > 1) {
+            return false;
+          }
+        }
+      }
     }
 
     return true;
   }
 
   public String get_FixedClassName(String originalFullClassName) {
-    if (fixed == false) return originalFullClassName;
+    if (fixed == false) {
+      return originalFullClassName;
+    }
 
     Iterator<NameHolder> it = appRoots.iterator();
     while (it.hasNext()) {
       NameHolder h = it.next();
-      if (h.contains_OriginalName(new StringTokenizer(originalFullClassName, "."), true))
+      if (h.contains_OriginalName(new StringTokenizer(originalFullClassName, "."), true)) {
         return h.get_FixedName(new StringTokenizer(originalFullClassName, "."), true);
+      }
     }
 
     return originalFullClassName.substring(originalFullClassName.lastIndexOf(".") + 1);
   }
 
   public String get_FixedPackageName(String originalPackageName) {
-    if (fixed == false) return originalPackageName;
+    if (fixed == false) {
+      return originalPackageName;
+    }
 
-    if (originalPackageName.equals("")) return "";
+    if (originalPackageName.equals("")) {
+      return "";
+    }
 
     Iterator<NameHolder> it = appRoots.iterator();
     while (it.hasNext()) {
       NameHolder h = it.next();
-      if (h.contains_OriginalName(new StringTokenizer(originalPackageName, "."), false))
+      if (h.contains_OriginalName(new StringTokenizer(originalPackageName, "."), false)) {
         return h.get_FixedName(new StringTokenizer(originalPackageName, "."), false);
+      }
     }
 
     return originalPackageName;
@@ -112,7 +130,7 @@ public class PackageNamer {
       this.parent = parent;
       this.isClass = isClass;
 
-      children = new ArrayList<NameHolder>();
+      children = new ArrayList<>();
     }
 
     public NameHolder get_Parent() {
@@ -124,8 +142,11 @@ public class PackageNamer {
     }
 
     public boolean is_Class() {
-      if (children.isEmpty()) return true;
-      else return isClass;
+      if (children.isEmpty()) {
+        return true;
+      } else {
+        return isClass;
+      }
     }
 
     public boolean is_Package() {
@@ -157,28 +178,36 @@ public class PackageNamer {
     }
 
     public String get_FixedPackageName() {
-      if (parent == null) return "";
+      if (parent == null) {
+        return "";
+      }
 
       return parent.retrieve_FixedPackageName();
     }
 
     public String retrieve_FixedPackageName() {
-      if (parent == null) return packageName;
+      if (parent == null) {
+        return packageName;
+      }
 
       return parent.get_FixedPackageName() + "." + packageName;
     }
 
     public String get_FixedName(StringTokenizer st, boolean forClass) {
-      if (st.nextToken().equals(originalName) == false)
+      if (st.nextToken().equals(originalName) == false) {
         throw new RuntimeException("Unable to resolve naming.");
+      }
 
       return retrieve_FixedName(st, forClass);
     }
 
     private String retrieve_FixedName(StringTokenizer st, boolean forClass) {
       if (st.hasMoreTokens() == false) {
-        if (forClass) return className;
-        else return packageName;
+        if (forClass) {
+          return className;
+        } else {
+          return packageName;
+        }
       }
 
       String subName = st.nextToken();
@@ -187,15 +216,20 @@ public class PackageNamer {
         NameHolder h = cit.next();
 
         if (h.get_OriginalName().equals(subName)) {
-          if (forClass) return h.retrieve_FixedName(st, forClass);
-          else return packageName + "." + h.retrieve_FixedName(st, forClass);
+          if (forClass) {
+            return h.retrieve_FixedName(st, forClass);
+          } else {
+            return packageName + "." + h.retrieve_FixedName(st, forClass);
+          }
         }
       }
       throw new RuntimeException("Unable to resolve naming.");
     }
 
     public String get_OriginalPackageName(StringTokenizer st) {
-      if (st.hasMoreTokens() == false) return get_OriginalName();
+      if (st.hasMoreTokens() == false) {
+        return get_OriginalName();
+      }
 
       String subName = st.nextToken();
 
@@ -206,8 +240,11 @@ public class PackageNamer {
         if (h.get_PackageName().equals(subName)) {
           String originalSubPackageName = h.get_OriginalPackageName(st);
 
-          if (originalSubPackageName == null) return null;
-          else return get_OriginalName() + "." + originalSubPackageName;
+          if (originalSubPackageName == null) {
+            return null;
+          } else {
+            return get_OriginalName() + "." + originalSubPackageName;
+          }
         }
       }
 
@@ -215,21 +252,26 @@ public class PackageNamer {
     }
 
     public boolean contains_OriginalName(StringTokenizer st, boolean forClass) {
-      if (get_OriginalName().equals(st.nextToken()) == false) return false;
+      if (get_OriginalName().equals(st.nextToken()) == false) {
+        return false;
+      }
 
       return finds_OriginalName(st, forClass);
     }
 
     private boolean finds_OriginalName(StringTokenizer st, boolean forClass) {
-      if (st.hasMoreTokens() == false)
+      if (st.hasMoreTokens() == false) {
         return (((forClass) && (is_Class())) || ((!forClass) && (is_Package())));
+      }
 
       String subName = st.nextToken();
       Iterator<NameHolder> cit = children.iterator();
       while (cit.hasNext()) {
         NameHolder h = cit.next();
 
-        if (h.get_OriginalName().equals(subName)) return h.finds_OriginalName(st, forClass);
+        if (h.get_OriginalName().equals(subName)) {
+          return h.finds_OriginalName(st, forClass);
+        }
       }
 
       return false;
@@ -244,11 +286,15 @@ public class PackageNamer {
           className = tClassName;
         }
 
-        for (int i = 0; keywords.contains(className); i++) className = tClassName + "_c" + i;
+        for (int i = 0; keywords.contains(className); i++) {
+          className = tClassName + "_c" + i;
+        }
       }
 
       Iterator<NameHolder> it = children.iterator();
-      while (it.hasNext()) it.next().fix_ClassNames(curPackName + "." + packageName);
+      while (it.hasNext()) {
+        it.next().fix_ClassNames(curPackName + "." + packageName);
+      }
     }
 
     public void fix_PackageNames() {
@@ -260,11 +306,15 @@ public class PackageNamer {
           packageName = tPackageName;
         }
 
-        for (int i = 0; verify_PackageName() == false; i++) packageName = tPackageName + "_p" + i;
+        for (int i = 0; verify_PackageName() == false; i++) {
+          packageName = tPackageName + "_p" + i;
+        }
       }
 
       Iterator<NameHolder> it = children.iterator();
-      while (it.hasNext()) it.next().fix_PackageNames();
+      while (it.hasNext()) {
+        it.next().fix_PackageNames();
+      }
     }
 
     public boolean verify_PackageName() {
@@ -278,17 +328,26 @@ public class PackageNamer {
 
       if (parent == null) {
 
-        if (appRoots.contains(this)) it = appRoots.iterator();
-        else throw new RuntimeException("Unable to find package siblings.");
-      } else it = parent.get_Children().iterator();
+        if (appRoots.contains(this)) {
+          it = appRoots.iterator();
+        } else {
+          throw new RuntimeException("Unable to find package siblings.");
+        }
+      } else {
+        it = parent.get_Children().iterator();
+      }
 
       while (it.hasNext()) {
         NameHolder sibling = it.next();
 
-        if (sibling == this) continue;
+        if (sibling == this) {
+          continue;
+        }
 
         if (((sibling.is_Package()) && (sibling.get_PackageName().equals(name)))
-            || ((sibling.is_Class()) && (sibling.get_ClassName().equals(name)))) return true;
+            || ((sibling.is_Class()) && (sibling.get_ClassName().equals(name)))) {
+          return true;
+        }
       }
 
       return false;
@@ -306,24 +365,32 @@ public class PackageNamer {
                   + "\", \""
                   + className
                   + "\" (");
-      if (is_Class()) G.v().out.print("c");
-      if (is_Package()) G.v().out.print("p");
+      if (is_Class()) {
+        G.v().out.print("c");
+      }
+      if (is_Package()) {
+        G.v().out.print("p");
+      }
       G.v().out.println(")");
 
       Iterator<NameHolder> it = children.iterator();
-      while (it.hasNext()) it.next().dump(indentation + "  ");
+      while (it.hasNext()) {
+        it.next().dump(indentation + "  ");
+      }
     }
   }
 
   private boolean fixed = false;
-  private final ArrayList<NameHolder> appRoots = new ArrayList<NameHolder>();
-  private final ArrayList<NameHolder> otherRoots = new ArrayList<NameHolder>();
-  private final HashSet<String> keywords = new HashSet<String>();
+  private final ArrayList<NameHolder> appRoots = new ArrayList<>();
+  private final ArrayList<NameHolder> otherRoots = new ArrayList<>();
+  private final HashSet<String> keywords = new HashSet<>();
   private char fileSep;
   private String classPath, pathSep;
 
   public void fixNames() {
-    if (fixed) return;
+    if (fixed) {
+      return;
+    }
 
     String[] keywordArray = {
       "abstract",
@@ -379,19 +446,29 @@ public class PackageNamer {
       "null"
     };
 
-    for (String element : keywordArray) keywords.add(element);
+    for (String element : keywordArray) {
+      keywords.add(element);
+    }
 
     Iterator classIt = Scene.v().getLibraryClasses().iterator();
-    while (classIt.hasNext()) add_ClassName(((SootClass) classIt.next()).getName(), otherRoots);
+    while (classIt.hasNext()) {
+      add_ClassName(((SootClass) classIt.next()).getName(), otherRoots);
+    }
 
     classIt = Scene.v().getApplicationClasses().iterator();
-    while (classIt.hasNext()) add_ClassName(((SootClass) classIt.next()).getName(), appRoots);
+    while (classIt.hasNext()) {
+      add_ClassName(((SootClass) classIt.next()).getName(), appRoots);
+    }
 
     Iterator<NameHolder> arit = appRoots.iterator();
-    while (arit.hasNext()) arit.next().fix_ClassNames("");
+    while (arit.hasNext()) {
+      arit.next().fix_ClassNames("");
+    }
 
     arit = appRoots.iterator();
-    while (arit.hasNext()) arit.next().fix_PackageNames();
+    while (arit.hasNext()) {
+      arit.next().fix_PackageNames();
+    }
 
     fileSep = System.getProperty("file.separator").charAt(0);
     pathSep = System.getProperty("path.separator");
@@ -417,7 +494,9 @@ public class PackageNamer {
 
         if (child.get_OriginalName().equals(curName)) {
 
-          if (st.hasMoreTokens() == false) child.set_ClassAttr();
+          if (st.hasMoreTokens() == false) {
+            child.set_ClassAttr();
+          }
 
           found = true;
           break;
@@ -437,17 +516,22 @@ public class PackageNamer {
   public boolean package_ContainsClass(String classpathDir, String packageName, String className) {
     File p = new File(classpathDir);
 
-    if (p.exists() == false) return false;
+    if (p.exists() == false) {
+      return false;
+    }
 
     packageName = packageName.replace('.', fileSep);
-    if ((packageName.length() > 0) && (packageName.charAt(packageName.length() - 1) != fileSep))
+    if ((packageName.length() > 0) && (packageName.charAt(packageName.length() - 1) != fileSep)) {
       packageName += fileSep;
+    }
 
     String name = packageName + className + ".class";
 
     if (p.isDirectory()) {
       if ((classpathDir.length() > 0)
-          && (classpathDir.charAt(classpathDir.length() - 1) != fileSep)) classpathDir += fileSep;
+          && (classpathDir.charAt(classpathDir.length() - 1) != fileSep)) {
+        classpathDir += fileSep;
+      }
 
       return (new File(classpathDir + name)).exists();
     } else {
@@ -487,8 +571,11 @@ public class PackageNamer {
           break;
         }
       }
-      if (newPackage != null) newContext.add(newPackage);
-      else newContext.add(currentPackage);
+      if (newPackage != null) {
+        newContext.add(newPackage);
+      } else {
+        newContext.add(currentPackage);
+      }
     }
 
     return newContext;

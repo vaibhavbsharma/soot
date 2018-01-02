@@ -24,6 +24,11 @@
 
 package soot.dexpler;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -33,11 +38,6 @@ import soot.Type;
 import soot.Unit;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /** */
 public class DexRefsChecker extends DexTransformer {
@@ -99,7 +99,7 @@ public class DexRefsChecker extends DexTransformer {
    * @param body the body to analyze
    */
   private Set<Unit> getRefCandidates(Body body) {
-    Set<Unit> candidates = new HashSet<Unit>();
+    Set<Unit> candidates = new HashSet<>();
     Iterator<Unit> i = body.getUnits().iterator();
     while (i.hasNext()) {
       Unit u = i.next();

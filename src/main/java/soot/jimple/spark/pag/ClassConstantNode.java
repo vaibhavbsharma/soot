@@ -28,6 +28,7 @@ import soot.jimple.ClassConstant;
  * @author Ondrej Lhotak
  */
 public class ClassConstantNode extends AllocNode {
+  @Override
   public String toString() {
     return "ClassConstantNode " + getNumber() + " " + newExpr;
   }

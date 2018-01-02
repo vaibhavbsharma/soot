@@ -19,6 +19,8 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import java.util.HashMap;
+
 import soot.dava.internal.AST.ASTDoWhileNode;
 import soot.dava.internal.AST.ASTForLoopNode;
 import soot.dava.internal.AST.ASTIfElseNode;
@@ -31,8 +33,6 @@ import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-
-import java.util.HashMap;
 
 /*
  * For each labeled node make a mapping of the label (a string)
@@ -49,12 +49,12 @@ public class LabelToNodeMapper extends DepthFirstAdapter {
   private final HashMap<String, ASTLabeledNode> labelsToNode;
 
   public LabelToNodeMapper() {
-    labelsToNode = new HashMap<String, ASTLabeledNode>();
+    labelsToNode = new HashMap<>();
   }
 
   public LabelToNodeMapper(boolean verbose) {
     super(verbose);
-    labelsToNode = new HashMap<String, ASTLabeledNode>();
+    labelsToNode = new HashMap<>();
   }
 
   /*
@@ -66,45 +66,57 @@ public class LabelToNodeMapper extends DepthFirstAdapter {
 
   private void addToMap(ASTLabeledNode node) {
     String str = node.get_Label().toString();
-    if (str != null) labelsToNode.put(str, node);
+    if (str != null) {
+      labelsToNode.put(str, node);
+    }
   }
 
+  @Override
   public void inASTLabeledBlockNode(ASTLabeledBlockNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTTryNode(ASTTryNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     addToMap(node);
   }
 
+  @Override
   public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     addToMap(node);
   }

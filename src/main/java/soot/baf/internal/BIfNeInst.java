@@ -36,30 +36,37 @@ public class BIfNeInst extends AbstractBranchInst implements IfNeInst {
     super(Baf.v().newInstBox(target));
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public Object clone() {
     return new BIfNeInst(getTarget());
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public String getName() {
     return "ifne";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIfNeInst(this);
   }

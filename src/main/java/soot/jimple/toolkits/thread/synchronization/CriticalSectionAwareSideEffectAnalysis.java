@@ -18,6 +18,15 @@ package soot.jimple.toolkits.thread.synchronization;
  * Boston, MA 02111-1307, USA.
  */
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 import soot.Local;
 import soot.MethodOrMethodContext;
 import soot.PointsToAnalysis;
@@ -51,15 +60,6 @@ import soot.jimple.toolkits.pointer.StmtRWSet;
 import soot.jimple.toolkits.thread.EncapsulatedObjectAnalysis;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
 /**
  * Generates side-effect information from a PointsToAnalysis. Uses various heuristic rules to filter
  * out side-effects that are not visible to other threads in a Transactional program.
@@ -75,21 +75,31 @@ class WholeObject {
     this.type = null;
   }
 
+  @Override
   public String toString() {
     return "All Fields" + (type == null ? "" : " (" + type + ")");
   }
 
+  @Override
   public int hashCode() {
-    if (type == null) return 1;
+    if (type == null) {
+      return 1;
+    }
     return type.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (type == null) return true;
+    if (type == null) {
+      return true;
+    }
     if (o instanceof WholeObject) {
       WholeObject other = (WholeObject) o;
-      if (other.type == null) return true;
-      else return (type == other.type);
+      if (other.type == null) {
+        return true;
+      } else {
+        return (type == other.type);
+      }
     } else if (o instanceof FieldRef) {
       return type == ((FieldRef) o).getType();
     } else if (o instanceof SootFieldRef) {
@@ -105,8 +115,8 @@ class WholeObject {
 public class CriticalSectionAwareSideEffectAnalysis {
   PointsToAnalysis pa;
   CallGraph cg;
-  Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<SootMethod, CodeBlockRWSet>();
-  Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<SootMethod, CodeBlockRWSet>();
+  Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<>();
+  Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<>();
   int rwsetcount = 0;
   CriticalSectionVisibleEdgesPred tve;
   TransitiveTargets tt;
@@ -122,12 +132,14 @@ public class CriticalSectionAwareSideEffectAnalysis {
   public Vector subSigBlacklist;
 
   public void findNTRWSets(SootMethod method) {
-    if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) return;
+    if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
+      return;
+    }
 
     CodeBlockRWSet read = null;
     CodeBlockRWSet write = null;
-    for (Iterator sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
+    for (Object element : method.retrieveActiveBody().getUnits()) {
+      final Stmt s = (Stmt) element;
 
       boolean ignore = false;
 
@@ -146,12 +158,16 @@ public class CriticalSectionAwareSideEffectAnalysis {
       if (!ignore) {
         RWSet ntr = ntReadSet(method, s);
         if (ntr != null) {
-          if (read == null) read = new CodeBlockRWSet();
+          if (read == null) {
+            read = new CodeBlockRWSet();
+          }
           read.union(ntr);
         }
         RWSet ntw = ntWriteSet(method, s);
         if (ntw != null) {
-          if (write == null) write = new CodeBlockRWSet();
+          if (write == null) {
+            write = new CodeBlockRWSet();
+          }
           write.union(ntw);
         }
         if (s.containsInvokeExpr()) {
@@ -163,8 +179,9 @@ public class CriticalSectionAwareSideEffectAnalysis {
               || calledMethod.getDeclaringClass().toString().startsWith("java.lang")) {
             // then it gets approximated
             Local base = null;
-            if (ie instanceof InstanceInvokeExpr)
+            if (ie instanceof InstanceInvokeExpr) {
               base = (Local) ((InstanceInvokeExpr) ie).getBase();
+            }
 
             if (tlo == null || base == null || !tlo.isObjectThreadLocal(base, method)) {
               // add its approximated read set to read
@@ -178,8 +195,12 @@ public class CriticalSectionAwareSideEffectAnalysis {
               //							r = approximatedReadSet(method, s, base, true);
               //						else
               r = approximatedReadSet(method, s, base, true);
-              if (read == null) read = new CodeBlockRWSet();
-              if (r != null) read.union(r);
+              if (read == null) {
+                read = new CodeBlockRWSet();
+              }
+              if (r != null) {
+                read.union(r);
+              }
 
               // add its approximated write set to write
               RWSet w;
@@ -191,8 +212,12 @@ public class CriticalSectionAwareSideEffectAnalysis {
               //							w = approximatedWriteSet(method, s, base, true);
               //						else
               w = approximatedWriteSet(method, s, base, true);
-              if (write == null) write = new CodeBlockRWSet();
-              if (w != null) write.union(w);
+              if (write == null) {
+                write = new CodeBlockRWSet();
+              }
+              if (w != null) {
+                write.union(w);
+              }
             }
           }
         }
@@ -277,14 +302,15 @@ public class CriticalSectionAwareSideEffectAnalysis {
     if (stmt instanceof AssignStmt) {
       AssignStmt a = (AssignStmt) stmt;
       Value r = a.getRightOp();
-      if (r instanceof NewExpr) // IGNORE NEW STATEMENTS
-      return null;
+      if (r instanceof NewExpr) {
+        return null;
+      }
       return addValue(r, method, stmt);
     }
     return null;
   }
 
-  private HashMap<Stmt, RWSet> RCache = new HashMap<Stmt, RWSet>();
+  private HashMap<Stmt, RWSet> RCache = new HashMap<>();
 
   public RWSet approximatedReadSet(
       SootMethod method,
@@ -311,10 +337,11 @@ public class CriticalSectionAwareSideEffectAnalysis {
                 Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
             if (!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass())) {
               for (SootClass baseClass : baseClasses) {
-                for (Iterator baseFieldIt = baseClass.getFields().iterator();
-                    baseFieldIt.hasNext(); ) {
-                  SootField baseField = (SootField) baseFieldIt.next();
-                  if (!baseField.isStatic()) ret.addFieldRef(base, baseField);
+                for (Object element : baseClass.getFields()) {
+                  SootField baseField = (SootField) element;
+                  if (!baseField.isStatic()) {
+                    ret.addFieldRef(base, baseField);
+                  }
                 }
               }
             }
@@ -337,15 +364,15 @@ public class CriticalSectionAwareSideEffectAnalysis {
             RCache.put(stmt, normalRW);
           }
           if (normalRW != null) {
-            for (Iterator fieldsIt = normalRW.getFields().iterator(); fieldsIt.hasNext(); ) {
-              Object field = fieldsIt.next();
+            for (Object field : normalRW.getFields()) {
               if (allRW.containsField(field)) {
                 PointsToSet otherBase = normalRW.getBaseForField(field);
                 if (otherBase instanceof FullObjectSet) {
                   ret.addFieldRef(otherBase, field);
                 } else {
-                  if (base.hasNonEmptyIntersection(otherBase))
+                  if (base.hasNonEmptyIntersection(otherBase)) {
                     ret.addFieldRef(base, field); // should use intersection of bases!!!
+                  }
                 }
               }
             }
@@ -357,8 +384,9 @@ public class CriticalSectionAwareSideEffectAnalysis {
     }
     if (stmt.containsInvokeExpr()) {
       int argCount = stmt.getInvokeExpr().getArgCount();
-      for (int i = 0; i < argCount; i++)
+      for (int i = 0; i < argCount; i++) {
         ret.union(addValue(stmt.getInvokeExpr().getArg(i), method, stmt));
+      }
     }
     if (stmt instanceof AssignStmt) {
       AssignStmt a = (AssignStmt) stmt;
@@ -471,7 +499,9 @@ public class CriticalSectionAwareSideEffectAnalysis {
           || calledMethod.getDeclaringClass().toString().startsWith("java.lang")) {
         // then it gets approximated as a NTReadSet
         Local base = null;
-        if (ie instanceof InstanceInvokeExpr) base = (Local) ((InstanceInvokeExpr) ie).getBase();
+        if (ie instanceof InstanceInvokeExpr) {
+          base = (Local) ((InstanceInvokeExpr) ie).getBase();
+        }
 
         if (tlo == null || base == null || !tlo.isObjectThreadLocal(base, method)) {
           // add its approximated read set to read
@@ -484,11 +514,17 @@ public class CriticalSectionAwareSideEffectAnalysis {
           //					r = approximatedReadSet(method, stmt, base, true);
           //				else
           r = approximatedReadSet(method, stmt, base, true);
-          if (r != null) ret.union(r);
+          if (r != null) {
+            ret.union(r);
+          }
 
           int argCount = stmt.getInvokeExpr().getArgCount();
-          for (int i = 0; i < argCount; i++) uses.add(ie.getArg(i));
-          if (base != null) uses.add(base);
+          for (int i = 0; i < argCount; i++) {
+            uses.add(ie.getArg(i));
+          }
+          if (base != null) {
+            uses.add(base);
+          }
         }
       }
     }
@@ -505,7 +541,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
     return null;
   }
 
-  private HashMap<Stmt, RWSet> WCache = new HashMap<Stmt, RWSet>();
+  private HashMap<Stmt, RWSet> WCache = new HashMap<>();
 
   public RWSet approximatedWriteSet(
       SootMethod method,
@@ -531,10 +567,11 @@ public class CriticalSectionAwareSideEffectAnalysis {
                 Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
             if (!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass())) {
               for (SootClass baseClass : baseClasses) {
-                for (Iterator baseFieldIt = baseClass.getFields().iterator();
-                    baseFieldIt.hasNext(); ) {
-                  SootField baseField = (SootField) baseFieldIt.next();
-                  if (!baseField.isStatic()) ret.addFieldRef(base, baseField);
+                for (Object element : baseClass.getFields()) {
+                  SootField baseField = (SootField) element;
+                  if (!baseField.isStatic()) {
+                    ret.addFieldRef(base, baseField);
+                  }
                 }
               }
             }
@@ -557,15 +594,15 @@ public class CriticalSectionAwareSideEffectAnalysis {
             WCache.put(stmt, normalRW);
           }
           if (normalRW != null) {
-            for (Iterator fieldsIt = normalRW.getFields().iterator(); fieldsIt.hasNext(); ) {
-              Object field = fieldsIt.next();
+            for (Object field : normalRW.getFields()) {
               if (allRW.containsField(field)) {
                 PointsToSet otherBase = normalRW.getBaseForField(field);
                 if (otherBase instanceof FullObjectSet) {
                   ret.addFieldRef(otherBase, field);
                 } else {
-                  if (base.hasNonEmptyIntersection(otherBase))
+                  if (base.hasNonEmptyIntersection(otherBase)) {
                     ret.addFieldRef(base, field); // should use intersection of bases!!!
+                  }
                 }
               }
             }
@@ -674,7 +711,9 @@ public class CriticalSectionAwareSideEffectAnalysis {
           || calledMethod.getDeclaringClass().toString().startsWith("java.lang")) {
         // then it gets approximated as a NTReadSet
         Local base = null;
-        if (ie instanceof InstanceInvokeExpr) base = (Local) ((InstanceInvokeExpr) ie).getBase();
+        if (ie instanceof InstanceInvokeExpr) {
+          base = (Local) ((InstanceInvokeExpr) ie).getBase();
+        }
 
         if (tlo == null || base == null || !tlo.isObjectThreadLocal(base, method)) {
           // add its approximated read set to read
@@ -687,9 +726,13 @@ public class CriticalSectionAwareSideEffectAnalysis {
           //					w = approximatedWriteSet(method, stmt, base, true);
           //				else
           w = approximatedWriteSet(method, stmt, base, true);
-          if (w != null) ret.union(w);
+          if (w != null) {
+            ret.union(w);
+          }
 
-          if (base != null) uses.add(base);
+          if (base != null) {
+            uses.add(base);
+          }
         }
       }
     }
@@ -709,10 +752,14 @@ public class CriticalSectionAwareSideEffectAnalysis {
         if (m.isConcrete()
             && !m.isStatic()
             && m.retrieveActiveBody().getThisLocal().equivTo(ifr.getBase())
-            && tlo.isObjectThreadLocal(ifr, m)) return null;
-        else if (tlo.isObjectThreadLocal(ifr.getBase(), m)) return null;
-      } else if (v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef) v).getBase(), m))
+            && tlo.isObjectThreadLocal(ifr, m)) {
+          return null;
+        } else if (tlo.isObjectThreadLocal(ifr.getBase(), m)) {
+          return null;
+        }
+      } else if (v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef) v).getBase(), m)) {
         return null;
+      }
     }
 
     if (v instanceof InstanceFieldRef) {
@@ -735,17 +782,22 @@ public class CriticalSectionAwareSideEffectAnalysis {
       ret = new CodeBlockRWSet();
       CodeBlockRWSet stmtRW = new CodeBlockRWSet();
       RWSet rSet = readSet(m, s, tn, new HashSet());
-      if (rSet != null) stmtRW.union(rSet);
+      if (rSet != null) {
+        stmtRW.union(rSet);
+      }
       RWSet wSet = writeSet(m, s, tn, new HashSet());
-      if (wSet != null) stmtRW.union(wSet);
+      if (wSet != null) {
+        stmtRW.union(wSet);
+      }
       // Should actually get a list of fields of this object that are read/written
       // make fake RW set of <base, all fields> (use a special class)
       // intersect with the REAL RW set of this stmt
       for (Iterator fieldsIt = stmtRW.getFields().iterator(); fieldsIt.hasNext(); ) {
         Object field = fieldsIt.next();
         PointsToSet fieldBase = stmtRW.getBaseForField(field);
-        if (base.hasNonEmptyIntersection(fieldBase))
+        if (base.hasNonEmptyIntersection(fieldBase)) {
           ret.addFieldRef(base, field); // should use intersection of bases!!!
+        }
       }
     } else {
       return null;
@@ -765,10 +817,14 @@ public class CriticalSectionAwareSideEffectAnalysis {
         if (m.isConcrete()
             && !m.isStatic()
             && m.retrieveActiveBody().getThisLocal().equivTo(ifr.getBase())
-            && tlo.isObjectThreadLocal(ifr, m)) return null;
-        else if (tlo.isObjectThreadLocal(ifr.getBase(), m)) return null;
-      } else if (v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef) v).getBase(), m))
+            && tlo.isObjectThreadLocal(ifr, m)) {
+          return null;
+        } else if (tlo.isObjectThreadLocal(ifr.getBase(), m)) {
+          return null;
+        }
+      } else if (v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef) v).getBase(), m)) {
         return null;
+      }
     }
 
     //		if(tlo != null &&
@@ -785,8 +841,10 @@ public class CriticalSectionAwareSideEffectAnalysis {
         SootClass baseClass = ((RefType) baseLocal.getType()).getSootClass();
         if (Scene.v()
             .getActiveHierarchy()
-            .isClassSubclassOfIncluding(baseClass, RefType.v("java.lang.Exception").getSootClass()))
+            .isClassSubclassOfIncluding(
+                baseClass, RefType.v("java.lang.Exception").getSootClass())) {
           return null;
+        }
       }
       ret = new StmtRWSet();
       ret.addFieldRef(base, ifr.getField());
@@ -803,6 +861,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
     return ret;
   }
 
+  @Override
   public String toString() {
     return "TransactionAwareSideEffectAnalysis: PA=" + pa + " CG=" + cg;
   }

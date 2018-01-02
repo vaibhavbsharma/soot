@@ -44,14 +44,17 @@ public class AnySubType extends RefLikeType {
     return base.getAnySubType();
   }
 
+  @Override
   public String toString() {
     return "Any_subtype_of_" + base;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseAnySubType(this);
   }
 
+  @Override
   public Type getArrayElementType() {
     throw new RuntimeException("Attempt to get array base type of a non-array");
   }

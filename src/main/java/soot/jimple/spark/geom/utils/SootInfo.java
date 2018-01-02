@@ -18,12 +18,12 @@
  */
 package soot.jimple.spark.geom.utils;
 
+import java.util.Iterator;
+
 import soot.Scene;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-
-import java.util.Iterator;
 
 /**
  * It implements missing features in Soot components. All functions should be static.
@@ -39,7 +39,9 @@ public class SootInfo {
     for (Iterator<Edge> it = cg.edgesOutOf(callsite); it.hasNext(); ) {
       it.next();
       ++count;
-      if (stopForMutiple && count > 1) break;
+      if (stopForMutiple && count > 1) {
+        break;
+      }
     }
 
     return count;

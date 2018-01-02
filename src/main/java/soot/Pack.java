@@ -25,11 +25,11 @@
 
 package soot;
 
-import soot.util.Chain;
-import soot.util.HashChain;
-
 import java.util.Iterator;
 import java.util.Map;
+
+import soot.util.Chain;
+import soot.util.HashChain;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key
@@ -38,6 +38,7 @@ import java.util.Map;
 public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
   private String name;
 
+  @Override
   public String getPhaseName() {
     return name;
   }
@@ -46,8 +47,9 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     this.name = name;
   }
 
-  Chain<Transform> opts = new HashChain<Transform>();
+  Chain<Transform> opts = new HashChain<>();
 
+  @Override
   public Iterator<Transform> iterator() {
     return opts.iterator();
   }
@@ -101,11 +103,12 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
   }
 
   public boolean remove(String phaseName) {
-    for (Transform tr : opts)
+    for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
         opts.remove(tr);
         return true;
       }
+    }
     return false;
   }
 
@@ -119,20 +122,26 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
 
   public final void apply() {
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(this);
-    if (!PhaseOptions.getBoolean(options, "enabled")) return;
+    if (!PhaseOptions.getBoolean(options, "enabled")) {
+      return;
+    }
     internalApply();
   }
 
   public final void apply(Body b) {
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(this);
-    if (!PhaseOptions.getBoolean(options, "enabled")) return;
+    if (!PhaseOptions.getBoolean(options, "enabled")) {
+      return;
+    }
     internalApply(b);
   }
 
+  @Override
   public String getDeclaredOptions() {
     return soot.options.Options.getDeclaredOptionsForPhase(getPhaseName());
   }
 
+  @Override
   public String getDefaultOptions() {
     return soot.options.Options.getDefaultOptionsForPhase(getPhaseName());
   }

@@ -35,6 +35,7 @@ public class NumLocalsMetric extends ASTMetric {
    * Will be invoked by the super as well as whenever a new class is entered
    *
    */
+  @Override
   public void reset() {
     numLocals = 0;
   }
@@ -42,10 +43,12 @@ public class NumLocalsMetric extends ASTMetric {
   /*
    * Will be invoked whenever we are leaving a subtree which was a classDecl
    */
+  @Override
   public void addMetrics(ClassData data) {
     data.addMetric(new MetricData("Number-Locals", new Integer(numLocals)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     if (n instanceof LocalDecl) {
       // System.out.println("Local declared is"+ ((LocalDecl)n).name()  );

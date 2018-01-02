@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.annotation;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -30,10 +34,6 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
 import soot.tagkit.LineNumberTag;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 public class LineNumberAdder extends SceneTransformer {
 
   public LineNumberAdder(Singletons.Global g) {}
@@ -42,17 +42,20 @@ public class LineNumberAdder extends SceneTransformer {
     return G.v().soot_jimple_toolkits_annotation_LineNumberAdder();
   }
 
+  @Override
   public void internalTransform(String phaseName, Map opts) {
 
     Iterator it = Scene.v().getApplicationClasses().iterator();
     while (it.hasNext()) {
       SootClass sc = (SootClass) it.next();
       // make map of first line to each method
-      HashMap<Integer, SootMethod> lineToMeth = new HashMap<Integer, SootMethod>();
+      HashMap<Integer, SootMethod> lineToMeth = new HashMap<>();
       Iterator methIt = sc.getMethods().iterator();
       while (methIt.hasNext()) {
         SootMethod meth = (SootMethod) methIt.next();
-        if (!meth.isConcrete()) continue;
+        if (!meth.isConcrete()) {
+          continue;
+        }
         Body body = meth.retrieveActiveBody();
         Stmt s = (Stmt) body.getUnits().getFirst();
         while (s instanceof IdentityStmt) {
@@ -66,7 +69,9 @@ public class LineNumberAdder extends SceneTransformer {
       Iterator methIt2 = sc.getMethods().iterator();
       while (methIt2.hasNext()) {
         SootMethod meth = (SootMethod) methIt2.next();
-        if (!meth.isConcrete()) continue;
+        if (!meth.isConcrete()) {
+          continue;
+        }
         Body body = meth.retrieveActiveBody();
         Stmt s = (Stmt) body.getUnits().getFirst();
         while (s instanceof IdentityStmt) {

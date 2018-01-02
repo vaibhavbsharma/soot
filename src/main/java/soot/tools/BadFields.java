@@ -19,6 +19,9 @@
 
 package soot.tools;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.G;
 import soot.PackManager;
 import soot.PrimType;
@@ -37,9 +40,6 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class BadFields extends SceneTransformer {
   public static void main(String[] args) {
     PackManager.v().getPack("cg").add(new Transform("cg.badfields", new BadFields()));
@@ -49,13 +49,12 @@ public class BadFields extends SceneTransformer {
   private SootClass lastClass;
   private SootClass currentClass;
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     lastClass = null;
 
-    for (Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator();
-        clIt.hasNext(); ) {
+    for (SootClass cl : Scene.v().getApplicationClasses()) {
 
-      final SootClass cl = clIt.next();
       currentClass = cl;
       handleClass(cl);
       for (Iterator<SootMethod> it = cl.methodIterator(); it.hasNext(); ) {
@@ -66,39 +65,60 @@ public class BadFields extends SceneTransformer {
   }
 
   private void handleClass(SootClass cl) {
-    for (Iterator<SootField> fIt = cl.getFields().iterator(); fIt.hasNext(); ) {
-      final SootField f = fIt.next();
-      if (!f.isStatic()) continue;
+    for (SootField f : cl.getFields()) {
+      if (!f.isStatic()) {
+        continue;
+      }
       String typeName = f.getType().toString();
-      if (typeName.equals("java.lang.Class")) continue;
+      if (typeName.equals("java.lang.Class")) {
+        continue;
+      }
       if (f.isFinal()) {
-        if (f.getType() instanceof PrimType) continue;
-        if (typeName.equals("java.io.PrintStream")) continue;
-        if (typeName.equals("java.lang.String")) continue;
-        if (typeName.equals("java.lang.Object")) continue;
-        if (typeName.equals("java.lang.Integer")) continue;
-        if (typeName.equals("java.lang.Boolean")) continue;
+        if (f.getType() instanceof PrimType) {
+          continue;
+        }
+        if (typeName.equals("java.io.PrintStream")) {
+          continue;
+        }
+        if (typeName.equals("java.lang.String")) {
+          continue;
+        }
+        if (typeName.equals("java.lang.Object")) {
+          continue;
+        }
+        if (typeName.equals("java.lang.Integer")) {
+          continue;
+        }
+        if (typeName.equals("java.lang.Boolean")) {
+          continue;
+        }
       }
       warn("Bad field " + f);
     }
   }
 
   private void warn(String warning) {
-    if (lastClass != currentClass) G.v().out.println("In class " + currentClass);
+    if (lastClass != currentClass) {
+      G.v().out.println("In class " + currentClass);
+    }
     lastClass = currentClass;
     G.v().out.println("  " + warning);
   }
 
   private void handleMethod(SootMethod m) {
-    if (!m.isConcrete()) return;
-    for (Iterator<ValueBox> bIt = m.retrieveActiveBody().getUseAndDefBoxes().iterator();
-        bIt.hasNext(); ) {
-      final ValueBox b = bIt.next();
+    if (!m.isConcrete()) {
+      return;
+    }
+    for (ValueBox b : m.retrieveActiveBody().getUseAndDefBoxes()) {
       Value v = b.getValue();
-      if (!(v instanceof StaticFieldRef)) continue;
+      if (!(v instanceof StaticFieldRef)) {
+        continue;
+      }
       StaticFieldRef sfr = (StaticFieldRef) v;
       SootField f = sfr.getField();
-      if (!f.getDeclaringClass().getName().equals("java.lang.System")) continue;
+      if (!f.getDeclaringClass().getName().equals("java.lang.System")) {
+        continue;
+      }
       if (f.getName().equals("err")) {
         G.v().out.println("Use of System.err in " + m);
       }
@@ -106,9 +126,11 @@ public class BadFields extends SceneTransformer {
         G.v().out.println("Use of System.out in " + m);
       }
     }
-    for (Iterator<Unit> sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
-      if (!s.containsInvokeExpr()) continue;
+    for (Unit unit : m.getActiveBody().getUnits()) {
+      final Stmt s = (Stmt) unit;
+      if (!s.containsInvokeExpr()) {
+        continue;
+      }
       InvokeExpr ie = s.getInvokeExpr();
       SootMethod target = ie.getMethod();
       if (target.getDeclaringClass().getName().equals("java.lang.System")
@@ -117,16 +139,17 @@ public class BadFields extends SceneTransformer {
       }
     }
     if (m.getName().equals("<clinit>")) {
-      for (Iterator<Unit> sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-        final Stmt s = (Stmt) sIt.next();
-        for (Iterator<ValueBox> bIt = s.getUseBoxes().iterator(); bIt.hasNext(); ) {
-          final ValueBox b = bIt.next();
+      for (Unit unit : m.getActiveBody().getUnits()) {
+        final Stmt s = (Stmt) unit;
+        for (ValueBox b : s.getUseBoxes()) {
           Value v = b.getValue();
           if (v instanceof FieldRef) {
             warn(m.getName() + " reads field " + v);
           }
         }
-        if (!s.containsInvokeExpr()) continue;
+        if (!s.containsInvokeExpr()) {
+          continue;
+        }
         InvokeExpr ie = s.getInvokeExpr();
         SootMethod target = ie.getMethod();
         calls(target);
@@ -136,17 +159,31 @@ public class BadFields extends SceneTransformer {
 
   private void calls(SootMethod target) {
     if (target.getName().equals("<init>")) {
-      if (target.getDeclaringClass().getName().equals("java.io.PrintStream")) return;
-      if (target.getDeclaringClass().getName().equals("java.lang.Boolean")) return;
-      if (target.getDeclaringClass().getName().equals("java.lang.Integer")) return;
-      if (target.getDeclaringClass().getName().equals("java.lang.String")) return;
-      if (target.getDeclaringClass().getName().equals("java.lang.Object")) return;
+      if (target.getDeclaringClass().getName().equals("java.io.PrintStream")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.Boolean")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.Integer")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.String")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.Object")) {
+        return;
+      }
     }
     if (target.getName().equals("getProperty")) {
-      if (target.getDeclaringClass().getName().equals("java.lang.System")) return;
+      if (target.getDeclaringClass().getName().equals("java.lang.System")) {
+        return;
+      }
     }
     if (target.getName().equals("charAt")) {
-      if (target.getDeclaringClass().getName().equals("java.lang.String")) return;
+      if (target.getDeclaringClass().getName().equals("java.lang.String")) {
+        return;
+      }
     }
     warn("<clinit> invokes " + target);
   }

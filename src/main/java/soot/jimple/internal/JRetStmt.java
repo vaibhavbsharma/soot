@@ -25,6 +25,9 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
@@ -32,9 +35,6 @@ import soot.jimple.Jimple;
 import soot.jimple.RetStmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JRetStmt extends AbstractStmt implements RetStmt {
   final ValueBox stmtAddressBox;
@@ -48,34 +48,41 @@ public class JRetStmt extends AbstractStmt implements RetStmt {
     this.stmtAddressBox = stmtAddressBox;
   }
 
+  @Override
   public Object clone() {
     return new JRetStmt(Jimple.cloneIfNecessary(getStmtAddress()));
   }
 
+  @Override
   public String toString() {
     return Jimple.RET + " " + stmtAddressBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.RET);
     up.literal(" ");
     stmtAddressBox.toString(up);
   }
 
+  @Override
   public Value getStmtAddress() {
     return stmtAddressBox.getValue();
   }
 
+  @Override
   public ValueBox getStmtAddressBox() {
     return stmtAddressBox;
   }
 
+  @Override
   public void setStmtAddress(Value stmtAddress) {
     stmtAddressBox.setValue(stmtAddress);
   }
 
+  @Override
   public List<ValueBox> getUseBoxes() {
-    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
+    List<ValueBox> useBoxes = new ArrayList<>();
 
     useBoxes.addAll(stmtAddressBox.getValue().getUseBoxes());
     useBoxes.add(stmtAddressBox);
@@ -83,14 +90,17 @@ public class JRetStmt extends AbstractStmt implements RetStmt {
     return useBoxes;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseRetStmt(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

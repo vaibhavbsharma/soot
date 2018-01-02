@@ -19,6 +19,9 @@
 
 package soot.shimple.toolkits.scalar;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Local;
 import soot.Type;
 import soot.UnitBoxOwner;
@@ -30,9 +33,6 @@ import soot.jimple.Expr;
 import soot.jimple.toolkits.scalar.Evaluator;
 import soot.shimple.PhiExpr;
 import soot.util.Switch;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Extension of soot.jimple.toolkits.scalar.Evaluator to handle Phi expressions.
@@ -51,10 +51,15 @@ public class SEvaluator {
       while (argsIt.hasNext()) {
         Value arg = argsIt.next();
 
-        if (!(arg instanceof Constant)) return false;
+        if (!(arg instanceof Constant)) {
+          return false;
+        }
 
-        if (firstConstant == null) firstConstant = (Constant) arg;
-        else if (!firstConstant.equals(arg)) return false;
+        if (firstConstant == null) {
+          firstConstant = (Constant) arg;
+        } else if (!firstConstant.equals(arg)) {
+          return false;
+        }
       }
 
       return true;
@@ -68,9 +73,13 @@ public class SEvaluator {
    * returns <code>null</code>.
    */
   public static Value getConstantValueOf(Value op) {
-    if (!(op instanceof PhiExpr)) return Evaluator.getConstantValueOf(op);
+    if (!(op instanceof PhiExpr)) {
+      return Evaluator.getConstantValueOf(op);
+    }
 
-    if (!(isValueConstantValued(op))) return null;
+    if (!(isValueConstantValued(op))) {
+      return null;
+    }
 
     return ((PhiExpr) op).getValue(0);
   }
@@ -88,11 +97,17 @@ public class SEvaluator {
    * @see SEvaluator.BottomConstant
    */
   public static Constant getFuzzyConstantValueOf(Value v) {
-    if (v instanceof Constant) return (Constant) v;
+    if (v instanceof Constant) {
+      return (Constant) v;
+    }
 
-    if (v instanceof Local) return BottomConstant.v();
+    if (v instanceof Local) {
+      return BottomConstant.v();
+    }
 
-    if (!(v instanceof Expr)) return BottomConstant.v();
+    if (!(v instanceof Expr)) {
+      return BottomConstant.v();
+    }
 
     Expr expr = (Expr) v;
     Constant constant = null;
@@ -104,18 +119,25 @@ public class SEvaluator {
       while (argsIt.hasNext()) {
         Value arg = argsIt.next();
 
-        if (!(arg instanceof Constant)) continue;
+        if (!(arg instanceof Constant)) {
+          continue;
+        }
 
-        if (arg instanceof TopConstant) continue;
+        if (arg instanceof TopConstant) {
+          continue;
+        }
 
-        if (constant == null) constant = (Constant) arg;
-        else if (!constant.equals(arg)) {
+        if (constant == null) {
+          constant = (Constant) arg;
+        } else if (!constant.equals(arg)) {
           constant = BottomConstant.v();
           break;
         }
       }
 
-      if (constant == null) constant = TopConstant.v();
+      if (constant == null) {
+        constant = TopConstant.v();
+      }
     } else {
       Iterator valueBoxesIt = expr.getUseBoxes().iterator();
       while (valueBoxesIt.hasNext()) {
@@ -126,12 +148,18 @@ public class SEvaluator {
           break;
         }
 
-        if (value instanceof TopConstant) constant = TopConstant.v();
+        if (value instanceof TopConstant) {
+          constant = TopConstant.v();
+        }
       }
 
-      if (constant == null) constant = (Constant) getConstantValueOf(expr);
+      if (constant == null) {
+        constant = (Constant) getConstantValueOf(expr);
+      }
 
-      if (constant == null) constant = BottomConstant.v();
+      if (constant == null) {
+        constant = BottomConstant.v();
+      }
     }
 
     return constant;
@@ -145,11 +173,17 @@ public class SEvaluator {
    * @see SEvaluator.BottomConstant
    */
   public static Constant getFuzzyConstantValueOf(Value v, Map<Local, Constant> localToConstant) {
-    if (v instanceof Constant) return (Constant) v;
+    if (v instanceof Constant) {
+      return (Constant) v;
+    }
 
-    if (v instanceof Local) return localToConstant.get(v);
+    if (v instanceof Local) {
+      return localToConstant.get(v);
+    }
 
-    if (!(v instanceof Expr)) return BottomConstant.v();
+    if (!(v instanceof Expr)) {
+      return BottomConstant.v();
+    }
 
     /* clone expr and update the clone with our assumptions */
 
@@ -161,12 +195,16 @@ public class SEvaluator {
       Value use = useBox.getValue();
       if (use instanceof Local) {
         Constant constant = localToConstant.get(use);
-        if (useBox.canContainValue(constant)) useBox.setValue(constant);
+        if (useBox.canContainValue(constant)) {
+          useBox.setValue(constant);
+        }
       }
     }
 
     // oops -- clear spurious pointers to the unit chain!
-    if (expr instanceof UnitBoxOwner) ((UnitBoxOwner) expr).clearUnitBoxes();
+    if (expr instanceof UnitBoxOwner) {
+      ((UnitBoxOwner) expr).clearUnitBoxes();
+    }
 
     /* evaluate the expression */
 
@@ -186,10 +224,12 @@ public class SEvaluator {
       return constant;
     }
 
+    @Override
     public Type getType() {
       return UnknownType.v();
     }
 
+    @Override
     public void apply(Switch sw) {
       throw new RuntimeException("Not implemented.");
     }
@@ -205,10 +245,12 @@ public class SEvaluator {
       return constant;
     }
 
+    @Override
     public Type getType() {
       return UnknownType.v();
     }
 
+    @Override
     public void apply(Switch sw) {
       throw new RuntimeException("Not implemented.");
     }

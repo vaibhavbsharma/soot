@@ -29,7 +29,9 @@ import soot.Type;
 import soot.util.Switch;
 
 public interface CaughtExceptionRef extends IdentityRef {
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

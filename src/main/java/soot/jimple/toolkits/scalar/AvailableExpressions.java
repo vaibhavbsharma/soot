@@ -25,10 +25,10 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.List;
+
 import soot.Unit;
 import soot.util.Chain;
-
-import java.util.List;
 
 /**
  * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each

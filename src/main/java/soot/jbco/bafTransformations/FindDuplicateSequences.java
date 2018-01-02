@@ -19,6 +19,14 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -67,14 +75,6 @@ import soot.jimple.StringConstant;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 12-May-2006
@@ -86,42 +86,55 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
   public static String dependancies[] =
       new String[] {"bb.jbco_j2bl", "bb.jbco_rds", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_rds";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Duplicate Sequences:");
-    for (int count = totalcounts.length - 1; count >= 0; count--)
-      if (totalcounts[count] > 0) out.println("\t" + count + " total: " + totalcounts[count]);
+    for (int count = totalcounts.length - 1; count >= 0; count--) {
+      if (totalcounts[count] > 0) {
+        out.println("\t" + count + " total: " + totalcounts[count]);
+      }
+    }
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
-    if (output) out.println("Checking " + b.getMethod().getName() + " for duplicate sequences..");
+    if (output) {
+      out.println("Checking " + b.getMethod().getName() + " for duplicate sequences..");
+    }
 
-    List<Unit> illegalUnits = new ArrayList<Unit>();
-    List<Unit> seenUnits = new ArrayList<Unit>();
-    List<Unit> workList = new ArrayList<Unit>();
+    List<Unit> illegalUnits = new ArrayList<>();
+    List<Unit> seenUnits = new ArrayList<>();
+    List<Unit> workList = new ArrayList<>();
     PatchingChain<Unit> units = b.getUnits();
     BriefUnitGraph bug = new BriefUnitGraph(b);
     workList.addAll(bug.getHeads());
     while (workList.size() > 0) {
       Unit u = workList.remove(0);
-      if (seenUnits.contains(u)) continue;
+      if (seenUnits.contains(u)) {
+        continue;
+      }
 
       if (u instanceof NewInst) {
         RefType t = ((NewInst) u).getBaseType();
-        List<Unit> tmpWorkList = new ArrayList<Unit>();
+        List<Unit> tmpWorkList = new ArrayList<>();
         tmpWorkList.add(u);
         while (tmpWorkList.size() > 0) {
           Unit v = tmpWorkList.remove(0);
@@ -130,8 +143,9 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           if (v instanceof SpecialInvokeInst) {
             SpecialInvokeInst si = (SpecialInvokeInst) v;
             if (si.getMethodRef().getSignature().indexOf("void <init>") < 0
-                || si.getMethodRef().declaringClass() != t.getSootClass())
+                || si.getMethodRef().declaringClass() != t.getSootClass()) {
               tmpWorkList.addAll(bug.getSuccsOf(v));
+            }
           } else {
             tmpWorkList.addAll(bug.getSuccsOf(v));
           }
@@ -146,7 +160,9 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
     int controlLocalIndex = 0;
     int longestSeq = (units.size() / 2) - 1;
-    if (longestSeq > 20) longestSeq = 20;
+    if (longestSeq > 20) {
+      longestSeq = 20;
+    }
 
     Local controlLocal = null;
     Collection<Local> bLocals = b.getLocals();
@@ -157,12 +173,14 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     Map<Unit, Stack<Type>> stackHeightsBefore = null;
     for (int count = longestSeq; count > 2; count--) {
       Unit uArry[] = units.toArray(new Unit[units.size()]);
-      if (uArry.length <= 0) return;
+      if (uArry.length <= 0) {
+        return;
+      }
 
       // int count = uArry.length > 100 ? 4 : uArry.length > 50 ? 3 : 2;
 
-      List<List<Unit>> candidates = new ArrayList<List<Unit>>();
-      List<Unit> unitIDs = new ArrayList<Unit>();
+      List<List<Unit>> candidates = new ArrayList<>();
+      List<Unit> unitIDs = new ArrayList<>();
 
       if (changed) {
         stackHeightsBefore = StackTypeHeightCalculator.calculateStackHeights(b, bafToJLocals);
@@ -174,13 +192,16 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       for (int i = 0; i < uArry.length; i++) {
         unitIDs.add(uArry[i]);
 
-        if (i + count > uArry.length) continue;
+        if (i + count > uArry.length) {
+          continue;
+        }
 
-        List<Unit> seq = new ArrayList<Unit>();
+        List<Unit> seq = new ArrayList<>();
         for (int j = 0; j < count; j++) {
           Unit u = uArry[i + j];
-          if (u instanceof IdentityInst || u instanceof ReturnInst || illegalUnits.contains(u))
+          if (u instanceof IdentityInst || u instanceof ReturnInst || illegalUnits.contains(u)) {
             break;
+          }
 
           // don't allow units within the sequence that have more than one
           // predecessor that is not _within_ the sequence
@@ -198,23 +219,29 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
                   }
                 }
               }
-              if (found < preds.size()) continue LOOP;
+              if (found < preds.size()) {
+                continue LOOP;
+              }
             }
           }
 
           seq.add(u);
         }
         if (seq.size() == count) {
-          if (seq.get(seq.size() - 1).fallsThrough()) candidates.add(seq);
+          if (seq.get(seq.size() - 1).fallsThrough()) {
+            candidates.add(seq);
+          }
         }
       }
 
-      Map<List<Unit>, List<List<Unit>>> selected = new HashMap<List<Unit>, List<List<Unit>>>();
+      Map<List<Unit>, List<List<Unit>>> selected = new HashMap<>();
       for (int i = 0; i < candidates.size(); i++) {
         List<Unit> seq = candidates.get(i);
-        List<List<Unit>> matches = new ArrayList<List<Unit>>();
+        List<List<Unit>> matches = new ArrayList<>();
         for (int j = 0; j < (uArry.length - count); j++) {
-          if (overlap(uArry, seq, j, count)) continue;
+          if (overlap(uArry, seq, j, count)) {
+            continue;
+          }
 
           boolean found = false;
           for (int k = 0; k < count; k++) {
@@ -223,7 +250,9 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
             found = false;
 
             Unit v = uArry[j + k];
-            if (!equalUnits(u, v, b) || illegalUnits.contains(v)) break;
+            if (!equalUnits(u, v, b) || illegalUnits.contains(v)) {
+              break;
+            }
 
             if (k > 0) {
               List<Unit> preds = bug.getPredsOf(v);
@@ -239,43 +268,59 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
                     }
                   }
                 }
-                if (fcount < preds.size()) break;
+                if (fcount < preds.size()) {
+                  break;
+                }
               }
             }
 
             // No need to calc AFTER stack, since they are equal units
-            if (!stackHeightsBefore.get(u).equals(stackHeightsBefore.get(v))) break;
+            if (!stackHeightsBefore.get(u).equals(stackHeightsBefore.get(v))) {
+              break;
+            }
 
             found = true;
           }
 
           if (found) {
-            List<Unit> foundSeq = new ArrayList<Unit>();
-            for (int m = 0; m < count; m++) foundSeq.add(uArry[j + m]);
+            List<Unit> foundSeq = new ArrayList<>();
+            for (int m = 0; m < count; m++) {
+              foundSeq.add(uArry[j + m]);
+            }
             matches.add(foundSeq);
           }
         }
 
         if (matches.size() > 0) {
           boolean done = false;
-          for (int x = 0; x < seq.size(); x++)
-            if (!unitIDs.contains(seq.get(x))) done = true;
-            else unitIDs.remove(seq.get(x));
+          for (int x = 0; x < seq.size(); x++) {
+            if (!unitIDs.contains(seq.get(x))) {
+              done = true;
+            } else {
+              unitIDs.remove(seq.get(x));
+            }
+          }
 
           if (!done) {
             matches = cullOverlaps(b, unitIDs, matches);
-            if (matches.size() > 0) selected.put(seq, matches);
+            if (matches.size() > 0) {
+              selected.put(seq, matches);
+            }
           }
         }
       }
 
-      if (selected.size() <= 0) continue;
+      if (selected.size() <= 0) {
+        continue;
+      }
 
       Iterator<List<Unit>> keys = selected.keySet().iterator();
       while (keys.hasNext()) {
         List<Unit> key = keys.next();
         List<List<Unit>> avalues = selected.get(key);
-        if (avalues.size() < 1 || soot.jbco.util.Rand.getInt(10) <= weight) continue;
+        if (avalues.size() < 1 || soot.jbco.util.Rand.getInt(10) <= weight) {
+          continue;
+        }
 
         changed = true;
 
@@ -287,7 +332,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
         counts[key.size()] += avalues.size();
 
-        List<Unit> jumps = new ArrayList<Unit>();
+        List<Unit> jumps = new ArrayList<>();
 
         Unit first = key.get(0);
         // protectedUnits.addAll(key);
@@ -352,24 +397,33 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     } // end of for loop for duplicate seq of various length
 
     boolean dupsExist = false;
-    if (output) System.out.println("Duplicate Sequences for " + b.getMethod().getName());
+    if (output) {
+      System.out.println("Duplicate Sequences for " + b.getMethod().getName());
+    }
 
-    for (int count = longestSeq; count >= 0; count--)
+    for (int count = longestSeq; count >= 0; count--) {
       if (counts[count] > 0) {
-        if (output) out.println(count + " total: " + counts[count]);
+        if (output) {
+          out.println(count + " total: " + counts[count]);
+        }
         dupsExist = true;
         totalcounts[count] += counts[count];
       }
+    }
 
     if (!dupsExist) {
-      if (output) out.println("\tnone");
+      if (output) {
+        out.println("\tnone");
+      }
     } else if (debug) {
       StackTypeHeightCalculator.calculateStackHeights(b);
     }
   }
 
   private boolean equalUnits(Object o1, Object o2, Body b) {
-    if (o1.getClass() != o2.getClass()) return false;
+    if (o1.getClass() != o2.getClass()) {
+      return false;
+    }
 
     // this is actually handled by the predecessor checks
 
@@ -380,12 +434,19 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
     List<Trap> l1 = getTrapsForUnit(o1, b);
     List<Trap> l2 = getTrapsForUnit(o2, b);
-    if (l1.size() != l2.size()) return false;
-    else {
-      for (int i = 0; i < l1.size(); i++) if (l1.get(i) != l2.get(i)) return false;
+    if (l1.size() != l2.size()) {
+      return false;
+    } else {
+      for (int i = 0; i < l1.size(); i++) {
+        if (l1.get(i) != l2.get(i)) {
+          return false;
+        }
+      }
     }
 
-    if (o1 instanceof NoArgInst) return true;
+    if (o1 instanceof NoArgInst) {
+      return true;
+    }
 
     /*
     if (o1 instanceof IncInst) {
@@ -398,60 +459,80 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     if (o1 instanceof TargetArgInst) {
       // return false;
       // Maybe shouldn't allow duplicate target units?
-      if (o1 instanceof OpTypeArgInst)
+      if (o1 instanceof OpTypeArgInst) {
         return ((TargetArgInst) o1).getTarget() == ((TargetArgInst) o2).getTarget()
             && ((OpTypeArgInst) o1).getOpType() == ((OpTypeArgInst) o2).getOpType();
-      else return ((TargetArgInst) o1).getTarget() == ((TargetArgInst) o2).getTarget();
+      } else {
+        return ((TargetArgInst) o1).getTarget() == ((TargetArgInst) o2).getTarget();
+      }
     }
 
-    if (o1 instanceof OpTypeArgInst)
+    if (o1 instanceof OpTypeArgInst) {
       return ((OpTypeArgInst) o1).getOpType() == ((OpTypeArgInst) o2).getOpType();
+    }
 
-    if (o1 instanceof MethodArgInst)
+    if (o1 instanceof MethodArgInst) {
       return ((MethodArgInst) o1).getMethod() == ((MethodArgInst) o2).getMethod();
+    }
 
-    if (o1 instanceof FieldArgInst)
+    if (o1 instanceof FieldArgInst) {
       return ((FieldArgInst) o1).getField() == ((FieldArgInst) o2).getField();
+    }
 
     if (o1 instanceof PrimitiveCastInst) {
       return ((PrimitiveCastInst) o1).getFromType() == ((PrimitiveCastInst) o2).getFromType()
           && ((PrimitiveCastInst) o1).getToType() == ((PrimitiveCastInst) o2).getToType();
     }
 
-    if (o1 instanceof DupInst) return compareDups(o1, o2);
+    if (o1 instanceof DupInst) {
+      return compareDups(o1, o2);
+    }
 
-    if (o1 instanceof LoadInst) return ((LoadInst) o1).getLocal() == ((LoadInst) o2).getLocal();
+    if (o1 instanceof LoadInst) {
+      return ((LoadInst) o1).getLocal() == ((LoadInst) o2).getLocal();
+    }
 
-    if (o1 instanceof StoreInst) return ((StoreInst) o1).getLocal() == ((StoreInst) o2).getLocal();
+    if (o1 instanceof StoreInst) {
+      return ((StoreInst) o1).getLocal() == ((StoreInst) o2).getLocal();
+    }
 
-    if (o1 instanceof PushInst)
+    if (o1 instanceof PushInst) {
       return equalConstants(((PushInst) o1).getConstant(), ((PushInst) o2).getConstant());
+    }
 
-    if (o1 instanceof IncInst)
-      if (equalConstants(((IncInst) o1).getConstant(), ((IncInst) o2).getConstant()))
+    if (o1 instanceof IncInst) {
+      if (equalConstants(((IncInst) o1).getConstant(), ((IncInst) o2).getConstant())) {
         return (((IncInst) o1).getLocal() == ((IncInst) o2).getLocal());
+      }
+    }
 
-    if (o1 instanceof InstanceCastInst)
+    if (o1 instanceof InstanceCastInst) {
       return equalTypes(
           ((InstanceCastInst) o1).getCastType(), ((InstanceCastInst) o2).getCastType());
+    }
 
-    if (o1 instanceof InstanceOfInst)
+    if (o1 instanceof InstanceOfInst) {
       return equalTypes(((InstanceOfInst) o1).getCheckType(), ((InstanceOfInst) o2).getCheckType());
+    }
 
-    if (o1 instanceof NewArrayInst)
+    if (o1 instanceof NewArrayInst) {
       return equalTypes(((NewArrayInst) o1).getBaseType(), ((NewArrayInst) o2).getBaseType());
+    }
 
-    if (o1 instanceof NewInst)
+    if (o1 instanceof NewInst) {
       return equalTypes(((NewInst) o1).getBaseType(), ((NewInst) o2).getBaseType());
+    }
 
-    if (o1 instanceof NewMultiArrayInst)
+    if (o1 instanceof NewMultiArrayInst) {
       return equalTypes(
               ((NewMultiArrayInst) o1).getBaseType(), ((NewMultiArrayInst) o2).getBaseType())
           && ((NewMultiArrayInst) o1).getDimensionCount()
               == ((NewMultiArrayInst) o2).getDimensionCount();
+    }
 
-    if (o1 instanceof PopInst)
+    if (o1 instanceof PopInst) {
       return ((PopInst) o1).getWordCount() == ((PopInst) o2).getWordCount();
+    }
 
     if (o1 instanceof SwapInst) {
       return ((SwapInst) o1).getFromType() == ((SwapInst) o2).getFromType()
@@ -462,7 +543,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
   }
 
   private List<Trap> getTrapsForUnit(Object o, Body b) {
-    ArrayList<Trap> list = new ArrayList<Trap>();
+    ArrayList<Trap> list = new ArrayList<>();
     Chain<Trap> traps = b.getTraps();
     if (traps.size() != 0) {
       PatchingChain<Unit> units = b.getUnits();
@@ -482,30 +563,46 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
   }
 
   private boolean overlap(Object units[], List<?> list, int idx, int count) {
-    if (idx < 0 || list == null || list.size() == 0) return false;
+    if (idx < 0 || list == null || list.size() == 0) {
+      return false;
+    }
 
     Object first = list.get(0);
     Object last = list.get(list.size() - 1);
-    for (int i = idx; i < idx + count; i++)
-      if (i < units.length && (first == units[i] || last == units[i])) return true;
+    for (int i = idx; i < idx + count; i++) {
+      if (i < units.length && (first == units[i] || last == units[i])) {
+        return true;
+      }
+    }
 
     return false;
   }
 
   private boolean equalConstants(Constant c1, Constant c2) {
     Type t = c1.getType();
-    if (t != c2.getType()) return false;
+    if (t != c2.getType()) {
+      return false;
+    }
 
-    if (t instanceof IntType) return ((IntConstant) c1).value == ((IntConstant) c2).value;
+    if (t instanceof IntType) {
+      return ((IntConstant) c1).value == ((IntConstant) c2).value;
+    }
 
-    if (t instanceof FloatType) return ((FloatConstant) c1).value == ((FloatConstant) c2).value;
+    if (t instanceof FloatType) {
+      return ((FloatConstant) c1).value == ((FloatConstant) c2).value;
+    }
 
-    if (t instanceof LongType) return ((LongConstant) c1).value == ((LongConstant) c2).value;
+    if (t instanceof LongType) {
+      return ((LongConstant) c1).value == ((LongConstant) c2).value;
+    }
 
-    if (t instanceof DoubleType) return ((DoubleConstant) c1).value == ((DoubleConstant) c2).value;
+    if (t instanceof DoubleType) {
+      return ((DoubleConstant) c1).value == ((DoubleConstant) c2).value;
+    }
 
-    if (c1 instanceof StringConstant && c2 instanceof StringConstant)
+    if (c1 instanceof StringConstant && c2 instanceof StringConstant) {
       return ((StringConstant) c1).value == ((StringConstant) c2).value;
+    }
 
     return c1 instanceof NullConstant && c2 instanceof NullConstant;
   }
@@ -521,9 +618,15 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
         l1 = d1.getUnderTypes();
         l2 = d2.getUnderTypes();
       }
-      if (l1.size() != l2.size()) return false;
+      if (l1.size() != l2.size()) {
+        return false;
+      }
 
-      for (int i = 0; i < l1.size(); i++) if (l1.get(i) != l2.get(i)) return false;
+      for (int i = 0; i < l1.size(); i++) {
+        if (l1.get(i) != l2.get(i)) {
+          return false;
+        }
+      }
     }
 
     return true;
@@ -540,13 +643,15 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       return false;
     }
 
-    if (t1 instanceof PrimType && t2 instanceof PrimType) return t1.getClass() == t2.getClass();
+    if (t1 instanceof PrimType && t2 instanceof PrimType) {
+      return t1.getClass() == t2.getClass();
+    }
 
     return false;
   }
 
   private static List<List<Unit>> cullOverlaps(Body b, List<Unit> ids, List<List<Unit>> matches) {
-    List<List<Unit>> newMatches = new ArrayList<List<Unit>>();
+    List<List<Unit>> newMatches = new ArrayList<>();
     for (int i = 0; i < matches.size(); i++) {
       List<Unit> match = matches.get(i);
       Iterator<Unit> it = match.iterator();
@@ -573,7 +678,9 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
       if (clean) {
         it = match.iterator();
-        while (it.hasNext()) ids.remove(it.next());
+        while (it.hasNext()) {
+          ids.remove(it.next());
+        }
         newMatches.add(match);
       }
     }

@@ -37,11 +37,13 @@ public class SignatureTag implements Tag {
     this.signature = signature;
   }
 
+  @Override
   public String toString() {
     return "Signature: " + signature;
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "SignatureTag";
   }
@@ -55,6 +57,7 @@ public class SignatureTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("SignatureTag has no value for bytecode");
   }

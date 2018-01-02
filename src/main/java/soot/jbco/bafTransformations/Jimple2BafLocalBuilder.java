@@ -19,15 +19,15 @@
 
 package soot.jbco.bafTransformations;
 
-import soot.Body;
-import soot.BodyTransformer;
-import soot.Local;
-import soot.jbco.IJbcoTransform;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import soot.Body;
+import soot.BodyTransformer;
+import soot.Local;
+import soot.jbco.IJbcoTransform;
 
 /**
  * @author Michael Batchelder
@@ -37,20 +37,24 @@ public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTran
 
   public static String dependancies[] = new String[] {"jtp.jbco_jl", "bb.jbco_j2bl", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_j2bl";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {}
 
   private static boolean runOnce = false;
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if (soot.jbco.Main.methods2JLocals.size() == 0) {
       if (!runOnce) {
@@ -62,7 +66,7 @@ public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTran
     }
 
     Collection<Local> bLocals = b.getLocals();
-    HashMap<Local, Local> bafToJLocals = new HashMap<Local, Local>();
+    HashMap<Local, Local> bafToJLocals = new HashMap<>();
     Iterator<Local> jlocIt = soot.jbco.Main.methods2JLocals.get(b.getMethod()).iterator();
     while (jlocIt.hasNext()) {
       Local jl = jlocIt.next();

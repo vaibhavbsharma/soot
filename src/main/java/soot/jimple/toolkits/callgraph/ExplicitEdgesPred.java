@@ -26,6 +26,7 @@ package soot.jimple.toolkits.callgraph;
  */
 public class ExplicitEdgesPred implements EdgePredicate {
   /** Returns true iff the edge e is wanted. */
+  @Override
   public boolean want(Edge e) {
     return e.isExplicit();
   }

@@ -1,5 +1,9 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Local;
 import soot.SootField;
 import soot.Value;
@@ -23,10 +27,6 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.CPFlowSet;
 import soot.dava.toolkits.base.AST.structuredAnalysis.CPHelper;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /*
 * The traversal utilizes the results of the CP (constant propagation analysis) to substitute uses
@@ -71,10 +71,15 @@ public class CPApplication extends DepthFirstAdapter {
     cp = new CP(AST, constantValueFields, classNameFieldNameToSootFieldMapping);
   }
 
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Object obj = cp.getBeforeSet(node);
-    if (obj == null) return;
-    if (!(obj instanceof CPFlowSet)) return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
     // before set is a non null CPFlowSet
     CPFlowSet beforeSet = (CPFlowSet) obj;
@@ -124,6 +129,7 @@ public class CPApplication extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     /*
      * For the init part we should actually use the before set for each init
@@ -134,8 +140,12 @@ public class CPApplication extends DepthFirstAdapter {
       List useBoxes = s.getUseBoxes();
 
       Object obj = cp.getBeforeSet(s);
-      if (obj == null) continue;
-      if (!(obj instanceof CPFlowSet)) continue;
+      if (obj == null) {
+        continue;
+      }
+      if (!(obj instanceof CPFlowSet)) {
+        continue;
+      }
 
       // before set is a non null CPFlowSet
       CPFlowSet beforeSet = (CPFlowSet) obj;
@@ -153,8 +163,12 @@ public class CPApplication extends DepthFirstAdapter {
     // get after set for the condition and update
     Object obj = cp.getAfterSet(node);
 
-    if (obj == null) return;
-    if (!(obj instanceof CPFlowSet)) return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
     // after set is a non null CPFlowSet
     CPFlowSet afterSet = (CPFlowSet) obj;
@@ -184,11 +198,16 @@ public class CPApplication extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     Object obj = cp.getAfterSet(node);
 
-    if (obj == null) return;
-    if (!(obj instanceof CPFlowSet)) return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
     // after set is a non null CPFlowSet
     CPFlowSet afterSet = (CPFlowSet) obj;
@@ -201,11 +220,16 @@ public class CPApplication extends DepthFirstAdapter {
     changedCondition(cond, afterSet);
   }
 
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     Object obj = cp.getAfterSet(node);
 
-    if (obj == null) return;
-    if (!(obj instanceof CPFlowSet)) return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
     // after set is a non null CPFlowSet
     CPFlowSet afterSet = (CPFlowSet) obj;
@@ -218,12 +242,17 @@ public class CPApplication extends DepthFirstAdapter {
     changedCondition(cond, afterSet);
   }
 
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     // System.out.println(node);
     Object obj = cp.getBeforeSet(node);
 
-    if (obj == null) return;
-    if (!(obj instanceof CPFlowSet)) return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
     // before set is a non null CPFlowSet
     CPFlowSet beforeSet = (CPFlowSet) obj;
@@ -238,11 +267,16 @@ public class CPApplication extends DepthFirstAdapter {
     changedCondition(cond, beforeSet);
   }
 
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     Object obj = cp.getBeforeSet(node);
 
-    if (obj == null) return;
-    if (!(obj instanceof CPFlowSet)) return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
     // before set is a non null CPFlowSet
     CPFlowSet beforeSet = (CPFlowSet) obj;
@@ -326,6 +360,7 @@ public class CPApplication extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -334,8 +369,12 @@ public class CPApplication extends DepthFirstAdapter {
 
       Object obj = cp.getBeforeSet(s);
 
-      if (obj == null) continue;
-      if (!(obj instanceof CPFlowSet)) continue;
+      if (obj == null) {
+        continue;
+      }
+      if (!(obj instanceof CPFlowSet)) {
+        continue;
+      }
 
       // before set is a non null CPFlowSet
       CPFlowSet beforeSet = (CPFlowSet) obj;

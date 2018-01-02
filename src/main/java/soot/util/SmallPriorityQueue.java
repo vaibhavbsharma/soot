@@ -1,12 +1,12 @@
 /** */
 package soot.util;
 
+import static java.lang.Long.numberOfTrailingZeros;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.Long.numberOfTrailingZeros;
 
 /** @author Steven Lambeth */
 class SmallPriorityQueue<E> extends PriorityQueue<E> {
@@ -14,8 +14,11 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
 
   private long queue = 0;
 
+  @Override
   void addAll() {
-    if (N == 0) return;
+    if (N == 0) {
+      return;
+    }
 
     queue = -1L >>> -N;
     min = 0;
@@ -51,11 +54,15 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
   int nextSetBit(int fromIndex) {
     assert fromIndex >= 0;
 
-    if (fromIndex > N) return fromIndex;
+    if (fromIndex > N) {
+      return fromIndex;
+    }
 
     long m0 = -1L << fromIndex;
     long t0 = queue & m0;
-    if ((t0 & -m0) != 0) return fromIndex;
+    if ((t0 & -m0) != 0) {
+      return fromIndex;
+    }
 
     return numberOfTrailingZeros(t0);
   }
@@ -64,7 +71,9 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
   boolean add(int ordinal) {
     long old = queue;
     queue |= (1L << ordinal);
-    if (old == queue) return false;
+    if (old == queue) {
+      return false;
+    }
     min = Math.min(min, ordinal);
     return true;
   }
@@ -85,9 +94,13 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
     long old = queue;
     queue &= ~(1L << index);
 
-    if (old == queue) return false;
+    if (old == queue) {
+      return false;
+    }
 
-    if (min == index) min = nextSetBit(min + 1);
+    if (min == index) {
+      min = nextSetBit(min + 1);
+    }
     return true;
   }
 
@@ -132,7 +145,9 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
     }
     long old = queue;
     queue |= mask;
-    if (old == queue) return false;
+    if (old == queue) {
+      return false;
+    }
     min = nextSetBit(0);
     return true;
   }

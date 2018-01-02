@@ -36,30 +36,37 @@ public class BIfNullInst extends AbstractBranchInst implements IfNullInst {
     super(Baf.v().newInstBox(target));
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public Object clone() {
     return new BIfNullInst(getTarget());
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public String getName() {
     return "ifnull";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIfNullInst(this);
   }

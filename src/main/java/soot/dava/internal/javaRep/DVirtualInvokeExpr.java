@@ -20,6 +20,9 @@
 
 package soot.dava.internal.javaRep;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import soot.NullType;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -28,9 +31,6 @@ import soot.grimp.Grimp;
 import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.grimp.internal.GVirtualInvokeExpr;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
   private HashSet<Object> thisLocals;
@@ -42,6 +42,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
     this.thisLocals = thisLocals;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     if (getBase().getType() instanceof NullType) {
       // OL: I don't know what this is for; I'm just refactoring the
@@ -50,9 +51,13 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
       up.type(methodRef.declaringClass().getType());
       up.literal(") ");
 
-      if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal("(");
+      if (PrecedenceTest.needsBrackets(baseBox, this)) {
+        up.literal("(");
+      }
       baseBox.toString(up);
-      if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal(")");
+      if (PrecedenceTest.needsBrackets(baseBox, this)) {
+        up.literal(")");
+      }
 
       up.literal(")");
       up.literal(".");
@@ -62,7 +67,9 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
 
       if (argBoxes != null) {
         for (int i = 0; i < argBoxes.length; i++) {
-          if (i != 0) up.literal(", ");
+          if (i != 0) {
+            up.literal(", ");
+          }
 
           argBoxes[i].toString(up);
         }
@@ -74,6 +81,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
     }
   }
 
+  @Override
   public String toString() {
     if (getBase().getType() instanceof NullType) {
       StringBuffer b = new StringBuffer();
@@ -84,8 +92,9 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
 
       String baseStr = (getBase()).toString();
       if ((getBase() instanceof Precedence)
-          && (((Precedence) getBase()).getPrecedence() < getPrecedence()))
+          && (((Precedence) getBase()).getPrecedence() < getPrecedence())) {
         baseStr = "(" + baseStr + ")";
+      }
 
       b.append(baseStr);
       b.append(").");
@@ -95,7 +104,9 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
 
       if (argBoxes != null) {
         for (int i = 0; i < argBoxes.length; i++) {
-          if (i != 0) b.append(", ");
+          if (i != 0) {
+            b.append(", ");
+          }
 
           b.append((argBoxes[i].getValue()).toString());
         }
@@ -109,10 +120,13 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
     return super.toString();
   }
 
+  @Override
   public Object clone() {
     ArrayList clonedArgs = new ArrayList(getArgCount());
 
-    for (int i = 0; i < getArgCount(); i++) clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    }
 
     return new DVirtualInvokeExpr(
         Grimp.cloneIfNecessary(getBase()), methodRef, clonedArgs, thisLocals);

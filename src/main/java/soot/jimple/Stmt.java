@@ -30,6 +30,7 @@ import soot.UnitPrinter;
 import soot.ValueBox;
 
 public interface Stmt extends Unit {
+  @Override
   void toString(UnitPrinter up);
 
   boolean containsInvokeExpr();

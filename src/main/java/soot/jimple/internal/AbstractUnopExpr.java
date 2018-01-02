@@ -25,12 +25,12 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.UnopExpr;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractUnopExpr implements UnopExpr {
@@ -40,6 +40,7 @@ public abstract class AbstractUnopExpr implements UnopExpr {
     this.opBox = opBox;
   }
 
+  @Override
   public abstract Object clone();
 
   @Override
@@ -59,7 +60,7 @@ public abstract class AbstractUnopExpr implements UnopExpr {
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     list.addAll(opBox.getValue().getUseBoxes());
     list.add(opBox);

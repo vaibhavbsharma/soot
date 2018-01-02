@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.ast.ClassDecl;
-
 import java.util.ArrayList;
+
+import polyglot.ast.ClassDecl;
 
 public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
 
@@ -32,9 +32,10 @@ public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
   }
 
   public ClassDeclFinder() {
-    declsFound = new ArrayList<ClassDecl>();
+    declsFound = new ArrayList<>();
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
 
     if (n instanceof polyglot.ast.ClassDecl) {

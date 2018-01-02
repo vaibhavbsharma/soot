@@ -25,15 +25,14 @@
 
 package soot.jimple.toolkits.typing;
 
+import java.util.TreeSet;
+
 import soot.ArrayType;
 import soot.G;
 import soot.RefType;
 import soot.options.Options;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
-
-import java.util.Iterator;
-import java.util.TreeSet;
 
 /**
  * Represents a type variable.
@@ -73,9 +72,7 @@ class TypeVariableBV implements Comparable<Object> {
     this.type = type;
     approx = type;
 
-    for (Iterator<TypeNode> parentIt = type.parents().iterator(); parentIt.hasNext(); ) {
-
-      final TypeNode parent = parentIt.next();
+    for (TypeNode parent : type.parents()) {
 
       addParent(resolver.typeVariable(parent));
     }
@@ -86,6 +83,7 @@ class TypeVariableBV implements Comparable<Object> {
     }
   }
 
+  @Override
   public int hashCode() {
     if (rep != this) {
       return ecr().hashCode();
@@ -94,6 +92,7 @@ class TypeVariableBV implements Comparable<Object> {
     return id;
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (rep != this) {
       return ecr().equals(obj);
@@ -112,6 +111,7 @@ class TypeVariableBV implements Comparable<Object> {
     return ecr == this;
   }
 
+  @Override
   public int compareTo(Object o) {
     if (rep != this) {
       return ecr().compareTo(o);
@@ -623,6 +623,7 @@ class TypeVariableBV implements Comparable<Object> {
     }
   }
 
+  @Override
   public String toString() {
     if (rep != this) {
       return ecr().toString();

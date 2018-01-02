@@ -4,6 +4,15 @@
  */
 package soot.toolkits.graph;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BriefUnitPrinter;
 import soot.CompilationDeathException;
@@ -14,15 +23,6 @@ import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class GraphComparer {
 
@@ -52,6 +52,7 @@ public class GraphComparer {
      * @param node a graph node that represents a {@link Unit}.
      * @return <tt>node</tt>.
      */
+    @Override
     public Object getEquiv(Object node) {
       return node;
     }
@@ -100,6 +101,7 @@ public class GraphComparer {
      * @return the node from the other graph being compared which represents the same block, or
      *     <tt>null</tt> if there is no such node.
      */
+    @Override
     public Object getEquiv(Object node) {
       return equivalenceMap.get(node);
     }
@@ -535,9 +537,10 @@ public class GraphComparer {
       this.predOfTrappedThrowerScreensFirstTrappedUnit = false;
     }
 
+    @Override
     public boolean onlyExpectedDiffs() {
       if (exceptional.size() != cOrT.size()) {
-        if (Options.v().verbose())
+        if (Options.v().verbose()) {
           G.v()
               .out
               .println(
@@ -545,13 +548,15 @@ public class GraphComparer {
                       + exceptional.size()
                       + " "
                       + cOrT.size());
+        }
         return false;
       }
 
       if (!(exceptional.getHeads().containsAll(cOrT.getHeads())
           && cOrT.getHeads().containsAll(exceptional.getHeads()))) {
-        if (Options.v().verbose())
+        if (Options.v().verbose()) {
           G.v().out.println("ExceptionalToTrapUnitComparer.onlyExpectedDiffs(): heads differ");
+        }
         return false;
       }
 
@@ -559,16 +564,16 @@ public class GraphComparer {
         return false;
       }
 
-      for (Iterator<Unit> tailIt = exceptional.getTails().iterator(); tailIt.hasNext(); ) {
-        Unit tail = tailIt.next();
+      for (Unit tail : exceptional.getTails()) {
         if ((!cOrT.getTails().contains(tail)) && (!trappedReturnOrThrow(tail))) {
-          if (Options.v().verbose())
+          if (Options.v().verbose()) {
             G.v()
                 .out
                 .println(
                     "ExceptionalToTrapUnitComparer.onlyExpectedDiffs(): "
                         + tail.toString()
                         + " is not a tail in cOrT, but not a trapped Return or Throw either");
+          }
           return false;
         }
       }
@@ -578,15 +583,15 @@ public class GraphComparer {
       // the nodes of one of them --- if they don't have exactly the same
       // set of nodes, this single iteration will reveal some
       // node in cOrT that is not in exceptional.
-      for (Iterator nodeIt = cOrT.iterator(); nodeIt.hasNext(); ) {
-        Unit node = (Unit) nodeIt.next();
+      for (Object element : cOrT) {
+        Unit node = (Unit) element;
         try {
           List cOrTSuccs = cOrT.getSuccsOf(node);
           List exceptionalSuccs = exceptional.getSuccsOf(node);
           for (Iterator it = cOrTSuccs.iterator(); it.hasNext(); ) {
             Unit cOrTSucc = (Unit) it.next();
             if ((!exceptionalSuccs.contains(cOrTSucc)) && (!cannotReallyThrowTo(node, cOrTSucc))) {
-              if (Options.v().verbose())
+              if (Options.v().verbose()) {
                 G.v()
                     .out
                     .println(
@@ -597,6 +602,7 @@ public class GraphComparer {
                             + " even though "
                             + node.toString()
                             + " can throw to it");
+              }
               return false;
             }
           }
@@ -604,7 +610,7 @@ public class GraphComparer {
             Unit exceptionalSucc = (Unit) it.next();
             if ((!cOrTSuccs.contains(exceptionalSucc))
                 && (!predOfTrappedThrower(node, exceptionalSucc))) {
-              if (Options.v().verbose())
+              if (Options.v().verbose()) {
                 G.v()
                     .out
                     .println(
@@ -615,6 +621,7 @@ public class GraphComparer {
                             + " even though "
                             + node.toString()
                             + " is not a predOfTrappedThrower or predOfTrapBegin");
+              }
               return false;
             }
           }
@@ -624,7 +631,7 @@ public class GraphComparer {
           for (Iterator it = cOrTPreds.iterator(); it.hasNext(); ) {
             Unit cOrTPred = (Unit) it.next();
             if ((!exceptionalPreds.contains(cOrTPred)) && (!cannotReallyThrowTo(cOrTPred, node))) {
-              if (Options.v().verbose())
+              if (Options.v().verbose()) {
                 G.v()
                     .out
                     .println(
@@ -636,6 +643,7 @@ public class GraphComparer {
                             + cOrTPred.toString()
                             + " can throw to "
                             + node.toString());
+              }
               return false;
             }
           }
@@ -643,7 +651,7 @@ public class GraphComparer {
             Unit exceptionalPred = (Unit) it.next();
             if ((!cOrTPreds.contains(exceptionalPred))
                 && (!predOfTrappedThrower(exceptionalPred, node))) {
-              if (Options.v().verbose())
+              if (Options.v().verbose()) {
                 G.v()
                     .out
                     .println(
@@ -654,6 +662,7 @@ public class GraphComparer {
                             + " even though "
                             + exceptionalPred.toString()
                             + " is not a predOfTrappedThrower");
+              }
               return false;
             }
           }
@@ -661,13 +670,14 @@ public class GraphComparer {
         } catch (RuntimeException e) {
           e.printStackTrace(System.err);
           if (e.getMessage() != null && e.getMessage().startsWith("Invalid unit ")) {
-            if (Options.v().verbose())
+            if (Options.v().verbose()) {
               G.v()
                   .out
                   .println(
                       "ExceptionalToTrapUnitComparer.onlyExpectedDiffs(): "
                           + node.toString()
                           + " is not in ExceptionalUnitGraph at all");
+            }
             // node is not in exceptional graph.
             return false;
           } else {
@@ -702,8 +712,8 @@ public class GraphComparer {
       if (succsUnaccountedFor.size() <= 0) {
         return false;
       }
-      for (Iterator trapIt = cOrT.getBody().getTraps().iterator(); trapIt.hasNext(); ) {
-        Trap trap = (Trap) trapIt.next();
+      for (Object element : cOrT.getBody().getTraps()) {
+        Trap trap = (Trap) element;
         succsUnaccountedFor.remove(trap.getHandlerUnit());
       }
       return (succsUnaccountedFor.size() == 0);
@@ -753,7 +763,8 @@ public class GraphComparer {
     protected boolean amongTrappedUnits(Unit unit, Trap trap) {
       Chain units = exceptional.getBody().getUnits();
       for (Iterator it = units.iterator(trap.getBeginUnit(), units.getPredOf(trap.getEndUnit()));
-          it.hasNext(); ) {
+          it.hasNext();
+          ) {
         Unit u = (Unit) it.next();
         if (u == unit) {
           return true;
@@ -779,8 +790,9 @@ public class GraphComparer {
       // First, ensure that tail is a handler.
       List tailsTraps = returnHandlersTraps(tail);
       if (tailsTraps.size() == 0) {
-        if (Options.v().verbose())
+        if (Options.v().verbose()) {
           G.v().out.println("trapsReachedViaEdge(): " + tail.toString() + " is not a trap handler");
+        }
         return false;
       }
 
@@ -796,8 +808,8 @@ public class GraphComparer {
       // head itself, since they should be in both CompleteUnitGraph
       // and TrapUnitGraph.
       List headsCatchers = new ArrayList();
-      for (Iterator it = exceptional.getExceptionDests(head).iterator(); it.hasNext(); ) {
-        ExceptionDest dest = (ExceptionDest) it.next();
+      for (Object element : exceptional.getExceptionDests(head)) {
+        ExceptionDest dest = (ExceptionDest) element;
         headsCatchers.add(dest.getTrap());
       }
 
@@ -840,8 +852,8 @@ public class GraphComparer {
     protected List returnHandlersTraps(Unit handler) {
       Body body = exceptional.getBody();
       List result = null;
-      for (Iterator it = body.getTraps().iterator(); it.hasNext(); ) {
-        Trap trap = (Trap) it.next();
+      for (Object element : body.getTraps()) {
+        Trap trap = (Trap) element;
         if (trap.getHandlerUnit() == handler) {
           if (result == null) {
             result = new ArrayList();
@@ -871,11 +883,13 @@ public class GraphComparer {
       this.predOfTrappedThrowerScreensFirstTrappedUnit = true;
     }
 
+    @Override
     protected boolean cannotReallyThrowTo(Unit head, Unit tail) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v()
             .out
             .println("ExceptionalToClassicCompleteUnitGraphComparer.cannotReallyThrowTo() called.");
+      }
       if (super.cannotReallyThrowTo(head, tail)) {
         return true;
       } else {
@@ -915,6 +929,7 @@ public class GraphComparer {
       this.alt = alt;
     }
 
+    @Override
     public boolean onlyExpectedDiffs() {
       if (reg.size() != alt.size()) {
         return false;

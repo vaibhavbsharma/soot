@@ -25,12 +25,11 @@
 
 package soot.toolkits.graph;
 
+import java.util.Set;
+
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
-
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * A CFG where the nodes are {@link Block} instances, and where exception boundaries are taken into
@@ -85,6 +84,7 @@ public class ZonedBlockGraph extends BlockGraph {
    * @param unitGraph is the <tt>Unit</tt>-level CFG which is to be split into basic blocks.
    * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which are block leaders.
    */
+  @Override
   protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
     Body body = unitGraph.getBody();
     if (body != mBody) {
@@ -94,8 +94,7 @@ public class ZonedBlockGraph extends BlockGraph {
 
     Set<Unit> leaders = super.computeLeaders(unitGraph);
 
-    for (Iterator<Trap> it = body.getTraps().iterator(); it.hasNext(); ) {
-      Trap trap = it.next();
+    for (Trap trap : body.getTraps()) {
       leaders.add(trap.getBeginUnit());
       leaders.add(trap.getEndUnit());
     }

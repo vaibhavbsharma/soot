@@ -45,6 +45,7 @@ public class EscapedReader extends FilterReader {
   int nextch = 0;
 
   /** Reads a character from the input. */
+  @Override
   public int read() throws IOException {
     /* if you already read the char, just return it */
     if (nextF) {
@@ -54,7 +55,9 @@ public class EscapedReader extends FilterReader {
 
     int ch = super.read();
 
-    if (ch != '\\') return ch;
+    if (ch != '\\') {
+      return ch;
+    }
 
     /* we may have an escape sequence here ..*/
     mini = new StringBuffer();

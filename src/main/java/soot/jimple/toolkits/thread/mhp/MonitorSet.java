@@ -1,8 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.scalar.ArraySparseSet;
-
 import java.util.Iterator;
+
+import soot.toolkits.scalar.ArraySparseSet;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -29,12 +29,15 @@ public class MonitorSet extends ArraySparseSet {
       Object obj = it.next();
       if (obj instanceof MonitorDepth) {
         MonitorDepth md = (MonitorDepth) obj;
-        if (md.getObjName().equals(objName)) return md;
+        if (md.getObjName().equals(objName)) {
+          return md;
+        }
       }
     }
     return null;
   }
 
+  @Override
   public MonitorSet clone() {
     MonitorSet newSet = new MonitorSet();
     newSet.union(this);
@@ -117,10 +120,13 @@ public class MonitorSet extends ArraySparseSet {
         if (o instanceof MonitorDepth) {
           MonitorDepth md = (MonitorDepth) o;
           Object obj = dest.getMonitorDepth(md.getObjName());
-          if (obj != null)
+          if (obj != null) {
             if (md.getDepth() != ((MonitorDepth) obj).getDepth()) {
               throw new RuntimeException("stmt inside different monitor depth !");
-            } else dest.add(obj);
+            } else {
+              dest.add(obj);
+            }
+          }
         }
       }
     }
@@ -135,7 +141,9 @@ public class MonitorSet extends ArraySparseSet {
         MonitorDepth md = (MonitorDepth) obj;
         System.out.println("obj: " + md.getObjName());
         System.out.println("depth: " + md.getDepth());
-      } else System.out.println(obj);
+      } else {
+        System.out.println(obj);
+      }
     }
     System.out.println("====MonitorSet end====");
   }

@@ -34,7 +34,9 @@ public interface NewExpr extends Expr, AnyNewExpr {
 
   void setBaseType(RefType type);
 
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

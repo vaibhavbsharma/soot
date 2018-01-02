@@ -25,6 +25,9 @@
 
 package soot.toDex;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,9 +38,6 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * The Dalvik VM requires synchronized methods to explicitly enter a monitor and leave it in a
@@ -53,13 +53,18 @@ public class SynchronizedMethodTransformer extends BodyTransformer {
     return G.v().soot_toDex_SynchronizedMethodTransformer();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (!b.getMethod().isSynchronized() || b.getMethod().isStatic()) return;
+    if (!b.getMethod().isSynchronized() || b.getMethod().isStatic()) {
+      return;
+    }
 
     Iterator<Unit> it = b.getUnits().snapshotIterator();
     while (it.hasNext()) {
       Unit u = it.next();
-      if (u instanceof IdentityStmt) continue;
+      if (u instanceof IdentityStmt) {
+        continue;
+      }
 
       // This the first real statement. If it is not a MonitorEnter
       // instruction, we generate one
@@ -68,8 +73,9 @@ public class SynchronizedMethodTransformer extends BodyTransformer {
 
         // We also need to leave the monitor when the method terminates
         UnitGraph graph = new ExceptionalUnitGraph(b);
-        for (Unit tail : graph.getTails())
+        for (Unit tail : graph.getTails()) {
           b.getUnits().insertBefore(Jimple.v().newExitMonitorStmt(b.getThisLocal()), tail);
+        }
       }
       break;
     }

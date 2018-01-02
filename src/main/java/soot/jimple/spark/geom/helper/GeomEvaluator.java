@@ -18,6 +18,16 @@
  */
 package soot.jimple.spark.geom.helper;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -46,16 +56,6 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * We provide a set of methods to evaluate the quality of geometric points-to analysis. The
@@ -90,14 +90,18 @@ public class GeomEvaluator {
     for (IVarAbstraction pn : ptsProvider.pointers) {
       // We don't consider exception pointers
       Node var = pn.getWrappedNode();
-      if (ptsProvider.isExceptionPointer(var)) continue;
+      if (ptsProvider.isExceptionPointer(var)) {
+        continue;
+      }
 
       ++n_legal_var;
 
       int size = var.getP2Set().size();
       evalRes.pts_size_bar_spark.addNumber(size);
       evalRes.total_spark_pts += size;
-      if (size > evalRes.max_pts_spark) evalRes.max_pts_spark = size;
+      if (size > evalRes.max_pts_spark) {
+        evalRes.max_pts_spark = size;
+      }
     }
 
     evalRes.avg_spark_pts = (double) evalRes.total_spark_pts / n_legal_var;
@@ -118,7 +122,9 @@ public class GeomEvaluator {
 
     // We first count the LOC
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (!sm.isConcrete()) continue;
+      if (!sm.isConcrete()) {
+        continue;
+      }
       if (!sm.hasActiveBody()) {
         sm.retrieveActiveBody();
       }
@@ -129,12 +135,16 @@ public class GeomEvaluator {
     for (IVarAbstraction pn : ptsProvider.pointers) {
       // We don't consider those un-processed pointers because their
       // points-to information is equivalent to SPARK
-      if (!pn.hasPTResult()) continue;
+      if (!pn.hasPTResult()) {
+        continue;
+      }
 
       pn = pn.getRepresentative();
       Node var = pn.getWrappedNode();
 
-      if (ptsProvider.isExceptionPointer(var)) continue;
+      if (ptsProvider.isExceptionPointer(var)) {
+        continue;
+      }
 
       if (var instanceof AllocDotField) {
         ++n_alloc_dot_fields;
@@ -148,18 +158,24 @@ public class GeomEvaluator {
         size = var.getP2Set().size();
         evalRes.pts_size_bar_spark.addNumber(size);
         evalRes.total_spark_pts += size;
-        if (size > evalRes.max_pts_spark) evalRes.max_pts_spark = size;
+        if (size > evalRes.max_pts_spark) {
+          evalRes.max_pts_spark = size;
+        }
       }
 
       // ...geom
       size = pn.num_of_diff_objs();
       evalRes.pts_size_bar_geom.addNumber(size);
       evalRes.total_geom_ins_pts += size;
-      if (size > evalRes.max_pts_geom) evalRes.max_pts_geom = size;
+      if (size > evalRes.max_pts_geom) {
+        evalRes.max_pts_geom = size;
+      }
     }
 
     evalRes.avg_geom_ins_pts = (double) evalRes.total_geom_ins_pts / n_legal_var;
-    if (testSpark) evalRes.avg_spark_pts = (double) evalRes.total_spark_pts / n_legal_var;
+    if (testSpark) {
+      evalRes.avg_spark_pts = (double) evalRes.total_spark_pts / n_legal_var;
+    }
 
     outputer.println("");
     outputer.println(
@@ -197,30 +213,36 @@ public class GeomEvaluator {
       LocalVarNode vn, SootMethod caller, SootMethod callee_signature, Histogram ce_range) {
     long l, r;
     IVarAbstraction pn = ptsProvider.findInternalNode(vn);
-    if (pn == null) return;
+    if (pn == null) {
+      return;
+    }
     pn = pn.getRepresentative();
-    Set<SootMethod> tgts = new HashSet<SootMethod>();
+    Set<SootMethod> tgts = new HashSet<>();
     Set<AllocNode> set = pn.get_all_points_to_objects();
 
     LinkedList<CgEdge> list = ptsProvider.getCallEdgesInto(ptsProvider.getIDFromSootMethod(caller));
 
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
 
-    for (Iterator<CgEdge> it = list.iterator(); it.hasNext(); ) {
-      CgEdge p = it.next();
-
+    for (CgEdge p : list) {
       l = p.map_offset;
       r = l + ptsProvider.max_context_size_block[p.s];
       tgts.clear();
 
       for (AllocNode obj : set) {
-        if (!pn.pointer_interval_points_to(l, r, obj)) continue;
+        if (!pn.pointer_interval_points_to(l, r, obj)) {
+          continue;
+        }
 
         Type t = obj.getType();
 
-        if (t == null) continue;
-        else if (t instanceof AnySubType) t = ((AnySubType) t).getBase();
-        else if (t instanceof ArrayType) t = RefType.v("java.lang.Object");
+        if (t == null) {
+          continue;
+        } else if (t instanceof AnySubType) {
+          t = ((AnySubType) t).getBase();
+        } else if (t instanceof ArrayType) {
+          t = RefType.v("java.lang.Object");
+        }
 
         try {
           tgts.add(
@@ -244,14 +266,18 @@ public class GeomEvaluator {
 
     for (Stmt callsite : ptsProvider.multiCallsites) {
       Iterator<Edge> edges = cg.edgesOutOf(callsite);
-      if (!edges.hasNext()) continue;
+      if (!edges.hasNext()) {
+        continue;
+      }
       evalRes.n_callsites++;
 
       // get an edge
       Edge anyEdge = edges.next();
       SootMethod src = anyEdge.src();
 
-      if (!ptsProvider.isReachableMethod(src) || !ptsProvider.isValidMethod(src)) continue;
+      if (!ptsProvider.isReachableMethod(src) || !ptsProvider.isValidMethod(src)) {
+        continue;
+      }
 
       // get the base pointer
       CgEdge p = ptsProvider.getInternalEdgeFromSootEdge(anyEdge);
@@ -264,7 +290,9 @@ public class GeomEvaluator {
         edges.next();
       }
       evalRes.n_geom_call_edges += edge_cnt;
-      if (edge_cnt == 1) ++evalRes.n_geom_solved_all;
+      if (edge_cnt == 1) {
+        ++evalRes.n_geom_solved_all;
+      }
 
       // test app method
       if (!src.isJavaLibraryMethod()) {
@@ -307,27 +335,35 @@ public class GeomEvaluator {
     evalRes.total_call_edges.printResult(
         ptsProvider.ps, "Testing of unsolved callsites on 1-CFA call graph: ");
 
-    if (ptsProvider.getOpts().verbose()) ptsProvider.outputNotEvaluatedMethods();
+    if (ptsProvider.getOpts().verbose()) {
+      ptsProvider.outputNotEvaluatedMethods();
+    }
   }
 
   /** Count how many aliased base pointers appeared in all user's functions. */
   public void checkAliasAnalysis() {
-    Set<IVarAbstraction> access_expr = new HashSet<IVarAbstraction>();
-    ArrayList<IVarAbstraction> al = new ArrayList<IVarAbstraction>();
+    Set<IVarAbstraction> access_expr = new HashSet<>();
+    ArrayList<IVarAbstraction> al = new ArrayList<>();
     Value[] values = new Value[2];
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) continue;
-      if (!sm.isConcrete()) continue;
+      if (sm.isJavaLibraryMethod()) {
+        continue;
+      }
+      if (!sm.isConcrete()) {
+        continue;
+      }
       if (!sm.hasActiveBody()) {
         sm.retrieveActiveBody();
       }
-      if (!ptsProvider.isValidMethod(sm)) continue;
+      if (!ptsProvider.isValidMethod(sm)) {
+        continue;
+      }
 
       // We first gather all the pointers
       // access_expr.clear();
-      for (Iterator<Unit> stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext(); ) {
-        Stmt st = (Stmt) stmts.next();
+      for (Unit unit : sm.getActiveBody().getUnits()) {
+        Stmt st = (Stmt) unit;
 
         if (st instanceof AssignStmt) {
           AssignStmt a = (AssignStmt) st;
@@ -340,17 +376,27 @@ public class GeomEvaluator {
             if (v instanceof InstanceFieldRef) {
               InstanceFieldRef ifr = (InstanceFieldRef) v;
               final SootField field = ifr.getField();
-              if (!(field.getType() instanceof RefType)) continue;
+              if (!(field.getType() instanceof RefType)) {
+                continue;
+              }
 
               LocalVarNode vn = ptsProvider.findLocalVarNode(ifr.getBase());
-              if (vn == null) continue;
+              if (vn == null) {
+                continue;
+              }
 
-              if (ptsProvider.isExceptionPointer(vn)) continue;
+              if (ptsProvider.isExceptionPointer(vn)) {
+                continue;
+              }
 
               IVarAbstraction pn = ptsProvider.findInternalNode(vn);
-              if (pn == null) continue;
+              if (pn == null) {
+                continue;
+              }
               pn = pn.getRepresentative();
-              if (pn.hasPTResult()) access_expr.add(pn);
+              if (pn.hasPTResult()) {
+                access_expr.add(pn);
+              }
             }
           }
         }
@@ -373,10 +419,14 @@ public class GeomEvaluator {
         IVarAbstraction qn = al.get(j);
         VarNode n2 = (VarNode) qn.getWrappedNode();
 
-        if (pn.heap_sensitive_intersection(qn)) evalRes.n_hs_alias++;
+        if (pn.heap_sensitive_intersection(qn)) {
+          evalRes.n_hs_alias++;
+        }
 
         // We directly use the SPARK points-to sets
-        if (n1.getP2Set().hasNonEmptyIntersection(n2.getP2Set())) evalRes.n_hi_alias++;
+        if (n1.getP2Set().hasNonEmptyIntersection(n2.getP2Set())) {
+          evalRes.n_hi_alias++;
+        }
       }
     }
 
@@ -400,16 +450,22 @@ public class GeomEvaluator {
   public void checkCastsSafety() {
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) continue;
-      if (!sm.isConcrete()) continue;
+      if (sm.isJavaLibraryMethod()) {
+        continue;
+      }
+      if (!sm.isConcrete()) {
+        continue;
+      }
       if (!sm.hasActiveBody()) {
         sm.retrieveActiveBody();
       }
-      if (!ptsProvider.isValidMethod(sm)) continue;
+      if (!ptsProvider.isValidMethod(sm)) {
+        continue;
+      }
 
       // All the statements in the method
-      for (Iterator<Unit> stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext(); ) {
-        Stmt st = (Stmt) stmts.next();
+      for (Unit unit : sm.getActiveBody().getUnits()) {
+        Stmt st = (Stmt) unit;
 
         if (st instanceof AssignStmt) {
           Value rhs = ((AssignStmt) st).getRightOp();
@@ -418,12 +474,18 @@ public class GeomEvaluator {
 
             Value v = ((CastExpr) rhs).getOp();
             VarNode node = ptsProvider.findLocalVarNode(v);
-            if (node == null) continue;
+            if (node == null) {
+              continue;
+            }
             IVarAbstraction pn = ptsProvider.findInternalNode(node);
-            if (pn == null) continue;
+            if (pn == null) {
+              continue;
+            }
 
             pn = pn.getRepresentative();
-            if (!pn.hasPTResult()) continue;
+            if (!pn.hasPTResult()) {
+              continue;
+            }
 
             evalRes.total_casts++;
             final Type targetType = ((CastExpr) rhs).getCastType();
@@ -434,23 +496,32 @@ public class GeomEvaluator {
             Set<AllocNode> set = pn.get_all_points_to_objects();
             for (AllocNode obj : set) {
               solved = ptsProvider.castNeverFails(obj.getType(), targetType);
-              if (solved == false) break;
+              if (solved == false) {
+                break;
+              }
             }
 
-            if (solved) evalRes.geom_solved_casts++;
+            if (solved) {
+              evalRes.geom_solved_casts++;
+            }
 
             // Second is the SPARK result
             solved = true;
             node.getP2Set()
                 .forall(
                     new P2SetVisitor() {
+                      @Override
                       public void visit(Node arg0) {
-                        if (solved == false) return;
+                        if (solved == false) {
+                          return;
+                        }
                         solved = ptsProvider.castNeverFails(arg0.getType(), targetType);
                       }
                     });
 
-            if (solved) evalRes.spark_solved_casts++;
+            if (solved) {
+              evalRes.spark_solved_casts++;
+            }
           }
         }
       }
@@ -471,24 +542,32 @@ public class GeomEvaluator {
    * context information.
    */
   public void estimateHeapDefuseGraph() {
-    final Map<IVarAbstraction, int[]> defUseCounterForGeom = new HashMap<IVarAbstraction, int[]>();
-    final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<AllocDotField, int[]>();
+    final Map<IVarAbstraction, int[]> defUseCounterForGeom = new HashMap<>();
+    final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<>();
 
     Date begin = new Date();
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) continue;
-      if (!sm.isConcrete()) continue;
+      if (sm.isJavaLibraryMethod()) {
+        continue;
+      }
+      if (!sm.isConcrete()) {
+        continue;
+      }
       if (!sm.hasActiveBody()) {
         sm.retrieveActiveBody();
       }
-      if (!ptsProvider.isValidMethod(sm)) continue;
+      if (!ptsProvider.isValidMethod(sm)) {
+        continue;
+      }
 
       // We first gather all the memory access expressions
-      for (Iterator<Unit> stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext(); ) {
-        Stmt st = (Stmt) stmts.next();
+      for (Unit unit : sm.getActiveBody().getUnits()) {
+        Stmt st = (Stmt) unit;
 
-        if (!(st instanceof AssignStmt)) continue;
+        if (!(st instanceof AssignStmt)) {
+          continue;
+        }
 
         AssignStmt a = (AssignStmt) st;
         final Value lValue = a.getLeftOp();
@@ -508,11 +587,17 @@ public class GeomEvaluator {
           final SootField field = ifr.getField();
 
           LocalVarNode vn = ptsProvider.findLocalVarNode(ifr.getBase());
-          if (vn == null) continue;
+          if (vn == null) {
+            continue;
+          }
           IVarAbstraction pn = ptsProvider.findInternalNode(vn);
-          if (pn == null) continue;
+          if (pn == null) {
+            continue;
+          }
           pn = pn.getRepresentative();
-          if (!pn.hasPTResult()) continue;
+          if (!pn.hasPTResult()) {
+            continue;
+          }
 
           // Spark
           vn.getP2Set()

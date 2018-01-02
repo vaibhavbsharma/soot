@@ -25,10 +25,10 @@
 
 package soot.coffi;
 
+import java.util.StringTokenizer;
+
 import soot.G;
 import soot.Value;
-
-import java.util.StringTokenizer;
 
 /**
  * Base abstract class for constant pool entries; includes some utility methods.
@@ -140,8 +140,11 @@ abstract class cp_info {
     int j, k;
     k = 1;
     for (j = 0; j < 32; j++) {
-      if ((i & k) != 0) s = "1" + s;
-      else s = "0" + s;
+      if ((i & k) != 0) {
+        s = "1" + s;
+      } else {
+        s = "0" + s;
+      }
       k = k << 1;
     }
     return s;
@@ -159,8 +162,11 @@ abstract class cp_info {
     long j, k;
     k = 1;
     for (j = 0; j < 64; j++) {
-      if ((i & k) != 0) s = "1" + s;
-      else s = "0" + s;
+      if ((i & k) != 0) {
+        s = "1" + s;
+      } else {
+        s = "0" + s;
+      }
       k = k << 1;
     }
     return s;
@@ -245,16 +251,22 @@ abstract class cp_info {
    */
   public static String getTypeDescr(cp_info constant_pool[], int i) {
     cp_info c = constant_pool[i];
-    if (c instanceof CONSTANT_Utf8_info) return c.toString(constant_pool);
-    if (c instanceof CONSTANT_NameAndType_info)
+    if (c instanceof CONSTANT_Utf8_info) {
+      return c.toString(constant_pool);
+    }
+    if (c instanceof CONSTANT_NameAndType_info) {
       return getTypeDescr(constant_pool, ((CONSTANT_NameAndType_info) c).descriptor_index);
-    if (c instanceof CONSTANT_Methodref_info)
+    }
+    if (c instanceof CONSTANT_Methodref_info) {
       return getTypeDescr(constant_pool, ((CONSTANT_Methodref_info) c).name_and_type_index);
-    if (c instanceof CONSTANT_InterfaceMethodref_info)
+    }
+    if (c instanceof CONSTANT_InterfaceMethodref_info) {
       return getTypeDescr(
           constant_pool, ((CONSTANT_InterfaceMethodref_info) c).name_and_type_index);
-    if (c instanceof CONSTANT_Fieldref_info)
+    }
+    if (c instanceof CONSTANT_Fieldref_info) {
       return getTypeDescr(constant_pool, ((CONSTANT_Fieldref_info) c).name_and_type_index);
+    }
     G.v().out.println("Invalid request for type descr!");
     return "Invalid type descriptor request.";
   }

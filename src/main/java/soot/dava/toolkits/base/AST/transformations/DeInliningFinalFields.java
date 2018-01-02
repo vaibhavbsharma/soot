@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -63,10 +67,6 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /** Maintained by: Nomair A. Naeem */
 
@@ -114,13 +114,14 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     DavaBody davaBody = node.getDavaBody();
     sootMethod = davaBody.getMethod();
     // System.out.println("Deiniling  method: "+sootMethod.getName());
     sootClass = sootMethod.getDeclaringClass();
 
-    finalFields = new HashMap<Comparable, SootField>();
+    finalFields = new HashMap<>();
 
     ArrayList fieldChain = new ArrayList();
 
@@ -159,8 +160,11 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
           finalFields.put(new Integer(val), f);
         } else if (fieldType instanceof BooleanType && f.hasTag("IntegerConstantValueTag")) {
           int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-          if (val == 0) finalFields.put(new Boolean(false), f);
-          else finalFields.put(new Boolean(true), f);
+          if (val == 0) {
+            finalFields.put(new Boolean(false), f);
+          } else {
+            finalFields.put(new Boolean(true), f);
+          }
         } else if ((fieldType instanceof IntType
                 || fieldType instanceof ByteType
                 || fieldType instanceof ShortType)
@@ -192,6 +196,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
   /*
    * Notice as things stand synchblocks cant have the use of a SootField
    */
+  @Override
   public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     // hence nothing is implemented here
   }
@@ -250,17 +255,23 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
         finalField = finalFields.get(new Long(myString.substring(0, myString.length() - 1)));
       } else if (val instanceof IntConstant) {
         String myString = val.toString();
-        if (myString.length() == 0) return null;
+        if (myString.length() == 0) {
+          return null;
+        }
 
         Type valType = val.getType();
 
         Integer myInt = null;
         try {
           if (myString.charAt(0) == '\'') { // character
-            if (myString.length() < 2) return null;
+            if (myString.length() < 2) {
+              return null;
+            }
 
             myInt = new Integer(myString.charAt(1));
-          } else myInt = new Integer(myString);
+          } else {
+            myInt = new Integer(myString);
+          }
         } catch (Exception e) {
           // System.out.println("exception occured...gracefully exitting method..string
           // was"+myString);
@@ -270,9 +281,11 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
         if (valType instanceof ByteType) {
           finalField = finalFields.get(myInt);
         } else if (valType instanceof IntType) {
-          if (myString.equals("false")) finalField = finalFields.get(new Boolean(false));
-          else if (myString.equals("true")) finalField = finalFields.get(new Boolean(true));
-          else {
+          if (myString.equals("false")) {
+            finalField = finalFields.get(new Boolean(false));
+          } else if (myString.equals("true")) {
+            finalField = finalFields.get(new Boolean(true));
+          } else {
             finalField = finalFields.get(myInt);
           }
         } else if (valType instanceof ShortType) {
@@ -291,6 +304,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
    * valueBoxes so that by changing the value in the value box we can deInline
    * any field
    */
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value val = node.get_Key();
 
@@ -311,6 +325,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -323,6 +338,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
 
     // checking uses in init
@@ -376,6 +392,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
   /*
    * The condition of an if node can use a local
    */
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -384,6 +401,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
   /*
    * The condition of an ifElse node can use a local
    */
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -392,6 +410,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
   /*
    * The condition of a while node can use a local
    */
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -400,6 +419,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
   /*
    * The condition of a doWhile node can use a local
    */
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);

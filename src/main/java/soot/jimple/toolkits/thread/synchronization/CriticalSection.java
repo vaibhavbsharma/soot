@@ -1,15 +1,15 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import soot.EquivalentValue;
 import soot.MethodOrMethodContext;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 class CriticalSection extends SynchronizedRegion {
   public static int nextIDNum = 1;
@@ -48,17 +48,17 @@ class CriticalSection extends SynchronizedRegion {
     this.nestLevel = nestLevel;
     this.read = new CodeBlockRWSet();
     this.write = new CodeBlockRWSet();
-    this.invokes = new HashSet<Unit>();
-    this.units = new HashSet<Unit>();
-    this.unitToRWSet = new HashMap<Unit, CodeBlockRWSet>();
-    this.unitToUses = new HashMap<Unit, List>();
+    this.invokes = new HashSet<>();
+    this.units = new HashSet<>();
+    this.unitToRWSet = new HashMap<>();
+    this.unitToUses = new HashMap<>();
     this.wholeMethod = wholeMethod;
     this.method = method;
     this.setNumber = 0; // 0 = no group, -1 = DELETE
     this.group = null;
-    this.edges = new HashSet<CriticalSectionDataDependency>();
-    this.waits = new HashSet<Unit>();
-    this.notifys = new HashSet<Unit>();
+    this.edges = new HashSet<>();
+    this.waits = new HashSet<>();
+    this.notifys = new HashSet<>();
     this.transitiveTargets = null;
     this.lockObject = null;
     this.lockObjectArrayIndex = null;
@@ -93,10 +93,12 @@ class CriticalSection extends SynchronizedRegion {
     this.lockset = tn.lockset;
   }
 
+  @Override
   protected Object clone() {
     return new CriticalSection(this);
   }
 
+  @Override
   public String toString() {
     return name;
   }

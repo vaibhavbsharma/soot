@@ -29,6 +29,10 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import soot.Local;
 import soot.SootField;
 import soot.Value;
@@ -37,10 +41,6 @@ import soot.dava.internal.AST.ASTUnaryBinaryCondition;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /*
 * The analysis stores all defs of Locals/SootField. The user can then ask whether a local or SootField
@@ -83,7 +83,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 
   public MustMayInitialize(Object analyze, int MUSTorMAY) {
     super();
-    mapping = new HashMap<Object, List>();
+    mapping = new HashMap<>();
     MUSTMAY = MUSTorMAY;
 
     // System.out.println("MustOrMay value is"+MUSTorMAY);
@@ -96,10 +96,12 @@ public class MustMayInitialize extends StructuredAnalysis {
     // method
   }
 
+  @Override
   public DavaFlowSet emptyFlowSet() {
     return new DavaFlowSet();
   }
 
+  @Override
   public void setMergeType() {
     // System.out.println("here"+MUSTMAY);
     if (MUSTMAY == MUST) {
@@ -108,7 +110,9 @@ public class MustMayInitialize extends StructuredAnalysis {
     } else if (MUSTMAY == MAY) {
       MERGETYPE = UNION;
       // System.out.println("MERGETYPE set to union");
-    } else throw new DavaFlowAnalysisException("Only allowed 0 or 1 for MUST or MAY values");
+    } else {
+      throw new DavaFlowAnalysisException("Only allowed 0 or 1 for MUST or MAY values");
+    }
   }
 
   /*
@@ -185,7 +189,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 
         if (temp == null) {
           // first definition
-          defs = new ArrayList<Stmt>();
+          defs = new ArrayList<>();
         } else {
           defs = (ArrayList<Stmt>) temp;
         }
@@ -205,7 +209,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 
         if (temp == null) {
           // first definition
-          defs = new ArrayList<Stmt>();
+          defs = new ArrayList<>();
         } else {
           defs = (ArrayList<Stmt>) temp;
         }
@@ -221,35 +225,45 @@ public class MustMayInitialize extends StructuredAnalysis {
   public boolean isMayInitialized(SootField field) {
     if (MUSTMAY == MAY) {
       Object temp = mapping.get(field);
-      if (temp == null) return false;
-      else {
+      if (temp == null) {
+        return false;
+      } else {
         List list = (List) temp;
         return list.size() != 0;
       }
-    } else throw new RuntimeException("Cannot invoke isMayInitialized for a MUST analysis");
+    } else {
+      throw new RuntimeException("Cannot invoke isMayInitialized for a MUST analysis");
+    }
   }
 
   public boolean isMayInitialized(Value local) {
     if (MUSTMAY == MAY) {
       Object temp = mapping.get(local);
-      if (temp == null) return false;
-      else {
+      if (temp == null) {
+        return false;
+      } else {
         List list = (List) temp;
         return list.size() != 0;
       }
-    } else throw new RuntimeException("Cannot invoke isMayInitialized for a MUST analysis");
+    } else {
+      throw new RuntimeException("Cannot invoke isMayInitialized for a MUST analysis");
+    }
   }
 
   public boolean isMustInitialized(SootField field) {
     if (MUSTMAY == MUST) {
       return finalResult.contains(field);
-    } else throw new RuntimeException("Cannot invoke isMustinitialized for a MAY analysis");
+    } else {
+      throw new RuntimeException("Cannot invoke isMustinitialized for a MAY analysis");
+    }
   }
 
   public boolean isMustInitialized(Value local) {
     if (MUSTMAY == MUST) {
       return finalResult.contains(local);
-    } else throw new RuntimeException("Cannot invoke isMustinitialized for a MAY analysis");
+    } else {
+      throw new RuntimeException("Cannot invoke isMustinitialized for a MAY analysis");
+    }
   }
 
   /*
@@ -258,8 +272,11 @@ public class MustMayInitialize extends StructuredAnalysis {
    */
   public List getDefs(Value local) {
     Object temp = mapping.get(local);
-    if (temp == null) return null;
-    else return (List) temp;
+    if (temp == null) {
+      return null;
+    } else {
+      return (List) temp;
+    }
   }
 
   /*
@@ -268,7 +285,10 @@ public class MustMayInitialize extends StructuredAnalysis {
    */
   public List getDefs(SootField field) {
     Object temp = mapping.get(field);
-    if (temp == null) return null;
-    else return (List) temp;
+    if (temp == null) {
+      return null;
+    } else {
+      return (List) temp;
+    }
   }
 }

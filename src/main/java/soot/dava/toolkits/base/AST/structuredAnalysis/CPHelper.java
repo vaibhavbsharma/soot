@@ -17,12 +17,19 @@ public class CPHelper {
    *  If it is not a data of interest a null is send back
    */
   public static Object wrapperClassCloner(Object value) {
-    if (value instanceof Double) return new Double(((Double) value).doubleValue());
-    else if (value instanceof Float) return new Float(((Float) value).floatValue());
-    else if (value instanceof Long) return new Long(((Long) value).longValue());
-    else if (value instanceof Boolean) return new Boolean(((Boolean) value).booleanValue());
-    else if (value instanceof Integer) return new Integer(((Integer) value).intValue());
-    else return null;
+    if (value instanceof Double) {
+      return new Double(((Double) value).doubleValue());
+    } else if (value instanceof Float) {
+      return new Float(((Float) value).floatValue());
+    } else if (value instanceof Long) {
+      return new Long(((Long) value).longValue());
+    } else if (value instanceof Boolean) {
+      return new Boolean(((Boolean) value).booleanValue());
+    } else if (value instanceof Integer) {
+      return new Integer(((Integer) value).intValue());
+    } else {
+      return null;
+    }
   }
 
   /*
@@ -55,12 +62,17 @@ public class CPHelper {
       return DoubleConstant.v(((Double) toConvert).doubleValue());
     } else if (toConvert instanceof Boolean) {
       boolean val = ((Boolean) toConvert).booleanValue();
-      if (val) return DIntConstant.v(1, BooleanType.v());
-      else return DIntConstant.v(0, BooleanType.v());
+      if (val) {
+        return DIntConstant.v(1, BooleanType.v());
+      } else {
+        return DIntConstant.v(0, BooleanType.v());
+      }
     } else if (toConvert instanceof Float) {
       return FloatConstant.v(((Float) toConvert).floatValue());
     } else if (toConvert instanceof Integer) {
       return IntConstant.v(((Integer) toConvert).intValue());
-    } else return null;
+    } else {
+      return null;
+    }
   }
 }

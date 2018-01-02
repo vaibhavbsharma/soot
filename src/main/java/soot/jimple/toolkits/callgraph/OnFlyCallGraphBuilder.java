@@ -19,6 +19,17 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -84,17 +95,6 @@ import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Models the call graph.
@@ -190,37 +190,30 @@ public final class OnFlyCallGraphBuilder {
   /** context-insensitive stuff */
   private final CallGraph cicg = new CallGraph();
 
-  private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
+  private final HashSet<SootMethod> analyzedMethods = new HashSet<>();
 
   // end type based reflection resolution
   private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
-      new LargeNumberedMap<Local, List<VirtualCallSite>>(
-          Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
+      new LargeNumberedMap<>(Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
   private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
-      new LargeNumberedMap<SootMethod, List<Local>>(
-          Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
+      new LargeNumberedMap<>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
   private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
-      new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
+      new LargeNumberedMap<>(Scene.v().getMethodNumberer());
   private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
-      new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final Map<Local, List<InvokeCallSite>> baseToInvokeSite =
-      new IdentityHashMap<Local, List<InvokeCallSite>>();
-  private final Map<Local, List<InvokeCallSite>> invokeArgsToInvokeSite =
-      new IdentityHashMap<Local, List<InvokeCallSite>>();
-  private final Map<Local, Set<Integer>> invokeArgsToSize =
-      new IdentityHashMap<Local, Set<Integer>>();
-  private final Map<AllocDotField, Set<Local>> allocDotFieldToLocal =
-      new IdentityHashMap<AllocDotField, Set<Local>>();
-  private final Map<Local, Set<Type>> reachingArgTypes = new IdentityHashMap<Local, Set<Type>>();
-  private final Map<Local, Set<Type>> reachingBaseTypes = new IdentityHashMap<Local, Set<Type>>();
+      new LargeNumberedMap<>(Scene.v().getMethodNumberer());
+  private final Map<Local, List<InvokeCallSite>> baseToInvokeSite = new IdentityHashMap<>();
+  private final Map<Local, List<InvokeCallSite>> invokeArgsToInvokeSite = new IdentityHashMap<>();
+  private final Map<Local, Set<Integer>> invokeArgsToSize = new IdentityHashMap<>();
+  private final Map<AllocDotField, Set<Local>> allocDotFieldToLocal = new IdentityHashMap<>();
+  private final Map<Local, Set<Type>> reachingArgTypes = new IdentityHashMap<>();
+  private final Map<Local, Set<Type>> reachingBaseTypes = new IdentityHashMap<>();
   private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
-      new SmallNumberedMap<List<VirtualCallSite>>(); // Local
+      new SmallNumberedMap<>(); // Local
   // ->
   // List(VirtualCallSite)
   private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants =
-      new LargeNumberedMap<SootMethod, List<Local>>(
-          Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+      new LargeNumberedMap<>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
+  private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<>();
   private final QueueReader<SootMethod> targets = targetsQueue.reader();
   ReflectionModel reflectionModel;
   private CGOptions options;
@@ -285,12 +278,18 @@ public final class OnFlyCallGraphBuilder {
     while (true) {
       if (!worklist.hasNext()) {
         rm.update();
-        if (!worklist.hasNext()) break;
+        if (!worklist.hasNext()) {
+          break;
+        }
       }
       MethodOrMethodContext momc = worklist.next();
       SootMethod m = momc.method();
-      if (appOnly && !m.getDeclaringClass().isApplicationClass()) continue;
-      if (analyzedMethods.add(m)) processNewMethod(m);
+      if (appOnly && !m.getDeclaringClass().isApplicationClass()) {
+        continue;
+      }
+      if (analyzedMethods.add(m)) {
+        processNewMethod(m);
+      }
       processNewMethodContext(momc);
     }
   }
@@ -564,13 +563,19 @@ public final class OnFlyCallGraphBuilder {
   public void addType(Local receiver, Context srcContext, Type type, Context typeContext) {
     FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
     if (receiverToSites.get(receiver) != null) {
-      for (Iterator<VirtualCallSite> siteIt = receiverToSites.get(receiver).iterator();
-          siteIt.hasNext(); ) {
-        final VirtualCallSite site = siteIt.next();
-        if (site.kind() == Kind.THREAD && !fh.canStoreType(type, clRunnable)) continue;
-        if (site.kind() == Kind.EXECUTOR && !fh.canStoreType(type, clRunnable)) continue;
-        if (site.kind() == Kind.ASYNCTASK && !fh.canStoreType(type, clAsyncTask)) continue;
-        if (site.kind() == Kind.HANDLER && !fh.canStoreType(type, clHandler)) continue;
+      for (VirtualCallSite site : receiverToSites.get(receiver)) {
+        if (site.kind() == Kind.THREAD && !fh.canStoreType(type, clRunnable)) {
+          continue;
+        }
+        if (site.kind() == Kind.EXECUTOR && !fh.canStoreType(type, clRunnable)) {
+          continue;
+        }
+        if (site.kind() == Kind.ASYNCTASK && !fh.canStoreType(type, clAsyncTask)) {
+          continue;
+        }
+        if (site.kind() == Kind.HANDLER && !fh.canStoreType(type, clHandler)) {
+          continue;
+        }
 
         if (site.iie() instanceof SpecialInvokeExpr
             && site.kind != Kind.THREAD
@@ -612,9 +617,7 @@ public final class OnFlyCallGraphBuilder {
   }
 
   public void addStringConstant(Local l, Context srcContext, String constant) {
-    for (Iterator<VirtualCallSite> siteIt = (stringConstToSites.get(l)).iterator();
-        siteIt.hasNext(); ) {
-      final VirtualCallSite site = siteIt.next();
+    for (VirtualCallSite site : (stringConstToSites.get(l))) {
       if (constant == null) {
         if (options.verbose()) {
           G.v()
@@ -632,7 +635,9 @@ public final class OnFlyCallGraphBuilder {
               && constant.charAt(1) == 'L'
               && constant.charAt(constant.length() - 1) == ';') {
             constant = constant.substring(2, constant.length() - 1);
-          } else continue;
+          } else {
+            continue;
+          }
         }
         if (!Scene.v().containsClass(constant)) {
           if (options.verbose()) {
@@ -766,9 +771,11 @@ public final class OnFlyCallGraphBuilder {
       Kind kind) {
     List<VirtualCallSite> sites = receiverToSites.get(receiver);
     if (sites == null) {
-      receiverToSites.put(receiver, sites = new ArrayList<VirtualCallSite>());
+      receiverToSites.put(receiver, sites = new ArrayList<>());
       List<Local> receivers = methodToReceivers.get(m);
-      if (receivers == null) methodToReceivers.put(m, receivers = new ArrayList<Local>());
+      if (receivers == null) {
+        methodToReceivers.put(m, receivers = new ArrayList<>());
+      }
       receivers.add(receiver);
     }
     sites.add(new VirtualCallSite(s, m, iie, subSig, kind));
@@ -804,8 +811,9 @@ public final class OnFlyCallGraphBuilder {
               || subSig == sigHandlerPostDelayed) {
             if (iie.getArgCount() > 0) {
               Value runnable = iie.getArg(0);
-              if (runnable instanceof Local)
+              if (runnable instanceof Local) {
                 addVirtualCallSite(s, m, (Local) runnable, iie, sigRun, Kind.EXECUTOR);
+              }
             }
           } else if (subSig == sigHandlerSendEmptyMessage
               || subSig == sigHandlerSendEmptyMessageAtTime
@@ -819,13 +827,14 @@ public final class OnFlyCallGraphBuilder {
             addVirtualCallSite(s, m, receiver, iie, sigDoInBackground, Kind.ASYNCTASK);
           }
         } else if (ie instanceof DynamicInvokeExpr) {
-          if (options.verbose())
+          if (options.verbose()) {
             G.v()
                 .out
                 .println(
                     "WARNING: InvokeDynamic to "
                         + ie
                         + " not resolved during call-graph construction.");
+          }
         } else {
           SootMethod tgt = ie.getMethod();
           if (tgt != null) {
@@ -858,7 +867,9 @@ public final class OnFlyCallGraphBuilder {
 
   private void getImplicitTargets(SootMethod source) {
     final SootClass scl = source.getDeclaringClass();
-    if (source.isNative() || source.isPhantom()) return;
+    if (source.isNative() || source.isPhantom()) {
+      return;
+    }
     if (source.getSubSignature().indexOf("<init>") >= 0) {
       handleInit(source, scl);
     }
@@ -873,19 +884,22 @@ public final class OnFlyCallGraphBuilder {
             if (methodRef
                 .getSubSignature()
                 .getString()
-                .equals("java.lang.Object invoke(java.lang.Object,java.lang.Object[])"))
+                .equals("java.lang.Object invoke(java.lang.Object,java.lang.Object[])")) {
               reflectionModel.methodInvoke(source, s);
+            }
             break;
           case "java.lang.Class":
-            if (methodRef.getSubSignature().getString().equals("java.lang.Object newInstance()"))
+            if (methodRef.getSubSignature().getString().equals("java.lang.Object newInstance()")) {
               reflectionModel.classNewInstance(source, s);
+            }
             break;
           case "java.lang.reflect.Constructor":
             if (methodRef
                 .getSubSignature()
                 .getString()
-                .equals("java.lang.Object newInstance(java.lang.Object[]))"))
+                .equals("java.lang.Object newInstance(java.lang.Object[]))")) {
               reflectionModel.contructorNewInstance(source, s);
+            }
             break;
         }
         if (methodRef.getSubSignature() == sigForName) {
@@ -917,7 +931,9 @@ public final class OnFlyCallGraphBuilder {
           }
         } else if (rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
           Type t = rhs.getType();
-          if (t instanceof ArrayType) t = ((ArrayType) t).baseType;
+          if (t instanceof ArrayType) {
+            t = ((ArrayType) t).baseType;
+          }
           if (t instanceof RefType) {
             SootClass cl = ((RefType) t).getSootClass();
             for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
@@ -995,13 +1011,14 @@ public final class OnFlyCallGraphBuilder {
 
     protected CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
-    protected HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
+    protected HashSet<SootMethod> warnedAlready = new HashSet<>();
 
     @Override
     public void classForName(SootMethod source, Stmt s) {
       List<Local> stringConstants = methodToStringConstants.get(source);
-      if (stringConstants == null)
-        methodToStringConstants.put(source, stringConstants = new ArrayList<Local>());
+      if (stringConstants == null) {
+        methodToStringConstants.put(source, stringConstants = new ArrayList<>());
+      }
       InvokeExpr ie = s.getInvokeExpr();
       Value className = ie.getArg(0);
       if (className instanceof StringConstant) {
@@ -1022,7 +1039,7 @@ public final class OnFlyCallGraphBuilder {
           VirtualCallSite site = new VirtualCallSite(s, source, null, null, Kind.CLINIT);
           List<VirtualCallSite> sites = stringConstToSites.get(constant);
           if (sites == null) {
-            stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
+            stringConstToSites.put(constant, sites = new ArrayList<>());
             stringConstants.add(constant);
           }
           sites.add(site);
@@ -1137,7 +1154,7 @@ public final class OnFlyCallGraphBuilder {
     private boolean registeredTransformation = false;
 
     private TraceBasedReflectionModel() {
-      guards = new HashSet<Guard>();
+      guards = new HashSet<>();
 
       String logFile = options.reflection_log();
       if (logFile == null) {
@@ -1291,7 +1308,9 @@ public final class OnFlyCallGraphBuilder {
     }
 
     private void insertGuard(Guard guard) {
-      if (options.guards().equals("ignore")) return;
+      if (options.guards().equals("ignore")) {
+        return;
+      }
 
       SootMethod container = guard.container;
       Stmt insertionPoint = guard.stmt;

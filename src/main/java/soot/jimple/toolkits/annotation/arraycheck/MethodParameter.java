@@ -41,6 +41,7 @@ class MethodParameter {
     return m.getParameterType(param);
   }
 
+  @Override
   public int hashCode() {
     return m.hashCode() + param;
   }
@@ -53,6 +54,7 @@ class MethodParameter {
     return param;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof MethodParameter) {
       MethodParameter another = (MethodParameter) other;
@@ -63,6 +65,7 @@ class MethodParameter {
     return false;
   }
 
+  @Override
   public String toString() {
     return "[" + m.getSignature() + " : P" + param + "]";
   }

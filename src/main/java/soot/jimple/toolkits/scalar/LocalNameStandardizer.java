@@ -25,6 +25,13 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -47,13 +54,6 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class LocalNameStandardizer extends BodyTransformer {
   public LocalNameStandardizer(Singletons.Global g) {}
@@ -123,12 +123,12 @@ public class LocalNameStandardizer extends BodyTransformer {
       if (sortLocals) {
         Chain<Local> locals = body.getLocals();
         final List<ValueBox> defs = body.getDefBoxes();
-        ArrayList<Local> sortedLocals = new ArrayList<Local>(locals);
+        ArrayList<Local> sortedLocals = new ArrayList<>(locals);
 
         Collections.sort(
             sortedLocals,
             new Comparator<Local>() {
-              private Map<Local, Integer> firstOccuranceCache = new HashMap<Local, Integer>();
+              private Map<Local, Integer> firstOccuranceCache = new HashMap<>();
 
               @Override
               public int compare(Local arg0, Local arg1) {
@@ -166,26 +166,41 @@ public class LocalNameStandardizer extends BodyTransformer {
       for (Local l : body.getLocals()) {
         String prefix = "";
 
-        if (l.getName().startsWith("$")) prefix = "$";
-        else {
-          if (onlyStackName) continue;
+        if (l.getName().startsWith("$")) {
+          prefix = "$";
+        } else {
+          if (onlyStackName) {
+            continue;
+          }
         }
 
         final Type type = l.getType();
 
-        if (type.equals(booleanType)) l.setName(prefix + "z" + intCount++);
-        else if (type.equals(byteType)) l.setName(prefix + "b" + longCount++);
-        else if (type.equals(shortType)) l.setName(prefix + "s" + longCount++);
-        else if (type.equals(charType)) l.setName(prefix + "c" + longCount++);
-        else if (type.equals(intType)) l.setName(prefix + "i" + longCount++);
-        else if (type.equals(longType)) l.setName(prefix + "l" + longCount++);
-        else if (type.equals(doubleType)) l.setName(prefix + "d" + doubleCount++);
-        else if (type.equals(floatType)) l.setName(prefix + "f" + floatCount++);
-        else if (type.equals(stmtAddressType)) l.setName(prefix + "a" + addressCount++);
-        else if (type.equals(erroneousType) || type.equals(unknownType)) {
+        if (type.equals(booleanType)) {
+          l.setName(prefix + "z" + intCount++);
+        } else if (type.equals(byteType)) {
+          l.setName(prefix + "b" + longCount++);
+        } else if (type.equals(shortType)) {
+          l.setName(prefix + "s" + longCount++);
+        } else if (type.equals(charType)) {
+          l.setName(prefix + "c" + longCount++);
+        } else if (type.equals(intType)) {
+          l.setName(prefix + "i" + longCount++);
+        } else if (type.equals(longType)) {
+          l.setName(prefix + "l" + longCount++);
+        } else if (type.equals(doubleType)) {
+          l.setName(prefix + "d" + doubleCount++);
+        } else if (type.equals(floatType)) {
+          l.setName(prefix + "f" + floatCount++);
+        } else if (type.equals(stmtAddressType)) {
+          l.setName(prefix + "a" + addressCount++);
+        } else if (type.equals(erroneousType) || type.equals(unknownType)) {
           l.setName(prefix + "e" + errorCount++);
-        } else if (type.equals(nullType)) l.setName(prefix + "n" + nullCount++);
-        else l.setName(prefix + "r" + objectCount++);
+        } else if (type.equals(nullType)) {
+          l.setName(prefix + "n" + nullCount++);
+        } else {
+          l.setName(prefix + "r" + objectCount++);
+        }
       }
     }
   }

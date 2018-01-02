@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -35,10 +39,6 @@ import soot.jimple.Expr;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 //  ArrayRef,
 //  CaughtExceptionRef,
@@ -61,6 +61,7 @@ public class PASideEffectTester implements SideEffectTester {
     if (G.v().Union_factory == null) {
       G.v().Union_factory =
           new UnionFactory() {
+            @Override
             public Union newUnion() {
               return FullObjectSet.v();
             }
@@ -69,10 +70,11 @@ public class PASideEffectTester implements SideEffectTester {
   }
 
   /** Call this when starting to analyze a new method to setup the cache. */
+  @Override
   public void newMethod(SootMethod m) {
-    unitToRead = new HashMap<Unit, RWSet>();
-    unitToWrite = new HashMap<Unit, RWSet>();
-    localToReachingObjects = new HashMap<Local, PointsToSet>();
+    unitToRead = new HashMap<>();
+    unitToWrite = new HashMap<>();
+    localToReachingObjects = new HashMap<>();
     currentMethod = m;
     sea.findNTRWSets(currentMethod);
   }
@@ -102,30 +104,40 @@ public class PASideEffectTester implements SideEffectTester {
   }
 
   /** Returns true if the unit can read from v. Does not deal with expressions; deals with Refs. */
+  @Override
   public boolean unitCanReadFrom(Unit u, Value v) {
     return valueTouchesRWSet(readSet(u), v, u.getUseBoxes());
   }
 
   /** Returns true if the unit can read from v. Does not deal with expressions; deals with Refs. */
+  @Override
   public boolean unitCanWriteTo(Unit u, Value v) {
     return valueTouchesRWSet(writeSet(u), v, u.getDefBoxes());
   }
 
   protected boolean valueTouchesRWSet(RWSet s, Value v, List boxes) {
-    for (Iterator useIt = v.getUseBoxes().iterator(); useIt.hasNext(); ) {
-      final ValueBox use = (ValueBox) useIt.next();
-      if (valueTouchesRWSet(s, use.getValue(), boxes)) return true;
+    for (Object element : v.getUseBoxes()) {
+      final ValueBox use = (ValueBox) element;
+      if (valueTouchesRWSet(s, use.getValue(), boxes)) {
+        return true;
+      }
     }
     // This doesn't really make any sense, but we need to return something.
-    if (v instanceof Constant) return false;
+    if (v instanceof Constant) {
+      return false;
+    }
 
-    if (v instanceof Expr) throw new RuntimeException("can't deal with expr");
+    if (v instanceof Expr) {
+      throw new RuntimeException("can't deal with expr");
+    }
 
     for (Iterator boxIt = boxes.iterator(); boxIt.hasNext(); ) {
 
       final ValueBox box = (ValueBox) boxIt.next();
       Value boxed = box.getValue();
-      if (boxed.equivTo(v)) return true;
+      if (boxed.equivTo(v)) {
+        return true;
+      }
     }
 
     if (v instanceof Local) {
@@ -134,27 +146,41 @@ public class PASideEffectTester implements SideEffectTester {
 
     if (v instanceof InstanceFieldRef) {
       InstanceFieldRef ifr = (InstanceFieldRef) v;
-      if (s == null) return false;
+      if (s == null) {
+        return false;
+      }
       PointsToSet o1 = s.getBaseForField(ifr.getField());
-      if (o1 == null) return false;
+      if (o1 == null) {
+        return false;
+      }
       PointsToSet o2 = reachingObjects((Local) ifr.getBase());
-      if (o2 == null) return false;
+      if (o2 == null) {
+        return false;
+      }
       return o1.hasNonEmptyIntersection(o2);
     }
 
     if (v instanceof ArrayRef) {
       ArrayRef ar = (ArrayRef) v;
-      if (s == null) return false;
+      if (s == null) {
+        return false;
+      }
       PointsToSet o1 = s.getBaseForField(PointsToAnalysis.ARRAY_ELEMENTS_NODE);
-      if (o1 == null) return false;
+      if (o1 == null) {
+        return false;
+      }
       PointsToSet o2 = reachingObjects((Local) ar.getBase());
-      if (o2 == null) return false;
+      if (o2 == null) {
+        return false;
+      }
       return o1.hasNonEmptyIntersection(o2);
     }
 
     if (v instanceof StaticFieldRef) {
       StaticFieldRef sfr = (StaticFieldRef) v;
-      if (s == null) return false;
+      if (s == null) {
+        return false;
+      }
       return s.getGlobals().contains(sfr.getField());
     }
 

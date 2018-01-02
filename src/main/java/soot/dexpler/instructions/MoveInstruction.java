@@ -26,6 +26,7 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -61,7 +62,9 @@ public class MoveInstruction extends DexlibAbstractInstruction {
     TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
     int dest = i.getRegisterA();
     int source = i.getRegisterB();
-    if (register == source) return dest;
+    if (register == source) {
+      return dest;
+    }
     return -1;
   }
 
@@ -70,7 +73,9 @@ public class MoveInstruction extends DexlibAbstractInstruction {
     TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
     int dest = i.getRegisterA();
     int source = i.getRegisterB();
-    if (register == dest) return source;
+    if (register == dest) {
+      return source;
+    }
     return -1;
   }
 

@@ -26,6 +26,9 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.SootField;
 import soot.SootFieldRef;
 import soot.Type;
@@ -41,61 +44,73 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.RefSwitch;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf {
   protected SootFieldRef fieldRef;
   final ValueBox baseBox;
 
   protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef) {
-    if (fieldRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    if (fieldRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
     this.baseBox = baseBox;
     this.fieldRef = fieldRef;
   }
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public String toString() {
     return baseBox.getValue().toString() + "." + fieldRef.getSignature();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal("(");
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal("(");
+    }
     baseBox.toString(up);
-    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal(")");
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal(")");
+    }
     up.literal(".");
     up.fieldRef(fieldRef);
   }
 
+  @Override
   public Value getBase() {
     return baseBox.getValue();
   }
 
+  @Override
   public ValueBox getBaseBox() {
     return baseBox;
   }
 
+  @Override
   public void setBase(Value base) {
     baseBox.setValue(base);
   }
 
+  @Override
   public SootFieldRef getFieldRef() {
     return fieldRef;
   }
 
+  @Override
   public void setFieldRef(SootFieldRef fieldRef) {
     this.fieldRef = fieldRef;
   }
 
+  @Override
   public SootField getField() {
     return fieldRef.resolve();
   }
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
+    List<ValueBox> useBoxes = new ArrayList<>();
 
     useBoxes.addAll(baseBox.getValue().getUseBoxes());
     useBoxes.add(baseBox);
@@ -103,14 +118,17 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     return useBoxes;
   }
 
+  @Override
   public Type getType() {
     return fieldRef.type();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseInstanceFieldRef(this);
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractInstanceFieldRef) {
       AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef) o;
@@ -120,10 +138,12 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return getField().equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) getBase()).convertToBaf(context, out);
     Unit u;

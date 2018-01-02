@@ -25,6 +25,7 @@
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
+
 import soot.dexpler.DexBody;
 
 public class InvokeStaticInstruction extends MethodInvocationInstruction {
@@ -33,6 +34,7 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
     super(instruction, codeAdress);
   }
 
+  @Override
   public void jimplify(DexBody body) {
     //        // use Nop as begin marker
     //        NopStmt nop = Jimple.v().newNopStmt();

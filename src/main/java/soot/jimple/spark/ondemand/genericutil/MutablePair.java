@@ -31,17 +31,22 @@ public class MutablePair<T, U> {
     this.o2 = o2;
   }
 
+  @Override
   public int hashCode() {
     return o1.hashCode() + o2.hashCode();
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof MutablePair) {
       MutablePair p = (MutablePair) other;
       return o1.equals(p.o1) && o2.equals(p.o2);
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
+  @Override
   public String toString() {
     return "Pair " + o1 + "," + o2;
   }

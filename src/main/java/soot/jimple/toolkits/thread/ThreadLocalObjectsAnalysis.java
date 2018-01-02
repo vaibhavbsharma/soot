@@ -1,5 +1,12 @@
 package soot.jimple.toolkits.thread;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.G;
 import soot.SootClass;
@@ -18,13 +25,6 @@ import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
 import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
 import soot.jimple.toolkits.infoflow.UseFinder;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 // ThreadLocalObjectsAnalysis written by Richard L. Halpert, 2007-03-05
 // Runs LocalObjectsAnalysis for the special case where we want to know
@@ -60,24 +60,28 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
     for (AbstractRuntimeThread thread : threads) {
       for (Object item : thread.getRunMethods()) {
         SootMethod runMethod = (SootMethod) item;
-        if (runMethod.getDeclaringClass().isApplicationClass())
+        if (runMethod.getDeclaringClass().isApplicationClass()) {
           getClassLocalObjectsAnalysis(runMethod.getDeclaringClass());
+        }
       }
     }
   }
 
   // override
+  @Override
   protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(
       LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc) {
     // find the right run methods to use for threads of type sc
-    List<SootMethod> runMethods = new ArrayList<SootMethod>();
+    List<SootMethod> runMethods = new ArrayList<>();
     Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
     while (threadsIt.hasNext()) {
       AbstractRuntimeThread thread = threadsIt.next();
       Iterator<Object> runMethodsIt = thread.getRunMethods().iterator();
       while (runMethodsIt.hasNext()) {
         SootMethod runMethod = (SootMethod) runMethodsIt.next();
-        if (runMethod.getDeclaringClass() == sc) runMethods.add(runMethod);
+        if (runMethod.getDeclaringClass() == sc) {
+          runMethods.add(runMethod);
+        }
       }
     }
 
@@ -85,24 +89,29 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
   }
 
   // Determines if a RefType Local or a FieldRef is Thread-Local
+  @Override
   public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm) {
-    if (threads.size() <= 1) return true;
-    //		Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
-    //		if(valueCache.containsKey(cacheKey))
-    //		{
-    //			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
-    //		}
+    if (threads.size() <= 1) {
+      return true;
+      //		Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
+      //		if(valueCache.containsKey(cacheKey))
+      //		{
+      //			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
+      //		}
+    }
 
-    if (printDebug) G.v().out.println("- " + localOrRef + " in " + sm + " is...");
+    if (printDebug) {
+      G.v().out.println("- " + localOrRef + " in " + sm + " is...");
+    }
     Collection<AbstractRuntimeThread> mhpThreads = mhp.getThreads();
-    if (mhpThreads != null)
+    if (mhpThreads != null) {
       for (AbstractRuntimeThread thread : mhpThreads) {
         for (Object meth : thread.getRunMethods()) {
           SootMethod runMethod = (SootMethod) meth;
 
           if (runMethod.getDeclaringClass().isApplicationClass()
               && !isObjectLocalToContext(localOrRef, sm, runMethod)) {
-            if (printDebug)
+            if (printDebug) {
               G.v()
                   .out
                   .println(
@@ -113,13 +122,15 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
                           + " smartloa "
                           + SmartMethodLocalObjectsAnalysis.counter
                           + ")");
+            }
             //					valueCache.put(cacheKey, Boolean.FALSE);
             //					escapesThrough(localOrRef, sm);
             return false;
           }
         }
       }
-    if (printDebug)
+    }
+    if (printDebug) {
       G.v()
           .out
           .println(
@@ -130,6 +141,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
                   + " smartloa "
                   + SmartMethodLocalObjectsAnalysis.counter
                   + ")"); // (" + localOrRef + " in " + sm + ")");
+    }
     //		valueCache.put(cacheKey, Boolean.TRUE);
     return true;
   }
@@ -154,7 +166,9 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
   */
 
   public boolean hasNonThreadLocalEffects(SootMethod containingMethod, InvokeExpr ie) {
-    if (threads.size() <= 1) return true;
+    if (threads.size() <= 1) {
+      return true;
+    }
     return true;
     /*
     		Pair cacheKey = new Pair(new EquivalentValue(ie), containingMethod);
@@ -223,11 +237,13 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 
           // Get an IFA node for our sharedValue
           EquivalentValue sharedValueEqVal;
-          if (sharedValue instanceof InstanceFieldRef)
+          if (sharedValue instanceof InstanceFieldRef) {
             sharedValueEqVal =
                 InfoFlowAnalysis.getNodeForFieldRef(
                     containingMethod, ((FieldRef) sharedValue).getField());
-          else sharedValueEqVal = new EquivalentValue(sharedValue);
+          } else {
+            sharedValueEqVal = new EquivalentValue(sharedValue);
+          }
 
           // Get the sources of our interesting value
           List<EquivalentValue> sources = smifa.sourcesOf(sharedValueEqVal);

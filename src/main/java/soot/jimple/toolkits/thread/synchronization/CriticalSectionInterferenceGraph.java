@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Hierarchy;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -10,10 +14,6 @@ import soot.SootClass;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class CriticalSectionInterferenceGraph {
 
@@ -53,7 +53,7 @@ public class CriticalSectionInterferenceGraph {
 
   public void calculateGroups() {
     nextGroup = 1;
-    groups = new ArrayList<CriticalSectionGroup>();
+    groups = new ArrayList<>();
     groups.add(new CriticalSectionGroup(0)); // dummy group
 
     if (optionOneGlobalLock) // use one group for all transactions
@@ -73,7 +73,9 @@ public class CriticalSectionInterferenceGraph {
         CriticalSection tn1 = tnIt1.next();
 
         // if this transaction has somehow already been marked for deletion
-        if (tn1.setNumber == -1) continue;
+        if (tn1.setNumber == -1) {
+          continue;
+        }
 
         // if this transaction is empty
         if (tn1.read.size() == 0 && tn1.write.size() == 0 && !optionLeaveOriginalLocks) {
@@ -88,7 +90,9 @@ public class CriticalSectionInterferenceGraph {
             CriticalSection tn2 = tnIt2.next();
 
             // check if this transactional region is going to be deleted
-            if (tn2.setNumber == -1) continue;
+            if (tn2.setNumber == -1) {
+              continue;
+            }
 
             // check if they're already marked as having an interference
             // NOTE: this results in a sound grouping, but a badly
@@ -98,7 +102,9 @@ public class CriticalSectionInterferenceGraph {
             //	    				continue;
 
             // check if these two transactions can't ever be in parallel
-            if (!mayHappenInParallel(tn1, tn2)) continue;
+            if (!mayHappenInParallel(tn1, tn2)) {
+              continue;
+            }
 
             // check for RW or WW data dependencies.
             // or, for optionLeaveOriginalLocks, check type compatibility
@@ -108,13 +114,15 @@ public class CriticalSectionInterferenceGraph {
             boolean emptyEdge = false;
             if (tn1.origLock != null && tn2.origLock != null) {
               // Check if edge is empty
-              if (tn1.origLock == null || tn2.origLock == null) emptyEdge = true;
-              else if (!(tn1.origLock instanceof Local) || !(tn2.origLock instanceof Local))
+              if (tn1.origLock == null || tn2.origLock == null) {
+                emptyEdge = true;
+              } else if (!(tn1.origLock instanceof Local) || !(tn2.origLock instanceof Local)) {
                 emptyEdge = !tn1.origLock.equals(tn2.origLock);
-              else
+              } else {
                 emptyEdge =
                     !pta.reachingObjects((Local) tn1.origLock)
                         .hasNonEmptyIntersection(pta.reachingObjects((Local) tn2.origLock));
+              }
 
               // Check if types are compatible
               RefLikeType typeOne = (RefLikeType) tn1.origLock.getType();
@@ -219,7 +227,9 @@ public class CriticalSectionInterferenceGraph {
 
   public boolean mayHappenInParallel(CriticalSection tn1, CriticalSection tn2) {
     if (mhp == null) {
-      if (optionLeaveOriginalLocks) return true;
+      if (optionLeaveOriginalLocks) {
+        return true;
+      }
       ReachableMethods rm = Scene.v().getReachableMethods();
       return rm.contains(tn1.method) && rm.contains(tn2.method);
     }

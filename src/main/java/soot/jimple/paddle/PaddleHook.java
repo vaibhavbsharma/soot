@@ -19,11 +19,11 @@
 
 package soot.jimple.paddle;
 
+import java.util.Map;
+
 import soot.G;
 import soot.SceneTransformer;
 import soot.Singletons;
-
-import java.util.Map;
 
 /**
  * Loads the Paddle plugin.
@@ -46,6 +46,7 @@ public class PaddleHook extends SceneTransformer {
     return paddleTransformer;
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     paddleTransformer().transform(phaseName, options);
   }

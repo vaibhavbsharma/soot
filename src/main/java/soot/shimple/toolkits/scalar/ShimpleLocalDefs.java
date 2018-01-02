@@ -19,6 +19,12 @@
 
 package soot.shimple.toolkits.scalar;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -26,12 +32,6 @@ import soot.ValueBox;
 import soot.shimple.ShimpleBody;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in
@@ -59,9 +59,10 @@ public class ShimpleLocalDefs implements LocalDefs {
   public ShimpleLocalDefs(ShimpleBody sb) {
     // Instead of rebuilding the ShimpleBody without the
     // programmer's knowledge, throw a RuntimeException
-    if (!sb.isSSA())
+    if (!sb.isSSA()) {
       throw new RuntimeException(
           "ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs.  You may need to rebuild it or use SimpleLocalDefs instead.");
+    }
 
     // build localToDefs map simply by iterating through all the
     // units in the body and saving the unique definition site for
@@ -69,7 +70,7 @@ public class ShimpleLocalDefs implements LocalDefs {
     {
       Chain<Unit> unitsChain = sb.getUnits();
       Iterator<Unit> unitsIt = unitsChain.iterator();
-      localToDefs = new HashMap<Value, List<Unit>>(unitsChain.size() * 2 + 1, 0.7f);
+      localToDefs = new HashMap<>(unitsChain.size() * 2 + 1, 0.7f);
 
       while (unitsIt.hasNext()) {
         Unit unit = unitsIt.next();
@@ -78,7 +79,9 @@ public class ShimpleLocalDefs implements LocalDefs {
           Value value = defBoxesIt.next().getValue();
 
           // only map locals
-          if (!(value instanceof Local)) continue;
+          if (!(value instanceof Local)) {
+            continue;
+          }
 
           localToDefs.put(value, Collections.singletonList(unit));
         }
@@ -95,7 +98,9 @@ public class ShimpleLocalDefs implements LocalDefs {
   public List<Unit> getDefsOf(Local l) {
     List<Unit> defs = localToDefs.get(l);
 
-    if (defs == null) throw new RuntimeException("Local not found in Body.");
+    if (defs == null) {
+      throw new RuntimeException("Local not found in Body.");
+    }
 
     return defs;
   }
@@ -127,9 +132,10 @@ public class ShimpleLocalDefs implements LocalDefs {
         }
       }
 
-      if (!defined)
+      if (!defined) {
         throw new RuntimeException(
             "Illegal LocalDefs query; local " + l + " is not being used at " + s);
+      }
     }
 
     return getDefsOf(l);

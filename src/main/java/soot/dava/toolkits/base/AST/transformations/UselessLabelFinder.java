@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.Singletons;
 import soot.dava.internal.AST.ASTLabeledNode;
@@ -29,9 +32,6 @@ import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class UselessLabelFinder {
   public static boolean DEBUG = false;
@@ -45,16 +45,23 @@ public class UselessLabelFinder {
   // check whether label on a node is useless
   public boolean findAndKill(ASTNode node) {
     if (!(node instanceof ASTLabeledNode)) {
-      if (DEBUG)
+      if (DEBUG) {
         System.out.println("Returning from findAndKill for node of type " + node.getClass());
+      }
       return false;
     } else {
-      if (DEBUG) System.out.println("FindAndKill continuing for node fo type" + node.getClass());
+      if (DEBUG) {
+        System.out.println("FindAndKill continuing for node fo type" + node.getClass());
+      }
     }
 
     String label = ((ASTLabeledNode) node).get_Label().toString();
-    if (label == null) return false;
-    if (DEBUG) System.out.println("dealing with labeled node" + label);
+    if (label == null) {
+      return false;
+    }
+    if (DEBUG) {
+      System.out.println("dealing with labeled node" + label);
+    }
 
     List<Object> subBodies = node.get_SubBodies();
     Iterator<Object> it = subBodies.iterator();
@@ -81,7 +88,9 @@ public class UselessLabelFinder {
 
     // means break was not found so we can remove
     ((ASTLabeledNode) node).set_Label(new SETNodeLabel());
-    if (DEBUG) System.out.println("USELESS LABEL DETECTED");
+    if (DEBUG) {
+      System.out.println("USELESS LABEL DETECTED");
+    }
     return true;
   }
 
@@ -150,6 +159,8 @@ public class UselessLabelFinder {
     if (abStmt.is_Break() || abStmt.is_Continue()) {
       SETNodeLabel label = abStmt.getLabel();
       return label.toString();
-    } else return null;
+    } else {
+      return null;
+    }
   }
 }

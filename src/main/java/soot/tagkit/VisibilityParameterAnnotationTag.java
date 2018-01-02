@@ -43,6 +43,7 @@ public class VisibilityParameterAnnotationTag implements Tag {
   }
 
   // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
     StringBuffer sb =
         new StringBuffer(
@@ -50,7 +51,9 @@ public class VisibilityParameterAnnotationTag implements Tag {
     if (visibilityAnnotations != null) {
       for (VisibilityAnnotationTag tag : visibilityAnnotations) {
         sb.append("\n");
-        if (tag != null) sb.append(tag.toString());
+        if (tag != null) {
+          sb.append(tag.toString());
+        }
       }
     }
     sb.append("\n");
@@ -58,6 +61,7 @@ public class VisibilityParameterAnnotationTag implements Tag {
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "VisibilityParameterAnnotationTag";
   }
@@ -67,13 +71,14 @@ public class VisibilityParameterAnnotationTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("VisibilityParameterAnnotationTag has no value for bytecode");
   }
 
   public void addVisibilityAnnotation(VisibilityAnnotationTag a) {
     if (visibilityAnnotations == null) {
-      visibilityAnnotations = new ArrayList<VisibilityAnnotationTag>();
+      visibilityAnnotations = new ArrayList<>();
     }
     visibilityAnnotations.add(a);
   }

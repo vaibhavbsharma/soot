@@ -1,5 +1,7 @@
 package soot.jimple.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
@@ -7,8 +9,6 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.List;
 
 /**
  * A basic validator that checks whether the length of the invoke statement's argument list matches
@@ -30,8 +30,9 @@ public enum InvokeArgumentValidator implements BodyValidator {
       if (s.containsInvokeExpr()) {
         InvokeExpr iinvExpr = s.getInvokeExpr();
         SootMethod callee = iinvExpr.getMethod();
-        if (callee != null && iinvExpr.getArgCount() != callee.getParameterCount())
+        if (callee != null && iinvExpr.getArgCount() != callee.getParameterCount()) {
           exceptions.add(new ValidationException(s, "Invalid number of arguments"));
+        }
       }
     }
   }

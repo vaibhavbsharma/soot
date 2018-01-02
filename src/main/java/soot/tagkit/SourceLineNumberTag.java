@@ -65,15 +65,18 @@ public class SourceLineNumberTag implements Tag {
     this.endLineNumber = value;
   }
 
+  @Override
   public String getName() {
     return "SourceLineNumberTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[2];
     return v;
   }
 
+  @Override
   public String toString() {
     return String.valueOf(startLineNumber);
   }

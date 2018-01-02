@@ -73,6 +73,7 @@ class Instruction_Newarray extends Instruction {
     name = "newarray";
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     String args;
     switch (atype) {
@@ -107,15 +108,18 @@ class Instruction_Newarray extends Instruction {
     return super.toString(constant_pool) + argsep + args;
   }
 
+  @Override
   public int nextOffset(int curr) {
     return curr + 2;
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     atype = bc[index];
     return index + 1;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     bc[index++] = code;
     bc[index] = atype;

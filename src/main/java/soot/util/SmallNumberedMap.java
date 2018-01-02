@@ -35,7 +35,9 @@ public final class SmallNumberedMap<T> {
   public boolean put(Numberable key, T value) {
     int pos = findPosition(key);
     if (array[pos] == key) {
-      if (values[pos] == value) return false;
+      if (values[pos] == value) {
+        return false;
+      }
       values[pos] = value;
       return true;
     }
@@ -58,7 +60,9 @@ public final class SmallNumberedMap<T> {
   public int nonNullSize() {
     int ret = 0;
     for (Object element : values) {
-      if (element != null) ret++;
+      if (element != null) {
+        ret++;
+      }
     }
     return ret;
   }
@@ -92,12 +96,15 @@ public final class SmallNumberedMap<T> {
       }
     }
 
+    @Override
     public final boolean hasNext() {
       return cur != -1;
     }
 
+    @Override
     public abstract C next();
 
+    @Override
     public void remove() {
       throw new RuntimeException("Not implemented.");
     }
@@ -108,6 +115,7 @@ public final class SmallNumberedMap<T> {
       super(map);
     }
 
+    @Override
     public final Numberable next() {
       Numberable ret = array[cur];
       cur++;
@@ -121,6 +129,7 @@ public final class SmallNumberedMap<T> {
       super(map);
     }
 
+    @Override
     public final T next() {
       Object ret = values[cur];
       cur++;
@@ -133,11 +142,17 @@ public final class SmallNumberedMap<T> {
 
   private final int findPosition(Numberable o) {
     int number = o.getNumber();
-    if (number == 0) throw new RuntimeException("unnumbered");
+    if (number == 0) {
+      throw new RuntimeException("unnumbered");
+    }
     number = number & (array.length - 1);
     while (true) {
-      if (array[number] == o) return number;
-      if (array[number] == null) return number;
+      if (array[number] == o) {
+        return number;
+      }
+      if (array[number] == null) {
+        return number;
+      }
       number = (number + 1) & (array.length - 1);
     }
   }

@@ -24,11 +24,15 @@
 
 package soot.dexpler.instructions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
@@ -36,9 +40,6 @@ import soot.dexpler.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class InstanceOfInstruction extends DexlibAbstractInstruction {
 
@@ -76,7 +77,7 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
   public Set<Type> introducedTypes() {
     ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-    Set<Type> types = new HashSet<Type>();
+    Set<Type> types = new HashSet<>();
     types.add(DexType.toSoot((TypeReference) i.getReference()));
     return types;
   }

@@ -19,11 +19,6 @@
 
 package soot.jimple.spark.pag;
 
-import soot.SootMethod;
-import soot.jimple.spark.sets.P2SetVisitor;
-import soot.util.HashMultiMap;
-import soot.util.MultiMap;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +26,11 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
+
+import soot.SootMethod;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 /**
  * Dumps a pointer assignment graph to a html files.
@@ -44,8 +44,8 @@ public class PAG2HTML {
   }
 
   public void dump() {
-    for (Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
-      final VarNode v = (VarNode) vIt.next();
+    for (Object element : pag.getVarNodeNumberer()) {
+      final VarNode v = (VarNode) element;
       mergedNodes.put(v.getReplacement(), v);
       if (v instanceof LocalVarNode) {
         SootMethod m = ((LocalVarNode) v).getMethod();
@@ -95,6 +95,7 @@ public class PAG2HTML {
     v.getP2Set()
         .forall(
             new P2SetVisitor() {
+              @Override
               public final void visit(Node n) {
                 out.println("<li>" + htmlify(n.toString()));
               }
@@ -133,7 +134,9 @@ public class PAG2HTML {
   protected String varNode(String dirPrefix, VarNode vv) {
     StringBuffer ret = new StringBuffer();
     ret.append("<li><a href=\"" + dirPrefix + "n" + vv.getNumber() + ".html\">");
-    if (vv.getVariable() != null) ret.append("" + htmlify(vv.getVariable().toString()));
+    if (vv.getVariable() != null) {
+      ret.append("" + htmlify(vv.getVariable().toString()));
+    }
     ret.append("GlobalVarNode");
     ret.append("</a><br>");
     ret.append("<li>Context: ");
@@ -195,9 +198,13 @@ public class PAG2HTML {
     StringBuffer ret = new StringBuffer();
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
-      if (c == '<') ret.append('{');
-      else if (c == '>') ret.append('}');
-      else ret.append(c);
+      if (c == '<') {
+        ret.append('{');
+      } else if (c == '>') {
+        ret.append('}');
+      } else {
+        ret.append(c);
+      }
     }
     return ret.toString();
   }

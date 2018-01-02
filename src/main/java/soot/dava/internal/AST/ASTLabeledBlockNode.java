@@ -20,12 +20,12 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.UnitPrinter;
 import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ASTLabeledBlockNode extends ASTLabeledNode {
   private List<Object> body;
@@ -43,7 +43,7 @@ public class ASTLabeledBlockNode extends ASTLabeledNode {
   */
   public void replaceBody(List<Object> body) {
     this.body = body;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(body);
   }
 
@@ -51,10 +51,12 @@ public class ASTLabeledBlockNode extends ASTLabeledNode {
     return body.size();
   }
 
+  @Override
   public Object clone() {
     return new ASTLabeledBlockNode(get_Label(), body);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -71,6 +73,7 @@ public class ASTLabeledBlockNode extends ASTLabeledNode {
     up.newline();
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -94,6 +97,7 @@ public class ASTLabeledBlockNode extends ASTLabeledNode {
     Part of Visitor Design Implementation for AST
     See: soot.dava.toolkits.base.AST.analysis For details
   */
+  @Override
   public void apply(Analysis a) {
     a.caseASTLabeledBlockNode(this);
   }

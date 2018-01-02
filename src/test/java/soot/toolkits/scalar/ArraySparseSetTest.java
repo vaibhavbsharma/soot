@@ -1,19 +1,19 @@
 package soot.toolkits.scalar;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class ArraySparseSetTest {
 
   @Test
   public void testBug11() {
-    ArraySparseSet<String> ars1 = new ArraySparseSet<String>();
+    ArraySparseSet<String> ars1 = new ArraySparseSet<>();
     ars1.add("a");
     ars1.add("b");
 
-    ArraySparseSet<String> ars2 = new ArraySparseSet<String>();
+    ArraySparseSet<String> ars2 = new ArraySparseSet<>();
     ars2.add("b");
     ars2.add("a");
 
@@ -23,12 +23,12 @@ public class ArraySparseSetTest {
 
   @Test
   public void testBug12() {
-    ArraySparseSet<String> ars1 = new ArraySparseSet<String>();
+    ArraySparseSet<String> ars1 = new ArraySparseSet<>();
     ars1.add("a");
     ars1.add("b");
 
     ArrayPackedSet<String> aps =
-        new ArrayPackedSet<String>(new CollectionFlowUniverse<String>(Arrays.asList("a", "b")));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(Arrays.asList("a", "b")));
     aps.add("b");
     aps.add("a");
 

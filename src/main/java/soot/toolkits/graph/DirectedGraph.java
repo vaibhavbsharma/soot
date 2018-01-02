@@ -53,5 +53,6 @@ public interface DirectedGraph<N> extends Iterable<N> {
    * Returns an iterator for the nodes in this graph. No specific ordering of the nodes is
    * guaranteed.
    */
+  @Override
   Iterator<N> iterator();
 }

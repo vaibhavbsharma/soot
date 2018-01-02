@@ -27,6 +27,7 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
+
 import soot.IntType;
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -44,9 +45,10 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction12x))
+    if (!(instruction instanceof Instruction12x)) {
       throw new IllegalArgumentException(
           "Expected Instruction12x but got: " + instruction.getClass());
+    }
 
     Instruction12x lengthOfArrayInstruction = (Instruction12x) instruction;
     int dest = lengthOfArrayInstruction.getRegisterA();

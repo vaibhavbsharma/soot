@@ -25,6 +25,10 @@
 
 package soot.jimple;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -43,10 +47,6 @@ import soot.jimple.validation.TypesValidator;
 import soot.options.Options;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody {
@@ -85,6 +85,7 @@ public class JimpleBody extends StmtBody {
   public JimpleBody() {}
 
   /** Clones the current body, making deep copies of the contents. */
+  @Override
   public Object clone() {
     Body b = new JimpleBody(getMethod());
     b.importBodyContentsFrom(this);
@@ -95,10 +96,13 @@ public class JimpleBody extends StmtBody {
    * Make sure that the JimpleBody is well formed. If not, throw an exception. Right now, performs
    * only a handful of checks.
    */
+  @Override
   public void validate() {
-    final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+    final List<ValidationException> exceptionList = new ArrayList<>();
     validate(exceptionList);
-    if (!exceptionList.isEmpty()) throw exceptionList.get(0);
+    if (!exceptionList.isEmpty()) {
+      throw exceptionList.get(0);
+    }
   }
 
   /**
@@ -106,11 +110,14 @@ public class JimpleBody extends StmtBody {
    *
    * @param exceptionList the list of validation errors
    */
+  @Override
   public void validate(List<ValidationException> exceptionList) {
     super.validate(exceptionList);
     final boolean runAllValidators = Options.v().debug() || Options.v().validate();
     for (BodyValidator validator : getValidators()) {
-      if (!validator.isBasicValidator() && !runAllValidators) continue;
+      if (!validator.isBasicValidator() && !runAllValidators) {
+        continue;
+      }
       validator.validate(this, exceptionList);
     }
   }
@@ -139,8 +146,11 @@ public class JimpleBody extends StmtBody {
       Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i));
 
       getLocals().add(l);
-      if (lastUnit == null) getUnits().addFirst(s);
-      else getUnits().insertAfter(s, lastUnit);
+      if (lastUnit == null) {
+        getUnits().addFirst(s);
+      } else {
+        getUnits().insertAfter(s, lastUnit);
+      }
 
       lastUnit = s;
       i++;
@@ -151,8 +161,14 @@ public class JimpleBody extends StmtBody {
   public Stmt getFirstNonIdentityStmt() {
     Iterator<Unit> it = getUnits().iterator();
     Object o = null;
-    while (it.hasNext()) if (!((o = it.next()) instanceof IdentityStmt)) break;
-    if (o == null) throw new RuntimeException("no non-id statements!");
+    while (it.hasNext()) {
+      if (!((o = it.next()) instanceof IdentityStmt)) {
+        break;
+      }
+    }
+    if (o == null) {
+      throw new RuntimeException("no non-id statements!");
+    }
     return (Stmt) o;
   }
 }

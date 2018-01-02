@@ -19,14 +19,6 @@
 
 package soot;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import soot.JavaClassProvider.JarException;
-import soot.asm.AsmClassProvider;
-import soot.dexpler.DexFileProvider;
-import soot.options.Options;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,12 +34,21 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
+import soot.JavaClassProvider.JarException;
+import soot.asm.AsmClassProvider;
+import soot.dexpler.DexFileProvider;
+import soot.options.Options;
+
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or
  * jimple or baf output files.
  */
 public class SourceLocator {
-  protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
+  protected Set<ClassLoader> additionalClassLoaders = new HashSet<>();
   protected List<ClassProvider> classProviders;
   protected List<String> classPath;
   private List<String> sourcePath;
@@ -63,17 +64,25 @@ public class SourceLocator {
                 @Override
                 public ClassSourceType load(String path) throws Exception {
                   File f = new File(path);
-                  if (!f.exists() && !Options.v().ignore_classpath_errors())
+                  if (!f.exists() && !Options.v().ignore_classpath_errors()) {
                     throw new Exception("Error: The path '" + path + "' does not exist.");
-                  if (!f.canRead() && !Options.v().ignore_classpath_errors())
+                  }
+                  if (!f.canRead() && !Options.v().ignore_classpath_errors()) {
                     throw new Exception(
                         "Error: The path '" + path + "' exists but is not readable.");
+                  }
                   if (f.isFile()) {
-                    if (path.endsWith(".zip")) return ClassSourceType.zip;
-                    else if (path.endsWith(".jar")) return ClassSourceType.jar;
-                    else if (path.endsWith(".apk")) return ClassSourceType.apk;
-                    else if (path.endsWith(".dex")) return ClassSourceType.dex;
-                    else return ClassSourceType.unknown;
+                    if (path.endsWith(".zip")) {
+                      return ClassSourceType.zip;
+                    } else if (path.endsWith(".jar")) {
+                      return ClassSourceType.jar;
+                    } else if (path.endsWith(".apk")) {
+                      return ClassSourceType.apk;
+                    } else if (path.endsWith(".dex")) {
+                      return ClassSourceType.dex;
+                    } else {
+                      return ClassSourceType.unknown;
+                    }
                   }
                   return ClassSourceType.directory;
                 }
@@ -91,14 +100,16 @@ public class SourceLocator {
                   ZipFile archive = null;
                   try {
                     archive = new ZipFile(archivePath);
-                    Set<String> ret = new HashSet<String>();
+                    Set<String> ret = new HashSet<>();
                     Enumeration<? extends ZipEntry> it = archive.entries();
                     while (it.hasMoreElements()) {
                       ret.add(it.nextElement().getName());
                     }
                     return ret;
                   } finally {
-                    if (archive != null) archive.close();
+                    if (archive != null) {
+                      archive.close();
+                    }
                   }
                 }
               });
@@ -137,7 +148,7 @@ public class SourceLocator {
 
   /** Explodes a class path into a list of individual class path entries. */
   public static List<String> explodeClassPath(String classPath) {
-    List<String> ret = new ArrayList<String>();
+    List<String> ret = new ArrayList<>();
     // the classpath is split at every path separator which is not escaped
     String regex = "(?<!\\\\)" + Pattern.quote(File.pathSeparator);
     for (String originalDir : classPath.split(regex)) {
@@ -164,12 +175,16 @@ public class SourceLocator {
     for (ClassProvider cp : classProviders) {
       try {
         ClassSource ret = cp.find(className);
-        if (ret != null) return ret;
+        if (ret != null) {
+          return ret;
+        }
       } catch (JarException e) {
         ex = e;
       }
     }
-    if (ex != null) throw ex;
+    if (ex != null) {
+      throw ex;
+    }
     for (final ClassLoader cl : additionalClassLoaders) {
       try {
         ClassSource ret =
@@ -179,20 +194,28 @@ public class SourceLocator {
               public ClassSource find(String className) {
                 String fileName = className.replace('.', '/') + ".class";
                 InputStream stream = cl.getResourceAsStream(fileName);
-                if (stream == null) return null;
+                if (stream == null) {
+                  return null;
+                }
                 return new CoffiClassSource(className, stream, fileName);
               }
             }.find(className);
-        if (ret != null) return ret;
+        if (ret != null) {
+          return ret;
+        }
       } catch (JarException e) {
         ex = e;
       }
     }
-    if (ex != null) throw ex;
+    if (ex != null) {
+      throw ex;
+    }
     if (className.startsWith("soot.rtlib.tamiflex.")) {
       String fileName = className.replace('.', '/') + ".class";
       ClassLoader cl = getClass().getClassLoader();
-      if (cl == null) return null;
+      if (cl == null) {
+        return null;
+      }
       InputStream stream = cl.getResourceAsStream(fileName);
       if (stream != null) {
         return new CoffiClassSource(className, stream, fileName);
@@ -206,7 +229,7 @@ public class SourceLocator {
   }
 
   protected void setupClassProviders() {
-    classProviders = new LinkedList<ClassProvider>();
+    classProviders = new LinkedList<>();
     ClassProvider classFileClassProvider =
         Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
     switch (Options.v().src_prec()) {
@@ -259,11 +282,14 @@ public class SourceLocator {
 
   public List<String> sourcePath() {
     if (sourcePath == null) {
-      sourcePath = new ArrayList<String>();
+      sourcePath = new ArrayList<>();
       for (String dir : classPath) {
         ClassSourceType cst = getClassSourceType(dir);
-        if (cst != ClassSourceType.apk && cst != ClassSourceType.jar && cst != ClassSourceType.zip)
+        if (cst != ClassSourceType.apk
+            && cst != ClassSourceType.jar
+            && cst != ClassSourceType.zip) {
           sourcePath.add(dir);
+        }
       }
     }
     return sourcePath;
@@ -282,7 +308,7 @@ public class SourceLocator {
   }
 
   private List<String> getClassesUnder(String aPath, String prefix) {
-    List<String> classes = new ArrayList<String>();
+    List<String> classes = new ArrayList<>();
     ClassSourceType cst = getClassSourceType(aPath);
 
     // Get the dex file from an apk
@@ -302,7 +328,8 @@ public class SourceLocator {
       try {
         archive = new ZipFile(aPath);
         for (Enumeration<? extends ZipEntry> entries = archive.entries();
-            entries.hasMoreElements(); ) {
+            entries.hasMoreElements();
+            ) {
           ZipEntry entry = entries.nextElement();
           String entryName = entry.getName();
           if (entryName.endsWith(".class") || entryName.endsWith(".jimple")) {
@@ -316,7 +343,9 @@ public class SourceLocator {
         throw new CompilationDeathException("Error reading archive '" + aPath + "'", e);
       } finally {
         try {
-          if (archive != null) archive.close();
+          if (archive != null) {
+            archive.close();
+          }
         } catch (Throwable t) {
         }
       }
@@ -373,12 +402,16 @@ public class SourceLocator {
           }
         }
       }
-    } else throw new RuntimeException("Invalid class source type");
+    } else {
+      throw new RuntimeException("Invalid class source type");
+    }
     return classes;
   }
 
   public String getFileNameFor(SootClass c, int rep) {
-    if (rep == Options.output_format_none) return null;
+    if (rep == Options.output_format_none) {
+      return null;
+    }
 
     StringBuffer b = new StringBuffer();
 
@@ -386,8 +419,9 @@ public class SourceLocator {
       b.append(getOutputDir());
     }
 
-    if ((b.length() > 0) && (b.charAt(b.length() - 1) != File.separatorChar))
+    if ((b.length() > 0) && (b.charAt(b.length() - 1) != File.separatorChar)) {
       b.append(File.separatorChar);
+    }
 
     if (rep != Options.output_format_dava) {
       if (rep == Options.output_format_class) {
@@ -429,7 +463,7 @@ public class SourceLocator {
 
   /* This is called after sootClassPath has been defined. */
   public Set<String> classesInDynamicPackage(String str) {
-    HashSet<String> set = new HashSet<String>(0);
+    HashSet<String> set = new HashSet<>(0);
     StringTokenizer strtok =
         new StringTokenizer(Scene.v().getSootClassPath(), String.valueOf(File.pathSeparatorChar));
     while (strtok.hasMoreTokens()) {
@@ -440,7 +474,9 @@ public class SourceLocator {
       // For jimple files
       List<String> l = getClassesUnder(path);
       for (String filename : l) {
-        if (filename.startsWith(str)) set.add(filename);
+        if (filename.startsWith(str)) {
+          set.add(filename);
+        }
       }
 
       // For class files;
@@ -448,10 +484,14 @@ public class SourceLocator {
       StringTokenizer tokenizer = new StringTokenizer(str, ".");
       while (tokenizer.hasMoreTokens()) {
         path = path + tokenizer.nextToken();
-        if (tokenizer.hasMoreTokens()) path = path + File.separatorChar;
+        if (tokenizer.hasMoreTokens()) {
+          path = path + File.separatorChar;
+        }
       }
       l = getClassesUnder(path);
-      for (String string : l) set.add(str + "." + string);
+      for (String string : l) {
+        set.add(str + "." + string);
+      }
     }
     return set;
   }
@@ -556,7 +596,9 @@ public class SourceLocator {
       } else if (cst == ClassSourceType.directory) {
         ret = lookupInDir(dir, fileName);
       }
-      if (ret != null) return ret;
+      if (ret != null) {
+        return ret;
+      }
     }
     return null;
   }
@@ -619,7 +661,9 @@ public class SourceLocator {
   public void extendClassPath(String newPathElement) {
     classPath = null;
     if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")) {
-      if (dexClassPathExtensions == null) dexClassPathExtensions = new HashSet<String>();
+      if (dexClassPathExtensions == null) {
+        dexClassPathExtensions = new HashSet<>();
+      }
       dexClassPathExtensions.add(newPathElement);
     }
   }

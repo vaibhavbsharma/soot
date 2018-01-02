@@ -53,8 +53,12 @@ public class PQ_Worklist implements IWorklist {
 
       while ((k * 2) < cur_tail) {
         int kk = k * 2;
-        if ((kk + 1) < cur_tail && heap[kk + 1].lessThan(heap[kk])) kk++;
-        if (e.lessThan(heap[kk])) break;
+        if ((kk + 1) < cur_tail && heap[kk + 1].lessThan(heap[kk])) {
+          kk++;
+        }
+        if (e.lessThan(heap[kk])) {
+          break;
+        }
         heap[k] = heap[kk];
         heap[k].Qpos = k;
         k = kk;
@@ -78,7 +82,9 @@ public class PQ_Worklist implements IWorklist {
 
       while (k > 1) {
         int kk = k / 2;
-        if (heap[kk].lessThan(e)) break;
+        if (heap[kk].lessThan(e)) {
+          break;
+        }
         heap[k] = heap[kk];
         heap[k].Qpos = k;
         k /= 2;
@@ -92,8 +98,12 @@ public class PQ_Worklist implements IWorklist {
       int k = e.Qpos;
       while ((k * 2) < cur_tail) {
         int kk = k * 2;
-        if ((kk + 1) < cur_tail && heap[kk + 1].lessThan(heap[kk])) kk++;
-        if (e.lessThan(heap[kk])) break;
+        if ((kk + 1) < cur_tail && heap[kk + 1].lessThan(heap[kk])) {
+          kk++;
+        }
+        if (e.lessThan(heap[kk])) {
+          break;
+        }
         heap[k] = heap[kk];
         heap[kk].Qpos = k;
         k = kk;

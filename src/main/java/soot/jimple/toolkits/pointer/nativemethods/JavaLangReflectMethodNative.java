@@ -38,6 +38,7 @@ public class JavaLangReflectMethodNative extends NativeMethodClass {
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding
    * methods by signatures.
    */
+  @Override
   public void simulateMethod(
       SootMethod method,
       ReferenceVariable thisVar,

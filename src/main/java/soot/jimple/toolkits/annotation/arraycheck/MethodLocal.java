@@ -45,10 +45,12 @@ class MethodLocal {
     return l;
   }
 
+  @Override
   public int hashCode() {
     return m.hashCode() + l.hashCode();
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof MethodLocal) {
       MethodLocal another = (MethodLocal) other;
@@ -58,6 +60,7 @@ class MethodLocal {
     return false;
   }
 
+  @Override
   public String toString() {
     return "[" + m.getSignature() + " : " + l.toString() + "]";
   }

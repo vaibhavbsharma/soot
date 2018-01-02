@@ -20,6 +20,8 @@
 
 package soot.dava.internal.javaRep;
 
+import java.util.ArrayList;
+
 import soot.NullType;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -29,13 +31,12 @@ import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.grimp.internal.GSpecialInvokeExpr;
 
-import java.util.ArrayList;
-
 public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
   public DSpecialInvokeExpr(Value base, SootMethodRef methodRef, java.util.List args) {
     super(base, methodRef, args);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     if (getBase().getType() instanceof NullType) {
       // OL: I don't know what this is for; I'm just refactoring the
@@ -44,9 +45,13 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
       up.type(methodRef.declaringClass().getType());
       up.literal(") ");
 
-      if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal("(");
+      if (PrecedenceTest.needsBrackets(baseBox, this)) {
+        up.literal("(");
+      }
       baseBox.toString(up);
-      if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal(")");
+      if (PrecedenceTest.needsBrackets(baseBox, this)) {
+        up.literal(")");
+      }
 
       up.literal(")");
       up.literal(".");
@@ -56,7 +61,9 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
 
       if (argBoxes != null) {
         for (int i = 0; i < argBoxes.length; i++) {
-          if (i != 0) up.literal(", ");
+          if (i != 0) {
+            up.literal(", ");
+          }
 
           argBoxes[i].toString(up);
         }
@@ -68,6 +75,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
     }
   }
 
+  @Override
   public String toString() {
     if (getBase().getType() instanceof NullType) {
       StringBuffer b = new StringBuffer();
@@ -78,8 +86,9 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
 
       String baseStr = (getBase()).toString();
       if ((getBase() instanceof Precedence)
-          && (((Precedence) getBase()).getPrecedence() < getPrecedence()))
+          && (((Precedence) getBase()).getPrecedence() < getPrecedence())) {
         baseStr = "(" + baseStr + ")";
+      }
 
       b.append(baseStr);
       b.append(").");
@@ -89,7 +98,9 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
 
       if (argBoxes != null) {
         for (int i = 0; i < argBoxes.length; i++) {
-          if (i != 0) b.append(", ");
+          if (i != 0) {
+            b.append(", ");
+          }
 
           b.append((argBoxes[i].getValue()).toString());
         }
@@ -103,10 +114,13 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr {
     return super.toString();
   }
 
+  @Override
   public Object clone() {
     ArrayList clonedArgs = new ArrayList(getArgCount());
 
-    for (int i = 0; i < getArgCount(); i++) clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    }
 
     return new DSpecialInvokeExpr(getBase(), methodRef, clonedArgs);
   }

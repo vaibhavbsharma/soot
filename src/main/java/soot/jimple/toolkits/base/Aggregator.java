@@ -27,6 +27,12 @@
 
 package soot.jimple.toolkits.base;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -53,12 +59,6 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class Aggregator extends BodyTransformer {
   public Aggregator(Singletons.Global g) {}
 
@@ -72,18 +72,20 @@ public class Aggregator extends BodyTransformer {
    *
    * <p>option: only-stack-locals; if this is true, only aggregate variables starting with $
    */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     StmtBody body = (StmtBody) b;
     boolean onlyStackVars = PhaseOptions.getBoolean(options, "only-stack-locals");
 
-    if (Options.v().time()) Timers.v().aggregationTimer.start();
+    if (Options.v().time()) {
+      Timers.v().aggregationTimer.start();
+    }
 
     int aggregateCount = 1;
 
     boolean changed = false;
 
-    Map<ValueBox, Zone> boxToZone =
-        new HashMap<ValueBox, Zone>(body.getUnits().size() * 2 + 1, 0.7f);
+    Map<ValueBox, Zone> boxToZone = new HashMap<>(body.getUnits().size() * 2 + 1, 0.7f);
 
     // Determine the zone of every box
     {
@@ -103,7 +105,7 @@ public class Aggregator extends BodyTransformer {
     }
 
     do {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v()
             .out
             .println(
@@ -112,6 +114,7 @@ public class Aggregator extends BodyTransformer {
                     + "] Aggregating iteration "
                     + aggregateCount
                     + "...");
+      }
 
       // body.printTo(new java.io.PrintWriter(G.v().out, true));
 
@@ -120,7 +123,9 @@ public class Aggregator extends BodyTransformer {
       aggregateCount++;
     } while (changed);
 
-    if (Options.v().time()) Timers.v().aggregationTimer.end();
+    if (Options.v().time()) {
+      Timers.v().aggregationTimer.end();
+    }
   }
 
   private static boolean internalAggregate(
@@ -134,24 +139,34 @@ public class Aggregator extends BodyTransformer {
 
     List<Unit> unitList = new PseudoTopologicalOrderer<Unit>().newList(graph, false);
     for (Unit u : unitList) {
-      if (!(u instanceof AssignStmt)) continue;
+      if (!(u instanceof AssignStmt)) {
+        continue;
+      }
       AssignStmt s = (AssignStmt) u;
 
       Value lhs = s.getLeftOp();
-      if (!(lhs instanceof Local)) continue;
+      if (!(lhs instanceof Local)) {
+        continue;
+      }
       Local lhsLocal = (Local) lhs;
 
-      if (onlyStackVars && !lhsLocal.getName().startsWith("$")) continue;
+      if (onlyStackVars && !lhsLocal.getName().startsWith("$")) {
+        continue;
+      }
 
       List<UnitValueBoxPair> lu = localUses.getUsesOf(s);
-      if (lu.size() != 1) continue;
+      if (lu.size() != 1) {
+        continue;
+      }
 
       UnitValueBoxPair usepair = lu.get(0);
       Unit use = usepair.unit;
       ValueBox useBox = usepair.valueBox;
 
       List<Unit> ld = localDefs.getDefsOfAt(lhsLocal, use);
-      if (ld.size() != 1) continue;
+      if (ld.size() != 1) {
+        continue;
+      }
 
       // Check to make sure aggregation pair in the same zone
       if (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepair.valueBox)) {
@@ -171,9 +186,9 @@ public class Aggregator extends BodyTransformer {
       boolean propagatingInvokeExpr = false;
       boolean propagatingFieldRef = false;
       boolean propagatingArrayRef = false;
-      List<FieldRef> fieldRefList = new ArrayList<FieldRef>();
+      List<FieldRef> fieldRefList = new ArrayList<>();
 
-      List<Value> localsUsed = new ArrayList<Value>();
+      List<Value> localsUsed = new ArrayList<>();
       for (ValueBox vb : s.getUseBoxes()) {
         Value v = vb.getValue();
         if (v instanceof Local) {
@@ -193,12 +208,16 @@ public class Aggregator extends BodyTransformer {
 
       List<Unit> path = graph.getExtendedBasicBlockPathBetween(s, use);
 
-      if (path == null) continue;
+      if (path == null) {
+        continue;
+      }
 
       Iterator<Unit> pathIt = path.iterator();
 
       // skip s.
-      if (pathIt.hasNext()) pathIt.next();
+      if (pathIt.hasNext()) {
+        pathIt.next();
+      }
 
       while (pathIt.hasNext() && !cantAggr) {
         Stmt between = (Stmt) (pathIt.next());
@@ -250,7 +269,9 @@ public class Aggregator extends BodyTransformer {
           }
 
           // Make sure not propagating past a {enter,exit}Monitor
-          if (propagatingInvokeExpr && between instanceof MonitorStmt) cantAggr = true;
+          if (propagatingInvokeExpr && between instanceof MonitorStmt) {
+            cantAggr = true;
+          }
         }
 
         // Check for intervening side effects due to method calls
@@ -322,15 +343,21 @@ public class Aggregator extends BodyTransformer {
    * @return True if the two references point to the same field, otherwise false
    */
   private static boolean isSameField(FieldRef ref1, FieldRef ref2) {
-    if (ref1 == ref2) return true;
+    if (ref1 == ref2) {
+      return true;
+    }
 
     return ref1.getFieldRef().equals(ref2.getFieldRef());
   }
 
   private static boolean isSimpleCopy(Unit u) {
-    if (!(u instanceof DefinitionStmt)) return false;
+    if (!(u instanceof DefinitionStmt)) {
+      return false;
+    }
     DefinitionStmt defstmt = (DefinitionStmt) u;
-    if (!(defstmt.getRightOp() instanceof Local)) return false;
+    if (!(defstmt.getRightOp() instanceof Local)) {
+      return false;
+    }
     return defstmt.getLeftOp() instanceof Local;
   }
 }

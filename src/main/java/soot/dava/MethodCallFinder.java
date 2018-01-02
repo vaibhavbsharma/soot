@@ -23,6 +23,11 @@
  */
 package soot.dava;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -51,11 +56,6 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class MethodCallFinder extends DepthFirstAdapter {
   ASTMethodNode underAnalysis;
 
@@ -72,6 +72,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
     underAnalysis = null;
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     underAnalysis = node;
   }
@@ -88,6 +89,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
    * Notice that since this class is only invoked for clinit methods this
    * invoke statement is some invocation that occured within the clinit method
    */
+  @Override
   public void inInvokeStmt(InvokeStmt s) {
     InvokeExpr invokeExpr = s.getInvokeExpr();
     SootMethod maybeInline = invokeExpr.getMethod();
@@ -144,10 +146,10 @@ public class MethodCallFinder extends DepthFirstAdapter {
             GThrowStmt throwStmt = new GThrowStmt(newInvokeExpr);
 
             AugmentedStmt augStmt = new AugmentedStmt(throwStmt);
-            List<AugmentedStmt> sequence = new ArrayList<AugmentedStmt>();
+            List<AugmentedStmt> sequence = new ArrayList<>();
             sequence.add(augStmt);
             ASTStatementSequenceNode seqNode = new ASTStatementSequenceNode(sequence);
-            List<Object> subBody = new ArrayList<Object>();
+            List<Object> subBody = new ArrayList<>();
             subBody.add(seqNode);
 
             toInlineASTMethod.replaceBody(subBody);
@@ -159,8 +161,9 @@ public class MethodCallFinder extends DepthFirstAdapter {
 
   public List<Object> getSubBodyFromSingleSubBodyNode(ASTNode node) {
     List<Object> subBodies = node.get_SubBodies();
-    if (subBodies.size() != 1)
+    if (subBodies.size() != 1) {
       throw new RuntimeException("Found a single subBody node with more than 1 subBodies");
+    }
 
     return (List<Object>) subBodies.get(0);
   }
@@ -168,13 +171,14 @@ public class MethodCallFinder extends DepthFirstAdapter {
   public List<Object> createNewSubBody(
       List<Object> orignalBody, List<ASTStatementSequenceNode> partNewBody, Object stmtSeqNode) {
 
-    List<Object> newBody = new ArrayList<Object>();
+    List<Object> newBody = new ArrayList<>();
 
     Iterator<Object> it = orignalBody.iterator();
     while (it.hasNext()) {
       Object temp = it.next();
-      if (temp != stmtSeqNode) newBody.add(temp);
-      else {
+      if (temp != stmtSeqNode) {
+        newBody.add(temp);
+      } else {
         // breaks out of the loop as soon as stmtSeqNode is reached
         break;
       }
@@ -259,8 +263,9 @@ public class MethodCallFinder extends DepthFirstAdapter {
       return true;
     } else if (node instanceof ASTIfElseNode) {
       List<Object> subBodies = node.get_SubBodies();
-      if (subBodies.size() != 2)
+      if (subBodies.size() != 2) {
         throw new RuntimeException("Found an ifelse ASTNode which does not have two bodies");
+      }
       List<Object> ifBody = (List<Object>) subBodies.get(0);
       List<Object> elseBody = (List<Object>) subBodies.get(1);
 
@@ -287,9 +292,13 @@ public class MethodCallFinder extends DepthFirstAdapter {
       }
 
       List<Object> subBodyToReplace = null;
-      if (subBodyNumber == 0) subBodyToReplace = ifBody;
-      else if (subBodyNumber == 1) subBodyToReplace = elseBody;
-      else throw new RuntimeException("Could not find the related ASTNode in the method");
+      if (subBodyNumber == 0) {
+        subBodyToReplace = ifBody;
+      } else if (subBodyNumber == 1) {
+        subBodyToReplace = elseBody;
+      } else {
+        throw new RuntimeException("Could not find the related ASTNode in the method");
+      }
 
       List<Object> newBody = createNewSubBody(subBodyToReplace, newChangedBodyPart, stmtSeqNode);
 
@@ -393,7 +402,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
 
     // copying the stmts till above the inoke stmt into one stmt sequence
     // node
-    List<AugmentedStmt> newInitialNode = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> newInitialNode = new ArrayList<>();
     Iterator<AugmentedStmt> it = orignal.getStatements().iterator();
     while (it.hasNext()) {
       AugmentedStmt as = it.next();
@@ -408,19 +417,23 @@ public class MethodCallFinder extends DepthFirstAdapter {
     }
 
     // copy remaining stmts into the AFTER stmt sequence node
-    List<AugmentedStmt> newSecondNode = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> newSecondNode = new ArrayList<>();
     while (it.hasNext()) {
       newSecondNode.add(it.next());
     }
 
-    List<ASTStatementSequenceNode> toReturn = new ArrayList<ASTStatementSequenceNode>();
+    List<ASTStatementSequenceNode> toReturn = new ArrayList<>();
 
-    if (newInitialNode.size() != 0) toReturn.add(new ASTStatementSequenceNode(newInitialNode));
+    if (newInitialNode.size() != 0) {
+      toReturn.add(new ASTStatementSequenceNode(newInitialNode));
+    }
 
     // add inline methods body
     toReturn.addAll(body);
 
-    if (newSecondNode.size() != 0) toReturn.add(new ASTStatementSequenceNode(newSecondNode));
+    if (newSecondNode.size() != 0) {
+      toReturn.add(new ASTStatementSequenceNode(newSecondNode));
+    }
 
     return toReturn;
   }

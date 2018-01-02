@@ -19,6 +19,10 @@
 
 package soot.javaToJimple.jj;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+
 import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
 import polyglot.frontend.Source;
@@ -27,10 +31,6 @@ import polyglot.types.TypeSystem;
 import soot.javaToJimple.jj.ast.JjNodeFactory_c;
 import soot.javaToJimple.jj.types.JjTypeSystem_c;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
 /** Extension information for jj extension. */
 public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
   static {
@@ -38,10 +38,12 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
     new Topics();
   }
 
+  @Override
   public String defaultFileExtension() {
     return "jj";
   }
 
+  @Override
   public String compilerName() {
     return "jjc";
   }
@@ -52,14 +54,17 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
       return new CupParser(grm, source, eq);
   }*/
 
+  @Override
   protected NodeFactory createNodeFactory() {
     return new JjNodeFactory_c();
   }
 
+  @Override
   protected TypeSystem createTypeSystem() {
     return new JjTypeSystem_c();
   }
 
+  @Override
   public List passes(Job job) {
     List passes = super.passes(job);
     // TODO: add passes as needed by your compiler
@@ -77,10 +82,12 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
   }
 
   /** Appends the soot classpath to the default system classpath. */
+  @Override
   protected Options createOptions() {
     return new Options(this) {
 
       /** Appends the soot classpath to the default system classpath. */
+      @Override
       public String constructFullClasspath() {
         String cp = super.constructFullClasspath();
         cp += File.pathSeparator + soot.options.Options.v().soot_classpath();

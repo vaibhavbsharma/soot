@@ -19,14 +19,14 @@
 
 package soot.toolkits.graph;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.Iterator;
-import java.util.List;
 
 // STEP 1: What are we computing?
 // SETS OF Units that are post-dominators => Use ArraySparseSet.
@@ -55,7 +55,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Un
   }
 
   private void initAllNodes() {
-    allNodes = new ArraySparseSet<Unit>();
+    allNodes = new ArraySparseSet<>();
     Iterator<Unit> it = g.iterator();
     while (it.hasNext()) {
       allNodes.add(it.next());
@@ -126,7 +126,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Un
   @Override
   protected FlowSet<Unit> entryInitialFlow() {
 
-    FlowSet<Unit> fs = new ArraySparseSet<Unit>();
+    FlowSet<Unit> fs = new ArraySparseSet<>();
     List<Unit> tails = g.getTails();
     //        if (tails.size() != 1) {
     //            throw new RuntimeException("Expect one end node only.");

@@ -1,5 +1,12 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -7,13 +14,6 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 /*
 import soot.tagkit.*;
@@ -32,7 +32,7 @@ import soot.toolkits.scalar.*;
 
 public class MultiCalledMethods {
 
-  Set<SootMethod> multiCalledMethods = new HashSet<SootMethod>();
+  Set<SootMethod> multiCalledMethods = new HashSet<>();
 
   MultiCalledMethods(PegCallGraph pcg, Set<SootMethod> mcm) {
     multiCalledMethods = mcm;
@@ -56,12 +56,16 @@ public class MultiCalledMethods {
 
   private void propagate(PegCallGraph pcg) {
     Set<SootMethod> visited = new HashSet();
-    List<SootMethod> reachable = new ArrayList<SootMethod>();
+    List<SootMethod> reachable = new ArrayList<>();
     reachable.addAll(multiCalledMethods);
     while (reachable.size() >= 1) {
       SootMethod popped = reachable.remove(0);
-      if (visited.contains(popped)) continue;
-      if (!multiCalledMethods.contains(popped)) multiCalledMethods.add(popped);
+      if (visited.contains(popped)) {
+        continue;
+      }
+      if (!multiCalledMethods.contains(popped)) {
+        multiCalledMethods.add(popped);
+      }
       visited.add(popped);
       Iterator succIt = pcg.getSuccsOf(popped).iterator();
       while (succIt.hasNext()) {
@@ -78,8 +82,8 @@ public class MultiCalledMethods {
     while (it.hasNext()) {
       Object head = it.next();
       // breadth first scan
-      Set<Object> gray = new HashSet<Object>();
-      LinkedList<Object> queue = new LinkedList<Object>();
+      Set<Object> gray = new HashSet<>();
+      LinkedList<Object> queue = new LinkedList<>();
       queue.add(head);
 
       while (queue.size() > 0) {
@@ -92,8 +96,9 @@ public class MultiCalledMethods {
           if (!gray.contains(succ)) {
             gray.add(succ);
             queue.addLast(succ);
-          } else if (clinitMethods.contains(succ)) continue;
-          else {
+          } else if (clinitMethods.contains(succ)) {
+            continue;
+          } else {
             multiCalledMethods.add((SootMethod) succ);
           }
         }
@@ -106,8 +111,8 @@ public class MultiCalledMethods {
   private void finder2(PegCallGraph pcg) {
 
     pcg.trim();
-    Set<SootMethod> first = new HashSet<SootMethod>();
-    Set<SootMethod> second = new HashSet<SootMethod>();
+    Set<SootMethod> first = new HashSet<>();
+    Set<SootMethod> second = new HashSet<>();
     // Visit each node
     Iterator it = pcg.iterator();
     while (it.hasNext()) {
@@ -127,7 +132,9 @@ public class MultiCalledMethods {
       if (!multiCalledMethods.contains(node)) {
         multiCalledMethods.add(node);
       }
-    } else first.add(node);
+    } else {
+      first.add(node);
+    }
 
     Iterator it = pcg.getTrimSuccsOf(node).iterator();
     while (it.hasNext()) {

@@ -19,6 +19,8 @@
 
 package soot.shimple;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.SootMethod;
@@ -30,8 +32,6 @@ import soot.options.ShimpleOptions;
 import soot.shimple.internal.SPatchingChain;
 import soot.shimple.internal.ShimpleBodyBuilder;
 import soot.util.HashChain;
-
-import java.util.Map;
 
 // * <p> We decided to hide all the intelligence in
 // * internal.ShimpleBodyBuilder for clarity of API.  Eventually we will
@@ -76,11 +76,13 @@ public class ShimpleBody extends StmtBody {
   ShimpleBody(Body body, Map options) {
     super(body.getMethod());
 
-    if (!(body instanceof JimpleBody || body instanceof ShimpleBody))
+    if (!(body instanceof JimpleBody || body instanceof ShimpleBody)) {
       throw new RuntimeException("Cannot construct ShimpleBody from given Body type.");
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + getMethod().getName() + "] Constructing ShimpleBody...");
+    }
 
     // must happen before SPatchingChain gets created
     this.options = new ShimpleOptions(options);
@@ -91,8 +93,11 @@ public class ShimpleBody extends StmtBody {
     /* Shimplise body */
     sbb = new ShimpleBodyBuilder(this);
 
-    if (body instanceof ShimpleBody) rebuild(true);
-    else rebuild(false);
+    if (body instanceof ShimpleBody) {
+      rebuild(true);
+    } else {
+      rebuild(false);
+    }
   }
 
   /**
@@ -167,12 +172,15 @@ public class ShimpleBody extends StmtBody {
   public void eliminateNodes() {
     sbb.preElimOpt();
     sbb.eliminatePhiNodes();
-    if (isExtendedSSA) sbb.eliminatePiNodes();
+    if (isExtendedSSA) {
+      sbb.eliminatePiNodes();
+    }
     sbb.postElimOpt();
     setSSA(false);
   }
 
   /** Returns a copy of the current ShimpleBody. */
+  @Override
   public Object clone() {
     Body b = Shimple.v().newBody(getMethod());
     b.importBodyContentsFrom(this);

@@ -25,6 +25,11 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -53,11 +58,6 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class CopyPropagator extends BodyTransformer {
 
@@ -92,20 +92,24 @@ public class CopyPropagator extends BodyTransformer {
    *
    * <p>Does not propagate stack locals when the "only-regular-locals" option is true.
    */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
     CPOptions options = new CPOptions(opts);
     StmtBody stmtBody = (StmtBody) b;
     int fastCopyPropagationCount = 0;
     int slowCopyPropagationCount = 0;
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + stmtBody.getMethod().getName() + "] Propagating copies...");
+    }
 
-    if (Options.v().time()) Timers.v().propagatorTimer.start();
+    if (Options.v().time()) {
+      Timers.v().propagatorTimer.start();
+    }
 
     Chain<Unit> units = stmtBody.getUnits();
 
-    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>();
+    Map<Local, Integer> localToDefCount = new HashMap<>();
 
     // Count number of definitions for each local.
     for (Unit u : units) {
@@ -113,15 +117,21 @@ public class CopyPropagator extends BodyTransformer {
       if (s instanceof DefinitionStmt && ((DefinitionStmt) s).getLeftOp() instanceof Local) {
         Local l = (Local) ((DefinitionStmt) s).getLeftOp();
 
-        if (!localToDefCount.containsKey(l)) localToDefCount.put(l, new Integer(1));
-        else localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
+        if (!localToDefCount.containsKey(l)) {
+          localToDefCount.put(l, new Integer(1));
+        } else {
+          localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
+        }
       }
     }
 
-    if (throwAnalysis == null) throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    if (throwAnalysis == null) {
+      throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    }
 
-    if (forceOmitExceptingUnitEdges == false)
+    if (forceOmitExceptingUnitEdges == false) {
       forceOmitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+    }
 
     // Go through the definitions, building the webs
     UnitGraph graph =
@@ -143,9 +153,13 @@ public class CopyPropagator extends BodyTransformer {
             // We force propagating nulls. If a target can only be
             // null due to typing, we always inline that constant.
             if (!(l.getType() instanceof NullType)) {
-              if (options.only_regular_locals() && l.getName().startsWith("$")) continue;
+              if (options.only_regular_locals() && l.getName().startsWith("$")) {
+                continue;
+              }
 
-              if (options.only_stack_locals() && !l.getName().startsWith("$")) continue;
+              if (options.only_stack_locals() && !l.getName().startsWith("$")) {
+                continue;
+              }
             }
 
             List<Unit> defsOfUse = localDefs.getDefsOfAt(l, stmt);
@@ -168,7 +182,9 @@ public class CopyPropagator extends BodyTransformer {
                     if (constVal == null) {
                       constVal = (Constant) assign.getRightOp();
                       defAgrees = true;
-                    } else if (constVal.equals(assign.getRightOp())) defAgrees = true;
+                    } else if (constVal.equals(assign.getRightOp())) {
+                      defAgrees = true;
+                    }
                   }
                 }
                 agrees &= defAgrees;
@@ -201,8 +217,9 @@ public class CopyPropagator extends BodyTransformer {
 
                 if (l != m) {
                   Integer defCount = localToDefCount.get(m);
-                  if (defCount == null || defCount == 0)
+                  if (defCount == null || defCount == 0) {
                     throw new RuntimeException("Variable " + m + " used without definition!");
+                  }
 
                   if (defCount == 1) {
                     useBox.setValue(m);
@@ -245,7 +262,9 @@ public class CopyPropagator extends BodyTransformer {
                       }
                     }
 
-                    if (isRedefined) continue;
+                    if (isRedefined) {
+                      continue;
+                    }
                   }
 
                   useBox.setValue(m);
@@ -258,7 +277,7 @@ public class CopyPropagator extends BodyTransformer {
       }
     }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
@@ -269,7 +288,10 @@ public class CopyPropagator extends BodyTransformer {
                   + " fast copies  "
                   + slowCopyPropagationCount
                   + " slow copies");
+    }
 
-    if (Options.v().time()) Timers.v().propagatorTimer.end();
+    if (Options.v().time()) {
+      Timers.v().propagatorTimer.end();
+    }
   }
 }

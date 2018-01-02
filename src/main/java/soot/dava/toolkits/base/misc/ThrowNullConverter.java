@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.misc;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import soot.G;
 import soot.NullType;
 import soot.RefType;
@@ -30,9 +33,6 @@ import soot.ValueBox;
 import soot.dava.DavaBody;
 import soot.dava.internal.javaRep.DNewInvokeExpr;
 import soot.jimple.ThrowStmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ThrowNullConverter {
   public ThrowNullConverter(Singletons.Global g) {}
@@ -53,8 +53,9 @@ public class ThrowNullConverter {
         ValueBox opBox = ((ThrowStmt) u).getOpBox();
         Value op = opBox.getValue();
 
-        if (op.getType() instanceof NullType)
+        if (op.getType() instanceof NullType) {
           opBox.setValue(new DNewInvokeExpr(npeRef, null, new ArrayList()));
+        }
       }
     }
   }

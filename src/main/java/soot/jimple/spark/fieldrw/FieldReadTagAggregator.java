@@ -32,10 +32,12 @@ public class FieldReadTagAggregator extends ImportantTagAggregator {
   }
 
   /** Decide whether this tag should be aggregated by this aggregator. */
+  @Override
   public boolean wantTag(Tag t) {
     return (t instanceof FieldReadTag);
   }
 
+  @Override
   public String aggregatedName() {
     return "FieldRead";
   }

@@ -19,15 +19,15 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.Map;
+import java.util.Stack;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.Type;
 import soot.Unit;
 import soot.jbco.IJbcoTransform;
-
-import java.util.Map;
-import java.util.Stack;
 
 /**
  * @author Michael Batchelder
@@ -37,12 +37,15 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
 
   public static String name = "bb.printout";
 
+  @Override
   public void outputSummary() {}
 
+  @Override
   public String[] getDependancies() {
     return new String[0];
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -56,6 +59,7 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
     stack = print_stack;
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // if (b.getMethod().getSignature().indexOf("run")<0) return;
     System.out.println("\n" + b.getMethod().getSignature());
@@ -65,8 +69,11 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
       Map<Local, Local> b2j = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
 
       try {
-        if (b2j == null) stacks = StackTypeHeightCalculator.calculateStackHeights(b);
-        else stacks = StackTypeHeightCalculator.calculateStackHeights(b, b2j);
+        if (b2j == null) {
+          stacks = StackTypeHeightCalculator.calculateStackHeights(b);
+        } else {
+          stacks = StackTypeHeightCalculator.calculateStackHeights(b, b2j);
+        }
 
         StackTypeHeightCalculator.printStack(b.getUnits(), stacks, true);
       } catch (Exception exc) {

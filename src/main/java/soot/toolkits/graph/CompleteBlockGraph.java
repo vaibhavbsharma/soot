@@ -26,6 +26,7 @@
 package soot.toolkits.graph;
 
 import soot.Body;
+import soot.Trap;
 
 /**
  * Represents a CFG for a {@link Body} instance where the nodes are {@link Block} instances, and

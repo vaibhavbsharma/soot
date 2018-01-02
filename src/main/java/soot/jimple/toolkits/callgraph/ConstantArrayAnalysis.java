@@ -1,5 +1,13 @@
 package soot.jimple.toolkits.callgraph;
 
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -17,14 +25,6 @@ import soot.jimple.Stmt;
 import soot.shimple.PhiExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ConstantArrayAnalysis
     extends ForwardFlowAnalysis<Unit, ConstantArrayAnalysis.ArrayState> {
@@ -93,12 +93,12 @@ public class ConstantArrayAnalysis
     }
   }
 
-  private Map<Local, Integer> localToInt = new HashMap<Local, Integer>();
-  private Map<Type, Integer> typeToInt = new HashMap<Type, Integer>();
-  private Map<Integer, Integer> sizeToInt = new HashMap<Integer, Integer>();
+  private Map<Local, Integer> localToInt = new HashMap<>();
+  private Map<Type, Integer> typeToInt = new HashMap<>();
+  private Map<Integer, Integer> sizeToInt = new HashMap<>();
 
-  private Map<Integer, Type> rvTypeToInt = new HashMap<Integer, Type>();
-  private Map<Integer, Integer> rvSizeToInt = new HashMap<Integer, Integer>();
+  private Map<Integer, Type> rvTypeToInt = new HashMap<>();
+  private Map<Integer, Integer> rvSizeToInt = new HashMap<>();
 
   private int size;
   private int typeSize;
@@ -330,13 +330,13 @@ public class ConstantArrayAnalysis
     ArrayTypes toRet = new ArrayTypes();
     int varRef = localToInt.get(arrayLocal);
     ArrayTypesInternal ati = getFlowBefore(s).state[varRef];
-    toRet.possibleSizes = new HashSet<Integer>();
+    toRet.possibleSizes = new HashSet<>();
     toRet.possibleTypes = new Set[ati.typeState.length];
     for (int i = ati.sizeState.nextSetBit(0); i >= 0; i = ati.sizeState.nextSetBit(i + 1)) {
       toRet.possibleSizes.add(rvSizeToInt.get(i));
     }
     for (int i = 0; i < toRet.possibleTypes.length; i++) {
-      toRet.possibleTypes[i] = new HashSet<Type>();
+      toRet.possibleTypes[i] = new HashSet<>();
       for (int j = ati.typeState[i].nextSetBit(0); j >= 0; j = ati.typeState[i].nextSetBit(j + 1)) {
         toRet.possibleTypes[i].add(rvTypeToInt.get(j));
       }

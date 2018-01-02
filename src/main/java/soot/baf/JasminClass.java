@@ -25,6 +25,12 @@
 
 package soot.baf;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import soot.AbstractJasminClass;
 import soot.ArrayType;
 import soot.Body;
@@ -77,12 +83,6 @@ import soot.toolkits.graph.BriefBlockGraph;
 import soot.util.ArraySet;
 import soot.util.Chain;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 public class JasminClass extends AbstractJasminClass {
 
   public JasminClass(SootClass sootClass) {
@@ -93,12 +93,16 @@ public class JasminClass extends AbstractJasminClass {
   protected void assignColorsToLocals(Body body) {
     super.assignColorsToLocals(body);
 
-    if (Options.v().time()) Timers.v().packTimer.end();
+    if (Options.v().time()) {
+      Timers.v().packTimer.end();
+    }
   }
 
   @Override
   protected void emitMethodBody(SootMethod method) {
-    if (Options.v().time()) Timers.v().buildJasminTimer.end();
+    if (Options.v().time()) {
+      Timers.v().buildJasminTimer.end();
+    }
 
     Body activeBody = method.getActiveBody();
 
@@ -113,26 +117,30 @@ public class JasminClass extends AbstractJasminClass {
                       + " but found a Jimple body. Will convert body to Baf on the fly.");
         }
         activeBody = PackManager.v().convertJimpleBodyToBaf(method);
-      } else
+      } else {
         throw new RuntimeException("method: " + method.getName() + " has an invalid active body!");
+      }
     }
 
     BafBody body = (BafBody) activeBody;
 
-    if (body == null)
+    if (body == null) {
       throw new RuntimeException("method: " + method.getName() + " has no active body!");
+    }
 
-    if (Options.v().time()) Timers.v().buildJasminTimer.start();
+    if (Options.v().time()) {
+      Timers.v().buildJasminTimer.start();
+    }
 
     Chain<Unit> instList = body.getUnits();
 
     int stackLimitIndex = -1;
 
-    subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
+    subroutineToReturnAddressSlot = new HashMap<>(10, 0.7f);
 
     // Determine the unitToLabel map
     {
-      unitToLabel = new HashMap<Unit, String>(instList.size() * 2 + 1, 0.7f);
+      unitToLabel = new HashMap<>(instList.size() * 2 + 1, 0.7f);
       labelCount = 0;
 
       for (UnitBox uBox : body.getUnitBoxes(true)) {
@@ -140,8 +148,9 @@ public class JasminClass extends AbstractJasminClass {
         {
           InstBox box = (InstBox) uBox;
 
-          if (!unitToLabel.containsKey(box.getUnit()))
+          if (!unitToLabel.containsKey(box.getUnit())) {
             unitToLabel.put(box.getUnit(), "label" + labelCount++);
+          }
         }
       }
     }
@@ -149,7 +158,7 @@ public class JasminClass extends AbstractJasminClass {
     // Emit the exceptions, recording the Units at the beginning
     // of handlers so that later on we can recognize blocks that
     // begin with an exception on the stack.
-    Set<Unit> handlerUnits = new ArraySet<Unit>(body.getTraps().size());
+    Set<Unit> handlerUnits = new ArraySet<>(body.getTraps().size());
     {
       for (Trap trap : body.getTraps()) {
         handlerUnits.add(trap.getHandlerUnit());
@@ -172,9 +181,9 @@ public class JasminClass extends AbstractJasminClass {
       int localCount = 0;
       int[] paramSlots = new int[method.getParameterCount()];
       int thisSlot = 0;
-      Set<Local> assignedLocals = new HashSet<Local>();
+      Set<Local> assignedLocals = new HashSet<>();
 
-      localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+      localToSlot = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // assignColorsToLocals(body);
 
@@ -202,13 +211,14 @@ public class JasminClass extends AbstractJasminClass {
             int slot = 0;
 
             if (identity instanceof ThisRef) {
-              if (method.isStatic())
+              if (method.isStatic()) {
                 throw new RuntimeException("Attempting to use 'this' in static method");
+              }
 
               slot = thisSlot;
-            } else if (identity instanceof ParameterRef)
+            } else if (identity instanceof ParameterRef) {
               slot = paramSlots[((ParameterRef) identity).getIndex()];
-            else {
+            } else {
               // Exception ref. Skip over this
               continue;
             }
@@ -247,7 +257,9 @@ public class JasminClass extends AbstractJasminClass {
       for (Unit u : instList) {
         Inst s = (Inst) u;
 
-        if (unitToLabel.containsKey(s)) emit(unitToLabel.get(s) + ":");
+        if (unitToLabel.containsKey(s)) {
+          emit(unitToLabel.get(s) + ":");
+        }
 
         // emit this statement
         {
@@ -275,11 +287,11 @@ public class JasminClass extends AbstractJasminClass {
                 initialHeight = new Integer(0);
               }
               if (blockToStackHeight == null) {
-                blockToStackHeight = new HashMap<Block, Integer>();
+                blockToStackHeight = new HashMap<>();
               }
               blockToStackHeight.put(entryBlock, initialHeight);
               if (blockToLogicalStackHeight == null) {
-                blockToLogicalStackHeight = new HashMap<Block, Integer>();
+                blockToLogicalStackHeight = new HashMap<>();
               }
               blockToLogicalStackHeight.put(entryBlock, initialHeight);
             }
@@ -294,8 +306,10 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
-      if (!Modifier.isNative(method.getModifiers()) && !Modifier.isAbstract(method.getModifiers()))
+      if (!Modifier.isNative(method.getModifiers())
+          && !Modifier.isAbstract(method.getModifiers())) {
         code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
+      }
     }
 
     // emit code attributes
@@ -315,7 +329,9 @@ public class JasminClass extends AbstractJasminClass {
 
   void emitInst(Inst inst) {
     LineNumberTag lnTag = (LineNumberTag) inst.getTag("LineNumberTag");
-    if (lnTag != null) emit(".line " + lnTag.getLineNumber());
+    if (lnTag != null) {
+      emit(".line " + lnTag.getLineNumber());
+    }
     inst.apply(
         new InstSwitch() {
           @Override
@@ -404,7 +420,9 @@ public class JasminClass extends AbstractJasminClass {
           public void casePopInst(PopInst i) {
             if (i.getWordCount() == 2) {
               emit("pop2");
-            } else emit("pop");
+            } else {
+              emit("pop");
+            }
           }
 
           @Override
@@ -426,13 +444,17 @@ public class JasminClass extends AbstractJasminClass {
           public void casePushInst(PushInst i) {
             if (i.getConstant() instanceof IntConstant) {
               IntConstant v = (IntConstant) (i.getConstant());
-              if (v.value == -1) emit("iconst_m1");
-              else if (v.value >= 0 && v.value <= 5) emit("iconst_" + v.value);
-              else if (v.value >= Byte.MIN_VALUE && v.value <= Byte.MAX_VALUE)
+              if (v.value == -1) {
+                emit("iconst_m1");
+              } else if (v.value >= 0 && v.value <= 5) {
+                emit("iconst_" + v.value);
+              } else if (v.value >= Byte.MIN_VALUE && v.value <= Byte.MAX_VALUE) {
                 emit("bipush " + v.value);
-              else if (v.value >= Short.MIN_VALUE && v.value <= Short.MAX_VALUE)
+              } else if (v.value >= Short.MIN_VALUE && v.value <= Short.MAX_VALUE) {
                 emit("sipush " + v.value);
-              else emit("ldc " + v.toString());
+              } else {
+                emit("ldc " + v.toString());
+              }
             } else if (i.getConstant() instanceof StringConstant) {
               emit("ldc " + i.getConstant().toString());
             } else if (i.getConstant() instanceof ClassConstant) {
@@ -440,32 +462,43 @@ public class JasminClass extends AbstractJasminClass {
             } else if (i.getConstant() instanceof DoubleConstant) {
               DoubleConstant v = (DoubleConstant) (i.getConstant());
 
-              if ((v.value == 0) && ((1.0 / v.value) > 0.0)) emit("dconst_0");
-              else if (v.value == 1) emit("dconst_1");
-              else {
+              if ((v.value == 0) && ((1.0 / v.value) > 0.0)) {
+                emit("dconst_0");
+              } else if (v.value == 1) {
+                emit("dconst_1");
+              } else {
                 String s = doubleToString(v);
                 emit("ldc2_w " + s);
               }
             } else if (i.getConstant() instanceof FloatConstant) {
               FloatConstant v = (FloatConstant) (i.getConstant());
-              if ((v.value == 0) && ((1.0f / v.value) > 1.0f)) emit("fconst_0");
-              else if (v.value == 1) emit("fconst_1");
-              else if (v.value == 2) emit("fconst_2");
-              else {
+              if ((v.value == 0) && ((1.0f / v.value) > 1.0f)) {
+                emit("fconst_0");
+              } else if (v.value == 1) {
+                emit("fconst_1");
+              } else if (v.value == 2) {
+                emit("fconst_2");
+              } else {
                 String s = floatToString(v);
                 emit("ldc " + s);
               }
             } else if (i.getConstant() instanceof LongConstant) {
               LongConstant v = (LongConstant) (i.getConstant());
-              if (v.value == 0) emit("lconst_0");
-              else if (v.value == 1) emit("lconst_1");
-              else emit("ldc2_w " + v.toString());
+              if (v.value == 0) {
+                emit("lconst_0");
+              } else if (v.value == 1) {
+                emit("lconst_1");
+              } else {
+                emit("ldc2_w " + v.toString());
+              }
             } else if (i.getConstant() instanceof NullConstant) {
               emit("aconst_null");
             } else if (i.getConstant() instanceof MethodHandle) {
               throw new RuntimeException(
                   "MethodHandle constants not supported by Jasmin. Please use -asm-backend.");
-            } else throw new RuntimeException("unsupported opcode");
+            } else {
+              throw new RuntimeException("unsupported opcode");
+            }
           }
 
           @Override
@@ -473,8 +506,11 @@ public class JasminClass extends AbstractJasminClass {
             if (i.getRightOp() instanceof CaughtExceptionRef && i.getLeftOp() instanceof Local) {
               int slot = localToSlot.get(i.getLeftOp()).intValue();
 
-              if (slot >= 0 && slot <= 3) emit("astore_" + slot);
-              else emit("astore " + slot);
+              if (slot >= 0 && slot <= 3) {
+                emit("astore_" + slot);
+              } else {
+                emit("astore " + slot);
+              }
             }
           }
 
@@ -487,62 +523,92 @@ public class JasminClass extends AbstractJasminClass {
                     new TypeSwitch() {
                       @Override
                       public void caseArrayType(ArrayType t) {
-                        if (slot >= 0 && slot <= 3) emit("astore_" + slot);
-                        else emit("astore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("astore_" + slot);
+                        } else {
+                          emit("astore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseDoubleType(DoubleType t) {
-                        if (slot >= 0 && slot <= 3) emit("dstore_" + slot);
-                        else emit("dstore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("dstore_" + slot);
+                        } else {
+                          emit("dstore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseFloatType(FloatType t) {
-                        if (slot >= 0 && slot <= 3) emit("fstore_" + slot);
-                        else emit("fstore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("fstore_" + slot);
+                        } else {
+                          emit("fstore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseIntType(IntType t) {
-                        if (slot >= 0 && slot <= 3) emit("istore_" + slot);
-                        else emit("istore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("istore_" + slot);
+                        } else {
+                          emit("istore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseByteType(ByteType t) {
-                        if (slot >= 0 && slot <= 3) emit("istore_" + slot);
-                        else emit("istore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("istore_" + slot);
+                        } else {
+                          emit("istore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseShortType(ShortType t) {
-                        if (slot >= 0 && slot <= 3) emit("istore_" + slot);
-                        else emit("istore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("istore_" + slot);
+                        } else {
+                          emit("istore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseCharType(CharType t) {
-                        if (slot >= 0 && slot <= 3) emit("istore_" + slot);
-                        else emit("istore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("istore_" + slot);
+                        } else {
+                          emit("istore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseBooleanType(BooleanType t) {
-                        if (slot >= 0 && slot <= 3) emit("istore_" + slot);
-                        else emit("istore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("istore_" + slot);
+                        } else {
+                          emit("istore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseLongType(LongType t) {
-                        if (slot >= 0 && slot <= 3) emit("lstore_" + slot);
-                        else emit("lstore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("lstore_" + slot);
+                        } else {
+                          emit("lstore " + slot);
+                        }
                       }
 
                       @Override
                       public void caseRefType(RefType t) {
-                        if (slot >= 0 && slot <= 3) emit("astore_" + slot);
-                        else emit("astore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("astore_" + slot);
+                        } else {
+                          emit("astore " + slot);
+                        }
                       }
 
                       @Override
@@ -558,8 +624,11 @@ public class JasminClass extends AbstractJasminClass {
 
                       @Override
                       public void caseNullType(NullType t) {
-                        if (slot >= 0 && slot <= 3) emit("astore_" + slot);
-                        else emit("astore " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("astore_" + slot);
+                        } else {
+                          emit("astore " + slot);
+                        }
                       }
 
                       @Override
@@ -578,8 +647,11 @@ public class JasminClass extends AbstractJasminClass {
                     new TypeSwitch() {
                       @Override
                       public void caseArrayType(ArrayType t) {
-                        if (slot >= 0 && slot <= 3) emit("aload_" + slot);
-                        else emit("aload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("aload_" + slot);
+                        } else {
+                          emit("aload " + slot);
+                        }
                       }
 
                       @Override
@@ -589,62 +661,92 @@ public class JasminClass extends AbstractJasminClass {
 
                       @Override
                       public void caseDoubleType(DoubleType t) {
-                        if (slot >= 0 && slot <= 3) emit("dload_" + slot);
-                        else emit("dload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("dload_" + slot);
+                        } else {
+                          emit("dload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseFloatType(FloatType t) {
-                        if (slot >= 0 && slot <= 3) emit("fload_" + slot);
-                        else emit("fload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("fload_" + slot);
+                        } else {
+                          emit("fload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseIntType(IntType t) {
-                        if (slot >= 0 && slot <= 3) emit("iload_" + slot);
-                        else emit("iload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("iload_" + slot);
+                        } else {
+                          emit("iload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseByteType(ByteType t) {
-                        if (slot >= 0 && slot <= 3) emit("iload_" + slot);
-                        else emit("iload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("iload_" + slot);
+                        } else {
+                          emit("iload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseShortType(ShortType t) {
-                        if (slot >= 0 && slot <= 3) emit("iload_" + slot);
-                        else emit("iload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("iload_" + slot);
+                        } else {
+                          emit("iload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseCharType(CharType t) {
-                        if (slot >= 0 && slot <= 3) emit("iload_" + slot);
-                        else emit("iload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("iload_" + slot);
+                        } else {
+                          emit("iload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseBooleanType(BooleanType t) {
-                        if (slot >= 0 && slot <= 3) emit("iload_" + slot);
-                        else emit("iload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("iload_" + slot);
+                        } else {
+                          emit("iload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseLongType(LongType t) {
-                        if (slot >= 0 && slot <= 3) emit("lload_" + slot);
-                        else emit("lload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("lload_" + slot);
+                        } else {
+                          emit("lload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseRefType(RefType t) {
-                        if (slot >= 0 && slot <= 3) emit("aload_" + slot);
-                        else emit("aload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("aload_" + slot);
+                        } else {
+                          emit("aload " + slot);
+                        }
                       }
 
                       @Override
                       public void caseNullType(NullType t) {
-                        if (slot >= 0 && slot <= 3) emit("aload_" + slot);
-                        else emit("aload " + slot);
+                        if (slot >= 0 && slot <= 3) {
+                          emit("aload_" + slot);
+                        } else {
+                          emit("aload " + slot);
+                        }
                       }
                     });
           }
@@ -1287,19 +1389,22 @@ public class JasminClass extends AbstractJasminClass {
           public void caseInstanceCastInst(InstanceCastInst i) {
             Type castType = i.getCastType();
 
-            if (castType instanceof RefType)
+            if (castType instanceof RefType) {
               emit("checkcast " + slashify(((RefType) castType).getClassName()));
-            else if (castType instanceof ArrayType)
+            } else if (castType instanceof ArrayType) {
               emit("checkcast " + jasminDescriptorOf(castType));
+            }
           }
 
           @Override
           public void caseInstanceOfInst(InstanceOfInst i) {
             Type checkType = i.getCheckType();
 
-            if (checkType instanceof RefType) emit("instanceof " + slashify(checkType.toString()));
-            else if (checkType instanceof ArrayType)
+            if (checkType instanceof RefType) {
+              emit("instanceof " + slashify(checkType.toString()));
+            } else if (checkType instanceof ArrayType) {
               emit("instanceof " + jasminDescriptorOf(checkType));
+            }
           }
 
           @Override
@@ -1322,7 +1427,9 @@ public class JasminClass extends AbstractJasminClass {
               bsmArgString += "(" + jasminDescriptorOf(val.getType()) + ")";
               bsmArgString += escape(val.toString());
 
-              if (iterator.hasNext()) bsmArgString += ",";
+              if (iterator.hasNext()) {
+                bsmArgString += ",";
+              }
             }
             emit(
                 "invokedynamic \""
@@ -1409,14 +1516,20 @@ public class JasminClass extends AbstractJasminClass {
 
           @Override
           public void caseCmplInst(CmplInst i) {
-            if (i.getOpType().equals(FloatType.v())) emit("fcmpl");
-            else emit("dcmpl");
+            if (i.getOpType().equals(FloatType.v())) {
+              emit("fcmpl");
+            } else {
+              emit("dcmpl");
+            }
           }
 
           @Override
           public void caseCmpgInst(CmpgInst i) {
-            if (i.getOpType().equals(FloatType.v())) emit("fcmpg");
-            else emit("dcmpg");
+            if (i.getOpType().equals(FloatType.v())) {
+              emit("fcmpg");
+            } else {
+              emit("dcmpg");
+            }
           }
 
           private void emitOpTypeInst(final String s, final OpTypeArgInst i) {
@@ -1531,8 +1644,9 @@ public class JasminClass extends AbstractJasminClass {
 
           @Override
           public void caseIncInst(IncInst i) {
-            if (i.getUseBoxes().get(0).getValue() != i.getDefBoxes().get(0).getValue())
+            if (i.getUseBoxes().get(0).getValue() != i.getDefBoxes().get(0).getValue()) {
               throw new RuntimeException("iinc def and use boxes don't match");
+            }
 
             emit("iinc " + localToSlot.get(i.getLocal()) + " " + i.getConstant());
           }
@@ -1549,11 +1663,13 @@ public class JasminClass extends AbstractJasminClass {
 
           @Override
           public void caseNewArrayInst(NewArrayInst i) {
-            if (i.getBaseType() instanceof RefType)
+            if (i.getBaseType() instanceof RefType) {
               emit("anewarray " + slashify(((RefType) i.getBaseType()).getClassName()));
-            else if (i.getBaseType() instanceof ArrayType)
+            } else if (i.getBaseType() instanceof ArrayType) {
               emit("anewarray " + jasminDescriptorOf(i.getBaseType()));
-            else emit("newarray " + i.getBaseType().toString());
+            } else {
+              emit("newarray " + i.getBaseType().toString());
+            }
           }
 
           @Override
@@ -1572,8 +1688,9 @@ public class JasminClass extends AbstractJasminClass {
             List<IntConstant> lookupValues = i.getLookupValues();
             List<Unit> targets = i.getTargets();
 
-            for (int j = 0; j < lookupValues.size(); j++)
+            for (int j = 0; j < lookupValues.size(); j++) {
               emit("  " + lookupValues.get(j) + " : " + unitToLabel.get(targets.get(j)));
+            }
 
             emit("  default : " + unitToLabel.get(i.getDefaultTarget()));
           }
@@ -1584,7 +1701,9 @@ public class JasminClass extends AbstractJasminClass {
 
             List<Unit> targets = i.getTargets();
 
-            for (int j = 0; j < targets.size(); j++) emit("  " + unitToLabel.get(targets.get(j)));
+            for (int j = 0; j < targets.size(); j++) {
+              emit("  " + unitToLabel.get(targets.get(j)));
+            }
 
             emit("default : " + unitToLabel.get(i.getDefaultTarget()));
           }
@@ -1596,8 +1715,11 @@ public class JasminClass extends AbstractJasminClass {
           @Override
           public void caseDup1Inst(Dup1Inst i) {
             Type firstOpType = i.getOp1Type();
-            if (isDwordType(firstOpType)) emit("dup2"); // (form 2)
-            else emit("dup");
+            if (isDwordType(firstOpType)) {
+              emit("dup2"); // (form 2)
+            } else {
+              emit("dup");
+            }
           }
 
           @Override
@@ -1610,11 +1732,15 @@ public class JasminClass extends AbstractJasminClass {
               emit("dup2"); // (form 2)
               if (isDwordType(secondOpType)) {
                 emit("dup2"); // (form 2 -- by simulation)
-              } else emit("dup"); // also a simulation
+              } else {
+                emit("dup"); // also a simulation
+              }
             } else if (isDwordType(secondOpType)) {
               if (isDwordType(firstOpType)) {
                 emit("dup2"); // (form 2)
-              } else emit("dup");
+              } else {
+                emit("dup");
+              }
               emit("dup2"); // (form 2 -- complete the simulation)
             } else {
               emit("dup2"); // form 1
@@ -1629,10 +1755,15 @@ public class JasminClass extends AbstractJasminClass {
             if (isDwordType(opType)) {
               if (isDwordType(underType)) {
                 emit("dup2_x2"); // (form 4)
-              } else emit("dup2_x1"); // (form 2)
+              } else {
+                emit("dup2_x1"); // (form 2)
+              }
             } else {
-              if (isDwordType(underType)) emit("dup_x2"); // (form 2)
-              else emit("dup_x1"); // (only one form)
+              if (isDwordType(underType)) {
+                emit("dup_x2"); // (form 2)
+              } else {
+                emit("dup_x1"); // (only one form)
+              }
             }
           }
 
@@ -1655,11 +1786,15 @@ public class JasminClass extends AbstractJasminClass {
              */
 
             if (isDwordType(opType)) {
-              if (!isDwordType(under1Type) && !isDwordType(under2Type)) emit("dup2_x2"); // (form 2)
-              else throw new RuntimeException("magic not implemented yet");
-            } else {
-              if (isDwordType(under1Type) || isDwordType(under2Type))
+              if (!isDwordType(under1Type) && !isDwordType(under2Type)) {
+                emit("dup2_x2"); // (form 2)
+              } else {
                 throw new RuntimeException("magic not implemented yet");
+              }
+            } else {
+              if (isDwordType(under1Type) || isDwordType(under2Type)) {
+                throw new RuntimeException("magic not implemented yet");
+              }
             }
 
             emit("dup_x2"); // (form 1)
@@ -1683,12 +1818,15 @@ public class JasminClass extends AbstractJasminClass {
              * cat2_value1, cat1_value2, cat2_value1]
              */
             if (isDwordType(under1Type)) {
-              if (!isDwordType(op1Type) && !isDwordType(op2Type))
+              if (!isDwordType(op1Type) && !isDwordType(op2Type)) {
                 throw new RuntimeException("magic not implemented yet");
-              else emit("dup2_x2"); // (form 3)
+              } else {
+                emit("dup2_x2"); // (form 3)
+              }
             } else {
-              if ((isDwordType(op1Type) && op2Type != null) || isDwordType(op2Type))
+              if ((isDwordType(op1Type) && op2Type != null) || isDwordType(op2Type)) {
                 throw new RuntimeException("magic not implemented yet");
+              }
             }
 
             emit("dup2_x1"); // (form 1)
@@ -1718,18 +1856,26 @@ public class JasminClass extends AbstractJasminClass {
              */
             boolean malformed = true;
             if (isDwordType(op1Type)) {
-              if (op2Type == null && under1Type != null)
+              if (op2Type == null && under1Type != null) {
                 if ((under2Type == null && isDwordType(under1Type))
-                    || (!isDwordType(under1Type) && under2Type != null && !isDwordType(under2Type)))
+                    || (!isDwordType(under1Type)
+                        && under2Type != null
+                        && !isDwordType(under2Type))) {
                   malformed = false;
+                }
+              }
             } else if (op1Type != null && op2Type != null && !isDwordType(op2Type)) {
               if ((under2Type == null && isDwordType(under1Type))
                   || (under1Type != null
                       && !isDwordType(under1Type)
                       && under2Type != null
-                      && !isDwordType(under2Type))) malformed = false;
+                      && !isDwordType(under2Type))) {
+                malformed = false;
+              }
             }
-            if (malformed) throw new RuntimeException("magic not implemented yet");
+            if (malformed) {
+              throw new RuntimeException("magic not implemented yet");
+            }
 
             emit("dup2_x2"); // (form 1)
           }
@@ -1854,9 +2000,11 @@ class GroupIntPair {
 
   @Override
   public boolean equals(Object other) {
-    if (other instanceof GroupIntPair)
+    if (other instanceof GroupIntPair) {
       return ((GroupIntPair) other).group.equals(this.group) && ((GroupIntPair) other).x == this.x;
-    else return false;
+    } else {
+      return false;
+    }
   }
 
   @Override

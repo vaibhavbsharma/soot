@@ -34,6 +34,7 @@ public class JCastExpr extends AbstractCastExpr {
     super(Jimple.v().newImmediateBox(op), type);
   }
 
+  @Override
   public Object clone() {
     return new JCastExpr(Jimple.cloneIfNecessary(getOp()), type);
   }

@@ -24,6 +24,12 @@
 
 package soot.dexpler;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
@@ -50,12 +56,6 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * BodyTransformer to find and change initialization type of Jimple variables. Dalvik bytecode does
@@ -131,8 +131,7 @@ public class DexNumTransformer extends DexTransformer {
                   ArrayRef ar = (ArrayRef) r;
                   Type arType = ar.getType();
                   if (arType instanceof UnknownType) {
-                    Type t =
-                        findArrayType(localDefs, stmt, 0, Collections.emptySet()); // TODO:
+                    Type t = findArrayType(localDefs, stmt, 0, Collections.emptySet()); // TODO:
                     // check
                     // where
                     // else
@@ -254,9 +253,13 @@ public class DexNumTransformer extends DexTransformer {
                 }
               });
 
-          if (doBreak) break;
+          if (doBreak) {
+            break;
+          }
         } // for uses
-        if (doBreak) break;
+        if (doBreak) {
+          break;
+        }
       } // for defs
 
       // change values
@@ -283,11 +286,13 @@ public class DexNumTransformer extends DexTransformer {
    * @param body the body to analyze
    */
   private Set<Local> getNumCandidates(Body body) {
-    Set<Local> candidates = new HashSet<Local>();
+    Set<Local> candidates = new HashSet<>();
     for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt a = (AssignStmt) u;
-        if (!(a.getLeftOp() instanceof Local)) continue;
+        if (!(a.getLeftOp() instanceof Local)) {
+          continue;
+        }
         Local l = (Local) a.getLeftOp();
         Value r = a.getRightOp();
         if ((r instanceof IntConstant || r instanceof LongConstant)) {

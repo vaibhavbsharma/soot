@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -36,9 +39,6 @@ import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.NullConstant;
 
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 20-Jun-2006
@@ -50,24 +50,30 @@ public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform 
 
   public static String dependancies[] = new String[] {"bb.jbco_riitcb", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_riitcb";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("If(Non)Nulls changed to traps: " + count);
     out.println("Total ifs found: " + totalifs);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     SootClass exc = G.v().soot_Scene().getSootClass("java.lang.NullPointerException");
     SootClass obj = G.v().soot_Scene().getSootClass("java.lang.Object");
@@ -78,7 +84,9 @@ public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform 
     Iterator<Unit> uit = units.snapshotIterator();
     while (uit.hasNext()) {
       Unit u = uit.next();
-      if (BodyBuilder.isBafIf(u)) totalifs++;
+      if (BodyBuilder.isBafIf(u)) {
+        totalifs++;
+      }
 
       if (u instanceof IfNullInst && Rand.getInt(10) <= weight) {
         Unit targ = ((IfNullInst) u).getTarget();
@@ -148,8 +156,10 @@ public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform 
       }
     }
 
-    if (change && debug) StackTypeHeightCalculator.calculateStackHeights(b);
-    // StackTypeHeightCalculator.printStack(units,
-    // StackTypeHeightCalculator.calculateStackHeights(b), true)
+    if (change && debug) {
+      StackTypeHeightCalculator.calculateStackHeights(b);
+      // StackTypeHeightCalculator.printStack(units,
+      // StackTypeHeightCalculator.calculateStackHeights(b), true)
+    }
   }
 }

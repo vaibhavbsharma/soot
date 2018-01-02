@@ -19,6 +19,8 @@
 
 package soot.sootify;
 
+import java.io.PrintWriter;
+
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -26,8 +28,6 @@ import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
-
-import java.io.PrintWriter;
 
 public class TemplatePrinter {
 
@@ -97,7 +97,9 @@ public class TemplatePrinter {
       println("Body b = Jimple.v().newBody(m);");
       println("m.setActiveBody(b);");
 
-      if (!m.hasActiveBody()) continue;
+      if (!m.hasActiveBody()) {
+        continue;
+      }
 
       Body b = m.getActiveBody();
 

@@ -37,26 +37,32 @@ class FutureStmt extends soot.jimple.internal.AbstractStmt {
 
   public FutureStmt() {}
 
+  @Override
   public String toString() {
     return "<futurestmt>";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("<futurestmt>");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((soot.jimple.StmtSwitch) sw).defaultCase(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     throw new RuntimeException();
   }
 
+  @Override
   public boolean branches() {
     throw new RuntimeException();
   }
 
+  @Override
   public Object clone() {
     throw new RuntimeException();
   }

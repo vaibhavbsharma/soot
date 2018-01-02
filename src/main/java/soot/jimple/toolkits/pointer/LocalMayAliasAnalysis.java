@@ -18,6 +18,10 @@
  */
 package soot.jimple.toolkits.pointer;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -26,10 +30,6 @@ import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Conducts a method-local, equality-based may-alias analysis.
@@ -62,10 +62,12 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
             break;
           }
         }
-        if (leftSet == null) throw new RuntimeException("internal error");
+        if (leftSet == null) {
+          throw new RuntimeException("internal error");
+        }
         // remove left from this set
         target.remove(leftSet);
-        HashSet<Value> setWithoutLeft = new HashSet<Value>(leftSet);
+        HashSet<Value> setWithoutLeft = new HashSet<>(leftSet);
         setWithoutLeft.remove(left);
         target.add(setWithoutLeft);
         // add left on its own
@@ -85,11 +87,13 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
             break;
           }
         }
-        if (leftSet == null || rightSet == null) throw new RuntimeException("internal error");
+        if (leftSet == null || rightSet == null) {
+          throw new RuntimeException("internal error");
+        }
         // replace the sets by their union
         target.remove(leftSet);
         target.remove(rightSet);
-        HashSet<Value> union = new HashSet<Value>(leftSet);
+        HashSet<Value> union = new HashSet<>(leftSet);
         union.addAll(rightSet);
         target.add(union);
       }
@@ -105,7 +109,7 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
   @Override
   protected Set<Set<Value>> entryInitialFlow() {
     // initially all values only alias themselves
-    Set<Set<Value>> res = new HashSet<Set<Value>>();
+    Set<Set<Value>> res = new HashSet<>();
     for (ValueBox vb : body.getUseAndDefBoxes()) {
       res.add(Collections.singleton(vb.getValue()));
     }
@@ -122,35 +126,41 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
 
   @Override
   protected Set<Set<Value>> newInitialFlow() {
-    return new HashSet<Set<Value>>();
+    return new HashSet<>();
   }
 
   /** Returns true if v1 and v2 may alias before u. */
   public boolean mayAlias(Value v1, Value v2, Unit u) {
     Set<Set<Value>> res = getFlowBefore(u);
     for (Set<Value> set : res) {
-      if (set.contains(v1) && set.contains(v2)) return true;
+      if (set.contains(v1) && set.contains(v2)) {
+        return true;
+      }
     }
     return false;
   }
 
   /** Returns all values that may-alias with v before u. */
   public Set<Value> mayAliases(Value v, Unit u) {
-    Set<Value> res = new HashSet<Value>();
+    Set<Value> res = new HashSet<>();
     Set<Set<Value>> flow = getFlowBefore(u);
     for (Set<Value> set : flow) {
-      if (set.contains(v)) res.addAll(set);
+      if (set.contains(v)) {
+        res.addAll(set);
+      }
     }
     return res;
   }
 
   /** Returns all values that may-alias with v at the end of the procedure. */
   public Set<Value> mayAliasesAtExit(Value v) {
-    Set<Value> res = new HashSet<Value>();
+    Set<Value> res = new HashSet<>();
     for (Unit u : graph.getTails()) {
       Set<Set<Value>> flow = getFlowAfter(u);
       for (Set<Value> set : flow) {
-        if (set.contains(v)) res.addAll(set);
+        if (set.contains(v)) {
+          res.addAll(set);
+        }
       }
     }
     return res;

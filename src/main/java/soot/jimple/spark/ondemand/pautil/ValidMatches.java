@@ -18,6 +18,8 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import java.util.Set;
+
 import soot.jimple.spark.ondemand.genericutil.ArraySet;
 import soot.jimple.spark.ondemand.genericutil.HashSetMultiMap;
 import soot.jimple.spark.ondemand.genericutil.MultiMap;
@@ -29,19 +31,16 @@ import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.toolkits.scalar.Pair;
 
-import java.util.Iterator;
-import java.util.Set;
-
 public class ValidMatches {
 
   // edges are in same direction as PAG, in the direction of value flow
-  private final MultiMap<VarNode, VarNode> vMatchEdges = new HashSetMultiMap<VarNode, VarNode>();
+  private final MultiMap<VarNode, VarNode> vMatchEdges = new HashSetMultiMap<>();
 
-  private final MultiMap<VarNode, VarNode> vMatchBarEdges = new HashSetMultiMap<VarNode, VarNode>();
+  private final MultiMap<VarNode, VarNode> vMatchBarEdges = new HashSetMultiMap<>();
 
   public ValidMatches(PAG pag, FieldToEdgesMap fieldToStores) {
-    for (Iterator iter = pag.loadSources().iterator(); iter.hasNext(); ) {
-      FieldRefNode loadSource = (FieldRefNode) iter.next();
+    for (Object element : pag.loadSources()) {
+      FieldRefNode loadSource = (FieldRefNode) element;
       SparkField field = loadSource.getField();
       VarNode loadBase = loadSource.getBase();
       ArraySet<Pair<VarNode, VarNode>> storesOnField = fieldToStores.get(field);
@@ -50,8 +49,8 @@ public class ValidMatches {
         if (loadBase.getP2Set().hasNonEmptyIntersection(storeBase.getP2Set())) {
           VarNode matchSrc = store.getO1();
           Node[] loadTargets = pag.loadLookup(loadSource);
-          for (int i = 0; i < loadTargets.length; i++) {
-            VarNode matchTgt = (VarNode) loadTargets[i];
+          for (Node loadTarget : loadTargets) {
+            VarNode matchTgt = (VarNode) loadTarget;
             vMatchEdges.put(matchSrc, matchTgt);
             vMatchBarEdges.put(matchTgt, matchSrc);
           }

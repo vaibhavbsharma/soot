@@ -19,6 +19,13 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
@@ -36,13 +43,6 @@ import soot.jimple.internal.JCastExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 /**
  * An intraprocedural nullness assumption analysis that computes for each location and each value in
  * a method if the value (before or after that location) is treated as definitely null, definitely
@@ -56,6 +56,7 @@ import java.util.Set;
 public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   protected static final Object BOTTOM =
       new Object() {
+        @Override
         public String toString() {
           return "bottom";
         }
@@ -63,6 +64,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
 
   protected static final Object NULL =
       new Object() {
+        @Override
         public String toString() {
           return "null";
         }
@@ -70,6 +72,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
 
   protected static final Object NON_NULL =
       new Object() {
+        @Override
         public String toString() {
           return "non-null";
         }
@@ -79,6 +82,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   // IS USED FOR THAT CASE
   protected static final Object TOP =
       new Object() {
+        @Override
         public String toString() {
           return "top";
         }
@@ -96,6 +100,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue)
         //	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts)
       {
@@ -235,6 +240,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void copy(Object source, Object dest) {
     Map s = (Map) source;
     Map d = (Map) dest;
@@ -243,11 +249,13 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object entryInitialFlow() {
     return new AnalysisInfo();
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     AnalysisInfo left = (AnalysisInfo) in1;
     AnalysisInfo right = (AnalysisInfo) in2;
@@ -261,7 +269,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
 
     for (Iterator keyIter = values.iterator(); keyIter.hasNext(); ) {
       Value v = (Value) keyIter.next();
-      Set<Object> leftAndRight = new HashSet<Object>();
+      Set<Object> leftAndRight = new HashSet<>();
       leftAndRight.add(left.get(v));
       leftAndRight.add(right.get(v));
 
@@ -294,6 +302,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object newInitialFlow() {
     return new AnalysisInfo();
   }
@@ -340,6 +349,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
       super(m);
     }
 
+    @Override
     public Object get(Object key) {
       Object object = super.get(key);
       if (object == null) {

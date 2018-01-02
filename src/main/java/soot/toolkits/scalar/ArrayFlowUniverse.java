@@ -36,14 +36,17 @@ public class ArrayFlowUniverse<E> implements FlowUniverse<E> {
     this.elements = elements;
   }
 
+  @Override
   public int size() {
     return elements.length;
   }
 
+  @Override
   public Iterator<E> iterator() {
     return Arrays.asList(elements).iterator();
   }
 
+  @Override
   public E[] toArray() {
     return elements;
   }

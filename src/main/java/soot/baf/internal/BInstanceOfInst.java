@@ -37,44 +37,54 @@ public class BInstanceOfInst extends AbstractInst implements InstanceOfInst {
   protected Type checkType;
 
   public BInstanceOfInst(Type opType) {
-    if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
+    if (!(opType instanceof RefType) && !(opType instanceof ArrayType)) {
       throw new RuntimeException("invalid InstanceOfInst: " + opType);
+    }
 
     checkType = opType;
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   public final String getName() {
     return "instanceof";
   }
 
+  @Override
   public Type getCheckType() {
     return checkType;
   }
 
+  @Override
   public void setCheckType(Type t) {
     checkType = t;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseInstanceOfInst(this);
   }
 
+  @Override
   public Object clone() {
     return new BInstanceOfInst(checkType);
   }

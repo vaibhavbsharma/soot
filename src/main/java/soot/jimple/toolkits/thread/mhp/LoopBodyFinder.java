@@ -1,12 +1,12 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.graph.DirectedGraph;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
+import soot.toolkits.graph.DirectedGraph;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -21,8 +21,8 @@ import java.util.Stack;
 
 public class LoopBodyFinder {
 
-  private final Stack<Object> stack = new Stack<Object>();
-  private final Set<Set<Object>> loops = new HashSet<Set<Object>>();
+  private final Stack<Object> stack = new Stack<>();
+  private final Set<Set<Object>> loops = new HashSet<>();
 
   LoopBodyFinder(Map<Object, Object> backEdges, DirectedGraph g) {
     findLoopBody(backEdges, g);
@@ -42,7 +42,7 @@ public class LoopBodyFinder {
   }
 
   private Set<Object> finder(Object tail, Object head, DirectedGraph g) {
-    Set<Object> loop = new HashSet<Object>();
+    Set<Object> loop = new HashSet<>();
     stack.empty();
     loop.add(head);
     insert(tail, loop);

@@ -19,6 +19,12 @@
 
 package soot.jimple.validation;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -35,12 +41,6 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A relatively simple validator. It tries to check whether after each new-expression-statement
@@ -83,7 +83,7 @@ public enum NewValidator implements BodyValidator {
           }
 
           // We search for a JSpecialInvokeExpr on the local.
-          LinkedHashSet<Local> locals = new LinkedHashSet<Local>();
+          LinkedHashSet<Local> locals = new LinkedHashSet<>();
           locals.add((Local) assign.getLeftOp());
 
           checkForInitializerOnPath(g, assign, exceptions);
@@ -110,16 +110,18 @@ public enum NewValidator implements BodyValidator {
    */
   private boolean checkForInitializerOnPath(
       UnitGraph g, AssignStmt newStmt, List<ValidationException> exception) {
-    List<Unit> workList = new ArrayList<Unit>();
-    Set<Unit> doneSet = new HashSet<Unit>();
+    List<Unit> workList = new ArrayList<>();
+    Set<Unit> doneSet = new HashSet<>();
     workList.add(newStmt);
 
-    Set<Local> aliasingLocals = new HashSet<Local>();
+    Set<Local> aliasingLocals = new HashSet<>();
     aliasingLocals.add((Local) newStmt.getLeftOp());
 
     while (!workList.isEmpty()) {
       Stmt curStmt = (Stmt) workList.remove(0);
-      if (!doneSet.add(curStmt)) continue;
+      if (!doneSet.add(curStmt)) {
+        continue;
+      }
       if (!newStmt.equals(curStmt)) {
         if (curStmt.containsInvokeExpr()) {
           InvokeExpr expr = curStmt.getInvokeExpr();

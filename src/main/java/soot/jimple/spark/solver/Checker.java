@@ -64,6 +64,7 @@ public class Checker {
   protected void checkAll(final Node container, PointsToSetInternal nodes, final Node upstream) {
     nodes.forall(
         new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
             checkNode(container, n, upstream);
           }
@@ -71,10 +72,12 @@ public class Checker {
   }
 
   protected void checkNode(Node container, Node n, Node upstream) {
-    if (container.getReplacement() != container)
+    if (container.getReplacement() != container) {
       throw new RuntimeException("container " + container + " is illegal");
-    if (upstream.getReplacement() != upstream)
+    }
+    if (upstream.getReplacement() != upstream) {
       throw new RuntimeException("upstream " + upstream + " is illegal");
+    }
     PointsToSetInternal p2set = container.getP2Set();
     FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
     if (!p2set.contains(n)
@@ -97,7 +100,9 @@ public class Checker {
 
   protected void handleSimples(VarNode src) {
     PointsToSetInternal srcSet = src.getP2Set();
-    if (srcSet.isEmpty()) return;
+    if (srcSet.isEmpty()) {
+      return;
+    }
     final Node[] simpleTargets = pag.simpleLookup(src);
     for (Node element : simpleTargets) {
       checkAll(element, srcSet, src);
@@ -106,7 +111,9 @@ public class Checker {
 
   protected void handleStores(final VarNode src) {
     final PointsToSetInternal srcSet = src.getP2Set();
-    if (srcSet.isEmpty()) return;
+    if (srcSet.isEmpty()) {
+      return;
+    }
     Node[] storeTargets = pag.storeLookup(src);
     for (Node element : storeTargets) {
       final FieldRefNode fr = (FieldRefNode) element;
@@ -115,6 +122,7 @@ public class Checker {
           .getP2Set()
           .forall(
               new P2SetVisitor() {
+                @Override
                 public final void visit(Node n) {
                   AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
                   checkAll(nDotF, srcSet, src);
@@ -130,11 +138,16 @@ public class Checker {
         .getP2Set()
         .forall(
             new P2SetVisitor() {
+              @Override
               public final void visit(Node n) {
                 AllocDotField nDotF = ((AllocNode) n).dot(f);
-                if (nDotF == null) return;
+                if (nDotF == null) {
+                  return;
+                }
                 PointsToSetInternal set = nDotF.getP2Set();
-                if (set.isEmpty()) return;
+                if (set.isEmpty()) {
+                  return;
+                }
                 for (Node element : loadTargets) {
                   VarNode target = (VarNode) element;
                   checkAll(target, set, src);

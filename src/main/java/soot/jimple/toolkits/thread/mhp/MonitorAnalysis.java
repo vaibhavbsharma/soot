@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.Timers;
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.Tag;
-import soot.toolkits.scalar.ArraySparseSet;
-import soot.toolkits.scalar.FlowSet;
-import soot.toolkits.scalar.ForwardFlowAnalysis;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
+import soot.Timers;
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.tagkit.Tag;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -39,10 +39,10 @@ import java.util.Vector;
 public class MonitorAnalysis extends ForwardFlowAnalysis {
 
   private PegGraph g;
-  private final HashMap<String, FlowSet> monitor = new HashMap<String, FlowSet>();
-  private final Vector<Object> nodes = new Vector<Object>();
-  private final Vector<Object> valueBefore = new Vector<Object>();
-  private final Vector<Object> valueAfter = new Vector<Object>();
+  private final HashMap<String, FlowSet> monitor = new HashMap<>();
+  private final Vector<Object> nodes = new Vector<>();
+  private final Vector<Object> valueBefore = new Vector<>();
+  private final Vector<Object> valueAfter = new Vector<>();
 
   public MonitorAnalysis(PegGraph g) {
     super(g);
@@ -53,9 +53,10 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
     //		testMonitor();
   }
 
+  @Override
   protected void doAnalysis() {
-    LinkedList<Object> changedUnits = new LinkedList<Object>();
-    HashSet<Object> changedUnitsSet = new HashSet<Object>();
+    LinkedList<Object> changedUnits = new LinkedList<>();
+    HashSet<Object> changedUnitsSet = new HashSet<>();
 
     int numNodes = graph.size();
     int numComputations = 0;
@@ -186,6 +187,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
 
   //	STEP 4: Is the merge operator union or intersection?
   //	UNION
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     MonitorSet inSet1 = (MonitorSet) in1;
     MonitorSet inSet2 = (MonitorSet) in2;
@@ -197,6 +199,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   //	STEP 5: Define flow equations.
   //	in(s) = ( out(s) minus defs(s) ) union uses(s)
   //
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     MonitorSet in = (MonitorSet) inValue;
     MonitorSet out = (MonitorSet) outValue;
@@ -212,13 +215,16 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
 
     if (in.size() > 0) {
 
-      if (!s.getName().equals("waiting") && !s.getName().equals("notified-entry"))
+      if (!s.getName().equals("waiting") && !s.getName().equals("notified-entry")) {
         updateMonitor(in, unit);
+      }
     }
     String objName = s.getObject();
     // if (objName == null) throw new RuntimeException("null object: "+s.getUnit());
     if (s.getName().equals("entry") || s.getName().equals("exit")) {
-      if (out.contains("&")) out.remove("&");
+      if (out.contains("&")) {
+        out.remove("&");
+      }
 
       Object obj = out.getMonitorDepth(objName);
 
@@ -253,9 +259,13 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
               //  System.out.println("===remove monitordepth: "+md);
 
               out.remove(md);
-            } else throw new RuntimeException("The monitor depth can not be decreased at  " + unit);
+            } else {
+              throw new RuntimeException("The monitor depth can not be decreased at  " + unit);
+            }
           }
-        } else throw new RuntimeException("MonitorSet contains non MonitorDepth element!");
+        } else {
+          throw new RuntimeException("MonitorSet contains non MonitorDepth element!");
+        }
       }
     }
 
@@ -283,6 +293,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
    System.out.println("--------test for debug end------");
    }
    */
+  @Override
   protected void copy(Object source, Object dest) {
     MonitorSet sourceSet = (MonitorSet) source;
     MonitorSet destSet = (MonitorSet) dest;
@@ -295,10 +306,12 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   //
   //	start node:              empty set
   //	initial approximation:   empty set
+  @Override
   protected Object entryInitialFlow() {
     return new MonitorSet();
   }
 
+  @Override
   protected Object newInitialFlow() {
     MonitorSet fullSet = new MonitorSet();
     fullSet.add("&");
@@ -411,7 +424,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
       LinkedList<Object> changedUnits, HashSet<Object> changedUnitsSet, PegChain chain) {
     // Depth first scan
     Iterator it = chain.getHeads().iterator();
-    Set<Object> gray = new HashSet<Object>();
+    Set<Object> gray = new HashSet<>();
 
     while (it.hasNext()) {
       Object head = it.next();

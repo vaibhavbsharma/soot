@@ -62,6 +62,7 @@ class Instruction_Goto_w extends Instruction_longbranch {
     name = "goto_w";
   }
 
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[1];
     i[0] = target;

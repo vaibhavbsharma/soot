@@ -24,9 +24,15 @@
 
 package soot.dexpler.instructions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.FiveRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.RegisterRangeInstruction;
+
 import soot.Type;
 import soot.Unit;
 import soot.dexpler.DexBody;
@@ -35,11 +41,6 @@ import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 /** This class represents a wrapper around dexlib instruction. */
 public abstract class DexlibAbstractInstruction {
@@ -151,7 +152,9 @@ public abstract class DexlibAbstractInstruction {
       host.addTag(new LineNumberTag(lineNumber));
       host.addTag(new SourceLineNumberTag(lineNumber));
     }
-    if (options.keep_offset()) host.addTag(new BytecodeOffsetTag(codeAddress));
+    if (options.keep_offset()) {
+      host.addTag(new BytecodeOffsetTag(codeAddress));
+    }
   }
 
   //    /**
@@ -361,9 +364,11 @@ public abstract class DexlibAbstractInstruction {
    * @return a list of register indices
    */
   protected List<Integer> getUsedRegistersNums(RegisterRangeInstruction instruction) {
-    List<Integer> regs = new ArrayList<Integer>();
+    List<Integer> regs = new ArrayList<>();
     int start = instruction.getStartRegister();
-    for (int i = start; i < start + instruction.getRegisterCount(); i++) regs.add(i);
+    for (int i = start; i < start + instruction.getRegisterCount(); i++) {
+      regs.add(i);
+    }
 
     return regs;
   }
@@ -382,8 +387,10 @@ public abstract class DexlibAbstractInstruction {
       instruction.getRegisterF(),
       instruction.getRegisterG(),
     };
-    List<Integer> l = new ArrayList<Integer>();
-    for (int i = 0; i < instruction.getRegisterCount(); i++) l.add(regs[i]);
+    List<Integer> l = new ArrayList<>();
+    for (int i = 0; i < instruction.getRegisterCount(); i++) {
+      l.add(regs[i]);
+    }
     return l;
   }
 }

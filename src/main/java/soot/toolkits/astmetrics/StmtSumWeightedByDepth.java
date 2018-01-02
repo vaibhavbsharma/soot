@@ -1,5 +1,9 @@
 package soot.toolkits.astmetrics;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
+
 import polyglot.ast.Block;
 import polyglot.ast.Branch;
 import polyglot.ast.CodeDecl;
@@ -19,10 +23,6 @@ import polyglot.ast.Try;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
-
 public class StmtSumWeightedByDepth extends ASTMetric {
 
   int currentDepth;
@@ -30,10 +30,10 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   int maxDepth;
   int numNodes;
 
-  Stack<ArrayList> labelNodesSoFar = new Stack<ArrayList>();
-  ArrayList<Node> blocksWithAbruptFlow = new ArrayList<Node>();
-  HashMap<Node, Integer> stmtToMetric = new HashMap<Node, Integer>();
-  HashMap<Node, Integer> stmtToMetricDepth = new HashMap<Node, Integer>();
+  Stack<ArrayList> labelNodesSoFar = new Stack<>();
+  ArrayList<Node> blocksWithAbruptFlow = new ArrayList<>();
+  HashMap<Node, Integer> stmtToMetric = new HashMap<>();
+  HashMap<Node, Integer> stmtToMetricDepth = new HashMap<>();
 
   public static boolean tmpAbruptChecker = false;
 
@@ -41,6 +41,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     super(node);
   }
 
+  @Override
   public void printAstMetric(Node n, CodeWriter w) {
     if (n instanceof Stmt) {
       if (stmtToMetric.containsKey(n)) {
@@ -49,6 +50,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     }
   }
 
+  @Override
   public void reset() {
     // if not one, then fields and method sigs don't get counted
     currentDepth = 1; // inside a class
@@ -57,6 +59,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     numNodes = 0;
   }
 
+  @Override
   public void addMetrics(ClassData data) {
     // data.addMetric(new MetricData("MaxDepth",new Integer(maxDepth)));
 
@@ -68,7 +71,9 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   private void increaseDepth() {
     System.out.println("Increasing depth");
     currentDepth++;
-    if (currentDepth > maxDepth) maxDepth = currentDepth;
+    if (currentDepth > maxDepth) {
+      maxDepth = currentDepth;
+    }
   }
 
   private void decreaseDepth() {
@@ -89,6 +94,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
    *
    * Block ... if it is a block within a block, add currentDepth plus increment depth ONLY if it has abrupt flow out of it.
    */
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     numNodes++;
     if (n instanceof CodeDecl) {
@@ -115,6 +121,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       n.visit(
           new NodeVisitor() {
             // extended NodeVisitor that checks for branching out of a block
+            @Override
             public NodeVisitor enter(Node parent, Node node) {
               if (node instanceof Branch) {
                 Branch b = (Branch) node;
@@ -126,8 +133,11 @@ public class StmtSumWeightedByDepth extends ASTMetric {
               return enter(node);
             }
             // this method simply stops further node visiting if we found our info
+            @Override
             public Node override(Node parent, Node node) {
-              if (StmtSumWeightedByDepth.tmpAbruptChecker) return node;
+              if (StmtSumWeightedByDepth.tmpAbruptChecker) {
+                return node;
+              }
               return null;
             }
           });
@@ -155,10 +165,13 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     return enter(n);
   }
 
+  @Override
   public Node leave(Node old, Node n, NodeVisitor v) {
 
     // stack maintenance, if leaving a method
-    if (n instanceof CodeDecl) labelNodesSoFar.pop();
+    if (n instanceof CodeDecl) {
+      labelNodesSoFar.pop();
+    }
 
     if (n instanceof If
         || n instanceof Loop

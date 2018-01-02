@@ -25,15 +25,15 @@
 
 package soot.tagkit;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.G;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.Singletons;
 import soot.SootClass;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 
 /** The aggregator for LineNumberTable attribute. */
 public class InnerClassTagAggregator extends SceneTransformer {
@@ -48,10 +48,11 @@ public class InnerClassTagAggregator extends SceneTransformer {
     return "InnerClasses";
   }
 
+  @Override
   public void internalTransform(String phaseName, Map<String, String> options) {
     Iterator<SootClass> it = Scene.v().getApplicationClasses().iterator();
     while (it.hasNext()) {
-      ArrayList<InnerClassTag> list = new ArrayList<InnerClassTag>();
+      ArrayList<InnerClassTag> list = new ArrayList<>();
       SootClass nextSc = it.next();
       for (Tag t : nextSc.getTags()) {
         if (t instanceof InnerClassTag) {

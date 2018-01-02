@@ -19,6 +19,12 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Kind;
 import soot.MethodOrMethodContext;
 import soot.SootMethod;
@@ -26,12 +32,6 @@ import soot.Unit;
 import soot.jimple.Stmt;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Represents the edges in a call graph. This class is meant to act as only a container of edges;
@@ -41,18 +41,19 @@ import java.util.Set;
  * @author Ondrej Lhotak
  */
 public class CallGraph implements Iterable<Edge> {
-  protected Set<Edge> edges = new HashSet<Edge>();
-  protected ChunkedQueue<Edge> stream = new ChunkedQueue<Edge>();
+  protected Set<Edge> edges = new HashSet<>();
+  protected ChunkedQueue<Edge> stream = new ChunkedQueue<>();
   protected QueueReader<Edge> reader = stream.reader();
-  protected Map<MethodOrMethodContext, Edge> srcMethodToEdge =
-      new HashMap<MethodOrMethodContext, Edge>();
-  protected Map<Unit, Edge> srcUnitToEdge = new HashMap<Unit, Edge>();
-  protected Map<MethodOrMethodContext, Edge> tgtToEdge = new HashMap<MethodOrMethodContext, Edge>();
+  protected Map<MethodOrMethodContext, Edge> srcMethodToEdge = new HashMap<>();
+  protected Map<Unit, Edge> srcUnitToEdge = new HashMap<>();
+  protected Map<MethodOrMethodContext, Edge> tgtToEdge = new HashMap<>();
   protected Edge dummy = new Edge(null, null, null, Kind.INVALID);
 
   /** Used to add an edge to the call graph. Returns true iff the edge was not already present. */
   public boolean addEdge(Edge e) {
-    if (!edges.add(e)) return false;
+    if (!edges.add(e)) {
+      return false;
+    }
     stream.add(e);
     Edge position = null;
 
@@ -125,7 +126,9 @@ public class CallGraph implements Iterable<Edge> {
    * call graph.
    */
   public boolean removeEdge(Edge e) {
-    if (!edges.remove(e)) return false;
+    if (!edges.remove(e)) {
+      return false;
+    }
     e.remove();
 
     if (srcUnitToEdge.get(e.srcUnit()) == e) {
@@ -177,7 +180,9 @@ public class CallGraph implements Iterable<Edge> {
   public Edge findEdge(Unit u, SootMethod callee) {
     Edge e = srcUnitToEdge.get(u);
     while (e.srcUnit() == u && e.kind() != Kind.INVALID) {
-      if (e.tgt() == callee) return e;
+      if (e.tgt() == callee) {
+        return e;
+      }
       e = e.nextByUnit();
     }
     return null;
@@ -198,22 +203,31 @@ public class CallGraph implements Iterable<Edge> {
 
     TargetsOfUnitIterator(Unit u) {
       this.u = u;
-      if (u == null) throw new RuntimeException();
+      if (u == null) {
+        throw new RuntimeException();
+      }
       position = srcUnitToEdge.get(u);
-      if (position == null) position = dummy;
+      if (position == null) {
+        position = dummy;
+      }
     }
 
+    @Override
     public boolean hasNext() {
-      if (position.srcUnit() != u) return false;
+      if (position.srcUnit() != u) {
+        return false;
+      }
       return position.kind() != Kind.INVALID;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextByUnit();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -229,22 +243,31 @@ public class CallGraph implements Iterable<Edge> {
 
     TargetsOfMethodIterator(MethodOrMethodContext m) {
       this.m = m;
-      if (m == null) throw new RuntimeException();
+      if (m == null) {
+        throw new RuntimeException();
+      }
       position = srcMethodToEdge.get(m);
-      if (position == null) position = dummy;
+      if (position == null) {
+        position = dummy;
+      }
     }
 
+    @Override
     public boolean hasNext() {
-      if (position.getSrc() != m) return false;
+      if (position.getSrc() != m) {
+        return false;
+      }
       return position.kind() != Kind.INVALID;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextBySrc();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -260,22 +283,31 @@ public class CallGraph implements Iterable<Edge> {
 
     CallersOfMethodIterator(MethodOrMethodContext m) {
       this.m = m;
-      if (m == null) throw new RuntimeException();
+      if (m == null) {
+        throw new RuntimeException();
+      }
       position = tgtToEdge.get(m);
-      if (position == null) position = dummy;
+      if (position == null) {
+        position = dummy;
+      }
     }
 
+    @Override
     public boolean hasNext() {
-      if (position.getTgt() != m) return false;
+      if (position.getTgt() != m) {
+        return false;
+      }
       return position.kind() != Kind.INVALID;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextByTgt();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -295,6 +327,7 @@ public class CallGraph implements Iterable<Edge> {
     return stream.reader();
   }
 
+  @Override
   public String toString() {
     QueueReader<Edge> reader = listener();
     StringBuffer out = new StringBuffer();

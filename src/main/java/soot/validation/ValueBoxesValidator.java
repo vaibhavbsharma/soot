@@ -1,14 +1,14 @@
 package soot.validation;
 
-import soot.Body;
-import soot.Unit;
-import soot.ValueBox;
+import static java.util.Collections.newSetFromMap;
 
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.newSetFromMap;
+import soot.Body;
+import soot.Unit;
+import soot.ValueBox;
 
 public enum ValueBoxesValidator implements BodyValidator {
   INSTANCE;
@@ -23,7 +23,9 @@ public enum ValueBoxesValidator implements BodyValidator {
     Set<ValueBox> set = newSetFromMap(new IdentityHashMap<ValueBox, Boolean>());
 
     for (ValueBox vb : body.getUseAndDefBoxes()) {
-      if (set.add(vb)) continue;
+      if (set.add(vb)) {
+        continue;
+      }
 
       exception.add(
           new ValidationException(vb, "Aliased value box : " + vb + " in " + body.getMethod()));

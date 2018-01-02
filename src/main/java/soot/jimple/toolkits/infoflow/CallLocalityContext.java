@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.EquivalentValue;
 import soot.RefLikeType;
 import soot.jimple.InstanceFieldRef;
@@ -7,9 +10,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.Ref;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.ThisRef;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * CallLocalityContext written by Richard L. Halpert 2007-03-05 Acts as a container for the locality
@@ -20,10 +20,10 @@ public class CallLocalityContext {
   List<Boolean> isNodeLocal;
 
   public CallLocalityContext(List<EquivalentValue> nodes) {
-    this.nodes = new ArrayList<EquivalentValue>();
+    this.nodes = new ArrayList<>();
     this.nodes.addAll(nodes);
 
-    isNodeLocal = new ArrayList<Boolean>(nodes.size());
+    isNodeLocal = new ArrayList<>(nodes.size());
     for (int i = 0; i < nodes.size(); i++) {
       isNodeLocal.add(i, Boolean.FALSE);
     }
@@ -160,24 +160,30 @@ public class CallLocalityContext {
   }
 
   public List<Object> getLocalRefs() {
-    List<Object> ret = new ArrayList<Object>();
+    List<Object> ret = new ArrayList<>();
     for (int i = 0; i < nodes.size(); i++) {
-      if (isNodeLocal.get(i).booleanValue()) ret.add(nodes.get(i));
+      if (isNodeLocal.get(i).booleanValue()) {
+        ret.add(nodes.get(i));
+      }
     }
     return ret;
   }
 
   public List<Object> getSharedRefs() {
-    List<Object> ret = new ArrayList<Object>();
+    List<Object> ret = new ArrayList<>();
     for (int i = 0; i < nodes.size(); i++) {
-      if (!isNodeLocal.get(i).booleanValue()) ret.add(nodes.get(i));
+      if (!isNodeLocal.get(i).booleanValue()) {
+        ret.add(nodes.get(i));
+      }
     }
     return ret;
   }
 
   public boolean isFieldLocal(EquivalentValue fieldRef) {
     for (int i = 0; i < nodes.size(); i++) {
-      if (fieldRef.equals(nodes.get(i))) return isNodeLocal.get(i).booleanValue();
+      if (fieldRef.equals(nodes.get(i))) {
+        return isNodeLocal.get(i).booleanValue();
+      }
     }
     return false; // catches static fields that were not included in the original context
     //		throw new RuntimeException("Field " + fieldRef + " is not present in
@@ -187,7 +193,9 @@ public class CallLocalityContext {
 
   public boolean containsField(EquivalentValue fieldRef) {
     for (int i = 0; i < nodes.size(); i++) {
-      if (fieldRef.equals(nodes.get(i))) return true;
+      if (fieldRef.equals(nodes.get(i))) {
+        return true;
+      }
     }
     return false;
   }
@@ -207,13 +215,16 @@ public class CallLocalityContext {
     for (int i = 0; i < other.nodes.size(); i++) {
       Boolean temp =
           new Boolean(isNodeLocal.get(i).booleanValue() && other.isNodeLocal.get(i).booleanValue());
-      if (!temp.equals(isNodeLocal.get(i))) isChanged = true;
+      if (!temp.equals(isNodeLocal.get(i))) {
+        isChanged = true;
+      }
       isNodeLocal.remove(i);
       isNodeLocal.add(i, temp);
     }
     return isChanged;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof CallLocalityContext) {
       CallLocalityContext other = (CallLocalityContext) o;
@@ -222,6 +233,7 @@ public class CallLocalityContext {
     return false;
   }
 
+  @Override
   public int hashCode() {
     return isNodeLocal.hashCode();
   }
@@ -238,27 +250,32 @@ public class CallLocalityContext {
     return true;
   }
 
+  @Override
   public String toString() {
     String fieldrefs = "";
     String staticrefs = "";
     String paramrefs = ""; // includes returnref
     String thisref = "";
-    if (nodes.size() == 0) return "Call Locality Context: NO NODES\n";
+    if (nodes.size() == 0) {
+      return "Call Locality Context: NO NODES\n";
+    }
     for (int i = 0; i < nodes.size(); i++) {
       Ref r = (Ref) nodes.get(i).getValue();
-      if (r instanceof InstanceFieldRef)
+      if (r instanceof InstanceFieldRef) {
         fieldrefs =
             fieldrefs + r + ": " + (isNodeLocal.get(i).booleanValue() ? "local" : "shared") + "\n";
-      else if (r instanceof StaticFieldRef)
+      } else if (r instanceof StaticFieldRef) {
         staticrefs =
             staticrefs + r + ": " + (isNodeLocal.get(i).booleanValue() ? "local" : "shared") + "\n";
-      else if (r instanceof ParameterRef)
+      } else if (r instanceof ParameterRef) {
         paramrefs =
             paramrefs + r + ": " + (isNodeLocal.get(i).booleanValue() ? "local" : "shared") + "\n";
-      else if (r instanceof ThisRef)
+      } else if (r instanceof ThisRef) {
         thisref =
             thisref + r + ": " + (isNodeLocal.get(i).booleanValue() ? "local" : "shared") + "\n";
-      else return "Call Locality Context: HAS STRANGE NODE " + r + "\n";
+      } else {
+        return "Call Locality Context: HAS STRANGE NODE " + r + "\n";
+      }
     }
     return "Call Locality Context: \n" + fieldrefs + paramrefs + thisref + staticrefs;
   }

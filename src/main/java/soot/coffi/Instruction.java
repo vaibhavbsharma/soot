@@ -110,11 +110,13 @@ abstract class Instruction implements Cloneable {
     returns = false;
   }
 
+  @Override
   protected Object clone() throws CloneNotSupportedException {
 
     return super.clone();
   }
 
+  @Override
   public String toString() {
     return label + ": " + name + "[" + originalIndex + "]";
   }
@@ -205,6 +207,7 @@ abstract class Instruction implements Cloneable {
    *
    * @return unique hash code for this instruction, assuming labels are unique.
    */
+  @Override
   public int hashCode() {
     return (new Integer(label)).hashCode();
   }
@@ -303,7 +306,9 @@ abstract class Instruction implements Cloneable {
    */
   public String toString(cp_info constant_pool[]) {
     int i = (code) & 0xff;
-    if (name == null) name = "null???=" + Integer.toString(i);
+    if (name == null) {
+      name = "null???=" + Integer.toString(i);
+    }
     return name;
   }
 }

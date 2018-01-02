@@ -1,8 +1,18 @@
 package soot.toolkits.exceptions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.DoubleType;
@@ -40,15 +50,6 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class UnitThrowAnalysisTest {
 
   static {
@@ -62,6 +63,7 @@ public class UnitThrowAnalysisTest {
     // test that individual arguments to invocations are being
     // examined.
 
+    @Override
     protected ThrowableSet mightThrow(SootMethod m) {
       return ThrowableSet.Manager.v().EMPTY;
     }
@@ -134,8 +136,7 @@ public class UnitThrowAnalysisTest {
                             }),
                         FloatType.v(),
                         true),
-                Arrays.asList(
-                    floatStaticFieldRef, floatArrayRef));
+                Arrays.asList(floatStaticFieldRef, floatArrayRef));
   }
 
   @Test
@@ -301,7 +302,7 @@ public class UnitThrowAnalysisTest {
     // local2 = local1[0]
     s = Jimple.v().newAssignStmt(scalarRef, arrayRef);
 
-    Set<RefLikeType> expectedRep = new ExceptionHashSet<RefLikeType>(utility.VM_ERRORS);
+    Set<RefLikeType> expectedRep = new ExceptionHashSet<>(utility.VM_ERRORS);
     expectedRep.add(utility.NULL_POINTER_EXCEPTION);
     expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
     assertTrue(
@@ -553,8 +554,7 @@ public class UnitThrowAnalysisTest {
 
   @Test
   public void testGIfStmt() {
-    IfStmt s =
-        Grimp.v().newIfStmt(Grimp.v().newEqExpr(IntConstant.v(1), IntConstant.v(1)), null);
+    IfStmt s = Grimp.v().newIfStmt(Grimp.v().newEqExpr(IntConstant.v(1), IntConstant.v(1)), null);
     s.setTarget(s); // A very tight infinite loop.
     assertTrue(
         ExceptionTestUtility.sameMembers(
@@ -588,10 +588,7 @@ public class UnitThrowAnalysisTest {
     Stmt s =
         Grimp.v()
             .newLookupSwitchStmt(
-                IntConstant.v(1),
-                Arrays.asList(IntConstant.v(1)),
-                Arrays.asList(target),
-                target);
+                IntConstant.v(1), Arrays.asList(IntConstant.v(1)), Arrays.asList(target), target);
     assertTrue(
         ExceptionTestUtility.sameMembers(
             utility.VM_ERRORS, Collections.EMPTY_SET, unitAnalysis.mightThrow(s)));
@@ -693,9 +690,7 @@ public class UnitThrowAnalysisTest {
   public void testJTableSwitchStmt() {
     Stmt target =
         Jimple.v().newAssignStmt(Jimple.v().newLocal("local0", IntType.v()), IntConstant.v(0));
-    Stmt s =
-        Jimple.v()
-            .newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(target), target);
+    Stmt s = Jimple.v().newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(target), target);
     assertTrue(
         ExceptionTestUtility.sameMembers(
             utility.VM_ERRORS, Collections.EMPTY_SET, unitAnalysis.mightThrow(s)));
@@ -707,9 +702,7 @@ public class UnitThrowAnalysisTest {
   public void testGTableSwitchStmt() {
     Stmt target =
         Grimp.v().newAssignStmt(Grimp.v().newLocal("local0", IntType.v()), IntConstant.v(0));
-    Stmt s =
-        Grimp.v()
-            .newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(target), target);
+    Stmt s = Grimp.v().newTableSwitchStmt(IntConstant.v(1), 0, 1, Arrays.asList(target), target);
     assertTrue(
         ExceptionTestUtility.sameMembers(
             utility.VM_ERRORS, Collections.EMPTY_SET, unitAnalysis.mightThrow(s)));

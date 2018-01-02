@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -32,9 +35,6 @@ import soot.Singletons;
 import soot.Unit;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Removes empty switch statements which always take the default action from a method body, i.e.
@@ -50,14 +50,16 @@ public class EmptySwitchEliminator extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_EmptySwitchEliminator();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     Iterator<Unit> it = b.getUnits().snapshotIterator();
     while (it.hasNext()) {
       Unit u = it.next();
       if (u instanceof LookupSwitchStmt) {
         LookupSwitchStmt sw = (LookupSwitchStmt) u;
-        if (sw.getTargetCount() == 0 && sw.getDefaultTarget() != null)
+        if (sw.getTargetCount() == 0 && sw.getDefaultTarget() != null) {
           b.getUnits().swapWith(sw, Jimple.v().newGotoStmt(sw.getDefaultTarget()));
+        }
       }
     }
   }

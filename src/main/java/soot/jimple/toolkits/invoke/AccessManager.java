@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 import soot.Body;
 import soot.ClassMember;
 import soot.Hierarchy;
@@ -50,10 +53,6 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 /** Methods for checking Java scope and visibiliity requirements. */
 public class AccessManager {
   /**
@@ -67,14 +66,20 @@ public class AccessManager {
     SootClass targetClass = target.getDeclaringClass();
     SootClass containerClass = container.getDeclaringClass();
 
-    if (!isAccessLegal(container, targetClass)) return false;
+    if (!isAccessLegal(container, targetClass)) {
+      return false;
+    }
 
     // Condition 1 above.
-    if (target.isPrivate() && !targetClass.getName().equals(containerClass.getName())) return false;
+    if (target.isPrivate() && !targetClass.getName().equals(containerClass.getName())) {
+      return false;
+    }
 
     // Condition 2. Check the package names.
     if (!target.isPrivate() && !target.isProtected() && !target.isPublic()) {
-      if (!targetClass.getPackageName().equals(containerClass.getPackageName())) return false;
+      if (!targetClass.getPackageName().equals(containerClass.getPackageName())) {
+        return false;
+      }
     }
 
     // Condition 3.
@@ -84,7 +89,6 @@ public class AccessManager {
       // protected means that you can be accessed by your children.
       // i.e. container must be in a child of target.
       return h.isClassSuperclassOfIncluding(targetClass, containerClass);
-
     }
 
     return true;
@@ -134,10 +138,14 @@ public class AccessManager {
   public static void createAccessorMethods(Body body, Stmt before, Stmt after) {
     soot.util.Chain units = body.getUnits();
 
-    if (before != null && !units.contains(before)) throw new RuntimeException();
-    if (after != null && !units.contains(after)) throw new RuntimeException();
+    if (before != null && !units.contains(before)) {
+      throw new RuntimeException();
+    }
+    if (after != null && !units.contains(after)) {
+      throw new RuntimeException();
+    }
 
-    ArrayList<Unit> unitList = new ArrayList<Unit>();
+    ArrayList<Unit> unitList = new ArrayList<>();
     unitList.addAll(units);
 
     boolean bInside = before == null;
@@ -145,12 +153,18 @@ public class AccessManager {
       Stmt s = (Stmt) unit;
 
       if (bInside) {
-        if (s == after) return;
+        if (s == after) {
+          return;
+        }
 
-        if (!isAccessLegal(body.getMethod(), s)) createAccessorMethod(body.getMethod(), s);
+        if (!isAccessLegal(body.getMethod(), s)) {
+          createAccessorMethod(body.getMethod(), s);
+        }
 
       } else {
-        if (s == before) bInside = true;
+        if (s == before) {
+          bInside = true;
+        }
       }
     }
   }
@@ -178,8 +192,8 @@ public class AccessManager {
       SootMethod m = (SootMethod) member;
       name += m.getName() + "$";
 
-      for (Iterator it = m.getParameterTypes().iterator(); it.hasNext(); ) {
-        Type type = (Type) it.next();
+      for (Object element : m.getParameterTypes()) {
+        Type type = (Type) element;
         name += type.toString().replaceAll("\\.", "\\$\\$") + "$";
       }
     }
@@ -200,7 +214,9 @@ public class AccessManager {
 
     Body containerBody = container.getActiveBody();
     soot.util.Chain containerStmts = containerBody.getUnits();
-    if (!containerStmts.contains(stmt)) throw new RuntimeException();
+    if (!containerStmts.contains(stmt)) {
+      throw new RuntimeException();
+    }
 
     if (stmt.containsInvokeExpr()) {
       createInvokeAccessor(container, stmt);
@@ -219,12 +235,14 @@ public class AccessManager {
       } else {
         throw new RuntimeException("Expected class member access");
       }
-    } else throw new RuntimeException("Expected class member access");
+    } else {
+      throw new RuntimeException("Expected class member access");
+    }
   }
 
   private static void createGetAccessor(SootMethod container, AssignStmt as, FieldRef ref) {
     java.util.List parameterTypes = new LinkedList();
-    java.util.List<SootClass> thrownExceptions = new LinkedList<SootClass>();
+    java.util.List<SootClass> thrownExceptions = new LinkedList<>();
 
     Body accessorBody = Jimple.v().newBody();
     soot.util.Chain accStmts = accessorBody.getUnits();
@@ -280,7 +298,7 @@ public class AccessManager {
 
   private static void createSetAccessor(SootMethod container, AssignStmt as, FieldRef ref) {
     java.util.List parameterTypes = new LinkedList();
-    java.util.List<SootClass> thrownExceptions = new LinkedList<SootClass>();
+    java.util.List<SootClass> thrownExceptions = new LinkedList<>();
 
     Body accessorBody = Jimple.v().newBody();
     soot.util.Chain accStmts = accessorBody.getUnits();
@@ -348,7 +366,7 @@ public class AccessManager {
 
   private static void createInvokeAccessor(SootMethod container, Stmt stmt) {
     java.util.List parameterTypes = new LinkedList();
-    java.util.List<SootClass> thrownExceptions = new LinkedList<SootClass>();
+    java.util.List<SootClass> thrownExceptions = new LinkedList<>();
     Type returnType;
 
     Body accessorBody = Jimple.v().newBody();
@@ -404,7 +422,9 @@ public class AccessManager {
         Local thisLocal = (Local) arguments.get(0);
         arguments.remove(0);
         accExpr = Jimple.v().newSpecialInvokeExpr(thisLocal, method.makeRef(), arguments);
-      } else throw new RuntimeException("");
+      } else {
+        throw new RuntimeException("");
+      }
 
       Stmt s;
       if (returnType instanceof VoidType) {
@@ -453,22 +473,34 @@ public class AccessManager {
     boolean safeChangesOnly = !(options.equals("unsafe"));
 
     SootClass targetClass = target.getDeclaringClass();
-    if (!ensureAccess(container, targetClass, options)) return false;
+    if (!ensureAccess(container, targetClass, options)) {
+      return false;
+    }
 
-    if (isAccessLegal(container, target)) return true;
+    if (isAccessLegal(container, target)) {
+      return true;
+    }
 
-    if (!allowChanges && !accessors) return false;
+    if (!allowChanges && !accessors) {
+      return false;
+    }
 
     // throw new RuntimeException("Not implemented yet!");
 
     if (target.getDeclaringClass().isApplicationClass()) {
-      if (accessors) return true;
+      if (accessors) {
+        return true;
+      }
 
-      if (safeChangesOnly) throw new RuntimeException("Not implemented yet!");
+      if (safeChangesOnly) {
+        throw new RuntimeException("Not implemented yet!");
+      }
 
       target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
       return true;
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -480,18 +512,28 @@ public class AccessManager {
     boolean allowChanges = !(options.equals("none"));
     boolean safeChangesOnly = !(options.equals("unsafe"));
 
-    if (isAccessLegal(container, target)) return true;
+    if (isAccessLegal(container, target)) {
+      return true;
+    }
 
-    if (!allowChanges && !accessors) return false;
+    if (!allowChanges && !accessors) {
+      return false;
+    }
 
-    if (safeChangesOnly && !accessors) throw new RuntimeException("Not implemented yet!");
+    if (safeChangesOnly && !accessors) {
+      throw new RuntimeException("Not implemented yet!");
+    }
 
-    if (accessors) return false;
+    if (accessors) {
+      return false;
+    }
 
     if (target.isApplicationClass()) {
 
       target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
       return true;
-    } else return false;
+    } else {
+      return false;
+    }
   }
 }

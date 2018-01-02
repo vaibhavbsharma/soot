@@ -25,6 +25,7 @@
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
+
 import soot.dexpler.DexBody;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
@@ -35,6 +36,7 @@ public class NopInstruction extends DexlibAbstractInstruction {
     super(instruction, codeAddress);
   }
 
+  @Override
   public void jimplify(DexBody body) {
     NopStmt nop = Jimple.v().newNopStmt();
     setUnit(nop);

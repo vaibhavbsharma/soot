@@ -3,6 +3,7 @@ package soot.toDex.instructions;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction10t;
+
 import soot.toDex.LabelAssigner;
 
 /**
@@ -19,7 +20,9 @@ public class Insn10t extends InsnWithOffset {
 
   @Override
   protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
-    if (target == null) throw new RuntimeException("Cannot jump to a NULL target");
+    if (target == null) {
+      throw new RuntimeException("Cannot jump to a NULL target");
+    }
     return new BuilderInstruction10t(opc, assigner.getOrCreateLabel(target));
   }
 

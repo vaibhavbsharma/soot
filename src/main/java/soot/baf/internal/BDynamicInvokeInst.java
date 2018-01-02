@@ -26,6 +26,8 @@
 
 package soot.baf.internal;
 
+import java.util.List;
+
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -35,8 +37,6 @@ import soot.baf.DynamicInvokeInst;
 import soot.baf.InstSwitch;
 import soot.jimple.Jimple;
 import soot.util.Switch;
-
-import java.util.List;
 
 @SuppressWarnings({"serial", "unchecked"})
 public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst {
@@ -52,35 +52,46 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     this.tag = tag;
   }
 
+  @Override
   public int getInCount() {
     return methodRef.parameterTypes().size();
   }
 
+  @Override
   public Object clone() {
     return new BDynamicInvokeInst(bsmRef, bsmArgs, methodRef, tag);
   }
 
+  @Override
   public int getOutCount() {
-    if (methodRef.returnType() instanceof VoidType) return 0;
-    else return 1;
+    if (methodRef.returnType() instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
 
+  @Override
   public SootMethodRef getBootstrapMethodRef() {
     return bsmRef;
   }
 
+  @Override
   public List<Value> getBootstrapArgs() {
     return bsmArgs;
   }
 
+  @Override
   public String getName() {
     return "dynamicinvoke";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDynamicInvokeInst(this);
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
@@ -95,7 +106,9 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     buffer.append(bsmRef.getSignature());
     buffer.append("(");
     for (int i = 0; i < bsmArgs.size(); i++) {
-      if (i != 0) buffer.append(", ");
+      if (i != 0) {
+        buffer.append(", ");
+      }
 
       buffer.append(bsmArgs.get(i).toString());
     }
@@ -104,6 +117,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.DYNAMICINVOKE);
     up.literal(
@@ -117,7 +131,9 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     up.literal("(");
 
     for (int i = 0; i < bsmArgs.size(); i++) {
-      if (i != 0) up.literal(", ");
+      if (i != 0) {
+        up.literal(", ");
+      }
 
       bsmArgs.get(i).toString(up);
     }

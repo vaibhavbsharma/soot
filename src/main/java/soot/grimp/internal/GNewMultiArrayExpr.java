@@ -25,23 +25,25 @@
 
 package soot.grimp.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.jimple.internal.AbstractNewMultiArrayExpr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
   public GNewMultiArrayExpr(ArrayType type, List sizes) {
     super(type, new ValueBox[sizes.size()]);
 
-    for (int i = 0; i < sizes.size(); i++)
+    for (int i = 0; i < sizes.size(); i++) {
       sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
+    }
   }
 
+  @Override
   public Object clone() {
     List clonedSizes = new ArrayList(getSizeCount());
 

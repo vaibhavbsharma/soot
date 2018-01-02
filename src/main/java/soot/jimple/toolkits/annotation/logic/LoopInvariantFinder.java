@@ -19,6 +19,11 @@
 
 package soot.jimple.toolkits.annotation.logic;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -41,11 +46,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.SmartLocalDefsPool;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
 public class LoopInvariantFinder extends BodyTransformer {
 
   private ArrayList constants;
@@ -57,6 +57,7 @@ public class LoopInvariantFinder extends BodyTransformer {
   }
 
   /** this one uses the side effect tester */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 
     SmartLocalDefs sld = SmartLocalDefsPool.v().getSmartLocalDefsFor(b);
@@ -70,7 +71,9 @@ public class LoopInvariantFinder extends BodyTransformer {
     constants = new ArrayList();
 
     // no loop invariants if no loops
-    if (loops.isEmpty()) return;
+    if (loops.isEmpty()) {
+      return;
+    }
 
     Iterator<Loop> lIt = loops.iterator();
     while (lIt.hasNext()) {
@@ -105,10 +108,14 @@ public class LoopInvariantFinder extends BodyTransformer {
     }
 
     // ignore goto stmts
-    if (s instanceof GotoStmt) return;
+    if (s instanceof GotoStmt) {
+      return;
+    }
 
     // ignore invoke stmts
-    if (s instanceof InvokeStmt) return;
+    if (s instanceof InvokeStmt) {
+      return;
+    }
 
     G.v()
         .out
@@ -135,7 +142,9 @@ public class LoopInvariantFinder extends BodyTransformer {
         break uses;
       }
       // side effect tester doesn't handle expr
-      if (v instanceof Expr) continue;
+      if (v instanceof Expr) {
+        continue;
+      }
 
       G.v().out.println("test: " + v + " of kind: " + v.getClass());
       Iterator loopStmtsIt = loopStmts.iterator();
@@ -169,14 +178,18 @@ public class LoopInvariantFinder extends BodyTransformer {
         break defs;
       }
       // side effect tester doesn't handle expr
-      if (v instanceof Expr) continue;
+      if (v instanceof Expr) {
+        continue;
+      }
 
       G.v().out.println("test: " + v + " of kind: " + v.getClass());
 
       Iterator loopStmtsIt = loopStmts.iterator();
       while (loopStmtsIt.hasNext()) {
         Stmt next = (Stmt) loopStmtsIt.next();
-        if (next.equals(s)) continue;
+        if (next.equals(s)) {
+          continue;
+        }
         if (nset.unitCanWriteTo(next, v)) {
           if (!isConstant(next)) {
             G.v().out.println("result false: unit can be written to by: " + next);

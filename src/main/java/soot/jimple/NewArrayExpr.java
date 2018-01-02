@@ -41,7 +41,9 @@ public interface NewArrayExpr extends Expr, AnyNewExpr {
 
   void setSize(Value size);
 
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

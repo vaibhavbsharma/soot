@@ -83,8 +83,11 @@ public class SootField extends AbstractHost
     return buffer.toString().intern();
   }
 
+  @Override
   public SootClass getDeclaringClass() {
-    if (!isDeclared) throw new RuntimeException("not declared: " + getName() + " " + getType());
+    if (!isDeclared) {
+      throw new RuntimeException("not declared: " + getName() + " " + getType());
+    }
 
     return declaringClass;
   }
@@ -97,13 +100,17 @@ public class SootField extends AbstractHost
   @Override
   public void setPhantom(boolean value) {
     if (value) {
-      if (!Scene.v().allowsPhantomRefs()) throw new RuntimeException("Phantom refs not allowed");
-      if (declaringClass != null && !declaringClass.isPhantom())
+      if (!Scene.v().allowsPhantomRefs()) {
+        throw new RuntimeException("Phantom refs not allowed");
+      }
+      if (declaringClass != null && !declaringClass.isPhantom()) {
         throw new RuntimeException("Declaring class would have to be phantom");
+      }
     }
     isPhantom = value;
   }
 
+  @Override
   public boolean isDeclared() {
     return isDeclared;
   }
@@ -112,6 +119,7 @@ public class SootField extends AbstractHost
     this.name = name;
   }
 
+  @Override
   public Type getType() {
     return type;
   }
@@ -121,21 +129,25 @@ public class SootField extends AbstractHost
   }
 
   /** Convenience method returning true if this field is public. */
+  @Override
   public boolean isPublic() {
     return Modifier.isPublic(this.getModifiers());
   }
 
   /** Convenience method returning true if this field is protected. */
+  @Override
   public boolean isProtected() {
     return Modifier.isProtected(this.getModifiers());
   }
 
   /** Convenience method returning true if this field is private. */
+  @Override
   public boolean isPrivate() {
     return Modifier.isPrivate(this.getModifiers());
   }
 
   /** Convenience method returning true if this field is static. */
+  @Override
   public boolean isStatic() {
     return Modifier.isStatic(this.getModifiers());
   }
@@ -145,17 +157,21 @@ public class SootField extends AbstractHost
     return Modifier.isFinal(this.getModifiers());
   }
 
+  @Override
   public void setModifiers(int modifiers) {
-    if (!declaringClass.isApplicationClass())
+    if (!declaringClass.isApplicationClass()) {
       throw new RuntimeException("Cannot set modifiers of a field from a non-app class!");
+    }
 
     this.modifiers = modifiers;
   }
 
+  @Override
   public int getModifiers() {
     return modifiers;
   }
 
+  @Override
   public String toString() {
     return getSignature();
   }
@@ -164,18 +180,23 @@ public class SootField extends AbstractHost
     String qualifiers = Modifier.toString(modifiers) + " " + type.toQuotedString();
     qualifiers = qualifiers.trim();
 
-    if (qualifiers.isEmpty()) return Scene.v().quotedNameOf(name);
-    else return qualifiers + " " + Scene.v().quotedNameOf(name) + "";
+    if (qualifiers.isEmpty()) {
+      return Scene.v().quotedNameOf(name);
+    } else {
+      return qualifiers + " " + Scene.v().quotedNameOf(name) + "";
+    }
   }
 
   public String getDeclaration() {
     return getOriginalStyleDeclaration();
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }
@@ -192,6 +213,8 @@ public class SootField extends AbstractHost
 
   public void setDeclaringClass(SootClass sc) {
     this.declaringClass = sc;
-    if (type instanceof RefLikeType) Scene.v().getFieldNumberer().add(this);
+    if (type instanceof RefLikeType) {
+      Scene.v().getFieldNumberer().add(this);
+    }
   }
 }

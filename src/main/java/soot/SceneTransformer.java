@@ -32,13 +32,15 @@ import java.util.Map;
 public abstract class SceneTransformer extends Transformer {
   /** Performs the transformation on the Scene, under the given phaseName. */
   public final void transform(String phaseName, Map<String, String> options) {
-    if (!PhaseOptions.getBoolean(options, "enabled")) return;
+    if (!PhaseOptions.getBoolean(options, "enabled")) {
+      return;
+    }
 
     internalTransform(phaseName, options);
   }
 
   public final void transform(String phaseName) {
-    HashMap<String, String> dummyOptions = new HashMap<String, String>();
+    HashMap<String, String> dummyOptions = new HashMap<>();
     dummyOptions.put("enabled", "true");
     transform(phaseName, dummyOptions);
   }

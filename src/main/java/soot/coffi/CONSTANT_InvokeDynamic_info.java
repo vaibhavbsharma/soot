@@ -32,6 +32,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
 
   public int name_and_type_index;
 
+  @Override
   public int size() {
     return 5;
   }
@@ -43,6 +44,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
    * @return String representation of this entry.
    * @see cp_info#toString
    */
+  @Override
   public String toString(cp_info constant_pool[]) {
     // currently neglects field "kind"
     cp_info bsm = constant_pool[bootstrap_method_index];
@@ -55,6 +57,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
    * @return the String "methodhandle".
    * @see cp_info#typeName
    */
+  @Override
   public String typeName() {
     return "invokedynamic";
   }
@@ -69,20 +72,26 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
    */
+  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     int i;
-    if (tag != cp.tag) return tag - cp.tag;
+    if (tag != cp.tag) {
+      return tag - cp.tag;
+    }
     CONSTANT_InvokeDynamic_info cu = (CONSTANT_InvokeDynamic_info) cp;
     i =
         constant_pool[bootstrap_method_index].compareTo(
             constant_pool, cp_constant_pool[cu.bootstrap_method_index], cp_constant_pool);
-    if (i != 0) return i;
+    if (i != 0) {
+      return i;
+    }
     i =
         constant_pool[name_and_type_index].compareTo(
             constant_pool, cp_constant_pool[cu.name_and_type_index], cp_constant_pool);
     return i;
   }
 
+  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     throw new UnsupportedOperationException("cannot convert to Jimple: " + typeName());
   }

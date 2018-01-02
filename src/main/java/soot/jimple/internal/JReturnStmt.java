@@ -25,6 +25,8 @@
 
 package soot.jimple.internal;
 
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
@@ -37,8 +39,6 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
-import java.util.List;
-
 public class JReturnStmt extends AbstractOpStmt implements ReturnStmt {
   public JReturnStmt(Value returnValue) {
     this(Jimple.v().newImmediateBox(returnValue));
@@ -48,24 +48,29 @@ public class JReturnStmt extends AbstractOpStmt implements ReturnStmt {
     super(returnValueBox);
   }
 
+  @Override
   public Object clone() {
     return new JReturnStmt(Jimple.cloneIfNecessary(getOp()));
   }
 
+  @Override
   public String toString() {
     return Jimple.RETURN + " " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.RETURN);
     up.literal(" ");
     opBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseReturnStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) (getOp())).convertToBaf(context, out);
 
@@ -74,10 +79,12 @@ public class JReturnStmt extends AbstractOpStmt implements ReturnStmt {
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

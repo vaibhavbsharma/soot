@@ -18,6 +18,12 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+
 import soot.SootClass;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
@@ -30,12 +36,6 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
-
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 
 /**
  * Implementation of pre-processing algorithms performed prior to the pointer analysis.
@@ -69,8 +69,8 @@ public class OfflineProcessor {
   public OfflineProcessor(GeomPointsTo pta) {
     int2var = pta.pointers;
     int size = int2var.size();
-    varGraph = new ArrayList<off_graph_edge>(size);
-    queue = new LinkedList<Integer>();
+    varGraph = new ArrayList<>(size);
+    queue = new LinkedList<>();
     pre = new int[size];
     low = new int[size];
     count = new int[size];
@@ -78,7 +78,9 @@ public class OfflineProcessor {
     repsize = new int[size];
     geomPTA = pta;
 
-    for (int i = 0; i < size; ++i) varGraph.add(null);
+    for (int i = 0; i < size; ++i) {
+      varGraph.add(null);
+    }
   }
 
   /** Call it before running the optimizations. */
@@ -103,13 +105,15 @@ public class OfflineProcessor {
         // All pointers will be processed
         for (int i = 0; i < n_var; ++i) {
           IVarAbstraction pn = int2var.get(i);
-          if (pn != null && pn.getRepresentative() == pn) pn.willUpdate = true;
+          if (pn != null && pn.getRepresentative() == pn) {
+            pn.willUpdate = true;
+          }
         }
         return;
     }
 
     // We always refine the callsites that have multiple call targets
-    Set<Node> multiBaseptrs = new HashSet<Node>();
+    Set<Node> multiBaseptrs = new HashSet<>();
 
     for (Stmt callsite : geomPTA.multiCallsites) {
       InstanceInvokeExpr iie = (InstanceInvokeExpr) callsite.getInvokeExpr();
@@ -225,7 +229,9 @@ public class OfflineProcessor {
                         @Override
                         public void visit(Node n) {
                           IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                          if (padf == null || padf.reachable() == false) return;
+                          if (padf == null || padf.reachable() == false) {
+                            return;
+                          }
                           off_graph_edge e = add_graph_edge(rhs.id, padf.id);
                           e.base_var = lhs;
                         }
@@ -234,7 +240,9 @@ public class OfflineProcessor {
               // Use geom
               for (AllocNode o : rep.get_all_points_to_objects()) {
                 IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-                if (padf == null || padf.reachable() == false) continue;
+                if (padf == null || padf.reachable() == false) {
+                  continue;
+                }
                 off_graph_edge e = add_graph_edge(rhs.id, padf.id);
                 e.base_var = lhs;
               }
@@ -256,7 +264,9 @@ public class OfflineProcessor {
                         @Override
                         public void visit(Node n) {
                           IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                          if (padf == null || padf.reachable() == false) return;
+                          if (padf == null || padf.reachable() == false) {
+                            return;
+                          }
                           off_graph_edge e = add_graph_edge(padf.id, lhs.id);
                           e.base_var = rhs;
                         }
@@ -265,7 +275,9 @@ public class OfflineProcessor {
               // use geom
               for (AllocNode o : rep.get_all_points_to_objects()) {
                 IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-                if (padf == null || padf.reachable() == false) continue;
+                if (padf == null || padf.reachable() == false) {
+                  continue;
+                }
                 off_graph_edge e = add_graph_edge(padf.id, lhs.id);
                 e.base_var = rhs;
               }
@@ -285,11 +297,15 @@ public class OfflineProcessor {
   protected void setAllUserCodeVariablesUseful() {
     for (int i = 0; i < n_var; ++i) {
       IVarAbstraction pn = int2var.get(i);
-      if (pn != pn.getRepresentative()) continue;
+      if (pn != pn.getRepresentative()) {
+        continue;
+      }
 
       Node node = pn.getWrappedNode();
       int sm_id = geomPTA.getMethodIDFromPtr(pn);
-      if (!geomPTA.isReachableMethod(sm_id)) continue;
+      if (!geomPTA.isReachableMethod(sm_id)) {
+        continue;
+      }
 
       if (node instanceof VarNode) {
         // flag == true if node is defined in the Java library
@@ -299,7 +315,9 @@ public class OfflineProcessor {
           defined_in_lib = ((LocalVarNode) node).getMethod().isJavaLibraryMethod();
         } else if (node instanceof GlobalVarNode) {
           SootClass sc = ((GlobalVarNode) node).getDeclaringClass();
-          if (sc != null) defined_in_lib = sc.isJavaLibraryClass();
+          if (sc != null) {
+            defined_in_lib = sc.isJavaLibraryClass();
+          }
         }
 
         if (!defined_in_lib && !geomPTA.isExceptionPointer(node)) {
@@ -323,7 +341,9 @@ public class OfflineProcessor {
     queue.clear();
     for (i = 0; i < n_var; ++i) {
       pn = int2var.get(i);
-      if (pn.willUpdate == true) queue.add(i);
+      if (pn.willUpdate == true) {
+        queue.add(i);
+      }
     }
 
     // Worklist based graph traversal
@@ -389,9 +409,13 @@ public class OfflineProcessor {
                     new P2SetVisitor() {
                       @Override
                       public void visit(Node n) {
-                        if (visitedFlag) return;
+                        if (visitedFlag) {
+                          return;
+                        }
                         IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                        if (padf == null || padf.reachable() == false) return;
+                        if (padf == null || padf.reachable() == false) {
+                          return;
+                        }
                         visitedFlag |= padf.willUpdate;
                       }
                     });
@@ -399,9 +423,13 @@ public class OfflineProcessor {
             // Use the geometric points-to result
             for (AllocNode o : pn.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-              if (padf == null || padf.reachable() == false) continue;
+              if (padf == null || padf.reachable() == false) {
+                continue;
+              }
               visitedFlag |= padf.willUpdate;
-              if (visitedFlag) break;
+              if (visitedFlag) {
+                break;
+              }
             }
           }
 
@@ -423,7 +451,9 @@ public class OfflineProcessor {
     queue.clear();
 
     for (PlainConstraint cons : geomPTA.constraints) {
-      if (!cons.isActive) continue;
+      if (!cons.isActive) {
+        continue;
+      }
 
       final IVarAbstraction lhs = cons.getLHS();
       final IVarAbstraction rhs = cons.getRHS();
@@ -452,7 +482,9 @@ public class OfflineProcessor {
                       @Override
                       public void visit(Node n) {
                         IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                        if (padf == null || padf.reachable() == false) return;
+                        if (padf == null || padf.reachable() == false) {
+                          return;
+                        }
                         add_graph_edge(padf.id, rhs.id);
                       }
                     });
@@ -460,7 +492,9 @@ public class OfflineProcessor {
             // use geomPA
             for (AllocNode o : rep.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-              if (padf == null || padf.reachable() == false) continue;
+              if (padf == null || padf.reachable() == false) {
+                continue;
+              }
               add_graph_edge(padf.id, rhs.id);
             }
           }
@@ -477,7 +511,9 @@ public class OfflineProcessor {
                       @Override
                       public void visit(Node n) {
                         IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                        if (padf == null || padf.reachable() == false) return;
+                        if (padf == null || padf.reachable() == false) {
+                          return;
+                        }
                         add_graph_edge(lhs.id, padf.id);
                       }
                     });
@@ -485,7 +521,9 @@ public class OfflineProcessor {
             // use geomPA
             for (AllocNode o : rep.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-              if (padf == null || padf.reachable() == false) continue;
+              if (padf == null || padf.reachable() == false) {
+                continue;
+              }
               add_graph_edge(lhs.id, padf.id);
             }
           }
@@ -517,7 +555,11 @@ public class OfflineProcessor {
     }
 
     // perform the SCC identification
-    for (i = 0; i < n_var; ++i) if (pre[i] == -1) tarjan_scc(i);
+    for (i = 0; i < n_var; ++i) {
+      if (pre[i] == -1) {
+        tarjan_scc(i);
+      }
+    }
 
     // In-degree counting
     for (i = 0; i < n_var; ++i) {
@@ -525,7 +567,9 @@ public class OfflineProcessor {
       s = find_parent(i);
       while (p != null) {
         t = find_parent(p.t);
-        if (t != s) count[t]++;
+        if (t != s) {
+          count[t]++;
+        }
         p = p.next;
       }
     }
@@ -535,7 +579,9 @@ public class OfflineProcessor {
       p = varGraph.get(i);
       if (p != null && rep[i] != i) {
         t = find_parent(i);
-        while (p.next != null) p = p.next;
+        while (p.next != null) {
+          p = p.next;
+        }
         p.next = varGraph.get(t);
         varGraph.set(t, varGraph.get(i));
         varGraph.set(i, null);
@@ -543,7 +589,11 @@ public class OfflineProcessor {
     }
 
     queue.clear();
-    for (i = 0; i < n_var; ++i) if (rep[i] == i && count[i] == 0) queue.addLast(i);
+    for (i = 0; i < n_var; ++i) {
+      if (rep[i] == i && count[i] == 0) {
+        queue.addLast(i);
+      }
+    }
 
     // Assign the topological value to every node
     // We also reserve space for the cycle members, i.e. linearize all the nodes not only the
@@ -560,7 +610,9 @@ public class OfflineProcessor {
       while (p != null) {
         t = find_parent(p.t);
         if (t != s) {
-          if (--count[t] == 0) queue.addLast(t);
+          if (--count[t] == 0) {
+            queue.addLast(t);
+          }
         }
         p = p.next;
       }
@@ -599,12 +651,18 @@ public class OfflineProcessor {
 
     while (p != null) {
       t = p.t;
-      if (pre[t] == -1) tarjan_scc(t);
-      if (low[t] < low[s]) low[s] = low[t];
+      if (pre[t] == -1) {
+        tarjan_scc(t);
+      }
+      if (low[t] < low[s]) {
+        low[s] = low[t];
+      }
       p = p.next;
     }
 
-    if (low[s] < pre[s]) return;
+    if (low[s] < pre[s]) {
+      return;
+    }
 
     int w = s;
 

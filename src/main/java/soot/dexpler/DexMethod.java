@@ -23,6 +23,9 @@
  */
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.DexFile;
@@ -30,6 +33,7 @@ import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.value.ArrayEncodedValue;
 import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
+
 import soot.Body;
 import soot.G;
 import soot.MethodSource;
@@ -42,9 +46,6 @@ import soot.Type;
 import soot.jimple.Jimple;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * DexMethod is a container for all methods that are declared in a class. It holds information about
@@ -63,18 +64,20 @@ public class DexMethod {
   public static SootMethod makeSootMethod(
       final DexFile dexFile, final Method method, final SootClass declaringClass) {
     int accessFlags = method.getAccessFlags();
-    List<Type> parameterTypes = new ArrayList<Type>();
+    List<Type> parameterTypes = new ArrayList<>();
 
     // get the name of the method
     String name = method.getName();
 
     // the following snippet retrieves all exceptions that this method
     // throws by analyzing its annotations
-    List<SootClass> thrownExceptions = new ArrayList<SootClass>();
+    List<SootClass> thrownExceptions = new ArrayList<>();
     for (Annotation a : method.getAnnotations()) {
       Type atype = DexType.toSoot(a.getType());
       String atypes = atype.toString();
-      if (!(atypes.equals("dalvik.annotation.Throws"))) continue;
+      if (!(atypes.equals("dalvik.annotation.Throws"))) {
+        continue;
+      }
       for (AnnotationElement ae : a.getElements()) {
         EncodedValue ev = ae.getValue();
         if (ev instanceof ArrayEncodedValue) {
@@ -112,9 +115,13 @@ public class DexMethod {
 
     // if the method is abstract or native, no code needs to be transformed
     int flags = method.getAccessFlags();
-    if (Modifier.isAbstract(flags) || Modifier.isNative(flags)) return sm;
+    if (Modifier.isAbstract(flags) || Modifier.isNative(flags)) {
+      return sm;
+    }
 
-    if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES) return sm;
+    if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES) {
+      return sm;
+    }
 
     // // retrieve all local types of the method
     // DebugInfoItem debugInfo = method.g.codeItem.getDebugInfo();

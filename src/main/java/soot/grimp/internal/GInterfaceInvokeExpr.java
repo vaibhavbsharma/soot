@@ -26,6 +26,9 @@
 
 package soot.grimp.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.SootMethodRef;
 import soot.UnitPrinter;
 import soot.Value;
@@ -35,17 +38,16 @@ import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.internal.AbstractInterfaceInvokeExpr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements Precedence {
   public GInterfaceInvokeExpr(Value base, SootMethodRef methodRef, List args) {
     super(Grimp.v().newObjExprBox(base), methodRef, new ValueBox[args.size()]);
 
-    for (int i = 0; i < args.size(); i++)
+    for (int i = 0; i < args.size(); i++) {
       this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    }
   }
 
+  @Override
   public int getPrecedence() {
     return 950;
   }
@@ -54,10 +56,13 @@ public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements
     String leftOp = opString;
 
     if (getBase() instanceof Precedence
-        && ((Precedence) getBase()).getPrecedence() < getPrecedence()) leftOp = "(" + leftOp + ")";
+        && ((Precedence) getBase()).getPrecedence() < getPrecedence()) {
+      leftOp = "(" + leftOp + ")";
+    }
     return leftOp + rightString;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
@@ -65,7 +70,9 @@ public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) buffer.append(", ");
+        if (i != 0) {
+          buffer.append(", ");
+        }
 
         buffer.append(argBoxes[i].getValue().toString());
       }
@@ -76,17 +83,24 @@ public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements
     return toString(getBase(), getBase().toString(), buffer.toString());
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal("(");
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal("(");
+    }
     baseBox.toString(up);
-    if (PrecedenceTest.needsBrackets(baseBox, this)) up.literal(")");
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal(")");
+    }
     up.literal(".");
     up.methodRef(methodRef);
     up.literal("(");
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) up.literal(", ");
+        if (i != 0) {
+          up.literal(", ");
+        }
 
         argBoxes[i].toString(up);
       }
@@ -95,6 +109,7 @@ public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements
     up.literal(")");
   }
 
+  @Override
   public Object clone() {
     List argList = new ArrayList(getArgCount());
 

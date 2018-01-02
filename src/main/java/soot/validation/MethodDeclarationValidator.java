@@ -1,11 +1,11 @@
 package soot.validation;
 
+import java.util.List;
+
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
-
-import java.util.List;
 
 /**
  * Validates classes to make sure that all method signatures are valid
@@ -21,16 +21,21 @@ public enum MethodDeclarationValidator implements ClassValidator {
 
   @Override
   public void validate(SootClass sc, List<ValidationException> exceptions) {
-    if (sc.isConcrete())
-      for (SootMethod sm : sc.getMethods())
+    if (sc.isConcrete()) {
+      for (SootMethod sm : sc.getMethods()) {
         for (Type tp : sm.getParameterTypes()) {
-          if (tp == null)
+          if (tp == null) {
             exceptions.add(new ValidationException(sm, "Null parameter types are invalid"));
-          if (tp instanceof VoidType)
+          }
+          if (tp instanceof VoidType) {
             exceptions.add(new ValidationException(sm, "Void parameter types are invalid"));
-          if (!tp.isAllowedInFinalCode())
+          }
+          if (!tp.isAllowedInFinalCode()) {
             exceptions.add(new ValidationException(sm, "Parameter type not allowed in final code"));
+          }
         }
+      }
+    }
   }
 
   @Override

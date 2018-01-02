@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -36,34 +40,36 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Filter;
 import soot.jimple.toolkits.callgraph.TransitiveTargets;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {
   PointsToAnalysis pa;
   CallGraph cg;
-  Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<SootMethod, MethodRWSet>();
-  Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
+  Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<>();
+  Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<>();
   int rwsetcount = 0;
   TransitiveTargets tt;
 
   public void findNTRWSets(SootMethod method) {
-    if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) return;
+    if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
+      return;
+    }
 
     MethodRWSet read = null;
     MethodRWSet write = null;
-    for (Iterator<Unit> sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
+    for (Unit unit : method.retrieveActiveBody().getUnits()) {
+      final Stmt s = (Stmt) unit;
       RWSet ntr = ntReadSet(method, s);
       if (ntr != null) {
-        if (read == null) read = new MethodRWSet();
+        if (read == null) {
+          read = new MethodRWSet();
+        }
         read.union(ntr);
       }
       RWSet ntw = ntWriteSet(method, s);
       if (ntw != null) {
-        if (write == null) write = new MethodRWSet();
+        if (write == null) {
+          write = new MethodRWSet();
+        }
         write.union(ntw);
       }
     }
@@ -85,6 +91,7 @@ public class SideEffectAnalysis {
     if (G.v().Union_factory == null) {
       G.v().Union_factory =
           new UnionFactory() {
+            @Override
             public Union newUnion() {
               return FullObjectSet.v();
             }
@@ -126,17 +133,23 @@ public class SideEffectAnalysis {
     while (targets.hasNext()) {
       SootMethod target = (SootMethod) targets.next();
       if (target.isNative()) {
-        if (ret == null) ret = new SiteRWSet();
+        if (ret == null) {
+          ret = new SiteRWSet();
+        }
         ret.setCallsNative();
       } else if (target.isConcrete()) {
         RWSet ntr = nonTransitiveReadSet(target);
         if (ntr != null) {
-          if (ret == null) ret = new SiteRWSet();
+          if (ret == null) {
+            ret = new SiteRWSet();
+          }
           ret.union(ntr);
         }
       }
     }
-    if (ret == null) return ntReadSet(method, stmt);
+    if (ret == null) {
+      return ntReadSet(method, stmt);
+    }
     ret.union(ntReadSet(method, stmt));
     return ret;
   }
@@ -156,17 +169,23 @@ public class SideEffectAnalysis {
     while (targets.hasNext()) {
       SootMethod target = (SootMethod) targets.next();
       if (target.isNative()) {
-        if (ret == null) ret = new SiteRWSet();
+        if (ret == null) {
+          ret = new SiteRWSet();
+        }
         ret.setCallsNative();
       } else if (target.isConcrete()) {
         RWSet ntw = nonTransitiveWriteSet(target);
         if (ntw != null) {
-          if (ret == null) ret = new SiteRWSet();
+          if (ret == null) {
+            ret = new SiteRWSet();
+          }
           ret.union(ntw);
         }
       }
     }
-    if (ret == null) return ntWriteSet(method, stmt);
+    if (ret == null) {
+      return ntWriteSet(method, stmt);
+    }
     ret.union(ntWriteSet(method, stmt));
     return ret;
   }
@@ -191,6 +210,7 @@ public class SideEffectAnalysis {
     return ret;
   }
 
+  @Override
   public String toString() {
     return "SideEffectAnalysis: PA=" + pa + " CG=" + cg;
   }

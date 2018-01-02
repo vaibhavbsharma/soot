@@ -65,10 +65,12 @@ public class TypeTemplatePrinter extends TypeSwitch {
     p.println(type + " " + varName + " = " + rhs + ";");
   }
 
+  @Override
   public void caseAnySubType(AnySubType t) {
     throw new IllegalArgumentException("cannot print this type");
   }
 
+  @Override
   public void caseArrayType(ArrayType t) {
     printAssign("baseType", t.getElementType());
 
@@ -77,62 +79,77 @@ public class TypeTemplatePrinter extends TypeSwitch {
     emit("ArrayType.v(baseType, numDimensions)");
   }
 
+  @Override
   public void caseBooleanType(BooleanType t) {
     emit("BooleanType.v()");
   }
 
+  @Override
   public void caseByteType(ByteType t) {
     emit("ByteType.v()");
   }
 
+  @Override
   public void caseCharType(CharType t) {
     emit("CharType.v()");
   }
 
+  @Override
   public void defaultCase(Type t) {
     throw new IllegalArgumentException("cannot print this type");
   }
 
+  @Override
   public void caseDoubleType(DoubleType t) {
     emit("DoubleType.v()");
   }
 
+  @Override
   public void caseErroneousType(ErroneousType t) {
     throw new IllegalArgumentException("cannot print this type");
   }
 
+  @Override
   public void caseFloatType(FloatType t) {
     emit("FloatType.v()");
   }
 
+  @Override
   public void caseIntType(IntType t) {
     emit("IntType.v()");
   }
 
+  @Override
   public void caseLongType(LongType t) {
     emit("LongType.v()");
   }
 
+  @Override
   public void caseNullType(NullType t) {
     emit("NullType.v()");
   }
 
+  @Override
   public void caseRefType(RefType t) {
     emitSpecial("RefType", "RefType.v(\"" + t.getClassName() + "\")");
   }
 
+  @Override
   public void caseShortType(ShortType t) {
     emit("ShortType.v()");
   }
 
+  @Override
   public void caseStmtAddressType(StmtAddressType t) {
     throw new IllegalArgumentException("cannot print this type");
   }
 
+  @Override
   public void caseUnknownType(UnknownType t) {
     throw new IllegalArgumentException("cannot print this type");
   }
 
+  @Override
   public void caseVoidType(VoidType t) {
     emit("VoidType.v()");
   }

@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -30,9 +33,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.asg.AugmentedStmtGraph;
 import soot.util.IterableSet;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 public class SequenceFinder implements FactFinder {
   public SequenceFinder(Singletons.Global g) {}
 
@@ -40,6 +40,7 @@ public class SequenceFinder implements FactFinder {
     return G.v().soot_dava_toolkits_base_finders_SequenceFinder();
   }
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET)
       throws RetriggerAnalysisException {
     Dava.v().log("SequenceFinder::find()");
@@ -53,13 +54,17 @@ public class SequenceFinder implements FactFinder {
     while (bit.hasNext()) {
       AugmentedStmt as = (AugmentedStmt) bit.next();
 
-      if (childUnion.contains(as)) continue;
+      if (childUnion.contains(as)) {
+        continue;
+      }
 
       IterableSet sequenceBody = new IterableSet();
 
       while (as.bpreds.size() == 1) {
         AugmentedStmt pas = as.bpreds.get(0);
-        if ((body.contains(pas) == false) || (childUnion.contains(pas) == true)) break;
+        if ((body.contains(pas) == false) || (childUnion.contains(pas) == true)) {
+          break;
+        }
 
         as = pas;
       }
@@ -69,9 +74,13 @@ public class SequenceFinder implements FactFinder {
         childUnion.add(as);
         sequenceBody.addLast(as);
 
-        if (as.bsuccs.isEmpty() == false) as = as.bsuccs.get(0);
+        if (as.bsuccs.isEmpty() == false) {
+          as = as.bsuccs.get(0);
+        }
 
-        if (as.bpreds.size() != 1) break;
+        if (as.bpreds.size() != 1) {
+          break;
+        }
       }
 
       SETParent.add_Child(

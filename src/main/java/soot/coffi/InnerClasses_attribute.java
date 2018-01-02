@@ -37,6 +37,7 @@ class InnerClasses_attribute extends attribute_info {
   /** Actual table of local variables. */
   public inner_class_entry inner_classes[];
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < inner_classes_length; i++) {

@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.SootClass;
@@ -37,10 +41,6 @@ import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -67,6 +67,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
   /*
@@ -76,6 +77,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
     ASTDoWhileNode      ASTForLoopNode                 ASTLabeledBlockNode
     ASTSynchronizedBlockNode
   */
+  @Override
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
       dealWithSwitchNode((ASTSwitchNode) node);
@@ -187,6 +189,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
     } // end of going over subBodies
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     inASTTryNode(node);
 
@@ -207,7 +210,9 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
         } else if (breaker.isIfElseBreakingPossiblePatternTwo((ASTIfElseNode) temp)) {
           success = true;
         }
-        if (G.v().ASTTransformations_modified) return;
+        if (G.v().ASTTransformations_modified) {
+          return;
+        }
         if (success) {
           List<Object> newBody = breaker.createNewBody(tryBody, nodeNumber);
 
@@ -262,7 +267,9 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
           } else if (breaker.isIfElseBreakingPossiblePatternTwo((ASTIfElseNode) temp)) {
             success = true;
           }
-          if (G.v().ASTTransformations_modified) return;
+          if (G.v().ASTTransformations_modified) {
+            return;
+          }
           if (success) {
             List<Object> newBody = breaker.createNewBody(body, nodeNumber);
 
@@ -310,7 +317,9 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
             } else if (breaker.isIfElseBreakingPossiblePatternTwo((ASTIfElseNode) temp)) {
               success = true;
             }
-            if (G.v().ASTTransformations_modified) return;
+            if (G.v().ASTTransformations_modified) {
+              return;
+            }
             if (success) {
               List<Object> newBody = breaker.createNewBody(body, nodeNumber);
 

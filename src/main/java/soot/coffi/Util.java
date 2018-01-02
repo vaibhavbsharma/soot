@@ -25,6 +25,13 @@
 
 package soot.coffi;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -80,13 +87,6 @@ import soot.tagkit.SyntheticTag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Util {
   public Util(Singletons.Global g) {}
 
@@ -131,9 +131,9 @@ public class Util {
       boolean success = coffiClass.loadClassFile(is);
 
       if (!success) {
-        if (!Scene.v().allowsPhantomRefs())
+        if (!Scene.v().allowsPhantomRefs()) {
           throw new RuntimeException("Could not load classfile: " + bclass.getName());
-        else {
+        } else {
           G.v().out.println("Warning: " + className + " is a phantom class!");
           bclass.setPhantomClass();
           return;
@@ -310,7 +310,7 @@ public class Util {
       {
         Type[] types = jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
-        parameterTypes = new ArrayList<Type>();
+        parameterTypes = new ArrayList<>();
         for (int j = 0; j < types.length - 1; j++) {
           references.add(types[j]);
           parameterTypes.add(types[j]);
@@ -396,8 +396,11 @@ public class Util {
             String desc = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
             String name = desc.replace('/', '.');
 
-            if (name.startsWith("[")) references.add(jimpleTypeOfFieldDescriptor(desc));
-            else references.add(RefType.v(name));
+            if (name.startsWith("[")) {
+              references.add(jimpleTypeOfFieldDescriptor(desc));
+            } else {
+              references.add(RefType.v(name));
+            }
           }
           if (coffiClass.constant_pool[k] instanceof CONSTANT_Fieldref_info
               || coffiClass.constant_pool[k] instanceof CONSTANT_Methodref_info
@@ -449,7 +452,7 @@ public class Util {
           String inner = null;
           String outer = null;
           String name = null;
-          if (e.inner_class_index != 0)
+          if (e.inner_class_index != 0) {
             inner =
                 ((CONSTANT_Utf8_info)
                         coffiClass
@@ -457,7 +460,8 @@ public class Util {
                             ((CONSTANT_Class_info) coffiClass.constant_pool[e.inner_class_index])
                                 .name_index])
                     .convert();
-          if (e.outer_class_index != 0)
+          }
+          if (e.outer_class_index != 0) {
             outer =
                 ((CONSTANT_Utf8_info)
                         coffiClass
@@ -465,8 +469,10 @@ public class Util {
                             ((CONSTANT_Class_info) coffiClass.constant_pool[e.outer_class_index])
                                 .name_index])
                     .convert();
-          if (e.name_index != 0)
+          }
+          if (e.name_index != 0) {
             name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[e.name_index])).convert();
+          }
           bclass.addTag(new InnerClassTag(inner, outer, name, e.access_flags));
         }
       }
@@ -525,7 +531,7 @@ public class Util {
     return types[types.length - 1];
   }
 
-  private final ArrayList<Type> conversionTypes = new ArrayList<Type>();
+  private final ArrayList<Type> conversionTypes = new ArrayList<>();
 
   /*
    * private Map cache = new HashMap(); public Type[]
@@ -581,17 +587,19 @@ public class Util {
    * cache.put(descriptor, ret); return ret; }
    */
 
-  private final Map<String, Type[]> cache = new HashMap<String, Type[]>();
+  private final Map<String, Type[]> cache = new HashMap<>();
 
   public Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor) {
     Type[] ret = null;
     synchronized (cache) {
       ret = cache.get(descriptor);
     }
-    if (ret != null) return ret;
+    if (ret != null) {
+      return ret;
+    }
     char[] d = descriptor.toCharArray();
     int p = 0;
-    List<Type> conversionTypes = new ArrayList<Type>();
+    List<Type> conversionTypes = new ArrayList<>();
 
     outer:
     while (p < d.length) {
@@ -640,10 +648,14 @@ public class Util {
           case 'L':
             int index = p + 1;
             while (index < d.length && d[index] != ';') {
-              if (d[index] == '/') d[index] = '.';
+              if (d[index] == '/') {
+                d[index] = '.';
+              }
               index++;
             }
-            if (index >= d.length) throw new RuntimeException("Class reference has no ending ;");
+            if (index >= d.length) {
+              throw new RuntimeException("Class reference has no ending ;");
+            }
             String className = new String(d, p + 1, index - p - 1);
             baseType = RefType.v(className);
             p = index + 1;
@@ -664,12 +676,17 @@ public class Util {
             throw new RuntimeException("Unknown field type!");
         }
       }
-      if (baseType == null) continue;
+      if (baseType == null) {
+        continue;
+      }
 
       // Determine type
       Type t;
-      if (isArray) t = ArrayType.v(baseType, numDimensions);
-      else t = baseType;
+      if (isArray) {
+        t = ArrayType.v(baseType, numDimensions);
+      } else {
+        t = baseType;
+      }
 
       conversionTypes.add(t);
     }
@@ -694,27 +711,42 @@ public class Util {
     }
 
     // Determine base type
-    if (descriptor.equals("B")) baseType = ByteType.v();
-    else if (descriptor.equals("C")) baseType = CharType.v();
-    else if (descriptor.equals("D")) baseType = DoubleType.v();
-    else if (descriptor.equals("F")) baseType = FloatType.v();
-    else if (descriptor.equals("I")) baseType = IntType.v();
-    else if (descriptor.equals("J")) baseType = LongType.v();
-    else if (descriptor.equals("V")) baseType = VoidType.v();
-    else if (descriptor.startsWith("L")) {
-      if (!descriptor.endsWith(";"))
+    if (descriptor.equals("B")) {
+      baseType = ByteType.v();
+    } else if (descriptor.equals("C")) {
+      baseType = CharType.v();
+    } else if (descriptor.equals("D")) {
+      baseType = DoubleType.v();
+    } else if (descriptor.equals("F")) {
+      baseType = FloatType.v();
+    } else if (descriptor.equals("I")) {
+      baseType = IntType.v();
+    } else if (descriptor.equals("J")) {
+      baseType = LongType.v();
+    } else if (descriptor.equals("V")) {
+      baseType = VoidType.v();
+    } else if (descriptor.startsWith("L")) {
+      if (!descriptor.endsWith(";")) {
         throw new RuntimeException("Class reference does not end with ;");
+      }
 
       String className = descriptor.substring(1, descriptor.length() - 1);
 
       baseType = RefType.v(className.replace('/', '.'));
-    } else if (descriptor.equals("S")) baseType = ShortType.v();
-    else if (descriptor.equals("Z")) baseType = BooleanType.v();
-    else throw new RuntimeException("Unknown field type: " + descriptor);
+    } else if (descriptor.equals("S")) {
+      baseType = ShortType.v();
+    } else if (descriptor.equals("Z")) {
+      baseType = BooleanType.v();
+    } else {
+      throw new RuntimeException("Unknown field type: " + descriptor);
+    }
 
     // Return type
-    if (isArray) return ArrayType.v(baseType, numDimensions);
-    else return baseType;
+    if (isArray) {
+      return ArrayType.v(baseType, numDimensions);
+    } else {
+      return baseType;
+    }
   }
 
   int nextEasyNameIndex;
@@ -731,8 +763,11 @@ public class Util {
 
     int justifiedIndex = nextEasyNameIndex++;
 
-    if (justifiedIndex >= easyNames.length) return "local" + (justifiedIndex - easyNames.length);
-    else return easyNames[justifiedIndex];
+    if (justifiedIndex >= easyNames.length) {
+      return "local" + (justifiedIndex - easyNames.length);
+    } else {
+      return easyNames[justifiedIndex];
+    }
   }
 
   Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack, int index) {
@@ -751,7 +786,9 @@ public class Util {
     for (; ; ) {
       periodIndex = className.indexOf('.', periodIndex + 1);
 
-      if (periodIndex == -1) break;
+      if (periodIndex == -1) {
+        break;
+      }
 
       buffer.append(Character.toLowerCase(className.charAt(periodIndex + 1)));
     }
@@ -762,7 +799,9 @@ public class Util {
   String getNormalizedClassName(String className) {
     className = className.replace('/', '.');
 
-    if (className.endsWith(";")) className = className.substring(0, className.length() - 1);
+    if (className.endsWith(";")) {
+      className = className.substring(0, className.length() - 1);
+    }
 
     // Handle array case
     {
@@ -775,8 +814,9 @@ public class Util {
       }
 
       if (numDimensions != 0) {
-        if (!className.startsWith("L"))
+        if (!className.startsWith("L")) {
           throw new RuntimeException("For some reason an array reference does not start with L");
+        }
 
         className = className.substring(1, className.length());
       }
@@ -787,7 +827,9 @@ public class Util {
 
   private Local getLocalUnsafe(Body b, String name) {
     for (Local local : b.getLocals()) {
-      if (local.getName().equals(name)) return local;
+      if (local.getName().equals(name)) {
+        return local;
+      }
     }
     return null;
   }
@@ -907,7 +949,9 @@ public class Util {
          * next bytecode index. This is the behavior observed at least
          * with OpenJDK javac.
          */
-        if (isLocalStore) lookupBcIndex = nextBcIndex;
+        if (isLocalStore) {
+          lookupBcIndex = nextBcIndex;
+        }
 
         name = activeVariableTable.getLocalVariableName(activeConstantPool, index, lookupBcIndex);
 
@@ -926,14 +970,18 @@ public class Util {
       name = "l" + index; // generate a default name for the local
     }
 
-    if (nameToIndexToLocal == null) nameToIndexToLocal = new HashMap<String, Map<Integer, Local>>();
+    if (nameToIndexToLocal == null) {
+      nameToIndexToLocal = new HashMap<>();
+    }
 
     Map<Integer, Local> indexToLocal;
 
     if (!nameToIndexToLocal.containsKey(name)) {
-      indexToLocal = new HashMap<Integer, Local>();
+      indexToLocal = new HashMap<>();
       nameToIndexToLocal.put(name, indexToLocal);
-    } else indexToLocal = nameToIndexToLocal.get(name);
+    } else {
+      indexToLocal = nameToIndexToLocal.get(name);
+    }
 
     if (indexToLocal.containsKey(index)) {
       local = indexToLocal.get(index);
@@ -986,15 +1034,21 @@ public class Util {
    * @author Patrick Lam
    */
   boolean isValidJimpleName(String prospectiveName) {
-    if (prospectiveName == null) return false;
+    if (prospectiveName == null) {
+      return false;
+    }
     for (int i = 0; i < prospectiveName.length(); i++) {
       char c = prospectiveName.charAt(i);
-      if (i == 0 && c >= '0' && c <= '9') return false;
+      if (i == 0 && c >= '0' && c <= '9') {
+        return false;
+      }
 
       if (!((c >= '0' && c <= '9')
           || (c >= 'a' && c <= 'z')
           || (c >= 'A' && c <= 'Z')
-          || (c == '_' || c == '$'))) return false;
+          || (c == '_' || c == '$'))) {
+        return false;
+      }
     }
     return true;
   }
@@ -1072,7 +1126,7 @@ public class Util {
 
   private ArrayList<AnnotationElem> createElementTags(
       int count, ClassFile coffiClass, element_value[] elems) {
-    ArrayList<AnnotationElem> list = new ArrayList<AnnotationElem>();
+    ArrayList<AnnotationElem> list = new ArrayList<>();
     for (int j = 0; j < count; j++) {
       element_value ev = elems[j];
       char kind = ev.tag;

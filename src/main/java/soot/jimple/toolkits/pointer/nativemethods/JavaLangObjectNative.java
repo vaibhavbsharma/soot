@@ -38,6 +38,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding
    * methods by signatures.
    */
+  @Override
   public void simulateMethod(
       SootMethod method,
       ReferenceVariable thisVar,
@@ -104,7 +105,9 @@ public class JavaLangObjectNative extends NativeMethodClass {
       ReferenceVariable thisVar,
       ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    if (thisVar == null) throw new RuntimeException("Need a 'this' variable to perform a clone()");
+    if (thisVar == null) {
+      throw new RuntimeException("Need a 'this' variable to perform a clone()");
+    }
 
     ReferenceVariable newVar = helper.cloneObject(thisVar);
     helper.assign(returnVar, newVar);

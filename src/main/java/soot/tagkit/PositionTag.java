@@ -45,15 +45,18 @@ public class PositionTag implements Tag {
     return startOffset;
   }
 
+  @Override
   public String getName() {
     return "PositionTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[2];
     return v;
   }
 
+  @Override
   public String toString() {
     return "Jimple pos tag: spos: " + startOffset + " epos: " + endOffset;
   }

@@ -78,6 +78,7 @@ class Instruction_Invokedynamic extends Instruction_intindex {
 
   public short reserved;
 
+  @Override
   public int parse(byte bc[], int index) {
     invoke_dynamic_index = getShort(bc, index);
     index += 2;
@@ -89,6 +90,7 @@ class Instruction_Invokedynamic extends Instruction_intindex {
     return index;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     bc[index++] = code;
     shortToBytes(invoke_dynamic_index, bc, index);

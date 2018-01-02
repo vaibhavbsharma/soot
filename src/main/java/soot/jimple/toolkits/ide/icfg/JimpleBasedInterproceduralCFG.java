@@ -18,15 +18,22 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
 import heros.DontSynchronize;
 import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.MethodOrMethodContext;
 import soot.PatchingChain;
@@ -37,11 +44,6 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * Default implementation for the {@link InterproceduralCFG} interface. Includes all statements
@@ -95,19 +97,24 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
                 Edge edge = edgeIter.next();
                 SootMethod m = edge.getTgt().method();
                 if (includePhantomCallees || m.hasActiveBody()) {
-                  if (res == null) res = new ArrayList<SootMethod>();
+                  if (res == null) {
+                    res = new ArrayList<>();
+                  }
                   res.add(m);
-                } else if (IDESolver.DEBUG)
+                } else if (IDESolver.DEBUG) {
                   logger.error(
                       String.format(
                           "Method %s is referenced but has no body!",
                           m.getSignature(), new Exception()));
+                }
               }
 
               if (res != null) {
                 res.trimToSize();
                 return res;
-              } else return Collections.emptySet();
+              } else {
+                return Collections.emptySet();
+              }
             }
           });
 
@@ -117,7 +124,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
           new CacheLoader<SootMethod, Collection<Unit>>() {
             @Override
             public Collection<Unit> load(SootMethod m) throws Exception {
-              ArrayList<Unit> res = new ArrayList<Unit>();
+              ArrayList<Unit> res = new ArrayList<>();
               // only retain callers that are explicit call sites or
               // Thread.start()
               Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
@@ -148,7 +155,8 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   protected void initializeUnitToOwner() {
     for (Iterator<MethodOrMethodContext> iter = Scene.v().getReachableMethods().listener();
-        iter.hasNext(); ) {
+        iter.hasNext();
+        ) {
       SootMethod m = iter.next().method();
       initializeUnitToOwner(m);
     }

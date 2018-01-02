@@ -19,6 +19,11 @@
 
 package soot.dava.toolkits.base.renamer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.Local;
 import soot.RefLikeType;
@@ -27,11 +32,6 @@ import soot.SootField;
 import soot.Type;
 import soot.dava.internal.AST.ASTMethodNode;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 public class Renamer {
   public final boolean DEBUG = false;
@@ -51,11 +51,13 @@ public class Renamer {
     locals = null;
     methodNode = node;
 
-    changedOrNot = new HashMap<Local, Boolean>();
+    changedOrNot = new HashMap<>();
     Iterator<Local> localIt = info.getLocalsIterator();
-    while (localIt.hasNext()) changedOrNot.put(localIt.next(), new Boolean(false));
+    while (localIt.hasNext()) {
+      changedOrNot.put(localIt.next(), new Boolean(false));
+    }
 
-    forLoopNames = new ArrayList<String>();
+    forLoopNames = new ArrayList<>();
     forLoopNames.add("i");
     forLoopNames.add("j");
     forLoopNames.add("k");
@@ -117,8 +119,9 @@ public class Renamer {
         debug("arraysGetTypeArray", "Local:" + tempLocal + " is an Array Type: " + type.toString());
         String tempClassName = type.toString();
         // remember that a toString of an array gives you the square brackets
-        if (tempClassName.indexOf('[') >= 0)
+        if (tempClassName.indexOf('[') >= 0) {
           tempClassName = tempClassName.substring(0, tempClassName.indexOf('['));
+        }
 
         // debug("arraysGetTypeArray","type of object is"+tempClassName);
         if (tempClassName.indexOf('.') != -1) {
@@ -207,8 +210,9 @@ public class Renamer {
             // contains a dot have to remove that
             tempClassName = tempClassName.substring(tempClassName.lastIndexOf('.') + 1);
           }
-          if (classNameToUse == null) classNameToUse = tempClassName;
-          else if (!classNameToUse.equals(tempClassName)) {
+          if (classNameToUse == null) {
+            classNameToUse = tempClassName;
+          } else if (!classNameToUse.equals(tempClassName)) {
             // different new assignment
             // cant use these classNames
             classNameToUse = null;
@@ -259,8 +263,9 @@ public class Renamer {
             // contains a dot have to remove that
             tempClassName = tempClassName.substring(tempClassName.lastIndexOf('.') + 1);
           }
-          if (classNameToUse == null) classNameToUse = tempClassName;
-          else if (!classNameToUse.equals(tempClassName)) {
+          if (classNameToUse == null) {
+            classNameToUse = tempClassName;
+          } else if (!classNameToUse.equals(tempClassName)) {
             // different new assignment
             // cant use these classNames
             classNameToUse = null;
@@ -314,8 +319,11 @@ public class Renamer {
           // eg it was some other classes field
           int count = 0;
           while (!isUniqueName(fieldName)) {
-            if (count == 0) fieldName = fieldName + count;
-            else fieldName = fieldName.substring(0, fieldName.length() - 1) + count;
+            if (count == 0) {
+              fieldName = fieldName + count;
+            } else {
+              fieldName = fieldName.substring(0, fieldName.length() - 1) + count;
+            }
             count++;
           }
 
@@ -375,7 +383,9 @@ public class Renamer {
             count++;
           }
         }
-        if (count != 0) newName = newName + count;
+        if (count != 0) {
+          newName = newName + count;
+        }
 
         setName(tempLocal, newName);
       }
@@ -428,8 +438,11 @@ public class Renamer {
         String newName = "args";
         int count = 0;
         while (!isUniqueName(newName)) {
-          if (count == 0) newName = newName + count;
-          else newName = newName.substring(0, newName.length() - 1) + count;
+          if (count == 0) {
+            newName = newName + count;
+          } else {
+            newName = newName.substring(0, newName.length() - 1) + count;
+          }
 
           count++;
         }
@@ -450,8 +463,9 @@ public class Renamer {
     Object truthValue = changedOrNot.get(var);
 
     // if it wasnt in there add it
-    if (truthValue == null) changedOrNot.put(var, new Boolean(false));
-    else {
+    if (truthValue == null) {
+      changedOrNot.put(var, new Boolean(false));
+    } else {
       if (((Boolean) truthValue).booleanValue()) {
         // already changed just return
         debug("setName", "Var: " + var + " had already been renamed");
@@ -482,7 +496,9 @@ public class Renamer {
         // already changed just return
         debug("alreadyChanged", "Var: " + var + " had already been renamed");
         return true;
-      } else return false;
+      } else {
+        return false;
+      }
     }
   }
 
@@ -497,9 +513,10 @@ public class Renamer {
       if (tempLocal.getName().equals(name)) {
         debug("isUniqueName", "New Name " + name + " is not unique (matches some local)..changing");
         return false;
-      } else
+      } else {
         debug(
             "isUniqueName", "New Name " + name + " is different from local " + tempLocal.getName());
+      }
     }
 
     it = getScopedFields();
@@ -509,9 +526,10 @@ public class Renamer {
       if (tempField.getName().equals(name)) {
         debug("isUniqueName", "New Name " + name + " is not unique (matches field)..changing");
         return false;
-      } else
+      } else {
         debug(
             "isUniqueName", "New Name " + name + " is different from field " + tempField.getName());
+      }
     }
     return true;
   }
@@ -538,13 +556,17 @@ public class Renamer {
     Iterator<Local> it = heuristics.getLocalsIterator();
 
     locals = new ArrayList();
-    while (it.hasNext()) locals.add(it.next());
+    while (it.hasNext()) {
+      locals.add(it.next());
+    }
 
     return locals.iterator();
   }
 
   public void debug(String methodName, String debug) {
 
-    if (DEBUG) System.out.println(methodName + "    DEBUG: " + debug);
+    if (DEBUG) {
+      System.out.println(methodName + "    DEBUG: " + debug);
+    }
   }
 }

@@ -24,6 +24,7 @@ import soot.jimple.AbstractExprSwitch;
 /** @author Navindra Umanee */
 public abstract class AbstractShimpleExprSwitch extends AbstractExprSwitch
     implements ShimpleExprSwitch {
+  @Override
   public void casePhiExpr(PhiExpr v) {
     defaultCase(v);
   }

@@ -35,10 +35,12 @@ public final class SortedArraySet extends PointsToSetInternal {
     this.pag = pag;
   }
   /** Returns true if this set contains no run-time objects. */
+  @Override
   public final boolean isEmpty() {
     return size == 0;
   }
   /** Adds contents of other into this set, returns true if this set changed. */
+  @Override
   public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
     boolean ret = false;
     BitVector typeMask = (pag.getTypeManager()).get(type);
@@ -93,6 +95,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     return super.addAll(other, exclude);
   }
   /** Calls v's visit method on all nodes in this set. */
+  @Override
   public final boolean forall(P2SetVisitor v) {
     for (int i = 0; i < size; i++) {
       v.visit(nodes[i]);
@@ -100,9 +103,12 @@ public final class SortedArraySet extends PointsToSetInternal {
     return v.getReturnValue();
   }
   /** Adds n to this set, returns true if n was not already in this set. */
+  @Override
   public final boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
-      if (contains(n)) return false;
+      if (contains(n)) {
+        return false;
+      }
       int left = 0;
       int right = size;
       int mid;
@@ -114,7 +120,9 @@ public final class SortedArraySet extends PointsToSetInternal {
           left = mid + 1;
         } else if (midhc > hc) {
           right = mid;
-        } else break;
+        } else {
+          break;
+        }
       }
       if (nodes == null) {
         nodes = new Node[size + 4];
@@ -131,6 +139,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     return false;
   }
   /** Returns true iff the set contains n. */
+  @Override
   public final boolean contains(Node n) {
     int left = 0;
     int right = size;
@@ -142,13 +151,16 @@ public final class SortedArraySet extends PointsToSetInternal {
         left = mid + 1;
       } else if (midhc > hc) {
         right = mid;
-      } else return true;
+      } else {
+        return true;
+      }
     }
     return false;
   }
 
   public static final P2SetFactory getFactory() {
     return new P2SetFactory() {
+      @Override
       public final PointsToSetInternal newSet(Type type, PAG pag) {
         return new SortedArraySet(type, pag);
       }

@@ -36,8 +36,12 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
 
     @Override
     public E next() {
-      if (expected != getExpected()) throw new ConcurrentModificationException();
-      if (next >= N) throw new NoSuchElementException();
+      if (expected != getExpected()) {
+        throw new ConcurrentModificationException();
+      }
+      if (next >= N) {
+        throw new NoSuchElementException();
+      }
 
       now = next;
       next = nextSetBit(next + 1);
@@ -46,8 +50,12 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
 
     @Override
     public void remove() {
-      if (now >= N) throw new IllegalStateException();
-      if (expected != getExpected()) throw new ConcurrentModificationException();
+      if (now >= N) {
+        throw new IllegalStateException();
+      }
+      if (expected != getExpected()) {
+        throw new ConcurrentModificationException();
+      }
 
       PriorityQueue.this.remove(now);
       expected = getExpected();
@@ -61,9 +69,13 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
   private Map<E, Integer> ordinalMap;
 
   int getOrdinal(Object o) {
-    if (o == null) throw new NullPointerException();
+    if (o == null) {
+      throw new NullPointerException();
+    }
     Integer i = ordinalMap.get(o);
-    if (i == null) throw new NoSuchElementException();
+    if (i == null) {
+      throw new NoSuchElementException();
+    }
     return i.intValue();
   }
 
@@ -94,7 +106,9 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
   /** {@inheritDoc} */
   @Override
   public final E poll() {
-    if (isEmpty()) return null;
+    if (isEmpty()) {
+      return null;
+    }
     E e = universe.get(min);
     remove(min);
     return e;
@@ -125,7 +139,9 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
   /** {@inheritDoc} */
   @Override
   public final boolean remove(Object o) {
-    if (o == null || isEmpty()) return false;
+    if (o == null || isEmpty()) {
+      return false;
+    }
     try {
       if (o.equals(peek())) {
         remove(min);
@@ -140,9 +156,13 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
   /** {@inheritDoc} */
   @Override
   public final boolean contains(Object o) {
-    if (o == null) return false;
+    if (o == null) {
+      return false;
+    }
     try {
-      if (o.equals(peek())) return true;
+      if (o.equals(peek())) {
+        return true;
+      }
 
       return contains(getOrdinal(o));
     } catch (NoSuchElementException e) {
@@ -202,11 +222,15 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
    * @return
    */
   public static <E> PriorityQueue<E> noneOf(List<? extends E> universe) {
-    Map<E, Integer> ordinalMap = new HashMap<E, Integer>(2 * universe.size() / 3);
+    Map<E, Integer> ordinalMap = new HashMap<>(2 * universe.size() / 3);
     int i = 0;
     for (E e : universe) {
-      if (e == null) throw new NullPointerException("null is not allowed");
-      if (ordinalMap.put(e, i++) != null) throw new IllegalArgumentException("duplicate key found");
+      if (e == null) {
+        throw new NullPointerException("null is not allowed");
+      }
+      if (ordinalMap.put(e, i++) != null) {
+        throw new IllegalArgumentException("duplicate key found");
+      }
     }
 
     return newPriorityQueue(universe, ordinalMap);
@@ -221,7 +245,9 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
 
   public static <E extends Numberable> PriorityQueue<E> noneOf(
       final List<? extends E> universe, boolean useNumberInterface) {
-    if (!useNumberInterface) return noneOf(universe);
+    if (!useNumberInterface) {
+      return noneOf(universe);
+    }
 
     int i = 0;
     for (E e : universe) {
@@ -251,10 +277,12 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
 
   private static <E> PriorityQueue<E> newPriorityQueue(
       List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    if (universe.size() <= SmallPriorityQueue.MAX_CAPACITY)
-      return new SmallPriorityQueue<E>(universe, ordinalMap);
-    if (universe.size() <= MediumPriorityQueue.MAX_CAPACITY)
-      return new MediumPriorityQueue<E>(universe, ordinalMap);
-    return new LargePriorityQueue<E>(universe, ordinalMap);
+    if (universe.size() <= SmallPriorityQueue.MAX_CAPACITY) {
+      return new SmallPriorityQueue<>(universe, ordinalMap);
+    }
+    if (universe.size() <= MediumPriorityQueue.MAX_CAPACITY) {
+      return new MediumPriorityQueue<>(universe, ordinalMap);
+    }
+    return new LargePriorityQueue<>(universe, ordinalMap);
   }
 }

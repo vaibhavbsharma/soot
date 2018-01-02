@@ -25,14 +25,14 @@
 
 package soot.toolkits.graph;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
 import soot.baf.BafBody;
 import soot.util.Chain;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Represents BasicBlocks that partition a method body. It is implemented as view on an underlying
@@ -95,6 +95,7 @@ public class Block implements Iterable<Unit> {
    * @see Chain
    * @see Unit
    */
+  @Override
   public Iterator<Unit> iterator() {
     if (mBody != null) {
       Chain<Unit> units = mBody.getUnits();
@@ -113,7 +114,9 @@ public class Block implements Iterable<Unit> {
    * @see Chain
    */
   public void insertBefore(Unit toInsert, Unit point) {
-    if (point == mHead) mHead = toInsert;
+    if (point == mHead) {
+      mHead = toInsert;
+    }
 
     Chain<Unit> methodBody = mBody.getUnits();
     methodBody.insertBefore(toInsert, point);
@@ -127,7 +130,9 @@ public class Block implements Iterable<Unit> {
    * @see Unit
    */
   public void insertAfter(Unit toInsert, Unit point) {
-    if (point == mTail) mTail = toInsert;
+    if (point == mTail) {
+      mTail = toInsert;
+    }
 
     Chain<Unit> methodBody = mBody.getUnits();
     methodBody.insertAfter(toInsert, point);
@@ -142,8 +147,11 @@ public class Block implements Iterable<Unit> {
   public boolean remove(Unit item) {
     Chain<Unit> methodBody = mBody.getUnits();
 
-    if (item == mHead) mHead = methodBody.getSuccOf(item);
-    else if (item == mTail) mTail = methodBody.getPredOf(item);
+    if (item == mHead) {
+      mHead = methodBody.getSuccOf(item);
+    } else if (item == mTail) {
+      mTail = methodBody.getPredOf(item);
+    }
 
     return methodBody.remove(item);
   }
@@ -156,8 +164,11 @@ public class Block implements Iterable<Unit> {
    */
   public Unit getSuccOf(Unit aItem) {
     Chain<Unit> methodBody = mBody.getUnits();
-    if (aItem != mTail) return methodBody.getSuccOf(aItem);
-    else return null;
+    if (aItem != mTail) {
+      return methodBody.getSuccOf(aItem);
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -168,8 +179,11 @@ public class Block implements Iterable<Unit> {
    */
   public Unit getPredOf(Unit aItem) {
     Chain<Unit> methodBody = mBody.getUnits();
-    if (aItem != mHead) return methodBody.getPredOf(aItem);
-    else return null;
+    if (aItem != mHead) {
+      return methodBody.getPredOf(aItem);
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -257,6 +271,7 @@ public class Block implements Iterable<Unit> {
     return "Block #" + mIndexInMethod;
   }
 
+  @Override
   public String toString() {
     StringBuffer strBuf = new StringBuffer();
 
@@ -293,18 +308,21 @@ public class Block implements Iterable<Unit> {
       strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
       while (basicBlockIt.hasNext()) {
         someUnit = basicBlockIt.next();
-        if (someUnit == mTail) break;
+        if (someUnit == mTail) {
+          break;
+        }
         strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
       }
       someUnit = mTail;
-      if (mTail == null)
+      if (mTail == null) {
         strBuf.append(
             "error: null tail found; block length: "
                 + mBlockLength
                 + ""
                 + System.getProperty("line.separator"));
-      else if (mHead != mTail)
+      } else if (mHead != mTail) {
         strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
+      }
     }
     // Or, it could be an empty block (e.g. Start or Stop Block) --NU
     // else

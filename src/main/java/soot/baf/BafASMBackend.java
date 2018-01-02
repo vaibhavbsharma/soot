@@ -1,9 +1,20 @@
 package soot.baf;
 
+import static soot.util.backend.ASMBackendUtils.sizeOfType;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+
 import soot.AbstractASMBackend;
 import soot.ArrayType;
 import soot.BooleanType;
@@ -47,16 +58,6 @@ import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.util.Chain;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static soot.util.backend.ASMBackendUtils.sizeOfType;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-
 /**
  * Concrete ASM based bytecode generation backend for the BAF intermediate representation
  *
@@ -65,7 +66,7 @@ import static soot.util.backend.ASMBackendUtils.toTypeDesc;
 public class BafASMBackend extends AbstractASMBackend {
 
   // Contains one Label for every Unit that is the target of a branch or jump
-  protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
+  protected final Map<Unit, Label> branchTargetLabels = new HashMap<>();
 
   /**
    * Returns the ASM Label for a given Unit that is the target of a branch or jump
@@ -79,7 +80,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
   // Contains a mapping of local variables to indices in the local variable
   // stack
-  protected final Map<Local, Integer> localToSlot = new HashMap<Local, Integer>();
+  protected final Map<Local, Integer> localToSlot = new HashMap<>();
 
   /**
    * Creates a new BafASMBackend with a given enforced java version
@@ -169,7 +170,7 @@ public class BafASMBackend extends AbstractASMBackend {
      */
     int localCount = 0;
     int[] paramSlots = new int[method.getParameterCount()];
-    Set<Local> assignedLocals = new HashSet<Local>();
+    Set<Local> assignedLocals = new HashSet<>();
 
     /*
      * For non-static methods the first parameters and zero-slot is the
@@ -192,11 +193,12 @@ public class BafASMBackend extends AbstractASMBackend {
         int slot = 0;
 
         if (identity instanceof ThisRef) {
-          if (method.isStatic())
+          if (method.isStatic()) {
             throw new RuntimeException("Attempting to use 'this' in static method");
-        } else if (identity instanceof ParameterRef)
+          }
+        } else if (identity instanceof ParameterRef) {
           slot = paramSlots[((ParameterRef) identity).getIndex()];
-        else {
+        } else {
           // Exception ref. Skip over this
           continue;
         }
@@ -242,7 +244,7 @@ public class BafASMBackend extends AbstractASMBackend {
           BafLocal l = (BafLocal) local;
           if (l.getOriginalLocal() != null) {
             Local jimpleLocal = l.getOriginalLocal();
-            if (jimpleLocal != null)
+            if (jimpleLocal != null) {
               mv.visitLocalVariable(
                   jimpleLocal.getName(),
                   toTypeDesc(jimpleLocal.getType()),
@@ -250,6 +252,7 @@ public class BafASMBackend extends AbstractASMBackend {
                   startLabel,
                   endLabel,
                   slot);
+            }
           }
         }
       }

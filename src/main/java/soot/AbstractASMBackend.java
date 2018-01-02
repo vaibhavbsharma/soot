@@ -1,5 +1,23 @@
 package soot;
 
+import static soot.util.backend.ASMBackendUtils.createASMAttribute;
+import static soot.util.backend.ASMBackendUtils.getDefaultValue;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
+import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -7,6 +25,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
+
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -36,24 +55,6 @@ import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.util.backend.SootASMClassWriter;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static soot.util.backend.ASMBackendUtils.createASMAttribute;
-import static soot.util.backend.ASMBackendUtils.getDefaultValue;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
-
 /**
  * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the
  * method bodies, as they are dependent on the IR.
@@ -69,7 +70,7 @@ public abstract class AbstractASMBackend {
   // The Java version to be used for generating this class
   protected int javaVersion;
 
-  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
+  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<>();
 
   /**
    * Creates a new ASM backend
@@ -83,7 +84,9 @@ public abstract class AbstractASMBackend {
 
     int minVersion = getMinJavaVersion(sc);
 
-    if (javaVersion == 0) javaVersion = Options.java_version_default;
+    if (javaVersion == 0) {
+      javaVersion = Options.java_version_default;
+    }
 
     if (javaVersion != Options.java_version_default && javaVersion < minVersion) {
       throw new IllegalArgumentException(
@@ -134,10 +137,14 @@ public abstract class AbstractASMBackend {
    */
   protected BafBody getBafBody(SootMethod method) {
     final Body activeBody = method.getActiveBody();
-    if (activeBody instanceof BafBody) return (BafBody) activeBody;
+    if (activeBody instanceof BafBody) {
+      return (BafBody) activeBody;
+    }
 
     BafBody body = bafBodyCache.get(method);
-    if (body != null) return body;
+    if (body != null) {
+      return body;
+    }
 
     if (activeBody instanceof JimpleBody) {
       body = PackManager.v().convertJimpleBodyToBaf(method);
@@ -292,10 +299,12 @@ public abstract class AbstractASMBackend {
 
   /** Emits the bytecode for all methods of the class */
   protected void generateMethods() {
-    List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
+    List<SootMethod> sortedMethods = new ArrayList<>(sc.getMethods());
     Collections.sort(sortedMethods, new SootMethodComparator());
     for (SootMethod sm : sortedMethods) {
-      if (sm.isPhantom()) continue;
+      if (sm.isPhantom()) {
+        continue;
+      }
 
       int access = getModifiers(sm.getModifiers(), sm);
       String name = sm.getName();
@@ -322,7 +331,9 @@ public abstract class AbstractASMBackend {
           exceptions[i] = slashify(exc.getName());
           ++i;
         }
-      } else exceptions = new String[0];
+      } else {
+        exceptions = new String[0];
+      }
       MethodVisitor mv = cv.visitMethod(access, name, descBuilder.toString(), sig, exceptions);
       if (mv != null) {
         // Visit parameter annotations
@@ -369,7 +380,9 @@ public abstract class AbstractASMBackend {
   /** Emits the bytecode for all fields of the class */
   protected void generateFields() {
     for (SootField f : sc.getFields()) {
-      if (f.isPhantom()) continue;
+      if (f.isPhantom()) {
+        continue;
+      }
       String name = f.getName();
       String desc = toTypeDesc(f.getType());
       String sig = null;
@@ -406,7 +419,7 @@ public abstract class AbstractASMBackend {
   protected void generateInnerClassReferences() {
     if (sc.hasTag("InnerClassAttribute") && !Options.v().no_output_inner_classes_attribute()) {
       InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
-      List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
+      List<InnerClassTag> sortedTags = new ArrayList<>(ica.getSpecs());
       Collections.sort(sortedTags, new SootInnerClassComparator());
       for (InnerClassTag ict : sortedTags) {
         String name = slashify(ict.getInnerClass());

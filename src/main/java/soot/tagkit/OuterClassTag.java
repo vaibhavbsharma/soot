@@ -25,9 +25,9 @@
 
 package soot.tagkit;
 
-import soot.SootClass;
-
 import java.io.UnsupportedEncodingException;
+
+import soot.SootClass;
 
 public class OuterClassTag implements Tag {
   SootClass outerClass;
@@ -40,11 +40,13 @@ public class OuterClassTag implements Tag {
     this.anon = anon;
   }
 
+  @Override
   public String getName() {
     return "OuterClassTag";
   }
 
   /** */
+  @Override
   public byte[] getValue() {
     try {
       return outerClass.getName().getBytes("UTF8");
@@ -65,6 +67,7 @@ public class OuterClassTag implements Tag {
     return anon;
   }
 
+  @Override
   public String toString() {
     return "[outer class=" + outerClass.getName() + "]";
   }

@@ -34,11 +34,13 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
 
   private boolean baf;
 
+  @Override
   public void startUnit(Unit u) {
     super.startUnit(u);
     baf = !(u instanceof Stmt);
   }
 
+  @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
     if (!baf && m.resolve().isStatic()) {
@@ -48,6 +50,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
     output.append(m.name());
   }
 
+  @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     if (baf || f.resolve().isStatic()) {
@@ -57,6 +60,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
     output.append(f.name());
   }
 
+  @Override
   public void identityRef(IdentityRef r) {
     handleIndent();
     if (r instanceof ThisRef) {
@@ -66,11 +70,14 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
       literal("@parameter" + pr.getIndex());
     } else if (r instanceof CaughtExceptionRef) {
       literal("@caughtexception");
-    } else throw new RuntimeException();
+    } else {
+      throw new RuntimeException();
+    }
   }
 
   private boolean eatSpace = false;
 
+  @Override
   public void literal(String s) {
     handleIndent();
     if (eatSpace && s.equals(" ")) {
@@ -90,6 +97,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
     output.append(s);
   }
 
+  @Override
   public void type(Type t) {
     handleIndent();
     output.append(t.toString());

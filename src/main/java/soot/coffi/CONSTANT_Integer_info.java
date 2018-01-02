@@ -43,6 +43,7 @@ class CONSTANT_Integer_info extends cp_info {
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
+  @Override
   public int size() {
     return 5;
   }
@@ -53,6 +54,7 @@ class CONSTANT_Integer_info extends cp_info {
    * @return String representation of this entry.
    * @see cp_info#toString
    */
+  @Override
   public String toString(cp_info constant_pool[]) {
     return Integer.toString((int) bytes);
   }
@@ -62,6 +64,7 @@ class CONSTANT_Integer_info extends cp_info {
    * @return the String "int".
    * @see cp_info#typeName
    */
+  @Override
   public String typeName() {
     return "int";
   }
@@ -75,12 +78,16 @@ class CONSTANT_Integer_info extends cp_info {
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
    */
+  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
-    if (tag != cp.tag) return tag - cp.tag;
+    if (tag != cp.tag) {
+      return tag - cp.tag;
+    }
     CONSTANT_Integer_info cu = (CONSTANT_Integer_info) cp;
     return ((int) bytes) - (int) cu.bytes;
   }
 
+  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     return IntConstant.v((int) bytes);
   }

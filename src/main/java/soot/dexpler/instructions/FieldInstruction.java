@@ -24,12 +24,19 @@
 
 package soot.dexpler.instructions;
 
+import static soot.dexpler.Util.dottedClassName;
+import static soot.dexpler.Util.isFloatLike;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 import org.jf.dexlib2.iface.reference.FieldReference;
+
 import soot.Local;
 import soot.Scene;
 import soot.SootClass;
@@ -42,12 +49,6 @@ import soot.dexpler.DexType;
 import soot.jimple.AssignStmt;
 import soot.jimple.ConcreteRef;
 import soot.jimple.Jimple;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static soot.dexpler.Util.dottedClassName;
-import static soot.dexpler.Util.isFloatLike;
 
 public abstract class FieldInstruction extends DexlibAbstractInstruction {
 
@@ -117,12 +118,15 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
   /** Return the source register for this instruction. */
   private int sourceRegister() {
     // I hate smali's API ..
-    if (instruction instanceof Instruction23x) return ((Instruction23x) instruction).getRegisterA();
-    else if (instruction instanceof Instruction22c)
+    if (instruction instanceof Instruction23x) {
+      return ((Instruction23x) instruction).getRegisterA();
+    } else if (instruction instanceof Instruction22c) {
       return ((Instruction22c) instruction).getRegisterA();
-    else if (instruction instanceof Instruction21c)
+    } else if (instruction instanceof Instruction21c) {
       return ((Instruction21c) instruction).getRegisterA();
-    else throw new RuntimeException("Instruction is not a instance, array or static op");
+    } else {
+      throw new RuntimeException("Instruction is not a instance, array or static op");
+    }
   }
 
   /**
@@ -138,9 +142,11 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
 
   @Override
   public Set<Type> introducedTypes() {
-    Set<Type> types = new HashSet<Type>();
+    Set<Type> types = new HashSet<>();
     // Aput instructions don't have references
-    if (!(instruction instanceof ReferenceInstruction)) return types;
+    if (!(instruction instanceof ReferenceInstruction)) {
+      return types;
+    }
 
     ReferenceInstruction i = (ReferenceInstruction) instruction;
 

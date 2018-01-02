@@ -30,11 +30,11 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
-import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-import soot.jimple.DefinitionStmt;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.DefinitionStmt;
 
 /*
  * DefinitionStmts can occur in either ASTStatementSequenceNode or the for init and for update
@@ -42,7 +42,7 @@ import java.util.List;
  */
 
 public class AllDefinitionsFinder extends DepthFirstAdapter {
-  ArrayList<DefinitionStmt> allDefs = new ArrayList<DefinitionStmt>();
+  ArrayList<DefinitionStmt> allDefs = new ArrayList<>();
 
   public AllDefinitionsFinder() {}
 
@@ -50,6 +50,7 @@ public class AllDefinitionsFinder extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void inDefinitionStmt(DefinitionStmt s) {
     allDefs.add(s);
   }

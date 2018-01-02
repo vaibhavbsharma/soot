@@ -33,6 +33,7 @@ public class LoopInvariantTag extends StringTag {
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "LoopInvariantTag";
   }

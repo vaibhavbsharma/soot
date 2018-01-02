@@ -62,6 +62,7 @@ class Instruction_Astore extends Instruction_bytevar implements Interface_Astore
     name = "astore";
   }
 
+  @Override
   public int getLocalNumber() {
     return arg_b;
   }

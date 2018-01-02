@@ -19,11 +19,11 @@
 
 package soot.jimple.toolkits.thread.synchronization;
 
-import soot.jimple.toolkits.callgraph.Edge;
-import soot.jimple.toolkits.callgraph.EdgePredicate;
-
 import java.util.Collection;
 import java.util.Iterator;
+
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.EdgePredicate;
 
 /**
  * A predicate that accepts edges that are not part of the class library and do not have a source
@@ -44,6 +44,7 @@ public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
   }
 
   /** Returns true iff the edge e is wanted. */
+  @Override
   public boolean want(Edge e) {
     String tgtMethod = e.tgt().toString();
     String tgtClass = e.tgt().getDeclaringClass().toString();
@@ -51,27 +52,43 @@ public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
     String srcClass = e.src().getDeclaringClass().toString();
 
     // Remove Deep Library Calls
-    if (tgtClass.startsWith("sun.")) return false;
-    if (tgtClass.startsWith("com.sun.")) return false;
+    if (tgtClass.startsWith("sun.")) {
+      return false;
+    }
+    if (tgtClass.startsWith("com.sun.")) {
+      return false;
+    }
 
     // Remove static initializers
-    if (tgtMethod.endsWith("void <clinit>()>")) return false;
+    if (tgtMethod.endsWith("void <clinit>()>")) {
+      return false;
+    }
 
     // Remove calls to equals in the library
     if ((tgtClass.startsWith("java.") || tgtClass.startsWith("javax."))
-        && e.tgt().toString().endsWith("boolean equals(java.lang.Object)>")) return false;
+        && e.tgt().toString().endsWith("boolean equals(java.lang.Object)>")) {
+      return false;
+    }
 
     // Remove anything in java.util
     // these calls will be treated as a non-transitive RW to the receiving object
-    if (tgtClass.startsWith("java.util") || srcClass.startsWith("java.util")) return false;
+    if (tgtClass.startsWith("java.util") || srcClass.startsWith("java.util")) {
+      return false;
+    }
 
     // Remove anything in java.lang
     // these calls will be treated as a non-transitive RW to the receiving object
-    if (tgtClass.startsWith("java.lang") || srcClass.startsWith("java.lang")) return false;
+    if (tgtClass.startsWith("java.lang") || srcClass.startsWith("java.lang")) {
+      return false;
+    }
 
-    if (tgtClass.startsWith("java")) return false; // filter out the rest!
+    if (tgtClass.startsWith("java")) {
+      return false; // filter out the rest!
+    }
 
-    if (e.tgt().isSynchronized()) return false;
+    if (e.tgt().isSynchronized()) {
+      return false;
+    }
 
     // I THINK THIS CHUNK IS JUST NOT NEEDED... TODO: REMOVE IT
     // Remove Calls from within a transaction

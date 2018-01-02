@@ -18,18 +18,18 @@
  */
 package soot.jimple.spark.ondemand;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.jimple.spark.ondemand.genericutil.Predicate;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PagToDotDumper;
 import soot.jimple.spark.pag.VarNode;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * you can just add edges and then dump them as a dot graph
@@ -38,9 +38,9 @@ import java.util.Set;
  */
 public class DotPointerGraph {
 
-  private final Set<String> edges = new HashSet<String>();
+  private final Set<String> edges = new HashSet<>();
 
-  private final Set<Node> nodes = new HashSet<Node>();
+  private final Set<Node> nodes = new HashSet<>();
 
   public void addAssign(VarNode from, VarNode to) {
     addEdge(to, from, "", "black");

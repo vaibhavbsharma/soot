@@ -1,9 +1,18 @@
 package soot.toDex;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -71,14 +80,6 @@ import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
 import soot.util.Switchable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * A visitor that builds a list of instructions from the Jimple statements it visits.<br>
  * <br>
@@ -95,7 +96,7 @@ class StmtVisitor implements StmtSwitch {
   private static final Map<Opcode, Opcode> oppositeIfs;
 
   static {
-    oppositeIfs = new HashMap<Opcode, Opcode>();
+    oppositeIfs = new HashMap<>();
 
     oppositeIfs.put(Opcode.IF_EQ, Opcode.IF_NE);
     oppositeIfs.put(Opcode.IF_NE, Opcode.IF_EQ);
@@ -129,18 +130,15 @@ class StmtVisitor implements StmtSwitch {
   private List<AbstractPayload> payloads;
 
   // maps used to map Jimple statements to dalvik instructions
-  private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
+  private Map<Insn, Stmt> insnStmtMap = new HashMap<>();
   private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap =
-      new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
-  private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<Instruction, Insn>();
-  private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap =
-      new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
-  private Map<Instruction, AbstractPayload> instructionPayloadMap =
-      new IdentityHashMap<Instruction, AbstractPayload>();
-  private List<LocalRegisterAssignmentInformation> parameterInstructionsList =
-      new ArrayList<LocalRegisterAssignmentInformation>();
+      new IdentityHashMap<>();
+  private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<>();
+  private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<>();
+  private Map<Instruction, AbstractPayload> instructionPayloadMap = new IdentityHashMap<>();
+  private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<>();
 
-  private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
+  private Map<Constant, Register> monitorRegs = new HashMap<>();
 
   public StmtVisitor(SootMethod belongingMethod, DexArrayInitDetector arrayInitDetector) {
     this.belongingMethod = belongingMethod;
@@ -148,8 +146,8 @@ class StmtVisitor implements StmtSwitch {
     constantV = new ConstantVisitor(this);
     regAlloc = new RegisterAllocator();
     exprV = new ExprVisitor(this, constantV, regAlloc);
-    insns = new ArrayList<Insn>();
-    payloads = new ArrayList<AbstractPayload>();
+    insns = new ArrayList<>();
+    payloads = new ArrayList<>();
   }
 
   protected void setLastReturnTypeDescriptor(String typeDescriptor) {
@@ -162,7 +160,9 @@ class StmtVisitor implements StmtSwitch {
 
   public Stmt getStmtForInstruction(Instruction instruction) {
     Insn insn = this.instructionInsnMap.get(instruction);
-    if (insn == null) return null;
+    if (insn == null) {
+      return null;
+    }
     return this.insnStmtMap.get(insn);
   }
 
@@ -185,8 +185,11 @@ class StmtVisitor implements StmtSwitch {
   protected void addInsn(Insn insn, Stmt s) {
     int highestIndex = insns.size();
     addInsn(highestIndex, insn);
-    if (s != null)
-      if (insnStmtMap.put(insn, s) != null) throw new RuntimeException("Duplicate instruction");
+    if (s != null) {
+      if (insnStmtMap.put(insn, s) != null) {
+        throw new RuntimeException("Duplicate instruction");
+      }
+    }
   }
 
   private void addInsn(int positionInList, Insn insn) {
@@ -214,25 +217,35 @@ class StmtVisitor implements StmtSwitch {
     for (int i = 0; i < this.insns.size() - 1; i++) {
       Insn curInsn = this.insns.get(i);
       // Only consider real instructions
-      if (curInsn instanceof AddressInsn) continue;
-      if (!isReducableMoveInstruction(curInsn.getOpcode().name)) continue;
+      if (curInsn instanceof AddressInsn) {
+        continue;
+      }
+      if (!isReducableMoveInstruction(curInsn.getOpcode().name)) {
+        continue;
+      }
 
       // Skip over following address instructions
       Insn nextInsn = null;
       int nextIndex = -1;
       for (int j = i + 1; j < this.insns.size(); j++) {
         Insn candidate = this.insns.get(j);
-        if (candidate instanceof AddressInsn) continue;
+        if (candidate instanceof AddressInsn) {
+          continue;
+        }
         nextInsn = candidate;
         nextIndex = j;
         break;
       }
-      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode().name)) continue;
+      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode().name)) {
+        continue;
+      }
 
       // Do not remove the last instruction in the body as we need to
       // remap
       // jump targets to the successor
-      if (nextIndex == this.insns.size() - 1) continue;
+      if (nextIndex == this.insns.size() - 1) {
+        continue;
+      }
 
       // Check if we have a <- b; b <- a;
       Register firstTarget = curInsn.getRegs().get(0);
@@ -265,9 +278,13 @@ class StmtVisitor implements StmtSwitch {
   }
 
   private boolean isJumpTarget(Stmt target) {
-    for (Insn insn : this.insns)
-      if (insn instanceof InsnWithOffset)
-        if (((InsnWithOffset) insn).getTarget() == target) return true;
+    for (Insn insn : this.insns) {
+      if (insn instanceof InsnWithOffset) {
+        if (((InsnWithOffset) insn).getTarget() == target) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 
@@ -280,7 +297,7 @@ class StmtVisitor implements StmtSwitch {
   }
 
   public List<BuilderInstruction> getRealInsns(LabelAssigner labelAssigner) {
-    List<BuilderInstruction> finalInsns = new ArrayList<BuilderInstruction>();
+    List<BuilderInstruction> finalInsns = new ArrayList<>();
     for (Insn i : insns) {
       if (i instanceof AddressInsn) {
         continue; // skip non-insns
@@ -293,7 +310,9 @@ class StmtVisitor implements StmtSwitch {
       if (insnRegisterMap.containsKey(i)) {
         instructionRegisterMap.put(realInsn, insnRegisterMap.get(i));
       }
-      if (i instanceof AbstractPayload) instructionPayloadMap.put(realInsn, (AbstractPayload) i);
+      if (i instanceof AbstractPayload) {
+        instructionPayloadMap.put(realInsn, (AbstractPayload) i);
+      }
     }
     return finalInsns;
   }
@@ -357,8 +376,11 @@ class StmtVisitor implements StmtSwitch {
     // that this constant assignment can throw an exception, leaving us
     // with a dangling monitor. Imprecise static analyzers ftw.
     Register lockReg = null;
-    if (lockValue instanceof Constant)
-      if ((lockReg = monitorRegs.get(lockValue)) != null) lockReg = lockReg.clone();
+    if (lockValue instanceof Constant) {
+      if ((lockReg = monitorRegs.get(lockValue)) != null) {
+        lockReg = lockReg.clone();
+      }
+    }
     if (lockReg == null) {
       lockReg = regAlloc.asImmediate(lockValue, constantV);
       regAlloc.lockRegister(lockReg);
@@ -526,7 +548,7 @@ class StmtVisitor implements StmtSwitch {
 
     // Convert the list of values into a list of numbers
     int elementSize = 0;
-    List<Number> numbers = new ArrayList<Number>(values.size());
+    List<Number> numbers = new ArrayList<>(values.size());
     for (Value val : values) {
       if (val instanceof IntConstant) {
         elementSize = Math.max(elementSize, 4);
@@ -540,18 +562,29 @@ class StmtVisitor implements StmtSwitch {
       } else if (val instanceof DoubleConstant) {
         elementSize = Math.max(elementSize, 8);
         numbers.add(((DoubleConstant) val).value);
-      } else return null;
+      } else {
+        return null;
+      }
     }
 
     // For some local types, we know the size upfront
-    if (destRef.getType() instanceof BooleanType) elementSize = 1;
-    else if (destRef.getType() instanceof ByteType) elementSize = 1;
-    else if (destRef.getType() instanceof CharType) elementSize = 2;
-    else if (destRef.getType() instanceof ShortType) elementSize = 2;
-    else if (destRef.getType() instanceof IntType) elementSize = 4;
-    else if (destRef.getType() instanceof FloatType) elementSize = 4;
-    else if (destRef.getType() instanceof LongType) elementSize = 8;
-    else if (destRef.getType() instanceof DoubleType) elementSize = 8;
+    if (destRef.getType() instanceof BooleanType) {
+      elementSize = 1;
+    } else if (destRef.getType() instanceof ByteType) {
+      elementSize = 1;
+    } else if (destRef.getType() instanceof CharType) {
+      elementSize = 2;
+    } else if (destRef.getType() instanceof ShortType) {
+      elementSize = 2;
+    } else if (destRef.getType() instanceof IntType) {
+      elementSize = 4;
+    } else if (destRef.getType() instanceof FloatType) {
+      elementSize = 4;
+    } else if (destRef.getType() instanceof LongType) {
+      elementSize = 8;
+    } else if (destRef.getType() instanceof DoubleType) {
+      elementSize = 8;
+    }
 
     ArrayDataPayload payload = new ArrayDataPayload(elementSize, numbers);
     payloads.add(payload);
@@ -695,7 +728,9 @@ class StmtVisitor implements StmtSwitch {
   }
 
   private Insn buildGotoInsn(Stmt target) {
-    if (target == null) throw new RuntimeException("Cannot jump to a NULL target");
+    if (target == null) {
+      throw new RuntimeException("Cannot jump to a NULL target");
+    }
 
     Insn10t insn = new Insn10t(Opcode.GOTO);
     insn.setTarget(target);
@@ -718,7 +753,9 @@ class StmtVisitor implements StmtSwitch {
     // create sparse-switch instruction that references the payload
     Value key = stmt.getKey();
     Stmt defaultTarget = (Stmt) stmt.getDefaultTarget();
-    if (defaultTarget == stmt) throw new RuntimeException("Looping switch block detected");
+    if (defaultTarget == stmt) {
+      throw new RuntimeException("Looping switch block detected");
+    }
     addInsn(buildSwitchInsn(Opcode.SPARSE_SWITCH, key, defaultTarget, payload, stmt), stmt);
   }
 

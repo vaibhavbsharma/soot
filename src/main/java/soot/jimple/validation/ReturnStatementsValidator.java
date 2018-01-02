@@ -1,5 +1,7 @@
 package soot.jimple.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.Unit;
 import soot.jimple.GotoStmt;
@@ -9,8 +11,6 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.ThrowStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.List;
 
 public enum ReturnStatementsValidator implements BodyValidator {
   INSTANCE;
@@ -32,11 +32,14 @@ public enum ReturnStatementsValidator implements BodyValidator {
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
     // Checks that this Jimple body actually contains a return statement
-    for (Unit u : body.getUnits())
+    for (Unit u : body.getUnits()) {
       if ((u instanceof ReturnStmt)
           || (u instanceof ReturnVoidStmt)
           || (u instanceof RetStmt)
-          || (u instanceof ThrowStmt)) return;
+          || (u instanceof ThrowStmt)) {
+        return;
+      }
+    }
 
     // A method can have an infinite loop
     // and no return statement:
@@ -47,7 +50,9 @@ public enum ReturnStatementsValidator implements BodyValidator {
     //
     // Only check that the execution cannot fall off the code.
     Unit last = body.getUnits().getLast();
-    if (last instanceof GotoStmt || last instanceof ThrowStmt) return;
+    if (last instanceof GotoStmt || last instanceof ThrowStmt) {
+      return;
+    }
 
     exceptions.add(
         new ValidationException(

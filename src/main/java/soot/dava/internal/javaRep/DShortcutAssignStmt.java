@@ -11,12 +11,14 @@ public class DShortcutAssignStmt extends DAssignStmt {
     this.type = type;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.type(type);
     up.literal(" ");
     super.toString(up);
   }
 
+  @Override
   public String toString() {
     return type.toString()
         + " "

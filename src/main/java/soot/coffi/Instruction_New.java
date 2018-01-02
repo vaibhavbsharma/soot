@@ -63,6 +63,7 @@ class Instruction_New extends Instruction_intindex {
     calls = true;
   }
 
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[1];
     i[0] = null;

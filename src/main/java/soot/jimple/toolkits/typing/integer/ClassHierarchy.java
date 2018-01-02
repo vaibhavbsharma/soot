@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -35,9 +38,6 @@ import soot.RefType;
 import soot.ShortType;
 import soot.Singletons;
 import soot.Type;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class encapsulates the integer type hierarchy.
@@ -296,7 +296,7 @@ public class ClassHierarchy {
   };
 
   /** Map: Type -> TypeNode * */
-  private final Map<Type, TypeNode> typeNodeMap = new HashMap<Type, TypeNode>();
+  private final Map<Type, TypeNode> typeNodeMap = new HashMap<>();
 
   /** Get the type node for the given type. * */
   public TypeNode typeNode(Type type) {

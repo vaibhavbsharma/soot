@@ -1,5 +1,8 @@
 package soot.jbco.bafTransformations;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -12,9 +15,6 @@ import soot.jbco.IJbcoTransform;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.Chain;
 
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 16-Jun-2006
@@ -23,18 +23,22 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
 
   public static String dependancies[] = new String[] {"bb.jbco_rrps"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_rrps";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {}
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // removes all redundant load-stores
     boolean changed = true;
@@ -75,9 +79,15 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
   private void fixJumps(Unit from, Unit to, Chain<Trap> t) {
     from.redirectJumpsToThisTo(to);
     for (Trap trap : t) {
-      if (trap.getBeginUnit() == from) trap.setBeginUnit(to);
-      if (trap.getEndUnit() == from) trap.setEndUnit(to);
-      if (trap.getHandlerUnit() == from) trap.setHandlerUnit(to);
+      if (trap.getBeginUnit() == from) {
+        trap.setBeginUnit(to);
+      }
+      if (trap.getEndUnit() == from) {
+        trap.setEndUnit(to);
+      }
+      if (trap.getHandlerUnit() == from) {
+        trap.setHandlerUnit(to);
+      }
     }
   }
 }

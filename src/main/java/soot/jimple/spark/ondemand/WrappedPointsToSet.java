@@ -18,13 +18,13 @@
  */
 package soot.jimple.spark.ondemand;
 
+import java.util.Set;
+
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
-
-import java.util.Set;
 
 public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
 
@@ -39,6 +39,7 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
     this.wrapped = wrapped;
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     if (other instanceof AllocAndContextSet) {
       return other.hasNonEmptyIntersection(this);
@@ -49,27 +50,33 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
     }
   }
 
+  @Override
   public boolean isEmpty() {
     return wrapped.isEmpty();
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
     return wrapped.possibleClassConstants();
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
     return wrapped.possibleStringConstants();
   }
 
+  @Override
   public Set<Type> possibleTypes() {
     return wrapped.possibleTypes();
   }
 
+  @Override
   public String toString() {
     return wrapped.toString();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean equals(Object obj) {
     if (obj == null) {
       return false;
@@ -89,11 +96,13 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode() {
     return wrapped.hashCode();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean pointsToSetEquals(Object other) {
     if (!(other instanceof EqualsSupportingPointsToSet)) {
       return false;
@@ -103,6 +112,7 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int pointsToSetHashCode() {
     return wrapped.pointsToSetHashCode();
   }

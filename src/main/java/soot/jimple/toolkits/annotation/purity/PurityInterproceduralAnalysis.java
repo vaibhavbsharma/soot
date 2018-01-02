@@ -25,6 +25,10 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -43,10 +47,6 @@ import soot.tagkit.GenericAttribute;
 import soot.tagkit.StringTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.dot.DotGraph;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalysis<PurityGraphBox> {
 

@@ -25,6 +25,8 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.Iterator;
+
 import soot.Body;
 import soot.Hierarchy;
 import soot.RefType;
@@ -38,8 +40,6 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
 
 /** Methods for checking safety requirements for inlining. */
 public class InlinerSafetyManager {
@@ -77,7 +77,9 @@ public class InlinerSafetyManager {
               // impact because we are inlining methods bottom-up, so such a call will
               // be rare
 
-              if (!accessors) return false;
+              if (!accessors) {
+                return false;
+              }
             }
           }
         }
@@ -100,8 +102,9 @@ public class InlinerSafetyManager {
         if (st.containsInvokeExpr()) {
           InvokeExpr ie1 = st.getInvokeExpr();
 
-          if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
+          if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions)) {
             return false;
+          }
         }
 
         if (st instanceof AssignStmt) {
@@ -110,11 +113,15 @@ public class InlinerSafetyManager {
 
           if (lhs instanceof FieldRef
               && !AccessManager.ensureAccess(
-                  container, ((FieldRef) lhs).getField(), modifierOptions)) return false;
+                  container, ((FieldRef) lhs).getField(), modifierOptions)) {
+            return false;
+          }
 
           if (rhs instanceof FieldRef
               && !AccessManager.ensureAccess(
-                  container, ((FieldRef) rhs).getField(), modifierOptions)) return false;
+                  container, ((FieldRef) rhs).getField(), modifierOptions)) {
+            return false;
+          }
         }
       }
     }
@@ -159,13 +166,19 @@ public class InlinerSafetyManager {
     /* first, check the simple (one-line) safety criteria. */
 
     // Rule 0: Don't inline constructors.
-    if (inlinee.getName().equals("<init>")) return false;
+    if (inlinee.getName().equals("<init>")) {
+      return false;
+    }
 
     // Rule 2: inlinee != container.
-    if (inlinee.getSignature().equals(container.getSignature())) return false;
+    if (inlinee.getSignature().equals(container.getSignature())) {
+      return false;
+    }
 
     // Rule 3: inlinee is neither native nor abstract.
-    if (inlinee.isNative() || inlinee.isAbstract()) return false;
+    if (inlinee.isNative() || inlinee.isAbstract()) {
+      return false;
+    }
 
     // Ok, that wraps up the simple criteria.  Now for the more
     // complicated criteria.
@@ -181,8 +194,10 @@ public class InlinerSafetyManager {
 
     if (base != null
         && base.getType() instanceof RefType
-        && invokeThrowsAccessErrorIn(((RefType) base.getType()).getSootClass(), inlinee, container))
+        && invokeThrowsAccessErrorIn(
+            ((RefType) base.getType()).getSootClass(), inlinee, container)) {
       return false;
+    }
 
     // Rule 5: Don't inline away any class, method or field access
     //         (in inlinee) resulting in an IllegalAccess error.
@@ -199,7 +214,7 @@ public class InlinerSafetyManager {
     //         an invokespecial.
     return !(ie instanceof SpecialInvokeExpr)
         || (!specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass())
-        && !specialInvokePerformsLookupIn(ie, container.getDeclaringClass()));
+            && !specialInvokePerformsLookupIn(ie, container.getDeclaringClass()));
   }
 
   /**
@@ -216,12 +231,15 @@ public class InlinerSafetyManager {
     SootClass containerClass = container.getDeclaringClass();
 
     // Condition 1 above.
-    if (inlinee.isPrivate() && !inlineeClass.getName().equals(containerClass.getName()))
+    if (inlinee.isPrivate() && !inlineeClass.getName().equals(containerClass.getName())) {
       return true;
+    }
 
     // Condition 2. Check the package names.
     if (!inlinee.isPrivate() && !inlinee.isProtected() && !inlinee.isPublic()) {
-      if (!inlineeClass.getPackageName().equals(containerClass.getPackageName())) return true;
+      if (!inlineeClass.getPackageName().equals(containerClass.getPackageName())) {
+        return true;
+      }
     }
 
     // Condition 3.
@@ -232,9 +250,13 @@ public class InlinerSafetyManager {
       // protected means that you can be accessed by your children.
       // i.e. container must be in a child of inlinee.
       if (h.isClassSuperclassOfIncluding(inlineeClass, containerClass)
-          || ((base != null) && h.isClassSuperclassOfIncluding(base, containerClass))) saved = true;
+          || ((base != null) && h.isClassSuperclassOfIncluding(base, containerClass))) {
+        saved = true;
+      }
 
-      if (!saved) return true;
+      if (!saved) {
+        return true;
+      }
     }
 
     return false;
@@ -256,7 +278,9 @@ public class InlinerSafetyManager {
 
     Hierarchy h = Scene.v().getActiveHierarchy();
 
-    if (!h.isClassSuperclassOf(m.getDeclaringClass(), containerClass)) return false;
+    if (!h.isClassSuperclassOf(m.getDeclaringClass(), containerClass)) {
+      return false;
+    }
 
     // ACC_SUPER must always be set, eh?
 

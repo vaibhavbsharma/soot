@@ -19,9 +19,9 @@
 
 package soot.jimple.spark.fieldrw;
 
-import soot.SootField;
-
 import java.util.Set;
+
+import soot.SootField;
 
 /** Implements a tag that holds a list of fields read by a call. */
 public class FieldReadTag extends FieldRWTag {
@@ -29,6 +29,7 @@ public class FieldReadTag extends FieldRWTag {
     super(fields);
   }
 
+  @Override
   public String getName() {
     return "FieldReadTag";
   }

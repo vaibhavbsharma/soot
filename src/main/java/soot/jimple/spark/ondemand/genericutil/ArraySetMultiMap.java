@@ -26,10 +26,12 @@ public class ArraySetMultiMap<K, V> extends AbstractMultiMap<K, V> {
   public static final ArraySetMultiMap EMPTY =
       new ArraySetMultiMap<Object, Object>() {
 
+        @Override
         public boolean put(Object key, Object val) {
           throw new RuntimeException();
         }
 
+        @Override
         public boolean putAll(Object key, Collection<? extends Object> vals) {
           throw new RuntimeException();
         }
@@ -45,13 +47,15 @@ public class ArraySetMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   protected Set<V> createSet() {
-    return new ArraySet<V>();
+    return new ArraySet<>();
   }
 
+  @Override
   protected Set<V> emptySet() {
     return ArraySet.empty();
   }
 
+  @Override
   public ArraySet<V> get(K key) {
     return (ArraySet<V>) super.get(key);
   }

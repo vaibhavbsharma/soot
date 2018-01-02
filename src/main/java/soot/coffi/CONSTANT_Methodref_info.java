@@ -25,13 +25,13 @@
 
 package soot.coffi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Scene;
 import soot.Type;
 import soot.Value;
 import soot.jimple.Jimple;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A constant pool entry of type CONSTANT_Methodref
@@ -58,6 +58,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
+  @Override
   public int size() {
     return 5;
   }
@@ -68,6 +69,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return String representation of this entry.
    * @see cp_info#toString
    */
+  @Override
   public String toString(cp_info constant_pool[]) {
     CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[class_index]);
     CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
@@ -79,6 +81,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return the String "methodref".
    * @see cp_info#typeName
    */
+  @Override
   public String typeName() {
     return "methodref";
   }
@@ -92,18 +95,24 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
    */
+  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     int i;
-    if (tag != cp.tag) return tag - cp.tag;
+    if (tag != cp.tag) {
+      return tag - cp.tag;
+    }
     CONSTANT_Methodref_info cu = (CONSTANT_Methodref_info) cp;
     i =
         constant_pool[class_index].compareTo(
             constant_pool, cp_constant_pool[cu.class_index], cp_constant_pool);
-    if (i != 0) return i;
+    if (i != 0) {
+      return i;
+    }
     return constant_pool[name_and_type_index].compareTo(
         constant_pool, cp_constant_pool[cu.name_and_type_index], cp_constant_pool);
   }
 
+  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[class_index]);
     CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
@@ -132,10 +141,12 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
                     Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
   }
 
+  @Override
   public int getClassIndex() {
     return class_index;
   }
 
+  @Override
   public int getNameAndTypeIndex() {
     return name_and_type_index;
   }

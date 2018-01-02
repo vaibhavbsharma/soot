@@ -76,8 +76,9 @@ public class DavaStaticBlockCleaner {
     // System.out.println(clinit);
 
     // retireve the active body
-    if (!clinit.hasActiveBody())
+    if (!clinit.hasActiveBody()) {
       throw new RuntimeException("method " + clinit.getName() + " has no active body!");
+    }
 
     Body clinitBody = clinit.getActiveBody();
     Chain units = clinitBody.getUnits();
@@ -87,8 +88,9 @@ public class DavaStaticBlockCleaner {
     }
 
     ASTNode AST = (ASTNode) units.getFirst();
-    if (!(AST instanceof ASTMethodNode))
+    if (!(AST instanceof ASTMethodNode)) {
       throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+    }
 
     // running methodCallFinder on the Clinit method
     AST.apply(new MethodCallFinder(this));
@@ -114,8 +116,9 @@ public class DavaStaticBlockCleaner {
           // send the ASTMethod node of the TO BE INLINED METHOD
 
           // retireve the active body
-          if (!maybeInline.hasActiveBody())
+          if (!maybeInline.hasActiveBody()) {
             throw new RuntimeException("method " + maybeInline.getName() + " has no active body!");
+          }
 
           Body bod = maybeInline.getActiveBody();
 
@@ -126,8 +129,9 @@ public class DavaStaticBlockCleaner {
           }
 
           ASTNode ASTtemp = (ASTNode) units.getFirst();
-          if (!(ASTtemp instanceof ASTMethodNode))
+          if (!(ASTtemp instanceof ASTMethodNode)) {
             throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+          }
 
           // restricting to methods which do not have any variables declared
           ASTMethodNode toReturn = (ASTMethodNode) ASTtemp;

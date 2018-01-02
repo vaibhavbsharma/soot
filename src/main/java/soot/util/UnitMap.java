@@ -25,15 +25,15 @@
 
 package soot.util;
 
-import soot.Body;
-import soot.Unit;
-import soot.toolkits.graph.UnitGraph;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import soot.Body;
+import soot.Unit;
+import soot.toolkits.graph.UnitGraph;
 
 /** Maps each unit to the result of <code>mapTo</code>. */
 public abstract class UnitMap<T> implements Map<Unit, T> {
@@ -47,7 +47,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * @param b a Body
    */
   public UnitMap(Body b) {
-    unitToResult = new HashMap<Unit, T>();
+    unitToResult = new HashMap<>();
     map(b);
   }
 
@@ -71,7 +71,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * @param initialCapacity the initialCapacity of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity) {
-    unitToResult = new HashMap<Unit, T>(initialCapacity);
+    unitToResult = new HashMap<>(initialCapacity);
     map(b);
   }
 
@@ -98,7 +98,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * @param loadFactor the loadFactor of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity, float loadFactor) {
-    unitToResult = new HashMap<Unit, T>(initialCapacity);
+    unitToResult = new HashMap<>(initialCapacity);
     init();
     map(b);
   }
@@ -123,7 +123,9 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
     while (unitIt.hasNext()) {
       Unit currentUnit = unitIt.next();
       T o = mapTo(currentUnit);
-      if (o != null) unitToResult.put(currentUnit, o);
+      if (o != null) {
+        unitToResult.put(currentUnit, o);
+      }
     }
   }
 
@@ -145,58 +147,72 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
 
   /*====== the Map-interface. all methods are deleguated tp the hashmap======*/
 
+  @Override
   public void clear() {
     unitToResult.clear();
   }
 
+  @Override
   public boolean containsKey(Object key) {
     return unitToResult.containsKey(key);
   }
 
+  @Override
   public boolean containsValue(Object value) {
     return unitToResult.containsValue(value);
   }
 
+  @Override
   public Set<Map.Entry<Unit, T>> entrySet() {
     return unitToResult.entrySet();
   }
 
+  @Override
   public boolean equals(Object o) {
     return unitToResult.equals(o);
   }
 
+  @Override
   public T get(Object key) {
     return unitToResult.get(key);
   }
 
+  @Override
   public int hashCode() {
     return unitToResult.hashCode();
   }
 
+  @Override
   public boolean isEmpty() {
     return unitToResult.isEmpty();
   }
 
+  @Override
   public Set<Unit> keySet() {
     return unitToResult.keySet();
   }
 
+  @Override
   public T put(Unit key, T value) {
     return unitToResult.put(key, value);
   }
 
+  @Override
   public void putAll(Map<? extends Unit, ? extends T> t) {
     unitToResult.putAll(t);
   }
 
+  @Override
   public T remove(Object key) {
     return unitToResult.remove(key);
   }
 
+  @Override
   public int size() {
     return unitToResult.size();
   }
 
+  @Override
   public Collection<T> values() {
     return unitToResult.values();
   }

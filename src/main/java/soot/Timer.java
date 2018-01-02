@@ -25,10 +25,10 @@
 
 package soot;
 
-import soot.options.Options;
-
 import static java.lang.System.gc;
 import static java.lang.System.nanoTime;
+
+import soot.options.Options;
 
 /** Utility class providing a timer. Used for profiling various phases of Sootification. */
 public class Timer {
@@ -52,12 +52,18 @@ public class Timer {
   static void doGarbageCollecting() {
     final G g = G.v();
     // Subtract garbage collection time
-    if (g.Timer_isGarbageCollecting) return;
+    if (g.Timer_isGarbageCollecting) {
+      return;
+    }
 
-    if (!Options.v().subtract_gc()) return;
+    if (!Options.v().subtract_gc()) {
+      return;
+    }
 
     // garbage collects only every 4 calls to avoid round off errors
-    if ((g.Timer_count++ % 4) != 0) return;
+    if ((g.Timer_count++ % 4) != 0) {
+      return;
+    }
 
     g.Timer_isGarbageCollecting = true;
     g.Timer_forcedGarbageCollectionTimer.start();
@@ -84,7 +90,9 @@ public class Timer {
 
     startTime = nanoTime();
 
-    if (hasStarted) throw new RuntimeException("timer " + name + " has already been started!");
+    if (hasStarted) {
+      throw new RuntimeException("timer " + name + " has already been started!");
+    }
 
     hasStarted = true;
 
@@ -96,13 +104,16 @@ public class Timer {
   }
 
   /** Returns the name of the current timer. */
+  @Override
   public String toString() {
     return name;
   }
 
   /** Stops the current timer. */
   public void end() {
-    if (!hasStarted) throw new RuntimeException("timer " + name + " has not been started!");
+    if (!hasStarted) {
+      throw new RuntimeException("timer " + name + " has not been started!");
+    }
 
     hasStarted = false;
 

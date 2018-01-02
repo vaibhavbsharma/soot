@@ -1,5 +1,7 @@
 package soot.dexpler;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -10,8 +12,6 @@ import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
-
-import java.util.Map;
 
 /**
  * Transformer to ensure that all exception handlers pull the exception object. In other words, if
@@ -35,7 +35,9 @@ public class DexTrapStackFixer extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     for (Trap t : b.getTraps()) {
       // If the first statement already catches the exception, we're fine
-      if (isCaughtExceptionRef(t.getHandlerUnit())) continue;
+      if (isCaughtExceptionRef(t.getHandlerUnit())) {
+        continue;
+      }
 
       // Add the exception reference
       Local l = new LocalGenerator(b).generateLocal(t.getException().getType());
@@ -53,7 +55,9 @@ public class DexTrapStackFixer extends BodyTransformer {
    * @return True if the given statement stores an exception reference, otherwise false
    */
   private boolean isCaughtExceptionRef(Unit handlerUnit) {
-    if (!(handlerUnit instanceof IdentityStmt)) return false;
+    if (!(handlerUnit instanceof IdentityStmt)) {
+      return false;
+    }
     IdentityStmt stmt = (IdentityStmt) handlerUnit;
     return stmt.getRightOp() instanceof CaughtExceptionRef;
   }

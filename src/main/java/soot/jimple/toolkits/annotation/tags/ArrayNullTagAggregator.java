@@ -19,14 +19,14 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
+import java.util.LinkedList;
+
 import soot.G;
 import soot.Singletons;
 import soot.Unit;
 import soot.baf.Inst;
 import soot.tagkit.Tag;
 import soot.tagkit.TagAggregator;
-
-import java.util.LinkedList;
 
 /** The aggregator for ArrayNullCheckAttribute. */
 public class ArrayNullTagAggregator extends TagAggregator {
@@ -36,6 +36,7 @@ public class ArrayNullTagAggregator extends TagAggregator {
     return G.v().soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator();
   }
 
+  @Override
   public boolean wantTag(Tag t) {
     return (t instanceof OneByteCodeTag);
   }
@@ -43,7 +44,9 @@ public class ArrayNullTagAggregator extends TagAggregator {
   @Override
   public void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units) {
     Inst i = (Inst) u;
-    if (!(i.containsInvokeExpr() || i.containsFieldRef() || i.containsArrayRef())) return;
+    if (!(i.containsInvokeExpr() || i.containsFieldRef() || i.containsArrayRef())) {
+      return;
+    }
 
     OneByteCodeTag obct = (OneByteCodeTag) t;
 
@@ -55,6 +58,7 @@ public class ArrayNullTagAggregator extends TagAggregator {
     anct.accumulate(obct.getValue()[0]);
   }
 
+  @Override
   public String aggregatedName() {
     return "ArrayNullCheckAttribute";
   }

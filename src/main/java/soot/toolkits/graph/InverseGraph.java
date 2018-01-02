@@ -35,31 +35,37 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<N> getHeads() {
     return g.getTails();
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<N> getPredsOf(N s) {
     return g.getSuccsOf(s);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<N> getSuccsOf(N s) {
     return g.getPredsOf(s);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<N> getTails() {
     return g.getHeads();
   }
 
   /** {@inheritDoc} */
+  @Override
   public Iterator<N> iterator() {
     return g.iterator();
   }
 
   /** {@inheritDoc} */
+  @Override
   public int size() {
     return g.size();
   }

@@ -65,9 +65,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
   protected void doAnalysis() {
     heads = graph.getHeads();
-    nodeToFlowSet = new HashMap<N, BitSet>();
-    nodeToIndex = new HashMap<N, Integer>();
-    indexToNode = new HashMap<Integer, N>();
+    nodeToFlowSet = new HashMap<>();
+    nodeToIndex = new HashMap<>();
+    indexToNode = new HashMap<>();
 
     // build full set
     fullSet = new BitSet(graph.size());
@@ -75,8 +75,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
     // set up domain for intersection: head nodes are only dominated by themselves,
     // other nodes are dominated by everything else
-    for (Iterator<N> i = graph.iterator(); i.hasNext(); ) {
-      N o = i.next();
+    for (N o : graph) {
       if (heads.contains(o)) {
         BitSet self = new BitSet();
         self.set(indexOf(o));
@@ -89,17 +88,18 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     boolean changed = true;
     do {
       changed = false;
-      for (Iterator<N> i = graph.iterator(); i.hasNext(); ) {
-        N o = i.next();
-        if (heads.contains(o)) continue;
+      for (N o : graph) {
+        if (heads.contains(o)) {
+          continue;
+        }
 
         // initialize to the "neutral element" for the intersection
         // this clone() is fast on BitSets (opposed to on HashSets)
         BitSet predsIntersect = (BitSet) fullSet.clone();
 
         // intersect over all predecessors
-        for (Iterator<N> j = graph.getPredsOf(o).iterator(); j.hasNext(); ) {
-          BitSet predSet = nodeToFlowSet.get(j.next());
+        for (N n : graph.getPredsOf(o)) {
+          BitSet predSet = nodeToFlowSet.get(n);
           predsIntersect.and(predSet);
         }
 
@@ -125,13 +125,15 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     return index;
   }
 
+  @Override
   public DirectedGraph<N> getGraph() {
     return graph;
   }
 
+  @Override
   public List<N> getDominators(N node) {
     // reconstruct list of dominators from bitset
-    List<N> result = new ArrayList<N>();
+    List<N> result = new ArrayList<>();
     BitSet bitSet = nodeToFlowSet.get(node);
     for (int i = 0; i < bitSet.length(); i++) {
       if (bitSet.get(i)) {
@@ -141,9 +143,12 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     return result;
   }
 
+  @Override
   public N getImmediateDominator(N node) {
     // root node
-    if (getGraph().getHeads().contains(node)) return null;
+    if (getGraph().getHeads().contains(node)) {
+      return null;
+    }
 
     // could be memoised, I guess
 
@@ -156,7 +161,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     while ((immediateDominator == null) && dominatorsIt.hasNext()) {
       N dominator = dominatorsIt.next();
 
-      if (isDominatedByAll(dominator, dominatorsList)) immediateDominator = dominator;
+      if (isDominatedByAll(dominator, dominatorsList)) {
+        immediateDominator = dominator;
+      }
     }
 
     // This can indeed happen with postdominators on methods that have
@@ -166,10 +173,12 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     return immediateDominator;
   }
 
+  @Override
   public boolean isDominatedBy(N node, N dominator) {
     return getDominators(node).contains(dominator);
   }
 
+  @Override
   public boolean isDominatedByAll(N node, Collection<N> dominators) {
     return getDominators(node).containsAll(dominators);
   }

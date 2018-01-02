@@ -20,6 +20,10 @@
 /** Maintained by: Nomair A. Naeem */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Local;
 import soot.Value;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -31,10 +35,6 @@ import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for
@@ -76,7 +76,7 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
 
   @Override
   public DavaFlowSet<Stmt> emptyFlowSet() {
-    return new DavaFlowSet<Stmt>();
+    return new DavaFlowSet<>();
   }
 
   /*
@@ -84,14 +84,16 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
    */
   @Override
   public DavaFlowSet<Stmt> newInitialFlow() {
-    DavaFlowSet<Stmt> initial = new DavaFlowSet<Stmt>();
+    DavaFlowSet<Stmt> initial = new DavaFlowSet<>();
     // find all definitions in the program
     AllDefinitionsFinder defFinder = new AllDefinitionsFinder();
     ((ASTNode) toAnalyze).apply(defFinder);
     List<DefinitionStmt> allDefs = defFinder.getAllDefs();
     // all defs is the list of all augmented stmts which contains
     // DefinitionStmts
-    for (DefinitionStmt def : allDefs) initial.add(def);
+    for (DefinitionStmt def : allDefs) {
+      initial.add(def);
+    }
 
     // initial is not the universal set of all definitions
     return initial;
@@ -100,6 +102,7 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
   /*
    * Using union
    */
+  @Override
   public void setMergeType() {
     MERGETYPE = UNION;
   }
@@ -193,7 +196,7 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
   }
 
   public List<DefinitionStmt> getReachingDefs(Local local, Object node) {
-    ArrayList<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
+    ArrayList<DefinitionStmt> toReturn = new ArrayList<>();
 
     // get the reaching defs of this node
     DavaFlowSet<Stmt> beforeSet = null;
@@ -204,8 +207,11 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
     if (node instanceof ASTWhileNode
         || node instanceof ASTDoWhileNode
         || node instanceof ASTUnconditionalLoopNode
-        || node instanceof ASTForLoopNode) beforeSet = getAfterSet(node);
-    else beforeSet = getBeforeSet(node);
+        || node instanceof ASTForLoopNode) {
+      beforeSet = getAfterSet(node);
+    } else {
+      beforeSet = getBeforeSet(node);
+    }
 
     if (beforeSet == null) {
       throw new RuntimeException("Could not get reaching defs of node");
@@ -214,8 +220,9 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
     // find all reachingdefs matching this local
     for (Object temp : beforeSet) {
       // checking each def to see if it is a def of local
-      if (!(temp instanceof DefinitionStmt))
+      if (!(temp instanceof DefinitionStmt)) {
         throw new RuntimeException("Not an instanceof DefinitionStmt" + temp);
+      }
       DefinitionStmt stmt = (DefinitionStmt) temp;
       Value leftOp = stmt.getLeftOp();
       if (leftOp.toString().compareTo(local.toString()) == 0) {
@@ -235,8 +242,11 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
     if (node instanceof ASTWhileNode
         || node instanceof ASTDoWhileNode
         || node instanceof ASTUnconditionalLoopNode
-        || node instanceof ASTForLoopNode) beforeSet = getAfterSet(node);
-    else beforeSet = getBeforeSet(node);
+        || node instanceof ASTForLoopNode) {
+      beforeSet = getAfterSet(node);
+    } else {
+      beforeSet = getBeforeSet(node);
+    }
 
     if (beforeSet == null) {
       throw new RuntimeException("Could not get reaching defs of node");

@@ -24,19 +24,6 @@
 
 package soot.dexpler;
 
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.DexFile;
-import soot.ArrayType;
-import soot.CompilationDeathException;
-import soot.PrimType;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootResolver;
-import soot.Type;
-import soot.VoidType;
-import soot.javaToJimple.IInitialResolver.Dependencies;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +35,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.DexFile;
+
+import soot.ArrayType;
+import soot.CompilationDeathException;
+import soot.PrimType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootResolver;
+import soot.Type;
+import soot.VoidType;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+
 /**
  * DexlibWrapper provides an entry point to the dexlib library from the smali project. Given a dex
  * file, it will use dexlib to retrieve all classes for further processing A call to getClass
@@ -58,7 +59,7 @@ public class DexlibWrapper {
   private static final Set<String> systemAnnotationNames;
 
   static {
-    Set<String> systemAnnotationNamesModifiable = new HashSet<String>();
+    Set<String> systemAnnotationNamesModifiable = new HashSet<>();
     // names as defined in the ".dex - Dalvik Executable Format" document
     systemAnnotationNamesModifiable.add("dalvik.annotation.AnnotationDefault");
     systemAnnotationNamesModifiable.add("dalvik.annotation.EnclosingClass");
@@ -71,7 +72,7 @@ public class DexlibWrapper {
   }
 
   private final DexClassLoader dexLoader = new DexClassLoader();
-  private final Map<String, ClassDef> classesToDefItems = new HashMap<String, ClassDef>();
+  private final Map<String, ClassDef> classesToDefItems = new HashMap<>();
   private final Collection<DexBackedDexFile> dexFiles;
 
   /**
@@ -141,8 +142,9 @@ public class DexlibWrapper {
 
     for (DexFile dexFile : dexFiles) {
       ClassDef defItem = classesToDefItems.get(className);
-      if (dexFile.getClasses().contains(defItem))
+      if (dexFile.getClasses().contains(defItem)) {
         return dexLoader.makeSootClass(sc, defItem, dexFile);
+      }
     }
 
     throw new RuntimeException("Error: class not found in DEX files: " + className);

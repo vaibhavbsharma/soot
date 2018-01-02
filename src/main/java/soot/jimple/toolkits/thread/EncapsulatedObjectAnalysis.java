@@ -1,13 +1,13 @@
 package soot.jimple.toolkits.thread;
 
-import soot.Body;
-import soot.SootMethod;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import soot.Body;
+import soot.SootMethod;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 
 // EncapsulatedObjectAnalysis written by Richard L. Halpert, 2006-12-26
 // Checks if all methods of a class are "object-pure", meaning that
@@ -21,8 +21,8 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 
   public EncapsulatedObjectAnalysis() {
     cachedClasses = new ArrayList();
-    objectPureMethods = new ArrayList<SootMethod>();
-    objectPureInitMethods = new ArrayList<SootMethod>();
+    objectPureMethods = new ArrayList<>();
+    objectPureInitMethods = new ArrayList<>();
   }
 
   public boolean isMethodPureOnObject(SootMethod sm) {
@@ -32,11 +32,13 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
       SootMethod initMethod = null;
       Collection methods = sm.getDeclaringClass().getMethods();
       Iterator methodsIt = methods.iterator();
-      List<SootMethod> mayBePureMethods = new ArrayList<SootMethod>(methods.size());
+      List<SootMethod> mayBePureMethods = new ArrayList<>(methods.size());
       while (methodsIt.hasNext()) {
         SootMethod method = (SootMethod) methodsIt.next();
         if (method.isConcrete()) {
-          if (method.getSubSignature().startsWith("void <init>")) initMethod = method;
+          if (method.getSubSignature().startsWith("void <init>")) {
+            initMethod = method;
+          }
           Body b = method.retrieveActiveBody();
           EncapsulatedMethodAnalysis ema =
               new EncapsulatedMethodAnalysis(new ExceptionalUnitGraph(b));
@@ -46,9 +48,14 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
         }
       }
 
-      if (mayBePureMethods.size() == methods.size()) objectPureMethods.addAll(mayBePureMethods);
-      else if (initMethod != null) objectPureMethods.add(initMethod);
-      if (initMethod != null) objectPureInitMethods.add(initMethod);
+      if (mayBePureMethods.size() == methods.size()) {
+        objectPureMethods.addAll(mayBePureMethods);
+      } else if (initMethod != null) {
+        objectPureMethods.add(initMethod);
+      }
+      if (initMethod != null) {
+        objectPureInitMethods.add(initMethod);
+      }
     }
 
     return objectPureMethods.contains(sm);

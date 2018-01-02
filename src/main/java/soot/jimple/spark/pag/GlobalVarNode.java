@@ -34,12 +34,15 @@ public class GlobalVarNode extends VarNode {
     super(pag, variable, t);
   }
 
+  @Override
   public String toString() {
     return "GlobalVarNode " + getNumber() + " " + variable;
   }
 
   public SootClass getDeclaringClass() {
-    if (variable instanceof SootField) return ((SootField) variable).getDeclaringClass();
+    if (variable instanceof SootField) {
+      return ((SootField) variable).getDeclaringClass();
+    }
 
     return null;
   }

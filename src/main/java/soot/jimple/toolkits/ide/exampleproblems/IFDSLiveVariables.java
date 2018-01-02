@@ -18,6 +18,13 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -36,13 +43,6 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class IFDSLiveVariables
     extends DefaultJimpleIFDSTabulationProblem<Value, InterproceduralCFG<Unit, SootMethod>> {
   public IFDSLiveVariables(InterproceduralCFG<Unit, SootMethod> icfg) {
@@ -55,11 +55,14 @@ public class IFDSLiveVariables
 
       @Override
       public FlowFunction<Value> getNormalFlowFunction(Unit curr, Unit succ) {
-        if (curr.getUseAndDefBoxes().isEmpty()) return Identity.v();
+        if (curr.getUseAndDefBoxes().isEmpty()) {
+          return Identity.v();
+        }
 
         final Stmt s = (Stmt) curr;
 
         return new FlowFunction<Value>() {
+          @Override
           public Set<Value> computeTargets(Value source) {
             // kill defs
             List<ValueBox> defs = s.getDefBoxes();
@@ -71,7 +74,7 @@ public class IFDSLiveVariables
 
             // gen uses out of zero value
             if (source.equals(zeroValue())) {
-              Set<Value> liveVars = new HashSet<Value>();
+              Set<Value> liveVars = new HashSet<>();
 
               for (ValueBox useBox : s.getUseBoxes()) {
                 Value value = useBox.getValue();
@@ -92,11 +95,12 @@ public class IFDSLiveVariables
           Unit callStmt, final SootMethod destinationMethod) {
         final Stmt s = (Stmt) callStmt;
         return new FlowFunction<Value>() {
+          @Override
           public Set<Value> computeTargets(Value source) {
             if (!s.getDefBoxes().isEmpty()) {
               Value callerSideReturnValue = s.getDefBoxes().get(0).getValue();
               if (callerSideReturnValue.equivTo(source)) {
-                Set<Value> calleeSideReturnValues = new HashSet<Value>();
+                Set<Value> calleeSideReturnValues = new HashSet<>();
                 for (Unit calleeUnit : interproceduralCFG().getStartPointsOf(destinationMethod)) {
                   if (calleeUnit instanceof ReturnStmt) {
                     ReturnStmt returnStmt = (ReturnStmt) calleeUnit;
@@ -119,13 +123,14 @@ public class IFDSLiveVariables
         Stmt s = (Stmt) callSite;
         InvokeExpr ie = s.getInvokeExpr();
         final List<Value> callArgs = ie.getArgs();
-        final List<Local> paramLocals = new ArrayList<Local>();
+        final List<Local> paramLocals = new ArrayList<>();
         for (int i = 0; i < calleeMethod.getParameterCount(); i++) {
           paramLocals.add(calleeMethod.getActiveBody().getParameterLocal(i));
         }
         return new FlowFunction<Value>() {
+          @Override
           public Set<Value> computeTargets(Value source) {
-            Set<Value> liveParamsAtCallee = new HashSet<Value>();
+            Set<Value> liveParamsAtCallee = new HashSet<>();
             for (int i = 0; i < paramLocals.size(); i++) {
               if (paramLocals.get(i).equivTo(source)) {
                 liveParamsAtCallee.add(callArgs.get(i));
@@ -138,11 +143,14 @@ public class IFDSLiveVariables
 
       @Override
       public FlowFunction<Value> getCallToReturnFlowFunction(Unit callSite, Unit returnSite) {
-        if (callSite.getUseAndDefBoxes().isEmpty()) return Identity.v();
+        if (callSite.getUseAndDefBoxes().isEmpty()) {
+          return Identity.v();
+        }
 
         final Stmt s = (Stmt) callSite;
 
         return new FlowFunction<Value>() {
+          @Override
           public Set<Value> computeTargets(Value source) {
             // kill defs
             List<ValueBox> defs = s.getDefBoxes();
@@ -154,7 +162,7 @@ public class IFDSLiveVariables
 
             // gen uses out of zero value
             if (source.equals(zeroValue())) {
-              Set<Value> liveVars = new HashSet<Value>();
+              Set<Value> liveVars = new HashSet<>();
 
               // only "gen" those values that are not parameter values;
               // the latter are taken care of by the return-flow function
@@ -177,11 +185,13 @@ public class IFDSLiveVariables
     };
   }
 
+  @Override
   public Map<Unit, Set<Value>> initialSeeds() {
     return DefaultSeeds.make(
         interproceduralCFG().getStartPointsOf(Scene.v().getMainMethod()), zeroValue());
   }
 
+  @Override
   public Value createZeroValue() {
     return new JimpleLocal("<<zero>>", NullType.v());
   }

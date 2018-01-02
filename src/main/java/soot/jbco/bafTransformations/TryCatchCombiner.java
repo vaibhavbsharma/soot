@@ -18,6 +18,13 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -44,13 +51,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.NullConstant;
 import soot.toolkits.graph.BriefUnitGraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform {
 
   int totalcount = 0;
@@ -59,30 +59,36 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
   public static String dependancies[] =
       new String[] {"bb.jbco_j2bl", "bb.jbco_ctbcb", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ctbcb";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Total try blocks found: " + totalcount);
     out.println("Combined TryCatches: " + changedcount);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     int trapCount = 0;
     PatchingChain<Unit> units = b.getUnits();
-    ArrayList<Unit> headList = new ArrayList<Unit>();
-    ArrayList<Trap> trapList = new ArrayList<Trap>();
+    ArrayList<Unit> headList = new ArrayList<>();
+    ArrayList<Trap> trapList = new ArrayList<>();
     Iterator<Trap> traps = b.getTraps().iterator();
 
     // build list of heads and corresponding traps
@@ -90,19 +96,25 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       Trap t = traps.next();
       totalcount++;
       // skip runtime exceptions
-      if (!isRewritable(t)) continue;
+      if (!isRewritable(t)) {
+        continue;
+      }
 
       headList.add(t.getBeginUnit());
       trapList.add(t);
       trapCount++;
     }
 
-    if (trapCount == 0) return;
+    if (trapCount == 0) {
+      return;
+    }
 
     //  check if any traps have same head, if so insert dumby NOP to disambiguate
     for (int i = 0; i < headList.size(); i++) {
       for (int j = 0; j < headList.size(); j++) {
-        if (i == j) continue;
+        if (i == j) {
+          continue;
+        }
         if (headList.get(i) == headList.get(j)) {
           Trap t = trapList.get(i);
           Unit nop = Baf.v().newNopInst();
@@ -117,7 +129,9 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     Iterator<Unit> uit = units.iterator();
     while (uit.hasNext()) {
       Unit unit = uit.next();
-      if (!(unit instanceof IdentityInst)) break;
+      if (!(unit instanceof IdentityInst)) {
+        break;
+      }
       first = unit;
     }
     if (first == null) {
@@ -135,7 +149,9 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     while (traps.hasNext()) {
       Trap t = traps.next();
       Unit begUnit = t.getBeginUnit();
-      if (!isRewritable(t) || Rand.getInt(10) > weight) continue;
+      if (!isRewritable(t) || Rand.getInt(10) > weight) {
+        continue;
+      }
 
       stackHeightsBefore = StackTypeHeightCalculator.calculateStackHeights(b, bafToJLocals);
       boolean badType = false;
@@ -151,7 +167,9 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
           }
         }
       }
-      if (badType) continue;
+      if (badType) {
+        continue;
+      }
 
       // local to hold control flow flag (0=try, 1=catch)
       Local controlLocal = Baf.v().newLocal("controlLocal_tccomb" + trapCount, IntType.v());
@@ -172,7 +190,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       units.add(pushZero);
       units.add(storZero);
 
-      Stack<Local> varsToLoad = new Stack<Local>();
+      Stack<Local> varsToLoad = new Stack<>();
       s = stackHeightsBefore.get(begUnit);
       if (s.size() > 0) {
         for (int i = 0; i < s.size(); i++) {
@@ -249,9 +267,10 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
 
       changedcount++;
 
-      if (debug)
+      if (debug) {
         StackTypeHeightCalculator.printStack(
             units, StackTypeHeightCalculator.calculateStackHeights(b), false);
+      }
     }
   }
 
@@ -271,15 +290,21 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
 
   private boolean isRewritable(Trap t) {
     // ignore traps that already catch their own begin unit
-    if (t.getBeginUnit() == t.getHandlerUnit()) return false;
+    if (t.getBeginUnit() == t.getHandlerUnit()) {
+      return false;
+    }
 
     // ignore runtime try blocks - these may have weird side-effects do to asynchronous
     // exceptions
     SootClass exc = t.getException();
-    if (exc.getName().equals("java.lang.Throwable")) return false;
+    if (exc.getName().equals("java.lang.Throwable")) {
+      return false;
+    }
 
     do {
-      if (exc.getName().equals("java.lang.RuntimeException")) return false;
+      if (exc.getName().equals("java.lang.RuntimeException")) {
+        return false;
+      }
     } while (exc.hasSuperclass() && (exc = exc.getSuperclass()) != null);
 
     return true;

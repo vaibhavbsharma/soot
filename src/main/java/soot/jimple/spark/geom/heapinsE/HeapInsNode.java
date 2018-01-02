@@ -6,6 +6,13 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 import soot.Hierarchy;
 import soot.RefType;
 import soot.Scene;
@@ -27,13 +34,6 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
-
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 /**
  * This class defines a pointer variable for use in the HeapIns encoding based points-to solver.
@@ -76,9 +76,9 @@ public class HeapInsNode extends IVarAbstraction {
 
   @Override
   public void reconstruct() {
-    flowto = new HashMap<HeapInsNode, HeapInsIntervalManager>();
-    pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
-    new_pts = new HashMap<AllocNode, HeapInsIntervalManager>();
+    flowto = new HashMap<>();
+    pt_objs = new HashMap<>();
+    new_pts = new HashMap<>();
     complex_cons = null;
     lrf_value = 0;
   }
@@ -131,13 +131,15 @@ public class HeapInsNode extends IVarAbstraction {
       im.flush();
     }
 
-    new_pts = new HashMap<AllocNode, HeapInsIntervalManager>();
+    new_pts = new HashMap<>();
   }
 
   @Override
   public int num_of_diff_objs() {
     // If this pointer is not a representative pointer
-    if (parent != this) return getRepresentative().num_of_diff_objs();
+    if (parent != this) {
+      return getRepresentative().num_of_diff_objs();
+    }
 
     if (pt_objs == null) {
       return -1;
@@ -148,9 +150,13 @@ public class HeapInsNode extends IVarAbstraction {
 
   @Override
   public int num_of_diff_edges() {
-    if (parent != this) return getRepresentative().num_of_diff_objs();
+    if (parent != this) {
+      return getRepresentative().num_of_diff_objs();
+    }
 
-    if (flowto == null) return -1;
+    if (flowto == null) {
+      return -1;
+    }
 
     return flowto.size();
   }
@@ -163,9 +169,11 @@ public class HeapInsNode extends IVarAbstraction {
     pres.I2 = I2;
     pres.L = L;
 
-    if (I1 == 0)
+    if (I1 == 0) {
       code = (I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
-    else code = (I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
+    } else {
+      code = (I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
+    }
 
     return addPointsTo(code, obj);
   }
@@ -183,9 +191,11 @@ public class HeapInsNode extends IVarAbstraction {
     pres.I2 = I2;
     pres.L = L;
 
-    if (I1 == 0)
+    if (I1 == 0) {
       code = (I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
-    else code = (I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
+    } else {
+      code = (I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
+    }
 
     return addFlowsTo(code, (HeapInsNode) qv);
   }
@@ -197,7 +207,9 @@ public class HeapInsNode extends IVarAbstraction {
 
   @Override
   public void put_complex_constraint(PlainConstraint cons) {
-    if (complex_cons == null) complex_cons = new Vector<PlainConstraint>();
+    if (complex_cons == null) {
+      complex_cons = new Vector<>();
+    }
     complex_cons.add(cons);
   }
 
@@ -260,7 +272,9 @@ public class HeapInsNode extends IVarAbstraction {
                       objn,
                       pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
                       pts.I2,
-                      pts.L < 0 ? -pts.L : pts.L)) worklist.push(qn);
+                      pts.L < 0 ? -pts.L : pts.L)) {
+                    worklist.push(qn);
+                  }
                   break;
 
                 case Constants.LOAD_CONS:
@@ -269,7 +283,9 @@ public class HeapInsNode extends IVarAbstraction {
                       qn,
                       pts.I2,
                       pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
-                      pts.L < 0 ? -pts.L : pts.L)) worklist.push(objn);
+                      pts.L < 0 ? -pts.L : pts.L)) {
+                    worklist.push(objn);
+                  }
                   break;
               }
 
@@ -294,8 +310,12 @@ public class HeapInsNode extends IVarAbstraction {
         obj = entry2.getKey();
         him2 = entry2.getValue();
 
-        if (him2 == deadManager) continue;
-        if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) continue;
+        if (him2 == deadManager) {
+          continue;
+        }
+        if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
+          continue;
+        }
 
         // Figure collection for the points-to tuple
         int_entry2 = him2.getFigures();
@@ -305,7 +325,9 @@ public class HeapInsNode extends IVarAbstraction {
         for (i = 0; i < HeapInsIntervalManager.Divisions; ++i) {
           pts = int_entry2[i];
           while (pts != null) {
-            if (!has_new_edges && !pts.is_new) break;
+            if (!has_new_edges && !pts.is_new) {
+              break;
+            }
 
             // Loop over all flows-to figures
             for (j = 0; j < HeapInsIntervalManager.Divisions; ++j) {
@@ -313,8 +335,12 @@ public class HeapInsNode extends IVarAbstraction {
               while (pe != null) {
                 if (pts.is_new || pe.is_new) {
                   // Propagate this object
-                  if (add_new_points_to_tuple(pts, pe, obj, qn)) added = true;
-                } else break;
+                  if (add_new_points_to_tuple(pts, pe, obj, qn)) {
+                    added = true;
+                  }
+                } else {
+                  break;
+                }
 
                 pe = pe.next;
               }
@@ -325,10 +351,14 @@ public class HeapInsNode extends IVarAbstraction {
         }
       }
 
-      if (added) worklist.push(qn);
+      if (added) {
+        worklist.push(qn);
+      }
 
       // Now, we clean the new edges if necessary
-      if (has_new_edges) him1.flush();
+      if (has_new_edges) {
+        him1.flush();
+      }
     }
   }
 
@@ -373,12 +403,17 @@ public class HeapInsNode extends IVarAbstraction {
 
     qn = (HeapInsNode) qv;
 
-    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext(); ) {
-      AllocNode an = it.next();
-      if (an instanceof ClassConstantNode) continue;
-      if (an instanceof StringConstantNode) continue;
+    for (AllocNode an : pt_objs.keySet()) {
+      if (an instanceof ClassConstantNode) {
+        continue;
+      }
+      if (an instanceof StringConstantNode) {
+        continue;
+      }
       qt = qn.find_points_to(an);
-      if (qt == null) continue;
+      if (qt == null) {
+        continue;
+      }
       pt = find_points_to(an);
 
       for (i = 0; i < HeapInsIntervalManager.Divisions; ++i) {
@@ -387,7 +422,9 @@ public class HeapInsNode extends IVarAbstraction {
           for (j = 0; j < HeapInsIntervalManager.Divisions; ++j) {
             q = qt[j];
             while (q != null) {
-              if (quick_intersecting_test(p, q)) return true;
+              if (quick_intersecting_test(p, q)) {
+                return true;
+              }
               q = q.next;
             }
           }
@@ -402,15 +439,16 @@ public class HeapInsNode extends IVarAbstraction {
   @Override
   public Set<AllocNode> get_all_points_to_objects() {
     // If this pointer is not a representative pointer
-    if (parent != this) return getRepresentative().get_all_points_to_objects();
+    if (parent != this) {
+      return getRepresentative().get_all_points_to_objects();
+    }
 
     return pt_objs.keySet();
   }
 
   @Override
   public void print_context_sensitive_points_to(PrintStream outPrintStream) {
-    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext(); ) {
-      AllocNode obj = it.next();
+    for (AllocNode obj : pt_objs.keySet()) {
       SegmentNode[] int_entry = find_points_to(obj);
       for (int j = 0; j < HeapInsIntervalManager.Divisions; ++j) {
         SegmentNode p = int_entry[j];
@@ -426,16 +464,22 @@ public class HeapInsNode extends IVarAbstraction {
   @Override
   public boolean pointer_interval_points_to(long l, long r, AllocNode obj) {
     SegmentNode[] int_entry = find_points_to(obj);
-    if (int_entry == null) return false;
+    if (int_entry == null) {
+      return false;
+    }
 
     // Check all-to-many figures
-    if (int_entry[HeapInsIntervalManager.ALL_TO_MANY] != null) return true;
+    if (int_entry[HeapInsIntervalManager.ALL_TO_MANY] != null) {
+      return true;
+    }
 
     for (int i = 1; i < HeapInsIntervalManager.Divisions; ++i) {
       SegmentNode p = int_entry[i];
       while (p != null) {
         long R = p.I1 + p.L;
-        if ((l <= p.I1 && p.I1 < r) || (p.I1 <= l && l < R)) return true;
+        if ((l <= p.I1 && p.I1 < r) || (p.I1 <= l && l < R)) {
+          return true;
+        }
         p = p.next;
       }
     }
@@ -514,7 +558,9 @@ public class HeapInsNode extends IVarAbstraction {
             if (l <= p.I1 && p.I1 < r) {
               if (i != HeapInsIntervalManager.MANY_TO_ALL) {
                 long d = r - p.I1;
-                if (d > p.L) d = p.L;
+                if (d > p.L) {
+                  d = p.L;
+                }
                 objL = p.I2;
                 objR = objL + d;
               } else {
@@ -524,7 +570,9 @@ public class HeapInsNode extends IVarAbstraction {
             } else if (p.I1 <= l && l < R) {
               if (i != HeapInsIntervalManager.MANY_TO_ALL) {
                 long d = R - l;
-                if (R > r) d = r - l;
+                if (R > r) {
+                  d = r - l;
+                }
                 objL = p.I2 + l - p.I1;
                 objR = objL + d;
               } else {
@@ -535,7 +583,9 @@ public class HeapInsNode extends IVarAbstraction {
           }
 
           // Now we test which context versions should this interval [objL, objR) maps to
-          if (objL != -1 && objR != -1) visitor.visit(obj, objL, objR, sm_int);
+          if (objL != -1 && objR != -1) {
+            visitor.visit(obj, objL, objR, sm_int);
+          }
 
           p = p.next;
         }
@@ -546,15 +596,16 @@ public class HeapInsNode extends IVarAbstraction {
   @Override
   public void injectPts() {
     final GeomPointsTo geomPTA = (GeomPointsTo) Scene.v().getPointsToAnalysis();
-    pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
+    pt_objs = new HashMap<>();
 
     me.getP2Set()
         .forall(
             new P2SetVisitor() {
               @Override
               public void visit(Node n) {
-                if (geomPTA.isValidGeometricNode(n))
+                if (geomPTA.isValidGeometricNode(n)) {
                   pt_objs.put((AllocNode) n, (HeapInsIntervalManager) stubManager);
+                }
               }
             });
 
@@ -569,13 +620,17 @@ public class HeapInsNode extends IVarAbstraction {
   // ---------------------------------Private Functions----------------------------------------
   private SegmentNode[] find_flowto(HeapInsNode qv) {
     HeapInsIntervalManager im = flowto.get(qv);
-    if (im == null) return null;
+    if (im == null) {
+      return null;
+    }
     return im.getFigures();
   }
 
   private SegmentNode[] find_points_to(AllocNode obj) {
     HeapInsIntervalManager im = pt_objs.get(obj);
-    if (im == null) return null;
+    if (im == null) {
+      return null;
+    }
     return im.getFigures();
   }
 
@@ -653,19 +708,22 @@ public class HeapInsNode extends IVarAbstraction {
       // The right-end is the smaller one
       interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
 
-      if (interI >= interJ) return false;
+      if (interI >= interJ) {
+        return false;
+      }
 
       // The intersection is non-empty
       pres.I1 = (pe.I2 == 0 ? 0 : interI - pe.I1 + pe.I2);
       pres.I2 = (pts.I2 == 0 ? 0 : interI - pts.I1 + pts.I2);
       pres.L = interJ - interI;
 
-      if (pres.I1 == 0)
+      if (pres.I1 == 0) {
         code =
             (pres.I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
-      else
+      } else {
         code =
             (pres.I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
+      }
     }
 
     return qn.addPointsTo(code, obj);
@@ -674,9 +732,13 @@ public class HeapInsNode extends IVarAbstraction {
   // We only test if their points-to objects intersected under context
   // insensitive manner
   private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
-    if (p.I2 == 0 || q.I2 == 0) return true;
+    if (p.I2 == 0 || q.I2 == 0) {
+      return true;
+    }
 
-    if (p.I2 >= q.I2) return p.I2 < q.I2 + (q.L < 0 ? -q.L : q.L);
+    if (p.I2 >= q.I2) {
+      return p.I2 < q.I2 + (q.L < 0 ? -q.L : q.L);
+    }
     return q.I2 < p.I2 + (p.L < 0 ? -p.L : p.L);
   }
 }

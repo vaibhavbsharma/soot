@@ -38,18 +38,22 @@ public class JSubExpr extends AbstractJimpleFloatBinopExpr implements SubExpr {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " - ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseSubExpr(this);
   }
 
+  @Override
   Object makeBafInst(Type opType) {
     return Baf.v().newSubInst(this.getOp1().getType());
   }
 
+  @Override
   public Object clone() {
     return new JSubExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }

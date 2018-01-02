@@ -19,17 +19,17 @@
 
 package soot.jimple.spark.pag;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.AnySubType;
 import soot.Context;
 import soot.G;
 import soot.RefLikeType;
 import soot.Type;
 import soot.toolkits.scalar.Pair;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents a simple variable node (Green) in the pointer assignment graph.
@@ -42,7 +42,9 @@ public abstract class VarNode extends ValNode implements Comparable {
   }
   /** Returns all field ref nodes having this node as their base. */
   public Collection<FieldRefNode> getAllFieldRefs() {
-    if (fields == null) return Collections.emptyList();
+    if (fields == null) {
+      return Collections.emptyList();
+    }
     return fields.values();
   }
   /**
@@ -53,6 +55,7 @@ public abstract class VarNode extends ValNode implements Comparable {
     return fields == null ? null : fields.get(field);
   }
 
+  @Override
   public int compareTo(Object o) {
     VarNode other = (VarNode) o;
     if (other.finishingNumber == finishingNumber && other != this) {
@@ -76,7 +79,9 @@ public abstract class VarNode extends ValNode implements Comparable {
 
   public void setFinishingNumber(int i) {
     finishingNumber = i;
-    if (i > pag.maxFinishNumber) pag.maxFinishNumber = i;
+    if (i > pag.maxFinishNumber) {
+      pag.maxFinishNumber = i;
+    }
   }
   /** Returns the underlying variable that this node represents. */
   public Object getVariable() {
@@ -135,7 +140,9 @@ public abstract class VarNode extends ValNode implements Comparable {
   }
   /** Registers a frn as having this node as its base. */
   void addField(FieldRefNode frn, SparkField field) {
-    if (fields == null) fields = new HashMap<SparkField, FieldRefNode>();
+    if (fields == null) {
+      fields = new HashMap<>();
+    }
     fields.put(field, frn);
   }
 

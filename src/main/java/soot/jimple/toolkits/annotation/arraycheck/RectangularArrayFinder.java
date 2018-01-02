@@ -25,6 +25,15 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -56,15 +65,6 @@ import soot.jimple.toolkits.callgraph.Targets;
 import soot.options.Options;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Interprocedural analysis to identify rectangular multi-dimension array locals. It is based on the
  * call graph.
@@ -79,17 +79,19 @@ public class RectangularArrayFinder extends SceneTransformer {
   private final ExtendedHashMutableDirectedGraph agraph = new ExtendedHashMutableDirectedGraph();
 
   private final Set falseSet = new HashSet();
-  private final Set<Object> trueSet = new HashSet<Object>();
+  private final Set<Object> trueSet = new HashSet<>();
   private CallGraph cg;
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> opts) {
     Scene sc = Scene.v();
 
     cg = sc.getCallGraph();
 
     Date start = new Date();
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[ra] Finding rectangular arrays, start on " + start);
+    }
 
     Chain appClasses = sc.getApplicationClasses();
 
@@ -103,9 +105,13 @@ public class RectangularArrayFinder extends SceneTransformer {
       while (methodIt.hasNext()) {
         SootMethod method = (SootMethod) methodIt.next();
 
-        if (!method.isConcrete()) continue;
+        if (!method.isConcrete()) {
+          continue;
+        }
 
-        if (!sc.getReachableMethods().contains(method)) continue;
+        if (!sc.getReachableMethods().contains(method)) {
+          continue;
+        }
 
         recoverRectArray(method);
         addInfoFromMethod(method);
@@ -176,14 +182,16 @@ public class RectangularArrayFinder extends SceneTransformer {
 
     /* propagate graph info from TRUE node then. */
     if (agraph.containsNode(BoolValue.v(true))) {
-      List<Object> changedNodeList = new ArrayList<Object>();
+      List<Object> changedNodeList = new ArrayList<>();
 
       List startNodes = agraph.getSuccsOf(BoolValue.v(true));
 
       Iterator nodesIt = startNodes.iterator();
       while (nodesIt.hasNext()) {
         Object node = nodesIt.next();
-        if (falseSet.contains(node)) continue;
+        if (falseSet.contains(node)) {
+          continue;
+        }
 
         changedNodeList.add(node);
         trueSet.add(node);
@@ -199,9 +207,13 @@ public class RectangularArrayFinder extends SceneTransformer {
         while (succsIt.hasNext()) {
           Object succ = succsIt.next();
 
-          if (falseSet.contains(succ)) continue;
+          if (falseSet.contains(succ)) {
+            continue;
+          }
 
-          if (trueSet.contains(succ)) continue;
+          if (trueSet.contains(succ)) {
+            continue;
+          }
 
           trueSet.add(succ);
           changedNodeList.add(succ);
@@ -251,13 +263,15 @@ public class RectangularArrayFinder extends SceneTransformer {
   }
 
   private void addInfoFromMethod(SootMethod method) {
-    if (Options.v().verbose()) G.v().out.println("[ra] Operating " + method.getSignature());
+    if (Options.v().verbose()) {
+      G.v().out.println("[ra] Operating " + method.getSignature());
+    }
 
     boolean needTransfer = true;
 
     Body body = method.getActiveBody();
 
-    Set<Object> tmpNode = new HashSet<Object>();
+    Set<Object> tmpNode = new HashSet<>();
 
     /* check the return type of method, if it is multi-array. */
 
@@ -271,7 +285,7 @@ public class RectangularArrayFinder extends SceneTransformer {
       }
     }
 
-    Set<Local> arrayLocal = new HashSet<Local>();
+    Set<Local> arrayLocal = new HashSet<>();
 
     /* Collect the multi-array locals */
 
@@ -285,7 +299,9 @@ public class RectangularArrayFinder extends SceneTransformer {
       if (type instanceof ArrayType) {
         if (((ArrayType) type).numDimensions > 1) {
           arrayLocal.add(local);
-        } else tmpNode.add(new MethodLocal(method, local));
+        } else {
+          tmpNode.add(new MethodLocal(method, local));
+        }
       }
     }
 
@@ -305,7 +321,9 @@ public class RectangularArrayFinder extends SceneTransformer {
 
         for (int i = 0; i < argnum; i++) {
           Value arg = iexpr.getArg(i);
-          if (!arrayLocal.contains(arg)) continue;
+          if (!arrayLocal.contains(arg)) {
+            continue;
+          }
 
           needTransfer = true;
 
@@ -340,8 +358,9 @@ public class RectangularArrayFinder extends SceneTransformer {
         Value leftOp = ((DefinitionStmt) s).getLeftOp();
         Value rightOp = ((DefinitionStmt) s).getRightOp();
 
-        if (!(leftOp.getType() instanceof ArrayType) && !(rightOp.getType() instanceof ArrayType))
+        if (!(leftOp.getType() instanceof ArrayType) && !(rightOp.getType() instanceof ArrayType)) {
           continue;
+        }
 
         Object from = null;
         Object to = null;
@@ -356,7 +375,9 @@ public class RectangularArrayFinder extends SceneTransformer {
             from = new MethodLocal(method, (Local) rightOp);
             ehmdg.addMutualEdge(from, to);
 
-            if (leftDims != rightDims) ehmdg.addEdge(BoolValue.v(false), from);
+            if (leftDims != rightDims) {
+              ehmdg.addEdge(BoolValue.v(false), from);
+            }
           } else if (!arrayLocal.contains(leftOp)) {
             /* implicitly cast from right side to left side, and the left side declare type is Object ... */
             ehmdg.addEdge(BoolValue.v(false), new MethodLocal(method, (Local) rightOp));
@@ -400,7 +421,9 @@ public class RectangularArrayFinder extends SceneTransformer {
 
             blocklabel:
             {
-              if (!ehmdg.containsNode(suspect)) break blocklabel;
+              if (!ehmdg.containsNode(suspect)) {
+                break blocklabel;
+              }
 
               List succs = ehmdg.getSuccsOf(suspect);
               List preds = ehmdg.getSuccsOf(suspect);
@@ -410,14 +433,20 @@ public class RectangularArrayFinder extends SceneTransformer {
               neighbor.addAll(succs);
               neighbor.addAll(preds);
 
-              if (neighbor.size() != 1) break blocklabel;
+              if (neighbor.size() != 1) {
+                break blocklabel;
+              }
 
               Object neighborOne = (neighbor.toArray())[0];
 
-              if (arrRef.equals(neighborOne)) doNothing = true;
+              if (arrRef.equals(neighborOne)) {
+                doNothing = true;
+              }
             }
 
-            if (!doNothing) ehmdg.addEdge(BoolValue.v(false), new MethodLocal(method, base));
+            if (!doNothing) {
+              ehmdg.addEdge(BoolValue.v(false), new MethodLocal(method, base));
+            }
           }
         } else if ((leftOp instanceof Local) && (rightOp instanceof InvokeExpr)) {
           if (arrayLocal.contains(leftOp)) {
@@ -513,49 +542,67 @@ public class RectangularArrayFinder extends SceneTransformer {
 
   private void recoverRectArray(SootMethod method) {
     Body body = method.getActiveBody();
-    HashSet<Local> malocal = new HashSet<Local>();
+    HashSet<Local> malocal = new HashSet<>();
 
     Collection<Local> locals = body.getLocals();
     Iterator<Local> localsIt = locals.iterator();
     while (localsIt.hasNext()) {
       Local local = localsIt.next();
       Type type = local.getType();
-      if (!(type instanceof ArrayType)) continue;
+      if (!(type instanceof ArrayType)) {
+        continue;
+      }
 
-      if (((ArrayType) type).numDimensions == 2) malocal.add(local);
+      if (((ArrayType) type).numDimensions == 2) {
+        malocal.add(local);
+      }
     }
 
-    if (malocal.size() == 0) return;
+    if (malocal.size() == 0) {
+      return;
+    }
 
     Chain<Unit> units = body.getUnits();
 
     Stmt stmt = (Stmt) units.getFirst();
 
     while (true) {
-      if (stmt == null) break;
+      if (stmt == null) {
+        break;
+      }
 
       /* only deal with the first block */
-      if (!stmt.fallsThrough()) break;
+      if (!stmt.fallsThrough()) {
+        break;
+      }
 
       searchblock:
       {
         /* possible candidates */
-        if (!(stmt instanceof AssignStmt)) break searchblock;
+        if (!(stmt instanceof AssignStmt)) {
+          break searchblock;
+        }
 
         Value leftOp = ((AssignStmt) stmt).getLeftOp();
         Value rightOp = ((AssignStmt) stmt).getRightOp();
 
-        if (!malocal.contains(leftOp) || !(rightOp instanceof NewArrayExpr)) break searchblock;
+        if (!malocal.contains(leftOp) || !(rightOp instanceof NewArrayExpr)) {
+          break searchblock;
+        }
 
         Local local = (Local) leftOp;
 
         NewArrayExpr naexpr = (NewArrayExpr) rightOp;
 
         Value size = naexpr.getSize();
-        if (!(size instanceof IntConstant)) break searchblock;
+        if (!(size instanceof IntConstant)) {
+          break searchblock;
+        }
 
         int firstdim = ((IntConstant) size).value;
-        if (firstdim > 100) break searchblock;
+        if (firstdim > 100) {
+          break searchblock;
+        }
 
         ArrayType localtype = (ArrayType) local.getType();
         Type basetype = localtype.baseType;
@@ -564,8 +611,9 @@ public class RectangularArrayFinder extends SceneTransformer {
 
         int seconddim = lookforPattern(units, stmt, firstdim, local, basetype, tmplocals);
 
-        if (seconddim >= 0)
+        if (seconddim >= 0) {
           transferPattern(units, stmt, firstdim, seconddim, local, basetype, tmplocals);
+        }
       }
 
       stmt = (Stmt) units.getSuccOf(stmt);
@@ -598,9 +646,13 @@ public class RectangularArrayFinder extends SceneTransformer {
 
     while (true) {
       curstmt = (Stmt) units.getSuccOf(curstmt);
-      if (curstmt == null) return -1;
+      if (curstmt == null) {
+        return -1;
+      }
 
-      if (!(curstmt instanceof AssignStmt)) return -1;
+      if (!(curstmt instanceof AssignStmt)) {
+        return -1;
+      }
 
       Value leftOp = ((AssignStmt) curstmt).getLeftOp();
       Value rightOp = ((AssignStmt) curstmt).getRightOp();
@@ -615,19 +667,28 @@ public class RectangularArrayFinder extends SceneTransformer {
           {
             state = fault;
 
-            if (!(rightOp instanceof NewArrayExpr)) break;
+            if (!(rightOp instanceof NewArrayExpr)) {
+              break;
+            }
 
             NewArrayExpr naexpr = (NewArrayExpr) rightOp;
             Type type = naexpr.getBaseType();
             Value size = naexpr.getSize();
 
-            if (!type.equals(basetype)) break;
+            if (!type.equals(basetype)) {
+              break;
+            }
 
-            if (!(size instanceof IntConstant)) break;
+            if (!(size instanceof IntConstant)) {
+              break;
+            }
 
-            if (curdim == 0) seconddim = ((IntConstant) size).value;
-            else {
-              if (((IntConstant) size).value != seconddim) break;
+            if (curdim == 0) {
+              seconddim = ((IntConstant) size).value;
+            } else {
+              if (((IntConstant) size).value != seconddim) {
+                break;
+              }
             }
 
             curtmp = leftOp;
@@ -640,28 +701,40 @@ public class RectangularArrayFinder extends SceneTransformer {
           {
             state = fault;
 
-            if (!(leftOp instanceof ArrayRef)) break;
+            if (!(leftOp instanceof ArrayRef)) {
+              break;
+            }
 
             Value base = ((ArrayRef) leftOp).getBase();
             Value idx = ((ArrayRef) leftOp).getIndex();
 
             /* curtmp[?] = ? */
-            if (base.equals(curtmp)) state = 2;
-            else
+            if (base.equals(curtmp)) {
+              state = 2;
+            } else
             /* local[?] = curtmp? */
             if (base.equals(local)) {
-              if (!(idx instanceof IntConstant)) break;
+              if (!(idx instanceof IntConstant)) {
+                break;
+              }
 
-              if (curdim != ((IntConstant) idx).value) break;
+              if (curdim != ((IntConstant) idx).value) {
+                break;
+              }
 
-              if (!rightOp.equals(curtmp)) break;
+              if (!rightOp.equals(curtmp)) {
+                break;
+              }
 
               tmplocals[curdim] = (Local) curtmp;
 
               curdim++;
 
-              if (curdim >= firstdim) state = 3;
-              else state = 1;
+              if (curdim >= firstdim) {
+                state = 3;
+              } else {
+                state = 1;
+              }
             }
           }
           break;
@@ -716,7 +789,9 @@ public class RectangularArrayFinder extends SceneTransformer {
           units.remove(tmpstmt);
 
           curdim++;
-        } else curstmt = (Stmt) units.getSuccOf(curstmt);
+        } else {
+          curstmt = (Stmt) units.getSuccOf(curstmt);
+        }
       }
     }
   }

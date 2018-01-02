@@ -120,6 +120,7 @@ public interface FlowSet<T> extends Iterable<T> {
    * returns an iterator over the elements of the flowSet. Note that the iterator might be backed,
    * and hence be faster in the creation, than doing <code>toList().iterator()</code>.
    */
+  @Override
   Iterator<T> iterator();
 
   /** Returns an unbacked list of contained objects for this FlowSet. */

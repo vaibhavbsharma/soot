@@ -38,7 +38,9 @@ public class Histogram {
     this.limits = limits;
     results = new int[limits.length + 1];
 
-    for (i = 0; i <= limits.length; ++i) results[i] = 0;
+    for (i = 0; i <= limits.length; ++i) {
+      results[i] = 0;
+    }
   }
 
   public void printResult(PrintStream output) {
@@ -50,8 +52,9 @@ public class Histogram {
     output.println("Samples : " + count);
 
     for (int i = 0; i < results.length; i++) {
-      if (i == 0) output.print("<=" + limits[0] + ": " + results[i]);
-      else if (i == results.length - 1) {
+      if (i == 0) {
+        output.print("<=" + limits[0] + ": " + results[i]);
+      } else if (i == results.length - 1) {
         output.print(">" + limits[limits.length - 1] + ": " + results[i]);
       } else {
         output.print(limits[i - 1] + "< x <=" + limits[i] + ": " + results[i]);
@@ -85,8 +88,9 @@ public class Histogram {
     output.println("Samples : " + count + " (" + other.count + ")");
 
     for (int i = 0; i < results.length; i++) {
-      if (i == 0) output.printf("<= %d: %d (%d)", limits[0], results[i], other.results[i]);
-      else if (i == results.length - 1) {
+      if (i == 0) {
+        output.printf("<= %d: %d (%d)", limits[0], results[i], other.results[i]);
+      } else if (i == results.length - 1) {
         output.printf("> %d: %d (%d)", limits[limits.length - 1], results[i], other.results[i]);
       } else {
         output.printf(
@@ -124,7 +128,9 @@ public class Histogram {
   public void merge(Histogram other) {
     int i;
 
-    for (i = 0; i <= limits.length; ++i) results[i] += other.results[i];
+    for (i = 0; i <= limits.length; ++i) {
+      results[i] += other.results[i];
+    }
 
     count += other.count;
   }
@@ -151,7 +157,9 @@ public class Histogram {
   }
 
   public int getResult(int inx) {
-    if (inx >= limits.length) return 0;
+    if (inx >= limits.length) {
+      return 0;
+    }
 
     return results[inx];
   }

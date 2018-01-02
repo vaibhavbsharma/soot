@@ -39,6 +39,7 @@ public class GTrap extends AbstractTrap {
         Grimp.v().newStmtBox(handlerStmt));
   }
 
+  @Override
   public Object clone() {
     return new GTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
   }

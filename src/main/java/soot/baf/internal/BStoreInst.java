@@ -25,6 +25,9 @@
 
 package soot.baf.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.AbstractJasminClass;
 import soot.Local;
 import soot.Type;
@@ -33,9 +36,6 @@ import soot.ValueBox;
 import soot.baf.InstSwitch;
 import soot.baf.StoreInst;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 
@@ -48,51 +48,63 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
     defBoxes = Collections.singletonList(localBox);
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public Object clone() {
     return new BStoreInst(getOpType(), getLocal());
   }
 
+  @Override
   public int getInMachineCount() {
     return AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public final String getName() {
     return "store";
   }
 
+  @Override
   final String getParameters() {
     return " " + localBox.getValue().toString();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     localBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseStoreInst(this);
   }
 
+  @Override
   public void setLocal(Local l) {
     localBox.setValue(l);
   }
 
+  @Override
   public Local getLocal() {
     return (Local) localBox.getValue();
   }
 
+  @Override
   public List getDefBoxes() {
     return defBoxes;
   }

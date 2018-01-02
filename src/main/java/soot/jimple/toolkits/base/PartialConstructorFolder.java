@@ -25,6 +25,11 @@
 
 package soot.jimple.toolkits.base;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -45,11 +50,6 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class PartialConstructorFolder extends BodyTransformer {
   // public JimpleConstructorFolder( Singletons.Global g ) {}
   // public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
@@ -68,14 +68,16 @@ public class PartialConstructorFolder extends BodyTransformer {
    * This method pushes all newExpr down to be the stmt directly before every invoke of the init
    * only if they are in the types list
    */
+  @Override
   public void internalTransform(Body b, String phaseName, Map<String, String> options) {
     JimpleBody body = (JimpleBody) b;
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Folding Jimple constructors...");
+    }
 
     Chain<Unit> units = body.getUnits();
-    List<Unit> stmtList = new ArrayList<Unit>();
+    List<Unit> stmtList = new ArrayList<>();
     stmtList.addAll(units);
 
     Iterator<Unit> it = stmtList.iterator();
@@ -89,15 +91,21 @@ public class PartialConstructorFolder extends BodyTransformer {
     while (it.hasNext()) {
       Stmt s = (Stmt) it.next();
 
-      if (!(s instanceof AssignStmt)) continue;
+      if (!(s instanceof AssignStmt)) {
+        continue;
+      }
 
       /* this should be generalized to ArrayRefs */
       // only deal with stmts that are an local = newExpr
       Value lhs = ((AssignStmt) s).getLeftOp();
-      if (!(lhs instanceof Local)) continue;
+      if (!(lhs instanceof Local)) {
+        continue;
+      }
 
       Value rhs = ((AssignStmt) s).getRightOp();
-      if (!(rhs instanceof NewExpr)) continue;
+      if (!(rhs instanceof NewExpr)) {
+        continue;
+      }
 
       // check if very next statement is invoke -->
       // this indicates there is no control flow between
@@ -117,7 +125,9 @@ public class PartialConstructorFolder extends BodyTransformer {
       }
 
       // check if new is in the types list - only process these
-      if (!types.contains(rhs.getType())) continue;
+      if (!types.contains(rhs.getType())) {
+        continue;
+      }
 
       List<UnitValueBoxPair> lu = localUses.getUsesOf(s);
       Iterator<UnitValueBoxPair> luIter = lu.iterator();
@@ -125,10 +135,14 @@ public class PartialConstructorFolder extends BodyTransformer {
 
       while (luIter.hasNext()) {
         Unit use = ((luIter.next())).unit;
-        if (!(use instanceof InvokeStmt)) continue;
+        if (!(use instanceof InvokeStmt)) {
+          continue;
+        }
         InvokeStmt is = (InvokeStmt) use;
         if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr)
-            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) continue;
+            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) {
+          continue;
+        }
 
         // make a new one here
         AssignStmt constructStmt =

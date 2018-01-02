@@ -26,6 +26,13 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.Tag;
 import soot.util.Chain;
@@ -33,13 +40,6 @@ import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphConstants;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
-
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -64,8 +64,8 @@ public class PegToDotFile {
   public static int graphtype = UNITGRAPH;
 
   public static boolean isBrief = false;
-  private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
-  private static final Map<Object, String> startNodeToName = new HashMap<Object, String>();
+  private static final Map<Object, String> listNodeName = new HashMap<>();
+  private static final Map<Object, String> startNodeToName = new HashMap<>();
 
   /* in one page or several pages of 8.5x11 */
   public static boolean onepage = true;
@@ -181,7 +181,9 @@ public class PegToDotFile {
             // need to draw these nodes!!!
           } else {
 
-            if (((JPegStmt) node).getName().equals("begin")) firstNode = true;
+            if (((JPegStmt) node).getName().equals("begin")) {
+              firstNode = true;
+            }
             Tag tag = ((JPegStmt) node).getTags().get(0);
             nodeName = makeNodeName(getNodeOrder(nodeindex, tag + " " + node));
             if (((JPegStmt) node).getName().equals("start")) {
@@ -190,8 +192,12 @@ public class PegToDotFile {
             // draw start edge
 
             if (firstNode) {
-              if (startNodeName == null) System.out.println("00000000startNodeName is null ");
-              if (nodeName == null) System.out.println("00000000nodeName is null ");
+              if (startNodeName == null) {
+                System.out.println("00000000startNodeName is null ");
+              }
+              if (nodeName == null) {
+                System.out.println("00000000nodeName is null ");
+              }
               //			DotGraphEdge startThreadEdge = canvas.drawEdge(startNodeName,
               // threadNodeName);
               DotGraphEdge startThreadEdge = canvas.drawEdge(startNodeName, nodeName);

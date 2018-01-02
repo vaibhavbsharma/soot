@@ -19,6 +19,10 @@
 
 package soot.xml;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
@@ -28,10 +32,6 @@ import soot.tagkit.PositionTag;
 import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
-
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Attribute {
 
@@ -52,7 +52,7 @@ public class Attribute {
 
   public void addColor(ColorAttribute ca) {
     if (colors == null) {
-      colors = new ArrayList<ColorAttribute>();
+      colors = new ArrayList<>();
     }
     colors.add(ca);
   }
@@ -138,14 +138,14 @@ public class Attribute {
 
   public void addText(StringAttribute s) {
     if (texts == null) {
-      texts = new ArrayList<StringAttribute>();
+      texts = new ArrayList<>();
     }
     texts.add(s);
   }
 
   public void addLink(LinkAttribute la) {
     if (links == null) {
-      links = new ArrayList<LinkAttribute>();
+      links = new ArrayList<>();
     }
     links.add(la);
   }
@@ -237,6 +237,7 @@ public class Attribute {
     return 0;
   }
 
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
     sb.append(

@@ -19,6 +19,10 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PatchingChain;
@@ -29,24 +33,24 @@ import soot.jbco.IJbcoTransform;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
 
   public static String name = "bb.jbco_bln";
 
+  @Override
   public void outputSummary() {}
 
+  @Override
   public String[] getDependancies() {
     return new String[] {name};
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int idx = 0;
     PatchingChain<Unit> units = b.getUnits();
@@ -61,7 +65,9 @@ public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
           break;
         }
       }
-      if (i instanceof IdentityInst) continue;
+      if (i instanceof IdentityInst) {
+        continue;
+      }
       i.addTag(new LineNumberTag(idx++));
     }
   }

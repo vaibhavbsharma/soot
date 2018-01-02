@@ -45,10 +45,12 @@ class ArrayReferenceNode {
     return l;
   }
 
+  @Override
   public int hashCode() {
     return m.hashCode() + l.hashCode() + 1;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof ArrayReferenceNode) {
       ArrayReferenceNode another = (ArrayReferenceNode) other;
@@ -58,6 +60,7 @@ class ArrayReferenceNode {
     return false;
   }
 
+  @Override
   public String toString() {
     return "[" + m.getSignature() + " : " + l.toString() + "[ ]";
   }

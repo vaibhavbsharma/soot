@@ -35,17 +35,20 @@ public class CollectionFlowUniverse<E> implements FlowUniverse<E> {
   Set<E> elements;
 
   public CollectionFlowUniverse(Collection<? extends E> elements) {
-    this.elements = new HashSet<E>(elements);
+    this.elements = new HashSet<>(elements);
   }
 
+  @Override
   public int size() {
     return elements.size();
   }
 
+  @Override
   public Iterator<E> iterator() {
     return elements.iterator();
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public E[] toArray() {
     return (E[]) elements.toArray();

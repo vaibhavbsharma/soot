@@ -25,11 +25,11 @@
 
 package soot;
 
+import java.util.Map;
+
 import soot.jimple.JimpleBody;
 import soot.options.JJOptions;
 import soot.options.Options;
-
-import java.util.Map;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key
@@ -44,24 +44,33 @@ public class JavaToJimpleBodyPack extends BodyPack {
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
     JJOptions options = new JJOptions(opts);
 
-    if (options.use_original_names())
+    if (options.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jj.lns", "only-stack-locals");
+    }
 
-    if (Options.v().time()) Timers.v().splitTimer.start();
+    if (Options.v().time()) {
+      Timers.v().splitTimer.start();
+    }
 
     PackManager.v().getTransform("jj.ls").apply(b);
 
-    if (Options.v().time()) Timers.v().splitTimer.end();
+    if (Options.v().time()) {
+      Timers.v().splitTimer.end();
+    }
 
     PackManager.v().getTransform("jj.a").apply(b);
     PackManager.v().getTransform("jj.ule").apply(b);
     PackManager.v().getTransform("jj.ne").apply(b);
 
-    if (Options.v().time()) Timers.v().assignTimer.start();
+    if (Options.v().time()) {
+      Timers.v().assignTimer.start();
+    }
 
     PackManager.v().getTransform("jj.tr").apply(b);
 
-    if (Options.v().time()) Timers.v().assignTimer.end();
+    if (Options.v().time()) {
+      Timers.v().assignTimer.end();
+    }
 
     if (options.use_original_names()) {
       PackManager.v().getTransform("jj.ulp").apply(b);
@@ -74,9 +83,12 @@ public class JavaToJimpleBodyPack extends BodyPack {
     // PackManager.v().getTransform( "jj.ct" ).apply( b );
     PackManager.v().getTransform("jj.uce").apply(b);
 
-    if (Options.v().time()) Timers.v().stmtCount += b.getUnits().size();
+    if (Options.v().time()) {
+      Timers.v().stmtCount += b.getUnits().size();
+    }
   }
 
+  @Override
   protected void internalApply(Body b) {
     applyPhaseOptions((JimpleBody) b, PhaseOptions.v().getPhaseOptions(getPhaseName()));
   }

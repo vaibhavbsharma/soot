@@ -20,6 +20,11 @@
 
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -41,11 +46,6 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public abstract class DexTransformer extends BodyTransformer {
 
   /**
@@ -59,9 +59,9 @@ public abstract class DexTransformer extends BodyTransformer {
    */
   protected List<Unit> collectDefinitionsWithAliases(
       Local l, LocalDefs localDefs, LocalUses localUses, Body body) {
-    Set<Local> seenLocals = new HashSet<Local>();
-    List<Local> newLocals = new ArrayList<Local>();
-    List<Unit> defs = new ArrayList<Unit>();
+    Set<Local> seenLocals = new HashSet<>();
+    List<Local> newLocals = new ArrayList<>();
+    List<Unit> defs = new ArrayList<>();
     newLocals.add(l);
     seenLocals.add(l);
 
@@ -70,7 +70,9 @@ public abstract class DexTransformer extends BodyTransformer {
       for (Unit u : collectDefinitions(local, localDefs)) {
         if (u instanceof AssignStmt) {
           Value r = ((AssignStmt) u).getRightOp();
-          if (r instanceof Local && seenLocals.add((Local) r)) newLocals.add((Local) r);
+          if (r instanceof Local && seenLocals.add((Local) r)) {
+            newLocals.add((Local) r);
+          }
         }
         defs.add(u);
         //
@@ -81,8 +83,9 @@ public abstract class DexTransformer extends BodyTransformer {
             AssignStmt assignStmt = ((AssignStmt) unit);
             Value right = assignStmt.getRightOp();
             Value left = assignStmt.getLeftOp();
-            if (right == local && left instanceof Local && seenLocals.add((Local) left))
+            if (right == local && left instanceof Local && seenLocals.add((Local) left)) {
               newLocals.add((Local) left);
+            }
           }
         }
         //
@@ -131,8 +134,10 @@ public abstract class DexTransformer extends BodyTransformer {
     Type aType = null;
     int nullDefCount = 0;
     for (Unit baseDef : defsOfaBaseList) {
-      if (alreadyVisitedDefs.contains(baseDef)) continue;
-      Set<Unit> newVisitedDefs = new HashSet<Unit>(alreadyVisitedDefs);
+      if (alreadyVisitedDefs.contains(baseDef)) {
+        continue;
+      }
+      Set<Unit> newVisitedDefs = new HashSet<>(alreadyVisitedDefs);
       newVisitedDefs.add(baseDef);
 
       // baseDef is either an assignment statement or an identity
@@ -251,7 +256,9 @@ public abstract class DexTransformer extends BodyTransformer {
             "ERROR: base local def must be AssignStmt or IdentityStmt! " + baseDef);
       }
 
-      if (aType != null) break;
+      if (aType != null) {
+        break;
+      }
     } // loop
 
     if (depth == 0 && aType == null) {
@@ -261,6 +268,8 @@ public abstract class DexTransformer extends BodyTransformer {
         throw new RuntimeException(
             "ERROR: could not find type of array from statement '" + arrayStmt + "'");
       }
-    } else return aType;
+    } else {
+      return aType;
+    }
   }
 }

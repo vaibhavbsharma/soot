@@ -1,5 +1,12 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
@@ -10,13 +17,6 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 // StartJoinFinder written by Richard L. Halpert, 2006-12-04
 // This can be used as an alternative to PegGraph and PegChain
@@ -32,13 +32,13 @@ public class StartJoinFinder {
   Map<Stmt, SootMethod> startToContainingMethod;
 
   public StartJoinFinder(CallGraph callGraph, PAG pag) {
-    startStatements = new HashSet<Stmt>();
-    joinStatements = new HashSet<Stmt>();
+    startStatements = new HashSet<>();
+    joinStatements = new HashSet<>();
 
-    startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
-    startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
-    startToJoin = new HashMap<Stmt, Stmt>();
-    startToContainingMethod = new HashMap<Stmt, SootMethod>();
+    startToRunMethods = new HashMap<>();
+    startToAllocNodes = new HashMap<>();
+    startToJoin = new HashMap<>();
+    startToContainingMethod = new HashMap<>();
 
     Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     while (runAnalysisClassesIt.hasNext()) {
@@ -53,8 +53,9 @@ public class StartJoinFinder {
         Iterator edgesIt = callGraph.edgesOutOf(method);
         while (edgesIt.hasNext()) {
           SootMethod target = ((Edge) edgesIt.next()).tgt();
-          if (target.getName().equals("start") || target.getName().equals("run"))
+          if (target.getName().equals("start") || target.getName().equals("run")) {
             mayHaveStartStmt = true;
+          }
         }
 
         if (mayHaveStartStmt && method.isConcrete()) {

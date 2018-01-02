@@ -1003,8 +1003,11 @@ class ByteCode {
 
     i.label = index;
 
-    if (isWide) i.parse(bc, index + 2);
-    else i.parse(bc, index + 1);
+    if (isWide) {
+      i.parse(bc, index + 2);
+    } else {
+      i.parse(bc, index + 1);
+    }
 
     return i;
   }
@@ -1075,10 +1078,15 @@ class ByteCode {
     String pref;
     i = startinst;
     while (j != null) {
-      if (i > 999) pref = "";
-      else if (i > 99) pref = " ";
-      else if (i > 9) pref = "  ";
-      else pref = "   ";
+      if (i > 999) {
+        pref = "";
+      } else if (i > 99) {
+        pref = " ";
+      } else if (i > 9) {
+        pref = "  ";
+      } else {
+        pref = "   ";
+      }
       G.v().out.print(pref + i + ": ");
       G.v().out.println(j.toString(constant_pool));
       i = j.nextOffset(i);
@@ -1100,9 +1108,15 @@ class ByteCode {
   private Instruction locateInstr(int index, int mini, int maxi) {
     int mid = (maxi - mini) / 2 + mini;
 
-    if (mini > maxi) return null;
-    if (instructions[mid].label == index) return instructions[mid];
-    if (instructions[mid].label > index) return locateInstr(index, mini, mid - 1);
+    if (mini > maxi) {
+      return null;
+    }
+    if (instructions[mid].label == index) {
+      return instructions[mid];
+    }
+    if (instructions[mid].label > index) {
+      return locateInstr(index, mini, mid - 1);
+    }
     return locateInstr(index, mid + 1, maxi);
   }
 

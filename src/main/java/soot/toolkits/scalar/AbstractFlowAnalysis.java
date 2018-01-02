@@ -25,13 +25,13 @@
 
 package soot.toolkits.scalar;
 
-import soot.options.Options;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.interaction.InteractionHandler;
-
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+
+import soot.options.Options;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.interaction.InteractionHandler;
 
 /**
  * An abstract class providing a metaframework for carrying out dataflow analysis. This class
@@ -53,7 +53,7 @@ public abstract class AbstractFlowAnalysis<N, A> {
 
   /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
   public AbstractFlowAnalysis(DirectedGraph<N> graph) {
-    unitToBeforeFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
+    unitToBeforeFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
     this.graph = graph;
     if (Options.v().interactive_mode()) {
       InteractionHandler.v().handleCfgEvent(graph);

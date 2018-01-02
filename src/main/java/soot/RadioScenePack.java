@@ -19,7 +19,6 @@
 
 package soot;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -32,14 +31,16 @@ public class RadioScenePack extends ScenePack {
     super(name);
   }
 
+  @Override
   protected void internalApply() {
-    LinkedList<Transform> enableds = new LinkedList<Transform>();
+    LinkedList<Transform> enableds = new LinkedList<>();
 
-    for (Iterator<Transform> tIt = this.iterator(); tIt.hasNext(); ) {
+    for (Transform t : this) {
 
-      final Transform t = tIt.next();
       Map<String, String> opts = PhaseOptions.v().getPhaseOptions(t);
-      if (!PhaseOptions.getBoolean(opts, "enabled")) continue;
+      if (!PhaseOptions.getBoolean(opts, "enabled")) {
+        continue;
+      }
       enableds.add(t);
     }
     if (enableds.size() == 0) {
@@ -68,16 +69,19 @@ public class RadioScenePack extends ScenePack {
     }
   }
 
+  @Override
   public void add(Transform t) {
     super.add(t);
     checkEnabled(t);
   }
 
+  @Override
   public void insertAfter(Transform t, String phaseName) {
     super.insertAfter(t, phaseName);
     checkEnabled(t);
   }
 
+  @Override
   public void insertBefore(Transform t, String phaseName) {
     super.insertBefore(t, phaseName);
     checkEnabled(t);

@@ -18,6 +18,11 @@
  */
 package soot.toolkits.graph.pdg;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
@@ -28,12 +33,6 @@ import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.MHGPostDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This class represents a control flow graph which behaves like an ExceptionalUnitGraph and
@@ -58,15 +57,15 @@ public class EnhancedUnitGraph extends UnitGraph {
     super(body);
 
     // try2nop = new Hashtable<GuardedBlock, Unit>();
-    try2nop = new Hashtable<Unit, Unit>();
-    handler2header = new Hashtable<Unit, Unit>();
+    try2nop = new Hashtable<>();
+    handler2header = new Hashtable<>();
 
     // there could be a maximum of traps.size() of nop
     // units added to the CFG plus potentially START/STOP nodes.
     int size = unitChain.size() + body.getTraps().size() + 2;
 
-    unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-    unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+    unitToSuccs = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToPreds = new HashMap<>(size * 2 + 1, 0.7f);
 
     /*
      * Compute the head and tails at each phase because other phases might
@@ -89,14 +88,14 @@ public class EnhancedUnitGraph extends UnitGraph {
   protected void handleMultipleReturns() {
     if (this.getTails().size() > 1) {
       Unit stop = new ExitStmt();
-      List<Unit> predsOfstop = new ArrayList<Unit>();
+      List<Unit> predsOfstop = new ArrayList<>();
 
       for (Unit tail : this.getTails()) {
         predsOfstop.add(tail);
 
         List<Unit> tailSuccs = this.unitToSuccs.get(tail);
         if (tailSuccs == null) {
-          tailSuccs = new ArrayList<Unit>();
+          tailSuccs = new ArrayList<>();
           this.unitToSuccs.put(tail, tailSuccs);
         }
         tailSuccs.add(stop);
@@ -106,7 +105,9 @@ public class EnhancedUnitGraph extends UnitGraph {
       this.unitToSuccs.put(stop, new ArrayList<Unit>());
 
       Chain<Unit> units = body.getUnits().getNonPatchingChain();
-      if (!units.contains(stop)) units.addLast(stop);
+      if (!units.contains(stop)) {
+        units.addLast(stop);
+      }
     }
   }
 
@@ -120,15 +121,19 @@ public class EnhancedUnitGraph extends UnitGraph {
 
     while (this.getHeads().size() > 1) {
       for (Unit head : this.getHeads()) {
-        if (trueHead == head) continue;
+        if (trueHead == head) {
+          continue;
+        }
 
         this.unitToPreds.remove(head);
         for (Unit succ : this.unitToSuccs.get(head)) {
-          List<Unit> tobeRemoved = new ArrayList<Unit>();
+          List<Unit> tobeRemoved = new ArrayList<>();
           List<Unit> predOfSuccs = this.unitToPreds.get(succ);
           if (predOfSuccs != null) {
             for (Unit pred : predOfSuccs) {
-              if (pred == head) tobeRemoved.add(pred);
+              if (pred == head) {
+                tobeRemoved.add(pred);
+              }
             }
             predOfSuccs.removeAll(tobeRemoved);
           }
@@ -136,7 +141,9 @@ public class EnhancedUnitGraph extends UnitGraph {
 
         this.unitToSuccs.remove(head);
 
-        if (units.contains(head)) units.remove(head);
+        if (units.contains(head)) {
+          units.remove(head);
+        }
       }
 
       this.buildHeadsAndTails();
@@ -144,20 +151,20 @@ public class EnhancedUnitGraph extends UnitGraph {
   }
 
   protected void handleExplicitThrowEdges() {
-    MHGDominatorTree<Unit> dom = new MHGDominatorTree<Unit>(new MHGDominatorsFinder<Unit>(this));
-    MHGDominatorTree<Unit> pdom =
-        new MHGDominatorTree<Unit>(new MHGPostDominatorsFinder<Unit>(this));
+    MHGDominatorTree<Unit> dom = new MHGDominatorTree<>(new MHGDominatorsFinder<>(this));
+    MHGDominatorTree<Unit> pdom = new MHGDominatorTree<>(new MHGPostDominatorsFinder<>(this));
 
     // this keeps a map from the entry of a try-catch-block to a selected
     // merge point
-    Hashtable<Unit, Unit> x2mergePoint = new Hashtable<Unit, Unit>();
+    Hashtable<Unit, Unit> x2mergePoint = new Hashtable<>();
 
     List<Unit> tails = this.getTails();
 
     TailsLoop:
-    for (Iterator<Unit> itr = tails.iterator(); itr.hasNext(); ) {
-      Unit tail = itr.next();
-      if (!(tail instanceof ThrowStmt)) continue;
+    for (Unit tail : tails) {
+      if (!(tail instanceof ThrowStmt)) {
+        continue;
+      }
 
       DominatorNode<Unit> x = dom.getDode(tail);
       DominatorNode<Unit> parentOfX = dom.getParentOf(x);
@@ -171,10 +178,11 @@ public class EnhancedUnitGraph extends UnitGraph {
         parentOfX = dom.getParentOf(x);
 
         // If parent is null we must be at the head of the graph
-        if (parentOfX == null)
+        if (parentOfX == null) {
           // throw new
           // RuntimeException("This should never have happened!");
           break;
+        }
 
         xgode = x.getGode();
         xpdomDode = pdom.getDode(xgode);
@@ -182,15 +190,18 @@ public class EnhancedUnitGraph extends UnitGraph {
         parentpdomDode = pdom.getDode(parentXGode);
       }
 
-      if (parentOfX != null) x = parentOfX;
+      if (parentOfX != null) {
+        x = parentOfX;
+      }
 
       xgode = x.getGode();
       xpdomDode = pdom.getDode(xgode);
 
       Unit mergePoint = null;
 
-      if (x2mergePoint.containsKey(xgode)) mergePoint = x2mergePoint.get(xgode);
-      else {
+      if (x2mergePoint.containsKey(xgode)) {
+        mergePoint = x2mergePoint.get(xgode);
+      } else {
         // Now get all the children of x in the dom
 
         List<DominatorNode<Unit>> domChilds = dom.getChildrenOf(x);
@@ -198,8 +209,7 @@ public class EnhancedUnitGraph extends UnitGraph {
         Unit child1god = null;
         Unit child2god = null;
 
-        for (Iterator<DominatorNode<Unit>> domItr = domChilds.iterator(); domItr.hasNext(); ) {
-          DominatorNode<Unit> child = domItr.next();
+        for (DominatorNode<Unit> child : domChilds) {
           Unit childGode = child.getGode();
           DominatorNode<Unit> childpdomDode = pdom.getDode(childGode);
 
@@ -207,7 +217,9 @@ public class EnhancedUnitGraph extends UnitGraph {
           List<Unit> path = this.getExtendedBasicBlockPathBetween(childGode, tail);
 
           // if(dom.isDominatorOf(child, dom.getDode(tail)))
-          if (!(path == null || path.isEmpty())) continue;
+          if (!(path == null || path.isEmpty())) {
+            continue;
+          }
 
           if (pdom.isDominatorOf(childpdomDode, xpdomDode)) {
             mergePoint = child.getGode();
@@ -215,8 +227,11 @@ public class EnhancedUnitGraph extends UnitGraph {
           }
 
           // gather two eligible childs
-          if (child1god == null) child1god = childGode;
-          else if (child2god == null) child2god = childGode;
+          if (child1god == null) {
+            child1god = childGode;
+          } else if (child2god == null) {
+            child2god = childGode;
+          }
         }
 
         if (mergePoint == null) {
@@ -238,8 +253,11 @@ public class EnhancedUnitGraph extends UnitGraph {
 
             DominatorNode<Unit> y = null;
 
-            if (child1god != null) y = pdom.getDode(child1god);
-            else if (child2god != null) y = pdom.getDode(child2god);
+            if (child1god != null) {
+              y = pdom.getDode(child1god);
+            } else if (child2god != null) {
+              y = pdom.getDode(child2god);
+            }
 
             DominatorNode<Unit> initialY = dom.getDode(y.getGode());
             DominatorNode<Unit> yDodeInDom = initialY;
@@ -255,8 +273,11 @@ public class EnhancedUnitGraph extends UnitGraph {
               }
               yDodeInDom = dom.getDode(y.getGode());
             }
-            if (y != null) mergePoint = y.getGode();
-            else mergePoint = initialY.getGode();
+            if (y != null) {
+              mergePoint = y.getGode();
+            } else {
+              mergePoint = initialY.getGode();
+            }
           }
         }
 
@@ -282,7 +303,9 @@ public class EnhancedUnitGraph extends UnitGraph {
           List<Unit> xSucc = this.unitToSuccs.get(x.getGode());
           if (xSucc != null) {
             for (Unit u : xSucc) {
-              if (dom.isDominatorOf(dom.getDode(u), dom.getDode(tail))) continue;
+              if (dom.isDominatorOf(dom.getDode(u), dom.getDode(tail))) {
+                continue;
+              }
 
               DominatorNode<Unit> y = pdom.getDode(u);
 
@@ -302,11 +325,15 @@ public class EnhancedUnitGraph extends UnitGraph {
         }
         // the following happens if the throw is the only exit in the
         // method (even if return stmt is present.)
-        else if (dom.isDominatorOf(dom.getDode(mergePoint), dom.getDode(tail))) continue TailsLoop;
+        else if (dom.isDominatorOf(dom.getDode(mergePoint), dom.getDode(tail))) {
+          continue TailsLoop;
+        }
 
         // turns out that when the method ends with a throw, the control
         // get here.
-        if (mergePoint == null) continue TailsLoop;
+        if (mergePoint == null) {
+          continue TailsLoop;
+        }
 
         x2mergePoint.put(xgode, mergePoint);
       }
@@ -314,7 +341,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> throwSuccs = this.unitToSuccs.get(tail);
       if (throwSuccs == null) {
-        throwSuccs = new ArrayList<Unit>();
+        throwSuccs = new ArrayList<>();
         this.unitToSuccs.put(tail, throwSuccs);
       }
 
@@ -322,7 +349,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> mergePreds = this.unitToPreds.get(mergePoint);
       if (mergePreds == null) {
-        mergePreds = new ArrayList<Unit>();
+        mergePreds = new ArrayList<>();
         this.unitToPreds.put(mergePoint, mergePreds);
       }
       mergePreds.add(tail);
@@ -336,14 +363,14 @@ public class EnhancedUnitGraph extends UnitGraph {
   protected void addAuxiliaryExceptionalEdges() {
 
     // Do some preparation for each trap in the method
-    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
-      Trap trap = trapIt.next();
-
+    for (Trap trap : body.getTraps()) {
       /** Find the real header of this handler block */
       Unit handler = trap.getHandlerUnit();
 
       Unit pred = handler;
-      while (this.unitToPreds.get(pred).size() > 0) pred = this.unitToPreds.get(pred).get(0);
+      while (this.unitToPreds.get(pred).size() > 0) {
+        pred = this.unitToPreds.get(pred).get(0);
+      }
 
       handler2header.put(handler, pred);
       /** ******** */
@@ -359,21 +386,21 @@ public class EnhancedUnitGraph extends UnitGraph {
        */
 
       Unit ehnop;
-      if (try2nop.containsKey(trap.getBeginUnit())) ehnop = try2nop.get(trap.getBeginUnit());
-      else {
+      if (try2nop.containsKey(trap.getBeginUnit())) {
+        ehnop = try2nop.get(trap.getBeginUnit());
+      } else {
         ehnop = new EHNopStmt();
         try2nop.put(trap.getBeginUnit(), ehnop);
       }
     }
 
     // Only add a nop once
-    Hashtable<Unit, Boolean> nop2added = new Hashtable<Unit, Boolean>();
+    Hashtable<Unit, Boolean> nop2added = new Hashtable<>();
 
     // Now actually add the edge
     AddExceptionalEdge:
-    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
+    for (Trap trap : body.getTraps()) {
 
-      Trap trap = trapIt.next();
       Unit b = trap.getBeginUnit();
       Unit handler = trap.getHandlerUnit();
       handler = handler2header.get(handler);
@@ -389,24 +416,31 @@ public class EnhancedUnitGraph extends UnitGraph {
        */
       if (this.unitToPreds.containsKey(handler)) {
         List<Unit> handlerPreds = this.unitToPreds.get(handler);
-        for (Iterator<Unit> preditr = handlerPreds.iterator(); preditr.hasNext(); )
-          if (try2nop.containsValue(preditr.next())) continue AddExceptionalEdge;
+        for (Unit unit : handlerPreds) {
+          if (try2nop.containsValue(unit)) {
+            continue AddExceptionalEdge;
+          }
+        }
 
-      } else continue;
+      } else {
+        continue;
+      }
 
       // GuardedBlock gb = new GuardedBlock(b, e);
       Unit ehnop = try2nop.get(b);
 
       if (!nop2added.containsKey(ehnop)) {
         List<Unit> predsOfB = getPredsOf(b);
-        List<Unit> predsOfehnop = new ArrayList<Unit>(predsOfB);
+        List<Unit> predsOfehnop = new ArrayList<>(predsOfB);
 
         for (Unit a : predsOfB) {
           List<Unit> succsOfA = this.unitToSuccs.get(a);
           if (succsOfA == null) {
-            succsOfA = new ArrayList<Unit>();
+            succsOfA = new ArrayList<>();
             this.unitToSuccs.put(a, succsOfA);
-          } else succsOfA.remove(b);
+          } else {
+            succsOfA.remove(b);
+          }
           succsOfA.add(ehnop);
         }
 
@@ -418,17 +452,19 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> succsOfehnop = this.unitToSuccs.get(ehnop);
       if (succsOfehnop == null) {
-        succsOfehnop = new ArrayList<Unit>();
+        succsOfehnop = new ArrayList<>();
         this.unitToSuccs.put(ehnop, succsOfehnop);
       }
 
-      if (!succsOfehnop.contains(b)) succsOfehnop.add(b);
+      if (!succsOfehnop.contains(b)) {
+        succsOfehnop.add(b);
+      }
 
       succsOfehnop.add(handler);
 
       List<Unit> predsOfhandler = this.unitToPreds.get(handler);
       if (predsOfhandler == null) {
-        predsOfhandler = new ArrayList<Unit>();
+        predsOfhandler = new ArrayList<>();
         this.unitToPreds.put(handler, predsOfhandler);
       }
 
@@ -436,7 +472,9 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       Chain<Unit> units = body.getUnits().getNonPatchingChain();
 
-      if (!units.contains(ehnop)) units.insertBefore(ehnop, b);
+      if (!units.contains(ehnop)) {
+        units.insertBefore(ehnop, b);
+      }
 
       nop2added.put(ehnop, Boolean.TRUE);
     }
@@ -458,6 +496,7 @@ class GuardedBlock {
     this.end = e;
   }
 
+  @Override
   public int hashCode() {
     // Following Joshua Bloch's recipe in "Effective Java", Item 8:
     int result = 17;
@@ -466,6 +505,7 @@ class GuardedBlock {
     return result;
   }
 
+  @Override
   public boolean equals(Object rhs) {
     if (rhs == this) {
       return true;
@@ -487,14 +527,17 @@ class GuardedBlock {
 class EHNopStmt extends JNopStmt {
   public EHNopStmt() {}
 
+  @Override
   public Object clone() {
     return new EHNopStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
@@ -509,14 +552,17 @@ class EHNopStmt extends JNopStmt {
 class EntryStmt extends JNopStmt {
   public EntryStmt() {}
 
+  @Override
   public Object clone() {
     return new EntryStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
@@ -531,14 +577,17 @@ class EntryStmt extends JNopStmt {
 class ExitStmt extends JNopStmt {
   public ExitStmt() {}
 
+  @Override
   public Object clone() {
     return new ExitStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

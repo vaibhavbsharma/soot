@@ -19,6 +19,12 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Value;
 import soot.dava.internal.AST.ASTAggregatedCondition;
 import soot.dava.internal.AST.ASTBinaryCondition;
@@ -33,12 +39,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.jimple.ConditionExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class ForLoopCreationHelper {
 
@@ -70,7 +70,7 @@ public class ForLoopCreationHelper {
   public ForLoopCreationHelper(ASTStatementSequenceNode stmtSeqNode, ASTWhileNode whileNode) {
     this.stmtSeqNode = stmtSeqNode;
     this.whileNode = whileNode;
-    varToStmtMap = new HashMap<String, Integer>();
+    varToStmtMap = new HashMap<>();
   }
 
   /*
@@ -81,7 +81,7 @@ public class ForLoopCreationHelper {
    * The new body is then returned;
    */
   public List<Object> createNewBody(List<Object> oldSubBody, int nodeNumber) {
-    List<Object> newSubBody = new ArrayList<Object>();
+    List<Object> newSubBody = new ArrayList<>();
 
     if (oldSubBody.size() <= nodeNumber) {
       // something is wrong since the oldSubBody has lesser nodes than
@@ -99,9 +99,13 @@ public class ForLoopCreationHelper {
     // check to see that the next is a stmtseq and the one afteris while
     // node
     ASTNode temp = (ASTNode) oldIt.next();
-    if (!(temp instanceof ASTStatementSequenceNode)) return null;
+    if (!(temp instanceof ASTStatementSequenceNode)) {
+      return null;
+    }
     temp = (ASTNode) oldIt.next();
-    if (!(temp instanceof ASTWhileNode)) return null;
+    if (!(temp instanceof ASTWhileNode)) {
+      return null;
+    }
 
     // add new stmtseqnode to the newSubBody
     if (newStmtSeqNode != null) {
@@ -135,7 +139,7 @@ public class ForLoopCreationHelper {
       return null;
     }
 
-    List<String> toReturn = new ArrayList<String>();
+    List<String> toReturn = new ArrayList<>();
 
     int stmtNum = 0;
     for (AugmentedStmt as : stmtSeqNode.getStatements()) {
@@ -147,8 +151,8 @@ public class ForLoopCreationHelper {
         toReturn.add(left.toString());
         varToStmtMap.put(left.toString(), new Integer(stmtNum));
       } else {
-        toReturn = new ArrayList<String>();
-        varToStmtMap = new HashMap<String, Integer>();
+        toReturn = new ArrayList<>();
+        varToStmtMap = new HashMap<>();
       }
       stmtNum++;
     } // going through all statements
@@ -170,7 +174,7 @@ public class ForLoopCreationHelper {
   }
 
   private List<String> getCond(ASTCondition cond) {
-    List<String> toReturn = new ArrayList<String>();
+    List<String> toReturn = new ArrayList<>();
 
     if (cond instanceof ASTUnaryCondition) {
       toReturn.add(cond.toString());
@@ -187,7 +191,7 @@ public class ForLoopCreationHelper {
 
   private List<String> getCommonVars(List<String> defs, List<String> condUses) {
 
-    List<String> toReturn = new ArrayList<String>();
+    List<String> toReturn = new ArrayList<>();
     Iterator<String> defIt = defs.iterator();
 
     while (defIt.hasNext()) {
@@ -290,7 +294,7 @@ public class ForLoopCreationHelper {
 
   private List<AugmentedStmt> getUpdate(
       List<String> defs, List<String> condUses, List<String> commonUses) {
-    List<AugmentedStmt> toReturn = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> toReturn = new ArrayList<>();
 
     // most naive approach
     List<Object> subBodies = whileNode.get_SubBodies();
@@ -402,7 +406,7 @@ public class ForLoopCreationHelper {
       }
     }
 
-    List<AugmentedStmt> stmts = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> stmts = new ArrayList<>();
 
     List<AugmentedStmt> statements = stmtSeqNode.getStatements();
     Iterator<AugmentedStmt> stmtIt = statements.iterator();
@@ -419,7 +423,7 @@ public class ForLoopCreationHelper {
       newStmtSeqNode = null;
     }
 
-    List<AugmentedStmt> init = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> init = new ArrayList<>();
     while (stmtIt.hasNext()) {
       init.add(stmtIt.next());
     }

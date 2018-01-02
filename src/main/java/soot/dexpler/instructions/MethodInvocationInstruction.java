@@ -24,11 +24,20 @@
 
 package soot.dexpler.instructions;
 
+import static soot.dexpler.Util.dottedClassName;
+import static soot.dexpler.Util.isFloatLike;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.MethodReference;
+
 import soot.Local;
 import soot.Modifier;
 import soot.RefType;
@@ -46,14 +55,6 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static soot.dexpler.Util.dottedClassName;
-import static soot.dexpler.Util.isFloatLike;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction
     implements DanglingInstruction {
@@ -116,15 +117,18 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   @Override
   public Set<Type> introducedTypes() {
-    Set<Type> types = new HashSet<Type>();
+    Set<Type> types = new HashSet<>();
     MethodReference method =
         (MethodReference) (((ReferenceInstruction) instruction).getReference());
 
     types.add(DexType.toSoot(method.getDefiningClass()));
     types.add(DexType.toSoot(method.getReturnType()));
     List<? extends CharSequence> paramTypes = method.getParameterTypes();
-    if (paramTypes != null)
-      for (CharSequence type : paramTypes) types.add(DexType.toSoot(type.toString()));
+    if (paramTypes != null) {
+      for (CharSequence type : paramTypes) {
+        types.add(DexType.toSoot(type.toString()));
+      }
+    }
 
     return types;
   }
@@ -147,7 +151,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     List<? extends CharSequence> paramTypes = item.getParameterTypes();
     List<Integer> regs = getUsedRegistersNums();
-    if (paramTypes == null) return false;
+    if (paramTypes == null) {
+      return false;
+    }
 
     for (int i = 0, j = 0; i < regs.size(); i++, j++) {
       if (!isStatic && i == 0) {
@@ -155,9 +161,12 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         continue;
       }
 
-      if (regs.get(i) == register && isFloatLike(DexType.toSoot(paramTypes.get(j).toString())))
+      if (regs.get(i) == register && isFloatLike(DexType.toSoot(paramTypes.get(j).toString()))) {
         return true;
-      if (DexType.isWide(paramTypes.get(j).toString())) i++;
+      }
+      if (DexType.isWide(paramTypes.get(j).toString())) {
+        i++;
+      }
     }
     return false;
   }
@@ -174,10 +183,14 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     List<? extends CharSequence> paramTypes = item.getParameterTypes();
     List<Integer> regs = getUsedRegistersNums();
-    if (paramTypes == null) return false;
+    if (paramTypes == null) {
+      return false;
+    }
 
     // we call a method on the register
-    if (!isStatic && regs.get(0) == register) return true;
+    if (!isStatic && regs.get(0) == register) {
+      return true;
+    }
 
     // we call a method with register as a reftype paramter
     for (int i = 0, j = 0; i < regs.size(); i++, j++) {
@@ -187,8 +200,12 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
       }
 
       if (regs.get(i) == register
-          && (DexType.toSoot(paramTypes.get(j).toString()) instanceof RefType)) return true;
-      if (DexType.isWide(paramTypes.get(j).toString())) i++;
+          && (DexType.toSoot(paramTypes.get(j).toString()) instanceof RefType)) {
+        return true;
+      }
+      if (DexType.isWide(paramTypes.get(j).toString())) {
+        i++;
+      }
     }
     return false;
   }
@@ -209,7 +226,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * @param invType The invocation type
    */
   private SootMethodRef getSootMethodRef(InvocationType invType) {
-    if (methodRef != null) return methodRef;
+    if (methodRef != null) {
+      return methodRef;
+    }
 
     MethodReference mItem = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     String tItem = mItem.getDefiningClass();
@@ -222,15 +241,19 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     }
 
     SootClass sc = SootResolver.v().makeClassRef(className);
-    if (invType == InvocationType.Interface && sc.isPhantom())
+    if (invType == InvocationType.Interface && sc.isPhantom()) {
       sc.setModifiers(sc.getModifiers() | Modifier.INTERFACE);
+    }
     String methodName = mItem.getName();
 
     Type returnType = DexType.toSoot(mItem.getReturnType());
-    List<Type> parameterTypes = new ArrayList<Type>();
+    List<Type> parameterTypes = new ArrayList<>();
     List<? extends CharSequence> paramTypes = mItem.getParameterTypes();
-    if (paramTypes != null)
-      for (CharSequence type : paramTypes) parameterTypes.add(DexType.toSoot(type.toString()));
+    if (paramTypes != null) {
+      for (CharSequence type : paramTypes) {
+        parameterTypes.add(DexType.toSoot(type.toString()));
+      }
+    }
 
     methodRef =
         Scene.v()
@@ -263,7 +286,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     MethodReference item = getTargetMethodReference();
     List<? extends CharSequence> paramTypes = item.getParameterTypes();
 
-    List<Local> parameters = new ArrayList<Local>();
+    List<Local> parameters = new ArrayList<>();
     List<Integer> regs = getUsedRegistersNums();
 
     // i: index for register
@@ -292,10 +315,11 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * @return a list of register indices
    */
   protected List<Integer> getUsedRegistersNums() {
-    if (instruction instanceof Instruction35c)
+    if (instruction instanceof Instruction35c) {
       return getUsedRegistersNums((Instruction35c) instruction);
-    else if (instruction instanceof Instruction3rc)
+    } else if (instruction instanceof Instruction3rc) {
       return getUsedRegistersNums((Instruction3rc) instruction);
+    }
     throw new RuntimeException(
         "Instruction is neither a InvokeInstruction nor a InvokeRangeInstruction");
   }

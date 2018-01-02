@@ -1,5 +1,14 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InstanceInvokeExpr;
@@ -13,15 +22,6 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
 // This code should be treated as beta-quality code.
@@ -34,7 +34,7 @@ import java.util.Set;
 // -Richard L. Halpert, 2006-11-30
 
 public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> {
-  Set<Unit> multiRunStatements = new HashSet<Unit>();
+  Set<Unit> multiRunStatements = new HashSet<>();
 
   protected Map<Object, Integer> nodeToIndex;
   protected int lastIndex = 0;
@@ -44,7 +44,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
       UnitGraph g, SootMethod sm, Set<SootMethod> multiCalledMethods, CallGraph cg) {
     super(g);
 
-    nodeToIndex = new HashMap<Object, Integer>();
+    nodeToIndex = new HashMap<>();
 
     //      System.out.println("===entering MultiObjectAllocSites==");
     doAnalysis();
@@ -64,7 +64,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
         InvokeExpr invokeExpr = stmt.getInvokeExpr();
 
-        List<SootMethod> targetList = new ArrayList<SootMethod>();
+        List<SootMethod> targetList = new ArrayList<>();
         SootMethod method = invokeExpr.getMethod();
         if (invokeExpr instanceof StaticInvokeExpr) {
           targetList.add(method);
@@ -90,6 +90,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
   //	STEP 4: Is the merge operator union or intersection?
   //	UNION
+  @Override
   protected void merge(BitSet in1, BitSet in2, BitSet out) {
     out.clear();
     out.or(in1);
@@ -99,6 +100,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
   //	STEP 5: Define flow equations.
   //	in(s) = ( out(s) minus defs(s) ) union uses(s)
   //
+  @Override
   protected void flowThrough(BitSet in, Unit unit, BitSet out) {
     out.clear();
     out.or(in);
@@ -115,6 +117,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
   }
 
+  @Override
   protected void copy(BitSet source, BitSet dest) {
     dest.clear();
     dest.or(source);
@@ -125,10 +128,12 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
   //
   //	start node:              empty set
   //	initial approximation:   empty set
+  @Override
   protected BitSet entryInitialFlow() {
     return new BitSet();
   }
 
+  @Override
   protected BitSet newInitialFlow() {
     return new BitSet();
   }

@@ -25,6 +25,16 @@
 
 package soot.jimple.parser;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackReader;
+import java.util.HashMap;
+
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -36,16 +46,6 @@ import soot.jimple.parser.node.Start;
 import soot.jimple.parser.parser.Parser;
 import soot.jimple.parser.parser.ParserException;
 import soot.util.EscapedReader;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackReader;
-import java.util.HashMap;
 
 /** Provides a test-driver for the Jimple parser. */
 @Deprecated
@@ -81,8 +81,9 @@ public class Parse {
     }
 
     Walker w;
-    if (sc == null) w = new Walker(null);
-    else {
+    if (sc == null) {
+      w = new Walker(null);
+    } else {
       w = new BodyExtractorWalker(sc, null, new HashMap<SootMethod, JimpleBody>());
     }
 
@@ -107,11 +108,15 @@ public class Parse {
       if (arg.startsWith("-")) {
         arg = arg.substring(1);
         if (arg.equals("d")) {
-        } else if (arg.equals("v")) verbose = true;
+        } else if (arg.equals("v")) {
+          verbose = true;
+        }
       } else {
 
         try {
-          if (verbose) G.v().out.println(" ... looking for " + arg);
+          if (verbose) {
+            G.v().out.println(" ... looking for " + arg);
+          }
           inFile = new FileInputStream(arg);
         } catch (FileNotFoundException e) {
           if (arg.endsWith(EXT)) {
@@ -120,7 +125,9 @@ public class Parse {
           }
           arg = arg + EXT;
           try {
-            if (verbose) G.v().out.println(" ... looking for " + arg);
+            if (verbose) {
+              G.v().out.println(" ... looking for " + arg);
+            }
             inFile = new BufferedInputStream(new FileInputStream(arg));
           } catch (FileNotFoundException ee) {
             G.v().out.println(" *** can't find " + arg);

@@ -19,13 +19,13 @@
 
 package soot.toolkits.astmetrics;
 
+import java.util.Iterator;
+
 import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
 import soot.G;
-
-import java.util.Iterator;
 
 public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
   polyglot.ast.Node astNode;
@@ -39,6 +39,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
   /*
    * Taking care of the change in classes within a polyglot ast
    */
+  @Override
   public final NodeVisitor enter(Node n) {
     if (n instanceof ClassDecl) {
       className = ((ClassDecl) n).name();
@@ -54,9 +55,12 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
    * This is done by invoking the addMetrics abstract method
    */
 
+  @Override
   public final Node leave(Node parent, Node old, Node n, NodeVisitor v) {
     if (n instanceof ClassDecl) {
-      if (className == null) throw new RuntimeException("className is null");
+      if (className == null) {
+        throw new RuntimeException("className is null");
+      }
 
       System.out.println("Done with class " + className);
 
@@ -76,6 +80,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
    * Should be used to execute the traversal which will find the
    * metric being calculated
    */
+  @Override
   public final void execute() {
     astNode.visit(this);
     // Testing testing testing
@@ -93,7 +98,9 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
    * otherwise creates new adds to globals metric list and returns that
    */
   public final ClassData getClassData() {
-    if (className == null) throw new RuntimeException("className is null");
+    if (className == null) {
+      throw new RuntimeException("className is null");
+    }
 
     Iterator<ClassData> it = G.v().ASTMetricsData.iterator();
     while (it.hasNext()) {

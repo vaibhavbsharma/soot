@@ -20,14 +20,14 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.AbstractUnit;
 import soot.UnitPrinter;
 import soot.dava.toolkits.base.AST.ASTAnalysis;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public abstract class ASTNode extends AbstractUnit {
   public static final String TAB = "    ", NEWLINE = "\n";
@@ -35,9 +35,10 @@ public abstract class ASTNode extends AbstractUnit {
   protected List<Object> subBodies;
 
   public ASTNode() {
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
   }
 
+  @Override
   public abstract void toString(UnitPrinter up);
 
   protected void body_toString(UnitPrinter up, List<Object> body) {
@@ -45,7 +46,9 @@ public abstract class ASTNode extends AbstractUnit {
     while (it.hasNext()) {
       ((ASTNode) it.next()).toString(up);
 
-      if (it.hasNext()) up.newline();
+      if (it.hasNext()) {
+        up.newline();
+      }
     }
   }
 
@@ -56,7 +59,9 @@ public abstract class ASTNode extends AbstractUnit {
     while (it.hasNext()) {
       b.append(it.next().toString());
 
-      if (it.hasNext()) b.append(NEWLINE);
+      if (it.hasNext()) {
+        b.append(NEWLINE);
+      }
     }
 
     return b.toString();
@@ -74,19 +79,26 @@ public abstract class ASTNode extends AbstractUnit {
       Object subBody = sbit.next();
       Iterator it = null;
 
-      if (this instanceof ASTTryNode) it = ((List) ((ASTTryNode.container) subBody).o).iterator();
-      else it = ((List) subBody).iterator();
+      if (this instanceof ASTTryNode) {
+        it = ((List) ((ASTTryNode.container) subBody).o).iterator();
+      } else {
+        it = ((List) subBody).iterator();
+      }
 
-      while (it.hasNext()) ((ASTNode) it.next()).perform_Analysis(a);
+      while (it.hasNext()) {
+        ((ASTNode) it.next()).perform_Analysis(a);
+      }
     }
 
     a.analyseASTNode(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

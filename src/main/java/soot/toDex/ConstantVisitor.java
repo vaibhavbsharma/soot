@@ -5,6 +5,7 @@ import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
+
 import soot.jimple.AbstractConstantSwitch;
 import soot.jimple.ClassConstant;
 import soot.jimple.DoubleConstant;
@@ -52,22 +53,26 @@ class ConstantVisitor extends AbstractConstantSwitch {
     this.origStmt = stmt;
   }
 
+  @Override
   public void defaultCase(Object o) {
     // const* opcodes not used since there seems to be no point in doing so:
     // CONST_HIGH16, CONST_WIDE_HIGH16
     throw new Error("unknown Object (" + o.getClass() + ") as Constant: " + o);
   }
 
+  @Override
   public void caseStringConstant(StringConstant s) {
     StringReference ref = new ImmutableStringReference(s.value);
     stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, ref), origStmt);
   }
 
+  @Override
   public void caseClassConstant(ClassConstant c) {
     TypeReference referencedClass = new ImmutableTypeReference(c.getValue());
     stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass), origStmt);
   }
 
+  @Override
   public void caseLongConstant(LongConstant l) {
     long constant = l.value;
     stmtV.addInsn(buildConstWideInsn(constant), origStmt);
@@ -83,28 +88,34 @@ class ConstantVisitor extends AbstractConstantSwitch {
     }
   }
 
+  @Override
   public void caseDoubleConstant(DoubleConstant d) {
     long longBits = Double.doubleToLongBits(d.value);
     stmtV.addInsn(buildConstWideInsn(longBits), origStmt);
   }
 
+  @Override
   public void caseFloatConstant(FloatConstant f) {
     int intBits = Float.floatToIntBits(f.value);
     stmtV.addInsn(buildConstInsn(intBits), origStmt);
   }
 
   private Insn buildConstInsn(int literal) {
-    if (SootToDexUtils.fitsSigned4(literal))
+    if (SootToDexUtils.fitsSigned4(literal)) {
       return new Insn11n(Opcode.CONST_4, destinationReg, (byte) literal);
-    else if (SootToDexUtils.fitsSigned16(literal))
+    } else if (SootToDexUtils.fitsSigned16(literal)) {
       return new Insn21s(Opcode.CONST_16, destinationReg, (short) literal);
-    else return new Insn31i(Opcode.CONST, destinationReg, literal);
+    } else {
+      return new Insn31i(Opcode.CONST, destinationReg, literal);
+    }
   }
 
+  @Override
   public void caseIntConstant(IntConstant i) {
     stmtV.addInsn(buildConstInsn(i.value), origStmt);
   }
 
+  @Override
   public void caseNullConstant(NullConstant v) {
     // dex bytecode spec says: "In terms of bitwise representation, (Object)
     // null == (int) 0."

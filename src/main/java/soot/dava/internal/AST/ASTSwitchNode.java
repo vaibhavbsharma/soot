@@ -20,6 +20,11 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
@@ -29,11 +34,6 @@ import soot.dava.toolkits.base.AST.ASTWalker;
 import soot.dava.toolkits.base.AST.TryContentsFinder;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
 import soot.jimple.Jimple;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class ASTSwitchNode extends ASTLabeledNode {
   private ValueBox keyBox;
@@ -55,7 +55,9 @@ public class ASTSwitchNode extends ASTLabeledNode {
     while (it.hasNext()) {
       List body = index2BodyList.get(it.next());
 
-      if (body != null) subBodies.add(body);
+      if (body != null) {
+        subBodies.add(body);
+      }
     }
   }
 
@@ -74,12 +76,14 @@ public class ASTSwitchNode extends ASTLabeledNode {
   public void replaceIndex2BodyList(Map<Object, List<Object>> index2BodyList) {
     this.index2BodyList = index2BodyList;
 
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     Iterator<Object> it = indexList.iterator();
     while (it.hasNext()) {
       List body = index2BodyList.get(it.next());
 
-      if (body != null) subBodies.add(body);
+      if (body != null) {
+        subBodies.add(body);
+      }
     }
   }
 
@@ -95,10 +99,12 @@ public class ASTSwitchNode extends ASTLabeledNode {
     this.keyBox = Jimple.v().newRValueBox(key);
   }
 
+  @Override
   public Object clone() {
     return new ASTSwitchNode(get_Label(), get_Key(), indexList, index2BodyList);
   }
 
+  @Override
   public void perform_Analysis(ASTAnalysis a) {
     ASTWalker.v().walk_value(a, get_Key());
 
@@ -109,6 +115,7 @@ public class ASTSwitchNode extends ASTLabeledNode {
     perform_AnalysisOnSubBodies(a);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -129,8 +136,9 @@ public class ASTSwitchNode extends ASTLabeledNode {
 
       up.incIndent();
 
-      if (index instanceof String) up.literal("default");
-      else {
+      if (index instanceof String) {
+        up.literal("default");
+      } else {
         up.literal("case");
         up.literal(" ");
         up.literal(index.toString());
@@ -145,7 +153,9 @@ public class ASTSwitchNode extends ASTLabeledNode {
         up.incIndent();
         body_toString(up, subBody);
 
-        if (it.hasNext()) up.newline();
+        if (it.hasNext()) {
+          up.newline();
+        }
         up.decIndent();
       }
       up.decIndent();
@@ -155,6 +165,7 @@ public class ASTSwitchNode extends ASTLabeledNode {
     up.newline();
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -175,8 +186,9 @@ public class ASTSwitchNode extends ASTLabeledNode {
 
       b.append(TAB);
 
-      if (index instanceof String) b.append("default");
-      else {
+      if (index instanceof String) {
+        b.append("default");
+      } else {
         b.append("case ");
         b.append(index.toString());
       }
@@ -189,7 +201,9 @@ public class ASTSwitchNode extends ASTLabeledNode {
       if (subBody != null) {
         b.append(body_toString(subBody));
 
-        if (it.hasNext()) b.append(NEWLINE);
+        if (it.hasNext()) {
+          b.append(NEWLINE);
+        }
       }
     }
 
@@ -204,6 +218,7 @@ public class ASTSwitchNode extends ASTLabeledNode {
     Part of Visitor Design Implementation for AST
     See: soot.dava.toolkits.base.AST.analysis For details
   */
+  @Override
   public void apply(Analysis a) {
     a.caseASTSwitchNode(this);
   }

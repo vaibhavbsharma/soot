@@ -34,6 +34,7 @@ public class GThrowStmt extends JThrowStmt {
     super(Grimp.v().newExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new GThrowStmt(Grimp.cloneIfNecessary(getOp()));
   }

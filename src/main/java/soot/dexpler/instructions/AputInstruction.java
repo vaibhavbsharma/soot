@@ -27,6 +27,7 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+
 import soot.ArrayType;
 import soot.IntType;
 import soot.Local;
@@ -48,9 +49,10 @@ public class AputInstruction extends FieldInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction23x))
+    if (!(instruction instanceof Instruction23x)) {
       throw new IllegalArgumentException(
           "Expected Instruction23x but got: " + instruction.getClass());
+    }
 
     Instruction23x aPutInstr = (Instruction23x) instruction;
     int source = aPutInstr.getRegisterA();
@@ -61,7 +63,9 @@ public class AputInstruction extends FieldInstruction {
 
     Local sourceValue = body.getRegisterLocal(source);
     AssignStmt assign = getAssignStmt(body, sourceValue, arrayRef);
-    if (aPutInstr.getOpcode() == Opcode.APUT_OBJECT) assign.addTag(new ObjectOpTag());
+    if (aPutInstr.getOpcode() == Opcode.APUT_OBJECT) {
+      assign.addTag(new ObjectOpTag());
+    }
 
     setUnit(assign);
     addTags(assign);
@@ -77,7 +81,10 @@ public class AputInstruction extends FieldInstruction {
   protected Type getTargetType(DexBody body) {
     Instruction23x aPutInstr = (Instruction23x) instruction;
     Type t = body.getRegisterLocal(aPutInstr.getRegisterB()).getType();
-    if (t instanceof ArrayType) return ((ArrayType) t).getElementType();
-    else return UnknownType.v();
+    if (t instanceof ArrayType) {
+      return ((ArrayType) t).getElementType();
+    } else {
+      return UnknownType.v();
+    }
   }
 }

@@ -1,5 +1,10 @@
 package soot.baf.toolkits.base;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -9,11 +14,6 @@ import soot.Unit;
 import soot.baf.PushInst;
 import soot.baf.StoreInst;
 import soot.toolkits.scalar.Pair;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Due to local packing, we may have chains of assignments to the same local.
@@ -37,8 +37,8 @@ public class StoreChainOptimizer extends BodyTransformer {
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // We keep track of all the stored values
-    Map<Local, Pair<Unit, Unit>> stores = new HashMap<Local, Pair<Unit, Unit>>();
-    Set<Unit> toRemove = new HashSet<Unit>();
+    Map<Local, Pair<Unit, Unit>> stores = new HashMap<>();
+    Set<Unit> toRemove = new HashSet<>();
 
     Unit lastPush = null;
     for (Unit u : b.getUnits()) {
@@ -59,7 +59,7 @@ public class StoreChainOptimizer extends BodyTransformer {
           toRemove.add(pushStorePair.getO2());
         }
 
-        stores.put(si.getLocal(), new Pair<Unit, Unit>(lastPush, u));
+        stores.put(si.getLocal(), new Pair<>(lastPush, u));
       } else {
         // We're outside of the trivial initialization chain
         stores.clear();

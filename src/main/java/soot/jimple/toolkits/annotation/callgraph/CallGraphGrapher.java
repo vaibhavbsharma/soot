@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.MethodOrMethodContext;
@@ -35,10 +39,6 @@ import soot.options.CGGOptions;
 import soot.options.Options;
 import soot.toolkits.graph.interaction.InteractionHandler;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 /** A scene transformer that creates a graphical callgraph. */
 public class CallGraphGrapher extends SceneTransformer {
   public CallGraphGrapher(Singletons.Global g) {}
@@ -54,10 +54,10 @@ public class CallGraphGrapher extends SceneTransformer {
   private ArrayList<MethInfo> getTgtMethods(SootMethod method, boolean recurse) {
     // G.v().out.println("meth for tgts: "+method);
     if (!method.hasActiveBody()) {
-      return new ArrayList<MethInfo>();
+      return new ArrayList<>();
     }
     Body b = method.getActiveBody();
-    ArrayList<MethInfo> list = new ArrayList<MethInfo>();
+    ArrayList<MethInfo> list = new ArrayList<>();
     Iterator sIt = b.getUnits().iterator();
     while (sIt.hasNext()) {
       Stmt s = (Stmt) sIt.next();
@@ -99,10 +99,10 @@ public class CallGraphGrapher extends SceneTransformer {
 
   private ArrayList<MethInfo> getSrcMethods(SootMethod method, boolean recurse) {
     // G.v().out.println("meth for srcs: "+method);
-    ArrayList<MethInfo> list = new ArrayList<MethInfo>();
+    ArrayList<MethInfo> list = new ArrayList<>();
 
-    for (Iterator momcIt = methodToContexts.get(method).iterator(); momcIt.hasNext(); ) {
-      final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
+    for (Object element : methodToContexts.get(method)) {
+      final MethodOrMethodContext momc = (MethodOrMethodContext) element;
       Iterator callerEdges = cg.edgesInto(momc);
       while (callerEdges.hasNext()) {
         Edge callEdge = (Edge) callerEdges.next();
@@ -135,6 +135,7 @@ public class CallGraphGrapher extends SceneTransformer {
     return list;
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
 
     CGGOptions opts = new CGGOptions(options);
@@ -178,7 +179,9 @@ public class CallGraphGrapher extends SceneTransformer {
   }
 
   public void handleNextMethod() {
-    if (!getNextMethod().hasActiveBody()) return;
+    if (!getNextMethod().hasActiveBody()) {
+      return;
+    }
     ArrayList<MethInfo> tgts = getTgtMethods(getNextMethod(), true);
     // System.out.println("for: "+getNextMethod().getName()+" tgts: "+tgts);
     ArrayList<MethInfo> srcs = getSrcMethods(getNextMethod(), true);

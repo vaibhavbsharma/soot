@@ -19,6 +19,10 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -39,10 +43,6 @@ import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
 import soot.toolkits.graph.BriefUnitGraph;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 31-Mar-2006
@@ -53,45 +53,57 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
 
   public static String dependancies[] = new String[] {"bb.jbco_rlaii", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_rlaii";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Moved Loads Above Ifs: " + movedloads);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     BriefUnitGraph bug = new BriefUnitGraph(b);
 
-    List<Unit> candidates = new ArrayList<Unit>();
-    List<Unit> visited = new ArrayList<Unit>();
-    List<Unit> worklist = new ArrayList<Unit>();
+    List<Unit> candidates = new ArrayList<>();
+    List<Unit> visited = new ArrayList<>();
+    List<Unit> worklist = new ArrayList<>();
     worklist.addAll(bug.getHeads());
 
     while (worklist.size() > 0) {
       Unit u = worklist.remove(0);
-      if (visited.contains(u)) continue;
+      if (visited.contains(u)) {
+        continue;
+      }
 
       visited.add(u);
       List<Unit> succs = bug.getSuccsOf(u);
       if (u instanceof TargetArgInst) {
-        if (checkCandidate(succs, bug)) candidates.add(u);
+        if (checkCandidate(succs, bug)) {
+          candidates.add(u);
+        }
       }
 
       for (int i = 0; i < succs.size(); i++) {
         Unit o = succs.get(i);
-        if (!visited.contains(o)) worklist.add(o);
+        if (!visited.contains(o)) {
+          worklist.add(o);
+        }
       }
     }
 
@@ -105,7 +117,9 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
       BLoadInst clone = (BLoadInst) succs.get(0).clone();
 
       if (u instanceof IfNonNullInst || u instanceof IfNullInst) {
-        if (category(clone.getOpType()) == 2 || Rand.getInt(10) > weight) continue;
+        if (category(clone.getOpType()) == 2 || Rand.getInt(10) > weight) {
+          continue;
+        }
 
         units.insertBefore(clone, u);
         units.insertBefore(Baf.v().newSwapInst(RefType.v(), clone.getOpType()), u);
@@ -114,7 +128,9 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
         // units.insertAfter(Baf.v().newSwapInst(RefType.v(),clone.getOpType()),clone);
       } else if (u instanceof OpTypeArgInst) {
         Type t = ((OpTypeArgInst) u).getOpType();
-        if (category(t) == 2 || Rand.getInt(10) > weight) continue;
+        if (category(t) == 2 || Rand.getInt(10) > weight) {
+          continue;
+        }
 
         units.insertBefore(clone, u);
         Type t2 = clone.getOpType();
@@ -137,7 +153,9 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
         units.insertAfter(dup,clone);
         units.insertAfter(Baf.v().newPopInst(t2),dup);*/
       } else {
-        if (category(clone.getOpType()) == 2 || Rand.getInt(10) > weight) continue;
+        if (category(clone.getOpType()) == 2 || Rand.getInt(10) > weight) {
+          continue;
+        }
 
         units.insertBefore(clone, u);
         units.insertBefore(Baf.v().newSwapInst(IntType.v(), clone.getOpType()), u);
@@ -154,9 +172,9 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
         List<Unit> sucPreds = bug.getPredsOf(suc);
 
         if (sucPreds.size() > 1) {
-          if (suc == ((TargetArgInst) u).getTarget())
+          if (suc == ((TargetArgInst) u).getTarget()) {
             ((TargetArgInst) u).setTarget(bug.getSuccsOf(suc).get(0));
-          else {
+          } else {
             units.insertAfter(Baf.v().newGotoInst(bug.getSuccsOf(suc).get(0)), u);
           }
         } else {
@@ -164,25 +182,34 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
         }
       }
 
-      if (i < candidates.size() - 1) bug = new BriefUnitGraph(b);
+      if (i < candidates.size() - 1) {
+        bug = new BriefUnitGraph(b);
+      }
 
       changed = true;
     }
 
     if (changed) {
-      if (output)
+      if (output) {
         out.println(
             (movedloads - orig) + " loads moved above ifs in " + b.getMethod().getSignature());
-      if (debug) StackTypeHeightCalculator.calculateStackHeights(b);
+      }
+      if (debug) {
+        StackTypeHeightCalculator.calculateStackHeights(b);
+      }
     }
   }
 
   private boolean checkCandidate(List<Unit> succs, BriefUnitGraph bug) {
-    if (succs.size() < 2) return false;
+    if (succs.size() < 2) {
+      return false;
+    }
 
     Object o = succs.get(0);
     for (int i = 1; i < succs.size(); i++) {
-      if (succs.get(i).getClass() != o.getClass()) return false;
+      if (succs.get(i).getClass() != o.getClass()) {
+        return false;
+      }
     }
 
     if (o instanceof BLoadInst) {
@@ -190,7 +217,9 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
       Local l = bl.getLocal();
       for (int i = 1; i < succs.size(); i++) {
         BLoadInst bld = (BLoadInst) succs.get(i);
-        if (bld.getLocal() != l || bug.getPredsOf(bld).size() > 1) return false;
+        if (bld.getLocal() != l || bug.getPredsOf(bld).size() > 1) {
+          return false;
+        }
       }
       return true;
     }

@@ -25,6 +25,13 @@
 
 package soot.toolkits.scalar;
 
+import java.util.ArrayDeque;
+import java.util.BitSet;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -39,13 +46,6 @@ import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LocalBitSetPacker;
-
-import java.util.ArrayDeque;
-import java.util.BitSet;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A BodyTransformer that attemps to indentify and separate uses of a local variable that are
@@ -84,17 +84,25 @@ public class LocalSplitter extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
+    }
 
-    if (Options.v().time()) Timers.v().splitTimer.start();
+    if (Options.v().time()) {
+      Timers.v().splitTimer.start();
+    }
 
-    if (Options.v().time()) Timers.v().splitPhase1Timer.start();
+    if (Options.v().time()) {
+      Timers.v().splitPhase1Timer.start();
+    }
 
-    if (throwAnalysis == null) throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    if (throwAnalysis == null) {
+      throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    }
 
-    if (omitExceptingUnitEdges == false)
+    if (omitExceptingUnitEdges == false) {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+    }
 
     // Pack the locals for efficiency
     final LocalBitSetPacker localPacker = new LocalBitSetPacker(body);
@@ -109,48 +117,68 @@ public class LocalSplitter extends BodyTransformer {
     final LocalDefs defs = LocalDefs.Factory.newLocalDefs(graph, true);
     final LocalUses uses = LocalUses.Factory.newLocalUses(graph, defs);
 
-    if (Options.v().time()) Timers.v().splitPhase1Timer.end();
-    if (Options.v().time()) Timers.v().splitPhase2Timer.start();
+    if (Options.v().time()) {
+      Timers.v().splitPhase1Timer.end();
+    }
+    if (Options.v().time()) {
+      Timers.v().splitPhase2Timer.start();
+    }
 
-    Set<Unit> visited = new HashSet<Unit>();
+    Set<Unit> visited = new HashSet<>();
 
     // Collect the set of locals that we need to split^
     BitSet localsToSplit = new BitSet(localPacker.getLocalCount());
     {
       BitSet localsVisited = new BitSet(localPacker.getLocalCount());
       for (Unit s : body.getUnits()) {
-        if (s.getDefBoxes().isEmpty()) continue;
-        if (!(s.getDefBoxes().get(0).getValue() instanceof Local)) continue;
+        if (s.getDefBoxes().isEmpty()) {
+          continue;
+        }
+        if (!(s.getDefBoxes().get(0).getValue() instanceof Local)) {
+          continue;
+        }
 
         // If we see a local the second time, we know that we must split it
         Local l = (Local) s.getDefBoxes().get(0).getValue();
-        if (localsVisited.get(l.getNumber())) localsToSplit.set(l.getNumber());
+        if (localsVisited.get(l.getNumber())) {
+          localsToSplit.set(l.getNumber());
+        }
         localsVisited.set(l.getNumber());
       }
     }
 
     int w = 0;
     for (Unit s : body.getUnits()) {
-      if (s.getDefBoxes().isEmpty()) continue;
+      if (s.getDefBoxes().isEmpty()) {
+        continue;
+      }
 
-      if (s.getDefBoxes().size() > 1) throw new RuntimeException("stmt with more than 1 defbox!");
+      if (s.getDefBoxes().size() > 1) {
+        throw new RuntimeException("stmt with more than 1 defbox!");
+      }
 
-      if (!(s.getDefBoxes().get(0).getValue() instanceof Local)) continue;
+      if (!(s.getDefBoxes().get(0).getValue() instanceof Local)) {
+        continue;
+      }
 
       // we don't want to visit a node twice
-      if (visited.remove(s)) continue;
+      if (visited.remove(s)) {
+        continue;
+      }
 
       // always reassign locals to avoid "use before definition" bugs!
       // unfortunately this creates a lot of new locals, so it's important
       // to remove them afterwards
       Local oldLocal = (Local) s.getDefBoxes().get(0).getValue();
-      if (!localsToSplit.get(oldLocal.getNumber())) continue;
+      if (!localsToSplit.get(oldLocal.getNumber())) {
+        continue;
+      }
       Local newLocal = (Local) oldLocal.clone();
 
       newLocal.setName(newLocal.getName() + '#' + ++w); // renaming should not be done here
       body.getLocals().add(newLocal);
 
-      Deque<Unit> queue = new ArrayDeque<Unit>();
+      Deque<Unit> queue = new ArrayDeque<>();
       queue.addFirst(s);
       do {
         final Unit head = queue.removeFirst();
@@ -159,7 +187,9 @@ public class LocalSplitter extends BodyTransformer {
             ValueBox vb = use.valueBox;
             Value v = vb.getValue();
 
-            if (v == newLocal) continue;
+            if (v == newLocal) {
+              continue;
+            }
 
             // should always be true - but who knows ...
             if (v instanceof Local) {
@@ -185,8 +215,12 @@ public class LocalSplitter extends BodyTransformer {
     // Restore the original local numbering
     localPacker.unpack();
 
-    if (Options.v().time()) Timers.v().splitPhase2Timer.end();
+    if (Options.v().time()) {
+      Timers.v().splitPhase2Timer.end();
+    }
 
-    if (Options.v().time()) Timers.v().splitTimer.end();
+    if (Options.v().time()) {
+      Timers.v().splitTimer.end();
+    }
   }
 }

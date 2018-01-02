@@ -26,6 +26,8 @@
 
 package soot.jimple.internal;
 
+import java.util.List;
+
 import soot.SootMethodRef;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -39,27 +41,31 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.StaticInvokeExpr;
 import soot.util.Switch;
 
-import java.util.List;
-
 @SuppressWarnings("serial")
 public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
     implements StaticInvokeExpr, ConvertToBaf {
   AbstractStaticInvokeExpr(SootMethodRef methodRef, List<Value> args) {
     this(methodRef, new ValueBox[args.size()]);
 
-    for (int i = 0; i < args.size(); i++)
+    for (int i = 0; i < args.size(); i++) {
       this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+    }
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractStaticInvokeExpr) {
       AbstractStaticInvokeExpr ie = (AbstractStaticInvokeExpr) o;
       if (!(getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) return false;
+              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+        return false;
+      }
       if (argBoxes != null) {
         for (int i = 0; i < argBoxes.length; i++) {
-          if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue())) return false;
+          if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue())) {
+            return false;
+          }
         }
       }
       return true;
@@ -68,18 +74,23 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return getMethod().equivHashCode();
   }
 
+  @Override
   public abstract Object clone();
 
   protected AbstractStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
     super(methodRef, argBoxes);
-    if (!methodRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    if (!methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
     this.methodRef = methodRef;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
@@ -87,7 +98,9 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) buffer.append(", ");
+        if (i != 0) {
+          buffer.append(", ");
+        }
 
         buffer.append(argBoxes[i].getValue().toString());
       }
@@ -98,6 +111,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.STATICINVOKE);
     up.literal(" ");
@@ -106,7 +120,9 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) up.literal(", ");
+        if (i != 0) {
+          up.literal(", ");
+        }
 
         argBoxes[i].toString(up);
       }
@@ -115,10 +131,12 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
     up.literal(")");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseStaticInvokeExpr(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     if (argBoxes != null) {
       for (ValueBox element : argBoxes) {

@@ -19,16 +19,15 @@
 
 package soot.options;
 
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
 import soot.HasPhaseOptions;
 import soot.Pack;
 import soot.PackManager;
 import soot.PhaseOptions;
 import soot.Transform;
 import soot.plugins.internal.PluginLoader;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
 
 /**
  * Soot command-line options parser base class.
@@ -38,13 +37,17 @@ import java.util.StringTokenizer;
 abstract class OptionsBase {
   private String pad(int initial, String opts, int tab, String desc) {
     StringBuffer b = new StringBuffer();
-    for (int i = 0; i < initial; i++) b.append(" ");
+    for (int i = 0; i < initial; i++) {
+      b.append(" ");
+    }
     b.append(opts);
     int i;
     if (tab <= opts.length()) {
       b.append("\n");
       i = 0;
-    } else i = opts.length() + initial;
+    } else {
+      i = opts.length() + initial;
+    }
     for (; i <= tab; i++) {
       b.append(" ");
     }
@@ -78,15 +81,15 @@ abstract class OptionsBase {
     b.append("\nPhases and phase options:\n");
     for (Pack p : PackManager.v().allPacks()) {
       b.append(padOpt(p.getPhaseName(), p.getDeclaredOptions()));
-      for (Iterator<Transform> phIt = p.iterator(); phIt.hasNext(); ) {
-        final HasPhaseOptions ph = phIt.next();
+      for (Transform transform : p) {
+        final HasPhaseOptions ph = transform;
         b.append(padVal(ph.getPhaseName(), ph.getDeclaredOptions()));
       }
     }
     return b.toString();
   }
 
-  private final LinkedList<String> options = new LinkedList<String>();
+  private final LinkedList<String> options = new LinkedList<>();
 
   protected void pushOptions(String s) {
     options.addFirst(s);
@@ -100,7 +103,7 @@ abstract class OptionsBase {
     return options.removeFirst();
   }
 
-  protected LinkedList<String> classes = new LinkedList<String>();
+  protected LinkedList<String> classes = new LinkedList<>();
 
   public LinkedList<String> classes() {
     return classes;

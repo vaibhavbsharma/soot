@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -9,9 +12,6 @@ import soot.Type;
 import soot.Unit;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Transformer that removes unnecessary identity casts such as
@@ -47,8 +47,11 @@ public class IdentityCastEliminator extends BodyTransformer {
           // Otherwise, if only the types match, we can replace the typecast
           // with a normal assignment.
           if (orgType == newType) {
-            if (assignStmt.getLeftOp() == ce.getOp()) unitIt.remove();
-            else assignStmt.setRightOp(ce.getOp());
+            if (assignStmt.getLeftOp() == ce.getOp()) {
+              unitIt.remove();
+            } else {
+              assignStmt.setRightOp(ce.getOp());
+            }
           }
         }
       }

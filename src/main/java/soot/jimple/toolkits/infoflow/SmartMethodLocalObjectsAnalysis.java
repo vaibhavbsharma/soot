@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.EquivalentValue;
 import soot.G;
 import soot.SootMethod;
@@ -9,9 +12,6 @@ import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.Ref;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.Iterator;
-import java.util.List;
 
 // SmartMethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Uses a SmartMethodInfoFlowAnalysis to determine if a Local or FieldRef is
@@ -48,9 +48,11 @@ public class SmartMethodLocalObjectsAnalysis {
       CallLocalityContext context) // to this analysis of this method (which depends on context)
       {
     EquivalentValue localEqVal;
-    if (local instanceof InstanceFieldRef)
+    if (local instanceof InstanceFieldRef) {
       localEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, ((FieldRef) local).getField());
-    else localEqVal = new CachedEquivalentValue(local);
+    } else {
+      localEqVal = new CachedEquivalentValue(local);
+    }
 
     List<EquivalentValue> sources = smdfa.sourcesOf(localEqVal);
     Iterator<EquivalentValue> sourcesIt = sources.iterator();
@@ -58,18 +60,21 @@ public class SmartMethodLocalObjectsAnalysis {
       EquivalentValue source = sourcesIt.next();
       if (source.getValue() instanceof Ref) {
         if (!context.isFieldLocal(source)) {
-          if (printMessages)
+          if (printMessages) {
             G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+          }
           return false;
         }
       } else if (source.getValue() instanceof Constant) {
-        if (printMessages)
+        if (printMessages) {
           G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+        }
         return false;
       }
     }
-    if (printMessages)
+    if (printMessages) {
       G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
+    }
     return true;
   }
 
@@ -78,9 +83,11 @@ public class SmartMethodLocalObjectsAnalysis {
     SmartMethodInfoFlowAnalysis smdfa = dfa.getMethodInfoFlowAnalysis(method);
 
     EquivalentValue localEqVal;
-    if (local instanceof InstanceFieldRef)
+    if (local instanceof InstanceFieldRef) {
       localEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, ((FieldRef) local).getField());
-    else localEqVal = new CachedEquivalentValue(local);
+    } else {
+      localEqVal = new CachedEquivalentValue(local);
+    }
 
     List<EquivalentValue> sources = smdfa.sourcesOf(localEqVal);
     Iterator<EquivalentValue> sourcesIt = sources.iterator();
@@ -88,14 +95,16 @@ public class SmartMethodLocalObjectsAnalysis {
       EquivalentValue source = sourcesIt.next();
       if (source.getValue() instanceof Ref) {
         if (!context.isFieldLocal(source)) {
-          if (printMessages)
+          if (printMessages) {
             G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
+          }
           return false;
         }
       }
     }
-    if (printMessages)
+    if (printMessages) {
       G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+    }
     return true;
   }
 }

@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.SideEffectTester;
 import soot.Unit;
@@ -38,9 +41,6 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Performs an DownSafe-analysis on the given graph. An expression is downsafe, if the computation
@@ -75,8 +75,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
         dg,
         unitToGen,
         sideEffect,
-        new ArrayPackedSet<EquivalentValue>(
-            new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(unitToGen.values())));
   }
 
   /**
@@ -125,7 +124,9 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
         EquivalentValue equiVal = outIt.next();
         Value avail = equiVal.getValue();
         if (avail instanceof FieldRef) {
-          if (sideEffect.unitCanWriteTo(u, avail)) outIt.remove();
+          if (sideEffect.unitCanWriteTo(u, avail)) {
+            outIt.remove();
+          }
         } else {
           Iterator<ValueBox> usesIt = avail.getUseBoxes().iterator();
 
@@ -143,7 +144,9 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
 
     // Perform generation
     EquivalentValue add = unitToGenerateMap.get(u);
-    if (add != null) out.add(add, out);
+    if (add != null) {
+      out.add(add, out);
+    }
   }
 
   @Override

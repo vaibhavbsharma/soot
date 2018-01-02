@@ -29,19 +29,24 @@ public final class NumberedString implements Numberable {
     this.s = s;
   }
 
+  @Override
   public final String toString() {
     return getString();
   }
 
   public final String getString() {
-    if (number == 0) throw new RuntimeException("oops");
+    if (number == 0) {
+      throw new RuntimeException("oops");
+    }
     return s;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
@@ -60,14 +65,26 @@ public final class NumberedString implements Numberable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     NumberedString other = (NumberedString) obj;
-    if (number != other.number) return false;
+    if (number != other.number) {
+      return false;
+    }
     if (s == null) {
-      if (other.s != null) return false;
-    } else if (!s.equals(other.s)) return false;
+      if (other.s != null) {
+        return false;
+      }
+    } else if (!s.equals(other.s)) {
+      return false;
+    }
     return true;
   }
 }

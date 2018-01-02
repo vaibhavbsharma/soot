@@ -29,6 +29,12 @@
 
 package soot.jimple.toolkits.typing;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.ByteType;
@@ -58,12 +64,6 @@ import soot.options.JBTROptions;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * This transformer assigns types to local variables.
  *
@@ -88,8 +88,9 @@ public class TypeAssigner extends BodyTransformer {
 
     Date start = new Date();
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[TypeAssigner] typing system started on " + start);
+    }
 
     JBTROptions opt = new JBTROptions(options);
 
@@ -118,8 +119,11 @@ public class TypeAssigner extends BodyTransformer {
     if (opt.compare_type_assigners()) {
       compareTypeAssigners(b, opt.use_older_type_assigner());
     } else {
-      if (opt.use_older_type_assigner()) TypeResolver.resolve((JimpleBody) b, Scene.v());
-      else (new soot.jimple.toolkits.typing.fast.TypeResolver((JimpleBody) b)).inferTypes();
+      if (opt.use_older_type_assigner()) {
+        TypeResolver.resolve((JimpleBody) b, Scene.v());
+      } else {
+        (new soot.jimple.toolkits.typing.fast.TypeResolver((JimpleBody) b)).inferTypes();
+      }
     }
 
     Date finish = new Date();
@@ -137,9 +141,13 @@ public class TypeAssigner extends BodyTransformer {
                   + " secs.");
     }
 
-    if (!opt.ignore_nullpointer_dereferences()) replaceNullType(b);
+    if (!opt.ignore_nullpointer_dereferences()) {
+      replaceNullType(b);
+    }
 
-    if (typingFailed((JimpleBody) b)) throw new RuntimeException("type inference failed!");
+    if (typingFailed((JimpleBody) b)) {
+      throw new RuntimeException("type inference failed!");
+    }
   }
 
   /**
@@ -151,7 +159,7 @@ public class TypeAssigner extends BodyTransformer {
    * @param b
    */
   private void replaceNullType(Body b) {
-    List<Local> localsToRemove = new ArrayList<Local>();
+    List<Local> localsToRemove = new ArrayList<>();
     boolean hasNullType = false;
 
     // check if any local has null_type
@@ -163,7 +171,9 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     // No local with null_type
-    if (!hasNullType) return;
+    if (!hasNullType) {
+      return;
+    }
 
     // force to propagate null constants
     Map<String, String> opts = PhaseOptions.v().getPhaseOptions("jop.cpf");
@@ -176,11 +186,10 @@ public class TypeAssigner extends BodyTransformer {
     }
     ConstantPropagatorAndFolder.v().transform(b);
 
-    List<Unit> unitToReplaceByException = new ArrayList<Unit>();
+    List<Unit> unitToReplaceByException = new ArrayList<>();
     for (Unit u : b.getUnits()) {
       for (ValueBox vb : u.getUseBoxes()) {
-        if (vb.getValue() instanceof Local
-            && vb.getValue().getType() instanceof NullType) {
+        if (vb.getValue() instanceof Local && vb.getValue().getType() instanceof NullType) {
 
           Local l = (Local) vb.getValue();
           Stmt s = (Stmt) u;
@@ -257,9 +266,13 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     int cmp;
-    if (newJb.getLocals().size() < oldJb.getLocals().size()) cmp = 2;
-    else if (newJb.getLocals().size() > oldJb.getLocals().size()) cmp = -2;
-    else cmp = compareTypings(oldJb, newJb);
+    if (newJb.getLocals().size() < oldJb.getLocals().size()) {
+      cmp = 2;
+    } else if (newJb.getLocals().size() > oldJb.getLocals().size()) {
+      cmp = -2;
+    } else {
+      cmp = compareTypings(oldJb, newJb);
+    }
 
     G.v()
         .out
@@ -293,24 +306,27 @@ public class TypeAssigner extends BodyTransformer {
     for (Local v : a.getLocals()) {
       Type ta = v.getType(), tb = ib.next().getType();
 
-      if (soot.jimple.toolkits.typing.fast.TypeResolver.typesEqual(ta, tb)) continue;
-      /*
-       * Sometimes there is no reason to choose between the char and byte /
-       * short types. Enabling this check allows one algorithm to select
-       * char and the other to select byte / short without returning
-       * incomparable.
-       */
-      else if (true
-          && ((ta instanceof CharType && (tb instanceof ByteType || tb instanceof ShortType))
-              || (tb instanceof CharType && (ta instanceof ByteType || ta instanceof ShortType))))
+      if (soot.jimple.toolkits.typing.fast.TypeResolver.typesEqual(ta, tb)) {
         continue;
-      else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(ta, tb)) {
-        if (r == -1) return 3;
-        else r = 1;
+      } else if (true
+          && ((ta instanceof CharType && (tb instanceof ByteType || tb instanceof ShortType))
+              || (tb instanceof CharType && (ta instanceof ByteType || ta instanceof ShortType)))) {
+        continue;
+      } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(ta, tb)) {
+        if (r == -1) {
+          return 3;
+        } else {
+          r = 1;
+        }
       } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(tb, ta)) {
-        if (r == 1) return 3;
-        else r = -1;
-      } else return 3;
+        if (r == 1) {
+          return 3;
+        } else {
+          r = -1;
+        }
+      } else {
+        return 3;
+      }
     }
 
     return r;

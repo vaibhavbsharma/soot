@@ -25,14 +25,14 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr {
@@ -65,7 +65,7 @@ public abstract class AbstractBinopExpr implements Expr {
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     list.addAll(op1Box.getValue().getUseBoxes());
     list.add(op1Box);
@@ -75,6 +75,7 @@ public abstract class AbstractBinopExpr implements Expr {
     return list;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractBinopExpr) {
       AbstractBinopExpr abe = (AbstractBinopExpr) o;
@@ -86,6 +87,7 @@ public abstract class AbstractBinopExpr implements Expr {
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return op1Box.getValue().equivHashCode() * 101 + op2Box.getValue().equivHashCode() + 17
         ^ getSymbol().hashCode();
@@ -94,8 +96,10 @@ public abstract class AbstractBinopExpr implements Expr {
   /** Returns the unique symbol for an operator. */
   protected abstract String getSymbol();
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public String toString() {
     Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
     String leftOp = op1.toString(), rightOp = op2.toString();
@@ -103,18 +107,27 @@ public abstract class AbstractBinopExpr implements Expr {
     return leftOp + getSymbol() + rightOp;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     // Value val1 = op1Box.getValue();
     // Value val2 = op2Box.getValue();
 
-    if (PrecedenceTest.needsBrackets(op1Box, this)) up.literal("(");
+    if (PrecedenceTest.needsBrackets(op1Box, this)) {
+      up.literal("(");
+    }
     op1Box.toString(up);
-    if (PrecedenceTest.needsBrackets(op1Box, this)) up.literal(")");
+    if (PrecedenceTest.needsBrackets(op1Box, this)) {
+      up.literal(")");
+    }
 
     up.literal(getSymbol());
 
-    if (PrecedenceTest.needsBracketsRight(op2Box, this)) up.literal("(");
+    if (PrecedenceTest.needsBracketsRight(op2Box, this)) {
+      up.literal("(");
+    }
     op2Box.toString(up);
-    if (PrecedenceTest.needsBracketsRight(op2Box, this)) up.literal(")");
+    if (PrecedenceTest.needsBracketsRight(op2Box, this)) {
+      up.literal(")");
+    }
   }
 }

@@ -1,5 +1,10 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.EquivalentValue;
 import soot.Local;
@@ -25,11 +30,6 @@ import soot.toolkits.graph.MemoryEfficientGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
 // ClassInfoFlowAnalysis written by Richard L. Halpert, 2007-02-22
 // Constructs data flow tables for each method of a class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -50,8 +50,8 @@ public class ClassInfoFlowAnalysis {
   public ClassInfoFlowAnalysis(SootClass sootClass, InfoFlowAnalysis dfa) {
     this.sootClass = sootClass;
     this.dfa = dfa;
-    methodToInfoFlowAnalysis = new HashMap<SootMethod, SmartMethodInfoFlowAnalysis>();
-    methodToInfoFlowSummary = new HashMap<SootMethod, HashMutableDirectedGraph<EquivalentValue>>();
+    methodToInfoFlowAnalysis = new HashMap<>();
+    methodToInfoFlowSummary = new HashMap<>();
 
     //		 doSimpleConservativeDataFlowAnalysis();
   }
@@ -189,11 +189,13 @@ public class ClassInfoFlowAnalysis {
     // flow sensitivity.
 
     // If this method cannot have a body, then we can't analyze it...
-    if (!sm.isConcrete()) return triviallyConservativeInfoFlowAnalysis(sm);
+    if (!sm.isConcrete()) {
+      return triviallyConservativeInfoFlowAnalysis(sm);
+    }
 
     Body b = sm.retrieveActiveBody();
     UnitGraph g = new ExceptionalUnitGraph(b);
-    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
+    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<>();
 
     // Get list of fields, globals, and parameters that are accessed
     for (Unit u : g) {
@@ -220,17 +222,17 @@ public class ClassInfoFlowAnalysis {
           InstanceFieldRef ifr = (InstanceFieldRef) ref;
           Value base = ifr.getBase();
           if (base instanceof Local) {
-            if (dfa.includesInnerFields() || ((!sm.isStatic()) && base.equivTo(b.getThisLocal())))
+            if (dfa.includesInnerFields() || ((!sm.isStatic()) && base.equivTo(b.getThisLocal()))) {
               fieldsStaticsParamsAccessed.add(
                   InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField()));
+            }
           }
         }
       }
     }
 
     // Each accessed field, global, and parameter becomes a node in the graph
-    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph =
-        new MemoryEfficientGraph<EquivalentValue>();
+    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<>();
     Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
     while (accessedIt1.hasNext()) {
       EquivalentValue o = accessedIt1.next();
@@ -241,26 +243,34 @@ public class ClassInfoFlowAnalysis {
     // Add every parameter of this method
     for (int i = 0; i < sm.getParameterCount(); i++) {
       EquivalentValue parameterRefEqVal = InfoFlowAnalysis.getNodeForParameterRef(sm, i);
-      if (!dataFlowGraph.containsNode(parameterRefEqVal)) dataFlowGraph.addNode(parameterRefEqVal);
+      if (!dataFlowGraph.containsNode(parameterRefEqVal)) {
+        dataFlowGraph.addNode(parameterRefEqVal);
+      }
     }
 
     // Add every relevant field of this class (static methods don't get non-static fields)
     for (SootField sf : sm.getDeclaringClass().getFields()) {
       if (sf.isStatic() || !sm.isStatic()) {
         EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
-        if (!dataFlowGraph.containsNode(fieldRefEqVal)) dataFlowGraph.addNode(fieldRefEqVal);
+        if (!dataFlowGraph.containsNode(fieldRefEqVal)) {
+          dataFlowGraph.addNode(fieldRefEqVal);
+        }
       }
     }
 
     // Add every field of this class's superclasses
     SootClass superclass = sm.getDeclaringClass();
-    if (superclass.hasSuperclass()) superclass = sm.getDeclaringClass().getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = sm.getDeclaringClass().getSuperclass();
+    }
     while (superclass.hasSuperclass()) // we don't want to process Object
     {
       for (SootField scField : superclass.getFields()) {
         if (scField.isStatic() || !sm.isStatic()) {
           EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
-          if (!dataFlowGraph.containsNode(fieldRefEqVal)) dataFlowGraph.addNode(fieldRefEqVal);
+          if (!dataFlowGraph.containsNode(fieldRefEqVal)) {
+            dataFlowGraph.addNode(fieldRefEqVal);
+          }
         }
       }
       superclass = superclass.getSuperclass();
@@ -287,21 +297,27 @@ public class ClassInfoFlowAnalysis {
     while (accessedIt1.hasNext()) {
       EquivalentValue r = accessedIt1.next();
       Ref rRef = (Ref) r.getValue();
-      if (!(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow()) continue;
+      if (!(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow()) {
+        continue;
+      }
       Iterator<EquivalentValue> accessedIt2 = fieldsStaticsParamsAccessed.iterator();
       while (accessedIt2.hasNext()) {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
-        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) ; // don't add this edge
-        else if (sRef instanceof ThisRef && rRef instanceof InstanceFieldRef)
-          ; // don't add this edge
-        else if (sRef instanceof ParameterRef && dfa.includesInnerFields())
-          ; // don't add edges to parameters if we are including inner fields
-        else if (sRef.getType() instanceof RefLikeType) dataFlowGraph.addEdge(r, s);
+        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {; // don't add this edge
+        } else if (sRef instanceof ThisRef
+            && rRef instanceof InstanceFieldRef) {; // don't add this edge
+        } else if (sRef instanceof ParameterRef
+            && dfa
+                .includesInnerFields()) {; // don't add edges to parameters if we are including inner fields
+        } else if (sRef.getType() instanceof RefLikeType) {
+          dataFlowGraph.addEdge(r, s);
+        }
       }
       if (returnValueRef != null
-          && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow()))
+          && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow())) {
         dataFlowGraph.addEdge(r, InfoFlowAnalysis.getNodeForReturnRef(sm));
+      }
     }
 
     return dataFlowGraph;
@@ -310,7 +326,7 @@ public class ClassInfoFlowAnalysis {
   /** Does not require the method to have a body */
   public HashMutableDirectedGraph<EquivalentValue> triviallyConservativeInfoFlowAnalysis(
       SootMethod sm) {
-    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
+    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<>();
 
     // Add all of the nodes necessary to ensure that this is a complete data flow graph
     // Add every parameter of this method
@@ -320,8 +336,7 @@ public class ClassInfoFlowAnalysis {
     }
 
     // Add every relevant field of this class (static methods don't get non-static fields)
-    for (Iterator<SootField> it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); ) {
-      SootField sf = it.next();
+    for (SootField sf : sm.getDeclaringClass().getFields()) {
       if (sf.isStatic() || !sm.isStatic()) {
         EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
         fieldsStaticsParamsAccessed.add(fieldRefEqVal);
@@ -330,7 +345,9 @@ public class ClassInfoFlowAnalysis {
 
     // Add every field of this class's superclasses
     SootClass superclass = sm.getDeclaringClass();
-    if (superclass.hasSuperclass()) superclass = sm.getDeclaringClass().getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = sm.getDeclaringClass().getSuperclass();
+    }
     while (superclass.hasSuperclass()) // we don't want to process Object
     {
       Iterator<SootField> scFieldsIt = superclass.getFields().iterator();
@@ -347,8 +364,7 @@ public class ClassInfoFlowAnalysis {
     // Don't add any static fields outside of the class... unsafe???
 
     // Each field, global, and parameter becomes a node in the graph
-    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph =
-        new MemoryEfficientGraph<EquivalentValue>();
+    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<>();
     Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
     while (accessedIt1.hasNext()) {
       EquivalentValue o = accessedIt1.next();
@@ -374,19 +390,24 @@ public class ClassInfoFlowAnalysis {
     while (accessedIt1.hasNext()) {
       EquivalentValue r = accessedIt1.next();
       Ref rRef = (Ref) r.getValue();
-      if (!(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow()) continue;
+      if (!(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow()) {
+        continue;
+      }
       Iterator<EquivalentValue> accessedIt2 = fieldsStaticsParamsAccessed.iterator();
       while (accessedIt2.hasNext()) {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
-        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) ; // don't add this edge
-        else if (sRef instanceof ThisRef && rRef instanceof InstanceFieldRef)
-          ; // don't add this edge
-        else if (sRef.getType() instanceof RefLikeType) dataFlowGraph.addEdge(r, s);
+        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {; // don't add this edge
+        } else if (sRef instanceof ThisRef
+            && rRef instanceof InstanceFieldRef) {; // don't add this edge
+        } else if (sRef.getType() instanceof RefLikeType) {
+          dataFlowGraph.addEdge(r, s);
+        }
       }
       if (returnValueRef != null
-          && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow()))
+          && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow())) {
         dataFlowGraph.addEdge(r, InfoFlowAnalysis.getNodeForReturnRef(sm));
+      }
     }
 
     return dataFlowGraph;

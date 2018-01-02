@@ -30,15 +30,19 @@ import soot.Value;
 import soot.ValueBox;
 
 public interface IdentityInst extends Inst, IdentityUnit {
+  @Override
   Value getLeftOp();
 
+  @Override
   Value getRightOp();
 
   void setLeftOp(Value variable);
 
   void setRightOp(Value rvalue);
 
+  @Override
   ValueBox getLeftOpBox();
 
+  @Override
   ValueBox getRightOpBox();
 }

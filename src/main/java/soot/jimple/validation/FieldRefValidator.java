@@ -1,5 +1,7 @@
 package soot.jimple.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.ResolutionFailedException;
 import soot.SootField;
@@ -14,8 +16,6 @@ import soot.validation.BodyValidator;
 import soot.validation.UnitValidationException;
 import soot.validation.ValidationException;
 
-import java.util.List;
-
 public enum FieldRefValidator implements BodyValidator {
   INSTANCE;
 
@@ -27,7 +27,9 @@ public enum FieldRefValidator implements BodyValidator {
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
     SootMethod method = body.getMethod();
-    if (method.isAbstract()) return;
+    if (method.isAbstract()) {
+      return;
+    }
 
     Chain<Unit> units = body.getUnits().getNonPatchingChain();
 
@@ -42,10 +44,11 @@ public enum FieldRefValidator implements BodyValidator {
         StaticFieldRef v = (StaticFieldRef) fr;
         try {
           SootField field = v.getField();
-          if (field == null)
+          if (field == null) {
             exceptions.add(
                 new UnitValidationException(
                     unit, body, "Resolved field is null: " + fr.toString()));
+          }
 
           if (!field.isStatic() && !field.isPhantom()) {
             exceptions.add(
@@ -62,10 +65,11 @@ public enum FieldRefValidator implements BodyValidator {
 
         try {
           SootField field = v.getField();
-          if (field == null)
+          if (field == null) {
             exceptions.add(
                 new UnitValidationException(
                     unit, body, "Resolved field is null: " + fr.toString()));
+          }
 
           if (field.isStatic() && !field.isPhantom()) {
             exceptions.add(

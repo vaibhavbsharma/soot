@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.liveness;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -32,9 +35,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class LiveVarsTagger extends BodyTransformer {
 
   public LiveVarsTagger(Singletons.Global g) {}
@@ -43,6 +43,7 @@ public class LiveVarsTagger extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_liveness_LiveVarsTagger();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 
     LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(b));

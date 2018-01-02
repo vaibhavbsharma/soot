@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.base;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -39,19 +42,21 @@ import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ThisInliner extends BodyTransformer {
 
+  @Override
   public void internalTransform(Body b, String phaseName, Map options) {
 
     // assure body is a constructor
-    if (!b.getMethod().getName().equals("<init>")) return;
+    if (!b.getMethod().getName().equals("<init>")) {
+      return;
+    }
 
     // if the first invoke is a this() and not a super() inline the this()
     InvokeStmt invokeStmt = getFirstSpecialInvoke(b);
-    if (invokeStmt == null) return;
+    if (invokeStmt == null) {
+      return;
+    }
     SpecialInvokeExpr specInvokeExpr = (SpecialInvokeExpr) invokeStmt.getInvokeExpr();
     if (specInvokeExpr.getMethod().getDeclaringClass().equals(b.getMethod().getDeclaringClass())) {
 
@@ -60,7 +65,7 @@ public class ThisInliner extends BodyTransformer {
         specInvokeExpr.getMethod().retrieveActiveBody();
       }
 
-      HashMap<Local, Local> oldLocalsToNew = new HashMap<Local, Local>();
+      HashMap<Local, Local> oldLocalsToNew = new HashMap<>();
 
       for (Local l : specInvokeExpr.getMethod().getActiveBody().getLocals()) {
         Local newLocal = (Local) l.clone();
@@ -71,7 +76,7 @@ public class ThisInliner extends BodyTransformer {
       // find identity stmt of original method
       IdentityStmt origIdStmt = findIdentityStmt(b);
 
-      HashMap<Stmt, Stmt> oldStmtsToNew = new HashMap<Stmt, Stmt>();
+      HashMap<Stmt, Stmt> oldStmtsToNew = new HashMap<>();
 
       // System.out.println("locals: "+b.getLocals());
       Chain<Unit> containerUnits = b.getUnits();
@@ -85,8 +90,7 @@ public class ThisInliner extends BodyTransformer {
           if (idStmt.getRightOp() instanceof ThisRef) {
             Stmt newThis =
                 Jimple.v()
-                    .newAssignStmt(
-                        oldLocalsToNew.get(idStmt.getLeftOp()), origIdStmt.getLeftOp());
+                    .newAssignStmt(oldLocalsToNew.get(idStmt.getLeftOp()), origIdStmt.getLeftOp());
             containerUnits.insertBefore(newThis, invokeStmt);
             oldStmtsToNew.put(inlineeStmt, newThis);
           } else if (idStmt.getRightOp() instanceof CaughtExceptionRef) {
@@ -139,8 +143,9 @@ public class ThisInliner extends BodyTransformer {
         System.out.println("handler: " + t.getHandlerUnit());
         Stmt newHandler = oldStmtsToNew.get(t.getHandlerUnit());
 
-        if (newBegin == null || newEnd == null || newHandler == null)
+        if (newBegin == null || newEnd == null || newHandler == null) {
           throw new RuntimeException("couldn't map trap!");
+        }
 
         b.getTraps().add(Jimple.v().newTrap(t.getException(), newBegin, newEnd, newHandler));
       }
@@ -168,10 +173,14 @@ public class ThisInliner extends BodyTransformer {
   private InvokeStmt getFirstSpecialInvoke(Body b) {
     for (Unit u : b.getUnits()) {
       Stmt s = (Stmt) u;
-      if (!(s instanceof InvokeStmt)) continue;
+      if (!(s instanceof InvokeStmt)) {
+        continue;
+      }
 
       InvokeExpr invokeExpr = s.getInvokeExpr();
-      if (!(invokeExpr instanceof SpecialInvokeExpr)) continue;
+      if (!(invokeExpr instanceof SpecialInvokeExpr)) {
+        continue;
+      }
 
       return (InvokeStmt) s;
     }

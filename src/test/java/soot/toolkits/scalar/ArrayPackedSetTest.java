@@ -1,15 +1,15 @@
 package soot.toolkits.scalar;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Iterator;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class ArrayPackedSetTest {
 
@@ -19,8 +19,8 @@ public class ArrayPackedSetTest {
   @Before
   public void init() {
     Integer[] aa = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    universe = new ArrayFlowUniverse<Integer>(aa);
-    a = new ArrayPackedSet<Integer>(universe);
+    universe = new ArrayFlowUniverse<>(aa);
+    a = new ArrayPackedSet<>(universe);
   }
 
   @Test
@@ -106,7 +106,9 @@ public class ArrayPackedSetTest {
     FlowSet<Integer> e = a.emptySet();
     Integer[] t = {3, 7, 33};
 
-    for (int i : t) e.add(i);
+    for (int i : t) {
+      e.add(i);
+    }
 
     assertEquals(t.length, e.size());
     assertArrayEquals(t, e.toList().toArray());
@@ -117,10 +119,14 @@ public class ArrayPackedSetTest {
     FlowSet<Integer> e = a.emptySet();
     Integer[] t = {3, 6, 7, 8, 12};
 
-    for (int i : t) e.add(i);
+    for (int i : t) {
+      e.add(i);
+    }
 
     int j = 0;
-    for (int i : e) assertEquals(t[j++].intValue(), i);
+    for (int i : e) {
+      assertEquals(t[j++].intValue(), i);
+    }
   }
 
   @Test

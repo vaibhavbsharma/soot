@@ -51,20 +51,25 @@ public class UnitValueBoxPair {
    * @param other another UnitValueBoxPair
    * @return true if equal.
    */
+  @Override
   public boolean equals(Object other) {
     if (other instanceof UnitValueBoxPair) {
       UnitValueBoxPair otherPair = (UnitValueBoxPair) other;
 
-      if (unit.equals(otherPair.unit) && valueBox.equals(otherPair.valueBox)) return true;
+      if (unit.equals(otherPair.unit) && valueBox.equals(otherPair.valueBox)) {
+        return true;
+      }
     }
 
     return false;
   }
 
+  @Override
   public int hashCode() {
     return unit.hashCode() + valueBox.hashCode();
   }
 
+  @Override
   public String toString() {
     return valueBox + " in " + unit;
   }

@@ -20,6 +20,9 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -28,44 +31,54 @@ import soot.IntegerType;
 import soot.ShortType;
 import soot.Type;
 
-import java.util.Collection;
-import java.util.Collections;
-
 /** @author Ben Bellamy */
 public class AugHierarchy implements IHierarchy {
+  @Override
   public Collection<Type> lcas(Type a, Type b) {
     return lcas_(a, b);
   }
 
   public static Collection<Type> lcas_(Type a, Type b) {
-    if (TypeResolver.typesEqual(a, b)) return Collections.singletonList(a);
-    else if (a instanceof BottomType) return Collections.singletonList(b);
-    else if (b instanceof BottomType) return Collections.singletonList(a);
-    else if (a instanceof IntegerType && b instanceof IntegerType) {
-      if (a instanceof Integer1Type) return Collections.singletonList(b);
-      else if (b instanceof Integer1Type) return Collections.singletonList(a);
-      else if (a instanceof BooleanType || b instanceof BooleanType)
+    if (TypeResolver.typesEqual(a, b)) {
+      return Collections.singletonList(a);
+    } else if (a instanceof BottomType) {
+      return Collections.singletonList(b);
+    } else if (b instanceof BottomType) {
+      return Collections.singletonList(a);
+    } else if (a instanceof IntegerType && b instanceof IntegerType) {
+      if (a instanceof Integer1Type) {
+        return Collections.singletonList(b);
+      } else if (b instanceof Integer1Type) {
+        return Collections.singletonList(a);
+      } else if (a instanceof BooleanType || b instanceof BooleanType) {
         return Collections.emptyList();
-      else if ((a instanceof ByteType && b instanceof Integer32767Type)
-          || (b instanceof ByteType && a instanceof Integer32767Type))
+      } else if ((a instanceof ByteType && b instanceof Integer32767Type)
+          || (b instanceof ByteType && a instanceof Integer32767Type)) {
         return Collections.singletonList(ShortType.v());
-      else if ((a instanceof CharType && (b instanceof ShortType || b instanceof ByteType))
-          || (b instanceof CharType && (a instanceof ShortType || a instanceof ByteType)))
+      } else if ((a instanceof CharType && (b instanceof ShortType || b instanceof ByteType))
+          || (b instanceof CharType && (a instanceof ShortType || a instanceof ByteType))) {
         return Collections.singletonList(IntType.v());
-      else if (ancestor_(a, b)) return Collections.singletonList(a);
-      else return Collections.singletonList(b);
-    } else if (a instanceof IntegerType || b instanceof IntegerType)
+      } else if (ancestor_(a, b)) {
+        return Collections.singletonList(a);
+      } else {
+        return Collections.singletonList(b);
+      }
+    } else if (a instanceof IntegerType || b instanceof IntegerType) {
       return Collections.emptyList();
-    else return BytecodeHierarchy.lcas_(a, b);
+    } else {
+      return BytecodeHierarchy.lcas_(a, b);
+    }
   }
 
+  @Override
   public boolean ancestor(Type ancestor, Type child) {
     return ancestor_(ancestor, child);
   }
 
   public static boolean ancestor_(Type ancestor, Type child) {
-    if (TypeResolver.typesEqual(ancestor, child)) return true;
-    else if (ancestor instanceof Integer1Type) {
+    if (TypeResolver.typesEqual(ancestor, child)) {
+      return true;
+    } else if (ancestor instanceof Integer1Type) {
       return child instanceof BottomType;
     } else if (ancestor instanceof BooleanType) {
       return child instanceof BottomType || child instanceof Integer1Type;
@@ -94,7 +107,10 @@ public class AugHierarchy implements IHierarchy {
           || child instanceof ByteType
           || child instanceof CharType
           || child instanceof ShortType;
-    } else if (child instanceof IntegerType) return false;
-    else return BytecodeHierarchy.ancestor_(ancestor, child);
+    } else if (child instanceof IntegerType) {
+      return false;
+    } else {
+      return BytecodeHierarchy.ancestor_(ancestor, child);
+    }
   }
 }

@@ -25,6 +25,10 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -49,10 +53,6 @@ import soot.jimple.Stmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class JIfStmt extends AbstractStmt implements IfStmt {
   final ValueBox conditionBox;
   final UnitBox targetBox;
@@ -74,17 +74,22 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
     targetBoxes = Collections.singletonList(targetBox);
   }
 
+  @Override
   public Object clone() {
     return new JIfStmt(Jimple.cloneIfNecessary(getCondition()), getTarget());
   }
 
+  @Override
   public String toString() {
     Unit t = getTarget();
     String target = "(branch)";
-    if (!t.branches()) target = t.toString();
+    if (!t.branches()) {
+      target = t.toString();
+    }
     return Jimple.IF + " " + getCondition().toString() + " " + Jimple.GOTO + " " + target;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.IF);
     up.literal(" ");
@@ -95,33 +100,39 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
     targetBox.toString(up);
   }
 
+  @Override
   public Value getCondition() {
     return conditionBox.getValue();
   }
 
+  @Override
   public void setCondition(Value condition) {
     conditionBox.setValue(condition);
   }
 
+  @Override
   public ValueBox getConditionBox() {
     return conditionBox;
   }
 
+  @Override
   public Stmt getTarget() {
     return (Stmt) targetBox.getUnit();
   }
 
+  @Override
   public void setTarget(Unit target) {
     targetBox.setUnit(target);
   }
 
+  @Override
   public UnitBox getTargetBox() {
     return targetBox;
   }
 
   @Override
   public List<ValueBox> getUseBoxes() {
-    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
+    List<ValueBox> useBoxes = new ArrayList<>();
 
     useBoxes.addAll(conditionBox.getValue().getUseBoxes());
     useBoxes.add(conditionBox);
@@ -134,10 +145,12 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
     return targetBoxes;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseIfStmt(this);
   }
 
+  @Override
   public void convertToBaf(final JimpleToBafContext context, final List<Unit> out) {
     Value cond = getCondition();
 
@@ -148,15 +161,20 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
 
     // Handle simple subcase where op1 is null
     if (op2 instanceof NullConstant || op1 instanceof NullConstant) {
-      if (op2 instanceof NullConstant) ((ConvertToBaf) op1).convertToBaf(context, out);
-      else ((ConvertToBaf) op2).convertToBaf(context, out);
+      if (op2 instanceof NullConstant) {
+        ((ConvertToBaf) op1).convertToBaf(context, out);
+      } else {
+        ((ConvertToBaf) op2).convertToBaf(context, out);
+      }
       Unit u;
 
-      if (cond instanceof EqExpr)
+      if (cond instanceof EqExpr) {
         u = Baf.v().newIfNullInst(Baf.v().newPlaceholderInst(getTarget()));
-      else if (cond instanceof NeExpr)
+      } else if (cond instanceof NeExpr) {
         u = Baf.v().newIfNonNullInst(Baf.v().newPlaceholderInst(getTarget()));
-      else throw new RuntimeException("invalid condition");
+      } else {
+        throw new RuntimeException("invalid condition");
+      }
 
       u.addAllTagsOf(this);
       out.add(u);
@@ -174,26 +192,32 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
               out.add(u);
             }
 
+            @Override
             public void caseEqExpr(EqExpr expr) {
               add(Baf.v().newIfEqInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseNeExpr(NeExpr expr) {
               add(Baf.v().newIfNeInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseLtExpr(LtExpr expr) {
               add(Baf.v().newIfLtInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseLeExpr(LeExpr expr) {
               add(Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseGtExpr(GtExpr expr) {
               add(Baf.v().newIfGtInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseGeExpr(GeExpr expr) {
               add(Baf.v().newIfGeInst(Baf.v().newPlaceholderInst(getTarget())));
             }
@@ -213,26 +237,32 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
               out.add(u);
             }
 
+            @Override
             public void caseEqExpr(EqExpr expr) {
               add(Baf.v().newIfEqInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseNeExpr(NeExpr expr) {
               add(Baf.v().newIfNeInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseLtExpr(LtExpr expr) {
               add(Baf.v().newIfGtInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseLeExpr(LeExpr expr) {
               add(Baf.v().newIfGeInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseGtExpr(GtExpr expr) {
               add(Baf.v().newIfLtInst(Baf.v().newPlaceholderInst(getTarget())));
             }
 
+            @Override
             public void caseGeExpr(GeExpr expr) {
               add(Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
             }
@@ -251,36 +281,44 @@ public class JIfStmt extends AbstractStmt implements IfStmt {
             out.add(u);
           }
 
+          @Override
           public void caseEqExpr(EqExpr expr) {
             add(Baf.v().newIfCmpEqInst(op1.getType(), Baf.v().newPlaceholderInst(getTarget())));
           }
 
+          @Override
           public void caseNeExpr(NeExpr expr) {
             add(Baf.v().newIfCmpNeInst(op1.getType(), Baf.v().newPlaceholderInst(getTarget())));
           }
 
+          @Override
           public void caseLtExpr(LtExpr expr) {
             add(Baf.v().newIfCmpLtInst(op1.getType(), Baf.v().newPlaceholderInst(getTarget())));
           }
 
+          @Override
           public void caseLeExpr(LeExpr expr) {
             add(Baf.v().newIfCmpLeInst(op1.getType(), Baf.v().newPlaceholderInst(getTarget())));
           }
 
+          @Override
           public void caseGtExpr(GtExpr expr) {
             add(Baf.v().newIfCmpGtInst(op1.getType(), Baf.v().newPlaceholderInst(getTarget())));
           }
 
+          @Override
           public void caseGeExpr(GeExpr expr) {
             add(Baf.v().newIfCmpGeInst(op1.getType(), Baf.v().newPlaceholderInst(getTarget())));
           }
         });
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return true;
   }

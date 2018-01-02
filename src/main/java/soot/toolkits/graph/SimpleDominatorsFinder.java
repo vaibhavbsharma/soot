@@ -19,19 +19,18 @@
 
 package soot.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.toolkits.scalar.ArrayPackedSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.FlowUniverse;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Wrapper class for a simple dominators analysis based on a simple flow analysis algorithm. Works
@@ -50,32 +49,36 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
     // "]     Finding Dominators...");
 
     this.graph = graph;
-    SimpleDominatorsAnalysis<N> analysis = new SimpleDominatorsAnalysis<N>(graph);
+    SimpleDominatorsAnalysis<N> analysis = new SimpleDominatorsAnalysis<>(graph);
 
     // build node to dominators map
     {
-      nodeToDominators = new HashMap<N, FlowSet<N>>(graph.size() * 2 + 1, 0.7f);
+      nodeToDominators = new HashMap<>(graph.size() * 2 + 1, 0.7f);
 
-      for (Iterator<N> nodeIt = graph.iterator(); nodeIt.hasNext(); ) {
-        N node = nodeIt.next();
+      for (N node : graph) {
         FlowSet<N> set = analysis.getFlowAfter(node);
         nodeToDominators.put(node, set);
       }
     }
   }
 
+  @Override
   public DirectedGraph<N> getGraph() {
     return graph;
   }
 
+  @Override
   public List<N> getDominators(N node) {
     // non-backed list since FlowSet is an ArrayPackedFlowSet
     return nodeToDominators.get(node).toList();
   }
 
+  @Override
   public N getImmediateDominator(N node) {
     // root node
-    if (getGraph().getHeads().contains(node)) return null;
+    if (getGraph().getHeads().contains(node)) {
+      return null;
+    }
 
     // avoid the creation of temp-lists
     FlowSet<N> head = nodeToDominators.get(node).clone();
@@ -90,15 +93,19 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
     return null;
   }
 
+  @Override
   public boolean isDominatedBy(N node, N dominator) {
     // avoid the creation of temp-lists
     return nodeToDominators.get(node).contains(dominator);
   }
 
+  @Override
   public boolean isDominatedByAll(N node, Collection<N> dominators) {
     FlowSet<N> f = nodeToDominators.get(node);
     for (N n : dominators) {
-      if (!f.contains(n)) return false;
+      if (!f.contains(n)) {
+        return false;
+      }
     }
     return true;
   }
@@ -126,14 +133,14 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
 
     // define empty set, with proper universe for complementation
 
-    List<N> nodes = new ArrayList<N>(graph.size());
+    List<N> nodes = new ArrayList<>(graph.size());
 
     for (N n : graph) {
       nodes.add(n);
     }
 
-    FlowUniverse<N> nodeUniverse = new CollectionFlowUniverse<N>(nodes);
-    emptySet = new ArrayPackedSet<N>(nodeUniverse);
+    FlowUniverse<N> nodeUniverse = new CollectionFlowUniverse<>(nodes);
+    emptySet = new ArrayPackedSet<>(nodeUniverse);
     fullSet = (BoundedFlowSet<N>) emptySet.clone();
     fullSet.complement();
 

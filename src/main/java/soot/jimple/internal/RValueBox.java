@@ -36,6 +36,7 @@ public class RValueBox extends AbstractValueBox {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof Immediate || value instanceof ConcreteRef || value instanceof Expr;
   }

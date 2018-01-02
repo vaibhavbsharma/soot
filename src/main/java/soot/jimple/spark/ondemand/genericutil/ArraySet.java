@@ -27,6 +27,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   private static final ArraySet EMPTY =
       new ArraySet<Object>(0, true) {
+        @Override
         public boolean add(Object obj_) {
           throw new RuntimeException();
         }
@@ -34,7 +35,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   @SuppressWarnings("all")
   public static final <T> ArraySet<T> empty() {
-    return (ArraySet<T>) EMPTY;
+    return EMPTY;
   }
 
   private T[] _elems;
@@ -72,10 +73,13 @@ public class ArraySet<T> extends AbstractSet<T> {
    *
    * @see AAA.util.AAASet#add(java.lang.Object)
    */
+  @Override
   @SuppressWarnings("all")
   public boolean add(T obj_) {
     assert obj_ != null;
-    if (checkDupes && this.contains(obj_)) return false;
+    if (checkDupes && this.contains(obj_)) {
+      return false;
+    }
     if (_curIndex == _elems.length) {
       // lengthen array
       Object[] tmp = _elems;
@@ -101,16 +105,21 @@ public class ArraySet<T> extends AbstractSet<T> {
    *
    * @see AAA.util.AAASet#contains(java.lang.Object)
    */
+  @Override
   public boolean contains(Object obj_) {
     for (int i = 0; i < _curIndex; i++) {
-      if (_elems[i].equals(obj_)) return true;
+      if (_elems[i].equals(obj_)) {
+        return true;
+      }
     }
     return false;
   }
 
   public boolean intersects(ArraySet<T> other) {
     for (int i = 0; i < other.size(); i++) {
-      if (contains(other.get(i))) return true;
+      if (contains(other.get(i))) {
+        return true;
+      }
     }
     return false;
   }
@@ -126,6 +135,7 @@ public class ArraySet<T> extends AbstractSet<T> {
     }
   }
 
+  @Override
   public int size() {
     return _curIndex;
   }
@@ -134,11 +144,14 @@ public class ArraySet<T> extends AbstractSet<T> {
     return _elems[i];
   }
 
+  @Override
   public boolean remove(Object obj_) {
     int ind;
     for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {}
     // check if object was never there
-    if (ind == _curIndex) return false;
+    if (ind == _curIndex) {
+      return false;
+    }
     return remove(ind);
   }
 
@@ -153,14 +166,17 @@ public class ArraySet<T> extends AbstractSet<T> {
     return true;
   }
 
+  @Override
   public void clear() {
     _curIndex = 0;
   }
 
+  @Override
   public boolean isEmpty() {
     return size() == 0;
   }
 
+  @Override
   public String toString() {
     StringBuffer ret = new StringBuffer();
     ret.append('[');
@@ -179,6 +195,7 @@ public class ArraySet<T> extends AbstractSet<T> {
    *
    * @see java.util.Set#toArray()
    */
+  @Override
   public Object[] toArray() {
     throw new UnsupportedOperationException();
   }
@@ -188,6 +205,7 @@ public class ArraySet<T> extends AbstractSet<T> {
    *
    * @see java.util.Set#addAll(java.util.Collection)
    */
+  @Override
   public boolean addAll(Collection<? extends T> c) {
     boolean ret = false;
     for (T element : c) {
@@ -202,6 +220,7 @@ public class ArraySet<T> extends AbstractSet<T> {
    *
    * @see java.util.Set#iterator()
    */
+  @Override
   public Iterator<T> iterator() {
     return new ArraySetIterator();
   }
@@ -211,6 +230,7 @@ public class ArraySet<T> extends AbstractSet<T> {
    *
    * @see java.util.Set#toArray(java.lang.Object[])
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <U> U[] toArray(U[] a) {
     for (int i = 0; i < _curIndex; i++) {
@@ -235,6 +255,7 @@ public class ArraySet<T> extends AbstractSet<T> {
      *
      * @see java.util.Iterator#remove()
      */
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -244,6 +265,7 @@ public class ArraySet<T> extends AbstractSet<T> {
      *
      * @see java.util.Iterator#hasNext()
      */
+    @Override
     public boolean hasNext() {
       return ind < setSize;
     }
@@ -253,6 +275,7 @@ public class ArraySet<T> extends AbstractSet<T> {
      *
      * @see java.util.Iterator#next()
      */
+    @Override
     public T next() {
       if (ind >= setSize) {
         throw new NoSuchElementException();

@@ -28,6 +28,7 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+
 import soot.IntType;
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -47,9 +48,10 @@ public class AgetInstruction extends DexlibAbstractInstruction {
 
   @Override
   public void jimplify(DexBody body) throws InvalidDalvikBytecodeException {
-    if (!(instruction instanceof Instruction23x))
+    if (!(instruction instanceof Instruction23x)) {
       throw new IllegalArgumentException(
           "Expected Instruction23x but got: " + instruction.getClass());
+    }
 
     Instruction23x aGetInstr = (Instruction23x) instruction;
     int dest = aGetInstr.getRegisterA();
@@ -61,7 +63,9 @@ public class AgetInstruction extends DexlibAbstractInstruction {
     Local l = body.getRegisterLocal(dest);
 
     AssignStmt assign = Jimple.v().newAssignStmt(l, arrayRef);
-    if (aGetInstr.getOpcode() == Opcode.AGET_OBJECT) assign.addTag(new ObjectOpTag());
+    if (aGetInstr.getOpcode() == Opcode.AGET_OBJECT) {
+      assign.addTag(new ObjectOpTag());
+    }
 
     setUnit(assign);
     addTags(assign);

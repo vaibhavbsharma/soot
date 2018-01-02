@@ -40,104 +40,160 @@ public class FloatConstant extends RealConstant {
     return new FloatConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return c instanceof FloatConstant && ((FloatConstant) c).value == value;
   }
 
   /** Returns a hash code for this FloatConstant object. */
+  @Override
   public int hashCode() {
     return Float.floatToIntBits(value);
   }
 
   // PTC 1999/06/28
+  @Override
   public NumericConstant add(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return FloatConstant.v(this.value + ((FloatConstant) c).value);
   }
 
+  @Override
   public NumericConstant subtract(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return FloatConstant.v(this.value - ((FloatConstant) c).value);
   }
 
+  @Override
   public NumericConstant multiply(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return FloatConstant.v(this.value * ((FloatConstant) c).value);
   }
 
+  @Override
   public NumericConstant divide(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return FloatConstant.v(this.value / ((FloatConstant) c).value);
   }
 
+  @Override
   public NumericConstant remainder(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return FloatConstant.v(this.value % ((FloatConstant) c).value);
   }
 
+  @Override
   public NumericConstant equalEqual(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return IntConstant.v((this.value == ((FloatConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant notEqual(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return IntConstant.v((this.value != ((FloatConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant lessThan(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return IntConstant.v((this.value < ((FloatConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant lessThanOrEqual(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return IntConstant.v((this.value <= ((FloatConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant greaterThan(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return IntConstant.v((this.value > ((FloatConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant greaterThanOrEqual(NumericConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     return IntConstant.v((this.value >= ((FloatConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public IntConstant cmpg(RealConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     float cValue = ((FloatConstant) c).value;
-    if (this.value < cValue) return IntConstant.v(-1);
-    else if (this.value == cValue) return IntConstant.v(0);
-    else /* this or c could be NaN */ return IntConstant.v(1);
+    if (this.value < cValue) {
+      return IntConstant.v(-1);
+    } else if (this.value == cValue) {
+      return IntConstant.v(0);
+    } else {
+      /* this or c could be NaN */ return IntConstant.v(1);
+    }
   }
 
+  @Override
   public IntConstant cmpl(RealConstant c) {
-    if (!(c instanceof FloatConstant)) throw new IllegalArgumentException("FloatConstant expected");
+    if (!(c instanceof FloatConstant)) {
+      throw new IllegalArgumentException("FloatConstant expected");
+    }
     float cValue = ((FloatConstant) c).value;
-    if (this.value > cValue) return IntConstant.v(1);
-    else if (this.value == cValue) return IntConstant.v(0);
-    else /* this or c could be NaN */ return IntConstant.v(-1);
+    if (this.value > cValue) {
+      return IntConstant.v(1);
+    } else if (this.value == cValue) {
+      return IntConstant.v(0);
+    } else {
+      /* this or c could be NaN */ return IntConstant.v(-1);
+    }
   }
 
+  @Override
   public NumericConstant negate() {
     return FloatConstant.v(-(this.value));
   }
 
+  @Override
   public String toString() {
     String floatString = new Float(value).toString();
 
     if (floatString.equals("NaN")
         || floatString.equals("Infinity")
-        || floatString.equals("-Infinity")) return "#" + floatString + "F";
-    else return floatString + "F";
+        || floatString.equals("-Infinity")) {
+      return "#" + floatString + "F";
+    } else {
+      return floatString + "F";
+    }
   }
 
+  @Override
   public Type getType() {
     return FloatType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseFloatConstant(this);
   }

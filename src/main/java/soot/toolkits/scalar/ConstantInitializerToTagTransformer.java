@@ -1,5 +1,14 @@
 package soot.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import soot.ConflictingFieldRefException;
 import soot.G;
 import soot.Scene;
@@ -24,15 +33,6 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * This is the reverse operation of the {@link ConstantValueToInitializerTransformer}. We scan for
@@ -68,11 +68,13 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
   public void transformClass(SootClass sc, boolean removeAssignments) {
     // If this class has no <clinit> method, we're done
     SootMethod smInit = sc.getMethodByNameUnsafe("<clinit>");
-    if (smInit == null || !smInit.isConcrete()) return;
+    if (smInit == null || !smInit.isConcrete()) {
+      return;
+    }
 
-    Set<SootField> nonConstantFields = new HashSet<SootField>();
-    Map<SootField, ConstantValueTag> newTags = new HashMap<SootField, ConstantValueTag>();
-    Set<SootField> removeTagList = new HashSet<SootField>(); // in case of
+    Set<SootField> nonConstantFields = new HashSet<>();
+    Map<SootField, ConstantValueTag> newTags = new HashMap<>();
+    Set<SootField> removeTagList = new HashSet<>(); // in case of
     // mismatch
     // between
     // code/constant
@@ -83,7 +85,8 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
     // removed
 
     for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator();
-        itU.hasNext(); ) {
+        itU.hasNext();
+        ) {
       Unit u = itU.next();
       if (u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
@@ -92,7 +95,9 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
           SootField field = null;
           try {
             field = ((StaticFieldRef) assign.getLeftOp()).getField();
-            if (field == null || nonConstantFields.contains(field)) continue;
+            if (field == null || nonConstantFields.contains(field)) {
+              continue;
+            }
           } catch (ConflictingFieldRefException ex) {
             // Ignore this statement
             continue;
@@ -107,7 +112,9 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
                   // If we assign the same value we also have
                   // in the constant table, we can get rid of
                   // the assignment.
-                  if (removeAssignments) itU.remove();
+                  if (removeAssignments) {
+                    itU.remove();
+                  }
                 } else {
                   G.v()
                       .out
@@ -140,14 +147,18 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
               }
 
               ConstantValueTag newTag = createConstantTagFromValue((Constant) assign.getRightOp());
-              if (newTag != null) newTags.put(field, newTag);
+              if (newTag != null) {
+                newTags.put(field, newTag);
+              }
             }
           }
         } else if (assign.getLeftOp() instanceof StaticFieldRef) {
           // a non-constant is assigned to the field
           try {
             SootField sf = ((StaticFieldRef) assign.getLeftOp()).getField();
-            if (sf != null) removeTagList.add(sf);
+            if (sf != null) {
+              removeTagList.add(sf);
+            }
           } catch (ConflictingFieldRefException ex) {
             // let's assume that a broken field doesn't cause any
             // harm
@@ -159,30 +170,37 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
     // Do the actual assignment
     for (Entry<SootField, ConstantValueTag> entry : newTags.entrySet()) {
       SootField field = entry.getKey();
-      if (removeTagList.contains(field)) continue;
+      if (removeTagList.contains(field)) {
+        continue;
+      }
       field.addTag(entry.getValue());
     }
 
-    if (removeAssignments && !newTags.isEmpty())
+    if (removeAssignments && !newTags.isEmpty()) {
       for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator();
-          itU.hasNext(); ) {
+          itU.hasNext();
+          ) {
         Unit u = itU.next();
         if (u instanceof AssignStmt) {
           AssignStmt assign = (AssignStmt) u;
-          if (assign.getLeftOp() instanceof FieldRef)
+          if (assign.getLeftOp() instanceof FieldRef) {
             try {
               SootField fld = ((FieldRef) assign.getLeftOp()).getField();
-              if (fld != null && newTags.containsKey(fld)) itU.remove();
+              if (fld != null && newTags.containsKey(fld)) {
+                itU.remove();
+              }
             } catch (ConflictingFieldRefException ex) {
               // Ignore broken code
             }
+          }
         }
       }
+    }
 
     // remove constant tags
     for (SootField sf : removeTagList) {
       if (removeTagList.contains(sf)) {
-        List<Tag> toRemoveTagList = new ArrayList<Tag>();
+        List<Tag> toRemoveTagList = new ArrayList<>();
         for (Tag t : sf.getTags()) {
           if (t instanceof ConstantValueTag) {
             toRemoveTagList.add(t);
@@ -196,39 +214,54 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
   }
 
   private ConstantValueTag createConstantTagFromValue(Constant rightOp) {
-    if (rightOp instanceof DoubleConstant)
+    if (rightOp instanceof DoubleConstant) {
       return new DoubleConstantValueTag(((DoubleConstant) rightOp).value);
-    else if (rightOp instanceof FloatConstant)
+    } else if (rightOp instanceof FloatConstant) {
       return new FloatConstantValueTag(((FloatConstant) rightOp).value);
-    else if (rightOp instanceof IntConstant)
+    } else if (rightOp instanceof IntConstant) {
       return new IntegerConstantValueTag(((IntConstant) rightOp).value);
-    else if (rightOp instanceof LongConstant)
+    } else if (rightOp instanceof LongConstant) {
       return new LongConstantValueTag(((LongConstant) rightOp).value);
-    else if (rightOp instanceof StringConstant)
+    } else if (rightOp instanceof StringConstant) {
       return new StringConstantValueTag(((StringConstant) rightOp).value);
-    else return null;
+    } else {
+      return null;
+    }
   }
 
   private boolean checkConstantValue(ConstantValueTag t, Constant rightOp) {
-    if (t == null || rightOp == null) return true;
+    if (t == null || rightOp == null) {
+      return true;
+    }
 
     if (t instanceof DoubleConstantValueTag) {
-      if (!(rightOp instanceof DoubleConstant)) return false;
+      if (!(rightOp instanceof DoubleConstant)) {
+        return false;
+      }
       return ((DoubleConstantValueTag) t).getDoubleValue() == ((DoubleConstant) rightOp).value;
     } else if (t instanceof FloatConstantValueTag) {
-      if (!(rightOp instanceof FloatConstant)) return false;
+      if (!(rightOp instanceof FloatConstant)) {
+        return false;
+      }
       return ((FloatConstantValueTag) t).getFloatValue() == ((FloatConstant) rightOp).value;
     } else if (t instanceof IntegerConstantValueTag) {
-      if (!(rightOp instanceof IntConstant)) return false;
+      if (!(rightOp instanceof IntConstant)) {
+        return false;
+      }
       return ((IntegerConstantValueTag) t).getIntValue() == ((IntConstant) rightOp).value;
     } else if (t instanceof LongConstantValueTag) {
-      if (!(rightOp instanceof LongConstant)) return false;
+      if (!(rightOp instanceof LongConstant)) {
+        return false;
+      }
       return ((LongConstantValueTag) t).getLongValue() == ((LongConstant) rightOp).value;
     } else if (t instanceof StringConstantValueTag) {
-      if (!(rightOp instanceof StringConstant)) return false;
+      if (!(rightOp instanceof StringConstant)) {
+        return false;
+      }
       return ((StringConstantValueTag) t).getStringValue().equals(((StringConstant) rightOp).value);
-    } else
+    } else {
       // We don't know the type, so we assume it's alright
       return true;
+    }
   }
 }

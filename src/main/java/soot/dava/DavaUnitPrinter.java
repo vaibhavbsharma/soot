@@ -46,25 +46,31 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     this.body = body;
   }
 
+  @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
     output.append(m.name());
   }
 
+  @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     output.append(f.name());
   }
 
+  @Override
   public void identityRef(IdentityRef r) {
     handleIndent();
     if (r instanceof ThisRef) {
       literal("this");
-    } else throw new RuntimeException();
+    } else {
+      throw new RuntimeException();
+    }
   }
 
   private boolean eatSpace = false;
 
+  @Override
   public void literal(String s) {
     handleIndent();
     if (eatSpace && s.equals(" ")) {
@@ -82,6 +88,7 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     output.append(s);
   }
 
+  @Override
   public void type(Type t) {
     handleIndent();
     if (t instanceof RefType) {
@@ -109,6 +116,7 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     }
   }
 
+  @Override
   public void unitRef(Unit u, boolean branchTarget) {
     throw new RuntimeException("Dava doesn't have unit references!");
   }

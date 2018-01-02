@@ -62,6 +62,7 @@ class Instruction_Astore_0 extends Instruction_noargs implements Interface_Astor
     name = "astore_0";
   }
 
+  @Override
   public int getLocalNumber() {
     return 0;
   }

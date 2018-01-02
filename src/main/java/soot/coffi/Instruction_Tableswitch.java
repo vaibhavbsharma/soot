@@ -74,6 +74,7 @@ class Instruction_Tableswitch extends Instruction {
   public Instruction default_inst;
   public Instruction jump_insts[];
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     String args;
     int i;
@@ -87,12 +88,16 @@ class Instruction_Tableswitch extends Instruction {
     return args;
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     // first figure out padding to next 4-byte quantity
     int i, j;
     i = index % 4;
-    if (i != 0) pad = (byte) (4 - i);
-    else pad = (byte) 0;
+    if (i != 0) {
+      pad = (byte) (4 - i);
+    } else {
+      pad = (byte) 0;
+    }
     index += pad;
     default_offset = getInt(bc, index);
     index += 4;
@@ -113,36 +118,51 @@ class Instruction_Tableswitch extends Instruction {
     return index;
   }
 
+  @Override
   public int nextOffset(int curr) {
     int i, siz = 0;
     i = (curr + 1) % 4;
-    if (i != 0) siz = (4 - i);
+    if (i != 0) {
+      siz = (4 - i);
+    }
     return (curr + siz + 13 + (high - low + 1) * 4);
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     int i;
     bc[index++] = code;
     // insert padding so next instruction is on a 4-byte boundary
-    for (i = 0; i < pad; i++) bc[index++] = 0;
-    if (default_inst != null) index = intToBytes(default_inst.label - label, bc, index);
-    else index = intToBytes(default_offset, bc, index);
+    for (i = 0; i < pad; i++) {
+      bc[index++] = 0;
+    }
+    if (default_inst != null) {
+      index = intToBytes(default_inst.label - label, bc, index);
+    } else {
+      index = intToBytes(default_offset, bc, index);
+    }
     index = intToBytes(low, bc, index);
     index = intToBytes(high, bc, index);
     for (i = 0; i <= high - low; i++) {
-      if (jump_insts[i] != null) index = intToBytes((jump_insts[i]).label - label, bc, index);
-      else index = intToBytes(jump_offsets[i], bc, index);
+      if (jump_insts[i] != null) {
+        index = intToBytes((jump_insts[i]).label - label, bc, index);
+      } else {
+        index = intToBytes(jump_offsets[i], bc, index);
+      }
     }
     return index;
   }
 
+  @Override
   public void offsetToPointer(ByteCode bc) {
     int i;
     default_inst = bc.locateInst(default_offset + label);
     if (default_inst == null) {
       G.v().out.println("Warning: can't locate target of instruction");
       G.v().out.println(" which should be at byte address " + (label + default_offset));
-    } else default_inst.labelled = true;
+    } else {
+      default_inst.labelled = true;
+    }
     if (high - low + 1 > 0) {
       jump_insts = new Instruction[high - low + 1];
       for (i = 0; i < high - low + 1; i++) {
@@ -150,16 +170,21 @@ class Instruction_Tableswitch extends Instruction {
         if (jump_insts[i] == null) {
           G.v().out.println("Warning: can't locate target of instruction");
           G.v().out.println(" which should be at byte address " + (label + jump_offsets[i]));
-        } else jump_insts[i].labelled = true;
+        } else {
+          jump_insts[i].labelled = true;
+        }
       }
     }
   }
 
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[high - low + 2];
     int j;
     i[0] = default_inst;
-    for (j = 1; j < high - low + 2; j++) i[j] = jump_insts[j - 1];
+    for (j = 1; j < high - low + 2; j++) {
+      i[j] = jump_insts[j - 1];
+    }
     return i;
   }
 }

@@ -25,6 +25,11 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.SideEffectTester;
 import soot.Unit;
@@ -34,11 +39,6 @@ import soot.jimple.FieldRef;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Computes the earliest points for the given expressions.<br>
@@ -100,7 +100,7 @@ public class EarliestnessComputation {
       DownSafetyAnalysis downSafe,
       SideEffectTester sideEffect,
       FlowSet<EquivalentValue> set) {
-    unitToEarliest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
+    unitToEarliest = new HashMap<>(unitGraph.size() + 1, 0.7f);
 
     for (Unit currentUnit : unitGraph) {
       /* create a new Earliest-list for each unit */
@@ -132,7 +132,8 @@ public class EarliestnessComputation {
              * passes through the predecessor
              */
             for (Iterator<EquivalentValue> downSafeIt = downSafeSet.iterator();
-                downSafeIt.hasNext(); ) {
+                downSafeIt.hasNext();
+                ) {
               EquivalentValue equiVal = downSafeIt.next();
               Value avail = equiVal.getValue();
 
@@ -161,7 +162,8 @@ public class EarliestnessComputation {
              * downsafe in one of the predecessors
              */
             for (Iterator<EquivalentValue> downSafeIt = downSafeSet.iterator();
-                downSafeIt.hasNext(); ) {
+                downSafeIt.hasNext();
+                ) {
               EquivalentValue equiVal = downSafeIt.next();
               FlowSet<EquivalentValue> preDown = downSafe.getFlowBefore(predecessor);
               FlowSet<EquivalentValue> preUp = upSafe.getFlowBefore(predecessor);

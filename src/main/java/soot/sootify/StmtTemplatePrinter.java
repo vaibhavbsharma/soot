@@ -1,5 +1,10 @@
 package soot.sootify;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import soot.PatchingChain;
 import soot.Unit;
 import soot.UnitBox;
@@ -22,17 +27,12 @@ import soot.jimple.StmtSwitch;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 class StmtTemplatePrinter implements StmtSwitch {
   private final TemplatePrinter p;
 
   private final ValueTemplatePrinter vtp; // text for expression
 
-  private List<Unit> jumpTargets = new ArrayList<Unit>();
+  private List<Unit> jumpTargets = new ArrayList<>();
 
   public StmtTemplatePrinter(TemplatePrinter templatePrinter, PatchingChain<Unit> units) {
     this.p = templatePrinter;
@@ -44,10 +44,11 @@ class StmtTemplatePrinter implements StmtSwitch {
       }
     }
 
-    final List<Unit> unitsList = new ArrayList<Unit>(units);
+    final List<Unit> unitsList = new ArrayList<>(units);
     Collections.sort(
         jumpTargets,
         new Comparator<Unit>() {
+          @Override
           public int compare(Unit o1, Unit o2) {
             return unitsList.indexOf(o1) - unitsList.indexOf(o2);
           }
@@ -75,7 +76,9 @@ class StmtTemplatePrinter implements StmtSwitch {
 
   private void printStmt(Unit u, String... ops) {
     String stmtClassName = u.getClass().getSimpleName();
-    if (stmtClassName.charAt(0) == 'J') stmtClassName = stmtClassName.substring(1);
+    if (stmtClassName.charAt(0) == 'J') {
+      stmtClassName = stmtClassName.substring(1);
+    }
     if (isJumpTarget(u)) {
       String nameOfJumpTarget = nameOfJumpTarget(u);
       p.println("units.add(" + nameOfJumpTarget + ");");
@@ -100,11 +103,13 @@ class StmtTemplatePrinter implements StmtSwitch {
     p.printNoIndent(")");
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {
     String varName = printValueAssignment(stmt.getOp(), "op");
     printStmt(stmt, varName);
   }
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     p.openBlock();
     String varName = printValueAssignment(stmt.getKey(), "key");
@@ -129,24 +134,29 @@ class StmtTemplatePrinter implements StmtSwitch {
     p.closeBlock();
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
     printStmt(stmt);
   }
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     String varName = printValueAssignment(stmt.getOp(), "retVal");
     printStmt(stmt, varName);
   }
 
+  @Override
   public void caseRetStmt(RetStmt stmt) {
     String varName = printValueAssignment(stmt.getStmtAddress(), "stmtAddress");
     printStmt(stmt, varName);
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {
     printStmt(stmt);
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     p.openBlock();
 
@@ -176,11 +186,13 @@ class StmtTemplatePrinter implements StmtSwitch {
     p.closeBlock();
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     String varName = printValueAssignment(stmt.getInvokeExpr(), "ie");
     printStmt(stmt, varName);
   }
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     String varName = printValueAssignment(stmt.getCondition(), "condition");
 
@@ -193,6 +205,7 @@ class StmtTemplatePrinter implements StmtSwitch {
     printStmt(stmt, varName, targetName);
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
     String varName = printValueAssignment(stmt.getLeftOp(), "lhs");
 
@@ -201,6 +214,7 @@ class StmtTemplatePrinter implements StmtSwitch {
     printStmt(stmt, varName, varName2);
   }
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {
     Unit target = stmt.getTarget();
 
@@ -211,22 +225,26 @@ class StmtTemplatePrinter implements StmtSwitch {
     printStmt(stmt, targetName);
   }
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
     String varName = printValueAssignment(stmt.getOp(), "monitor");
 
     printStmt(stmt, varName);
   }
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
     String varName = printValueAssignment(stmt.getOp(), "monitor");
 
     printStmt(stmt, varName);
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
     printStmt(stmt);
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     String varName = printValueAssignment(stmt.getLeftOp(), "lhs");
     String varName2 = printValueAssignment(stmt.getRightOp(), "rhs");
@@ -234,6 +252,7 @@ class StmtTemplatePrinter implements StmtSwitch {
     printStmt(stmt, varName, varName2);
   }
 
+  @Override
   public void defaultCase(Object obj) {
     throw new InternalError("should never be called");
   }

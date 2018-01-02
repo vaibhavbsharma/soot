@@ -12,6 +12,7 @@ public class DAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     super(left, right);
   }
 
+  @Override
   public Object clone() {
     return new DAssignStmt(leftBox, rightBox);
   }
@@ -26,12 +27,14 @@ public class DAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     rightBox.setValue(rvalue);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     leftBox.toString(up);
     up.literal(" = ");
     rightBox.toString(up);
   }
 
+  @Override
   public String toString() {
     return leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
   }

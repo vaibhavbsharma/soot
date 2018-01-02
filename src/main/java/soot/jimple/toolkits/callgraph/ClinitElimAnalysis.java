@@ -19,14 +19,14 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.util.Iterator;
+
 import soot.Scene;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.Iterator;
 
 public class ClinitElimAnalysis extends ForwardFlowAnalysis {
 
@@ -39,6 +39,7 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis {
     doAnalysis();
   }
 
+  @Override
   public void merge(Object in1, Object in2, Object out) {
 
     FlowSet inSet1 = (FlowSet) in1;
@@ -48,6 +49,7 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis {
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   public void copy(Object src, Object dest) {
 
     FlowSet srcIn = (FlowSet) src;
@@ -57,6 +59,7 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis {
   }
 
   // out(s) = in(s) intersect { target methods of s where edge kind is clinit}
+  @Override
   protected void flowThrough(Object inVal, Object stmt, Object outVal) {
     FlowSet in = (FlowSet) inVal;
     FlowSet out = (FlowSet) outVal;
@@ -76,11 +79,13 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis {
     }
   }
 
+  @Override
   protected Object entryInitialFlow() {
 
     return new ArraySparseSet();
   }
 
+  @Override
   protected Object newInitialFlow() {
     ArraySparseSet set = new ArraySparseSet();
     CallGraph cg = Scene.v().getCallGraph();

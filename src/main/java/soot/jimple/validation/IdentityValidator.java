@@ -19,6 +19,8 @@
 
 package soot.jimple.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.Unit;
 import soot.jimple.IdentityStmt;
@@ -26,8 +28,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
-
-import java.util.List;
 
 /**
  * This validator checks whether each ParameterRef and ThisRef is used exactly once.
@@ -57,17 +57,18 @@ public enum IdentityValidator implements BodyValidator {
         if (id.getRightOp() instanceof ParameterRef) {
           ParameterRef ref = (ParameterRef) id.getRightOp();
           if (ref.getIndex() < 0 || ref.getIndex() >= paramCount) {
-            if (paramCount == 0)
+            if (paramCount == 0) {
               exceptions.add(
                   new ValidationException(
                       id, "This method has no parameters, so no parameter reference is allowed"));
-            else
+            } else {
               exceptions.add(
                   new ValidationException(
                       id,
                       String.format(
                           "Parameter reference index must be between 0 and %d (inclusive)",
                           paramCount - 1)));
+            }
             return;
           }
           if (parameterRefs[ref.getIndex()]) {

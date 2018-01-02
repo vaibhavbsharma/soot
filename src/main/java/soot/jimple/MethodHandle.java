@@ -43,10 +43,12 @@ public class MethodHandle extends Constant {
     return new MethodHandle(ref, tag);
   }
 
+  @Override
   public String toString() {
     return "handle: " + methodRef;
   }
 
+  @Override
   public Type getType() {
     return RefType.v("java.lang.invoke.MethodHandle");
   }
@@ -55,6 +57,7 @@ public class MethodHandle extends Constant {
     return methodRef;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseMethodHandle(this);
   }
@@ -69,13 +72,23 @@ public class MethodHandle extends Constant {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     MethodHandle other = (MethodHandle) obj;
     if (methodRef == null) {
-      if (other.methodRef != null) return false;
-    } else if (!methodRef.equals(other.methodRef)) return false;
+      if (other.methodRef != null) {
+        return false;
+      }
+    } else if (!methodRef.equals(other.methodRef)) {
+      return false;
+    }
     return true;
   }
 }

@@ -34,15 +34,18 @@ public final class Units implements Iterator {
     this.edges = edges;
   }
 
+  @Override
   public boolean hasNext() {
     return edges.hasNext();
   }
 
+  @Override
   public Object next() {
     Edge e = (Edge) edges.next();
     return e.srcUnit();
   }
 
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

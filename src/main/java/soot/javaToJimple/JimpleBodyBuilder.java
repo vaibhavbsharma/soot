@@ -19,6 +19,12 @@
 
 package soot.javaToJimple;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Try;
@@ -33,12 +39,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-
 public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
   public JimpleBodyBuilder() {
@@ -52,14 +52,14 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   // from synch try blocks
 
   protected ArrayList<Trap> exceptionTable; // list of exceptions
-  protected Stack<Stmt> endControlNoop = new Stack<Stmt>(); // for break
-  protected Stack<Stmt> condControlNoop = new Stack<Stmt>(); // continue
+  protected Stack<Stmt> endControlNoop = new Stack<>(); // for break
+  protected Stack<Stmt> condControlNoop = new Stack<>(); // continue
   protected Stack<Value> monitorStack; // for synchronized blocks
   protected Stack<Try> tryStack; // for try stmts in case of returns
   protected Stack<Try> catchStack; // for catch stmts in case of returns
 
-  protected Stack<Stmt> trueNoop = new Stack<Stmt>();
-  protected Stack<Stmt> falseNoop = new Stack<Stmt>();
+  protected Stack<Stmt> trueNoop = new Stack<>();
+  protected Stack<Stmt> falseNoop = new Stack<>();
 
   protected HashMap<String, Stmt> labelBreakMap; // for break label --> nop to
   // jump to
@@ -67,7 +67,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   // nop to jump to
 
   protected HashMap<polyglot.ast.Stmt, Stmt> labelMap;
-  protected HashMap<IdentityKey, Local> localsMap = new HashMap<IdentityKey, Local>(); // localInst
+  protected HashMap<IdentityKey, Local> localsMap = new HashMap<>(); // localInst
   // -->
   // soot
   // local
@@ -81,6 +81,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   protected LocalGenerator lg; // for generated locals not in orig src
 
   /** Jimple Body Creation */
+  @Override
   public soot.jimple.JimpleBody createJimpleBody(
       polyglot.ast.Block block, List formals, soot.SootMethod sootMethod) {
 
@@ -133,7 +134,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     // handle formals
     if (formals != null) {
-      ArrayList<String> formalNames = new ArrayList<String>();
+      ArrayList<String> formalNames = new ArrayList<>();
       Iterator formalsIt = formals.iterator();
       while (formalsIt.hasNext()) {
         polyglot.ast.Formal formal = (polyglot.ast.Formal) formalsIt.next();
@@ -201,7 +202,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   }
 
   private void handleAssert(soot.SootMethod sootMethod) {
-    if (!((soot.javaToJimple.PolyglotMethodSource) sootMethod.getSource()).hasAssert()) return;
+    if (!((soot.javaToJimple.PolyglotMethodSource) sootMethod.getSource()).hasAssert()) {
+      return;
+    }
     ((soot.javaToJimple.PolyglotMethodSource) sootMethod.getSource()).addAssertInits(body);
   }
 
@@ -358,7 +361,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   /** Block creation */
   private void createBlock(polyglot.ast.Block block) {
 
-    if (block == null) return;
+    if (block == null) {
+      return;
+    }
 
     // handle stmts
     Iterator it = block.statements().iterator();
@@ -384,7 +389,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     Util.addLnPosTags(stmt, formal.position());
     Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
 
-    ArrayList<String> names = new ArrayList<String>();
+    ArrayList<String> names = new ArrayList<>();
     names.add(formal.name());
     stmt.addTag(new soot.tagkit.ParamNamesTag(names));
     return formalLocal;
@@ -434,8 +439,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       return soot.jimple.IntConstant.v(litValue);
     } else if (lit instanceof polyglot.ast.BooleanLit) {
       boolean litValue = ((polyglot.ast.BooleanLit) lit).value();
-      if (litValue) return soot.jimple.IntConstant.v(1);
-      else return soot.jimple.IntConstant.v(0);
+      if (litValue) {
+        return soot.jimple.IntConstant.v(1);
+      } else {
+        return soot.jimple.IntConstant.v(0);
+      }
     } else if (lit instanceof polyglot.ast.ClassLit) {
       return getSpecialClassLitLocal((polyglot.ast.ClassLit) lit);
     } else {
@@ -562,6 +570,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   }
 
   /** Stmt creation */
+  @Override
   protected void createStmt(polyglot.ast.Stmt stmt) {
     // System.out.println("stmt: "+stmt.getClass());
     if (stmt instanceof polyglot.ast.Eval) {
@@ -1148,15 +1157,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     polyglot.ast.Expr value = switchStmt.expr();
     soot.Value sootValue = base().createAggressiveExpr(value, false, false);
 
-    if (switchStmt.elements().size() == 0) return;
+    if (switchStmt.elements().size() == 0) {
+      return;
+    }
 
     soot.jimple.Stmt defaultTarget = null;
 
     polyglot.ast.Case[] caseArray = new polyglot.ast.Case[switchStmt.elements().size()];
     soot.jimple.Stmt[] targetsArray = new soot.jimple.Stmt[switchStmt.elements().size()];
 
-    ArrayList<Stmt> targets = new ArrayList<Stmt>();
-    HashMap<Object, Stmt> targetsMap = new HashMap<Object, Stmt>();
+    ArrayList<Stmt> targets = new ArrayList<>();
+    HashMap<Object, Stmt> targetsMap = new HashMap<>();
     int counter = 0;
     Iterator it = switchStmt.elements().iterator();
     while (it.hasNext()) {
@@ -1301,7 +1312,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       Object next = it.next();
       if (next instanceof polyglot.ast.Case) {
         polyglot.ast.Case caseStmt = (polyglot.ast.Case) next;
-        if (caseStmt.isDefault()) continue;
+        if (caseStmt.isDefault()) {
+          continue;
+        }
         int caseValue = (int) caseStmt.value();
         if (caseValue <= lowest || counter == 0) {
           lowest = caseValue;
@@ -1348,7 +1361,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
         // handle monitor exits before break if necessary
         if (monitorStack != null) {
-          Stack<Local> putBack = new Stack<Local>();
+          Stack<Local> putBack = new Stack<>();
           while (!monitorStack.isEmpty()) {
             soot.Local exitVal = (soot.Local) monitorStack.pop();
             putBack.push(exitVal);
@@ -1376,7 +1389,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
         // handle monitor exits before continue if necessary
         if (monitorStack != null) {
-          Stack<Local> putBack = new Stack<Local>();
+          Stack<Local> putBack = new Stack<>();
           while (!monitorStack.isEmpty()) {
             soot.Local exitVal = (soot.Local) monitorStack.pop();
             putBack.push(exitVal);
@@ -1418,17 +1431,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
 
     if (labelMap == null) {
-      labelMap = new HashMap<polyglot.ast.Stmt, Stmt>();
+      labelMap = new HashMap<>();
     }
 
     labelMap.put(stmt, noop);
 
     if (labelBreakMap == null) {
-      labelBreakMap = new HashMap<String, Stmt>();
+      labelBreakMap = new HashMap<>();
     }
 
     if (labelContinueMap == null) {
-      labelContinueMap = new HashMap<String, Stmt>();
+      labelContinueMap = new HashMap<>();
     }
 
     labelContinueMap.put(label, noop);
@@ -1581,16 +1594,16 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     body.getUnits().add(enterMon);
 
     if (beforeReturn == null) {
-      beforeReturn = new ArrayList<List<Stmt>>();
+      beforeReturn = new ArrayList<>();
     }
     if (afterReturn == null) {
-      afterReturn = new ArrayList<List<Stmt>>();
+      afterReturn = new ArrayList<>();
     }
     beforeReturn.add(new ArrayList<Stmt>());
     afterReturn.add(new ArrayList<Stmt>());
 
     if (monitorStack == null) {
-      monitorStack = new Stack<Value>();
+      monitorStack = new Stack<>();
     }
     monitorStack.push(sootExpr);
 
@@ -1705,7 +1718,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     // handle monitor exits before return if necessary
     if (monitorStack != null) {
-      Stack<Local> putBack = new Stack<Local>();
+      Stack<Local> putBack = new Stack<>();
       while (!monitorStack.isEmpty()) {
         soot.Local exitVal = (soot.Local) monitorStack.pop();
         putBack.push(exitVal);
@@ -1827,7 +1840,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     body.getUnits().add(noop1);
 
     if (tryStack == null) {
-      tryStack = new Stack<Try>();
+      tryStack = new Stack<>();
     }
     tryStack.push(tryStmt);
     createBlock(tryBlock);
@@ -1856,7 +1869,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       createCatchFormal(catchBlock.formal());
 
       if (catchStack == null) {
-        catchStack = new Stack<Try>();
+        catchStack = new Stack<>();
       }
       catchStack.push(tryStmt);
       createBlock(catchBlock.body());
@@ -1876,7 +1889,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   /** handles try/catch/finally (try/catch is separate for simplicity) */
   private void createTryCatchFinally(polyglot.ast.Try tryStmt) {
 
-    HashMap<Stmt, Stmt> gotoMap = new HashMap<Stmt, Stmt>();
+    HashMap<Stmt, Stmt> gotoMap = new HashMap<>();
 
     // try
     polyglot.ast.Block tryBlock = tryStmt.tryBlock();
@@ -1886,7 +1899,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     body.getUnits().add(noop1);
 
     if (tryStack == null) {
-      tryStack = new Stack<Try>();
+      tryStack = new Stack<>();
     }
     tryStack.push(tryStmt);
     createBlock(tryBlock);
@@ -1937,7 +1950,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       body.getUnits().add(catchStmtsNoop);
 
       if (catchStack == null) {
-        catchStack = new Stack<Try>();
+        catchStack = new Stack<>();
       }
       catchStack.push(tryStmt);
       createBlock(catchBlock.body());
@@ -2038,7 +2051,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       soot.jimple.Stmt with,
       soot.SootClass exceptionClass) {
     if (exceptionTable == null) {
-      exceptionTable = new ArrayList<Trap>();
+      exceptionTable = new ArrayList<>();
     }
     soot.Trap trap = soot.jimple.Jimple.v().newTrap(exceptionClass, from, to, with);
     exceptionTable.add(trap);
@@ -2094,6 +2107,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
    * Aggressive Expression Creation make reduceAggressively true to not reduce all the way to a
    * local
    */
+  @Override
   protected soot.Value createAggressiveExpr(
       polyglot.ast.Expr expr, boolean reduceAggressively, boolean reverseCondIfNec) {
     // System.out.println("create expr: "+expr+" type: "+expr.getClass());
@@ -2143,6 +2157,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
   }
 
+  @Override
   protected soot.Local handlePrivateFieldUnarySet(polyglot.ast.Unary unary) {
     polyglot.ast.Field fLeft = (polyglot.ast.Field) unary.expr();
 
@@ -2177,6 +2192,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
   }
 
+  @Override
   protected soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign) {
     polyglot.ast.Field fLeft = (polyglot.ast.Field) assign.left();
     // soot.Value right = createExpr(assign.right());
@@ -2203,6 +2219,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     return handlePrivateFieldSet(fLeft, right, fieldBase);
   }
 
+  @Override
   protected soot.Local handlePrivateFieldSet(
       polyglot.ast.Expr expr, soot.Value right, soot.Value base) {
     // in normal j2j its always a field (and checked before call)
@@ -2336,6 +2353,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     return meth;
   }
 
+  @Override
   protected soot.Value getAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal) {
 
     if (assign.operator() == polyglot.ast.Assign.ASSIGN) {
@@ -2348,6 +2366,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
   }
 
+  @Override
   protected soot.Value getSimpleAssignRightLocal(polyglot.ast.Assign assign) {
     boolean repush = false;
     soot.jimple.Stmt tNoop = null;
@@ -2568,9 +2587,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
   }
 
+  @Override
   protected boolean needsAccessor(polyglot.ast.Expr expr) {
-    if (!(expr instanceof polyglot.ast.Field) && !(expr instanceof polyglot.ast.Call)) return false;
-    else {
+    if (!(expr instanceof polyglot.ast.Field) && !(expr instanceof polyglot.ast.Call)) {
+      return false;
+    } else {
       if (expr instanceof polyglot.ast.Field) {
         return needsAccessor(((polyglot.ast.Field) expr).fieldInstance());
       } else {
@@ -2696,11 +2717,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   private Number createConstantCast(polyglot.types.Type fieldType, Number constant) {
     if (constant instanceof Integer) {
       if (fieldType.isDouble()) {
-        return new Double((double) constant.intValue());
+        return new Double(constant.intValue());
       } else if (fieldType.isFloat()) {
-        return new Float((float) constant.intValue());
+        return new Float(constant.intValue());
       } else if (fieldType.isLong()) {
-        return new Long((long) constant.intValue());
+        return new Long(constant.intValue());
       }
     }
     return constant;
@@ -2711,6 +2732,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   }
 
   /** creates a field ref */
+  @Override
   protected soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
 
     soot.SootClass receiverClass =
@@ -3061,8 +3083,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     // System.out.println("node in is string lit: "+node+" kind:
     // "+node.getClass());
-    if (node instanceof polyglot.ast.StringLit) return true;
-    else if (node instanceof polyglot.ast.Field) {
+    if (node instanceof polyglot.ast.StringLit) {
+      return true;
+    } else if (node instanceof polyglot.ast.Field) {
       return shouldReturnConstant((polyglot.ast.Field) node);
     } else if (node instanceof polyglot.ast.Binary) {
       return areAllStringLitsBinary((polyglot.ast.Binary) node);
@@ -4065,6 +4088,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   }
 
   /** Returns a needed constant given a type and val */
+  @Override
   protected soot.jimple.Constant getConstant(soot.Type type, int val) {
 
     if (type instanceof soot.DoubleType) {
@@ -4167,6 +4191,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
   }
 
+  @Override
   protected soot.Local getThis(soot.Type sootType) {
 
     return Util.getThis(sootType, body, getThisMap, lg);
@@ -4177,7 +4202,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     AnonLocalClassInfo info =
         InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(typeToInvoke));
 
-    if (InitialResolver.v().isAnonInCCall(typeToInvoke)) return false;
+    if (InitialResolver.v().isAnonInCCall(typeToInvoke)) {
+      return false;
+    }
 
     if ((info != null) && (!info.inStaticMethod())) {
       return true;
@@ -4310,7 +4337,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   private void handleFinalLocalInits() {
     ArrayList<SootField> finalsList =
         ((PolyglotMethodSource) body.getMethod().getSource()).getFinalsList();
-    if (finalsList == null) return;
+    if (finalsList == null) {
+      return;
+    }
     int paramCount = paramRefCount - finalsList.size();
     Iterator<SootField> it = finalsList.iterator();
     while (it.hasNext()) {
@@ -4446,6 +4475,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     return retLocal;
   }
 
+  @Override
   protected soot.SootMethodRef getSootMethodRef(polyglot.ast.Call call) {
     soot.Type sootRecType;
     soot.SootClass receiverTypeClass;
@@ -4658,6 +4688,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
   }
 
+  @Override
   protected soot.Value getBaseLocal(polyglot.ast.Receiver receiver) {
 
     if (receiver instanceof polyglot.ast.TypeNode) {
@@ -4815,6 +4846,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   }
 
   /** create LHS expressions */
+  @Override
   protected soot.Value createLHS(polyglot.ast.Expr expr) {
     if (expr instanceof polyglot.ast.Local) {
       return getLocal((polyglot.ast.Local) expr);
@@ -5056,11 +5088,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
    */
 
   /** Extra Local Variables Generation */
+  @Override
   protected soot.Local generateLocal(polyglot.types.Type polyglotType) {
     soot.Type type = Util.getSootType(polyglotType);
     return lg.generateLocal(type);
   }
 
+  @Override
   protected soot.Local generateLocal(soot.Type sootType) {
     return lg.generateLocal(sootType);
   }

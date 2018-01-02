@@ -36,6 +36,7 @@ public class XMLRoot {
 
   XMLRoot() {}
 
+  @Override
   public String toString() {
     return XMLPrinter.xmlHeader + XMLPrinter.dtdHeader + this.child.toPostString();
   }

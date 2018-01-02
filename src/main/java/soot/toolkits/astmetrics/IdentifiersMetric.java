@@ -19,6 +19,13 @@
 
 package soot.toolkits.astmetrics;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import polyglot.ast.ClassDecl;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Formal;
@@ -28,13 +35,6 @@ import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 import soot.G;
 import soot.options.Options;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author Michael Batchelder
@@ -80,15 +80,17 @@ public class IdentifiersMetric extends ASTMetric {
   private void initializeDictionary() {
     String line;
     BufferedReader br = null;
-    dictionary = new ArrayList<String>();
-    names = new HashMap<String, Double>();
+    dictionary = new ArrayList<>();
+    names = new HashMap<>();
 
     InputStream is = ClassLoader.getSystemResourceAsStream("mydict.txt");
     if (is != null) {
       br = new BufferedReader(new InputStreamReader(is));
 
       try {
-        while ((line = br.readLine()) != null) addWord(line);
+        while ((line = br.readLine()) != null) {
+          addWord(line);
+        }
       } catch (IOException ioexc) {
       }
     }
@@ -98,22 +100,27 @@ public class IdentifiersMetric extends ASTMetric {
       br = new BufferedReader(new InputStreamReader(is));
 
       try {
-        while ((line = br.readLine()) != null) addWord(line.trim().toLowerCase());
+        while ((line = br.readLine()) != null) {
+          addWord(line.trim().toLowerCase());
+        }
       } catch (IOException ioexc) {
       }
     }
 
-    if ((dictionarySize = dictionary.size()) == 0)
+    if ((dictionarySize = dictionary.size()) == 0) {
       G.v().out.println("Error reading in dictionary file(s)");
-    else if (Options.v().verbose())
+    } else if (Options.v().verbose()) {
       G.v().out.println("Read " + dictionarySize + " words in from dictionary file(s)");
+    }
 
     try {
       is.close();
     } catch (IOException e) {
     }
     try {
-      if (br != null) br.close();
+      if (br != null) {
+        br.close();
+      }
     } catch (IOException e) {
     }
   }
@@ -123,9 +130,13 @@ public class IdentifiersMetric extends ASTMetric {
       dictionary.add(word);
     } else {
       int i = 0;
-      while (i < dictionarySize && word.compareTo(dictionary.get(i)) > 0) i++;
+      while (i < dictionarySize && word.compareTo(dictionary.get(i)) > 0) {
+        i++;
+      }
 
-      if (word.compareTo(dictionary.get(i)) == 0) return;
+      if (word.compareTo(dictionary.get(i)) == 0) {
+        return;
+      }
 
       dictionary.add(i, word);
     }
@@ -136,6 +147,7 @@ public class IdentifiersMetric extends ASTMetric {
   /* (non-Javadoc)
    * @see soot.toolkits.astmetrics.ASTMetric#reset()
    */
+  @Override
   public void reset() {
     nameComplexity = 0;
     nameCount = 0;
@@ -144,11 +156,13 @@ public class IdentifiersMetric extends ASTMetric {
   /* (non-Javadoc)
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
+  @Override
   public void addMetrics(ClassData data) {
     data.addMetric(new MetricData("NameComplexity", new Double(nameComplexity)));
     data.addMetric(new MetricData("NameCount", new Double(nameCount)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     double multiplier = 1;
     String name = null;
@@ -180,9 +194,11 @@ public class IdentifiersMetric extends ASTMetric {
   }
 
   private double computeNameComplexity(String name) {
-    if (names.containsKey(name)) return names.get(name).doubleValue();
+    if (names.containsKey(name)) {
+      return names.get(name).doubleValue();
+    }
 
-    ArrayList<String> strings = new ArrayList<String>();
+    ArrayList<String> strings = new ArrayList<>();
 
     // throw out non-alpha characters
     String tmp = "";
@@ -195,9 +211,11 @@ public class IdentifiersMetric extends ASTMetric {
         tmp = "";
       }
     }
-    if (tmp.length() > 0) strings.add(tmp);
+    if (tmp.length() > 0) {
+      strings.add(tmp);
+    }
 
-    ArrayList<String> tokens = new ArrayList<String>();
+    ArrayList<String> tokens = new ArrayList<>();
     for (int i = 0; i < strings.size(); i++) {
       tmp = strings.get(i);
       while (tmp.length() > 0) {
@@ -235,9 +253,15 @@ public class IdentifiersMetric extends ASTMetric {
 
     double words = 0;
     double complexity = 0;
-    for (int i = 0; i < tokens.size(); i++) if (dictionary.contains(tokens.get(i))) words++;
+    for (int i = 0; i < tokens.size(); i++) {
+      if (dictionary.contains(tokens.get(i))) {
+        words++;
+      }
+    }
 
-    if (words > 0) complexity = (tokens.size()) / words;
+    if (words > 0) {
+      complexity = (tokens.size()) / words;
+    }
 
     names.put(name, new Double(complexity + computeCharComplexity(name)));
 
@@ -251,7 +275,9 @@ public class IdentifiersMetric extends ASTMetric {
       if ((c < 65 || c > 90) && (c < 97 || c > 122)) {
         last++;
       } else {
-        if (last > 1) count += last;
+        if (last > 1) {
+          count += last;
+        }
         last = 0;
       }
       index++;
@@ -259,8 +285,11 @@ public class IdentifiersMetric extends ASTMetric {
 
     double complexity = lng - count;
 
-    if (complexity > 0) return ((lng) / complexity);
-    else return lng;
+    if (complexity > 0) {
+      return ((lng) / complexity);
+    } else {
+      return lng;
+    }
   }
 
   /*
@@ -275,8 +304,11 @@ public class IdentifiersMetric extends ASTMetric {
     int caps = 0;
     while (caps < name.length()) {
       char c = name.charAt(caps);
-      if (c > 64 && c < 91) caps++;
-      else break;
+      if (c > 64 && c < 91) {
+        caps++;
+      } else {
+        break;
+      }
     }
 
     return caps;
@@ -294,8 +326,11 @@ public class IdentifiersMetric extends ASTMetric {
     int idx = 0;
     while (idx < name.length()) {
       char c = name.charAt(idx);
-      if (c > 64 && c < 91) return idx;
-      else idx++;
+      if (c > 64 && c < 91) {
+        return idx;
+      } else {
+        idx++;
+      }
     }
 
     return -1;

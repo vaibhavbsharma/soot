@@ -34,6 +34,7 @@ public class GLengthExpr extends AbstractLengthExpr {
     super(Grimp.v().newObjExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new GLengthExpr(Grimp.cloneIfNecessary(getOp()));
   }

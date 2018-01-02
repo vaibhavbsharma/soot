@@ -34,12 +34,16 @@ public class GroupIntPair {
     this.x = x;
   }
 
+  @Override
   public boolean equals(Object other) {
-    if (other instanceof GroupIntPair)
+    if (other instanceof GroupIntPair) {
       return ((GroupIntPair) other).group.equals(this.group) && ((GroupIntPair) other).x == this.x;
-    else return false;
+    } else {
+      return false;
+    }
   }
 
+  @Override
   public int hashCode() {
     return group.hashCode() + 1013 * x;
   }

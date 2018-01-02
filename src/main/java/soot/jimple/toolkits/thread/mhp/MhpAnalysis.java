@@ -4,6 +4,14 @@
  */
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.jimple.toolkits.thread.mhp.stmt.BeginStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JoinStmt;
@@ -17,14 +25,6 @@ import soot.tagkit.Tag;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -54,21 +54,21 @@ class MhpAnalysis {
   private final Map<String, FlowSet> monitor;
   private final Map<JPegStmt, Set<JPegStmt>> notifyPred;
   FlowSet fullSet = new ArraySparseSet();
-  LinkedList<Object> workList = new LinkedList<Object>();
+  LinkedList<Object> workList = new LinkedList<>();
 
   MhpAnalysis(PegGraph g) {
     // System.out.println("******entering MhpAnalysis");
     this.g = g;
     int size = g.size();
     Map startToThread = g.getStartToThread();
-    unitToGen = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
-    unitToKill = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
-    unitToM = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
+    unitToGen = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToKill = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToM = new HashMap<>(size * 2 + 1, 0.7f);
     // unitToMSym = new HashMap(size*2+1, 0.7f);
-    unitToOut = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
-    notifySucc = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
+    unitToOut = new HashMap<>(size * 2 + 1, 0.7f);
+    notifySucc = new HashMap<>(size * 2 + 1, 0.7f);
     //	notifyEdge = new HashMap(size*2+1,0.7f);
-    notifyPred = new HashMap<JPegStmt, Set<JPegStmt>>(size * 2 + 1, 0.7f);
+    notifyPred = new HashMap<>(size * 2 + 1, 0.7f);
     // monitor = new HashMap(size*2+1,0.7f);
     monitor = g.getMonitor();
 
@@ -500,7 +500,7 @@ class MhpAnalysis {
                       notifyPredSet.add(currentNode);
                       notifyPred.put(waitingSucc, notifyPredSet);
                     } else {
-                      Set<JPegStmt> notifyPredSet = new HashSet<JPegStmt>();
+                      Set<JPegStmt> notifyPredSet = new HashSet<>();
                       notifyPredSet.add(currentNode);
                       // notifyPredSet.add(waitingSucc);
                       notifyPred.put(waitingSucc, notifyPredSet);
@@ -869,7 +869,9 @@ class MhpAnalysis {
               if (localSucc instanceof NotifiedEntryStmt) {
                 continue;
               } else {
-                if (!workList.contains(localSucc)) workList.addLast(localSucc);
+                if (!workList.contains(localSucc)) {
+                  workList.addLast(localSucc);
+                }
               }
 
             } else if (!workList.contains(localSucc)) {
@@ -950,7 +952,7 @@ class MhpAnalysis {
   // end add for debug
 
   private void computeMPairs() {
-    Set<Set<Object>> mSetPairs = new HashSet<Set<Object>>();
+    Set<Set<Object>> mSetPairs = new HashSet<>();
     Set maps = unitToM.entrySet();
     for (Iterator iter = maps.iterator(); iter.hasNext(); ) {
       Map.Entry entry = (Map.Entry) iter.next();
@@ -974,7 +976,7 @@ class MhpAnalysis {
         */
 
         Object m = it.next();
-        Set<Object> pair = new HashSet<Object>();
+        Set<Object> pair = new HashSet<>();
         pair.add(obj);
         pair.add(m);
         if (!mSetPairs.contains(pair)) {
@@ -1000,12 +1002,16 @@ class MhpAnalysis {
       if (fs.size() > 0) {
         totalNodes += fs.size();
         nodes++;
-        if (fs.size() > max) max = fs.size();
+        if (fs.size() > max) {
+          max = fs.size();
+        }
         if (first) {
           min = fs.size();
           first = false;
         } else {
-          if (fs.size() < min) min = fs.size();
+          if (fs.size() < min) {
+            min = fs.size();
+          }
         }
       }
     }

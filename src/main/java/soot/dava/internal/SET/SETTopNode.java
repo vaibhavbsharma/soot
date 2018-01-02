@@ -30,14 +30,17 @@ public class SETTopNode extends SETNode {
     add_SubBody(body);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     return new IterableSet();
   }
 
+  @Override
   public ASTNode emit_AST() {
     return new ASTMethodNode(emit_ASTBody(body2childChain.get(subBodies.get(0))));
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     throw new RuntimeException("Not implemented.");
     // FIXME the following turned out to be ill-typed after applying type
@@ -47,6 +50,7 @@ public class SETTopNode extends SETNode {
     // subBodies.get(0))).get_EntryStmt();
   }
 
+  @Override
   protected boolean resolve(SETNode parent) {
     throw new RuntimeException("Attempting auto-nest a SETTopNode.");
   }

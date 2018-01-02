@@ -1,8 +1,12 @@
 package soot.toDex;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.reference.MethodReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
+
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -72,9 +76,6 @@ import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.Switchable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A visitor that builds a list of instructions from the Jimple expressions it visits.<br>
@@ -197,7 +198,6 @@ class ExprVisitor implements ExprSwitch {
     // arrive at java.lang.Object. In this case, we should not fail
     // the check
     return currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object");
-
   }
 
   @Override
@@ -213,7 +213,7 @@ class ExprVisitor implements ExprSwitch {
 
   private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
     constantV.setOrigStmt(origStmt);
-    List<Register> argumentRegs = new ArrayList<Register>();
+    List<Register> argumentRegs = new ArrayList<>();
     for (Value arg : ie.getArgs()) {
       Register currentReg = regAlloc.asImmediate(arg, constantV);
       argumentRegs.add(currentReg);
@@ -300,8 +300,9 @@ class ExprVisitor implements ExprSwitch {
 
     // Double-check that we are not carrying out any arithmetic operations
     // on non-primitive values
-    if (!(secondOperand.getType() instanceof PrimType))
+    if (!(secondOperand.getType() instanceof PrimType)) {
       throw new RuntimeException("Invalid value type for primitibe operation");
+    }
 
     // For some data types, there are no calculating opcodes in Dalvik. In
     // this case, we need to use a bigger opcode and cast the result back.
@@ -648,13 +649,15 @@ class ExprVisitor implements ExprSwitch {
 
     // Fix null_types on the fly. This should not be necessary, but better be safe
     // than sorry and it's easy to fix it here.
-    if (castType == PrimitiveType.INT && source.getType() instanceof NullType)
+    if (castType == PrimitiveType.INT && source.getType() instanceof NullType) {
       source = IntConstant.v(0);
+    }
 
     // select fitting conversion opcode, depending on the source and cast type
     Type srcType = source.getType();
-    if (srcType instanceof RefType)
+    if (srcType instanceof RefType) {
       throw new RuntimeException("Trying to cast reference type " + srcType + " to a primitive");
+    }
     PrimitiveType sourceType = PrimitiveType.getByName(srcType.toString());
     if (castType == PrimitiveType.BOOLEAN) {
       // there is no "-to-boolean" opcode, so just pretend to move an int to an int
@@ -674,8 +677,9 @@ class ExprVisitor implements ExprSwitch {
         stmtV.addInsn(StmtVisitor.buildMoveInsn(destinationReg, sourceReg), origStmt);
       }
       // Make sure that we have at least some statement in case we need one for jumps
-      else if (!origStmt.getBoxesPointingToThis().isEmpty())
+      else if (!origStmt.getBoxesPointingToThis().isEmpty()) {
         stmtV.addInsn(new Insn10x(Opcode.NOP), origStmt);
+      }
     } else if (needsCastThroughInt(sourceType, castType)) {
       /*
        * an unsupported "dest = (cast) src" is broken down to
@@ -764,7 +768,7 @@ class ExprVisitor implements ExprSwitch {
     ArrayType arrayType = ArrayType.v(nmae.getBaseType().baseType, dimensions);
     TypeReference arrayTypeItem = DexPrinter.toTypeReference(arrayType);
     // get the dimension size registers
-    List<Register> dimensionSizeRegs = new ArrayList<Register>();
+    List<Register> dimensionSizeRegs = new ArrayList<>();
     for (int i = 0; i < dimensions; i++) {
       Value currentDimensionSize = nmae.getSize(i);
       Register currentReg = regAlloc.asImmediate(currentDimensionSize, constantV);

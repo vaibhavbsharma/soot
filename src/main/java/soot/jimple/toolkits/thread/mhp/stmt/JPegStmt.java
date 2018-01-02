@@ -101,8 +101,9 @@ public abstract class JPegStmt extends AbstractHost
   }
 
   public UnitGraph getUnitGraph() {
-    if (!containUnitGraph())
+    if (!containUnitGraph()) {
       throw new RuntimeException("This statement does not contain UnitGraph!");
+    }
 
     return unitGraph;
   }
@@ -112,7 +113,9 @@ public abstract class JPegStmt extends AbstractHost
   }
 
   public Unit getUnit() {
-    if (!containUnit()) throw new RuntimeException("This statement does not contain Unit!");
+    if (!containUnit()) {
+      throw new RuntimeException("This statement does not contain Unit!");
+    }
 
     return unit;
   }
@@ -163,11 +166,14 @@ public abstract class JPegStmt extends AbstractHost
   }
   */
 
+  @Override
   public String toString() {
 
-    if (sootMethod != null)
+    if (sootMethod != null) {
       return "(" + getObject() + ", " + getName() + ", " + getCaller() + "," + sootMethod + ")";
-    else return "(" + getObject() + ", " + getName() + ", " + getCaller() + ")";
+    } else {
+      return "(" + getObject() + ", " + getName() + ", " + getCaller() + ")";
+    }
   }
 
   public String testToString() {
@@ -184,8 +190,11 @@ public abstract class JPegStmt extends AbstractHost
             + ","
             + sootMethod
             + ")";
-      } else
+      } else {
         return "(" + getObject() + ", " + getName() + ", " + getCaller() + ", " + getUnit() + ")";
-    } else return "(" + getObject() + ", " + getName() + ", " + getCaller() + ")";
+      }
+    } else {
+      return "(" + getObject() + ", " + getName() + ", " + getCaller() + ")";
+    }
   }
 }

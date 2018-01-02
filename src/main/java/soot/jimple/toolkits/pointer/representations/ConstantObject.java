@@ -26,10 +26,12 @@
 package soot.jimple.toolkits.pointer.representations;
 
 public abstract class ConstantObject implements AbstractObject {
+  @Override
   public String toString() {
     return "constantobject";
   }
 
+  @Override
   public String shortString() {
     return "shortstring";
   }

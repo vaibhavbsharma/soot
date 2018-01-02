@@ -48,8 +48,11 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     numberToObj = Arrays.copyOf(numberToObj, n);
   }
 
+  @Override
   public synchronized void add(E o) {
-    if (o.getNumber() != 0) return;
+    if (o.getNumber() != 0) {
+      return;
+    }
 
     ++lastNumber;
     if (lastNumber >= numberToObj.length) {
@@ -59,32 +62,46 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     o.setNumber(lastNumber);
   }
 
+  @Override
   public long get(E o) {
-    if (o == null) return 0;
+    if (o == null) {
+      return 0;
+    }
     int ret = o.getNumber();
-    if (ret == 0) throw new RuntimeException("unnumbered: " + o);
+    if (ret == 0) {
+      throw new RuntimeException("unnumbered: " + o);
+    }
     return ret;
   }
 
+  @Override
   public E get(long number) {
-    if (number == 0) return null;
+    if (number == 0) {
+      return null;
+    }
     E ret = numberToObj[(int) number];
-    if (ret == null) throw new RuntimeException("no object with number " + number);
+    if (ret == null) {
+      throw new RuntimeException("no object with number " + number);
+    }
     return ret;
   }
 
+  @Override
   public int size() {
     return lastNumber;
   }
 
+  @Override
   public Iterator<E> iterator() {
     return new Iterator<E>() {
       int cur = 1;
 
+      @Override
       public final boolean hasNext() {
         return cur <= lastNumber && cur < numberToObj.length && numberToObj[cur] != null;
       }
 
+      @Override
       public final E next() {
         if (hasNext()) {
           return numberToObj[cur++];
@@ -92,6 +109,7 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
         throw new NoSuchElementException();
       }
 
+      @Override
       public final void remove() {
         throw new UnsupportedOperationException();
       }

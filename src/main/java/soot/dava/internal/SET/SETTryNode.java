@@ -24,6 +24,11 @@
 
 package soot.dava.internal.SET;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.Value;
 import soot.dava.DavaBody;
 import soot.dava.internal.AST.ASTNode;
@@ -37,11 +42,6 @@ import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 public class SETTryNode extends SETNode {
   private ExceptionNode en;
@@ -57,7 +57,7 @@ public class SETTryNode extends SETNode {
 
     add_SubBody(en.get_TryBody());
 
-    cb2clone = new HashMap<IterableSet, IterableSet>();
+    cb2clone = new HashMap<>();
 
     Iterator it = en.get_CatchList().iterator();
     while (it.hasNext()) {
@@ -77,23 +77,29 @@ public class SETTryNode extends SETNode {
         AugmentedStmt as = (AugmentedStmt) it.next();
 
         Iterator pit = as.cpreds.iterator();
-        while (pit.hasNext())
+        while (pit.hasNext()) {
           if (body.contains(pit.next()) == false) {
             entryStmt = as;
             break getEntryStmt;
           }
+        }
       }
     }
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
-    if (entryStmt != null) return entryStmt;
-    else return (en.get_TryBody()).getFirst();
+    if (entryStmt != null) {
+      return entryStmt;
+    } else {
+      return (en.get_TryBody()).getFirst();
+    }
 
     // return ((SETNode) ((IterableSet) body2childChain.get(
     // en.get_TryBody())).getFirst()).get_EntryStmt();
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
 
@@ -105,17 +111,19 @@ public class SETTryNode extends SETNode {
       while (eit.hasNext()) {
         Object o = eit.next();
 
-        if (c.contains(o) == false) c.add(o);
+        if (c.contains(o) == false) {
+          c.add(o);
+        }
       }
     }
 
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
-    LinkedList<Object> catchList = new LinkedList<Object>();
-    HashMap<Object, Object> exceptionMap = new HashMap<Object, Object>(),
-        paramMap = new HashMap<Object, Object>();
+    LinkedList<Object> catchList = new LinkedList<>();
+    HashMap<Object, Object> exceptionMap = new HashMap<>(), paramMap = new HashMap<>();
 
     Iterator it = en.get_CatchList().iterator();
     while (it.hasNext()) {
@@ -139,8 +147,10 @@ public class SETTryNode extends SETNode {
         // TODO: HOW the heck do you handle finallys with NO finally?
         // Semantics are
         // technically incorrect here
-        if (s instanceof GotoStmt) s = (Stmt) ((GotoStmt) s).getTarget();
-        /* 04.04.2006 mbatch end */
+        if (s instanceof GotoStmt) {
+          s = (Stmt) ((GotoStmt) s).getTarget();
+          /* 04.04.2006 mbatch end */
+        }
 
         if (s instanceof IdentityStmt) {
           IdentityStmt ids = (IdentityStmt) s;
@@ -163,6 +173,7 @@ public class SETTryNode extends SETNode {
         paramMap);
   }
 
+  @Override
   protected boolean resolve(SETNode parent) {
     Iterator<IterableSet> sbit = parent.get_SubBodies().iterator();
     while (sbit.hasNext()) {
@@ -178,17 +189,22 @@ public class SETTryNode extends SETNode {
           IterableSet childBody = child.get_Body();
 
           if ((childBody.intersects(en.get_TryBody()) == false)
-              || (childBody.isSubsetOf(en.get_TryBody()))) continue;
+              || (childBody.isSubsetOf(en.get_TryBody()))) {
+            continue;
+          }
 
-          if (childBody.isSupersetOf(get_Body())) return true;
+          if (childBody.isSupersetOf(get_Body())) {
+            return true;
+          }
 
           IterableSet newTryBody = childBody.intersection(en.get_TryBody());
           if (newTryBody.isStrictSubsetOf(en.get_TryBody())) {
             en.splitOff_ExceptionNode(newTryBody, asg, davaBody.get_ExceptionFacts());
 
             Iterator enlit = davaBody.get_ExceptionFacts().iterator();
-            while (enlit.hasNext())
+            while (enlit.hasNext()) {
               ((ExceptionNode) enlit.next()).refresh_CatchBody(ExceptionFinder.v());
+            }
 
             return false;
           }
@@ -200,16 +216,18 @@ public class SETTryNode extends SETNode {
             while (bit.hasNext()) {
               AugmentedStmt as = (AugmentedStmt) bit.next();
 
-              if (childBody.contains(as) == false) remove_AugmentedStmt(as);
-              else if ((child instanceof SETControlFlowNode)
+              if (childBody.contains(as) == false) {
+                remove_AugmentedStmt(as);
+              } else if ((child instanceof SETControlFlowNode)
                   && ((child instanceof SETUnconditionalWhileNode) == false)) {
                 SETControlFlowNode scfn = (SETControlFlowNode) child;
 
                 if ((scfn.get_CharacterizingStmt() == as)
                     || ((as.cpreds.size() == 1)
                         && (as.get_Stmt() instanceof GotoStmt)
-                        && (scfn.get_CharacterizingStmt() == as.cpreds.get(0))))
+                        && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
                   remove_AugmentedStmt(as);
+                }
               }
             }
           }

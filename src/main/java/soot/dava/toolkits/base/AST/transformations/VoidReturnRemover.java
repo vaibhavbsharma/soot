@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.SootClass;
 import soot.SootMethod;
 import soot.VoidType;
@@ -29,9 +32,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.util.Chain;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class VoidReturnRemover {
 
@@ -45,24 +45,33 @@ public class VoidReturnRemover {
 
   private static void removeReturn(SootMethod method) {
     // check if this is a void method
-    if (!(method.getReturnType() instanceof VoidType)) return;
+    if (!(method.getReturnType() instanceof VoidType)) {
+      return;
+    }
 
     // get the methodnode
-    if (!method.hasActiveBody()) return;
+    if (!method.hasActiveBody()) {
+      return;
+    }
 
     Chain units = method.getActiveBody().getUnits();
 
-    if (units.size() != 1) return;
+    if (units.size() != 1) {
+      return;
+    }
 
     ASTNode AST = (ASTNode) units.getFirst();
-    if (!(AST instanceof ASTMethodNode))
+    if (!(AST instanceof ASTMethodNode)) {
       throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+    }
 
     ASTMethodNode node = (ASTMethodNode) AST;
 
     // check there is only 1 subBody
     List<Object> subBodies = node.get_SubBodies();
-    if (subBodies.size() != 1) return;
+    if (subBodies.size() != 1) {
+      return;
+    }
 
     List subBody = (List) subBodies.get(0);
     // see if the last of this is a stmtseq node
@@ -73,7 +82,9 @@ public class VoidReturnRemover {
 
     // check last node is a ASTStatementSequenceNode
     ASTNode last = (ASTNode) subBody.get(subBody.size() - 1);
-    if (!(last instanceof ASTStatementSequenceNode)) return;
+    if (!(last instanceof ASTStatementSequenceNode)) {
+      return;
+    }
 
     // get last statement
     List<AugmentedStmt> stmts = ((ASTStatementSequenceNode) last).getStatements();
@@ -84,7 +95,9 @@ public class VoidReturnRemover {
     }
     AugmentedStmt lastas = stmts.get(stmts.size() - 1);
     Stmt lastStmt = lastas.get_Stmt();
-    if (!(lastStmt instanceof ReturnVoidStmt)) return;
+    if (!(lastStmt instanceof ReturnVoidStmt)) {
+      return;
+    }
 
     // we can remove the lastStmt
     stmts.remove(stmts.size() - 1);
@@ -92,6 +105,8 @@ public class VoidReturnRemover {
     we need to check if we have made the size 0 in
     which case the stmtSeq Node should also be removed
     */
-    if (stmts.size() == 0) subBody.remove(subBody.size() - 1);
+    if (stmts.size() == 0) {
+      subBody.remove(subBody.size() - 1);
+    }
   } // end method
 }

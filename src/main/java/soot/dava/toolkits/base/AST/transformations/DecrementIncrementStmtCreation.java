@@ -43,11 +43,14 @@ public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       // System.out.println(temp);
       Stmt s = as.get_Stmt();
-      if (!(s instanceof DefinitionStmt)) continue;
+      if (!(s instanceof DefinitionStmt)) {
+        continue;
+      }
 
       // check if its i= i+1
       Value left = ((DefinitionStmt) s).getLeftOp();

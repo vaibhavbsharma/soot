@@ -25,15 +25,15 @@
 
 package soot.baf.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Type;
 import soot.UnitPrinter;
 import soot.baf.Baf;
 import soot.baf.Dup1Inst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BDup1Inst extends BDupInst implements Dup1Inst {
 
@@ -43,32 +43,39 @@ public class BDup1Inst extends BDupInst implements Dup1Inst {
     mOpType = Baf.getDescriptorTypeOf(aOpType);
   }
 
+  @Override
   public Type getOp1Type() {
     return mOpType;
   }
 
+  @Override
   public List<Type> getOpTypes() {
-    List<Type> res = new ArrayList<Type>();
+    List<Type> res = new ArrayList<>();
     res.add(mOpType);
     return res;
   }
 
+  @Override
   public List<Type> getUnderTypes() {
-    return new ArrayList<Type>();
+    return new ArrayList<>();
   }
 
+  @Override
   public final String getName() {
     return "dup1";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDup1Inst(this);
   }
 
+  @Override
   public String toString() {
     return "dup1." + Baf.bafDescriptorOf(mOpType);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("dup1");
     up.literal(".");

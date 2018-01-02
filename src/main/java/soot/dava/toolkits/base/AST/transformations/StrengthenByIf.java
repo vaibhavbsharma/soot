@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.dava.internal.AST.ASTAndCondition;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -34,10 +38,6 @@ import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class StrengthenByIf {
   /*
@@ -65,7 +65,7 @@ public class StrengthenByIf {
             // aggregate the two conditions
             ASTCondition newCond = new ASTAndCondition(outerCond, innerCond);
             // make empty body
-            List<Object> newWhileBody = new ArrayList<Object>();
+            List<Object> newWhileBody = new ArrayList<>();
             // SETNodeLabel newLabel =
             // ((ASTWhileNode)loopNode).get_Label();
 
@@ -74,7 +74,7 @@ public class StrengthenByIf {
             SETNodeLabel newLabel = new SETNodeLabel();
 
             // make new ASTWhileNode
-            List<ASTNode> toReturn = new ArrayList<ASTNode>();
+            List<ASTNode> toReturn = new ArrayList<>();
             toReturn.add(new ASTWhileNode(newLabel, newCond, newWhileBody));
             return toReturn;
 
@@ -97,7 +97,7 @@ public class StrengthenByIf {
             innerCond.flip();
 
             // make empty body
-            List<Object> newWhileBody = new ArrayList<Object>();
+            List<Object> newWhileBody = new ArrayList<>();
             // SETNodeLabel newLabel =
             // ((ASTUnconditionalLoopNode)loopNode).get_Label();
 
@@ -106,7 +106,7 @@ public class StrengthenByIf {
             SETNodeLabel newLabel = new SETNodeLabel();
 
             // make new ASTWhileNode
-            List<ASTNode> toReturn = new ArrayList<ASTNode>();
+            List<ASTNode> toReturn = new ArrayList<>();
             toReturn.add(new ASTWhileNode(newLabel, innerCond, newWhileBody));
             return toReturn;
           }
@@ -141,17 +141,17 @@ public class StrengthenByIf {
                   innerCond.flip();
 
                   // make empty body
-                  List<Object> newWhileBody = new ArrayList<Object>();
+                  List<Object> newWhileBody = new ArrayList<>();
                   SETNodeLabel newLabel = ((ASTUnconditionalLoopNode) loopNode).get_Label();
 
                   // make new ASTWhileNode
-                  List<ASTNode> toReturn = new ArrayList<ASTNode>();
+                  List<ASTNode> toReturn = new ArrayList<>();
                   toReturn.add(new ASTWhileNode(newLabel, innerCond, newWhileBody));
 
                   // Add the statementSequenceNode AFTER the
                   // whileNode except for the laststmt
                   Iterator<AugmentedStmt> tempIt = statements.iterator();
-                  List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>();
+                  List<AugmentedStmt> newStmts = new ArrayList<>();
                   while (tempIt.hasNext()) {
                     AugmentedStmt tempStmt = tempIt.next();
                     if (tempIt.hasNext()) {
@@ -171,7 +171,7 @@ public class StrengthenByIf {
               innerCond.flip();
 
               // make empty body
-              List<Object> newWhileBody = new ArrayList<Object>();
+              List<Object> newWhileBody = new ArrayList<>();
               // SETNodeLabel newLabel =
               // ((ASTUnconditionalLoopNode)loopNode).get_Label();
 
@@ -180,13 +180,13 @@ public class StrengthenByIf {
               SETNodeLabel newLabel = new SETNodeLabel();
 
               // make new ASTWhileNode
-              List<ASTNode> toReturn = new ArrayList<ASTNode>();
+              List<ASTNode> toReturn = new ArrayList<>();
               toReturn.add(new ASTWhileNode(newLabel, innerCond, newWhileBody));
 
               // Add the statementSequenceNode AFTER the whileNode
               // except for the laststmt
               Iterator<AugmentedStmt> tempIt = statements.iterator();
-              List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>();
+              List<AugmentedStmt> newStmts = new ArrayList<>();
               while (tempIt.hasNext()) {
                 newStmts.add(tempIt.next());
               }

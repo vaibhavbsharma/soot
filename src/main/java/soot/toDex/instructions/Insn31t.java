@@ -1,12 +1,13 @@
 package soot.toDex.instructions;
 
+import java.util.BitSet;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction31t;
+
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-
-import java.util.BitSet;
 
 /**
  * The "31t" instruction format: It needs three 16-bit code units, has one register and is used for
@@ -23,6 +24,7 @@ public class Insn31t extends InsnWithOffset implements OneRegInsn {
     regs.add(regA);
   }
 
+  @Override
   public Register getRegA() {
     return regs.get(REG_A_IDX);
   }

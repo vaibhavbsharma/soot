@@ -52,12 +52,19 @@ public class RefIntPair {
     return this._val;
   }
 
+  @Override
   public String toString() {
     String prefix = "(" + _ref + ", ";
-    if (_val == BranchedRefVarsAnalysis.kNull) return prefix + "null)";
-    else if (_val == BranchedRefVarsAnalysis.kNonNull) return prefix + "non-null)";
-    else if (_val == BranchedRefVarsAnalysis.kTop) return prefix + "top)";
-    else if (_val == BranchedRefVarsAnalysis.kBottom) return prefix + "bottom)";
-    else return prefix + _val + ")";
+    if (_val == BranchedRefVarsAnalysis.kNull) {
+      return prefix + "null)";
+    } else if (_val == BranchedRefVarsAnalysis.kNonNull) {
+      return prefix + "non-null)";
+    } else if (_val == BranchedRefVarsAnalysis.kTop) {
+      return prefix + "top)";
+    } else if (_val == BranchedRefVarsAnalysis.kBottom) {
+      return prefix + "bottom)";
+    } else {
+      return prefix + _val + ")";
+    }
   }
 } // end class RefIntPair

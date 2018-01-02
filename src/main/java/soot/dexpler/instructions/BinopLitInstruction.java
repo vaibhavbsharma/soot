@@ -30,6 +30,7 @@ import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22b;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22s;
+
 import soot.Local;
 import soot.Value;
 import soot.dexpler.DexBody;
@@ -46,9 +47,10 @@ public class BinopLitInstruction extends TaggedInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction22s) && !(instruction instanceof Instruction22b))
+    if (!(instruction instanceof Instruction22s) && !(instruction instanceof Instruction22b)) {
       throw new IllegalArgumentException(
           "Expected Instruction22s or Instruction22b but got: " + instruction.getClass());
+    }
 
     NarrowLiteralInstruction binOpLitInstr = (NarrowLiteralInstruction) this.instruction;
     int dest = ((TwoRegisterInstruction) instruction).getRegisterA();

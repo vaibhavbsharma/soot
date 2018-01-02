@@ -25,9 +25,9 @@
 
 package soot.tagkit;
 
-import soot.util.Switch;
-
 import java.util.ArrayList;
+
+import soot.util.Switch;
 
 /**
  * Represents the base class of annotation elements each annotation can have several elements for
@@ -42,6 +42,7 @@ public class AnnotationArrayElem extends AnnotationElem {
     this.values = t;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " values: " + values.toString();
   }
@@ -51,8 +52,11 @@ public class AnnotationArrayElem extends AnnotationElem {
   }
 
   public int getNumValues() {
-    if (values == null) return 0;
-    else return values.size();
+    if (values == null) {
+      return 0;
+    } else {
+      return values.size();
+    }
   }
 
   public AnnotationElem getValueAt(int i) {

@@ -33,10 +33,12 @@ public class PurityGraphBox {
     g = new PurityGraph();
   }
 
+  @Override
   public int hashCode() {
     return g.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
     return g.equals(((PurityGraphBox) o).g);
   }

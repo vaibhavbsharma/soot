@@ -54,8 +54,12 @@ public class BitSetIterator {
     index = 0;
 
     /* Zip through empty blocks */
-    while (index < bits.length && bits[index] == 0L) index++;
-    if (index < bits.length) save = bits[index];
+    while (index < bits.length && bits[index] == 0L) {
+      index++;
+    }
+    if (index < bits.length) {
+      save = bits[index];
+    }
   }
 
   /** Returns true if there are more set bits in the BitVector; false otherwise. */
@@ -65,7 +69,9 @@ public class BitSetIterator {
 
   /** Returns the index of the next set bit. Note that the return type is int, and not Object. */
   public int next() {
-    if (index >= bits.length) throw new NoSuchElementException();
+    if (index >= bits.length) {
+      throw new NoSuchElementException();
+    }
 
     long k = (save & (save - 1)); // Clears the last non-zero bit. save is guaranteed non-zero.
     long diff = save ^ k; // Finds out which bit it is. diff has exactly one bit set.
@@ -76,8 +82,12 @@ public class BitSetIterator {
 
     if (save == 0) {
       index++;
-      while (index < bits.length && bits[index] == 0L) index++;
-      if (index < bits.length) save = bits[index];
+      while (index < bits.length && bits[index] == 0L) {
+        index++;
+      }
+      if (index < bits.length) {
+        save = bits[index];
+      }
     }
     return result;
   }

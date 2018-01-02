@@ -19,6 +19,11 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -58,11 +63,6 @@ import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 
 /** Maintained by: Nomair A. Naeem */
 
@@ -107,7 +107,7 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
       return;
     }
 
-    cancelFinalModifier = new ArrayList<SootField>();
+    cancelFinalModifier = new ArrayList<>();
     analyzeMethod(node, interesting);
 
     Iterator<SootField> it = cancelFinalModifier.iterator();
@@ -128,7 +128,7 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
   public ArrayList<SootField> findFinalFields() {
 
     // first thing is to get a list of all final fields in the class
-    ArrayList<SootField> interestingFinalFields = new ArrayList<SootField>();
+    ArrayList<SootField> interestingFinalFields = new ArrayList<>();
 
     Iterator fieldIt = sootClass.getFields().iterator();
     while (fieldIt.hasNext()) {
@@ -189,9 +189,10 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
         // System.out.println("It is initialized on some path just not
         // all paths\n");
         List defs = must.getDefs(interest);
-        if (defs == null)
+        if (defs == null) {
           throw new RuntimeException(
               "Sootfield: " + interest + " is mayInitialized but the defs is null");
+        }
 
         handleAssignOnSomePaths(node, interest, defs);
       } else {
@@ -216,11 +217,14 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
     // create initialization stmt
     AugmentedStmt defaultStmt = createDefaultStmt(f);
 
-    if (defaultStmt == null) return;
+    if (defaultStmt == null) {
+      return;
+    }
 
     List<Object> subBodies = node.get_SubBodies();
-    if (subBodies.size() != 1)
+    if (subBodies.size() != 1) {
       throw new RuntimeException("SubBodies size of method node not equal to 1");
+    }
 
     List<Object> body = (List<Object>) subBodies.get(0);
 
@@ -251,7 +255,7 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
       }
     }
     if (!done) {
-      List<AugmentedStmt> newBody = new ArrayList<AugmentedStmt>();
+      List<AugmentedStmt> newBody = new ArrayList<>();
       newBody.add(defaultStmt);
 
       ASTStatementSequenceNode newNode = new ASTStatementSequenceNode(newBody);
@@ -270,11 +274,13 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
       SootFieldRef tempFieldRef = ((SootField) field).makeRef();
 
       fieldType = ((SootField) field).getType();
-      if (((SootField) field).isStatic()) ref = new DStaticFieldRef(tempFieldRef, true);
-      else
+      if (((SootField) field).isStatic()) {
+        ref = new DStaticFieldRef(tempFieldRef, true);
+      } else {
         ref =
             new DInstanceFieldRef(
-                new JimpleLocal("this", fieldType), tempFieldRef, new HashSet<Object>());
+                new JimpleLocal("this", fieldType), tempFieldRef, new HashSet<>());
+      }
 
     } else if (field instanceof Local) {
       ref = (Local) field;
@@ -304,7 +310,9 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
       // System.out.println("AssignStmt is"+assignStmt);
       AugmentedStmt as = new AugmentedStmt(assignStmt);
       return as;
-    } else return null;
+    } else {
+      return null;
+    }
   }
 
   /*
@@ -400,8 +408,9 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
         declNode = new ASTStatementSequenceNode(stmts);
 
         List<Object> subBodies = node.get_SubBodies();
-        if (subBodies.size() != 1)
+        if (subBodies.size() != 1) {
           throw new DecompilationException("ASTMethodNode does not have one subBody");
+        }
 
         List<Object> body = (List<Object>) subBodies.get(0);
 
@@ -419,7 +428,9 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
          * we know there is a second node because originaly the
          * field was initialized on some path
          */
-        if (body.size() < 2) throw new RuntimeException("Size of body is less than 1");
+        if (body.size() < 2) {
+          throw new RuntimeException("Size of body is less than 1");
+        }
 
         /*
          * If the second node is a stmt seq we put STMT1 there
@@ -436,7 +447,7 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
           body.remove(1);
         } else {
           // System.out.println("had to add new node");
-          List<AugmentedStmt> tempList = new ArrayList<AugmentedStmt>();
+          List<AugmentedStmt> tempList = new ArrayList<>();
           tempList.add(initialization);
           nodeSecond = new ASTStatementSequenceNode(tempList);
         }
@@ -453,11 +464,12 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
         SootFieldRef tempFieldRef = (field).makeRef();
 
         Value ref;
-        if (field.isStatic()) ref = new DStaticFieldRef(tempFieldRef, true);
-        else {
+        if (field.isStatic()) {
+          ref = new DStaticFieldRef(tempFieldRef, true);
+        } else {
           ref =
               new DInstanceFieldRef(
-                  new JimpleLocal("this", field.getType()), tempFieldRef, new HashSet<Object>());
+                  new JimpleLocal("this", field.getType()), tempFieldRef, new HashSet<>());
           // throw new RuntimeException("STOPPED");
         }
 
@@ -506,10 +518,12 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
           while (it.hasNext()) {
             List<ASTStatementSequenceNode> ancestorSubBody = null;
 
-            if (ancestor instanceof ASTTryNode)
+            if (ancestor instanceof ASTTryNode) {
               ancestorSubBody =
                   (List<ASTStatementSequenceNode>) ((ASTTryNode.container) it.next()).o;
-            else ancestorSubBody = (List<ASTStatementSequenceNode>) it.next();
+            } else {
+              ancestorSubBody = (List<ASTStatementSequenceNode>) it.next();
+            }
 
             if (ancestorSubBody.indexOf(grandParent) > -1) {
               // grandParent is present in this body
@@ -524,7 +538,7 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
                 // add the assign stmt here
 
                 List<AugmentedStmt> stmtsLast = (someNode).getStatements();
-                List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>();
+                List<AugmentedStmt> newStmts = new ArrayList<>();
                 newStmts.add(assignStmt1);
                 newStmts.addAll(stmtsLast);
                 someNode.setStatements(newStmts);
@@ -539,7 +553,7 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
                 }
               } else {
                 // create a new stmt seq node and add it here
-                List<AugmentedStmt> tempList = new ArrayList<AugmentedStmt>();
+                List<AugmentedStmt> tempList = new ArrayList<>();
                 tempList.add(assignStmt1);
                 ASTStatementSequenceNode lastNode = new ASTStatementSequenceNode(tempList);
                 ancestorSubBody.add(index + 1, lastNode);
@@ -591,6 +605,7 @@ class MethodCallFinder extends DepthFirstAdapter {
     this.def = def;
   }
 
+  @Override
   public void outDefinitionStmt(DefinitionStmt s) {
     if (s instanceof GAssignStmt) {
       if (s.equals(def)) {
@@ -600,6 +615,7 @@ class MethodCallFinder extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inInvokeExpr(InvokeExpr ie) {
     // System.out.println("In invoke Expr");
     if (foundIt) {

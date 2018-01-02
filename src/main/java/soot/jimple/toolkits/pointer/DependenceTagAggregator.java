@@ -32,11 +32,13 @@ public class DependenceTagAggregator extends ImportantTagAggregator {
   }
 
   /** Decide whether this tag should be aggregated by this aggregator. */
+  @Override
   public boolean wantTag(Tag t) {
     return (t instanceof DependenceTag);
   }
 
   /** Return name of the resulting aggregated tag. */
+  @Override
   public String aggregatedName() {
     return "SideEffectAttribute";
   }

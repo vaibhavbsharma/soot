@@ -48,18 +48,23 @@ public class Array2ndDimensionSymbol {
     return this.var;
   }
 
+  @Override
   public int hashCode() {
     return var.hashCode() + 1;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof Array2ndDimensionSymbol) {
       Array2ndDimensionSymbol another = (Array2ndDimensionSymbol) other;
 
       return (this.var == another.var);
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
+  @Override
   public String toString() {
     return var + "[";
   }

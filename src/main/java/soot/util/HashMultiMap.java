@@ -45,7 +45,7 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   protected Map<K, Set<V>> createMap(int initialSize) {
-    return new HashMap<K, Set<V>>(initialSize, loadFactor);
+    return new HashMap<>(initialSize, loadFactor);
   }
 
   public HashMultiMap() {
@@ -87,12 +87,16 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public boolean containsValue(V value) {
-    for (Set<V> s : m.values()) if (s.contains(value)) return true;
+    for (Set<V> s : m.values()) {
+      if (s.contains(value)) {
+        return true;
+      }
+    }
     return false;
   }
 
   protected Set<V> newSet() {
-    return new HashSet<V>(4);
+    return new HashSet<>(4);
   }
 
   private Set<V> findSet(K key) {
@@ -111,14 +115,18 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public boolean putAll(K key, Set<V> values) {
-    if (values.isEmpty()) return false;
+    if (values.isEmpty()) {
+      return false;
+    }
     return findSet(key).addAll(values);
   }
 
   @Override
   public boolean remove(K key, V value) {
     Set<V> s = m.get(key);
-    if (s == null) return false;
+    if (s == null) {
+      return false;
+    }
     boolean ret = s.remove(value);
     if (s.isEmpty()) {
       m.remove(key);
@@ -134,7 +142,9 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   @Override
   public boolean removeAll(K key, Set<V> values) {
     Set<V> s = m.get(key);
-    if (s == null) return false;
+    if (s == null) {
+      return false;
+    }
     boolean ret = s.removeAll(values);
     if (s.isEmpty()) {
       m.remove(key);
@@ -145,8 +155,11 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   @Override
   public Set<V> get(K o) {
     Set<V> ret = m.get(o);
-    if (ret == null) return Collections.emptySet();
-    else return ret;
+    if (ret == null) {
+      return Collections.emptySet();
+    } else {
+      return ret;
+    }
   }
 
   @Override
@@ -156,22 +169,30 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public Set<V> values() {
-    Set<V> ret = new HashSet<V>(m.size());
-    for (Set<V> s : m.values()) ret.addAll(s);
+    Set<V> ret = new HashSet<>(m.size());
+    for (Set<V> s : m.values()) {
+      ret.addAll(s);
+    }
     return ret;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof MultiMap)) return false;
+    if (!(o instanceof MultiMap)) {
+      return false;
+    }
     @SuppressWarnings("unchecked")
     MultiMap<K, V> mm = (MultiMap<K, V>) o;
-    if (!keySet().equals(mm.keySet())) return false;
+    if (!keySet().equals(mm.keySet())) {
+      return false;
+    }
     Iterator<Map.Entry<K, Set<V>>> it = m.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<K, Set<V>> e = it.next();
       Set<V> s = e.getValue();
-      if (!s.equals(mm.get(e.getKey()))) return false;
+      if (!s.equals(mm.get(e.getKey()))) {
+        return false;
+      }
     }
     return true;
   }

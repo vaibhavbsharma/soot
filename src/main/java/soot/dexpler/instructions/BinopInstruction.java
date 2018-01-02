@@ -28,6 +28,7 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+
 import soot.Local;
 import soot.Value;
 import soot.dexpler.DexBody;
@@ -46,9 +47,10 @@ public class BinopInstruction extends TaggedInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction23x))
+    if (!(instruction instanceof Instruction23x)) {
       throw new IllegalArgumentException(
           "Expected Instruction23x but got: " + instruction.getClass());
+    }
 
     Instruction23x binOpInstr = (Instruction23x) instruction;
     int dest = binOpInstr.getRegisterA();

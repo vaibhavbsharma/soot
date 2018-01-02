@@ -25,6 +25,8 @@
 
 package soot.jimple.internal;
 
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
@@ -37,8 +39,6 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
-import java.util.List;
-
 public class JEnterMonitorStmt extends AbstractOpStmt implements EnterMonitorStmt {
   public JEnterMonitorStmt(Value op) {
     this(Jimple.v().newImmediateBox(op));
@@ -48,24 +48,29 @@ public class JEnterMonitorStmt extends AbstractOpStmt implements EnterMonitorStm
     super(opBox);
   }
 
+  @Override
   public Object clone() {
     return new JEnterMonitorStmt(Jimple.cloneIfNecessary(getOp()));
   }
 
+  @Override
   public String toString() {
     return Jimple.ENTERMONITOR + " " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.ENTERMONITOR);
     up.literal(" ");
     opBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseEnterMonitorStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) (getOp())).convertToBaf(context, out);
     Unit u = Baf.v().newEnterMonitorInst();
@@ -73,10 +78,12 @@ public class JEnterMonitorStmt extends AbstractOpStmt implements EnterMonitorStm
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

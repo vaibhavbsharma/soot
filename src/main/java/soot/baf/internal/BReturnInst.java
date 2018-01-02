@@ -36,34 +36,42 @@ public class BReturnInst extends AbstractOpTypeInst implements ReturnInst {
     super(opType);
   }
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public Object clone() {
     return new BReturnInst(getOpType());
   }
 
+  @Override
   public int getInMachineCount() {
     return AbstractJasminClass.sizeOfType((getOpType()));
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public final String getName() {
     return "return";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseReturnInst(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }

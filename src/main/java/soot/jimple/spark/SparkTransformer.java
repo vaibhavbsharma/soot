@@ -19,6 +19,9 @@
 
 package soot.jimple.spark;
 
+import java.util.Date;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -60,9 +63,6 @@ import soot.tagkit.Host;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
 
-import java.util.Date;
-import java.util.Map;
-
 /**
  * Main entry point for Spark.
  *
@@ -75,27 +75,36 @@ public class SparkTransformer extends SceneTransformer {
     return G.v().soot_jimple_spark_SparkTransformer();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     SparkOptions opts = new SparkOptions(options);
     final String output_dir = SourceLocator.v().getOutputDir();
 
     // Build pointer assignment graph
     ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
-    if (opts.pre_jimplify()) b.preJimplify();
-    if (opts.force_gc()) doGC();
+    if (opts.pre_jimplify()) {
+      b.preJimplify();
+    }
+    if (opts.force_gc()) {
+      doGC();
+    }
     Date startBuild = new Date();
     final PAG pag = b.setup(opts);
     b.build();
     Date endBuild = new Date();
     reportTime("Pointer Assignment Graph", startBuild, endBuild);
-    if (opts.force_gc()) doGC();
+    if (opts.force_gc()) {
+      doGC();
+    }
 
     // Build type masks
     Date startTM = new Date();
     pag.getTypeManager().makeTypeMask();
     Date endTM = new Date();
     reportTime("Type masks", startTM, endTM);
-    if (opts.force_gc()) doGC();
+    if (opts.force_gc()) {
+      doGC();
+    }
 
     if (opts.verbose()) {
       G.v().out.println("VarNodes: " + pag.getVarNodeNumberer().size());
@@ -120,14 +129,18 @@ public class SparkTransformer extends SceneTransformer {
     }
     Date endSimplify = new Date();
     reportTime("Pointer Graph simplified", startSimplify, endSimplify);
-    if (opts.force_gc()) doGC();
+    if (opts.force_gc()) {
+      doGC();
+    }
 
     // Dump pag
     PAGDumper dumper = null;
     if (opts.dump_pag() || opts.dump_solution()) {
       dumper = new PAGDumper(pag, output_dir);
     }
-    if (opts.dump_pag()) dumper.dump();
+    if (opts.dump_pag()) {
+      dumper.dump();
+    }
 
     // Propagate
     Date startProp = new Date();
@@ -154,12 +167,16 @@ public class SparkTransformer extends SceneTransformer {
         throw new RuntimeException();
     }
 
-    if (propagator[0] != null) propagator[0].propagate();
+    if (propagator[0] != null) {
+      propagator[0].propagate();
+    }
     Date endProp = new Date();
     reportTime("Propagation", startProp, endProp);
     reportTime("Solution found", startSimplify, endProp);
 
-    if (opts.force_gc()) doGC();
+    if (opts.force_gc()) {
+      doGC();
+    }
 
     if (!opts.on_fly_cg() || opts.vta()) {
       CallGraphBuilder cgb = new CallGraphBuilder(pag);
@@ -173,11 +190,19 @@ public class SparkTransformer extends SceneTransformer {
               "[Spark] Number of reachable methods: " + Scene.v().getReachableMethods().size());
     }
 
-    if (opts.set_mass()) findSetMass(pag);
+    if (opts.set_mass()) {
+      findSetMass(pag);
+    }
 
-    if (opts.dump_answer()) new ReachingTypeDumper(pag, output_dir).dump();
-    if (opts.dump_solution()) dumper.dumpPointsToSets();
-    if (opts.dump_html()) new PAG2HTML(pag, output_dir).dump();
+    if (opts.dump_answer()) {
+      new ReachingTypeDumper(pag, output_dir).dump();
+    }
+    if (opts.dump_solution()) {
+      dumper.dumpPointsToSets();
+    }
+    if (opts.dump_html()) {
+      new PAG2HTML(pag, output_dir).dump();
+    }
     Scene.v().setPointsToAnalysis(pag);
     if (opts.add_tags()) {
       addTags(pag);
@@ -217,8 +242,12 @@ public class SparkTransformer extends SceneTransformer {
     final Map<Node, Tag> nodeToTag = pag.getNodeTags();
     for (final SootClass c : Scene.v().getClasses()) {
       for (final SootMethod m : c.getMethods()) {
-        if (!m.isConcrete()) continue;
-        if (!m.hasActiveBody()) continue;
+        if (!m.isConcrete()) {
+          continue;
+        }
+        if (!m.hasActiveBody()) {
+          continue;
+        }
         for (final Unit u : m.getActiveBody().getUnits()) {
           final Stmt s = (Stmt) u;
           if (s instanceof DefinitionStmt) {
@@ -233,6 +262,7 @@ public class SparkTransformer extends SceneTransformer {
               PointsToSetInternal p2set = v.getP2Set();
               p2set.forall(
                   new P2SetVisitor() {
+                    @Override
                     public final void visit(Node n) {
                       addTag(s, n, nodeToTag, unknown);
                     }
@@ -274,8 +304,11 @@ public class SparkTransformer extends SceneTransformer {
   }
 
   protected void addTag(Host h, Node n, Map<Node, Tag> nodeToTag, Tag unknown) {
-    if (nodeToTag.containsKey(n)) h.addTag(nodeToTag.get(n));
-    else h.addTag(unknown);
+    if (nodeToTag.containsKey(n)) {
+      h.addTag(nodeToTag.get(n));
+    } else {
+      h.addTag(unknown);
+    }
   }
 
   protected void findSetMass(PAG pag) {
@@ -287,13 +320,19 @@ public class SparkTransformer extends SceneTransformer {
     for (final VarNode v : pag.getVarNodeNumberer()) {
       scalars++;
       PointsToSetInternal set = v.getP2Set();
-      if (set != null) mass += set.size();
-      if (set != null) varMass += set.size();
+      if (set != null) {
+        mass += set.size();
+      }
+      if (set != null) {
+        varMass += set.size();
+      }
     }
     for (final AllocNode an : pag.allocSources()) {
       for (final AllocDotField adf : an.getFields()) {
         PointsToSetInternal set = adf.getP2Set();
-        if (set != null) mass += set.size();
+        if (set != null) {
+          mass += set.size();
+        }
         if (set != null && set.size() > 0) {
           adfs++;
         }
@@ -309,11 +348,15 @@ public class SparkTransformer extends SceneTransformer {
     for (VarNode v : pag.getDereferences()) {
       PointsToSetInternal set = v.getP2Set();
       int size = 0;
-      if (set != null) size = set.size();
+      if (set != null) {
+        size = set.size();
+      }
       deRefCounts[size]++;
     }
     int total = 0;
-    for (int element : deRefCounts) total += element;
+    for (int element : deRefCounts) {
+      total += element;
+    }
     G.v().out.println("Dereference counts BEFORE trimming (total = " + total + "):");
     for (int i = 0; i < deRefCounts.length; i++) {
       if (deRefCounts[i] > 0) {

@@ -19,10 +19,10 @@
 
 package soot.dava.internal.SET;
 
+import java.util.Iterator;
+
 import soot.G;
 import soot.util.IterableSet;
-
-import java.util.Iterator;
 
 public class SETBasicBlock implements Comparable {
 
@@ -39,14 +39,18 @@ public class SETBasicBlock implements Comparable {
     priority = -1;
   }
 
+  @Override
   public int compareTo(Object o) {
-    if (o == this) return 0;
+    if (o == this) {
+      return 0;
+    }
 
     SETBasicBlock other = (SETBasicBlock) o;
 
     int difference = other.get_Priority() - get_Priority(); // major sorting order ... _descending_
-    if (difference == 0) // bogus minor order ... it isn't consistent
-    difference = 1; //  but it doesn't matter.
+    if (difference == 0) {
+      difference = 1; //  but it doesn't matter.
+    }
 
     return difference;
   }
@@ -61,7 +65,9 @@ public class SETBasicBlock implements Comparable {
         while (sit.hasNext()) {
           int sucScore = ((SETBasicBlock) sit.next()).get_Priority();
 
-          if (sucScore > priority) priority = sucScore;
+          if (sucScore > priority) {
+            priority = sucScore;
+          }
         }
 
         priority++;
@@ -76,7 +82,9 @@ public class SETBasicBlock implements Comparable {
    */
 
   public void add(SETNode sn) {
-    if (body.isEmpty()) entryNode = sn;
+    if (body.isEmpty()) {
+      entryNode = sn;
+    }
 
     body.add(sn);
     G.v().SETBasicBlock_binding.put(sn, this);
@@ -110,7 +118,9 @@ public class SETBasicBlock implements Comparable {
 
   public void printSig() {
     Iterator it = body.iterator();
-    while (it.hasNext()) ((SETNode) it.next()).dump();
+    while (it.hasNext()) {
+      ((SETNode) it.next()).dump();
+    }
   }
 
   public void dump() {
@@ -118,11 +128,15 @@ public class SETBasicBlock implements Comparable {
     G.v().out.println("=== preds ===");
 
     Iterator it = predecessors.iterator();
-    while (it.hasNext()) ((SETBasicBlock) it.next()).printSig();
+    while (it.hasNext()) {
+      ((SETBasicBlock) it.next()).printSig();
+    }
 
     G.v().out.println("=== succs ===");
 
     it = successors.iterator();
-    while (it.hasNext()) ((SETBasicBlock) it.next()).printSig();
+    while (it.hasNext()) {
+      ((SETBasicBlock) it.next()).printSig();
+    }
   }
 }

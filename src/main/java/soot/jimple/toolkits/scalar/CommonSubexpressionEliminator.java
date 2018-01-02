@@ -25,6 +25,12 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -47,12 +53,6 @@ import soot.tagkit.StringTag;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Runs an available expressions analysis on a body, then eliminates common subexpressions.
  *
@@ -71,12 +71,13 @@ public class CommonSubexpressionEliminator extends BodyTransformer {
   }
 
   /** Common subexpression eliminator. */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int counter = 0;
 
     // Sigh.  check for name collisions.
     Iterator<Local> localsIt = b.getLocals().iterator();
-    Set<String> localNames = new HashSet<String>(b.getLocals().size());
+    Set<String> localNames = new HashSet<>(b.getLocals().size());
     while (localsIt.hasNext()) {
       localNames.add((localsIt.next()).getName());
     }
@@ -89,7 +90,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer {
     }
     sideEffect.newMethod(b.getMethod());
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
@@ -98,6 +99,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer {
                   + "]     Eliminating common subexpressions "
                   + (sideEffect instanceof NaiveSideEffectTester ? "(naively)" : "")
                   + "...");
+    }
 
     AvailableExpressions ae = // new SlowAvailableExpressions(b);
         new FastAvailableExpressions(b, sideEffect);
@@ -154,9 +156,10 @@ public class CommonSubexpressionEliminator extends BodyTransformer {
         }
       }
     }
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println("[" + b.getMethod().getName() + "]     Eliminating common subexpressions done!");
+    }
   }
 }

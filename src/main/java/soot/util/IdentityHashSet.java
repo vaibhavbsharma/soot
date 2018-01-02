@@ -39,7 +39,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 
   /** Creates a new, empty IdentityHashSet. */
   public IdentityHashSet() {
-    delegate = new IdentityHashMap<E, E>();
+    delegate = new IdentityHashMap<>();
   }
 
   /**
@@ -48,7 +48,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
    * @param original The original collection whose elements to inherit
    */
   public IdentityHashSet(Collection<E> original) {
-    delegate = new IdentityHashMap<E, E>();
+    delegate = new IdentityHashMap<>();
     addAll(original);
   }
 
@@ -104,13 +104,23 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     final IdentityHashSet<?> other = (IdentityHashSet<?>) obj;
     if (delegate == null) {
-      if (other.delegate != null) return false;
-    } else if (!delegate.equals(other.delegate)) return false;
+      if (other.delegate != null) {
+        return false;
+      }
+    } else if (!delegate.equals(other.delegate)) {
+      return false;
+    }
     return true;
   }
 

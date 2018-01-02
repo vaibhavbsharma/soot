@@ -35,7 +35,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   private static final long serialVersionUID = -3182515910302586044L;
 
-  Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<K, ConcurrentMap<V, V>>(0);
+  Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<>(0);
 
   public ConcurrentHashMultiMap() {}
 
@@ -55,12 +55,16 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public boolean containsValue(V value) {
-    for (Map<V, V> s : m.values()) if (s.containsKey(value)) return true;
+    for (Map<V, V> s : m.values()) {
+      if (s.containsKey(value)) {
+        return true;
+      }
+    }
     return false;
   }
 
   protected ConcurrentMap<V, V> newSet() {
-    return new ConcurrentHashMap<V, V>();
+    return new ConcurrentHashMap<>();
   }
 
   private ConcurrentMap<V, V> findSet(K key) {
@@ -90,7 +94,9 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public boolean putAll(K key, Set<V> values) {
-    if (values == null || values.isEmpty()) return false;
+    if (values == null || values.isEmpty()) {
+      return false;
+    }
 
     ConcurrentMap<V, V> s = m.get(key);
     if (s == null) {
@@ -103,7 +109,9 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
         s = m.get(key);
         if (s == null) {
           ConcurrentMap<V, V> newSet = newSet();
-          for (V v : values) newSet.put(v, v);
+          for (V v : values) {
+            newSet.put(v, v);
+          }
           m.put(key, newSet);
           return true;
         }
@@ -113,7 +121,11 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
     // No "else", we can fall through if the set was created between first
     // check and obtaining the lock.
     boolean ok = false;
-    for (V v : values) if (s.put(v, v) == null) ok = true;
+    for (V v : values) {
+      if (s.put(v, v) == null) {
+        ok = true;
+      }
+    }
 
     return ok;
   }
@@ -121,7 +133,9 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   @Override
   public boolean remove(K key, V value) {
     Map<V, V> s = m.get(key);
-    if (s == null) return false;
+    if (s == null) {
+      return false;
+    }
     boolean ret = s.remove(value) != null;
     if (s.isEmpty()) {
       m.remove(key);
@@ -137,9 +151,15 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   @Override
   public boolean removeAll(K key, Set<V> values) {
     Map<V, V> s = m.get(key);
-    if (s == null) return false;
+    if (s == null) {
+      return false;
+    }
     boolean ret = false;
-    for (V v : values) if (s.remove(v) != null) ret = true;
+    for (V v : values) {
+      if (s.remove(v) != null) {
+        ret = true;
+      }
+    }
     if (s.isEmpty()) {
       m.remove(key);
     }
@@ -149,7 +169,9 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   @Override
   public Set<V> get(K o) {
     Map<V, V> ret = m.get(o);
-    if (ret == null) return Collections.emptySet();
+    if (ret == null) {
+      return Collections.emptySet();
+    }
     return Collections.unmodifiableSet(ret.keySet());
   }
 
@@ -160,20 +182,28 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public Set<V> values() {
-    Set<V> ret = new HashSet<V>(m.size());
-    for (Map<V, V> s : m.values()) ret.addAll(s.keySet());
+    Set<V> ret = new HashSet<>(m.size());
+    for (Map<V, V> s : m.values()) {
+      ret.addAll(s.keySet());
+    }
     return ret;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof MultiMap)) return false;
+    if (!(o instanceof MultiMap)) {
+      return false;
+    }
     @SuppressWarnings("unchecked")
     MultiMap<K, V> mm = (MultiMap<K, V>) o;
-    if (!keySet().equals(mm.keySet())) return false;
+    if (!keySet().equals(mm.keySet())) {
+      return false;
+    }
     for (Map.Entry<K, ConcurrentMap<V, V>> e : m.entrySet()) {
       Map<V, V> s = e.getValue();
-      if (!s.equals(mm.get(e.getKey()))) return false;
+      if (!s.equals(mm.get(e.getKey()))) {
+        return false;
+      }
     }
     return true;
   }

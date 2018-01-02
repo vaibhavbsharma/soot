@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -97,9 +100,6 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.jimple.toolkits.typing.Util;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 class ConstraintChecker extends AbstractStmtSwitch {
   private final TypeResolver resolver;
@@ -178,14 +178,17 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
     // Do nothing
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     handleInvokeExpr(stmt.getInvokeExpr(), stmt);
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -207,9 +210,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
         }
 
         if (index instanceof Local) {
-          if (!ClassHierarchy.v()
-              .typeNode(index.getType())
-              .hasAncestor_1(ClassHierarchy.v().INT)) {
+          if (!ClassHierarchy.v().typeNode(index.getType()).hasAncestor_1(ClassHierarchy.v().INT)) {
             if (fix) {
               ref.setIndex(insertCast((Local) index, IntType.v(), stmt));
             } else {
@@ -252,9 +253,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
         }
 
         if (index instanceof Local) {
-          if (!ClassHierarchy.v()
-              .typeNode(index.getType())
-              .hasAncestor_1(ClassHierarchy.v().INT)) {
+          if (!ClassHierarchy.v().typeNode(index.getType()).hasAncestor_1(ClassHierarchy.v().INT)) {
             if (fix) {
               ref.setIndex(insertCast((Local) index, IntType.v(), stmt));
             } else {
@@ -510,9 +509,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
       Value size = nae.getSize();
 
       if (size instanceof Local) {
-        if (!ClassHierarchy.v()
-            .typeNode(size.getType())
-            .hasAncestor_1(ClassHierarchy.v().INT)) {
+        if (!ClassHierarchy.v().typeNode(size.getType()).hasAncestor_1(ClassHierarchy.v().INT)) {
           if (fix) {
             nae.setSize(insertCast((Local) size, IntType.v(), stmt));
           } else {
@@ -528,9 +525,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
         Value size = nmae.getSize(i);
 
         if (size instanceof Local) {
-          if (!ClassHierarchy.v()
-              .typeNode(size.getType())
-              .hasAncestor_1(ClassHierarchy.v().INT)) {
+          if (!ClassHierarchy.v().typeNode(size.getType()).hasAncestor_1(ClassHierarchy.v().INT)) {
             if (fix) {
               nmae.setSize(i, insertCast((Local) size, IntType.v(), stmt));
             } else {
@@ -626,6 +621,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
     return node.type();
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -648,12 +644,16 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {}
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {}
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {}
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     ConditionExpr cond = (ConditionExpr) stmt.getCondition();
 
@@ -752,13 +752,12 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     Value key = stmt.getKey();
 
     if (key instanceof Local) {
-      if (!ClassHierarchy.v()
-          .typeNode(key.getType())
-          .hasAncestor_1(ClassHierarchy.v().INT)) {
+      if (!ClassHierarchy.v().typeNode(key.getType()).hasAncestor_1(ClassHierarchy.v().INT)) {
         if (fix) {
           stmt.setKey(insertCast((Local) key, IntType.v(), stmt));
         } else {
@@ -768,8 +767,10 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {}
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     if (stmt.getOp() instanceof Local) {
       if (stmt.getOp().getType() instanceof IntegerType) {
@@ -787,15 +788,15 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     Value key = stmt.getKey();
 
     if (key instanceof Local) {
-      if (!ClassHierarchy.v()
-          .typeNode(key.getType())
-          .hasAncestor_1(ClassHierarchy.v().INT)) {
+      if (!ClassHierarchy.v().typeNode(key.getType()).hasAncestor_1(ClassHierarchy.v().INT)) {
         if (fix) {
           stmt.setKey(insertCast((Local) key, IntType.v(), stmt));
         } else {
@@ -806,6 +807,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {}
 
   public void defaultCase(Stmt stmt) {

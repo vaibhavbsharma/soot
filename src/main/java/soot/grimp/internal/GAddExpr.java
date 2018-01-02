@@ -36,18 +36,22 @@ public class GAddExpr extends AbstractGrimpFloatBinopExpr implements AddExpr {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " + ";
   }
 
+  @Override
   public final int getPrecedence() {
     return 700;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseAddExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GAddExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }

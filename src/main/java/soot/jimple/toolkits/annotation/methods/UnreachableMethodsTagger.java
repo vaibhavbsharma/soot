@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.annotation.methods;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.G;
 import soot.Scene;
 import soot.SceneTransformer;
@@ -28,10 +32,6 @@ import soot.SootMethod;
 import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 /** A scene transformer that adds tags to unused methods. */
 public class UnreachableMethodsTagger extends SceneTransformer {
   public UnreachableMethodsTagger(Singletons.Global g) {}
@@ -40,10 +40,11 @@ public class UnreachableMethodsTagger extends SceneTransformer {
     return G.v().soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
 
     // make list of all unreachable methods
-    ArrayList<SootMethod> methodList = new ArrayList<SootMethod>();
+    ArrayList<SootMethod> methodList = new ArrayList<>();
 
     Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
     while (getClassesIt.hasNext()) {

@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.ast.Node;
-
 import java.util.ArrayList;
+
+import polyglot.ast.Node;
 
 public class InnerClassInfoFinder extends polyglot.visit.NodeVisitor {
 
@@ -53,13 +53,14 @@ public class InnerClassInfoFinder extends polyglot.visit.NodeVisitor {
 
   public InnerClassInfoFinder() {
     // declFound = null;
-    localClassDeclList = new ArrayList<Node>();
-    anonBodyList = new ArrayList<Node>();
-    memberList = new ArrayList<Node>();
+    localClassDeclList = new ArrayList<>();
+    anonBodyList = new ArrayList<>();
+    memberList = new ArrayList<>();
     // declaredInstList = new ArrayList();
     // usedInstList = new ArrayList();
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
 
     if (n instanceof polyglot.ast.LocalClassDecl) {

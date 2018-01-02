@@ -20,6 +20,14 @@
 
 package soot.dava.toolkits.base.finders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.RefType;
@@ -44,14 +52,6 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.util.IterableSet;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class SynchronizedBlockFinder implements FactFinder {
   public SynchronizedBlockFinder(Singletons.Global g) {}
@@ -80,6 +80,7 @@ public class SynchronizedBlockFinder implements FactFinder {
 
   private final String THROWABLE = "java.lang.Throwable";
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET)
       throws RetriggerAnalysisException {
     davaBody = body;
@@ -183,7 +184,7 @@ public class SynchronizedBlockFinder implements FactFinder {
               // RuntimeException("Could not verify approximated Synchronized body");
             }
           }
-          if (!done)
+          if (!done) {
             throw new RuntimeException(
                 "Could not verify approximated Synchronized body!\n"
                     + "Method:\n"
@@ -192,6 +193,7 @@ public class SynchronizedBlockFinder implements FactFinder {
                     + "===============================================================\n"
                     + body.getUnits()
                     + "===============================================================\n");
+          }
         } // non null synch set for this enter monitor stmt
       } // if the augmented stmt was a enter monitor stmt
       previousStmt = as;
@@ -287,7 +289,9 @@ public class SynchronizedBlockFinder implements FactFinder {
               && (slocal2level.get(local) != VARIABLE_INCR)) {
             slocal2level.put(local, VARIABLE_INCR);
 
-            if (worklist.contains(sas) == false) worklist.addLast(sas);
+            if (worklist.contains(sas) == false) {
+              worklist.addLast(sas);
+            }
           }
         }
       }
@@ -318,7 +322,9 @@ public class SynchronizedBlockFinder implements FactFinder {
            * Protect this by checking isEmpty
            */
           if (!viAugStmts.isEmpty()) {
-            if (viAugStmts.getLast() != as) viAugStmts.addLast(as);
+            if (viAugStmts.getLast() != as) {
+              viAugStmts.addLast(as);
+            }
           } else {
             // System.out.println("List was empty added as");
             viAugStmts.addLast(as);
@@ -327,7 +333,7 @@ public class SynchronizedBlockFinder implements FactFinder {
           LinkedList<Value> locals = null;
 
           if ((locals = as2locals.get(as)) == null) {
-            locals = new LinkedList<Value>();
+            locals = new LinkedList<>();
             as2locals.put(as, locals);
           }
 
@@ -382,7 +388,9 @@ public class SynchronizedBlockFinder implements FactFinder {
     while (sit.hasNext()) {
       AugmentedStmt sas = (AugmentedStmt) sit.next();
 
-      if (component.contains(sas) == false) continue;
+      if (component.contains(sas) == false) {
+        continue;
+      }
 
       // get the local2Level hashmap for the successor
       HashMap<Value, Integer> slocal2level = (HashMap<Value, Integer>) as2rml.get(sas);
@@ -420,7 +428,9 @@ public class SynchronizedBlockFinder implements FactFinder {
             slocal2level.put(local, VARIABLE_INCR);
 
             // add this to the viSeeds list
-            if (viSeeds.contains(sas) == false) viSeeds.add(sas);
+            if (viSeeds.contains(sas) == false) {
+              viSeeds.add(sas);
+            }
           }
         }
       }
@@ -436,7 +446,7 @@ public class SynchronizedBlockFinder implements FactFinder {
    * stmt and the level is greater or equal to that of the enter stmt
    */
   private Map<AugmentedStmt, IterableSet> build_SynchSets() {
-    HashMap<AugmentedStmt, IterableSet> as2synchSet = new HashMap<AugmentedStmt, IterableSet>();
+    HashMap<AugmentedStmt, IterableSet> as2synchSet = new HashMap<>();
 
     Iterator mesit = monitorEnterSet.iterator();
     monitorEnterLoop:
@@ -456,8 +466,9 @@ public class SynchronizedBlockFinder implements FactFinder {
         worklist.removeFirst();
 
         Stmt s = as.get_Stmt();
-        if ((s instanceof DefinitionStmt) && (((DefinitionStmt) s).getLeftOp() == local))
+        if ((s instanceof DefinitionStmt) && (((DefinitionStmt) s).getLeftOp() == local)) {
           continue monitorEnterLoop;
+        }
 
         synchSet.add(as);
 
@@ -476,7 +487,9 @@ public class SynchronizedBlockFinder implements FactFinder {
           if (sas.get_Dominators().contains(headAs)
               && (sml >= monitorLevel)
               && (worklist.contains(sas) == false)
-              && (synchSet.contains(sas) == false)) worklist.addLast(sas);
+              && (synchSet.contains(sas) == false)) {
+            worklist.addLast(sas);
+          }
         }
       }
 
@@ -506,10 +519,14 @@ public class SynchronizedBlockFinder implements FactFinder {
         Value local = ((MonitorStmt) s).getOp();
 
         // if the monitorLocalSet does not contain this local add it
-        if (monitorLocalSet.contains(local) == false) monitorLocalSet.add(local);
+        if (monitorLocalSet.contains(local) == false) {
+          monitorLocalSet.add(local);
+        }
 
         // add the monitor enter statement to the monitorEnter Set
-        if (s instanceof EnterMonitorStmt) monitorEnterSet.add(as);
+        if (s instanceof EnterMonitorStmt) {
+          monitorEnterSet.add(as);
+        }
       }
     }
 
@@ -529,9 +546,8 @@ public class SynchronizedBlockFinder implements FactFinder {
       as2ml.put(asgit.next(), (Map<Value, Integer>) local2level_template.clone());
     }
 
-    LinkedList<AugmentedStmt> viAugStmts = new LinkedList<AugmentedStmt>();
-    HashMap<AugmentedStmt, LinkedList<Value>> incrAs2locals =
-        new HashMap<AugmentedStmt, LinkedList<Value>>();
+    LinkedList<AugmentedStmt> viAugStmts = new LinkedList<>();
+    HashMap<AugmentedStmt, LinkedList<Value>> incrAs2locals = new HashMap<>();
 
     // setup the variable increasing monitor levels
     find_VariableIncreasing(asg, local2level_template, viAugStmts, incrAs2locals);
@@ -583,9 +599,10 @@ public class SynchronizedBlockFinder implements FactFinder {
           int predLevel = ((Integer) pred_local2level.get(local)).intValue();
           Stmt ps = pas.get_Stmt();
 
-          if (predLevel == UNKNOWN) // Already marked as variable
+          if (predLevel == UNKNOWN) {
             // increasing.
             continue;
+          }
 
           if (ps instanceof ExitMonitorStmt) {
 
@@ -595,7 +612,9 @@ public class SynchronizedBlockFinder implements FactFinder {
              * local it exits is the same as this local and the
              * predLevel is greater than 0 decrease the pred level
              */
-            if ((ems.getOp() == local) && (predLevel > 0)) predLevel--;
+            if ((ems.getOp() == local) && (predLevel > 0)) {
+              predLevel--;
+            }
           }
 
           if (s instanceof EnterMonitorStmt) {
@@ -606,7 +625,9 @@ public class SynchronizedBlockFinder implements FactFinder {
              * as this local and the predLevel is greater or equal
              * to 0 increase the pred level
              */
-            if ((ems.getOp() == local) && (predLevel >= 0)) predLevel++;
+            if ((ems.getOp() == local) && (predLevel >= 0)) {
+              predLevel++;
+            }
           }
 
           int curLevel = cur_local2level.get(local).intValue();
@@ -623,7 +644,9 @@ public class SynchronizedBlockFinder implements FactFinder {
             while (sit.hasNext()) {
               Object so = sit.next();
 
-              if (worklist.contains(so) == false) worklist.add(so);
+              if (worklist.contains(so) == false) {
+                worklist.add(so);
+              }
             }
           }
         }
@@ -867,7 +890,7 @@ public class SynchronizedBlockFinder implements FactFinder {
     boolean unChanged = false;
     while (!unChanged) {
       unChanged = true;
-      List<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
+      List<AugmentedStmt> toRemove = new ArrayList<>();
       synchIt = synchBody.iterator();
       while (synchIt.hasNext()) {
         AugmentedStmt synchAs = (AugmentedStmt) synchIt.next();
@@ -1013,10 +1036,7 @@ public class SynchronizedBlockFinder implements FactFinder {
 
     // if not a caught exception of type throwable we have a problem
     if (!((asnFrom instanceof CaughtExceptionRef)
-        && (((RefType) asnFrom.getType())
-            .getSootClass()
-            .getName()
-            .equals(THROWABLE)))) {
+        && (((RefType) asnFrom.getType()).getSootClass().getName().equals(THROWABLE)))) {
       // System.out.println("here4");
       return false;
     }
@@ -1169,7 +1189,9 @@ public class SynchronizedBlockFinder implements FactFinder {
           AugmentedStmt sas = (AugmentedStmt) sit.next();
 
           // if not dominated by head continue with next stmt in body
-          if (sas.get_Dominators().contains(head) == false) continue;
+          if (sas.get_Dominators().contains(head) == false) {
+            continue;
+          }
 
           Stmt ss = sas.get_Stmt();
 

@@ -19,6 +19,9 @@
 
 package soot.jimple.spark.sets;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.G;
 import soot.PointsToSet;
 import soot.RefType;
@@ -30,9 +33,6 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.util.BitVector;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Abstract base class for implementations of points-to sets.
@@ -68,8 +68,11 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     }
     return other.forall(
         new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
-            if (exclude == null || !exclude.contains(n)) returnValue = add(n) | returnValue;
+            if (exclude == null || !exclude.contains(n)) {
+              returnValue = add(n) | returnValue;
+            }
           }
         });
   }
@@ -100,25 +103,33 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     this.type = type;
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     final PointsToSetInternal o = (PointsToSetInternal) other;
     return forall(
         new P2SetVisitor() {
+          @Override
           public void visit(Node n) {
-            if (o.contains(n)) returnValue = true;
+            if (o.contains(n)) {
+              returnValue = true;
+            }
           }
         });
   }
 
+  @Override
   public Set<Type> possibleTypes() {
-    final HashSet<Type> ret = new HashSet<Type>();
+    final HashSet<Type> ret = new HashSet<>();
     forall(
         new P2SetVisitor() {
+          @Override
           public void visit(Node n) {
             Type t = n.getType();
             if (t instanceof RefType) {
               RefType rt = (RefType) t;
-              if (rt.getSootClass().isAbstract()) return;
+              if (rt.getSootClass().isAbstract()) {
+                return;
+              }
             }
             ret.add(t);
           }
@@ -138,6 +149,7 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     final int[] ret = new int[1];
     forall(
         new P2SetVisitor() {
+          @Override
           public void visit(Node n) {
             ret[0]++;
           }
@@ -145,10 +157,12 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     return ret[0];
   }
 
+  @Override
   public String toString() {
     final StringBuffer ret = new StringBuffer();
     this.forall(
         new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
             ret.append("" + n + ",");
           }
@@ -156,10 +170,12 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     return ret.toString();
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
-    final HashSet<String> ret = new HashSet<String>();
+    final HashSet<String> ret = new HashSet<>();
     return this.forall(
             new P2SetVisitor() {
+              @Override
               public final void visit(Node n) {
                 if (n instanceof StringConstantNode) {
                   ret.add(((StringConstantNode) n).getString());
@@ -172,10 +188,12 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
         : ret;
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
-    final HashSet<ClassConstant> ret = new HashSet<ClassConstant>();
+    final HashSet<ClassConstant> ret = new HashSet<>();
     return this.forall(
             new P2SetVisitor() {
+              @Override
               public final void visit(Node n) {
                 if (n instanceof ClassConstantNode) {
                   ret.add(((ClassConstantNode) n).getClassConstant());
@@ -212,12 +230,14 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
   }
 
   /** {@inheritDoc} */
+  @Override
   public int pointsToSetHashCode() {
     P2SetVisitorInt visitor =
         new P2SetVisitorInt(1) {
 
           final int PRIME = 31;
 
+          @Override
           public void visit(Node n) {
             intValue = PRIME * intValue + n.hashCode();
           }
@@ -227,6 +247,7 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean pointsToSetEquals(Object other) {
     if (this == other) {
       return true;
@@ -248,6 +269,7 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     return onePts.forall(
         new P2SetVisitorDefaultTrue() {
 
+          @Override
           public final void visit(Node n) {
             returnValue = returnValue && otherPts.contains(n);
           }

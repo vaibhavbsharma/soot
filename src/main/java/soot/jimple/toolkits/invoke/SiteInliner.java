@@ -25,6 +25,12 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.Hierarchy;
 import soot.Local;
@@ -57,12 +63,6 @@ import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /** Provides methods to inline a given invoke site. */
 public class SiteInliner {
@@ -117,7 +117,9 @@ public class SiteInliner {
     Chain<Unit> containerUnits = containerB.getUnits();
 
     if (!(inlinee.getDeclaringClass().isApplicationClass()
-        || inlinee.getDeclaringClass().isLibraryClass())) return null;
+        || inlinee.getDeclaringClass().isLibraryClass())) {
+      return null;
+    }
 
     Body inlineeB = inlinee.getActiveBody();
     Chain<Unit> inlineeUnits = inlineeB.getUnits();
@@ -125,7 +127,9 @@ public class SiteInliner {
     InvokeExpr ie = toInline.getInvokeExpr();
 
     Value thisToAdd = null;
-    if (ie instanceof InstanceInvokeExpr) thisToAdd = ((InstanceInvokeExpr) ie).getBase();
+    if (ie instanceof InstanceInvokeExpr) {
+      thisToAdd = ((InstanceInvokeExpr) ie).getBase();
+    }
 
     // Insert casts to please the verifier.
     {
@@ -199,10 +203,10 @@ public class SiteInliner {
     {
       if (inlinee.isSynchronized()) {
         // Need to get the class object if ie is a static invoke.
-        if (ie instanceof InstanceInvokeExpr)
+        if (ie instanceof InstanceInvokeExpr) {
           SynchronizerManager.v()
               .synchronizeStmtOn(toInline, containerB, (Local) ((InstanceInvokeExpr) ie).getBase());
-        else {
+        } else {
           // If we're in an interface, we must be in a
           // <clinit> method, which surely needs no
           // synchronization.
@@ -218,14 +222,16 @@ public class SiteInliner {
     Stmt exitPoint = (Stmt) containerUnits.getSuccOf(toInline);
 
     // First, clone all of the inlinee's units & locals.
-    HashMap<Local, Local> oldLocalsToNew = new HashMap<Local, Local>();
-    HashMap<Stmt, Stmt> oldUnitsToNew = new HashMap<Stmt, Stmt>();
+    HashMap<Local, Local> oldLocalsToNew = new HashMap<>();
+    HashMap<Stmt, Stmt> oldUnitsToNew = new HashMap<>();
     {
       Stmt cursor = toInline;
-      for (Iterator<Unit> currIt = inlineeUnits.iterator(); currIt.hasNext(); ) {
-        final Stmt curr = (Stmt) currIt.next();
+      for (Unit unit : inlineeUnits) {
+        final Stmt curr = (Stmt) unit;
         Stmt currPrime = (Stmt) curr.clone();
-        if (currPrime == null) throw new RuntimeException("getting null from clone!");
+        if (currPrime == null) {
+          throw new RuntimeException("getting null from clone!");
+        }
         currPrime.addAllTagsOf(curr);
 
         containerUnits.insertAfter(currPrime, cursor);
@@ -234,11 +240,12 @@ public class SiteInliner {
         oldUnitsToNew.put(curr, currPrime);
       }
 
-      for (Iterator<Local> lIt = inlineeB.getLocals().iterator(); lIt.hasNext(); ) {
+      for (Local l : inlineeB.getLocals()) {
 
-        final Local l = lIt.next();
         Local lPrime = (Local) l.clone();
-        if (lPrime == null) throw new RuntimeException("getting null from local clone!");
+        if (lPrime == null) {
+          throw new RuntimeException("getting null from local clone!");
+        }
 
         containerB.getLocals().add(lPrime);
         oldLocalsToNew.put(l, lPrime);
@@ -255,17 +262,25 @@ public class SiteInliner {
         Stmt patchee = (Stmt) it.next();
 
         for (ValueBox box : patchee.getUseAndDefBoxes()) {
-          if (!(box.getValue() instanceof Local)) continue;
+          if (!(box.getValue() instanceof Local)) {
+            continue;
+          }
 
           Local lPrime = oldLocalsToNew.get(box.getValue());
-          if (lPrime != null) box.setValue(lPrime);
-          else throw new RuntimeException("local has no clone!");
+          if (lPrime != null) {
+            box.setValue(lPrime);
+          } else {
+            throw new RuntimeException("local has no clone!");
+          }
         }
 
         for (UnitBox box : patchee.getUnitBoxes()) {
           Unit uPrime = (oldUnitsToNew.get(box.getUnit()));
-          if (uPrime != null) box.setUnit(uPrime);
-          else throw new RuntimeException("inlined stmt has no clone!");
+          if (uPrime != null) {
+            box.setUnit(uPrime);
+          } else {
+            throw new RuntimeException("inlined stmt has no clone!");
+          }
         }
       }
     }
@@ -278,12 +293,16 @@ public class SiteInliner {
             newEnd = oldUnitsToNew.get(t.getEndUnit()),
             newHandler = oldUnitsToNew.get(t.getHandlerUnit());
 
-        if (newBegin == null || newEnd == null || newHandler == null)
+        if (newBegin == null || newEnd == null || newHandler == null) {
           throw new RuntimeException("couldn't map trap!");
+        }
 
         Trap trap = Jimple.v().newTrap(t.getException(), newBegin, newEnd, newHandler);
-        if (prevTrap == null) containerB.getTraps().addFirst(trap);
-        else containerB.getTraps().insertAfter(trap, prevTrap);
+        if (prevTrap == null) {
+          containerB.getTraps().addFirst(trap);
+        } else {
+          containerB.getTraps().insertAfter(trap, prevTrap);
+        }
         prevTrap = trap;
       }
     }
@@ -293,7 +312,7 @@ public class SiteInliner {
       Iterator<Unit> it =
           containerUnits.iterator(
               containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint));
-      ArrayList<Unit> cuCopy = new ArrayList<Unit>();
+      ArrayList<Unit> cuCopy = new ArrayList<>();
 
       while (it.hasNext()) {
         cuCopy.add(it.next());
@@ -304,10 +323,12 @@ public class SiteInliner {
 
         if (s instanceof IdentityStmt) {
           IdentityRef rhs = (IdentityRef) ((IdentityStmt) s).getRightOp();
-          if (rhs instanceof CaughtExceptionRef) continue;
-          else if (rhs instanceof ThisRef) {
-            if (!(ie instanceof InstanceInvokeExpr))
+          if (rhs instanceof CaughtExceptionRef) {
+            continue;
+          } else if (rhs instanceof ThisRef) {
+            if (!(ie instanceof InstanceInvokeExpr)) {
               throw new RuntimeException("thisref with no receiver!");
+            }
 
             containerUnits.swapWith(
                 s, Jimple.v().newAssignStmt(((IdentityStmt) s).getLeftOp(), thisToAdd));
@@ -325,23 +346,26 @@ public class SiteInliner {
             continue;
           }
 
-          if (!(toInline instanceof AssignStmt))
+          if (!(toInline instanceof AssignStmt)) {
             throw new RuntimeException("invoking stmt neither InvokeStmt nor AssignStmt!??!?!");
+          }
           Value ro = ((ReturnStmt) s).getOp();
           Value lhs = ((AssignStmt) toInline).getLeftOp();
           AssignStmt as = Jimple.v().newAssignStmt(lhs, ro);
           containerUnits.insertBefore(as, s);
           containerUnits.swapWith(s, Jimple.v().newGotoStmt(exitPoint));
-        } else if (s instanceof ReturnVoidStmt)
+        } else if (s instanceof ReturnVoidStmt) {
           containerUnits.swapWith(s, Jimple.v().newGotoStmt(exitPoint));
+        }
       }
     }
 
-    List<Unit> newStmts = new ArrayList<Unit>();
+    List<Unit> newStmts = new ArrayList<>();
     for (Iterator<Unit> i =
             containerUnits.iterator(
                 containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint));
-        i.hasNext(); ) {
+        i.hasNext();
+        ) {
       newStmts.add(i.next());
     }
 

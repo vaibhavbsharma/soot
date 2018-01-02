@@ -1,11 +1,11 @@
 package soot.jimple.toolkits.infoflow;
 
-import soot.SootMethod;
-import soot.jimple.toolkits.callgraph.Edge;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import soot.SootMethod;
+import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * CallChain written by Richard L. Halpert 2007-03-07 Stores a list of edges, and has a "next
@@ -18,15 +18,19 @@ public class CallChain {
 
   public CallChain(Edge edge, CallChain next) {
     this.edge = edge;
-    if (next != null && next.edge == null && next.next == null) // ignore the empty chain...
-    this.next = null;
-    else this.next = next;
+    if (next != null && next.edge == null && next.next == null) {
+      this.next = null;
+    } else {
+      this.next = next;
+    }
   }
 
   // reconstructs the whole chain
   public List<Edge> getEdges() {
-    List<Edge> ret = new LinkedList<Edge>();
-    if (edge != null) ret.add(edge);
+    List<Edge> ret = new LinkedList<>();
+    if (edge != null) {
+      ret.add(edge);
+    }
     CallChain current = next;
     while (current != null) {
       ret.add(current.edge);
@@ -54,23 +58,31 @@ public class CallChain {
   // returns a shallow clone of this list...
   // which requires a deep clone of the CallChain objects in it
   public CallChain cloneAndExtend(CallChain extension) {
-    if (next == null) return new CallChain(edge, extension);
+    if (next == null) {
+      return new CallChain(edge, extension);
+    }
 
     return new CallChain(edge, next.cloneAndExtend(extension));
   }
 
+  @Override
   public Object clone() {
-    if (next == null) return new CallChain(edge, null);
+    if (next == null) {
+      return new CallChain(edge, null);
+    }
 
     return new CallChain(edge, (CallChain) next.clone());
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof CallChain) {
       CallChain other = (CallChain) o;
       if (edge == other.edge
           && ((next == null && other.next == null)
-              || (next != null && other.next != null && next.equals(other.next)))) return true;
+              || (next != null && other.next != null && next.equals(other.next)))) {
+        return true;
+      }
     }
     return false;
   }

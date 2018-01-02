@@ -22,6 +22,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
+
 import soot.SootField;
 
 /**
@@ -43,7 +44,9 @@ final class FieldBuilder extends FieldVisitor {
 
   private TagBuilder getTagBuilder() {
     TagBuilder t = tb;
-    if (t == null) t = tb = new TagBuilder(field, scb);
+    if (t == null) {
+      t = tb = new TagBuilder(field, scb);
+    }
     return t;
   }
 

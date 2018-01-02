@@ -19,20 +19,19 @@
 
 package soot.jimple.spark.pag;
 
-import soot.SootClass;
-import soot.SootMethod;
-import soot.Type;
-import soot.jimple.spark.sets.P2SetVisitor;
-import soot.jimple.spark.sets.PointsToSetInternal;
-import soot.jimple.spark.solver.TopoSorter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Type;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.solver.TopoSorter;
 
 /**
  * Dumps a pointer assignment graph to a file.
@@ -50,15 +49,18 @@ public class PAGDumper {
       final PrintWriter file =
           new PrintWriter(new FileOutputStream(new File(output_dir, "solution")));
       file.println("Solution:");
-      for (Iterator vnIt = pag.getVarNodeNumberer().iterator(); vnIt.hasNext(); ) {
-        final VarNode vn = (VarNode) vnIt.next();
+      for (Object element : pag.getVarNodeNumberer()) {
+        final VarNode vn = (VarNode) element;
         if (vn.getReplacement() != vn) {
           continue;
         }
         PointsToSetInternal p2set = vn.getP2Set();
-        if (p2set == null) continue;
+        if (p2set == null) {
+          continue;
+        }
         p2set.forall(
             new P2SetVisitor() {
+              @Override
               public final void visit(Node n) {
                 try {
                   dumpNode(vn, file);
@@ -87,7 +89,9 @@ public class PAGDumper {
       file.println("Allocations:");
       for (Object object : pag.allocSources()) {
         final AllocNode n = (AllocNode) object;
-        if (n.getReplacement() != n) continue;
+        if (n.getReplacement() != n) {
+          continue;
+        }
         Node[] succs = pag.allocLookup(n);
         for (Node element0 : succs) {
           dumpNode(n, file);
@@ -100,7 +104,9 @@ public class PAGDumper {
       file.println("Assignments:");
       for (Object object : pag.simpleSources()) {
         final VarNode n = (VarNode) object;
-        if (n.getReplacement() != n) continue;
+        if (n.getReplacement() != n) {
+          continue;
+        }
         Node[] succs = pag.simpleLookup(n);
         for (Node element0 : succs) {
           dumpNode(n, file);
@@ -124,7 +130,9 @@ public class PAGDumper {
       file.println("Stores:");
       for (Object object : pag.storeSources()) {
         final VarNode n = (VarNode) object;
-        if (n.getReplacement() != n) continue;
+        if (n.getReplacement() != n) {
+          continue;
+        }
         Node[] succs = pag.storeLookup(n);
         for (Node element0 : succs) {
           dumpNode(n, file);
@@ -148,39 +156,53 @@ public class PAGDumper {
   protected PAG pag;
   protected String output_dir;
   protected int fieldNum = 0;
-  protected HashMap<SparkField, Integer> fieldMap = new HashMap<SparkField, Integer>();
+  protected HashMap<SparkField, Integer> fieldMap = new HashMap<>();
   protected ObjectNumberer root = new ObjectNumberer(null, 0);
 
   protected void dumpTypes(PrintWriter file) throws IOException {
-    HashSet<Type> declaredTypes = new HashSet<Type>();
-    HashSet<Type> actualTypes = new HashSet<Type>();
-    HashSet<SparkField> allFields = new HashSet<SparkField>();
-    for (Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext(); ) {
-      final Node n = (Node) nIt.next();
+    HashSet<Type> declaredTypes = new HashSet<>();
+    HashSet<Type> actualTypes = new HashSet<>();
+    HashSet<SparkField> allFields = new HashSet<>();
+    for (Object element : pag.getVarNodeNumberer()) {
+      final Node n = (Node) element;
       Type t = n.getType();
-      if (t != null) declaredTypes.add(t);
+      if (t != null) {
+        declaredTypes.add(t);
+      }
     }
     for (Object object : pag.loadSources()) {
       final Node n = (Node) object;
-      if (n.getReplacement() != n) continue;
+      if (n.getReplacement() != n) {
+        continue;
+      }
       Type t = n.getType();
-      if (t != null) declaredTypes.add(t);
+      if (t != null) {
+        declaredTypes.add(t);
+      }
       allFields.add(((FieldRefNode) n).getField());
     }
     for (Object object : pag.storeInvSources()) {
       final Node n = (Node) object;
-      if (n.getReplacement() != n) continue;
+      if (n.getReplacement() != n) {
+        continue;
+      }
       Type t = n.getType();
-      if (t != null) declaredTypes.add(t);
+      if (t != null) {
+        declaredTypes.add(t);
+      }
       allFields.add(((FieldRefNode) n).getField());
     }
     for (Object object : pag.allocSources()) {
       final Node n = (Node) object;
-      if (n.getReplacement() != n) continue;
+      if (n.getReplacement() != n) {
+        continue;
+      }
       Type t = n.getType();
-      if (t != null) actualTypes.add(t);
+      if (t != null) {
+        actualTypes.add(t);
+      }
     }
-    HashMap<Type, Integer> typeToInt = new HashMap<Type, Integer>();
+    HashMap<Type, Integer> typeToInt = new HashMap<>();
     int nextint = 1;
     for (Type type : declaredTypes) {
       typeToInt.put(type, new Integer(nextint++));
@@ -201,7 +223,9 @@ public class PAGDumper {
     file.println("Allocation Types:");
     for (Object object : pag.allocSources()) {
       final Node n = (Node) object;
-      if (n.getReplacement() != n) continue;
+      if (n.getReplacement() != n) {
+        continue;
+      }
       Type t = n.getType();
       dumpNode(n, file);
       if (t == null) {
@@ -212,9 +236,11 @@ public class PAGDumper {
       }
     }
     file.println("Variable Types:");
-    for (Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext(); ) {
-      final Node n = (Node) nIt.next();
-      if (n.getReplacement() != n) continue;
+    for (Object element : pag.getVarNodeNumberer()) {
+      final Node n = (Node) element;
+      if (n.getReplacement() != n) {
+        continue;
+      }
       Type t = n.getType();
       dumpNode(n, file);
       if (t == null) {
@@ -235,7 +261,9 @@ public class PAGDumper {
   }
 
   protected void dumpNode(Node n, PrintWriter out) throws IOException {
-    if (n.getReplacement() != n) throw new RuntimeException("Attempt to dump collapsed node.");
+    if (n.getReplacement() != n) {
+      throw new RuntimeException("Attempt to dump collapsed node.");
+    }
     if (n instanceof FieldRefNode) {
       FieldRefNode fn = (FieldRefNode) n;
       dumpNode(fn.getBase(), out);
@@ -247,7 +275,9 @@ public class PAGDumper {
         m = ((LocalVarNode) vn).getMethod();
       }
       SootClass c = null;
-      if (m != null) c = m.getDeclaringClass();
+      if (m != null) {
+        c = m.getDeclaringClass();
+      }
       ObjectNumberer cl = root.findOrAdd(c);
       ObjectNumberer me = cl.findOrAdd(m);
       ObjectNumberer vr = me.findOrAdd(vn);
@@ -277,7 +307,9 @@ public class PAGDumper {
     }
 
     ObjectNumberer findOrAdd(Object child) {
-      if (children == null) children = new HashMap<Object, ObjectNumberer>();
+      if (children == null) {
+        children = new HashMap<>();
+      }
       ObjectNumberer ret = children.get(child);
       if (ret == null) {
         ret = new ObjectNumberer(child, nextChildNum++);

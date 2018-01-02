@@ -25,6 +25,15 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -67,15 +76,6 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class DeadAssignmentEliminator extends BodyTransformer {
   public DeadAssignmentEliminator(Singletons.Global g) {}
 
@@ -102,7 +102,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
     }
 
     Chain<Unit> units = b.getUnits();
-    Deque<Unit> q = new ArrayDeque<Unit>(units.size());
+    Deque<Unit> q = new ArrayDeque<>(units.size());
 
     // Make a first pass through the statements, noting
     // the statements we must absolutely keep.
@@ -218,14 +218,18 @@ public class DeadAssignmentEliminator extends BodyTransformer {
               if (v instanceof IntConstant) {
                 IntConstant i = (IntConstant) v;
                 isEssential = (i.value == 0);
-              } else isEssential = true; // could be 0, we don't know
+              } else {
+                isEssential = true; // could be 0, we don't know
+              }
             }
             if (isEssential && t2 instanceof LongType) {
               Value v = expr.getOp2();
               if (v instanceof LongConstant) {
                 LongConstant l = (LongConstant) v;
                 isEssential = (l.value == 0);
-              } else isEssential = true; // could be 0, we don't know
+              } else {
+                isEssential = true; // could be 0, we don't know
+              }
             }
           }
         }
@@ -245,7 +249,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b);
 
       if (!allEssential) {
-        Set<Unit> essential = new HashSet<Unit>(b.getUnits().size());
+        Set<Unit> essential = new HashSet<>(b.getUnits().size());
         while (!q.isEmpty()) {
           Unit s = q.removeFirst();
           if (essential.add(s)) {
@@ -254,7 +258,9 @@ public class DeadAssignmentEliminator extends BodyTransformer {
               if (v instanceof Local) {
                 Local l = (Local) v;
                 List<Unit> defs = localDefs.getDefsOfAt(l, s);
-                if (defs != null) q.addAll(defs);
+                if (defs != null) {
+                  q.addAll(defs);
+                }
               }
             }
           }
@@ -268,7 +274,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
         // Eliminate dead assignments from invokes such as x = f(), where
         //	x is no longer used
 
-        List<AssignStmt> postProcess = new ArrayList<AssignStmt>();
+        List<AssignStmt> postProcess = new ArrayList<>();
         for (Unit u : units) {
           if (u instanceof AssignStmt) {
             AssignStmt s = (AssignStmt) u;
@@ -296,7 +302,9 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           units.swapWith(s, newInvoke);
 
           // If we have a callgraph, we need to fix it
-          if (Scene.v().hasCallGraph()) Scene.v().getCallGraph().swapEdgesOutOf(s, newInvoke);
+          if (Scene.v().hasCallGraph()) {
+            Scene.v().getCallGraph().swapEdgesOutOf(s, newInvoke);
+          }
         }
       }
     }

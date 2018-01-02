@@ -25,6 +25,14 @@
 
 package soot.baf.toolkits.base;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -67,14 +75,6 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class LoadStoreOptimizer extends BodyTransformer {
   public LoadStoreOptimizer(Singletons.Global g) {}
 
@@ -102,6 +102,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
   /** The method that drives the optimizations. */
   /* This is the public interface to LoadStoreOptimizer */
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
 
     gOptions = options;
@@ -112,10 +113,11 @@ public class LoadStoreOptimizer extends BodyTransformer {
 
     debug = PhaseOptions.getBoolean(gOptions, "debug");
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
+    }
 
     if (debug) {
       G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());
@@ -177,7 +179,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       }
 
       List<Block> blocks = blockGraph.getBlocks();
-      mUnitToBlockMap = new HashMap<Unit, Block>();
+      mUnitToBlockMap = new HashMap<>();
 
       Iterator<Block> blockIt = blocks.iterator();
       while (blockIt.hasNext()) {
@@ -194,10 +196,12 @@ public class LoadStoreOptimizer extends BodyTransformer {
     // computes a list of all the stores in mUnits in order of their occurence therein.
 
     private List<Unit> buildStoreList() {
-      List<Unit> storeList = new ArrayList<Unit>();
+      List<Unit> storeList = new ArrayList<>();
 
       for (Unit unit : mUnits) {
-        if (unit instanceof StoreInst) storeList.add(unit);
+        if (unit instanceof StoreInst) {
+          storeList.add(unit);
+        }
       }
       return storeList;
     }
@@ -240,7 +244,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
                 while (useIt.hasNext()) {
                   UnitValueBoxPair pair = useIt.next();
                   Unit loadUnit = pair.getUnit();
-                  if (!(loadUnit instanceof LoadInst)) continue nextUnit;
+                  if (!(loadUnit instanceof LoadInst)) {
+                    continue nextUnit;
+                  }
 
                   List<Unit> defs =
                       mLocalDefs.getDefsOfAt((Local) pair.getValueBox().getValue(), loadUnit);
@@ -260,7 +266,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
                 while (useIt.hasNext()) {
                   UnitValueBoxPair pair = useIt.next();
                   Block useBlock = mUnitToBlockMap.get(pair.getUnit());
-                  if (useBlock != storeBlock) continue nextUnit;
+                  if (useBlock != storeBlock) {
+                    continue nextUnit;
+                  }
                 }
               }
 
@@ -411,7 +419,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
         it.next();
         while (it.hasNext()) {
           Unit currentInst = it.next();
-          if (currentInst == to) break;
+          if (currentInst == to) {
+            break;
+          }
 
           stackHeight -= ((Inst) currentInst).getInCount();
           if (stackHeight < 0) {
@@ -428,7 +438,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       Unit storePred = block.getPredOf(from);
       if (storePred != null) {
         if (((Inst) storePred).getOutCount() == 1) {
-          Set<Unit> unitsToMove = new HashSet<Unit>();
+          Set<Unit> unitsToMove = new HashSet<>();
           unitsToMove.add(storePred);
           unitsToMove.add(from);
           int h = ((Inst) storePred).getInCount();
@@ -446,7 +456,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
               }
               h += ((Inst) currentUnit).getInCount();
               unitsToMove.add(currentUnit);
-              if (h == 0) break;
+              if (h == 0) {
+                break;
+              }
               currentUnit = block.getPredOf(currentUnit);
             }
           }
@@ -460,7 +472,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
           Unit uu = from;
           for (; ; ) {
             uu = block.getSuccOf(uu);
-            if (uu == to) break;
+            if (uu == to) {
+              break;
+            }
             Iterator<Unit> it2 = unitsToMove.iterator();
             while (it2.hasNext()) {
               Unit nu = it2.next();
@@ -543,7 +557,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
       // find minStackHeightAttained
       while (currentInst != to && it.hasNext()) {
         stackHeight -= ((Inst) currentInst).getInCount();
-        if (stackHeight < minStackHeightAttained) minStackHeightAttained = stackHeight;
+        if (stackHeight < minStackHeightAttained) {
+          minStackHeightAttained = stackHeight;
+        }
 
         stackHeight += ((Inst) currentInst).getOutCount();
 
@@ -666,7 +682,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
               }
 
               stackHeight--;
-              if (stackHeight < minStackHeightAttained) minStackHeightAttained = stackHeight;
+              if (stackHeight < minStackHeightAttained) {
+                minStackHeightAttained = stackHeight;
+              }
               hasChanged = true;
               break;
             }
@@ -693,9 +711,13 @@ public class LoadStoreOptimizer extends BodyTransformer {
           block.remove((Unit) toPred);
           block.insertAfter((Unit) toPred, to);
           return HAS_CHANGED; // return has changed
-        } else return FAILURE;
+        } else {
+          return FAILURE;
+        }
       }
-      if (aContext == STORE_LOAD_ELIMINATION) return pushStoreToLoad(from, to, block);
+      if (aContext == STORE_LOAD_ELIMINATION) {
+        return pushStoreToLoad(from, to, block);
+      }
 
       return res;
     }
@@ -745,17 +767,22 @@ public class LoadStoreOptimizer extends BodyTransformer {
           || (aUnitToGoOver instanceof StaticPutInst
               && aUnitToMove instanceof StaticPutInst
               && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())) return false;
+                  == ((FieldArgInst) aUnitToMove).getField())) {
+        return false;
+      }
 
       // xxx to be safe don't mess w/ monitors. These rules could be relaxed. ? Maybe.
-      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst)
+      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
         return false;
+      }
 
-      if (aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst)
+      if (aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
         return false;
+      }
 
-      if (aUnitToGoOver instanceof IdentityInst || aUnitToMove instanceof IdentityInst)
+      if (aUnitToGoOver instanceof IdentityInst || aUnitToMove instanceof IdentityInst) {
         return false;
+      }
 
       if (aUnitToMove instanceof LoadInst) {
         if (aUnitToGoOver instanceof StoreInst) {
@@ -806,14 +833,20 @@ public class LoadStoreOptimizer extends BodyTransformer {
       if (debug) {
         G.v().out.println("[tryToMoveUnit]: trying to move:" + unitToMove);
       }
-      if (unitToMove == null) return false;
+      if (unitToMove == null) {
+        return false;
+      }
 
       while (current != block.getHead()) { // do not go past basic block limit
         current = mUnits.getPredOf(current);
 
-        if (!canMoveUnitOver(current, unitToMove)) return false;
+        if (!canMoveUnitOver(current, unitToMove)) {
+          return false;
+        }
 
-        if (current == from) reachedStore = true;
+        if (current == from) {
+          reachedStore = true;
+        }
 
         h -= ((Inst) current).getOutCount();
         if (h < 0) {
@@ -908,7 +941,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
     private boolean isExceptionHandlerBlock(Block aBlock) {
       Unit blockHead = aBlock.getHead();
       for (Trap trap : mBody.getTraps()) {
-        if (trap.getHandlerUnit() == blockHead) return true;
+        if (trap.getHandlerUnit() == blockHead) {
+          return true;
+        }
       }
       return false;
     }
@@ -935,7 +970,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       while (hasChanged) {
         hasChanged = false;
 
-        List<Unit> tempList = new ArrayList<Unit>();
+        List<Unit> tempList = new ArrayList<>();
         tempList.addAll(mUnits);
         Iterator<Unit> it = tempList.iterator();
         while (it.hasNext()) {
@@ -1076,7 +1111,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
 
       List<Block> preds = aSecondBlock.getPreds();
       while (it.hasNext()) {
-        if (!preds.contains(it.next())) return false;
+        if (!preds.contains(it.next())) {
+          return false;
+        }
       }
 
       return size == preds.size();
@@ -1084,7 +1121,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
 
     /** @return true if aUnit is a commutative binary operator */
     private boolean isCommutativeBinOp(Unit aUnit) {
-      if (aUnit == null) return false;
+      if (aUnit == null) {
+        return false;
+      }
 
       return aUnit instanceof AddInst
           || aUnit instanceof MulInst
@@ -1095,7 +1134,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
 
     void propagateBackwardsIndependentHunk() {
 
-      List<Unit> tempList = new ArrayList<Unit>();
+      List<Unit> tempList = new ArrayList<>();
       tempList.addAll(mUnits);
       Iterator<Unit> it = tempList.iterator();
 
@@ -1113,7 +1152,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
               currentUnit = block.getPredOf(currentUnit);
               if (canMoveUnitOver(currentUnit, succ)) {
                 candidate = currentUnit;
-              } else break;
+              } else {
+                break;
+              }
             }
             if (candidate != null) {
               block.remove(u);

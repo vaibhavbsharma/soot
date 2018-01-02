@@ -32,7 +32,9 @@ public class StringTrie {
   }
 
   public void add(char[] chars, int index) {
-    if (chars.length == index) return;
+    if (chars.length == index) {
+      return;
+    }
     if (startChars.length == 0) {
       startChars = new char[1];
       startChars[0] = chars[0];
@@ -77,16 +79,24 @@ public class StringTrie {
 
   private int findSpot(char c, int first, int last) {
     int diff = last - first;
-    if (diff == 1) return c < startChars[first] ? first : c < startChars[last] ? last : last + 1;
+    if (diff == 1) {
+      return c < startChars[first] ? first : c < startChars[last] ? last : last + 1;
+    }
 
     diff /= 2;
-    if (startChars[first + diff] < c) return findSpot(c, first + diff, last);
-    else return findSpot(c, first, last - diff);
+    if (startChars[first + diff] < c) {
+      return findSpot(c, first + diff, last);
+    } else {
+      return findSpot(c, first, last - diff);
+    }
   }
 
   public boolean contains(char[] chars, int index) {
-    if (chars.length == index) return true;
-    else if (startChars.length == 0) return false;
+    if (chars.length == index) {
+      return true;
+    } else if (startChars.length == 0) {
+      return false;
+    }
 
     int i = findStart(chars[index], 0, startChars.length - 1);
     if (i >= 0) {
@@ -97,10 +107,15 @@ public class StringTrie {
 
   private int findStart(char c, int first, int last) {
     int diff = last - first;
-    if (diff <= 1) return c == startChars[first] ? first : c == startChars[last] ? last : -1;
+    if (diff <= 1) {
+      return c == startChars[first] ? first : c == startChars[last] ? last : -1;
+    }
 
     diff /= 2;
-    if (startChars[first + diff] <= c) return findStart(c, first + diff, last);
-    else return findStart(c, first, last - diff);
+    if (startChars[first + diff] <= c) {
+      return findStart(c, first + diff, last);
+    } else {
+      return findStart(c, first, last - diff);
+    }
   }
 }

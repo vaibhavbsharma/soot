@@ -19,6 +19,8 @@
 
 package soot.jimple.spark.solver;
 
+import java.util.TreeSet;
+
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -37,8 +39,6 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
 
-import java.util.TreeSet;
-
 /**
  * Propagates points-to sets along pointer assignment graph using iteration.
  *
@@ -50,6 +50,7 @@ public final class PropIter extends Propagator {
   }
 
   /** Actually does the propagation. */
+  @Override
   public final void propagate() {
     final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
@@ -60,7 +61,7 @@ public final class PropIter extends Propagator {
     boolean change;
     do {
       change = false;
-      TreeSet<VarNode> simpleSources = new TreeSet<VarNode>(pag.simpleSources());
+      TreeSet<VarNode> simpleSources = new TreeSet<>(pag.simpleSources());
       if (pag.getOpts().verbose()) {
         G.v().out.println("Iteration " + (iteration++));
       }
@@ -80,7 +81,9 @@ public final class PropIter extends Propagator {
           change = true;
           if (addedSrc instanceof VarNode) {
             PointsToSetInternal p2set = addedSrc.getP2Set();
-            if (p2set != null) p2set.unFlushNew();
+            if (p2set != null) {
+              p2set.unFlushNew();
+            }
           } else if (addedSrc instanceof AllocNode) {
             addedTgt.makeP2Set().add(addedSrc);
           }
@@ -117,7 +120,9 @@ public final class PropIter extends Propagator {
   protected final boolean handleSimples(VarNode src) {
     boolean ret = false;
     PointsToSetInternal srcSet = src.getP2Set();
-    if (srcSet.isEmpty()) return false;
+    if (srcSet.isEmpty()) {
+      return false;
+    }
     Node[] simpleTargets = pag.simpleLookup(src);
     for (Node element : simpleTargets) {
       ret = element.makeP2Set().addAll(srcSet, null) | ret;
@@ -134,7 +139,9 @@ public final class PropIter extends Propagator {
   protected final boolean handleStores(VarNode src) {
     boolean ret = false;
     final PointsToSetInternal srcSet = src.getP2Set();
-    if (srcSet.isEmpty()) return false;
+    if (srcSet.isEmpty()) {
+      return false;
+    }
     Node[] storeTargets = pag.storeLookup(src);
     for (Node element : storeTargets) {
       final FieldRefNode fr = (FieldRefNode) element;
@@ -144,6 +151,7 @@ public final class PropIter extends Propagator {
                   .getP2Set()
                   .forall(
                       new P2SetVisitor() {
+                        @Override
                         public final void visit(Node n) {
                           AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
                           if (nDotF.makeP2Set().addAll(srcSet, null)) {
@@ -165,11 +173,16 @@ public final class PropIter extends Propagator {
                 .getP2Set()
                 .forall(
                     new P2SetVisitor() {
+                      @Override
                       public final void visit(Node n) {
                         AllocDotField nDotF = ((AllocNode) n).dot(f);
-                        if (nDotF == null) return;
+                        if (nDotF == null) {
+                          return;
+                        }
                         PointsToSetInternal set = nDotF.getP2Set();
-                        if (set.isEmpty()) return;
+                        if (set.isEmpty()) {
+                          return;
+                        }
                         for (Node element : loadTargets) {
                           VarNode target = (VarNode) element;
                           if (target.makeP2Set().addAll(set, null)) {
@@ -201,8 +214,9 @@ public final class PropIter extends Propagator {
                         // do
                         // this now
                         SootClass targetClass = ((RefType) ccnType).getSootClass();
-                        if (targetClass.resolvingLevel() == SootClass.DANGLING)
+                        if (targetClass.resolvingLevel() == SootClass.DANGLING) {
                           Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+                        }
 
                         instance
                             .makeP2Set()

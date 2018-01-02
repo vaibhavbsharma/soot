@@ -19,6 +19,14 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -60,14 +68,6 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 7-Feb-2006
@@ -76,12 +76,14 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
   public static String dependancies[] = new String[] {"wjtp.jbco_blbc"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "wjtp.jbco_blbc";
 
+  @Override
   public String getName() {
     return name;
   }
@@ -89,32 +91,40 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
   private static int newmethods = 0;
   private static int methodcalls = 0;
 
+  @Override
   public void outputSummary() {
     out.println("New Methods Created: " + newmethods);
     out.println("Method Calls Replaced: " + methodcalls);
   }
 
   private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods =
-      new HashMap<SootClass, Map<SootMethod, SootMethodRef>>();
+      new HashMap<>();
 
   private static final Scene scene = G.v().soot_Scene();
 
-  public static ArrayList<SootMethod> builtByMe = new ArrayList<SootMethod>();
+  public static ArrayList<SootMethod> builtByMe = new ArrayList<>();
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
-    if (output) out.println("Building Library Wrapper Methods...");
+    if (output) {
+      out.println("Building Library Wrapper Methods...");
+    }
     soot.jbco.util.BodyBuilder.retrieveAllBodies();
     // iterate through application classes to find library calls
     Iterator<SootClass> it = scene.getApplicationClasses().snapshotIterator();
     while (it.hasNext()) {
       SootClass c = it.next();
 
-      if (output) out.println("\r\tProcessing " + c.getName() + "\r");
+      if (output) {
+        out.println("\r\tProcessing " + c.getName() + "\r");
+      }
 
       List<SootMethod> mList = c.getMethods();
       for (int midx = 0; midx < mList.size(); midx++) {
         SootMethod m = mList.get(midx);
-        if (!m.isConcrete() || builtByMe.contains(m)) continue;
+        if (!m.isConcrete() || builtByMe.contains(m)) {
+          continue;
+        }
 
         Body body = null;
         try {
@@ -122,7 +132,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
         } catch (Exception exc) {
           body = m.retrieveActiveBody();
         }
-        if (body == null) continue;
+        if (body == null) {
+          continue;
+        }
 
         int localName = 0;
         Collection<Local> locals = body.getLocals();
@@ -132,7 +144,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
         Iterator<Unit> uIt = units.snapshotIterator();
         while (uIt.hasNext()) {
           Unit unit = uIt.next();
-          if (unit instanceof IdentityStmt) continue;
+          if (unit instanceof IdentityStmt) {
+            continue;
+          }
           first = unit;
           break;
         }
@@ -144,7 +158,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
           for (int i = 0; i < uses.size(); i++) {
             ValueBox vb = uses.get(i);
             Value v = vb.getValue();
-            if (!(v instanceof InvokeExpr)) continue;
+            if (!(v instanceof InvokeExpr)) {
+              continue;
+            }
 
             InvokeExpr ie = (InvokeExpr) v;
             SootMethod sm = null;
@@ -153,9 +169,13 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
             } catch (RuntimeException exc) {
             }
             SootClass dc = sm.getDeclaringClass();
-            if (sm.getName().endsWith("init>") || !dc.isLibraryClass()) continue;
+            if (sm.getName().endsWith("init>") || !dc.isLibraryClass()) {
+              continue;
+            }
 
-            if (output) out.print("\t\t\tChanging " + sm.getSignature());
+            if (output) {
+              out.print("\t\t\tChanging " + sm.getSignature());
+            }
 
             SootMethodRef smr = getNewMethodRef(dc, sm);
             if (smr == null) {
@@ -167,9 +187,13 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                 smr = null;
               }
             }
-            if (smr == null) continue;
+            if (smr == null) {
+              continue;
+            }
 
-            if (output) out.println(" to " + smr.getSignature() + "\tUnit: " + unit);
+            if (output) {
+              out.println(" to " + smr.getSignature() + "\tUnit: " + unit);
+            }
 
             List<Value> args = ie.getArgs();
             List<Type> parms = smr.parameterTypes();
@@ -226,7 +250,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
   private void setNewMethodRef(SootClass libClass, SootMethod sm, SootMethodRef smr) {
     Map<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
     if (methods == null) {
-      libClassesToMethods.put(libClass, methods = new HashMap<SootMethod, SootMethodRef>());
+      libClassesToMethods.put(libClass, methods = new HashMap<>());
     }
     methods.put(sm, smr);
   }
@@ -238,17 +262,20 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
     SootMethod randMethod;
     String newName;
 
-    Vector<SootClass> availClasses = new Vector<SootClass>();
+    Vector<SootClass> availClasses = new Vector<>();
     Iterator<SootClass> aIt = scene.getApplicationClasses().iterator();
     while (aIt.hasNext()) {
       SootClass c = aIt.next();
-      if (c.isConcrete() && !c.isInterface() && c.isPublic()) availClasses.add(c);
+      if (c.isConcrete() && !c.isInterface() && c.isPublic()) {
+        availClasses.add(c);
+      }
     }
 
     int classCount = availClasses.size();
-    if (classCount == 0)
+    if (classCount == 0) {
       throw new RuntimeException(
           "There appears to be no public non-interface Application classes!");
+    }
 
     do {
       int index = Rand.getInt(classCount);
@@ -264,9 +291,11 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
     } while (newName.endsWith("init>"));
 
     List<Type> smParamTypes = sm.getParameterTypes();
-    List<Type> tmp = new ArrayList<Type>();
+    List<Type> tmp = new ArrayList<>();
     if (!sm.isStatic()) {
-      for (int i = 0; i < smParamTypes.size(); i++) tmp.add(smParamTypes.get(i));
+      for (int i = 0; i < smParamTypes.size(); i++) {
+        tmp.add(smParamTypes.get(i));
+      }
       tmp.add(libClass.getType());
       smParamTypes = tmp;
     } else {
@@ -311,18 +340,21 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
     InvokeExpr ie = null;
     List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
-    while (extraParams-- > 0) args.remove(args.size() - 1);
+    while (extraParams-- > 0) {
+      args.remove(args.size() - 1);
+    }
 
     if (sm.isStatic()) {
       ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
     } else {
       Local libObj = args.remove(args.size() - 1);
-      if (origIE instanceof InterfaceInvokeExpr)
+      if (origIE instanceof InterfaceInvokeExpr) {
         ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
-      else if (origIE instanceof SpecialInvokeExpr)
+      } else if (origIE instanceof SpecialInvokeExpr) {
         ie = Jimple.v().newSpecialInvokeExpr(libObj, sm.makeRef(), args);
-      else if (origIE instanceof VirtualInvokeExpr)
+      } else if (origIE instanceof VirtualInvokeExpr) {
         ie = Jimple.v().newVirtualInvokeExpr(libObj, sm.makeRef(), args);
+      }
     }
     if (sm.getReturnType() instanceof VoidType) {
       units.add(Jimple.v().newInvokeStmt(ie));
@@ -334,7 +366,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
       units.add(Jimple.v().newReturnStmt(assign));
     }
 
-    if (output)
+    if (output) {
       out.println(
           "\r"
               + sm.getName()
@@ -342,8 +374,11 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
               + newMethod.getName()
               + " which calls \r\t\t"
               + ie);
+    }
 
-    if (units.size() < 2) out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD " + units);
+    if (units.size() < 2) {
+      out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD " + units);
+    }
 
     builtByMe.add(newMethod);
 
@@ -372,15 +407,27 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
   }
 
   private static Value getConstantType(Type t) {
-    if (t instanceof BooleanType) return IntConstant.v(Rand.getInt(1));
-    if (t instanceof IntType) return IntConstant.v(Rand.getInt());
-    if (t instanceof CharType)
+    if (t instanceof BooleanType) {
+      return IntConstant.v(Rand.getInt(1));
+    }
+    if (t instanceof IntType) {
+      return IntConstant.v(Rand.getInt());
+    }
+    if (t instanceof CharType) {
       return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
-    if (t instanceof ByteType)
+    }
+    if (t instanceof ByteType) {
       return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
-    if (t instanceof LongType) return LongConstant.v(Rand.getLong());
-    if (t instanceof FloatType) return FloatConstant.v(Rand.getFloat());
-    if (t instanceof DoubleType) return DoubleConstant.v(Rand.getDouble());
+    }
+    if (t instanceof LongType) {
+      return LongConstant.v(Rand.getLong());
+    }
+    if (t instanceof FloatType) {
+      return FloatConstant.v(Rand.getFloat());
+    }
+    if (t instanceof DoubleType) {
+      return DoubleConstant.v(Rand.getDouble());
+    }
 
     return Jimple.v().newCastExpr(NullConstant.v(), t);
   }

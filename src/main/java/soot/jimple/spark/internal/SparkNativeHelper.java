@@ -42,10 +42,12 @@ public class SparkNativeHelper extends NativeHelper {
     this.pag = pag;
   }
 
+  @Override
   protected void assignImpl(ReferenceVariable lhs, ReferenceVariable rhs) {
     pag.addEdge((Node) rhs, (Node) lhs);
   }
 
+  @Override
   protected void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
     AllocNode objNode =
         pag.makeAllocNode(new Pair("AbstractObject", obj.getType()), obj.getType(), null);
@@ -60,12 +62,14 @@ public class SparkNativeHelper extends NativeHelper {
     pag.addEdge(objNode, var);
   }
 
+  @Override
   protected void throwExceptionImpl(AbstractObject obj) {
     AllocNode objNode =
         pag.makeAllocNode(new Pair("AbstractObject", obj.getType()), obj.getType(), null);
     pag.addEdge(objNode, pag.nodeFactory().caseThrow());
   }
 
+  @Override
   protected ReferenceVariable arrayElementOfImpl(ReferenceVariable base) {
     VarNode l;
     if (base instanceof VarNode) {
@@ -78,30 +82,36 @@ public class SparkNativeHelper extends NativeHelper {
     return pag.makeFieldRefNode(l, ArrayElement.v());
   }
 
+  @Override
   protected ReferenceVariable cloneObjectImpl(ReferenceVariable source) {
     return source;
   }
 
+  @Override
   protected ReferenceVariable newInstanceOfImpl(ReferenceVariable cls) {
     return pag.nodeFactory().caseNewInstance((VarNode) cls);
   }
 
+  @Override
   protected ReferenceVariable staticFieldImpl(String className, String fieldName) {
     SootClass c = RefType.v(className).getSootClass();
     SootField f = c.getFieldByName(fieldName);
     return pag.makeGlobalVarNode(f, f.getType());
   }
 
+  @Override
   protected ReferenceVariable tempFieldImpl(String fieldsig) {
     return pag.makeGlobalVarNode(new Pair("tempField", fieldsig), RefType.v("java.lang.Object"));
   }
 
+  @Override
   protected ReferenceVariable tempVariableImpl() {
     return pag.makeGlobalVarNode(
         new Pair("TempVar", new Integer(++G.v().SparkNativeHelper_tempVar)),
         RefType.v("java.lang.Object"));
   }
 
+  @Override
   protected ReferenceVariable tempLocalVariableImpl(SootMethod method) {
     return pag.makeLocalVarNode(
         new Pair("TempVar", new Integer(++G.v().SparkNativeHelper_tempVar)),

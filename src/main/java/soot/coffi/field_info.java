@@ -82,7 +82,9 @@ public class field_info {
     cm = (CONSTANT_Utf8_info) (constant_pool[name_index]);
     dm = (CONSTANT_Utf8_info) (constant_pool[descriptor_index]);
     s = ClassFile.access_string(access_flags, " ");
-    if (s.compareTo("") != 0) s = s + " ";
+    if (s.compareTo("") != 0) {
+      s = s + " ";
+    }
     return s + ClassFile.parseDesc(dm.convert(), "") + " " + cm.convert();
   }
 
@@ -95,8 +97,9 @@ public class field_info {
   public ConstantValue_attribute findConstantValue_attribute() {
     int i;
     for (i = 0; i < attributes_count; i++) {
-      if ((attributes[i]) instanceof ConstantValue_attribute)
+      if ((attributes[i]) instanceof ConstantValue_attribute) {
         return (ConstantValue_attribute) (attributes[i]);
+      }
     }
     return null;
   }

@@ -27,6 +27,7 @@ public abstract class SETDagNode extends SETControlFlowNode {
     super(characterizingStmt, body);
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return get_CharacterizingStmt();
   }

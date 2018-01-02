@@ -25,19 +25,21 @@
 
 package soot.baf.internal;
 
+import java.util.Iterator;
+
 import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.DupInst;
 import soot.util.Switch;
 
-import java.util.Iterator;
-
 public abstract class BDupInst extends AbstractInst implements DupInst {
 
+  @Override
   public int getInCount() {
     return getUnderTypes().size() + getOpTypes().size();
   }
 
+  @Override
   public int getInMachineCount() {
     int count = 0;
 
@@ -54,10 +56,12 @@ public abstract class BDupInst extends AbstractInst implements DupInst {
     return count;
   }
 
+  @Override
   public int getOutCount() {
     return getUnderTypes().size() + 2 * getOpTypes().size();
   }
 
+  @Override
   public int getOutMachineCount() {
     int count = 0;
 
@@ -73,6 +77,7 @@ public abstract class BDupInst extends AbstractInst implements DupInst {
     return count;
   }
 
+  @Override
   public void apply(Switch sw) {
     throw new RuntimeException();
   }

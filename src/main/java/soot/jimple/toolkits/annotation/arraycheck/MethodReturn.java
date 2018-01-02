@@ -43,10 +43,12 @@ class MethodReturn {
     return m.getReturnType();
   }
 
+  @Override
   public int hashCode() {
     return m.hashCode() + m.getParameterCount();
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof MethodReturn) {
       return m.equals(((MethodReturn) other).getMethod());
@@ -55,6 +57,7 @@ class MethodReturn {
     return false;
   }
 
+  @Override
   public String toString() {
     return "[" + m.getSignature() + " : R]";
   }

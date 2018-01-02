@@ -36,7 +36,9 @@ public final class SharedBitSetCache {
 
   public BitVector canonicalize(BitVector set) {
     int hash = set.hashCode();
-    if (hash < 0) hash = -hash;
+    if (hash < 0) {
+      hash = -hash;
+    }
     hash %= size;
     if (cache[hash] == null || !cache[hash].equals(set)) {
       return cache[hash] = set;

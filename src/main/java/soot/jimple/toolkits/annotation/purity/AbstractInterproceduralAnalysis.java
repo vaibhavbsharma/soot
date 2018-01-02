@@ -25,6 +25,14 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
+import java.io.File;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import soot.G;
 import soot.SootMethod;
 import soot.SourceLocator;
@@ -36,14 +44,6 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
-
-import java.io.File;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Inter-procedural iterator skeleton for summary-based analysis
@@ -97,11 +97,11 @@ public abstract class AbstractInterproceduralAnalysis<S> {
 
     System.out.println("this.cg = " + System.identityHashCode(this.cg));
     this.dg = new DirectedCallGraph(cg, filter, heads, verbose);
-    this.data = new HashMap<SootMethod, S>();
-    this.unanalysed = new HashMap<SootMethod, S>();
+    this.data = new HashMap<>();
+    this.unanalysed = new HashMap<>();
 
     // construct reverse pseudo topological order on filtered methods
-    this.order = new HashMap<SootMethod, Integer>();
+    this.order = new HashMap<>();
 
     int i = 0;
     for (SootMethod m : new PseudoTopologicalOrderer<SootMethod>().newList(dg, true)) {
@@ -236,7 +236,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
     dot.setGraphAttribute("compound", "true");
     // dot.setGraphAttribute("rankdir","LR");
     int id = 0;
-    Map<SootMethod, Integer> idmap = new HashMap<SootMethod, Integer>();
+    Map<SootMethod, Integer> idmap = new HashMap<>();
 
     // draw sub-graph cluster
     // draw sub-graph cluster
@@ -344,7 +344,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
       }
     }
 
-    SortedSet<SootMethod> queue = new TreeSet<SootMethod>(new IntComparator());
+    SortedSet<SootMethod> queue = new TreeSet<>(new IntComparator());
 
     // init
     for (SootMethod o : order.keySet()) {
@@ -353,7 +353,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
     }
 
     Map<SootMethod, Integer> nb =
-        new HashMap<SootMethod, Integer>(); // only for debug pretty-printing
+        new HashMap<>(); // only for debug pretty-printing
 
     // fixpoint iterations
     while (!queue.isEmpty()) {

@@ -20,11 +20,11 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.Collection;
+
 import soot.Type;
 import soot.Value;
 import soot.jimple.Stmt;
-
-import java.util.Collection;
 
 /** @author Ben Bellamy */
 public interface IEvalFunction {

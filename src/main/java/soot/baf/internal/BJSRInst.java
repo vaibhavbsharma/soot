@@ -36,38 +36,47 @@ public class BJSRInst extends AbstractBranchInst implements JSRInst {
     super(Baf.v().newInstBox(target));
   }
 
+  @Override
   public Object clone() {
     return new BJSRInst(getTarget());
   }
 
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public boolean branches() {
     return true;
   }
 
+  @Override
   public int getInCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   public String getName() {
     return "jsr";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseJSRInst(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }

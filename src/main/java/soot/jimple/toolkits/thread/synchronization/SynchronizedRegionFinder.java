@@ -1,5 +1,11 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -30,19 +36,13 @@ import soot.toolkits.scalar.Pair;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Richard L. Halpert Finds Synchronized Regions and creates a set of CriticalSection
  *     objects from them.
  */
 public class SynchronizedRegionFinder
     extends ForwardFlowAnalysis<Unit, FlowSet<SynchronizedRegionFlowPair>> {
-  FlowSet<SynchronizedRegionFlowPair> emptySet = new ArraySparseSet<SynchronizedRegionFlowPair>();
+  FlowSet<SynchronizedRegionFlowPair> emptySet = new ArraySparseSet<>();
 
   Map unitToGenerateSet;
 
@@ -76,14 +76,18 @@ public class SynchronizedRegionFinder
     units = b.getUnits();
     method = body.getMethod();
 
-    if (graph instanceof ExceptionalUnitGraph) egraph = (ExceptionalUnitGraph) graph;
-    else egraph = new ExceptionalUnitGraph(b);
+    if (graph instanceof ExceptionalUnitGraph) {
+      egraph = (ExceptionalUnitGraph) graph;
+    } else {
+      egraph = new ExceptionalUnitGraph(b);
+    }
 
     slu = LocalUses.Factory.newLocalUses(egraph);
 
     if (G.v().Union_factory == null) {
       G.v().Union_factory =
           new UnionFactory() {
+            @Override
             public Union newUnion() {
               return FullObjectSet.v();
             }
@@ -94,7 +98,7 @@ public class SynchronizedRegionFinder
         new CriticalSectionAwareSideEffectAnalysis(
             Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), null, tlo);
 
-    prepUnits = new ArrayList<Object>();
+    prepUnits = new ArrayList<>();
 
     methodTn = null;
     if (method.isSynchronized()) {
@@ -104,14 +108,15 @@ public class SynchronizedRegionFinder
     }
     doAnalysis();
     if (method.isSynchronized() && methodTn != null) {
-      for (Iterator<Unit> tailIt = graph.getTails().iterator(); tailIt.hasNext(); ) {
-        Stmt tail = (Stmt) tailIt.next();
+      for (Unit unit : graph.getTails()) {
+        Stmt tail = (Stmt) unit;
         methodTn.earlyEnds.add(new Pair(tail, null)); // has no exitmonitor stmt yet
       }
     }
   }
 
   /** All INs are initialized to the empty set. */
+  @Override
   protected FlowSet<SynchronizedRegionFlowPair> newInitialFlow() {
     FlowSet<SynchronizedRegionFlowPair> ret = emptySet.clone();
     if (method.isSynchronized() && methodTn != null) {
@@ -121,6 +126,7 @@ public class SynchronizedRegionFinder
   }
 
   /** OUT is the same as (IN minus killSet) plus the genSet. */
+  @Override
   protected void flowThrough(
       FlowSet<SynchronizedRegionFlowPair> in, Unit unit, FlowSet<SynchronizedRegionFlowPair> out) {
     Stmt stmt = (Stmt) unit;
@@ -136,7 +142,9 @@ public class SynchronizedRegionFinder
     if (unit instanceof AssignStmt) {
       boolean isPrep = true;
       Iterator<UnitValueBoxPair> uses = slu.getUsesOf(unit).iterator();
-      if (!uses.hasNext()) isPrep = false;
+      if (!uses.hasNext()) {
+        isPrep = false;
+      }
       while (uses.hasNext()) {
         UnitValueBoxPair use = uses.next();
         Unit useStmt = use.getUnit();
@@ -162,7 +170,9 @@ public class SynchronizedRegionFinder
     Iterator<SynchronizedRegionFlowPair> outIt0 = out.iterator();
     while (outIt0.hasNext()) {
       SynchronizedRegionFlowPair srfp = outIt0.next();
-      if (srfp.tn.nestLevel > nestLevel && srfp.inside == true) nestLevel = srfp.tn.nestLevel;
+      if (srfp.tn.nestLevel > nestLevel && srfp.inside == true) {
+        nestLevel = srfp.tn.nestLevel;
+      }
     }
 
     // Process this unit's effect on each txn
@@ -186,7 +196,9 @@ public class SynchronizedRegionFinder
         // for this statement
 
         // Add this unit to the current transactional region
-        if (!tn.units.contains(unit)) tn.units.add(unit);
+        if (!tn.units.contains(unit)) {
+          tn.units.add(unit);
+        }
 
         // Check what kind of statement this is
         // If it contains an invoke, save it for later processing as part of this
@@ -199,15 +211,23 @@ public class SynchronizedRegionFinder
           if ((InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
               && tn.nestLevel == nestLevel) // only applies to outermost txn
           {
-            if (!tn.notifys.contains(unit)) tn.notifys.add(unit);
-            if (optionPrintDebug) G.v().out.print("{x,x} ");
+            if (!tn.notifys.contains(unit)) {
+              tn.notifys.add(unit);
+            }
+            if (optionPrintDebug) {
+              G.v().out.print("{x,x} ");
+            }
           } else if ((InvokeSig.equals("void wait()")
                   || InvokeSig.equals("void wait(long)")
                   || InvokeSig.equals("void wait(long,int)"))
               && tn.nestLevel == nestLevel) // only applies to outermost txn
           {
-            if (!tn.waits.contains(unit)) tn.waits.add(unit);
-            if (optionPrintDebug) G.v().out.print("{x,x} ");
+            if (!tn.waits.contains(unit)) {
+              tn.waits.add(unit);
+            }
+            if (optionPrintDebug) {
+              G.v().out.print("{x,x} ");
+            }
           }
 
           if (!tn.invokes.contains(unit)) {
@@ -227,7 +247,9 @@ public class SynchronizedRegionFinder
                     .print(
                         ((stmtRead.getGlobals() != null ? stmtRead.getGlobals().size() : 0)
                             + (stmtRead.getFields() != null ? stmtRead.getFields().size() : 0)));
-              } else G.v().out.print("0");
+              } else {
+                G.v().out.print("0");
+              }
               G.v().out.print(",");
               if (stmtWrite != null) {
                 G.v()
@@ -235,7 +257,9 @@ public class SynchronizedRegionFinder
                     .print(
                         ((stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)
                             + (stmtWrite.getFields() != null ? stmtWrite.getFields().size() : 0)));
-              } else G.v().out.print("0");
+              } else {
+                G.v().out.print("0");
+              }
               G.v().out.print("} ");
             }
           }
@@ -259,11 +283,14 @@ public class SynchronizedRegionFinder
             tn.after = (Stmt) ((GotoStmt) nextUnit).getTarget();
           } else if (nextUnit instanceof ThrowStmt) {
             tn.exceptionalEnd = new Pair(nextUnit, stmt);
-          } else
+          } else {
             throw new RuntimeException(
                 "Unknown bytecode pattern: exitmonitor not followed by return, exitmonitor, goto, or throw");
+          }
 
-          if (optionPrintDebug) G.v().out.print("[0,0] ");
+          if (optionPrintDebug) {
+            G.v().out.print("[0,0] ");
+          }
         } else {
           // Add this unit's read and write sets to this transactional region
           HashSet uses = new HashSet();
@@ -282,7 +309,9 @@ public class SynchronizedRegionFinder
                   .print(
                       ((stmtRead.getGlobals() != null ? stmtRead.getGlobals().size() : 0)
                           + (stmtRead.getFields() != null ? stmtRead.getFields().size() : 0)));
-            } else G.v().out.print("0");
+            } else {
+              G.v().out.print("0");
+            }
             G.v().out.print(",");
             if (stmtWrite != null) {
               G.v()
@@ -290,7 +319,9 @@ public class SynchronizedRegionFinder
                   .print(
                       ((stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)
                           + (stmtWrite.getFields() != null ? stmtWrite.getFields().size() : 0)));
-            } else G.v().out.print("0");
+            } else {
+              G.v().out.print("0");
+            }
             G.v().out.print("] ");
           }
         }
@@ -336,10 +367,13 @@ public class SynchronizedRegionFinder
       CriticalSection newTn = new CriticalSection(false, method, nestLevel + 1);
       newTn.entermonitor = stmt;
       newTn.beginning = (Stmt) units.getSuccOf(stmt);
-      if (stmt instanceof EnterMonitorStmt) newTn.origLock = ((EnterMonitorStmt) stmt).getOp();
+      if (stmt instanceof EnterMonitorStmt) {
+        newTn.origLock = ((EnterMonitorStmt) stmt).getOp();
+      }
 
-      if (optionPrintDebug)
+      if (optionPrintDebug) {
         G.v().out.println("Transaction found in method: " + newTn.method.toString());
+      }
       out.add(new SynchronizedRegionFlowPair(newTn, true));
 
       // This is a really stupid way to find out which prep applies to this txn.
@@ -360,6 +394,7 @@ public class SynchronizedRegionFinder
   }
 
   /** union */
+  @Override
   protected void merge(
       FlowSet<SynchronizedRegionFlowPair> inSet1,
       FlowSet<SynchronizedRegionFlowPair> inSet2,
@@ -367,6 +402,7 @@ public class SynchronizedRegionFinder
     inSet1.union(inSet2, outSet);
   }
 
+  @Override
   protected void copy(
       FlowSet<SynchronizedRegionFlowPair> sourceSet, FlowSet<SynchronizedRegionFlowPair> destSet) {
     destSet.clear();

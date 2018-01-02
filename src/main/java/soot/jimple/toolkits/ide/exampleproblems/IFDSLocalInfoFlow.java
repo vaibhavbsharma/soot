@@ -18,6 +18,13 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -43,13 +50,6 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class IFDSLocalInfoFlow
     extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {
 
@@ -57,6 +57,7 @@ public class IFDSLocalInfoFlow
     super(icfg);
   }
 
+  @Override
   public FlowFunctions<Unit, Local, SootMethod> createFlowFunctionsFactory() {
     return new FlowFunctions<Unit, Local, SootMethod>() {
 
@@ -68,7 +69,7 @@ public class IFDSLocalInfoFlow
           Local leftLocal = (Local) is.getLeftOp();
           Value right = is.getRightOp();
           if (right instanceof ParameterRef) {
-            return new Gen<Local>(leftLocal, zeroValue());
+            return new Gen<>(leftLocal, zeroValue());
           }
         }
 
@@ -79,9 +80,9 @@ public class IFDSLocalInfoFlow
             final Local leftLocal = (Local) assignStmt.getLeftOp();
             if (right instanceof Local) {
               final Local rightLocal = (Local) right;
-              return new Transfer<Local>(leftLocal, rightLocal);
+              return new Transfer<>(leftLocal, rightLocal);
             } else {
-              return new Kill<Local>(leftLocal);
+              return new Kill<>(leftLocal);
             }
           }
         }
@@ -93,17 +94,20 @@ public class IFDSLocalInfoFlow
         Stmt s = (Stmt) src;
         InvokeExpr ie = s.getInvokeExpr();
         final List<Value> callArgs = ie.getArgs();
-        final List<Local> paramLocals = new ArrayList<Local>();
+        final List<Local> paramLocals = new ArrayList<>();
         for (int i = 0; i < dest.getParameterCount(); i++) {
           paramLocals.add(dest.getActiveBody().getParameterLocal(i));
         }
         return new FlowFunction<Local>() {
+          @Override
           public Set<Local> computeTargets(Local source) {
             // ignore implicit calls to static initializers
             if (dest.getName().equals(SootMethod.staticInitializerName)
-                && dest.getParameterCount() == 0) return Collections.emptySet();
+                && dest.getParameterCount() == 0) {
+              return Collections.emptySet();
+            }
 
-            Set<Local> taintsInCaller = new HashSet<Local>();
+            Set<Local> taintsInCaller = new HashSet<>();
             for (int i = 0; i < callArgs.size(); i++) {
               if (callArgs.get(i).equivTo(source)) {
                 taintsInCaller.add(paramLocals.get(i));
@@ -129,8 +133,11 @@ public class IFDSLocalInfoFlow
                 final Local retLocal = (Local) op;
                 return new FlowFunction<Local>() {
 
+                  @Override
                   public Set<Local> computeTargets(Local source) {
-                    if (source == retLocal) return Collections.singleton(tgtLocal);
+                    if (source == retLocal) {
+                      return Collections.singleton(tgtLocal);
+                    }
                     return Collections.emptySet();
                   }
                 };

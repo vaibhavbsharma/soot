@@ -25,6 +25,11 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.EquivalentValue;
 import soot.Unit;
@@ -36,11 +41,6 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 import soot.util.HashChain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each
@@ -60,23 +60,19 @@ public class SlowAvailableExpressions implements AvailableExpressions {
 
     // Build unitToExprs map
     {
-      unitToPairsAfter =
-          new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToPairsBefore =
-          new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToEquivsAfter =
-          new HashMap<Unit, Chain<EquivalentValue>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToEquivsBefore =
-          new HashMap<Unit, Chain<EquivalentValue>>(b.getUnits().size() * 2 + 1, 0.7f);
+      unitToPairsAfter = new HashMap<>(b.getUnits().size() * 2 + 1, 0.7f);
+      unitToPairsBefore = new HashMap<>(b.getUnits().size() * 2 + 1, 0.7f);
+      unitToEquivsAfter = new HashMap<>(b.getUnits().size() * 2 + 1, 0.7f);
+      unitToEquivsBefore = new HashMap<>(b.getUnits().size() * 2 + 1, 0.7f);
 
       for (Unit s : b.getUnits()) {
         FlowSet<Value> set = analysis.getFlowBefore(s);
 
-        List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();
-        List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
+        List<UnitValueBoxPair> pairsBefore = new ArrayList<>();
+        List<UnitValueBoxPair> pairsAfter = new ArrayList<>();
 
-        Chain<EquivalentValue> equivsBefore = new HashChain<EquivalentValue>();
-        Chain<EquivalentValue> equivsAfter = new HashChain<EquivalentValue>();
+        Chain<EquivalentValue> equivsBefore = new HashChain<>();
+        Chain<EquivalentValue> equivsAfter = new HashChain<>();
 
         for (Value v : set) {
           Stmt containingStmt = analysis.rhsToContainingStmt.get(v);
@@ -84,7 +80,9 @@ public class SlowAvailableExpressions implements AvailableExpressions {
               new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox());
           EquivalentValue ev = new EquivalentValue(v);
           pairsBefore.add(p);
-          if (!equivsBefore.contains(ev)) equivsBefore.add(ev);
+          if (!equivsBefore.contains(ev)) {
+            equivsBefore.add(ev);
+          }
         }
 
         unitToPairsBefore.put(s, pairsBefore);
@@ -96,7 +94,9 @@ public class SlowAvailableExpressions implements AvailableExpressions {
               new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox());
           EquivalentValue ev = new EquivalentValue(v);
           pairsAfter.add(p);
-          if (!equivsAfter.contains(ev)) equivsAfter.add(ev);
+          if (!equivsAfter.contains(ev)) {
+            equivsAfter.add(ev);
+          }
         }
 
         unitToPairsAfter.put(s, pairsAfter);
@@ -109,6 +109,7 @@ public class SlowAvailableExpressions implements AvailableExpressions {
    * Returns a List containing the UnitValueBox pairs corresponding to expressions available before
    * u.
    */
+  @Override
   public List<UnitValueBoxPair> getAvailablePairsBefore(Unit u) {
     return unitToPairsBefore.get(u);
   }
@@ -117,6 +118,7 @@ public class SlowAvailableExpressions implements AvailableExpressions {
    * Returns a List containing the UnitValueBox pairs corresponding to expressions available after
    * u.
    */
+  @Override
   public List<UnitValueBoxPair> getAvailablePairsAfter(Unit u) {
     return unitToPairsAfter.get(u);
   }
@@ -125,6 +127,7 @@ public class SlowAvailableExpressions implements AvailableExpressions {
    * Returns a Chain containing the EquivalentValue objects corresponding to expressions available
    * before u.
    */
+  @Override
   public Chain<EquivalentValue> getAvailableEquivsBefore(Unit u) {
     return unitToEquivsBefore.get(u);
   }
@@ -133,6 +136,7 @@ public class SlowAvailableExpressions implements AvailableExpressions {
    * Returns a Chain containing the EquivalentValue objects corresponding to expressions available
    * after u.
    */
+  @Override
   public Chain<EquivalentValue> getAvailableEquivsAfter(Unit u) {
     return unitToEquivsAfter.get(u);
   }

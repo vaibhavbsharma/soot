@@ -25,10 +25,12 @@ import java.util.AbstractList;
 /** @author Ben Bellamy */
 @Deprecated
 public class EmptyList<E> extends AbstractList<E> {
+  @Override
   public E get(int index) {
     throw new IndexOutOfBoundsException();
   }
 
+  @Override
   public int size() {
     return 0;
   }

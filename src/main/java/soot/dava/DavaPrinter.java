@@ -20,6 +20,11 @@
 
 package soot.dava;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -51,11 +56,6 @@ import soot.tagkit.Tag;
 import soot.util.Chain;
 import soot.util.IterableSet;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class DavaPrinter {
   public DavaPrinter(Singletons.Global g) {}
 
@@ -65,7 +65,9 @@ public class DavaPrinter {
 
   private void printStatementsInBody(Body body, java.io.PrintWriter out) {
 
-    if (Options.v().verbose()) System.out.println("Printing " + body.getMethod().getName());
+    if (Options.v().verbose()) {
+      System.out.println("Printing " + body.getMethod().getName());
+    }
 
     Chain<Unit> units = body.getUnits();
 
@@ -100,7 +102,9 @@ public class DavaPrinter {
       while (interfaceIt.hasNext()) {
         String interfacePackage = interfaceIt.next().toString();
 
-        if (!importList.contains(interfacePackage)) importList.add(interfacePackage);
+        if (!importList.contains(interfacePackage)) {
+          importList.add(interfacePackage);
+        }
 
         // if (!packagesUsed.contains(interfacePackage))
         //  packagesUsed.add(interfacePackage);
@@ -119,7 +123,9 @@ public class DavaPrinter {
         Iterator<SootClass> eit = dm.getExceptions().iterator();
         while (eit.hasNext()) {
           String thrownPackage = eit.next().toString();
-          if (!importList.contains(thrownPackage)) importList.add(thrownPackage);
+          if (!importList.contains(thrownPackage)) {
+            importList.add(thrownPackage);
+          }
 
           // if (!packagesUsed.contains(thrownPackage))
           //  packagesUsed.add(thrownPackage);
@@ -132,7 +138,9 @@ public class DavaPrinter {
           if (t instanceof RefType) {
             String paramPackage = ((RefType) t).getSootClass().toString();
 
-            if (!importList.contains(paramPackage)) importList.add(paramPackage);
+            if (!importList.contains(paramPackage)) {
+              importList.add(paramPackage);
+            }
 
             // if (packagesUsed.contains(paramPackage) == false)
             //  packagesUsed.add(paramPackage);
@@ -143,7 +151,9 @@ public class DavaPrinter {
         if (t instanceof RefType) {
           String returnPackage = ((RefType) t).getSootClass().toString();
 
-          if (!importList.contains(returnPackage)) importList.add(returnPackage);
+          if (!importList.contains(returnPackage)) {
+            importList.add(returnPackage);
+          }
 
           // if (packagesUsed.contains(returnPackage) == false)
           //  packagesUsed.add(returnPackage);
@@ -154,19 +164,23 @@ public class DavaPrinter {
       while (fieldIt.hasNext()) {
         SootField f = fieldIt.next();
 
-        if (f.isPhantom()) continue;
+        if (f.isPhantom()) {
+          continue;
+        }
 
         Type t = f.getType();
 
         if (t instanceof RefType) {
           String fieldPackage = ((RefType) t).getSootClass().toString();
 
-          if (!importList.contains(fieldPackage)) importList.add(fieldPackage);
+          if (!importList.contains(fieldPackage)) {
+            importList.add(fieldPackage);
+          }
         }
       }
 
       Iterator<String> pit = importList.iterator();
-      List<String> toImport = new ArrayList<String>();
+      List<String> toImport = new ArrayList<>();
       while (pit.hasNext()) {
         /*
          * dont import any file which has currentPackage.className
@@ -189,7 +203,9 @@ public class DavaPrinter {
           continue;
         }
 
-        if (cl.toString().equals(temp)) continue;
+        if (cl.toString().equals(temp)) {
+          continue;
+        }
 
         // System.out.println("printing"+);
         toImport.add(temp);
@@ -209,11 +225,15 @@ public class DavaPrinter {
           if (temp.lastIndexOf('.') > -1) {
             temp = temp.substring(0, temp.lastIndexOf('.'));
             out.println("import " + temp + ".*;");
-          } else throw new DecompilationException("Cant find the DOT . for fullyqualified name");
+          } else {
+            throw new DecompilationException("Cant find the DOT . for fullyqualified name");
+          }
         } else {
           if (temp.lastIndexOf('.') == -1) {
             // dot not found this is a class belonging to this package so dont add
-          } else out.println("import " + temp + ";");
+          } else {
+            out.println("import " + temp + ";");
+          }
         }
       }
       boolean addNewLine = false;
@@ -221,7 +241,9 @@ public class DavaPrinter {
 
       // out.println("import " + temp + ";");
 
-      if (addNewLine) out.println();
+      if (addNewLine) {
+        out.println();
+      }
 
       /*if (!packagesUsed.isEmpty())
           out.println();
@@ -269,12 +291,17 @@ public class DavaPrinter {
       Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
 
       if (interfaceIt.hasNext()) {
-        if (cl.isInterface()) out.print(" extends ");
-        else out.print(" implements ");
+        if (cl.isInterface()) {
+          out.print(" extends ");
+        } else {
+          out.print(" implements ");
+        }
 
         out.print("" + (interfaceIt.next()).getName() + "");
 
-        while (interfaceIt.hasNext()) out.print(", " + (interfaceIt.next()).getName() + "");
+        while (interfaceIt.hasNext()) {
+          out.print(", " + (interfaceIt.next()).getName() + "");
+        }
       }
     }
 
@@ -288,7 +315,9 @@ public class DavaPrinter {
         while (fieldIt.hasNext()) {
           SootField f = fieldIt.next();
 
-          if (f.isPhantom()) continue;
+          if (f.isPhantom()) {
+            continue;
+          }
 
           String declaration = null;
 
@@ -301,8 +330,11 @@ public class DavaPrinter {
 
           qualifiers = qualifiers.trim();
 
-          if (qualifiers.equals("")) declaration = Scene.v().quotedNameOf(f.getName());
-          else declaration = qualifiers + " " + Scene.v().quotedNameOf(f.getName()) + "";
+          if (qualifiers.equals("")) {
+            declaration = Scene.v().quotedNameOf(f.getName());
+          } else {
+            declaration = qualifiers + " " + Scene.v().quotedNameOf(f.getName()) + "";
+          }
 
           if (f.isFinal() && f.isStatic()) {
 
@@ -334,8 +366,11 @@ public class DavaPrinter {
               int val =
                   ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
 
-              if (val == 0) out.println("    " + declaration + " = false;");
-              else out.println("    " + declaration + " = true;");
+              if (val == 0) {
+                out.println("    " + declaration + " = false;");
+              } else {
+                out.println("    " + declaration + " = true;");
+              }
 
             } else if ((fieldType instanceof IntType
                     || fieldType instanceof ByteType
@@ -370,27 +405,37 @@ public class DavaPrinter {
       Iterator<SootMethod> methodIt = cl.methodIterator();
 
       if (methodIt.hasNext()) {
-        if (cl.getMethodCount() != 0) out.println();
+        if (cl.getMethodCount() != 0) {
+          out.println();
+        }
 
         while (methodIt.hasNext()) {
           SootMethod method = methodIt.next();
 
-          if (method.isPhantom()) continue;
+          if (method.isPhantom()) {
+            continue;
+          }
 
           if (!Modifier.isAbstract(method.getModifiers())
               && !Modifier.isNative(method.getModifiers())) {
-            if (!method.hasActiveBody())
+            if (!method.hasActiveBody()) {
               throw new RuntimeException("method " + method.getName() + " has no active body!");
-            else printTo(method.getActiveBody(), out);
+            } else {
+              printTo(method.getActiveBody(), out);
+            }
 
-            if (methodIt.hasNext()) out.println();
+            if (methodIt.hasNext()) {
+              out.println();
+            }
           } else {
             // if method is abstract then print the declaration
             out.print("    ");
             out.print(method.getDavaDeclaration());
             out.println(";");
 
-            if (methodIt.hasNext()) out.println();
+            if (methodIt.hasNext()) {
+              out.println();
+            }
           }
         }
       }
@@ -436,8 +481,7 @@ public class DavaPrinter {
 
     {
       out.println("    " + decl);
-      for (Iterator<Tag> tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
-        final Tag t = tIt.next();
+      for (Tag t : b.getMethod().getTags()) {
         if (Options.v().print_tags_in_output()) {
           out.println(t);
         }

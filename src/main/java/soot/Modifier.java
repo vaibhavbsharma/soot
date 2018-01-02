@@ -133,31 +133,57 @@ public class Modifier {
   public static String toString(int m) {
     StringBuffer buffer = new StringBuffer();
 
-    if (isPublic(m)) buffer.append("public ");
-    else if (isPrivate(m)) buffer.append("private ");
-    else if (isProtected(m)) buffer.append("protected ");
+    if (isPublic(m)) {
+      buffer.append("public ");
+    } else if (isPrivate(m)) {
+      buffer.append("private ");
+    } else if (isProtected(m)) {
+      buffer.append("protected ");
+    }
 
-    if (isAbstract(m)) buffer.append("abstract ");
+    if (isAbstract(m)) {
+      buffer.append("abstract ");
+    }
 
-    if (isStatic(m)) buffer.append("static ");
+    if (isStatic(m)) {
+      buffer.append("static ");
+    }
 
-    if (isFinal(m)) buffer.append("final ");
+    if (isFinal(m)) {
+      buffer.append("final ");
+    }
 
-    if (isSynchronized(m)) buffer.append("synchronized ");
+    if (isSynchronized(m)) {
+      buffer.append("synchronized ");
+    }
 
-    if (isNative(m)) buffer.append("native ");
+    if (isNative(m)) {
+      buffer.append("native ");
+    }
 
-    if (isTransient(m)) buffer.append("transient ");
+    if (isTransient(m)) {
+      buffer.append("transient ");
+    }
 
-    if (isVolatile(m)) buffer.append("volatile ");
+    if (isVolatile(m)) {
+      buffer.append("volatile ");
+    }
 
-    if (isStrictFP(m)) buffer.append("strictfp ");
+    if (isStrictFP(m)) {
+      buffer.append("strictfp ");
+    }
 
-    if (isAnnotation(m)) buffer.append("annotation ");
+    if (isAnnotation(m)) {
+      buffer.append("annotation ");
+    }
 
-    if (isEnum(m)) buffer.append("enum ");
+    if (isEnum(m)) {
+      buffer.append("enum ");
+    }
 
-    if (isInterface(m)) buffer.append("interface ");
+    if (isInterface(m)) {
+      buffer.append("interface ");
+    }
 
     return (buffer.toString()).trim();
   }

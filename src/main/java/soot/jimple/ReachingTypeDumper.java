@@ -19,6 +19,14 @@
 
 package soot.jimple;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Set;
+
 import soot.Body;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -28,14 +36,6 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Set;
-
 /**
  * Dumps the reaching types of each local variable to a file in a format that can be easily compared
  * with results of other analyses, such as VTA.
@@ -44,6 +44,7 @@ import java.util.Set;
  */
 public class ReachingTypeDumper {
   private static class StringComparator<T> implements Comparator<T> {
+    @Override
     public int compare(T o1, T o2) {
       return o1.toString().compareTo(o2.toString());
     }
@@ -77,7 +78,9 @@ public class ReachingTypeDumper {
 
   protected void handleClass(PrintWriter out, SootClass c) {
     for (SootMethod m : c.getMethods()) {
-      if (!m.isConcrete()) continue;
+      if (!m.isConcrete()) {
+        continue;
+      }
       Body b = m.retrieveActiveBody();
 
       Local[] sortedLocals = b.getLocals().toArray(new Local[b.getLocalCount()]);

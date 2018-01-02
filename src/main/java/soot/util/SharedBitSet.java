@@ -32,7 +32,9 @@ public final class SharedBitSet {
   }
 
   private void acquire() {
-    if (own) return;
+    if (own) {
+      return;
+    }
     own = true;
     value = (BitVector) value.clone();
   }
@@ -95,6 +97,7 @@ public final class SharedBitSet {
     return value.iterator();
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     for (BitSetIterator it = iterator(); it.hasNext(); ) {

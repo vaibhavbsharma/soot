@@ -25,6 +25,9 @@
 
 package soot.jimple.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -34,9 +37,6 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 public class JGotoStmt extends AbstractStmt implements GotoStmt {
   final UnitBox targetBox;
@@ -51,53 +51,66 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt {
     targetBoxes = Collections.singletonList(box);
   }
 
+  @Override
   public Object clone() {
     return new JGotoStmt(getTarget());
   }
 
+  @Override
   public String toString() {
     Unit t = getTarget();
     String target = "(branch)";
-    if (!t.branches()) target = t.toString();
+    if (!t.branches()) {
+      target = t.toString();
+    }
     return Jimple.GOTO + " [?= " + target + "]";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.GOTO);
     up.literal(" ");
     targetBox.toString(up);
   }
 
+  @Override
   public Unit getTarget() {
     return targetBox.getUnit();
   }
 
+  @Override
   public void setTarget(Unit target) {
     targetBox.setUnit(target);
   }
 
+  @Override
   public UnitBox getTargetBox() {
     return targetBox;
   }
 
+  @Override
   public List<UnitBox> getUnitBoxes() {
     return targetBoxes;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseGotoStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget()));
     u.addAllTagsOf(this);
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return true;
   }

@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.ast.Node;
-
 import java.util.ArrayList;
+
+import polyglot.ast.Node;
 
 public class ClassLiteralChecker extends polyglot.visit.NodeVisitor {
 
@@ -32,9 +32,10 @@ public class ClassLiteralChecker extends polyglot.visit.NodeVisitor {
   }
 
   public ClassLiteralChecker() {
-    list = new ArrayList<Node>();
+    list = new ArrayList<>();
   }
 
+  @Override
   public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n) {
     if (n instanceof polyglot.ast.ClassDecl) {
       return n;
@@ -45,6 +46,7 @@ public class ClassLiteralChecker extends polyglot.visit.NodeVisitor {
     return null;
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
 
     if (n instanceof polyglot.ast.ClassLit) {

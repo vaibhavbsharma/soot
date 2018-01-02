@@ -19,14 +19,14 @@
 
 package soot.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import soot.toolkits.exceptions.ThrowAnalysis;
 
 /**
  * Represents a CFG for a Body instance where the nodes are {@link Unit} instances, and where edges
@@ -81,14 +81,14 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
    *     an ``out parameter''; <tt>buildExceptionalEdges</tt> will add a mapping for every {@link
    *     Trap} handler to all the <tt>Unit</tt>s within the scope of that <tt>Trap</tt>.
    */
+  @Override
   protected void buildExceptionalEdges(
       Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
     // First, add the same edges as TrapUnitGraph.
     super.buildExceptionalEdges(unitToSuccs, unitToPreds);
     // Then add edges from the predecessors of the first
     // trapped Unit for each Trap.
-    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
-      Trap trap = trapIt.next();
+    for (Trap trap : body.getTraps()) {
       Unit firstTrapped = trap.getBeginUnit();
       Unit catcher = trap.getHandlerUnit();
       // Make a copy of firstTrapped's predecessors to iterate over,
@@ -98,9 +98,8 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
       // possibility, we should iterate here until we reach a fixed
       // point; but the old UnitGraph that we are attempting to
       // duplicate did not do that, so we won't either.
-      List<Unit> origPredsOfTrapped = new ArrayList<Unit>(getPredsOf(firstTrapped));
-      for (Iterator<Unit> unitIt = origPredsOfTrapped.iterator(); unitIt.hasNext(); ) {
-        Unit pred = unitIt.next();
+      List<Unit> origPredsOfTrapped = new ArrayList<>(getPredsOf(firstTrapped));
+      for (Unit pred : origPredsOfTrapped) {
         addEdge(unitToSuccs, unitToPreds, pred, catcher);
       }
     }

@@ -25,6 +25,16 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -47,16 +57,6 @@ import soot.jimple.Stmt;
 import soot.options.Options;
 import soot.toolkits.scalar.LocalDefs;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class ClassFieldAnalysis {
   public ClassFieldAnalysis(Singletons.Global g) {}
 
@@ -73,14 +73,16 @@ public class ClassFieldAnalysis {
    */
 
   private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap =
-      new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();
+      new HashMap<>();
 
   protected void internalTransform(SootClass c) {
-    if (classToFieldInfoMap.containsKey(c)) return;
+    if (classToFieldInfoMap.containsKey(c)) {
+      return;
+    }
 
     /* Summerize class information here. */
     Date start = new Date();
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
@@ -89,15 +91,15 @@ public class ClassFieldAnalysis {
                   + " for "
                   + c.getPackageName()
                   + c.getName());
+    }
 
-    Hashtable<SootField, IntValueContainer> fieldInfoTable =
-        new Hashtable<SootField, IntValueContainer>();
+    Hashtable<SootField, IntValueContainer> fieldInfoTable = new Hashtable<>();
     classToFieldInfoMap.put(c, fieldInfoTable);
 
     /* Who is the candidate for analysis?
        Int, Array, field. Also it should be PRIVATE now.
     */
-    HashSet<SootField> candidSet = new HashSet<SootField>();
+    HashSet<SootField> candidSet = new HashSet<>();
 
     int arrayTypeFieldNum = 0;
 
@@ -117,7 +119,9 @@ public class ClassFieldAnalysis {
     }
 
     if (arrayTypeFieldNum == 0) {
-      if (Options.v().verbose()) G.v().out.println("[] ClassFieldAnalysis finished with nothing");
+      if (Options.v().verbose()) {
+        G.v().out.println("[] ClassFieldAnalysis finished with nothing");
+      }
       return;
     }
 
@@ -175,11 +179,15 @@ public class ClassFieldAnalysis {
       SootMethod method,
       Set<SootField> candidates,
       Hashtable<SootField, IntValueContainer> fieldinfo) {
-    if (!method.isConcrete()) return;
+    if (!method.isConcrete()) {
+      return;
+    }
 
     Body body = method.retrieveActiveBody();
 
-    if (body == null) return;
+    if (body == null) {
+      return;
+    }
 
     /* no array locals, then definitely it has no array type field references. */
     {
@@ -211,7 +219,7 @@ public class ClassFieldAnalysis {
        this.f, or other.f are treated as same because we summerize the field as a class's field.
     */
 
-    HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();
+    HashMap<Stmt, SootField> stmtfield = new HashMap<>();
 
     {
       Iterator<Unit> unitIt = body.getUnits().iterator();
@@ -223,7 +231,9 @@ public class ClassFieldAnalysis {
             FieldRef fref = (FieldRef) leftOp;
             SootField field = fref.getField();
 
-            if (candidates.contains(field)) stmtfield.put(stmt, field);
+            if (candidates.contains(field)) {
+              stmtfield.put(stmt, field);
+            }
           }
         }
       }
@@ -264,23 +274,31 @@ public class ClassFieldAnalysis {
             if (defs.size() == 1) {
               usestmt = (DefinitionStmt) defs.get(0);
 
-              if (Options.v().debug()) G.v().out.println("        " + usestmt);
+              if (Options.v().debug()) {
+                G.v().out.println("        " + usestmt);
+              }
 
               Value tmp_rhs = usestmt.getRightOp();
               if ((tmp_rhs instanceof NewArrayExpr) || (tmp_rhs instanceof NewMultiArrayExpr)) {
                 Value size;
 
-                if (tmp_rhs instanceof NewArrayExpr) size = ((NewArrayExpr) tmp_rhs).getSize();
-                else size = ((NewMultiArrayExpr) tmp_rhs).getSize(0);
+                if (tmp_rhs instanceof NewArrayExpr) {
+                  size = ((NewArrayExpr) tmp_rhs).getSize();
+                } else {
+                  size = ((NewMultiArrayExpr) tmp_rhs).getSize(0);
+                }
 
-                if (size instanceof IntConstant) length.setValue(((IntConstant) size).value);
-                else if (size instanceof Local) {
+                if (size instanceof IntConstant) {
+                  length.setValue(((IntConstant) size).value);
+                } else if (size instanceof Local) {
                   local = (Local) size;
 
                   //  defs = localDefs.getDefsOfAt((Local)size, (Unit)usestmt);
 
                   continue;
-                } else length.setTop();
+                } else {
+                  length.setTop();
+                }
               } else if (tmp_rhs instanceof IntConstant) {
                 length.setValue(((IntConstant) tmp_rhs).value);
               } else if (tmp_rhs instanceof Local) {
@@ -288,19 +306,27 @@ public class ClassFieldAnalysis {
                 local = (Local) tmp_rhs;
 
                 continue;
-              } else length.setTop();
-            } else length.setTop();
+              } else {
+                length.setTop();
+              }
+            } else {
+              length.setTop();
+            }
           }
-        } else
+        } else {
           /* it could be null */
           continue;
+        }
 
         IntValueContainer oldv = fieldinfo.get(which);
 
         /* the length is top, set the field to top */
         if (length.isTop()) {
-          if (oldv == null) fieldinfo.put(which, length.dup());
-          else oldv.setTop();
+          if (oldv == null) {
+            fieldinfo.put(which, length.dup());
+          } else {
+            oldv.setTop();
+          }
 
           /* remove from the candidate set. */
           candidates.remove(which);

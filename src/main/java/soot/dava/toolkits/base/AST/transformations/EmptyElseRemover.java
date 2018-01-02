@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.internal.AST.ASTDoWhileNode;
 import soot.dava.internal.AST.ASTIfElseNode;
@@ -29,10 +33,6 @@ import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTSynchronizedBlockNode;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -138,7 +138,7 @@ public class EmptyElseRemover {
   public static List<Object> createNewNodeBody(
       List<Object> oldSubBody, int nodeNumber, ASTIfElseNode ifElseNode) {
     // create a new SubBody
-    List<Object> newSubBody = new ArrayList<Object>();
+    List<Object> newSubBody = new ArrayList<>();
 
     // this is an iterator of ASTNodes
     Iterator<Object> it = oldSubBody.iterator();

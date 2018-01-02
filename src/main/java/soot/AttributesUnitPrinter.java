@@ -19,14 +19,14 @@
 
 package soot;
 
+import java.util.Iterator;
+import java.util.Stack;
+
 import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.PositionTag;
 import soot.tagkit.Tag;
-
-import java.util.Iterator;
-import java.util.Stack;
 
 /** Adds PositionTags to ValueBoxes to identify their position in the output. */
 public class AttributesUnitPrinter {
@@ -62,7 +62,7 @@ public class AttributesUnitPrinter {
 
   public void startValueBox(ValueBox u) {
     if (startOffsets == null) {
-      startOffsets = new Stack<Integer>();
+      startOffsets = new Stack<>();
     }
     startOffsets.push(new Integer(output().length() - lastNewline));
   }
@@ -78,7 +78,9 @@ public class AttributesUnitPrinter {
     if (h instanceof Unit) {
       Iterator<ValueBox> usesAndDefsIt = ((Unit) h).getUseAndDefBoxes().iterator();
       while (usesAndDefsIt.hasNext()) {
-        if (hasTag(usesAndDefsIt.next())) return true;
+        if (hasTag(usesAndDefsIt.next())) {
+          return true;
+        }
       }
     }
     return !h.getTags().isEmpty();
@@ -86,7 +88,9 @@ public class AttributesUnitPrinter {
 
   private boolean hasColorTag(Host h) {
     for (Tag t : h.getTags()) {
-      if (t instanceof ColorTag) return true;
+      if (t instanceof ColorTag) {
+        return true;
+      }
     }
     return false;
   }

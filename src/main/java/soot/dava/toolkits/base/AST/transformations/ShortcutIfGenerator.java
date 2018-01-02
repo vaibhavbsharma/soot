@@ -23,10 +23,13 @@ public class ShortcutIfGenerator extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
-      if (!(s instanceof DefinitionStmt)) continue;
+      if (!(s instanceof DefinitionStmt)) {
+        continue;
+      }
 
       DefinitionStmt ds = (DefinitionStmt) s;
       ValueBox rightBox = ds.getRightOpBox();
@@ -65,7 +68,9 @@ public class ShortcutIfGenerator extends DepthFirstAdapter {
       ImmediateBox falseBox = new ImmediateBox(IntConstant.v(0));
 
       DShortcutIf shortcut = new DShortcutIf(OpBox, trueBox, falseBox);
-      if (DEBUG) System.out.println("created: " + shortcut);
+      if (DEBUG) {
+        System.out.println("created: " + shortcut);
+      }
       rightBox.setValue(shortcut);
     }
   }

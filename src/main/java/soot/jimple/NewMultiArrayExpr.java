@@ -25,13 +25,13 @@
 
 package soot.jimple;
 
+import java.util.List;
+
 import soot.ArrayType;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.util.Switch;
-
-import java.util.List;
 
 public interface NewMultiArrayExpr extends Expr, AnyNewExpr {
   ArrayType getBaseType();
@@ -48,7 +48,9 @@ public interface NewMultiArrayExpr extends Expr, AnyNewExpr {
 
   void setSize(int index, Value size);
 
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

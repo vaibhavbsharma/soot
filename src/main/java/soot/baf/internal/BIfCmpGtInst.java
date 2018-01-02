@@ -38,30 +38,37 @@ public class BIfCmpGtInst extends AbstractOpTypeBranchInst implements IfCmpGtIns
     super(opType, Baf.v().newInstBox(target));
   }
 
+  @Override
   public int getInCount() {
     return 2;
   }
 
+  @Override
   public Object clone() {
     return new BIfCmpGtInst(getOpType(), getTarget());
   }
 
+  @Override
   public int getInMachineCount() {
     return 2 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public String getName() {
     return "ifcmpgt";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIfCmpGtInst(this);
   }

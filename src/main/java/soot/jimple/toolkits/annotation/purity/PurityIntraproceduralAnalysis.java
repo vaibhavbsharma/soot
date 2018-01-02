@@ -25,6 +25,10 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.Local;
 import soot.RefLikeType;
 import soot.SourceLocator;
@@ -60,10 +64,6 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Intra-procedural purity-graph analysis.
@@ -344,7 +344,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
     dot.setGraphLabel(name);
     dot.setGraphAttribute("compound", "true");
     dot.setGraphAttribute("rankdir", "LR");
-    Map<Unit, Integer> node = new HashMap<Unit, Integer>();
+    Map<Unit, Integer> node = new HashMap<>();
     int id = 0;
     for (Unit stmt : graph) {
       PurityGraphBox ref = getFlowAfter(stmt);

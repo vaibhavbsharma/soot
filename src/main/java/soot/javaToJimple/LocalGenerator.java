@@ -19,11 +19,11 @@
 
 package soot.javaToJimple;
 
-import soot.Body;
-import soot.Local;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import soot.Body;
+import soot.Local;
 
 public class LocalGenerator {
 
@@ -40,8 +40,10 @@ public class LocalGenerator {
   }
 
   private void initLocalNames() {
-    localNames = new HashSet<String>();
-    for (Local l : body.getLocals()) localNames.add(l.getName());
+    localNames = new HashSet<>();
+    for (Local l : body.getLocals()) {
+      localNames.add(l.getName());
+    }
   }
 
   /** generates a new soot local given the type */
@@ -54,58 +56,80 @@ public class LocalGenerator {
     if (type instanceof soot.IntType) {
       while (true) {
         name = nextIntName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.ByteType) {
       while (true) {
         name = nextByteName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.ShortType) {
       while (true) {
         name = nextShortName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.BooleanType) {
       while (true) {
         name = nextBooleanName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.VoidType) {
       while (true) {
         name = nextVoidName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.CharType) {
       while (true) {
         name = nextCharName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
       type = soot.CharType.v();
     } else if (type instanceof soot.DoubleType) {
       while (true) {
         name = nextDoubleName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.FloatType) {
       while (true) {
         name = nextFloatName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.LongType) {
       while (true) {
         name = nextLongName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.RefLikeType) {
       while (true) {
         name = nextRefLikeTypeName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else if (type instanceof soot.UnknownType) {
       while (true) {
         name = nextUnknownTypeName();
-        if (!bodyContainsLocal(name)) break;
+        if (!bodyContainsLocal(name)) {
+          break;
+        }
       }
     } else {
       localNames = null;

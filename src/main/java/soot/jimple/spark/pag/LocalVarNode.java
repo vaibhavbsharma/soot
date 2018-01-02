@@ -19,11 +19,11 @@
 
 package soot.jimple.spark.pag;
 
-import soot.SootMethod;
-import soot.Type;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import soot.SootMethod;
+import soot.Type;
 
 /**
  * Represents a simple variable node (Green) in the pointer assignment graph that is specific to a
@@ -40,6 +40,7 @@ public class LocalVarNode extends VarNode {
     return method;
   }
 
+  @Override
   public String toString() {
     return "LocalVarNode " + getNumber() + " " + variable + " " + method;
   }
@@ -52,7 +53,9 @@ public class LocalVarNode extends VarNode {
   }
   /** Registers a cvn as having this node as its base. */
   void addContext(ContextVarNode cvn, Object context) {
-    if (cvns == null) cvns = new HashMap<Object, ContextVarNode>();
+    if (cvns == null) {
+      cvns = new HashMap<>();
+    }
     cvns.put(context, cvn);
   }
 

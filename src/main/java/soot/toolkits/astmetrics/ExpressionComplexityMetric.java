@@ -38,6 +38,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     super(node);
   }
 
+  @Override
   public void reset() {
     currentExprDepth = 0;
     exprDepthSum = 0;
@@ -45,6 +46,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     inExpr = 0;
   }
 
+  @Override
   public void addMetrics(ClassData data) {
     double a = exprDepthSum;
     double b = exprCount;
@@ -53,6 +55,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     data.addMetric(new MetricData("Expr-Count", new Double(b)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     if (n instanceof Expr) {
       inExpr++;
@@ -62,6 +65,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     return enter(n);
   }
 
+  @Override
   public Node leave(Node old, Node n, NodeVisitor v) {
     if (n instanceof Expr) {
       if (currentExprDepth == 1) {

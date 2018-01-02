@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.RefType;
 import soot.SootField;
 import soot.jimple.spark.internal.TypeManager;
@@ -27,9 +30,6 @@ import soot.jimple.spark.ondemand.pautil.SootUtil.CallSiteAndContext;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.SparkField;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
 
   private final TypeManager manager;
@@ -38,9 +38,9 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
 
   private static final String[] EXCLUDED_NAMES = new String[] {"ca.mcgill.sable.soot.SootMethod"};
 
-  private Set<RefType> typesToCheck = new HashSet<RefType>();
+  private Set<RefType> typesToCheck = new HashSet<>();
 
-  private Set<RefType> notBothEndsTypes = new HashSet<RefType>();
+  private Set<RefType> notBothEndsTypes = new HashSet<>();
 
   private RefType newTypeOnQuery = null;
 
@@ -49,6 +49,7 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
    *
    * @see AAA.algs.Heuristic#newQuery()
    */
+  @Override
   public boolean runNewPass() {
     //        if (!aggressive && reachedAggressive) {
     //            aggressive = true;
@@ -70,6 +71,7 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
    *
    * @see AAA.algs.Heuristic#validateMatchesForField(soot.jimple.spark.pag.SparkField)
    */
+  @Override
   public boolean validateMatchesForField(SparkField field) {
     // if (true) return true;
     if (field instanceof ArrayElement) {
@@ -102,6 +104,7 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
     this.manager = manager;
   }
 
+  @Override
   public String toString() {
     StringBuffer ret = new StringBuffer();
     ret.append("types ");
@@ -113,6 +116,7 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
     return ret.toString();
   }
 
+  @Override
   public boolean validFromBothEnds(SparkField field) {
     if (field instanceof SootField) {
       SootField sootField = (SootField) field;

@@ -43,5 +43,6 @@ public interface BinopExpr extends Expr {
 
   String getSymbol();
 
+  @Override
   String toString();
 }

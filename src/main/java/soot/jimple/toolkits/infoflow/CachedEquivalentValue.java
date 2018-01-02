@@ -19,10 +19,10 @@
 
 package soot.jimple.toolkits.infoflow;
 
+import java.util.WeakHashMap;
+
 import soot.EquivalentValue;
 import soot.Value;
-
-import java.util.WeakHashMap;
 
 /**
  * An {@link EquivalentValue} with cached hash code and equals-relation.
@@ -33,12 +33,13 @@ public class CachedEquivalentValue extends EquivalentValue {
 
   protected int code = Integer.MAX_VALUE;
 
-  protected WeakHashMap<Value, Boolean> isEquivalent = new WeakHashMap<Value, Boolean>();
+  protected WeakHashMap<Value, Boolean> isEquivalent = new WeakHashMap<>();
 
   public CachedEquivalentValue(Value e) {
     super(e);
   }
 
+  @Override
   public int hashCode() {
     if (code == Integer.MAX_VALUE) {
       code = super.hashCode();
@@ -46,6 +47,7 @@ public class CachedEquivalentValue extends EquivalentValue {
     return code;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (this.getClass() != o.getClass()) {
       return false;

@@ -61,19 +61,25 @@ class Instruction_longbranch extends Instruction_branch {
     super(c);
   }
 
+  @Override
   public int nextOffset(int curr) {
     return curr + 5;
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     arg_i = getInt(bc, index);
     return index + 4;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     bc[index++] = code;
-    if (target != null) shortToBytes((short) (target.label - label), bc, index);
-    else shortToBytes((short) (arg_i), bc, index);
+    if (target != null) {
+      shortToBytes((short) (target.label - label), bc, index);
+    } else {
+      shortToBytes((short) (arg_i), bc, index);
+    }
     return index + 4;
   }
 }

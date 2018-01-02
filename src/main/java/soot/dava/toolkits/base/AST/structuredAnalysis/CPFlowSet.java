@@ -1,11 +1,11 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import soot.dava.DecompilationException;
-import soot.toolkits.scalar.FlowSet;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+
+import soot.dava.DecompilationException;
+import soot.toolkits.scalar.FlowSet;
 
 /*
  * Really the only reason for needing a specialized flow set is that
@@ -33,8 +33,11 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
     elements = new CPTuple[other.getElementCount()];
     for (int i = 0; i < other.getElementCount(); i++) {
-      if (other.getElementAt(i) != null) elements[i] = other.getElementAt(i).clone();
-      else elements[i] = null;
+      if (other.getElementAt(i) != null) {
+        elements[i] = other.getElementAt(i).clone();
+      } else {
+        elements[i] = null;
+      }
     }
     // elements = (Object[]) other.elements.clone();
 
@@ -60,14 +63,22 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
   public Object contains(String className, String localOrField) {
     for (int i = 0; i < this.numElements; i++) {
       CPTuple current = getElementAt(i);
-      if (!(current.getSootClassName().equals(className))) continue;
+      if (!(current.getSootClassName().equals(className))) {
+        continue;
+      }
 
       if (current.containsField()) {
-        if (!current.getVariable().getSootField().getName().equals(localOrField)) continue;
-        else return current.getValue();
+        if (!current.getVariable().getSootField().getName().equals(localOrField)) {
+          continue;
+        } else {
+          return current.getValue();
+        }
       } else if (current.containsLocal()) {
-        if (!current.getVariable().getLocal().getName().equals(localOrField)) continue;
-        else return current.getValue();
+        if (!current.getVariable().getLocal().getName().equals(localOrField)) {
+          continue;
+        } else {
+          return current.getValue();
+        }
       }
     }
     return null;
@@ -150,7 +161,9 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
        * We only assign value if there is one not already
        * present
        */
-      if (current.isTop()) current.setValue(newTuple.getValue());
+      if (current.isTop()) {
+        current.setValue(newTuple.getValue());
+      }
 
       return;
     }
@@ -185,6 +198,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
    *
    *
    */
+  @Override
   public void intersection(FlowSet otherFlow, FlowSet destFlow) {
     // System.out.println("In specialized intersection for CopyPropagation");
     if (!(otherFlow instanceof CPFlowSet && destFlow instanceof CPFlowSet)) {
@@ -196,8 +210,9 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     CPFlowSet dest = (CPFlowSet) destFlow;
     CPFlowSet workingSet;
 
-    if (dest == other || dest == this) workingSet = new CPFlowSet();
-    else {
+    if (dest == other || dest == this) {
+      workingSet = new CPFlowSet();
+    } else {
       workingSet = dest;
       workingSet.clear();
     }
@@ -239,10 +254,14 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
         // check that the two tuples have the same class
         String tempClass = otherTuple.getSootClassName();
-        if (!tempClass.equals(className)) continue;
+        if (!tempClass.equals(className)) {
+          continue;
+        }
 
         // Check that the variable contained is the same name and type (local or sootfield)
-        if (!otherTuple.getVariable().equals(thisVar)) continue;
+        if (!otherTuple.getVariable().equals(thisVar)) {
+          continue;
+        }
 
         // match of sootClass and Variable have to use merge table on matchFound and
         // elements[i]
@@ -367,11 +386,13 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     } // end going through other elements
   }
 
+  @Override
   public CPFlowSet clone() {
 
     return new CPFlowSet(this);
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     b.append("Printing CPFlowSet: ");

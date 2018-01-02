@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.annotation.profiling;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -42,9 +45,6 @@ import soot.jimple.Stmt;
 import soot.options.ProfilingOptions;
 import soot.util.Chain;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class ProfilingGenerator extends BodyTransformer {
   public ProfilingGenerator(Singletons.Global g) {}
 
@@ -56,9 +56,12 @@ public class ProfilingGenerator extends BodyTransformer {
 
   //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map opts) {
     ProfilingOptions options = new ProfilingOptions(opts);
-    if (options.notmainentry()) mainSignature = "long runBenchmark(java.lang.String[])";
+    if (options.notmainentry()) {
+      mainSignature = "long runBenchmark(java.lang.String[])";
+    }
 
     {
       SootMethod m = body.getMethod();

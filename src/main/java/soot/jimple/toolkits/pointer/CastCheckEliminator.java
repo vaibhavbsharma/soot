@@ -19,6 +19,12 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.Local;
 import soot.RefType;
 import soot.Type;
@@ -40,13 +46,6 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /** A flow analysis that detects redundant cast checks. */
 public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSet> {
   Map unitToKill = new HashMap();
@@ -63,9 +62,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
 
   /** Put the results of the analysis into tags in cast statements. */
   protected void tagCasts() {
-    for (Iterator<Unit> sIt = ((UnitGraph) graph).getBody().getUnits().iterator();
-        sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
+    for (Unit unit : ((UnitGraph) graph).getBody().getUnits()) {
+      final Stmt s = (Stmt) unit;
       if (s instanceof AssignStmt) {
         AssignStmt as = (AssignStmt) s;
         Value rhs = as.getRightOp();
@@ -94,19 +92,17 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
   protected void makeInitialSet() {
     // Find all locals of reference type
     Collection<Local> locals = ((UnitGraph) graph).getBody().getLocals();
-    List<Local> refLocals = new ArrayList<Local>();
-    for (Iterator<Local> lIt = locals.iterator(); lIt.hasNext(); ) {
-      final Local l = lIt.next();
+    List<Local> refLocals = new ArrayList<>();
+    for (Local l : locals) {
       if (l.getType() instanceof RefType) {
         refLocals.add(l);
       }
     }
 
     // Find types of all casts
-    List<Type> types = new ArrayList<Type>();
-    for (Iterator<Unit> sIt = ((UnitGraph) graph).getBody().getUnits().iterator();
-        sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
+    List<Type> types = new ArrayList<>();
+    for (Unit unit : ((UnitGraph) graph).getBody().getUnits()) {
+      final Stmt s = (Stmt) unit;
       if (s instanceof AssignStmt) {
         AssignStmt as = (AssignStmt) s;
         Value rhs = as.getRightOp();
@@ -142,8 +138,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     final Stmt stmt = (Stmt) unit;
 
     // First kill all locals defined in this statement
-    for (Iterator<ValueBox> bIt = stmt.getDefBoxes().iterator(); bIt.hasNext(); ) {
-      final ValueBox b = bIt.next();
+    for (ValueBox b : stmt.getDefBoxes()) {
       Value v = b.getValue();
       if (v instanceof Local && v.getType() instanceof RefType) {
         out.killLocal((Local) v);
@@ -182,18 +177,34 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
       // than having to have seven nested if statements. Silly people who
       // took goto's out of the language... <grumble> <grumble>
       do {
-        if (graph.getPredsOf(stmt).size() != 1) break;
+        if (graph.getPredsOf(stmt).size() != 1) {
+          break;
+        }
         Object predecessor = graph.getPredsOf(stmt).get(0);
-        if (!(predecessor instanceof AssignStmt)) break;
+        if (!(predecessor instanceof AssignStmt)) {
+          break;
+        }
         AssignStmt pred = (AssignStmt) predecessor;
-        if (!(pred.getRightOp() instanceof InstanceOfExpr)) break;
+        if (!(pred.getRightOp() instanceof InstanceOfExpr)) {
+          break;
+        }
         InstanceOfExpr iofexpr = (InstanceOfExpr) pred.getRightOp();
-        if (!(iofexpr.getCheckType() instanceof RefType)) break;
-        if (!(iofexpr.getOp() instanceof Local)) break;
+        if (!(iofexpr.getCheckType() instanceof RefType)) {
+          break;
+        }
+        if (!(iofexpr.getOp() instanceof Local)) {
+          break;
+        }
         ConditionExpr c = (ConditionExpr) ifstmt.getCondition();
-        if (!c.getOp1().equals(pred.getLeftOp())) break;
-        if (!(c.getOp2() instanceof IntConstant)) break;
-        if (((IntConstant) c.getOp2()).value != 0) break;
+        if (!c.getOp1().equals(pred.getLeftOp())) {
+          break;
+        }
+        if (!(c.getOp2() instanceof IntConstant)) {
+          break;
+        }
+        if (((IntConstant) c.getOp2()).value != 0) {
+          break;
+        }
         if (c instanceof NeExpr) {
           // The IfStmt is like this:
           // if x instanceof t goto somewhere_else
@@ -211,11 +222,11 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     }
 
     // Now copy the computed (local,type) set to all successors
-    for (Iterator<LocalTypeSet> it = outFallValues.iterator(); it.hasNext(); ) {
-      copy(out, it.next());
+    for (LocalTypeSet localTypeSet : outFallValues) {
+      copy(out, localTypeSet);
     }
-    for (Iterator<LocalTypeSet> it = outBranchValues.iterator(); it.hasNext(); ) {
-      copy(outBranch, it.next());
+    for (LocalTypeSet localTypeSet : outBranchValues) {
+      copy(outBranch, localTypeSet);
     }
   }
 

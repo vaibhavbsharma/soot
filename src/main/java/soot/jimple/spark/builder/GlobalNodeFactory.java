@@ -136,10 +136,12 @@ public class GlobalNodeFactory {
   }
 
   public final Node caseNewInstance(VarNode cls) {
-    if (cls instanceof ContextVarNode) cls = pag.findLocalVarNode(cls.getVariable());
+    if (cls instanceof ContextVarNode) {
+      cls = pag.findLocalVarNode(cls.getVariable());
+    }
     VarNode local = pag.makeGlobalVarNode(cls, RefType.v("java.lang.Object"));
     for (SootClass cl : Scene.v().dynamicClasses()) {
-      AllocNode site = pag.makeAllocNode(new Pair<VarNode, SootClass>(cls, cl), cl.getType(), null);
+      AllocNode site = pag.makeAllocNode(new Pair<>(cls, cl), cl.getType(), null);
       pag.addEdge(site, local);
     }
     return local;

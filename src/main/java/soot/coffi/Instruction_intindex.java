@@ -63,6 +63,7 @@ class Instruction_intindex extends Instruction {
     super(c);
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool)
         + argsep
@@ -71,23 +72,28 @@ class Instruction_intindex extends Instruction {
         + "]";
   }
 
+  @Override
   public int nextOffset(int curr) {
     return curr + 3;
   }
 
+  @Override
   public void markCPRefs(boolean[] refs) {
     refs[arg_i] = true;
   }
 
+  @Override
   public void redirectCPRefs(short redirect[]) {
     arg_i = redirect[arg_i];
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     arg_i = getShort(bc, index);
     return index + 2;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     bc[index++] = code;
     shortToBytes((short) arg_i, bc, index);

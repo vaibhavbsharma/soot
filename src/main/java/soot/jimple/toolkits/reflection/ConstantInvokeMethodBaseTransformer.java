@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.reflection;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -13,9 +16,6 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * This class creates a local for each string constant that is used as a base object to a reflective
@@ -45,7 +45,9 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
       // In some rare cases we will have application classes that are not resolved due to
       // being located in excluded packages (e.g., the ServiceConnection class constructed by
       // FlowDroid: soot.jimple.infoflow.cfg.LibraryClassPatcher#patchServiceConnection)
-      if (sootClass.resolvingLevel() < SootClass.BODIES) continue;
+      if (sootClass.resolvingLevel() < SootClass.BODIES) {
+        continue;
+      }
       for (SootMethod sootMethod : sootClass.getMethods()) {
         Body body = sootMethod.retrieveActiveBody();
 
@@ -64,12 +66,13 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
                 body.getUnits().insertBefore(Jimple.v().newAssignStmt(newLocal, constant), u);
                 invokeExpr.setArg(0, newLocal);
 
-                if (verbose)
+                if (verbose) {
                   G.v()
                       .out
                       .println(
                           "Replaced constant base object of Method.invoke() by local in: "
                               + sootMethod.toString());
+                }
               }
             }
           }

@@ -35,6 +35,7 @@ public class ParamNamesTag implements Tag {
     names = list;
   }
 
+  @Override
   public String toString() {
     return names.toString();
   }
@@ -44,6 +45,7 @@ public class ParamNamesTag implements Tag {
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "ParamNamesTag";
   }
@@ -53,6 +55,7 @@ public class ParamNamesTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("ParamNamesTag has no value for bytecode");
   }

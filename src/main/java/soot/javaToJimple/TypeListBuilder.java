@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.types.Type;
-
 import java.util.HashSet;
+
+import polyglot.types.Type;
 
 public class TypeListBuilder extends polyglot.visit.NodeVisitor {
 
@@ -32,9 +32,10 @@ public class TypeListBuilder extends polyglot.visit.NodeVisitor {
   }
 
   public TypeListBuilder() {
-    list = new HashSet<Type>();
+    list = new HashSet<>();
   }
 
+  @Override
   public polyglot.ast.Node leave(
       polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
 

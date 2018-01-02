@@ -58,10 +58,14 @@ public class CallsiteContextVar extends ContextVar {
   @Override
   public int hashCode() {
     int ch = 0;
-    if (context != null) ch = context.hashCode();
+    if (context != null) {
+      ch = context.hashCode();
+    }
 
     int ans = var.hashCode() + ch;
-    if (ans < 0) ans = -ans;
+    if (ans < 0) {
+      ans = -ans;
+    }
     return ans;
   }
 

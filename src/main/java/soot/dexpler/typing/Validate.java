@@ -1,5 +1,10 @@
 package soot.dexpler.typing;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -31,17 +36,12 @@ import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class Validate {
 
   public static void validateArrays(Body b) {
 
-    Set<DefinitionStmt> definitions = new HashSet<DefinitionStmt>();
-    Set<Unit> unitWithArrayRef = new HashSet<Unit>();
+    Set<DefinitionStmt> definitions = new HashSet<>();
+    Set<Unit> unitWithArrayRef = new HashSet<>();
 
     for (Unit u : b.getUnits()) {
       if (u instanceof DefinitionStmt) {
@@ -59,7 +59,7 @@ public class Validate {
 
     final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b, true);
 
-    Set<Unit> toReplace = new HashSet<Unit>();
+    Set<Unit> toReplace = new HashSet<>();
 
     for (Unit u : unitWithArrayRef) {
       boolean ok = false;
@@ -72,11 +72,13 @@ public class Validate {
           List<Unit> defs = localDefs.getDefsOfAt(base, u);
 
           // add aliases
-          Set<Unit> alreadyHandled = new HashSet<Unit>();
+          Set<Unit> alreadyHandled = new HashSet<>();
           while (true) {
             boolean isMore = false;
             for (Unit d : defs) {
-              if (alreadyHandled.contains(d)) continue;
+              if (alreadyHandled.contains(d)) {
+                continue;
+              }
               if (d instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt) d;
                 Value r = ass.getRightOp();
@@ -95,7 +97,9 @@ public class Validate {
                 }
               }
             }
-            if (!isMore) break;
+            if (!isMore) {
+              break;
+            }
           }
 
           // System.out.println("def size "+ defs.size());
@@ -118,20 +122,28 @@ public class Validate {
               InvokeExpr ie = (InvokeExpr) r;
               t = ie.getType();
               // System.out.println("ie type: "+ t +" "+ t.getClass());
-              if (t instanceof ArrayType) ok = true;
+              if (t instanceof ArrayType) {
+                ok = true;
+              }
             } else if (r instanceof FieldRef) {
               FieldRef ref = (FieldRef) r;
               t = ref.getType();
               // System.out.println("fr type: "+ t +" "+ t.getClass());
-              if (t instanceof ArrayType) ok = true;
+              if (t instanceof ArrayType) {
+                ok = true;
+              }
             } else if (r instanceof IdentityRef) {
               IdentityRef ir = (IdentityRef) r;
               t = ir.getType();
-              if (t instanceof ArrayType) ok = true;
+              if (t instanceof ArrayType) {
+                ok = true;
+              }
             } else if (r instanceof CastExpr) {
               CastExpr c = (CastExpr) r;
               t = c.getType();
-              if (t instanceof ArrayType) ok = true;
+              if (t instanceof ArrayType) {
+                ok = true;
+              }
             } else if (r instanceof ArrayRef) {
               // we also check that this arrayref is correctly defined
             } else if (r instanceof NewArrayExpr) {
@@ -145,10 +157,14 @@ public class Validate {
                   "error: unknown right hand side of definition stmt " + def);
             }
 
-            if (ok) break;
+            if (ok) {
+              break;
+            }
           }
 
-          if (ok) break;
+          if (ok) {
+            break;
+          }
         }
       }
 
@@ -168,12 +184,12 @@ public class Validate {
       Unit initLocalUnit = Jimple.v().newAssignStmt(ttt, r);
 
       // call <init> method with a string parameter for message
-      List<String> pTypes = new ArrayList<String>();
+      List<String> pTypes = new ArrayList<>();
       pTypes.add("java.lang.String");
       boolean isStatic = false;
       SootMethodRef mRef =
           Validate.makeMethodRef("java.lang.Throwable", "<init>", "", pTypes, isStatic);
-      List<Value> parameters = new ArrayList<Value>();
+      List<Value> parameters = new ArrayList<>();
       parameters.add(StringConstant.v("Soot updated this instruction"));
       InvokeExpr ie = Jimple.v().newSpecialInvokeExpr(ttt, mRef, parameters);
       Unit initMethod = Jimple.v().newInvokeStmt(ie);
@@ -198,10 +214,15 @@ public class Validate {
       String cName, String mName, String rType, List<String> pTypes, boolean isStatic) {
     SootClass sc = SootResolver.v().makeClassRef(cName);
     Type returnType = null;
-    if (rType == "") returnType = VoidType.v();
-    else returnType = RefType.v(rType);
-    List<Type> parameterTypes = new ArrayList<Type>();
-    for (String p : pTypes) parameterTypes.add(RefType.v(p));
+    if (rType == "") {
+      returnType = VoidType.v();
+    } else {
+      returnType = RefType.v(rType);
+    }
+    List<Type> parameterTypes = new ArrayList<>();
+    for (String p : pTypes) {
+      parameterTypes.add(RefType.v(p));
+    }
     return Scene.v().makeMethodRef(sc, mName, parameterTypes, returnType, isStatic);
   }
 }

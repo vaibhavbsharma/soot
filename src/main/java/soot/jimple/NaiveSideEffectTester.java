@@ -25,14 +25,14 @@
 
 package soot.jimple;
 
+import java.util.Iterator;
+
 import soot.Local;
 import soot.SideEffectTester;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-
-import java.util.Iterator;
 
 /**
  * Provides naive side effect information. Relies on no context information; instead, does the least
@@ -53,20 +53,28 @@ import java.util.Iterator;
 //  StaticFieldRef
 
 public class NaiveSideEffectTester implements SideEffectTester {
+  @Override
   public void newMethod(SootMethod m) {}
 
   /** Returns true if the unit can read from v. Does not deal with expressions; deals with Refs. */
+  @Override
   public boolean unitCanReadFrom(Unit u, Value v) {
     Stmt s = (Stmt) u;
 
     // This doesn't really make any sense, but we need to return something.
-    if (v instanceof Constant) return false;
+    if (v instanceof Constant) {
+      return false;
+    }
 
-    if (v instanceof Expr) throw new RuntimeException("can't deal with expr");
+    if (v instanceof Expr) {
+      throw new RuntimeException("can't deal with expr");
+    }
 
     // If it's an invoke, then only locals are safe.
     if (s.containsInvokeExpr()) {
-      if (!(v instanceof Local)) return true;
+      if (!(v instanceof Local)) {
+        return true;
+      }
     }
 
     // otherwise, use boxes tell all.
@@ -74,26 +82,37 @@ public class NaiveSideEffectTester implements SideEffectTester {
     while (useIt.hasNext()) {
       Value use = (Value) useIt.next();
 
-      if (use.equivTo(v)) return true;
+      if (use.equivTo(v)) {
+        return true;
+      }
 
       Iterator vUseIt = v.getUseBoxes().iterator();
       while (vUseIt.hasNext()) {
-        if (use.equivTo(vUseIt.next())) return true;
+        if (use.equivTo(vUseIt.next())) {
+          return true;
+        }
       }
     }
     return false;
   }
 
+  @Override
   public boolean unitCanWriteTo(Unit u, Value v) {
     Stmt s = (Stmt) u;
 
-    if (v instanceof Constant) return false;
+    if (v instanceof Constant) {
+      return false;
+    }
 
-    if (v instanceof Expr) throw new RuntimeException("can't deal with expr");
+    if (v instanceof Expr) {
+      throw new RuntimeException("can't deal with expr");
+    }
 
     // If it's an invoke, then only locals are safe.
     if (s.containsInvokeExpr()) {
-      if (!(v instanceof Local)) return true;
+      if (!(v instanceof Local)) {
+        return true;
+      }
     }
 
     // otherwise, def boxes tell all.
@@ -103,16 +122,22 @@ public class NaiveSideEffectTester implements SideEffectTester {
       Iterator useIt = v.getUseBoxes().iterator();
       while (useIt.hasNext()) {
         Value use = ((ValueBox) useIt.next()).getValue();
-        if (def.equivTo(use)) return true;
+        if (def.equivTo(use)) {
+          return true;
+        }
       }
       // also handle the container of all these useboxes!
-      if (def.equivTo(v)) return true;
+      if (def.equivTo(v)) {
+        return true;
+      }
 
       // deal with aliasing - handle case where they
       // are a read to the same field, regardless of
       // base object.
       if (v instanceof InstanceFieldRef && def instanceof InstanceFieldRef) {
-        if (((InstanceFieldRef) v).getField() == ((InstanceFieldRef) def).getField()) return true;
+        if (((InstanceFieldRef) v).getField() == ((InstanceFieldRef) def).getField()) {
+          return true;
+        }
       }
     }
     return false;

@@ -30,7 +30,7 @@ class Lock {
   Lock() {
     level = 0;
     owner = null;
-    q = new LinkedList<Thread>();
+    q = new LinkedList<>();
   }
 
   public Thread nextThread() {
@@ -38,7 +38,9 @@ class Lock {
   }
 
   public Thread deQ(Thread t) throws IllegalMonitorStateException {
-    if (t != q.getFirst()) throw new IllegalMonitorStateException();
+    if (t != q.getFirst()) {
+      throw new IllegalMonitorStateException();
+    }
 
     return q.removeFirst();
   }

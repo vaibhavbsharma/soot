@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTCondition;
@@ -17,9 +20,6 @@ import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
-import java.util.List;
 
 /*
  *  look for patterns of the form
@@ -56,20 +56,26 @@ public class IfElseSplitter extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     methodNode = node;
   }
 
+  @Override
   public void outASTMethodNode(ASTMethodNode a) {
-    if (!transform) return;
+    if (!transform) {
+      return;
+    }
 
     List<Object> parentBodies = parent.get_SubBodies();
     Iterator<Object> it = parentBodies.iterator();
     while (it.hasNext()) {
       List<Object> subBody = null;
-      if (parent instanceof ASTTryNode)
+      if (parent instanceof ASTTryNode) {
         subBody = (List<Object>) ((ASTTryNode.container) it.next()).o;
-      else subBody = (List<Object>) it.next();
+      } else {
+        subBody = (List<Object>) it.next();
+      }
 
       if (subBody.indexOf(toReplace) > -1) {
         // in the subBody list the node is present
@@ -81,13 +87,17 @@ public class IfElseSplitter extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     // if some pattern has already matched cant do another one in this go
-    if (transform) return;
+    if (transform) {
+      return;
+    }
 
     List<Object> subBodies = node.get_SubBodies();
-    if (subBodies.size() != 2)
+    if (subBodies.size() != 2) {
       throw new DecompilationException("IfelseNode without two subBodies. report to developer");
+    }
 
     List<Object> ifBody = (List<Object>) subBodies.get(0);
     List<Object> elseBody = (List<Object>) subBodies.get(1);
@@ -98,14 +108,18 @@ public class IfElseSplitter extends DepthFirstAdapter {
     boolean negateIfCondition = false;
 
     if (patternMatched) {
-      if (DEBUG) System.out.println("First pattern matched");
+      if (DEBUG) {
+        System.out.println("First pattern matched");
+      }
       newIfBody = ifBody;
       outerScopeBody = elseBody;
       negateIfCondition = false;
     } else {
       patternMatched = tryBodyPattern(elseBody, node.get_Label(), ifBody);
       if (patternMatched) {
-        if (DEBUG) System.out.println("Second pattern matched");
+        if (DEBUG) {
+          System.out.println("Second pattern matched");
+        }
 
         newIfBody = elseBody;
         outerScopeBody = ifBody;
@@ -117,14 +131,17 @@ public class IfElseSplitter extends DepthFirstAdapter {
     // transformation :)
     if (newIfBody != null && outerScopeBody != null) {
       ASTCondition cond = node.get_Condition();
-      if (negateIfCondition) cond.flip();
+      if (negateIfCondition) {
+        cond.flip();
+      }
 
       ASTIfNode newNode = new ASTIfNode(node.get_Label(), cond, newIfBody);
       if (DEBUG) {
         System.out.println("New IF Node is: " + newNode.toString());
         System.out.println("Outer scope body list is:\n");
-        for (int i = 0; i < outerScopeBody.size(); i++)
+        for (int i = 0; i < outerScopeBody.size(); i++) {
           System.out.println("\n\n " + outerScopeBody.get(i).toString());
+        }
       }
 
       ASTParentNodeFinder finder = new ASTParentNodeFinder();
@@ -181,10 +198,14 @@ public class IfElseSplitter extends DepthFirstAdapter {
    */
   public boolean bodyTargetsLabel(SETNodeLabel label, List<Object> body) {
     // no SETNodeLabel is good
-    if (label == null) return false;
+    if (label == null) {
+      return false;
+    }
 
     // SETNodeLabel but with no string is also good
-    if (label.toString() == null) return false;
+    if (label.toString() == null) {
+      return false;
+    }
 
     final String strLabel = label.toString();
 
@@ -198,9 +219,12 @@ public class IfElseSplitter extends DepthFirstAdapter {
       temp.apply(
           new DepthFirstAdapter() {
             // set targeted to true if DAbruptStmt targets it
+            @Override
             public void inStmt(Stmt s) {
               // only interested in abrupt stmts
-              if (!(s instanceof DAbruptStmt)) return;
+              if (!(s instanceof DAbruptStmt)) {
+                return;
+              }
 
               DAbruptStmt abrupt = (DAbruptStmt) s;
               SETNodeLabel label = abrupt.getLabel();
@@ -210,7 +234,9 @@ public class IfElseSplitter extends DepthFirstAdapter {
             }
           });
 
-      if (targeted) break;
+      if (targeted) {
+        break;
+      }
     }
     return targeted;
   }
@@ -221,14 +247,20 @@ public class IfElseSplitter extends DepthFirstAdapter {
    * else, return the last statement in this node
    */
   public Stmt getLastStmt(List<Object> body) {
-    if (body.size() == 0) return null;
+    if (body.size() == 0) {
+      return null;
+    }
 
     ASTNode lastNode = (ASTNode) body.get(body.size() - 1);
-    if (!(lastNode instanceof ASTStatementSequenceNode)) return null;
+    if (!(lastNode instanceof ASTStatementSequenceNode)) {
+      return null;
+    }
 
     ASTStatementSequenceNode stmtNode = (ASTStatementSequenceNode) lastNode;
     List<AugmentedStmt> stmts = stmtNode.getStatements();
-    if (stmts.size() == 0) return null;
+    if (stmts.size() == 0) {
+      return null;
+    }
 
     AugmentedStmt lastStmt = stmts.get(stmts.size() - 1);
     return lastStmt.get_Stmt();

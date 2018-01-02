@@ -20,9 +20,9 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import soot.Type;
-
 import java.util.Collection;
+
+import soot.Type;
 
 /** @author Ben Bellamy */
 public interface IHierarchy {

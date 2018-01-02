@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
-import soot.SootMethod;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
-import soot.toolkits.graph.DirectedGraph;
-import soot.util.Chain;
-import soot.util.HashChain;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import soot.SootMethod;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.Chain;
+import soot.util.HashChain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -74,7 +74,9 @@ public class PegCallGraph implements DirectedGraph {
     Iterator it = cg.sourceMethods();
     while (it.hasNext()) {
       SootMethod sm = (SootMethod) it.next();
-      if (sm.getName().equals("main")) heads.add(sm);
+      if (sm.getName().equals("main")) {
+        heads.add(sm);
+      }
       // if (sm.isConcrete() && !sm.getDeclaringClass().isLibraryClass()){
       // if (sm.hasActiveBody() && sm.getDeclaringClass().isApplicationClass() ){
       if (sm.isConcrete() && sm.getDeclaringClass().isApplicationClass()) {
@@ -101,7 +103,9 @@ public class PegCallGraph implements DirectedGraph {
           }
         }
         // if (succsList == null) System.out.println("null succsList");
-        if (succsList.size() > 0) methodToSuccs.put(sm, succsList);
+        if (succsList.size() > 0) {
+          methodToSuccs.put(sm, succsList);
+        }
       }
     }
     // testChain();
@@ -210,46 +214,60 @@ public class PegCallGraph implements DirectedGraph {
     for (Iterator iter = maps.iterator(); iter.hasNext(); ) {
       Map.Entry entry = (Map.Entry) iter.next();
       List list = (List) entry.getValue();
-      List<Object> newList = new ArrayList<Object>();
+      List<Object> newList = new ArrayList<>();
       Iterator it = list.iterator();
       while (it.hasNext()) {
         Object obj = it.next();
-        if (!list.contains(obj)) newList.add(obj);
+        if (!list.contains(obj)) {
+          newList.add(obj);
+        }
       }
       methodToSuccsTrim.put(entry.getKey(), newList);
     }
   }
 
+  @Override
   public List getHeads() {
     return heads;
   }
 
+  @Override
   public List getTails() {
     return tails;
   }
 
   public List getTrimSuccsOf(Object s) {
-    if (!methodToSuccsTrim.containsKey(s)) return java.util.Collections.EMPTY_LIST;
+    if (!methodToSuccsTrim.containsKey(s)) {
+      return java.util.Collections.EMPTY_LIST;
+    }
     //			throw new RuntimeException("Invalid method"+s);
     return methodToSuccsTrim.get(s);
   }
 
+  @Override
   public List getSuccsOf(Object s) {
-    if (!methodToSuccs.containsKey(s)) return java.util.Collections.EMPTY_LIST;
+    if (!methodToSuccs.containsKey(s)) {
+      return java.util.Collections.EMPTY_LIST;
+    }
     //			throw new RuntimeException("Invalid method"+s);
     return methodToSuccs.get(s);
   }
 
+  @Override
   public List getPredsOf(Object s) {
-    if (!methodToPreds.containsKey(s)) return java.util.Collections.EMPTY_LIST;
+    if (!methodToPreds.containsKey(s)) {
+      return java.util.Collections.EMPTY_LIST;
+    }
     //			throw new RuntimeException("Invalid method"+s);
     return methodToPreds.get(s);
   }
 
+  @Override
   public Iterator iterator() {
     return chain.iterator();
   }
 
+  @Override
   public int size() {
     return chain.size();
   }

@@ -19,14 +19,6 @@
 
 package soot.javaToJimple;
 
-import polyglot.frontend.ExtensionInfo;
-import polyglot.frontend.FileSource;
-import polyglot.frontend.Job;
-import polyglot.frontend.Pass;
-import polyglot.frontend.SourceJob;
-import polyglot.frontend.SourceLoader;
-import polyglot.frontend.VisitorPass;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -34,6 +26,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import polyglot.frontend.ExtensionInfo;
+import polyglot.frontend.FileSource;
+import polyglot.frontend.Job;
+import polyglot.frontend.Pass;
+import polyglot.frontend.SourceJob;
+import polyglot.frontend.SourceLoader;
+import polyglot.frontend.VisitorPass;
 
 public class JavaToJimple {
 
@@ -50,9 +50,10 @@ public class JavaToJimple {
   public polyglot.frontend.ExtensionInfo initExtInfo(
       String fileName, List<String> sourceLocations) {
 
-    Set<String> source = new HashSet<String>();
+    Set<String> source = new HashSet<>();
     ExtensionInfo extInfo =
         new soot.javaToJimple.jj.ExtensionInfo() {
+          @Override
           public List passes(Job job) {
             List passes = super.passes(job);
             // beforePass(passes, Pass.EXIT_CHECK, new
@@ -110,7 +111,9 @@ public class JavaToJimple {
       // This hack is to stop the catch block at the bottom causing an error
       // with versions of Polyglot where the constructor above can't throw IOException
       // It should be removed as soon as Polyglot 1.3 is no longer supported.
-      if (false) throw new IOException("Bogus exception");
+      if (false) {
+        throw new IOException("Bogus exception");
+      }
 
       SourceJob job = null;
 

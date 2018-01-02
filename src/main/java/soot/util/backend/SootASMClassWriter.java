@@ -1,12 +1,13 @@
 package soot.util.backend;
 
+import static soot.util.backend.ASMBackendUtils.slashify;
+
 import org.objectweb.asm.ClassWriter;
+
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
-
-import static soot.util.backend.ASMBackendUtils.slashify;
 
 /**
  * ASM class writer with soot-specific resolution of common superclasses
@@ -47,8 +48,9 @@ public class SootASMClassWriter extends ClassWriter {
     if (s1.isPhantom()
         || s2.isPhantom()
         || s1.resolvingLevel() == SootClass.DANGLING
-        || s2.resolvingLevel() == SootClass.DANGLING) mergedType = Scene.v().getObjectType();
-    else {
+        || s2.resolvingLevel() == SootClass.DANGLING) {
+      mergedType = Scene.v().getObjectType();
+    } else {
       Type t1 = s1.getType();
       Type t2 = s2.getType();
 

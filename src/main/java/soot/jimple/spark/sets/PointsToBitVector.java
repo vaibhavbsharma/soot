@@ -30,7 +30,9 @@ public class PointsToBitVector extends BitVector {
     {
       set(num);
       return true;
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
   public boolean contains(Node n) {

@@ -29,6 +29,10 @@
  */
 package soot.dava.toolkits.base.AST.analysis;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Immediate;
 import soot.Local;
 import soot.SootClass;
@@ -79,10 +83,6 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /*
  * CHANGE LOG: 18th MArch 2006: Need a reference to the ValueBox holding a BinOp for SimplifyExpressions
  *              Need to create a level of indirection i.e. instead of retrieving Values e.g. from stmts retrieve the valueBox
@@ -101,13 +101,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTMethodNode(ASTMethodNode node) {
-    if (verbose) System.out.println("inASTMethodNode");
+    if (verbose) {
+      System.out.println("inASTMethodNode");
+    }
   }
 
   public void outASTMethodNode(ASTMethodNode node) {
-    if (verbose) System.out.println("outASTMethodNode");
+    if (verbose) {
+      System.out.println("outASTMethodNode");
+    }
   }
 
+  @Override
   public void caseASTMethodNode(ASTMethodNode node) {
     inASTMethodNode(node);
     normalRetrieving(node);
@@ -115,13 +120,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
-    if (verbose) System.out.println("inASTSynchronizedBlockNode");
+    if (verbose) {
+      System.out.println("inASTSynchronizedBlockNode");
+    }
   }
 
   public void outASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
-    if (verbose) System.out.println("outASTSynchronizedBlockNode");
+    if (verbose) {
+      System.out.println("outASTSynchronizedBlockNode");
+    }
   }
 
+  @Override
   public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     inASTSynchronizedBlockNode(node);
 
@@ -142,13 +152,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTLabeledBlockNode(ASTLabeledBlockNode node) {
-    if (verbose) System.out.println("inASTLabeledBlockNode");
+    if (verbose) {
+      System.out.println("inASTLabeledBlockNode");
+    }
   }
 
   public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {
-    if (verbose) System.out.println("outASTLabeledBlockNode");
+    if (verbose) {
+      System.out.println("outASTLabeledBlockNode");
+    }
   }
 
+  @Override
   public void caseASTLabeledBlockNode(ASTLabeledBlockNode node) {
     inASTLabeledBlockNode(node);
     normalRetrieving(node);
@@ -156,13 +171,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
-    if (verbose) System.out.println("inASTUnconditionalWhileNode");
+    if (verbose) {
+      System.out.println("inASTUnconditionalWhileNode");
+    }
   }
 
   public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
-    if (verbose) System.out.println("outASTUnconditionalWhileNode");
+    if (verbose) {
+      System.out.println("outASTUnconditionalWhileNode");
+    }
   }
 
+  @Override
   public void caseASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     inASTUnconditionalLoopNode(node);
     normalRetrieving(node);
@@ -170,13 +190,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTSwitchNode(ASTSwitchNode node) {
-    if (verbose) System.out.println("inASTSwitchNode");
+    if (verbose) {
+      System.out.println("inASTSwitchNode");
+    }
   }
 
   public void outASTSwitchNode(ASTSwitchNode node) {
-    if (verbose) System.out.println("outASTSwitchNode");
+    if (verbose) {
+      System.out.println("outASTSwitchNode");
+    }
   }
 
+  @Override
   public void caseASTSwitchNode(ASTSwitchNode node) {
     inASTSwitchNode(node);
 
@@ -198,13 +223,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTIfNode(ASTIfNode node) {
-    if (verbose) System.out.println("inASTIfNode");
+    if (verbose) {
+      System.out.println("inASTIfNode");
+    }
   }
 
   public void outASTIfNode(ASTIfNode node) {
-    if (verbose) System.out.println("outASTIfNode");
+    if (verbose) {
+      System.out.println("outASTIfNode");
+    }
   }
 
+  @Override
   public void caseASTIfNode(ASTIfNode node) {
     inASTIfNode(node);
 
@@ -222,13 +252,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTIfElseNode(ASTIfElseNode node) {
-    if (verbose) System.out.println("inASTIfElseNode");
+    if (verbose) {
+      System.out.println("inASTIfElseNode");
+    }
   }
 
   public void outASTIfElseNode(ASTIfElseNode node) {
-    if (verbose) System.out.println("outASTIfElseNode");
+    if (verbose) {
+      System.out.println("outASTIfElseNode");
+    }
   }
 
+  @Override
   public void caseASTIfElseNode(ASTIfElseNode node) {
     inASTIfElseNode(node);
 
@@ -247,13 +282,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTWhileNode(ASTWhileNode node) {
-    if (verbose) System.out.println("inASTWhileNode");
+    if (verbose) {
+      System.out.println("inASTWhileNode");
+    }
   }
 
   public void outASTWhileNode(ASTWhileNode node) {
-    if (verbose) System.out.println("outASTWhileNode");
+    if (verbose) {
+      System.out.println("outASTWhileNode");
+    }
   }
 
+  @Override
   public void caseASTWhileNode(ASTWhileNode node) {
     inASTWhileNode(node);
 
@@ -271,13 +311,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTForLoopNode(ASTForLoopNode node) {
-    if (verbose) System.out.println("inASTForLoopNode");
+    if (verbose) {
+      System.out.println("inASTForLoopNode");
+    }
   }
 
   public void outASTForLoopNode(ASTForLoopNode node) {
-    if (verbose) System.out.println("outASTForLoopNode");
+    if (verbose) {
+      System.out.println("outASTForLoopNode");
+    }
   }
 
+  @Override
   public void caseASTForLoopNode(ASTForLoopNode node) {
     inASTForLoopNode(node);
 
@@ -286,11 +331,17 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     */
     for (AugmentedStmt as : node.getInit()) {
       Stmt s = as.get_Stmt();
-      if (s instanceof DefinitionStmt) caseDefinitionStmt((DefinitionStmt) s);
-      else if (s instanceof ReturnStmt) caseReturnStmt((ReturnStmt) s);
-      else if (s instanceof InvokeStmt) caseInvokeStmt((InvokeStmt) s);
-      else if (s instanceof ThrowStmt) caseThrowStmt((ThrowStmt) s);
-      else caseStmt(s);
+      if (s instanceof DefinitionStmt) {
+        caseDefinitionStmt((DefinitionStmt) s);
+      } else if (s instanceof ReturnStmt) {
+        caseReturnStmt((ReturnStmt) s);
+      } else if (s instanceof InvokeStmt) {
+        caseInvokeStmt((InvokeStmt) s);
+      } else if (s instanceof ThrowStmt) {
+        caseThrowStmt((ThrowStmt) s);
+      } else {
+        caseStmt(s);
+      }
     }
 
     /*
@@ -305,11 +356,17 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     for (AugmentedStmt as : node.getUpdate()) {
       Stmt s = as.get_Stmt();
 
-      if (s instanceof DefinitionStmt) caseDefinitionStmt((DefinitionStmt) s);
-      else if (s instanceof ReturnStmt) caseReturnStmt((ReturnStmt) s);
-      else if (s instanceof InvokeStmt) caseInvokeStmt((InvokeStmt) s);
-      else if (s instanceof ThrowStmt) caseThrowStmt((ThrowStmt) s);
-      else caseStmt(s);
+      if (s instanceof DefinitionStmt) {
+        caseDefinitionStmt((DefinitionStmt) s);
+      } else if (s instanceof ReturnStmt) {
+        caseReturnStmt((ReturnStmt) s);
+      } else if (s instanceof InvokeStmt) {
+        caseInvokeStmt((InvokeStmt) s);
+      } else if (s instanceof ThrowStmt) {
+        caseThrowStmt((ThrowStmt) s);
+      } else {
+        caseStmt(s);
+      }
     }
 
     /*
@@ -320,13 +377,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTDoWhileNode(ASTDoWhileNode node) {
-    if (verbose) System.out.println("inASTDoWhileNode");
+    if (verbose) {
+      System.out.println("inASTDoWhileNode");
+    }
   }
 
   public void outASTDoWhileNode(ASTDoWhileNode node) {
-    if (verbose) System.out.println("outASTDoWhileNode");
+    if (verbose) {
+      System.out.println("outASTDoWhileNode");
+    }
   }
 
+  @Override
   public void caseASTDoWhileNode(ASTDoWhileNode node) {
     inASTDoWhileNode(node);
 
@@ -344,13 +406,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTTryNode(ASTTryNode node) {
-    if (verbose) System.out.println("inASTTryNode");
+    if (verbose) {
+      System.out.println("inASTTryNode");
+    }
   }
 
   public void outASTTryNode(ASTTryNode node) {
-    if (verbose) System.out.println("outASTTryNode");
+    if (verbose) {
+      System.out.println("outASTTryNode");
+    }
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     inASTTryNode(node);
 
@@ -359,7 +426,9 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     Iterator<Object> it = tryBody.iterator();
 
     // go over the ASTNodes in this tryBody and apply
-    while (it.hasNext()) ((ASTNode) it.next()).apply(this);
+    while (it.hasNext()) {
+      ((ASTNode) it.next()).apply(this);
+    }
 
     Map<Object, Object> exceptionMap = node.get_ExceptionMap();
     Map<Object, Object> paramMap = node.get_ParamMap();
@@ -397,13 +466,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTUnaryCondition(ASTUnaryCondition uc) {
-    if (verbose) System.out.println("inASTUnaryCondition");
+    if (verbose) {
+      System.out.println("inASTUnaryCondition");
+    }
   }
 
   public void outASTUnaryCondition(ASTUnaryCondition uc) {
-    if (verbose) System.out.println("outASTUnaryCondition");
+    if (verbose) {
+      System.out.println("outASTUnaryCondition");
+    }
   }
 
+  @Override
   public void caseASTUnaryCondition(ASTUnaryCondition uc) {
     inASTUnaryCondition(uc);
     // apply on the value
@@ -412,13 +486,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTBinaryCondition(ASTBinaryCondition bc) {
-    if (verbose) System.out.println("inASTBinaryCondition");
+    if (verbose) {
+      System.out.println("inASTBinaryCondition");
+    }
   }
 
   public void outASTBinaryCondition(ASTBinaryCondition bc) {
-    if (verbose) System.out.println("outASTBinaryCondition");
+    if (verbose) {
+      System.out.println("outASTBinaryCondition");
+    }
   }
 
+  @Override
   public void caseASTBinaryCondition(ASTBinaryCondition bc) {
     inASTBinaryCondition(bc);
 
@@ -431,13 +510,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTAndCondition(ASTAndCondition ac) {
-    if (verbose) System.out.println("inASTAndCondition");
+    if (verbose) {
+      System.out.println("inASTAndCondition");
+    }
   }
 
   public void outASTAndCondition(ASTAndCondition ac) {
-    if (verbose) System.out.println("outASTAndCondition");
+    if (verbose) {
+      System.out.println("outASTAndCondition");
+    }
   }
 
+  @Override
   public void caseASTAndCondition(ASTAndCondition ac) {
     inASTAndCondition(ac);
 
@@ -448,13 +532,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTOrCondition(ASTOrCondition oc) {
-    if (verbose) System.out.println("inASTOrCondition");
+    if (verbose) {
+      System.out.println("inASTOrCondition");
+    }
   }
 
   public void outASTOrCondition(ASTOrCondition oc) {
-    if (verbose) System.out.println("outASTOrCondition");
+    if (verbose) {
+      System.out.println("outASTOrCondition");
+    }
   }
 
+  @Override
   public void caseASTOrCondition(ASTOrCondition oc) {
     inASTOrCondition(oc);
 
@@ -465,13 +554,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inType(Type t) {
-    if (verbose) System.out.println("inType");
+    if (verbose) {
+      System.out.println("inType");
+    }
   }
 
   public void outType(Type t) {
-    if (verbose) System.out.println("outType");
+    if (verbose) {
+      System.out.println("outType");
+    }
   }
 
+  @Override
   public void caseType(Type t) {
     inType(t);
     outType(t);
@@ -494,13 +588,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
-    if (verbose) System.out.println("inASTStatementSequenceNode");
+    if (verbose) {
+      System.out.println("inASTStatementSequenceNode");
+    }
   }
 
   public void outASTStatementSequenceNode(ASTStatementSequenceNode node) {
-    if (verbose) System.out.println("outASTStatementSequenceNode");
+    if (verbose) {
+      System.out.println("outASTStatementSequenceNode");
+    }
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
     inASTStatementSequenceNode(node);
     for (AugmentedStmt as : node.getStatements()) {
@@ -513,25 +612,36 @@ public class DepthFirstAdapter extends AnalysisAdapter {
       package and dont want to change code all over the place
       */
 
-      if (s instanceof DefinitionStmt) caseDefinitionStmt((DefinitionStmt) s);
-      else if (s instanceof ReturnStmt) caseReturnStmt((ReturnStmt) s);
-      else if (s instanceof InvokeStmt) caseInvokeStmt((InvokeStmt) s);
-      else if (s instanceof ThrowStmt) caseThrowStmt((ThrowStmt) s);
-      else if (s instanceof DVariableDeclarationStmt)
+      if (s instanceof DefinitionStmt) {
+        caseDefinitionStmt((DefinitionStmt) s);
+      } else if (s instanceof ReturnStmt) {
+        caseReturnStmt((ReturnStmt) s);
+      } else if (s instanceof InvokeStmt) {
+        caseInvokeStmt((InvokeStmt) s);
+      } else if (s instanceof ThrowStmt) {
+        caseThrowStmt((ThrowStmt) s);
+      } else if (s instanceof DVariableDeclarationStmt) {
         caseDVariableDeclarationStmt((DVariableDeclarationStmt) s);
-      else caseStmt(s);
+      } else {
+        caseStmt(s);
+      }
     } // end of while going through the statement sequence
     outASTStatementSequenceNode(node);
   }
 
   public void inDefinitionStmt(DefinitionStmt s) {
-    if (verbose) System.out.println("inDefinitionStmt" + s);
+    if (verbose) {
+      System.out.println("inDefinitionStmt" + s);
+    }
   }
 
   public void outDefinitionStmt(DefinitionStmt s) {
-    if (verbose) System.out.println("outDefinitionStmt");
+    if (verbose) {
+      System.out.println("outDefinitionStmt");
+    }
   }
 
+  @Override
   public void caseDefinitionStmt(DefinitionStmt s) {
     inDefinitionStmt(s);
 
@@ -547,14 +657,19 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inReturnStmt(ReturnStmt s) {
-    if (verbose) System.out.println("inReturnStmt");
-    //	System.out.println("Return Stmt:"+s);
+    if (verbose) {
+      System.out.println("inReturnStmt");
+      //	System.out.println("Return Stmt:"+s);
+    }
   }
 
   public void outReturnStmt(ReturnStmt s) {
-    if (verbose) System.out.println("outReturnStmt");
+    if (verbose) {
+      System.out.println("outReturnStmt");
+    }
   }
 
+  @Override
   public void caseReturnStmt(ReturnStmt s) {
     inReturnStmt(s);
 
@@ -568,13 +683,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inInvokeStmt(InvokeStmt s) {
-    if (verbose) System.out.println("inInvokeStmt");
+    if (verbose) {
+      System.out.println("inInvokeStmt");
+    }
   }
 
   public void outInvokeStmt(InvokeStmt s) {
-    if (verbose) System.out.println("outInvokeStmt");
+    if (verbose) {
+      System.out.println("outInvokeStmt");
+    }
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt s) {
     inInvokeStmt(s);
 
@@ -585,13 +705,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inThrowStmt(ThrowStmt s) {
-    if (verbose) System.out.println("\n\ninThrowStmt\n\n");
+    if (verbose) {
+      System.out.println("\n\ninThrowStmt\n\n");
+    }
   }
 
   public void outThrowStmt(ThrowStmt s) {
-    if (verbose) System.out.println("outThrowStmt");
+    if (verbose) {
+      System.out.println("outThrowStmt");
+    }
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt s) {
     inThrowStmt(s);
     caseExprOrRefValueBox(s.getOpBox());
@@ -601,13 +726,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inDVariableDeclarationStmt(DVariableDeclarationStmt s) {
-    if (verbose) System.out.println("\n\ninDVariableDeclarationStmt\n\n" + s);
+    if (verbose) {
+      System.out.println("\n\ninDVariableDeclarationStmt\n\n" + s);
+    }
   }
 
   public void outDVariableDeclarationStmt(DVariableDeclarationStmt s) {
-    if (verbose) System.out.println("outDVariableDeclarationStmt");
+    if (verbose) {
+      System.out.println("outDVariableDeclarationStmt");
+    }
   }
 
+  @Override
   public void caseDVariableDeclarationStmt(DVariableDeclarationStmt s) {
     inDVariableDeclarationStmt(s);
 
@@ -626,7 +756,9 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inStmt(Stmt s) {
-    if (verbose) System.out.println("inStmt: " + s);
+    if (verbose) {
+      System.out.println("inStmt: " + s);
+    }
 
     /*
     if(s instanceof DAbruptStmt)
@@ -637,9 +769,12 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void outStmt(Stmt s) {
-    if (verbose) System.out.println("outStmt");
+    if (verbose) {
+      System.out.println("outStmt");
+    }
   }
 
+  @Override
   public void caseStmt(Stmt s) {
     inStmt(s);
     outStmt(s);
@@ -655,35 +790,48 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inExprOrRefValueBox(ValueBox vb) {
-    if (verbose) System.out.println("inExprOrRefValueBox" + vb);
+    if (verbose) {
+      System.out.println("inExprOrRefValueBox" + vb);
+    }
   }
 
   public void outExprOrRefValueBox(ValueBox vb) {
-    if (verbose) System.out.println("outExprOrRefValueBox" + vb);
+    if (verbose) {
+      System.out.println("outExprOrRefValueBox" + vb);
+    }
   }
 
   public void decideCaseExprOrRef(Value v) {
-    if (v instanceof Expr) caseExpr((Expr) v);
-    else if (v instanceof Ref) caseRef((Ref) v);
-    else caseValue(v);
+    if (v instanceof Expr) {
+      caseExpr((Expr) v);
+    } else if (v instanceof Ref) {
+      caseRef((Ref) v);
+    } else {
+      caseValue(v);
+    }
   }
 
   public void inValue(Value v) {
     if (verbose) {
       System.out.println("inValue" + v);
 
-      if (v instanceof DThisRef) System.out.println("DTHISREF.................");
-      else if (v instanceof Immediate) {
+      if (v instanceof DThisRef) {
+        System.out.println("DTHISREF.................");
+      } else if (v instanceof Immediate) {
         System.out.println("\tIMMEDIATE");
         if (v instanceof soot.jimple.internal.JimpleLocal) {
           System.out.println("\t\tJimpleLocal...................." + v);
 
         } else if (v instanceof Constant) {
           System.out.println("\t\tconstant....................");
-          if (v instanceof IntConstant) System.out.println("\t\t INTconstant....................");
+          if (v instanceof IntConstant) {
+            System.out.println("\t\t INTconstant....................");
+          }
         } else if (v instanceof soot.baf.internal.BafLocal) {
           System.out.println("\t\tBafLocal....................");
-        } else System.out.println("\t\telse!!!!!!!!!!!!");
+        } else {
+          System.out.println("\t\telse!!!!!!!!!!!!");
+        }
       } else {
         System.out.println("NEITHER................");
       }
@@ -691,22 +839,30 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void outValue(Value v) {
-    if (verbose) System.out.println("outValue");
+    if (verbose) {
+      System.out.println("outValue");
+    }
   }
 
+  @Override
   public void caseValue(Value v) {
     inValue(v);
     outValue(v);
   }
 
   public void inExpr(Expr e) {
-    if (verbose) System.out.println("inExpr");
+    if (verbose) {
+      System.out.println("inExpr");
+    }
   }
 
   public void outExpr(Expr e) {
-    if (verbose) System.out.println("outExpr");
+    if (verbose) {
+      System.out.println("outExpr");
+    }
   }
 
+  @Override
   public void caseExpr(Expr e) {
     inExpr(e);
     decideCaseExpr(e);
@@ -714,13 +870,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inRef(Ref r) {
-    if (verbose) System.out.println("inRef");
+    if (verbose) {
+      System.out.println("inRef");
+    }
   }
 
   public void outRef(Ref r) {
-    if (verbose) System.out.println("outRef");
+    if (verbose) {
+      System.out.println("outRef");
+    }
   }
 
+  @Override
   public void caseRef(Ref r) {
     inRef(r);
     decideCaseRef(r);
@@ -728,23 +889,36 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void decideCaseExpr(Expr e) {
-    if (e instanceof BinopExpr) caseBinopExpr((BinopExpr) e);
-    else if (e instanceof UnopExpr) caseUnopExpr((UnopExpr) e);
-    else if (e instanceof NewArrayExpr) caseNewArrayExpr((NewArrayExpr) e);
-    else if (e instanceof NewMultiArrayExpr) caseNewMultiArrayExpr((NewMultiArrayExpr) e);
-    else if (e instanceof InstanceOfExpr) caseInstanceOfExpr((InstanceOfExpr) e);
-    else if (e instanceof InvokeExpr) caseInvokeExpr((InvokeExpr) e);
-    else if (e instanceof CastExpr) caseCastExpr((CastExpr) e);
+    if (e instanceof BinopExpr) {
+      caseBinopExpr((BinopExpr) e);
+    } else if (e instanceof UnopExpr) {
+      caseUnopExpr((UnopExpr) e);
+    } else if (e instanceof NewArrayExpr) {
+      caseNewArrayExpr((NewArrayExpr) e);
+    } else if (e instanceof NewMultiArrayExpr) {
+      caseNewMultiArrayExpr((NewMultiArrayExpr) e);
+    } else if (e instanceof InstanceOfExpr) {
+      caseInstanceOfExpr((InstanceOfExpr) e);
+    } else if (e instanceof InvokeExpr) {
+      caseInvokeExpr((InvokeExpr) e);
+    } else if (e instanceof CastExpr) {
+      caseCastExpr((CastExpr) e);
+    }
   }
 
   public void inBinopExpr(BinopExpr be) {
-    if (verbose) System.out.println("inBinopExpr");
+    if (verbose) {
+      System.out.println("inBinopExpr");
+    }
   }
 
   public void outBinopExpr(BinopExpr be) {
-    if (verbose) System.out.println("outBinopExpr");
+    if (verbose) {
+      System.out.println("outBinopExpr");
+    }
   }
 
+  @Override
   public void caseBinopExpr(BinopExpr be) {
     inBinopExpr(be);
 
@@ -757,13 +931,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inUnopExpr(UnopExpr ue) {
-    if (verbose) System.out.println("inUnopExpr");
+    if (verbose) {
+      System.out.println("inUnopExpr");
+    }
   }
 
   public void outUnopExpr(UnopExpr ue) {
-    if (verbose) System.out.println("outUnopExpr");
+    if (verbose) {
+      System.out.println("outUnopExpr");
+    }
   }
 
+  @Override
   public void caseUnopExpr(UnopExpr ue) {
     inUnopExpr(ue);
 
@@ -774,13 +953,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inNewArrayExpr(NewArrayExpr nae) {
-    if (verbose) System.out.println("inNewArrayExpr");
+    if (verbose) {
+      System.out.println("inNewArrayExpr");
+    }
   }
 
   public void outNewArrayExpr(NewArrayExpr nae) {
-    if (verbose) System.out.println("outNewArrayExpr");
+    if (verbose) {
+      System.out.println("outNewArrayExpr");
+    }
   }
 
+  @Override
   public void caseNewArrayExpr(NewArrayExpr nae) {
     inNewArrayExpr(nae);
 
@@ -791,13 +975,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inNewMultiArrayExpr(NewMultiArrayExpr nmae) {
-    if (verbose) System.out.println("inNewMultiArrayExpr");
+    if (verbose) {
+      System.out.println("inNewMultiArrayExpr");
+    }
   }
 
   public void outNewMultiArrayExpr(NewMultiArrayExpr nmae) {
-    if (verbose) System.out.println("outNewMultiArrayExpr");
+    if (verbose) {
+      System.out.println("outNewMultiArrayExpr");
+    }
   }
 
+  @Override
   public void caseNewMultiArrayExpr(NewMultiArrayExpr nmae) {
     inNewMultiArrayExpr(nmae);
 
@@ -809,13 +998,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inInstanceOfExpr(InstanceOfExpr ioe) {
-    if (verbose) System.out.println("inInstanceOfExpr");
+    if (verbose) {
+      System.out.println("inInstanceOfExpr");
+    }
   }
 
   public void outInstanceOfExpr(InstanceOfExpr ioe) {
-    if (verbose) System.out.println("outInstanceOfExpr");
+    if (verbose) {
+      System.out.println("outInstanceOfExpr");
+    }
   }
 
+  @Override
   public void caseInstanceOfExpr(InstanceOfExpr ioe) {
     inInstanceOfExpr(ioe);
 
@@ -826,13 +1020,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inInvokeExpr(InvokeExpr ie) {
-    if (verbose) System.out.println("inInvokeExpr");
+    if (verbose) {
+      System.out.println("inInvokeExpr");
+    }
   }
 
   public void outInvokeExpr(InvokeExpr ie) {
-    if (verbose) System.out.println("outInvokeExpr");
+    if (verbose) {
+      System.out.println("outInvokeExpr");
+    }
   }
 
+  @Override
   public void caseInvokeExpr(InvokeExpr ie) {
     inInvokeExpr(ie);
 
@@ -840,19 +1039,26 @@ public class DepthFirstAdapter extends AnalysisAdapter {
       caseExprOrRefValueBox(ie.getArgBox(i));
       // decideCaseExprOrRef(ie.getArg(i));
     }
-    if (ie instanceof InstanceInvokeExpr) caseInstanceInvokeExpr((InstanceInvokeExpr) ie);
+    if (ie instanceof InstanceInvokeExpr) {
+      caseInstanceInvokeExpr((InstanceInvokeExpr) ie);
+    }
 
     outInvokeExpr(ie);
   }
 
   public void inInstanceInvokeExpr(InstanceInvokeExpr iie) {
-    if (verbose) System.out.println("inInstanceInvokeExpr");
+    if (verbose) {
+      System.out.println("inInstanceInvokeExpr");
+    }
   }
 
   public void outInstanceInvokeExpr(InstanceInvokeExpr iie) {
-    if (verbose) System.out.println("outInstanceInvokeExpr");
+    if (verbose) {
+      System.out.println("outInstanceInvokeExpr");
+    }
   }
 
+  @Override
   public void caseInstanceInvokeExpr(InstanceInvokeExpr iie) {
     inInstanceInvokeExpr(iie);
 
@@ -863,13 +1069,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inCastExpr(CastExpr ce) {
-    if (verbose) System.out.println("inCastExpr");
+    if (verbose) {
+      System.out.println("inCastExpr");
+    }
   }
 
   public void outCastExpr(CastExpr ce) {
-    if (verbose) System.out.println("outCastExpr");
+    if (verbose) {
+      System.out.println("outCastExpr");
+    }
   }
 
+  @Override
   public void caseCastExpr(CastExpr ce) {
     inCastExpr(ce);
     Type type = ce.getCastType();
@@ -883,19 +1094,28 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void decideCaseRef(Ref r) {
-    if (r instanceof ArrayRef) caseArrayRef((ArrayRef) r);
-    else if (r instanceof InstanceFieldRef) caseInstanceFieldRef((InstanceFieldRef) r);
-    else if (r instanceof StaticFieldRef) caseStaticFieldRef((StaticFieldRef) r);
+    if (r instanceof ArrayRef) {
+      caseArrayRef((ArrayRef) r);
+    } else if (r instanceof InstanceFieldRef) {
+      caseInstanceFieldRef((InstanceFieldRef) r);
+    } else if (r instanceof StaticFieldRef) {
+      caseStaticFieldRef((StaticFieldRef) r);
+    }
   }
 
   public void inArrayRef(ArrayRef ar) {
-    if (verbose) System.out.println("inArrayRef");
+    if (verbose) {
+      System.out.println("inArrayRef");
+    }
   }
 
   public void outArrayRef(ArrayRef ar) {
-    if (verbose) System.out.println("outArrayRef");
+    if (verbose) {
+      System.out.println("outArrayRef");
+    }
   }
 
+  @Override
   public void caseArrayRef(ArrayRef ar) {
     inArrayRef(ar);
     caseExprOrRefValueBox(ar.getBaseBox());
@@ -916,9 +1136,12 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void outInstanceFieldRef(InstanceFieldRef ifr) {
-    if (verbose) System.out.println("outInstanceFieldRef");
+    if (verbose) {
+      System.out.println("outInstanceFieldRef");
+    }
   }
 
+  @Override
   public void caseInstanceFieldRef(InstanceFieldRef ifr) {
     inInstanceFieldRef(ifr);
     caseExprOrRefValueBox(ifr.getBaseBox());
@@ -927,13 +1150,18 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void inStaticFieldRef(StaticFieldRef sfr) {
-    if (verbose) System.out.println("inStaticFieldRef");
+    if (verbose) {
+      System.out.println("inStaticFieldRef");
+    }
   }
 
   public void outStaticFieldRef(StaticFieldRef sfr) {
-    if (verbose) System.out.println("outStaticFieldRef");
+    if (verbose) {
+      System.out.println("outStaticFieldRef");
+    }
   }
 
+  @Override
   public void caseStaticFieldRef(StaticFieldRef sfr) {
     inStaticFieldRef(sfr);
 
@@ -941,7 +1169,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
   }
 
   public void debug(String className, String methodName, String debug) {
-    if (DEBUG)
+    if (DEBUG) {
       System.out.println("Analysis" + className + "..Method:" + methodName + "    DEBUG: " + debug);
+    }
   }
 }

@@ -46,7 +46,7 @@ public class EnumTest extends AbstractASMBackendTest {
       fv.visitEnd();
     }
     {
-      if (targetCompiler == TargetCompiler.eclipse)
+      if (targetCompiler == TargetCompiler.eclipse) {
         fv =
             cw.visitField(
                 ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC,
@@ -54,7 +54,7 @@ public class EnumTest extends AbstractASMBackendTest {
                 "[Lsoot/asm/backend/targets/MyEnum;",
                 null,
                 null);
-      else
+      } else {
         fv =
             cw.visitField(
                 ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC,
@@ -62,6 +62,7 @@ public class EnumTest extends AbstractASMBackendTest {
                 "[Lsoot/asm/backend/targets/MyEnum;",
                 null,
                 null);
+      }
       fv.visitEnd();
     }
     {
@@ -111,26 +112,29 @@ public class EnumTest extends AbstractASMBackendTest {
           "Lsoot/asm/backend/targets/MyEnum;");
       mv.visitInsn(AASTORE);
       mv.visitVarInsn(ALOAD, 0);
-      if (targetCompiler == TargetCompiler.eclipse)
+      if (targetCompiler == TargetCompiler.eclipse) {
         mv.visitFieldInsn(
             PUTSTATIC,
             "soot/asm/backend/targets/MyEnum",
             "ENUM$VALUES",
             "[Lsoot/asm/backend/targets/MyEnum;");
-      else
+      } else {
         mv.visitFieldInsn(
             PUTSTATIC,
             "soot/asm/backend/targets/MyEnum",
             "$VALUES",
             "[Lsoot/asm/backend/targets/MyEnum;");
+      }
       mv.visitInsn(RETURN);
       mv.visitMaxs(0, 0);
       mv.visitEnd();
     }
     {
-      if (targetCompiler == TargetCompiler.eclipse)
+      if (targetCompiler == TargetCompiler.eclipse) {
         mv = cw.visitMethod(ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", null, null);
-      else mv = cw.visitMethod(ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", "()V", null);
+      } else {
+        mv = cw.visitMethod(ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", "()V", null);
+      }
       mv.visitVarInsn(ALOAD, 0);
       mv.visitVarInsn(ALOAD, 1);
       mv.visitVarInsn(ILOAD, 2);

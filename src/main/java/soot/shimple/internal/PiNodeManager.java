@@ -19,6 +19,14 @@
 
 package soot.shimple.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Stack;
+
 import soot.Local;
 import soot.PatchingChain;
 import soot.Unit;
@@ -44,14 +52,6 @@ import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.ReversibleGraph;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Stack;
 
 /**
  * This class does the real high-level work. It takes a Jimple body or Jimple/Shimple hybrid body
@@ -101,19 +101,23 @@ public class PiNodeManager {
   public boolean insertTrivialPiNodes() {
     update();
     boolean change = false;
-    MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
-    varToBlocks = new HashMultiMap<Local, Block>();
+    MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<>();
+    varToBlocks = new HashMultiMap<>();
 
     // compute localsToUsePoints and varToBlocks
     for (Block block : cfg) {
       for (Unit unit : block) {
         List<ValueBox> useBoxes = unit.getUseBoxes();
-        for (Iterator<ValueBox> useBoxesIt = useBoxes.iterator(); useBoxesIt.hasNext(); ) {
-          Value use = useBoxesIt.next().getValue();
-          if (use instanceof Local) localsToUsePoints.put((Local) use, block);
+        for (ValueBox valueBox : useBoxes) {
+          Value use = valueBox.getValue();
+          if (use instanceof Local) {
+            localsToUsePoints.put((Local) use, block);
+          }
         }
 
-        if (Shimple.isPiNode(unit)) varToBlocks.put(Shimple.getLhsLocal(unit), block);
+        if (Shimple.isPiNode(unit)) {
+          varToBlocks.put(Shimple.getLhsLocal(unit), block);
+        }
       }
     }
 
@@ -123,7 +127,7 @@ public class PiNodeManager {
     int[] hasAlreadyFlags = new int[cfg.size()];
 
     int iterCount = 0;
-    Stack<Block> workList = new Stack<Block>();
+    Stack<Block> workList = new Stack<>();
 
     /* Main Cytron algorithm. */
 
@@ -163,12 +167,16 @@ public class PiNodeManager {
       }
     }
 
-    if (change) sf.clearCache();
+    if (change) {
+      sf.clearCache();
+    }
     return change;
   }
 
   public void insertPiNodes(Local local, Block frontierBlock) {
-    if (varToBlocks.get(local).contains(frontierBlock.getSuccs().get(0))) return;
+    if (varToBlocks.get(local).contains(frontierBlock.getSuccs().get(0))) {
+      return;
+    }
 
     Unit u = frontierBlock.getTail();
 
@@ -176,16 +184,21 @@ public class PiNodeManager {
     {
       if (trimmed) {
         for (ValueBox vb : u.getUseBoxes()) {
-          if (vb.getValue().equals(local)) break TRIMMED;
+          if (vb.getValue().equals(local)) {
+            break TRIMMED;
+          }
         }
         return;
       }
     }
 
-    if (u instanceof IfStmt) piHandleIfStmt(local, (IfStmt) u);
-    else if ((u instanceof LookupSwitchStmt) || (u instanceof TableSwitchStmt))
+    if (u instanceof IfStmt) {
+      piHandleIfStmt(local, (IfStmt) u);
+    } else if ((u instanceof LookupSwitchStmt) || (u instanceof TableSwitchStmt)) {
       piHandleSwitchStmt(local, u);
-    else throw new RuntimeException("Assertion failed: Unhandled stmt: " + u);
+    } else {
+      throw new RuntimeException("Assertion failed: Unhandled stmt: " + u);
+    }
   }
 
   public void piHandleIfStmt(Local local, IfStmt u) {
@@ -217,7 +230,9 @@ public class PiNodeManager {
         predOfTarget = null;
       }
 
-      if (predOfTarget == null) break PREDFALLSTHROUGH;
+      if (predOfTarget == null) {
+        break PREDFALLSTHROUGH;
+      }
 
       if (predOfTarget.fallsThrough()) {
         GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
@@ -231,14 +246,16 @@ public class PiNodeManager {
   }
 
   public void piHandleSwitchStmt(Local local, Unit u) {
-    List<UnitBox> targetBoxes = new ArrayList<UnitBox>();
-    List<Object> targetKeys = new ArrayList<Object>();
+    List<UnitBox> targetBoxes = new ArrayList<>();
+    List<Object> targetKeys = new ArrayList<>();
 
     if (u instanceof LookupSwitchStmt) {
       LookupSwitchStmt lss = (LookupSwitchStmt) u;
       targetBoxes.add(lss.getDefaultTargetBox());
       targetKeys.add("default");
-      for (int i = 0; i < lss.getTargetCount(); i++) targetBoxes.add(lss.getTargetBox(i));
+      for (int i = 0; i < lss.getTargetCount(); i++) {
+        targetBoxes.add(lss.getTargetBox(i));
+      }
       targetKeys.addAll(lss.getLookupValues());
     } else if (u instanceof TableSwitchStmt) {
       TableSwitchStmt tss = (TableSwitchStmt) u;
@@ -247,8 +264,12 @@ public class PiNodeManager {
 
       targetBoxes.add(tss.getDefaultTargetBox());
       targetKeys.add("default");
-      for (int i = 0; i <= (hi - low); i++) targetBoxes.add(tss.getTargetBox(i));
-      for (int i = low; i <= hi; i++) targetKeys.add(new Integer(i));
+      for (int i = 0; i <= (hi - low); i++) {
+        targetBoxes.add(tss.getTargetBox(i));
+      }
+      for (int i = low; i <= hi; i++) {
+        targetKeys.add(new Integer(i));
+      }
     } else {
       throw new RuntimeException("Assertion failed.");
     }
@@ -277,7 +298,9 @@ public class PiNodeManager {
           predOfTarget = null;
         }
 
-        if (predOfTarget == null) break PREDFALLSTHROUGH;
+        if (predOfTarget == null) {
+          break PREDFALLSTHROUGH;
+        }
 
         if (predOfTarget.fallsThrough()) {
           GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
@@ -293,8 +316,8 @@ public class PiNodeManager {
 
   public void eliminatePiNodes(boolean smart) {
     if (smart) {
-      Map<Local, Value> newToOld = new HashMap<Local, Value>();
-      List<ValueBox> boxes = new ArrayList<ValueBox>();
+      Map<Local, Value> newToOld = new HashMap<>();
+      List<ValueBox> boxes = new ArrayList<>();
 
       for (Iterator<Unit> unitsIt = body.getUnits().iterator(); unitsIt.hasNext(); ) {
         Unit u = unitsIt.next();
@@ -307,11 +330,12 @@ public class PiNodeManager {
         }
       }
 
-      for (Iterator<ValueBox> boxesIt = boxes.iterator(); boxesIt.hasNext(); ) {
-        ValueBox box = boxesIt.next();
+      for (ValueBox box : boxes) {
         Value value = box.getValue();
         Value old = newToOld.get(value);
-        if (old != null) box.setValue(old);
+        if (old != null) {
+          box.setValue(old);
+        }
       }
 
       DeadAssignmentEliminator.v().transform(body);
@@ -320,7 +344,9 @@ public class PiNodeManager {
     } else {
       for (Unit u : body.getUnits()) {
         PiExpr pe = Shimple.getPiExpr(u);
-        if (pe != null) ((AssignStmt) u).setRightOp(pe.getValue());
+        if (pe != null) {
+          ((AssignStmt) u).setRightOp(pe.getValue());
+        }
       }
     }
   }
@@ -328,9 +354,11 @@ public class PiNodeManager {
   public static List<ValueBox> getUseBoxesFromBlock(Block block) {
     Iterator<Unit> unitsIt = block.iterator();
 
-    List<ValueBox> useBoxesList = new ArrayList<ValueBox>();
+    List<ValueBox> useBoxesList = new ArrayList<>();
 
-    while (unitsIt.hasNext()) useBoxesList.addAll(unitsIt.next().getUseBoxes());
+    while (unitsIt.hasNext()) {
+      useBoxesList.addAll(unitsIt.next().getUseBoxes());
+    }
 
     return useBoxesList;
   }

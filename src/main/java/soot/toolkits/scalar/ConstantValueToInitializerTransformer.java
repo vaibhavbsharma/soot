@@ -1,5 +1,11 @@
 package soot.toolkits.scalar;
 
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.SootClass;
@@ -25,12 +31,6 @@ import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
-import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Transformer that creates a static initializer which sets constant values into final static fields
  * to emulate the initializations that are done through the constant table in CLASS and DEX code,
@@ -53,17 +53,21 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 
   public void transformClass(SootClass sc) {
     SootMethod smInit = null;
-    Set<SootField> alreadyInitialized = new HashSet<SootField>();
+    Set<SootField> alreadyInitialized = new HashSet<>();
 
     for (SootField sf : sc.getFields()) {
       // We can only create an initializer for static final fields that
       // have a constant value. We ignore non-static final fields as
       // different constructors might assign different values.
-      if (!sf.isStatic() || !sf.isFinal()) continue;
+      if (!sf.isStatic() || !sf.isFinal()) {
+        continue;
+      }
 
       // If there is already an initializer for this field, we do not
       // generate a second one
-      if (alreadyInitialized.contains(sf)) continue;
+      if (alreadyInitialized.contains(sf)) {
+        continue;
+      }
 
       // Look for constant values
       for (Tag t : sf.getTags()) {
@@ -99,7 +103,9 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
         }
 
         if (initStmt != null) {
-          if (smInit == null) smInit = getOrCreateInitializer(sc, alreadyInitialized);
+          if (smInit == null) {
+            smInit = getOrCreateInitializer(sc, alreadyInitialized);
+          }
           smInit.getActiveBody().getUnits().addFirst(initStmt);
         }
       }
@@ -107,8 +113,9 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 
     if (smInit != null) {
       Chain<Unit> units = smInit.getActiveBody().getUnits();
-      if (units.isEmpty() || !(units.getLast() instanceof ReturnVoidStmt))
+      if (units.isEmpty() || !(units.getLast() instanceof ReturnVoidStmt)) {
         units.add(Jimple.v().newReturnVoidStmt());
+      }
     }
   }
 
@@ -128,9 +135,11 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
       // somewhere
       for (Unit u : smInit.getActiveBody().getUnits()) {
         Stmt s = (Stmt) u;
-        for (ValueBox vb : s.getDefBoxes())
-          if (vb.getValue() instanceof FieldRef)
+        for (ValueBox vb : s.getDefBoxes()) {
+          if (vb.getValue() instanceof FieldRef) {
             alreadyInitialized.add(((FieldRef) vb.getValue()).getField());
+          }
+        }
       }
     }
     return smInit;

@@ -19,6 +19,10 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.FastHierarchy;
@@ -35,10 +39,6 @@ import soot.jbco.IJbcoTransform;
 import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.ClassConstant;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * @author Michael Batchelder
@@ -58,18 +58,24 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
   public static Map<String, String> oldToNewClassNames = new HashMap<>();
   public static Map<String, SootClass> newNameToClass = new HashMap<>();
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
+  @Override
   public void outputSummary() {}
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
-    if (output) G.v().out.println("Transforming Class Names...");
+    if (output) {
+      G.v().out.println("Transforming Class Names...");
+    }
 
     soot.jbco.util.BodyBuilder.retrieveAllBodies();
     soot.jbco.util.BodyBuilder.retrieveAllNames();
@@ -100,20 +106,28 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
       newNameToClass.put(newName, c);
 
-      if (output) out.println("\tRenaming " + oldName + " to " + newName);
+      if (output) {
+        out.println("\tRenaming " + oldName + " to " + newName);
+      }
     }
 
     scene.releaseActiveHierarchy();
     scene.getActiveHierarchy();
     scene.setFastHierarchy(new FastHierarchy());
 
-    if (output) out.println("\r\tUpdating bytecode class references");
+    if (output) {
+      out.println("\r\tUpdating bytecode class references");
+    }
 
     for (SootClass c : scene.getApplicationClasses()) {
       for (SootMethod m : c.getMethods()) {
-        if (!m.isConcrete()) continue;
+        if (!m.isConcrete()) {
+          continue;
+        }
 
-        if (output) out.println("\t\t" + m.getSignature());
+        if (output) {
+          out.println("\t\t" + m.getSignature());
+        }
         Body aBody = null;
         try {
           aBody = m.getActiveBody();
@@ -144,8 +158,9 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
                 if (at.baseType instanceof RefType) {
                   RefType rt = (RefType) at.baseType;
                   if (!rt.getSootClass().isLibraryClass()
-                      && oldToNewClassNames.containsKey(rt.getClassName()))
+                      && oldToNewClassNames.containsKey(rt.getClassName())) {
                     rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
+                  }
                 }
               }
             }
@@ -184,8 +199,11 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
   public static String getNamePrefix(String fullName) {
     int idx = fullName.lastIndexOf('.');
-    if (idx >= 0) return fullName.substring(0, idx + 1);
-    else return "";
+    if (idx >= 0) {
+      return fullName.substring(0, idx + 1);
+    } else {
+      return "";
+    }
   }
 
   private static SootClass getMainClassSafely() {

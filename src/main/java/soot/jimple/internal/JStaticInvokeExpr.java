@@ -26,24 +26,26 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Jimple;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JStaticInvokeExpr extends AbstractStaticInvokeExpr {
   public JStaticInvokeExpr(SootMethodRef methodRef, List<? extends Value> args) {
     super(methodRef, new ValueBox[args.size()]);
 
-    for (int i = 0; i < args.size(); i++)
+    for (int i = 0; i < args.size(); i++) {
       this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+    }
   }
 
+  @Override
   public Object clone() {
-    List<Value> clonedArgs = new ArrayList<Value>(getArgCount());
+    List<Value> clonedArgs = new ArrayList<>(getArgCount());
 
     for (int i = 0; i < getArgCount(); i++) {
       clonedArgs.add(i, getArg(i));

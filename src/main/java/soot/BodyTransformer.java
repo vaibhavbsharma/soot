@@ -46,7 +46,9 @@ public abstract class BodyTransformer extends Transformer {
    * @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
    */
   public final void transform(Body b, String phaseName, Map<String, String> options) {
-    if (!PhaseOptions.getBoolean(options, "enabled")) return;
+    if (!PhaseOptions.getBoolean(options, "enabled")) {
+      return;
+    }
 
     internalTransform(b, phaseName, options);
   }

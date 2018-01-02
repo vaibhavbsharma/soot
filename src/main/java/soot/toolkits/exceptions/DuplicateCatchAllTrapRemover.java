@@ -1,13 +1,13 @@
 package soot.toolkits.exceptions;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Some compilers generate duplicate traps:
@@ -87,9 +87,12 @@ public class DuplicateCatchAllTrapRemover extends BodyTransformer {
    */
   private boolean trapCoversUnit(Body b, Trap trap, Unit unit) {
     for (Iterator<Unit> unitIt = b.getUnits().iterator(trap.getBeginUnit(), trap.getEndUnit());
-        unitIt.hasNext(); ) {
+        unitIt.hasNext();
+        ) {
       Unit u = unitIt.next();
-      if (u == unit) return true;
+      if (u == unit) {
+        return true;
+      }
     }
     return false;
   }

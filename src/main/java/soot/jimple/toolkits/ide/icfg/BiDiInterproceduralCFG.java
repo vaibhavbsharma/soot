@@ -1,16 +1,17 @@
 package soot.jimple.toolkits.ide.icfg;
 
-import heros.InterproceduralCFG;
-import soot.Value;
-import soot.toolkits.graph.DirectedGraph;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import heros.InterproceduralCFG;
+import soot.Value;
+import soot.toolkits.graph.DirectedGraph;
+
 /** An {@link InterproceduralCFG} which supports the computation of predecessors. */
 public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 
+  @Override
   List<N> getPredsOf(N u);
 
   Collection<N> getEndPointsOf(M m);

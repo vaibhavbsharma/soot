@@ -48,12 +48,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import soot.EquivalentValue;
-import soot.Unit;
-import soot.Value;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.FlowSet;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,6 +55,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import soot.EquivalentValue;
+import soot.Unit;
+import soot.Value;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.FlowSet;
 
 /**
  * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so
@@ -83,14 +83,15 @@ public class LocalRefVarsAnalysisWrapper {
   // utility method to build lists of (ref, value) pairs for a given flow set
   // optionally discard (ref, kTop) pairs.
   private final List<RefIntPair> buildList(FlowSet set) {
-    List<RefIntPair> lst = new ArrayList<RefIntPair>();
+    List<RefIntPair> lst = new ArrayList<>();
     Iterator<EquivalentValue> it = analysis.refTypeValues.iterator();
     while (it.hasNext()) {
       EquivalentValue r = it.next();
       int refInfo = analysis.refInfo(r, set);
-      if (!(discardKTop && (refInfo == BranchedRefVarsAnalysis.kTop)))
+      if (!(discardKTop && (refInfo == BranchedRefVarsAnalysis.kTop))) {
         lst.add(analysis.getKRefIntPair(r, refInfo));
-      // remove tops from the list that will be printed for readability
+        // remove tops from the list that will be printed for readability
+      }
     }
     return lst;
   } // buildList
@@ -99,12 +100,11 @@ public class LocalRefVarsAnalysisWrapper {
   public LocalRefVarsAnalysisWrapper(ExceptionalUnitGraph graph) {
     analysis = new BranchedRefVarsAnalysis(graph);
 
-    unitToVarsBefore = new HashMap<Unit, List<RefIntPair>>(graph.size() * 2 + 1, 0.7f);
-    unitToVarsAfterFall = new HashMap<Unit, List<RefIntPair>>(graph.size() * 2 + 1, 0.7f);
-    unitToListsOfVarsAfterBranches =
-        new HashMap<Unit, List<List<RefIntPair>>>(graph.size() * 2 + 1, 0.7f);
-    unitToVarsNeedCheck = new HashMap<Unit, List<Object>>(graph.size() * 2 + 1, 0.7f);
-    unitToVarsDontNeedCheck = new HashMap<Unit, List<RefIntPair>>(graph.size() * 2 + 1, 0.7f);
+    unitToVarsBefore = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    unitToVarsAfterFall = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    unitToListsOfVarsAfterBranches = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    unitToVarsNeedCheck = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    unitToVarsDontNeedCheck = new HashMap<>(graph.size() * 2 + 1, 0.7f);
 
     Iterator unitIt = graph.iterator();
 
@@ -119,7 +119,7 @@ public class LocalRefVarsAnalysisWrapper {
       // we get a list of flow sets for branches, iterate over them
       {
         List branchesFlowsets = analysis.getBranchFlowAfter(s);
-        List<List<RefIntPair>> lst = new ArrayList<List<RefIntPair>>(branchesFlowsets.size());
+        List<List<RefIntPair>> lst = new ArrayList<>(branchesFlowsets.size());
 
         Iterator it = branchesFlowsets.iterator();
         while (it.hasNext()) {
@@ -135,8 +135,8 @@ public class LocalRefVarsAnalysisWrapper {
 
       if (computeChecks) {
 
-        ArrayList<RefIntPair> dontNeedCheckVars = new ArrayList<RefIntPair>();
-        ArrayList<Object> needCheckVars = new ArrayList<Object>();
+        ArrayList<RefIntPair> dontNeedCheckVars = new ArrayList<>();
+        ArrayList<Object> needCheckVars = new ArrayList<>();
 
         HashSet allChecksSet = new HashSet(5, 0.7f);
         allChecksSet.addAll(analysis.unitToArrayRefChecksSet.get(s));
@@ -194,12 +194,18 @@ public class LocalRefVarsAnalysisWrapper {
   } // end getListsOfVarsAfterBranch
 
   public List getVarsNeedCheck(Unit s) {
-    if (computeChecks) return unitToVarsNeedCheck.get(s);
-    else return new ArrayList();
+    if (computeChecks) {
+      return unitToVarsNeedCheck.get(s);
+    } else {
+      return new ArrayList();
+    }
   } // end getVarsNeedCheck
 
   public List getVarsDontNeedCheck(Unit s) {
-    if (computeChecks) return unitToVarsDontNeedCheck.get(s);
-    else return new ArrayList();
+    if (computeChecks) {
+      return unitToVarsDontNeedCheck.get(s);
+    } else {
+      return new ArrayList();
+    }
   } // end getVarsNeedCheck
 } // end class LocalRefVarsAnalysisWrapper

@@ -25,6 +25,12 @@
 
 package soot.jimple.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -34,12 +40,6 @@ import soot.UnitBox;
 import soot.jimple.Jimple;
 import soot.options.Options;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * removes all critical edges.<br>
@@ -60,12 +60,15 @@ public class CriticalEdgeRemover extends BodyTransformer {
   }
 
   /** performs critical edge-removing. */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + b.getMethod().getName() + "]     Removing Critical Edges...");
+    }
     removeCriticalEdges(b);
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + b.getMethod().getName() + "]     Removing Critical Edges done.");
+    }
   }
 
   /**
@@ -113,7 +116,9 @@ public class CriticalEdgeRemover extends BodyTransformer {
   private static void redirectBranch(Unit node, Unit oldTarget, Unit newTarget) {
     for (UnitBox targetBox : node.getUnitBoxes()) {
       Unit target = targetBox.getUnit();
-      if (target == oldTarget) targetBox.setUnit(newTarget);
+      if (target == oldTarget) {
+        targetBox.setUnit(newTarget);
+      }
     }
   }
 
@@ -134,7 +139,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
   private void removeCriticalEdges(Body b) {
     Chain<Unit> unitChain = b.getUnits();
     int size = unitChain.size();
-    Map<Unit, List<Unit>> predecessors = new HashMap<Unit, List<Unit>>(2 * size + 1, 0.7f);
+    Map<Unit, List<Unit>> predecessors = new HashMap<>(2 * size + 1, 0.7f);
 
     /* First get the predecessors of each node (although direct predecessors are
      * predecessors too, we'll not include them in the lists) */
@@ -148,10 +153,12 @@ public class CriticalEdgeRemover extends BodyTransformer {
           Unit target = succsIt.next().getUnit();
           List<Unit> predList = predecessors.get(target);
           if (predList == null) {
-            predList = new ArrayList<Unit>();
+            predList = new ArrayList<>();
             predList.add(currentUnit);
             predecessors.put(target, predList);
-          } else predList.add(currentUnit);
+          } else {
+            predList.add(currentUnit);
+          }
         }
       }
     }
@@ -171,7 +178,9 @@ public class CriticalEdgeRemover extends BodyTransformer {
 
         List<Unit> predList = predecessors.get(currentUnit);
         int nbPreds = (predList == null) ? 0 : predList.size();
-        if (directPredecessor != null && directPredecessor.fallsThrough()) nbPreds++;
+        if (directPredecessor != null && directPredecessor.fallsThrough()) {
+          nbPreds++;
+        }
 
         if (nbPreds >= 2) {
           /* redirect the directPredecessor (if it falls through), so we can
@@ -194,9 +203,11 @@ public class CriticalEdgeRemover extends BodyTransformer {
             if (nbSuccs >= 2) {
               /* insert synthetic node (insertGotoAfter should be slightly
                * faster)*/
-              if (directPredecessor == null)
+              if (directPredecessor == null) {
                 directPredecessor = insertGotoBefore(unitChain, currentUnit, currentUnit);
-              else directPredecessor = insertGotoAfter(unitChain, directPredecessor, currentUnit);
+              } else {
+                directPredecessor = insertGotoAfter(unitChain, directPredecessor, currentUnit);
+              }
               /* update the branch */
               redirectBranch(predecessor, currentUnit, directPredecessor);
             }

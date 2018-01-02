@@ -34,6 +34,7 @@ public class SourceLnNamePosTag extends SourceLnPosTag {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
     sb.append(super.toString());

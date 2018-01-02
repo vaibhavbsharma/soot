@@ -36,7 +36,7 @@ public class DominatorNode<N> {
 
   protected DominatorNode(N gode) {
     this.gode = gode;
-    children = new ArrayList<DominatorNode<N>>();
+    children = new ArrayList<>();
   }
 
   /** Sets the parent of this node in the DominatorTree. Usually called internally. */
@@ -81,6 +81,7 @@ public class DominatorNode<N> {
     return children.isEmpty();
   }
 
+  @Override
   public String toString() {
     // *** FIXME: Print info about parent and children
     return gode.toString();

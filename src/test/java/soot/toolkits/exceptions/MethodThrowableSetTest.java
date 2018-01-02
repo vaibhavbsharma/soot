@@ -1,17 +1,5 @@
 package soot.toolkits.exceptions;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import soot.AnySubType;
-import soot.G;
-import soot.PackManager;
-import soot.RefLikeType;
-import soot.Scene;
-import soot.SootMethod;
-import soot.options.Options;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +7,19 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import soot.AnySubType;
+import soot.G;
+import soot.PackManager;
+import soot.RefLikeType;
+import soot.Scene;
+import soot.SootMethod;
+import soot.options.Options;
 
 public class MethodThrowableSetTest {
 
@@ -34,7 +35,9 @@ public class MethodThrowableSetTest {
 
     List<String> processDir = new ArrayList<>();
     File f = new File("./target/test-classes");
-    if (f.exists()) processDir.add(f.getCanonicalPath());
+    if (f.exists()) {
+      processDir.add(f.getCanonicalPath());
+    }
     Options.v().set_process_dir(processDir);
 
     Options.v().set_src_prec(Options.src_prec_only_class);
@@ -81,13 +84,12 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void foo()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
     expected.add(testUtility.ARITHMETIC_EXCEPTION);
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -96,13 +98,12 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void bar()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
     expected.add(testUtility.ARITHMETIC_EXCEPTION);
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -111,14 +112,13 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void tool()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
     expected.add(testUtility.ARITHMETIC_EXCEPTION);
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
     expected.add(testUtility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -127,11 +127,10 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void getAllException()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -140,14 +139,13 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void getMyException()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.add(AnySubType.v(testUtility.ERROR)); // for NewExpr
     expected.add(testUtility.ILLEGAL_MONITOR_STATE_EXCEPTION);
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
     expected.add(AnySubType.v(Scene.v().getSootClass(EXCEPTION_CLASS).getType()));
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -156,14 +154,13 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void nestedTry()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
     expected.add(testUtility.ARITHMETIC_EXCEPTION);
     expected.add(testUtility.NULL_POINTER_EXCEPTION);
     expected.add(testUtility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -172,11 +169,10 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void recursion()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 
   @Test
@@ -185,11 +181,10 @@ public class MethodThrowableSetTest {
         getExceptionsForMethod(
             "<soot.toolkits.exceptions.targets.MethodThrowableSetClass: void unitInCatchBlock()>");
 
-    Set<RefLikeType> expected = new HashSet<RefLikeType>();
+    Set<RefLikeType> expected = new HashSet<>();
     expected.addAll(testUtility.VM_ERRORS);
     expected.add(testUtility.ARITHMETIC_EXCEPTION);
 
-    Assert.assertTrue(
-        ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
+    Assert.assertTrue(ExceptionTestUtility.sameMembers(expected, Collections.emptySet(), ts));
   }
 }

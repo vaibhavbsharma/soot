@@ -54,7 +54,9 @@ public class ASTWalker {
   }
 
   public void walk_stmt(ASTAnalysis a, Stmt s) {
-    if (a.getAnalysisDepth() < ASTAnalysis.ANALYSE_STMTS) return;
+    if (a.getAnalysisDepth() < ASTAnalysis.ANALYSE_STMTS) {
+      return;
+    }
 
     if (s instanceof DefinitionStmt) {
       DefinitionStmt ds = (DefinitionStmt) s;
@@ -77,11 +79,15 @@ public class ASTWalker {
 
       walk_value(a, ts.getOp());
       a.analyseThrowStmt(ts);
-    } else a.analyseStmt(s);
+    } else {
+      a.analyseStmt(s);
+    }
   }
 
   public void walk_value(ASTAnalysis a, Value v) {
-    if (a.getAnalysisDepth() < ASTAnalysis.ANALYSE_VALUES) return;
+    if (a.getAnalysisDepth() < ASTAnalysis.ANALYSE_VALUES) {
+      return;
+    }
 
     if (v instanceof Expr) {
       Expr e = (Expr) v;
@@ -110,7 +116,9 @@ public class ASTWalker {
       } else if (e instanceof NewMultiArrayExpr) {
         NewMultiArrayExpr nmae = (NewMultiArrayExpr) e;
 
-        for (int i = 0; i < nmae.getSizeCount(); i++) walk_value(a, nmae.getSize(i));
+        for (int i = 0; i < nmae.getSizeCount(); i++) {
+          walk_value(a, nmae.getSize(i));
+        }
         a.analyseNewMultiArrayExpr(nmae);
       } else if (e instanceof InstanceOfExpr) {
         InstanceOfExpr ioe = (InstanceOfExpr) e;
@@ -120,15 +128,21 @@ public class ASTWalker {
       } else if (e instanceof InvokeExpr) {
         InvokeExpr ie = (InvokeExpr) e;
 
-        for (int i = 0; i < ie.getArgCount(); i++) walk_value(a, ie.getArg(i));
+        for (int i = 0; i < ie.getArgCount(); i++) {
+          walk_value(a, ie.getArg(i));
+        }
 
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
 
           walk_value(a, iie.getBase());
           a.analyseInstanceInvokeExpr(iie);
-        } else a.analyseInvokeExpr(ie);
-      } else a.analyseExpr(e);
+        } else {
+          a.analyseInvokeExpr(ie);
+        }
+      } else {
+        a.analyseExpr(e);
+      }
     } else if (v instanceof Ref) {
       Ref r = (Ref) v;
 
@@ -143,7 +157,11 @@ public class ASTWalker {
 
         walk_value(a, ifr.getBase());
         a.analyseInstanceFieldRef(ifr);
-      } else a.analyseRef(r);
-    } else a.analyseValue(v);
+      } else {
+        a.analyseRef(r);
+      }
+    } else {
+      a.analyseValue(v);
+    }
   }
 }

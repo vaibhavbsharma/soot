@@ -39,6 +39,7 @@ import soot.Value;
 
 @SuppressWarnings("serial")
 public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
+  @Override
   public Type getType() {
     Value op1 = op1Box.getValue();
     Value op2 = op2Box.getValue();
@@ -53,10 +54,16 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
             || op2t.equals(ByteType.v())
             || op2t.equals(ShortType.v())
             || op2t.equals(CharType.v())
-            || op2t.equals(BooleanType.v()))) return IntType.v();
-    else if (op1t.equals(LongType.v()) || op2t.equals(LongType.v())) return LongType.v();
-    else if (op1t.equals(DoubleType.v()) || op2t.equals(DoubleType.v())) return DoubleType.v();
-    else if (op1t.equals(FloatType.v()) || op2t.equals(FloatType.v())) return FloatType.v();
-    else return UnknownType.v();
+            || op2t.equals(BooleanType.v()))) {
+      return IntType.v();
+    } else if (op1t.equals(LongType.v()) || op2t.equals(LongType.v())) {
+      return LongType.v();
+    } else if (op1t.equals(DoubleType.v()) || op2t.equals(DoubleType.v())) {
+      return DoubleType.v();
+    } else if (op1t.equals(FloatType.v()) || op2t.equals(FloatType.v())) {
+      return FloatType.v();
+    } else {
+      return UnknownType.v();
+    }
   }
 }

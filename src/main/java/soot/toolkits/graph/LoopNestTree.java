@@ -18,14 +18,14 @@
  */
 package soot.toolkits.graph;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.TreeSet;
+
 import soot.Body;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.TreeSet;
 
 /**
  * A loop nesting tree, implemented as a tree-map. Loops are represented by pairs of head-statements
@@ -44,6 +44,7 @@ public class LoopNestTree extends TreeSet<Loop> {
    */
   private static class LoopNestTreeComparator implements Comparator<Loop> {
 
+    @Override
     public int compare(Loop loop1, Loop loop2) {
       Collection<Stmt> stmts1 = loop1.getLoopStatements();
       Collection<Stmt> stmts2 = loop2.getLoopStatements();

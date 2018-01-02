@@ -33,12 +33,12 @@ public abstract class Predicate<T> {
 
   @SuppressWarnings("unchecked")
   public static <T> Predicate<T> truePred() {
-    return (Predicate<T>) TRUE;
+    return TRUE;
   }
 
   @SuppressWarnings("unchecked")
   public static <T> Predicate<T> falsePred() {
-    return (Predicate<T>) FALSE;
+    return FALSE;
   }
 
   /** Test whether an {@link Object} satisfies this {@link Predicate} */
@@ -48,6 +48,7 @@ public abstract class Predicate<T> {
   public Predicate<T> not() {
     final Predicate<T> originalPredicate = this;
     return new Predicate<T>() {
+      @Override
       public boolean test(T obj_) {
         return !originalPredicate.test(obj_);
       }
@@ -58,6 +59,7 @@ public abstract class Predicate<T> {
   public Predicate<T> and(final Predicate<T> conjunct_) {
     final Predicate<T> originalPredicate = this;
     return new Predicate<T>() {
+      @Override
       public boolean test(T obj_) {
         return originalPredicate.test(obj_) && conjunct_.test(obj_);
       }
@@ -68,6 +70,7 @@ public abstract class Predicate<T> {
   public Predicate<T> or(final Predicate<T> disjunct_) {
     final Predicate<T> originalPredicate = this;
     return new Predicate<T>() {
+      @Override
       public boolean test(T obj_) {
         return originalPredicate.test(obj_) || disjunct_.test(obj_);
       }

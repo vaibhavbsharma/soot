@@ -25,6 +25,13 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
 import soot.G;
 import soot.Hierarchy;
 import soot.PackManager;
@@ -45,13 +52,6 @@ import soot.jimple.toolkits.callgraph.TopologicalOrderer;
 import soot.options.Options;
 import soot.tagkit.Host;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 /** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
 public class StaticInliner extends SceneTransformer {
   public StaticInliner(Singletons.Global g) {}
@@ -60,9 +60,12 @@ public class StaticInliner extends SceneTransformer {
     return G.v().soot_jimple_toolkits_invoke_StaticInliner();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
     Filter explicitInvokesFilter = new Filter(new ExplicitEdgesPred());
-    if (Options.v().verbose()) G.v().out.println("[] Inlining methods...");
+    if (Options.v().verbose()) {
+      G.v().out.println("[] Inlining methods...");
+    }
 
     boolean enableNullPointerCheckInsertion =
         PhaseOptions.getBoolean(options, "insert-null-checks");
@@ -79,7 +82,7 @@ public class StaticInliner extends SceneTransformer {
     CallGraph cg = Scene.v().getCallGraph();
     Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
-    ArrayList<List<Host>> sitesToInline = new ArrayList<List<Host>>();
+    ArrayList<List<Host>> sitesToInline = new ArrayList<>();
 
     computeAverageMethodSizeAndSaveOriginalSizes();
     // Visit each potential site in reverse pseudo topological order.
@@ -91,33 +94,48 @@ public class StaticInliner extends SceneTransformer {
 
       while (it.hasPrevious()) {
         SootMethod container = it.previous();
-        if (methodToOriginalSize.get(container) == null) continue;
+        if (methodToOriginalSize.get(container) == null) {
+          continue;
+        }
 
-        if (!container.isConcrete()) continue;
+        if (!container.isConcrete()) {
+          continue;
+        }
 
-        if (!explicitInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) continue;
+        if (!explicitInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
+          continue;
+        }
 
         JimpleBody b = (JimpleBody) container.retrieveActiveBody();
 
-        List<Unit> unitList = new ArrayList<Unit>();
+        List<Unit> unitList = new ArrayList<>();
         unitList.addAll(b.getUnits());
         Iterator<Unit> unitIt = unitList.iterator();
 
         while (unitIt.hasNext()) {
           Stmt s = (Stmt) unitIt.next();
-          if (!s.containsInvokeExpr()) continue;
+          if (!s.containsInvokeExpr()) {
+            continue;
+          }
 
           Iterator targets = new Targets(explicitInvokesFilter.wrap(cg.edgesOutOf(s)));
-          if (!targets.hasNext()) continue;
-          SootMethod target = (SootMethod) targets.next();
-          if (targets.hasNext()) continue;
-
-          if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete()) continue;
-
-          if (!InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions))
+          if (!targets.hasNext()) {
             continue;
+          }
+          SootMethod target = (SootMethod) targets.next();
+          if (targets.hasNext()) {
+            continue;
+          }
 
-          List<Host> l = new ArrayList<Host>();
+          if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete()) {
+            continue;
+          }
+
+          if (!InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions)) {
+            continue;
+          }
+
+          List<Host> l = new ArrayList<>();
           l.add(target);
           l.add(s);
           l.add(container);
@@ -141,12 +159,18 @@ public class StaticInliner extends SceneTransformer {
         SootMethod container = (SootMethod) l.get(2);
         int containerSize = container.retrieveActiveBody().getUnits().size();
 
-        if (inlineeSize + containerSize > maxContainerSize) continue;
+        if (inlineeSize + containerSize > maxContainerSize) {
+          continue;
+        }
 
-        if (inlineeSize > maxInlineeSize) continue;
+        if (inlineeSize > maxInlineeSize) {
+          continue;
+        }
 
         if (inlineeSize + containerSize
-            > expansionFactor * methodToOriginalSize.get(container).intValue()) continue;
+            > expansionFactor * methodToOriginalSize.get(container).intValue()) {
+          continue;
+        }
 
         if (InlinerSafetyManager.ensureInlinability(
             inlinee, invokeStmt, container, modifierOptions)) {
@@ -162,8 +186,7 @@ public class StaticInliner extends SceneTransformer {
     }
   }
 
-  private final HashMap<SootMethod, Integer> methodToOriginalSize =
-      new HashMap<SootMethod, Integer>();
+  private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<>();
 
   private void computeAverageMethodSizeAndSaveOriginalSizes() {
     long sum = 0, count = 0;
@@ -183,6 +206,8 @@ public class StaticInliner extends SceneTransformer {
         }
       }
     }
-    if (count == 0) return;
+    if (count == 0) {
+      return;
+    }
   }
 }

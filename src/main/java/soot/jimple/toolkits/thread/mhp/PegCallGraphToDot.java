@@ -26,16 +26,16 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.graph.DirectedGraph;
-import soot.util.dot.DotGraph;
-import soot.util.dot.DotGraphConstants;
-import soot.util.dot.DotGraphNode;
-
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.dot.DotGraph;
+import soot.util.dot.DotGraphConstants;
+import soot.util.dot.DotGraphNode;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -54,7 +54,7 @@ public class PegCallGraphToDot {
    * the graph in the middle */
 
   public static boolean isBrief = false;
-  private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
+  private static final Map<Object, String> listNodeName = new HashMap<>();
 
   /* in one page or several pages of 8.5x11 */
   public static boolean onepage = true;
@@ -155,7 +155,9 @@ public class PegCallGraphToDot {
           // System.out.println("nodename: "+ nodename);
           DotGraphNode dotnode = canvas.getNode(nodename);
           // System.out.println("dotnode: "+dotnode);
-          if (dotnode != null) dotnode.setLabel(node.toString());
+          if (dotnode != null) {
+            dotnode.setLabel(node.toString());
+          }
         }
       }
     }

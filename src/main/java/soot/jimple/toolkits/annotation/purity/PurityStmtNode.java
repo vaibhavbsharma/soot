@@ -25,10 +25,10 @@
  */
 package soot.jimple.toolkits.annotation.purity;
 
-import soot.jimple.Stmt;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import soot.jimple.Stmt;
 
 /**
  * A node created dynamically and attached to a statement Stmt. Can be either an inside or a load
@@ -43,7 +43,7 @@ public class PurityStmtNode implements PurityNode {
   private boolean inside;
 
   /** gives a unique id, for pretty-printing purposes */
-  private static final Map<Stmt, Integer> nMap = new HashMap<Stmt, Integer>();
+  private static final Map<Stmt, Integer> nMap = new HashMap<>();
 
   private static int n = 0;
 
@@ -56,31 +56,42 @@ public class PurityStmtNode implements PurityNode {
     }
   }
 
+  @Override
   public String toString() {
-    if (inside) return "I_" + nMap.get(id);
-    else return "L_" + nMap.get(id);
-    // if (inside) return "I_"+id; else return "L_"+id;
+    if (inside) {
+      return "I_" + nMap.get(id);
+    } else {
+      return "L_" + nMap.get(id);
+      // if (inside) return "I_"+id; else return "L_"+id;
+    }
   }
 
+  @Override
   public int hashCode() {
     return id.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof PurityStmtNode) {
       PurityStmtNode oo = (PurityStmtNode) o;
       return id.equals(oo.id) && oo.inside == inside;
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
+  @Override
   public boolean isInside() {
     return inside;
   }
 
+  @Override
   public boolean isLoad() {
     return !inside;
   }
 
+  @Override
   public boolean isParam() {
     return false;
   }

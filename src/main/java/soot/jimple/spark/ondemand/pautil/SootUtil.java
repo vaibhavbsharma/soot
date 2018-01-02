@@ -18,6 +18,18 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.CompilationDeathException;
 import soot.G;
@@ -52,18 +64,6 @@ import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 import soot.util.queue.ChunkedQueue;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-
 /**
  * Utility methods for dealing with Soot.
  *
@@ -88,10 +88,12 @@ public class SootUtil {
       FieldRefNode frNode = (FieldRefNode) frNodeIter.next();
       SparkField field = frNode.getField();
       Node[] targets = pag.storeInvLookup(frNode);
-      for (int i = 0; i < targets.length; i++) {
-        VarNode target = (VarNode) targets[i];
-        if (target instanceof GlobalVarNode) continue;
-        ret.put(field, new Pair<FieldRefNode, LocalVarNode>(frNode, (LocalVarNode) target));
+      for (Node target2 : targets) {
+        VarNode target = (VarNode) target2;
+        if (target instanceof GlobalVarNode) {
+          continue;
+        }
+        ret.put(field, new Pair<>(frNode, (LocalVarNode) target));
       }
     }
     return ret;
@@ -313,9 +315,10 @@ public class SootUtil {
    * @return
    */
   public static boolean inLibrary(String className) {
-    for (int i = 0; i < lib13Packages.length; i++) {
-      String libPackage = lib13Packages[i];
-      if (className.startsWith(libPackage)) return true;
+    for (String libPackage : lib13Packages) {
+      if (className.startsWith(libPackage)) {
+        return true;
+      }
     }
     return false;
   }
@@ -359,9 +362,9 @@ public class SootUtil {
       VarNode source = frNode.getBase();
       SparkField field = frNode.getField();
       Node[] targets = pag.storeInvLookup(frNode);
-      for (int i = 0; i < targets.length; i++) {
-        VarNode target = (VarNode) targets[i];
-        storesOnField.put(field, new Pair<VarNode, VarNode>(target, source));
+      for (Node target2 : targets) {
+        VarNode target = (VarNode) target2;
+        storesOnField.put(field, new Pair<>(target, source));
       }
     }
     return storesOnField;
@@ -375,9 +378,9 @@ public class SootUtil {
       VarNode source = frNode.getBase();
       SparkField field = frNode.getField();
       Node[] targets = pag.loadLookup(frNode);
-      for (int i = 0; i < targets.length; i++) {
-        VarNode target = (VarNode) targets[i];
-        loadsOnField.put(field, new Pair<VarNode, VarNode>(target, source));
+      for (Node target2 : targets) {
+        VarNode target = (VarNode) target2;
+        loadsOnField.put(field, new Pair<>(target, source));
       }
     }
     return loadsOnField;
@@ -405,7 +408,9 @@ public class SootUtil {
 
           @Override
           public void visit(Node n) {
-            if (set2.contains(n)) ret.add(n);
+            if (set2.contains(n)) {
+              ret.add(n);
+            }
           }
         });
     ret.forall(
@@ -493,8 +498,8 @@ public class SootUtil {
       e.printStackTrace();
     }
 
-    for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter.hasNext(); ) {
-      VarNode varNode = (VarNode) iter.next();
+    for (Object element : pag.getVarNodeNumberer()) {
+      VarNode varNode = (VarNode) element;
       varNodeWriter.println(varNode.getNumber() + " " + varNode);
     }
     varNodeWriter.flush();
@@ -503,7 +508,9 @@ public class SootUtil {
 
   @SuppressWarnings("unchecked")
   public static boolean noRefTypeParameters(SootMethod method) {
-    if (!method.isStatic()) return false;
+    if (!method.isStatic()) {
+      return false;
+    }
     Predicate<Type> notRefTypePred =
         new Predicate<Type>() {
 
@@ -525,7 +532,9 @@ public class SootUtil {
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {
     // TODO make calls through invokespecial resolvable
-    if (invokedMethod.isStatic()) return true;
+    if (invokedMethod.isStatic()) {
+      return true;
+    }
     return isConstructor(invokedMethod);
   }
 
@@ -539,7 +548,7 @@ public class SootUtil {
     Iterator iter = chunkedQueue.reader();
     VirtualCalls.v()
         .resolve(type, receiverType, invokedMethod.getNumberedSubSignature(), null, chunkedQueue);
-    Set<SootMethod> ret = new ArraySet<SootMethod>();
+    Set<SootMethod> ret = new ArraySet<>();
     for (; iter.hasNext(); ) {
       SootMethod target = (SootMethod) iter.next();
       ret.add(target);
@@ -578,8 +587,8 @@ public class SootUtil {
     try {
       PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
 
-      for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter.hasNext(); ) {
-        VarNode vn = (VarNode) iter.next();
+      for (Object element : pag.getVarNodeNumberer()) {
+        VarNode vn = (VarNode) element;
         pw.println(vn.getNumber() + "\t" + vn);
       }
 

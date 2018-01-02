@@ -29,9 +29,12 @@ import soot.Value;
 import soot.ValueBox;
 
 public interface ExitMonitorStmt extends MonitorStmt {
+  @Override
   Value getOp();
 
+  @Override
   void setOp(Value op);
 
+  @Override
   ValueBox getOpBox();
 }

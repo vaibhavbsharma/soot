@@ -28,6 +28,7 @@ public class ObjWrapper {
     this.wrapped = wrapped;
   }
 
+  @Override
   public String toString() {
     return "wrapped " + wrapped;
   }

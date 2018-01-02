@@ -33,6 +33,7 @@ public class JjLocalDecl_c extends LocalDecl_c {
     super(pos, flags, type, name, init);
   }
 
+  @Override
   public Type childExpectedType(Expr child, AscriptionVisitor av) {
 
     return type().type();

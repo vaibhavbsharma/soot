@@ -25,19 +25,19 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.MethodOrMethodContext;
 import soot.Scene;
 import soot.SootMethod;
 import soot.util.NumberedSet;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class TopologicalOrderer {
   CallGraph cg;
-  List<SootMethod> order = new ArrayList<SootMethod>();
-  NumberedSet<SootMethod> visited = new NumberedSet<SootMethod>(Scene.v().getMethodNumberer());
+  List<SootMethod> order = new ArrayList<>();
+  NumberedSet<SootMethod> visited = new NumberedSet<>(Scene.v().getMethodNumberer());
 
   public TopologicalOrderer(CallGraph cg) {
     this.cg = cg;
@@ -52,7 +52,9 @@ public class TopologicalOrderer {
   }
 
   private void dfsVisit(SootMethod m) {
-    if (visited.contains(m)) return;
+    if (visited.contains(m)) {
+      return;
+    }
     visited.add(m);
     Iterator<MethodOrMethodContext> targets = new Targets(cg.edgesOutOf(m));
     while (targets.hasNext()) {

@@ -25,6 +25,11 @@
 
 package soot.util;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Body;
 import soot.G;
 import soot.Printer;
@@ -37,12 +42,6 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * The <tt>PhaseDumper</tt> is a debugging aid. It maintains two lists of phases to be debugged. If
@@ -186,14 +185,16 @@ public class PhaseDumper {
       final File[] toDelete =
           dir.listFiles(
               new java.io.FilenameFilter() {
+                @Override
                 public boolean accept(File dir, String name) {
                   return name.startsWith(phaseName) && name.endsWith(DotGraph.DOT_EXTENSION);
                 }
               });
-      if (toDelete != null)
+      if (toDelete != null) {
         for (File element : toDelete) {
           element.delete();
         }
+      }
     } catch (java.io.IOException e) {
       // Don't abort execution because of an I/O error, but report
       // the error.
@@ -233,8 +234,8 @@ public class PhaseDumper {
   private void dumpAllBodies(String baseName, boolean deleteGraphFiles) {
     List<SootClass> classes = Scene.v().getClasses(SootClass.BODIES);
     for (SootClass cls : classes) {
-      for (Iterator m = cls.getMethods().iterator(); m.hasNext(); ) {
-        SootMethod method = (SootMethod) m.next();
+      for (Object element : cls.getMethods()) {
+        SootMethod method = (SootMethod) element;
         if (method.hasActiveBody()) {
           Body body = method.getActiveBody();
           if (deleteGraphFiles) {

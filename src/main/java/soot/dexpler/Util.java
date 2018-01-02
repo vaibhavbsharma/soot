@@ -24,6 +24,11 @@
 
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -53,11 +58,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalCreation;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class Util {
   /**
@@ -228,8 +228,8 @@ public class Util {
    */
   public static void emptyBody(Body jBody) {
     // identity statements
-    List<Unit> idStmts = new ArrayList<Unit>();
-    List<Local> idLocals = new ArrayList<Local>();
+    List<Unit> idStmts = new ArrayList<>();
+    List<Local> idLocals = new ArrayList<>();
     for (Unit u : jBody.getUnits()) {
       if (u instanceof IdentityStmt) {
         IdentityStmt i = (IdentityStmt) u;
@@ -246,8 +246,12 @@ public class Util {
 
     final LocalGenerator lg = new LocalGenerator(jBody);
 
-    for (Unit u : idStmts) jBody.getUnits().add(u);
-    for (Local l : idLocals) jBody.getLocals().add(l);
+    for (Unit u : idStmts) {
+      jBody.getUnits().add(u);
+    }
+    for (Local l : idLocals) {
+      jBody.getLocals().add(l);
+    }
 
     Type rType = jBody.getMethod().getReturnType();
 
@@ -291,7 +295,7 @@ public class Util {
     LocalCreation lc = new LocalCreation(b.getLocals());
     Local l = lc.newLocal(RefType.v(exceptionType));
 
-    List<Unit> newUnits = new ArrayList<Unit>();
+    List<Unit> newUnits = new ArrayList<>();
     Unit u1 = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
     Unit u2 =
         Jimple.v()
@@ -316,7 +320,7 @@ public class Util {
   }
 
   public static List<String> splitParameters(String parameters) {
-    List<String> pList = new ArrayList<String>();
+    List<String> pList = new ArrayList<>();
 
     int idx = 0;
     boolean object = false;

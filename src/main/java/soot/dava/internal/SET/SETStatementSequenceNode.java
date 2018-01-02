@@ -19,6 +19,10 @@
 
 package soot.dava.internal.SET;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.SootMethod;
 import soot.Value;
 import soot.dava.DavaBody;
@@ -34,10 +38,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 public class SETStatementSequenceNode extends SETNode {
   private DavaBody davaBody;
@@ -60,17 +60,21 @@ public class SETStatementSequenceNode extends SETNode {
     return hasContinue;
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
     AugmentedStmt last = get_Body().getLast();
 
-    if ((last.csuccs != null) && (last.csuccs.isEmpty() == false)) c.add(last);
+    if ((last.csuccs != null) && (last.csuccs.isEmpty() == false)) {
+      c.add(last);
+    }
 
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
-    List<AugmentedStmt> l = new LinkedList<AugmentedStmt>();
+    List<AugmentedStmt> l = new LinkedList<>();
 
     boolean isStaticInitializer =
         davaBody.getMethod().getName().equals(SootMethod.staticInitializerName);
@@ -82,11 +86,17 @@ public class SETStatementSequenceNode extends SETNode {
 
       if (davaBody != null) {
 
-        if ((s instanceof ReturnVoidStmt) && (isStaticInitializer)) continue;
+        if ((s instanceof ReturnVoidStmt) && (isStaticInitializer)) {
+          continue;
+        }
 
-        if (s instanceof GotoStmt) continue;
+        if (s instanceof GotoStmt) {
+          continue;
+        }
 
-        if (s instanceof MonitorStmt) continue;
+        if (s instanceof MonitorStmt) {
+          continue;
+        }
 
         /*
          * January 12th 2006 Trying to fix the super problem we need to
@@ -103,32 +113,45 @@ public class SETStatementSequenceNode extends SETNode {
 
           Value rightOp = ids.getRightOp(), leftOp = ids.getLeftOp();
 
-          if (davaBody.get_ThisLocals().contains(leftOp)) continue;
+          if (davaBody.get_ThisLocals().contains(leftOp)) {
+            continue;
+          }
 
-          if (rightOp instanceof ParameterRef) continue;
+          if (rightOp instanceof ParameterRef) {
+            continue;
+          }
 
-          if (rightOp instanceof CaughtExceptionRef) continue;
+          if (rightOp instanceof CaughtExceptionRef) {
+            continue;
+          }
         }
       }
 
       l.add(as);
     }
 
-    if (l.isEmpty()) return null;
-    else return new ASTStatementSequenceNode(l);
+    if (l.isEmpty()) {
+      return null;
+    } else {
+      return new ASTStatementSequenceNode(l);
+    }
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return get_Body().getFirst();
   }
 
   public void insert_AbruptStmt(DAbruptStmt stmt) {
-    if (hasContinue) return;
+    if (hasContinue) {
+      return;
+    }
 
     get_Body().addLast(new AugmentedStmt(stmt));
     hasContinue = stmt.is_Continue();
   }
 
+  @Override
   protected boolean resolve(SETNode parent) {
     throw new RuntimeException("Attempting auto-nest a SETStatementSequenceNode.");
   }

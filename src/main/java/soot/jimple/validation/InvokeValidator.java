@@ -1,5 +1,7 @@
 package soot.jimple.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.SootClass;
 import soot.SootMethod;
@@ -14,8 +16,6 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
-import java.util.List;
-
 public enum InvokeValidator implements BodyValidator {
   INSTANCE;
 
@@ -25,7 +25,9 @@ public enum InvokeValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    if (true) return;
+    if (true) {
+      return;
+    }
     SootClass bodyDeclaredClass = body.getMethod().getDeclaringClass();
     for (Unit unit : body.getUnits()) {
       if (unit instanceof Stmt) {

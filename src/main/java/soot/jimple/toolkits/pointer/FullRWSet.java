@@ -19,54 +19,65 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.Set;
+
 import soot.PointsToSet;
 import soot.SootField;
 
-import java.util.Set;
-
 public class FullRWSet extends RWSet {
 
+  @Override
   public int size() {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean getCallsNative() {
     return true;
   }
 
+  @Override
   public boolean setCallsNative() {
     throw new RuntimeException("Unsupported");
   }
 
   /** Returns an iterator over any globals read/written. */
+  @Override
   public Set getGlobals() {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public Set getFields() {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public PointsToSet getBaseForField(Object f) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(RWSet other) {
     return other != null;
   }
   /** Adds the RWSet other into this set. */
+  @Override
   public boolean union(RWSet other) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean addGlobal(SootField global) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean addFieldRef(PointsToSet otherBase, Object field) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean isEquivTo(RWSet other) {
     return other instanceof FullRWSet;
   }

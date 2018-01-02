@@ -19,13 +19,14 @@
 
 package soot.jbco.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class PopupDialog extends JDialog implements ActionListener {
   private JPanel myPanel = null;
@@ -45,7 +46,10 @@ public class PopupDialog extends JDialog implements ActionListener {
     setVisible(true);
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
-    if (okButton == e.getSource()) setVisible(false);
+    if (okButton == e.getSource()) {
+      setVisible(false);
+    }
   }
 }

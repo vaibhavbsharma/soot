@@ -1,10 +1,10 @@
 package soot.jimple.toolkits.thread;
 
-import soot.SootMethod;
-import soot.jimple.Stmt;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import soot.SootMethod;
+import soot.jimple.Stmt;
 
 /**
  * AbstractRuntimeThread written by Richard L. Halpert 2007-03-04 Acts as a container for the thread
@@ -39,8 +39,8 @@ public class AbstractRuntimeThread {
   public AbstractRuntimeThread() {
     startStmt = null;
     startStmtMethod = null;
-    methods = new ArrayList<Object>();
-    runMethods = new ArrayList<Object>();
+    methods = new ArrayList<>();
+    runMethods = new ArrayList<>();
 
     // What kind of parallelism - this is set unsafely, so analysis MUST set it correctly
     runsMany = false;
@@ -138,6 +138,7 @@ public class AbstractRuntimeThread {
     isMainThread = true;
   }
 
+  @Override
   public String toString() {
     String ret =
         (isMainThread ? "Main Thread" : "User Thread")
@@ -147,20 +148,31 @@ public class AbstractRuntimeThread {
                 : (runsOnce ? "Single, " : (runsOneAtATime ? "At-Once," : "ERROR")));
     if (startStmtHasMultipleReachingObjects) {
       ret = ret + "MRO,"; // Multiple Reaching Objects
-      if (startMethodIsReentrant) ret = ret + "SMR"; // Start Method is Reentrant
-      else if (startMethodMayHappenInParallel) ret = ret + "MSP"; // May be Started in Parallel
-      else if (startStmtMayBeRunMultipleTimes) ret = ret + "RMT"; // Run Multiple Times
-      else ret = ret + "ROT"; // Run One Time
+      if (startMethodIsReentrant) {
+        ret = ret + "SMR"; // Start Method is Reentrant
+      } else if (startMethodMayHappenInParallel) {
+        ret = ret + "MSP"; // May be Started in Parallel
+      } else if (startStmtMayBeRunMultipleTimes) {
+        ret = ret + "RMT"; // Run Multiple Times
+      } else {
+        ret = ret + "ROT"; // Run One Time
+      }
     } else {
-      if (isMainThread) ret = ret + "---,---"; // no start stmt...
-      else ret = ret + "SRO,---"; // Single Reaching Object
+      if (isMainThread) {
+        ret = ret + "---,---"; // no start stmt...
+      } else {
+        ret = ret + "SRO,---"; // Single Reaching Object
+      }
     }
     ret = ret + "): ";
 
-    if (!isMainThread) ret = ret + "Started in " + startStmtMethod + " by " + startStmt + "\n";
-    else ret = ret + "\n";
+    if (!isMainThread) {
+      ret = ret + "Started in " + startStmtMethod + " by " + startStmt + "\n";
+    } else {
+      ret = ret + "\n";
+    }
 
-    if (joinStmt != null)
+    if (joinStmt != null) {
       ret =
           ret
               + "                               "
@@ -169,6 +181,7 @@ public class AbstractRuntimeThread {
               + " by "
               + joinStmt
               + "\n";
+    }
 
     ret = ret + methods.toString();
 

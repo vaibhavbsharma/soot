@@ -19,14 +19,14 @@
 
 package soot;
 
+import java.io.File;
+
 import polyglot.ast.Node;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.javaToJimple.InitialResolver;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ComputeASTMetrics;
-
-import java.io.File;
 
 /** A class source for resolving from .java files using javaToJimple. */
 public class JavaClassSource extends ClassSource {
@@ -39,12 +39,18 @@ public class JavaClassSource extends ClassSource {
     super(className);
   }
 
+  @Override
   public Dependencies resolve(SootClass sc) {
-    if (Options.v().verbose()) G.v().out.println("resolving [from .java]: " + className);
+    if (Options.v().verbose()) {
+      G.v().out.println("resolving [from .java]: " + className);
+    }
 
     IInitialResolver resolver;
-    if (Options.v().polyglot()) resolver = InitialResolver.v();
-    else resolver = JastAddInitialResolver.v();
+    if (Options.v().polyglot()) {
+      resolver = InitialResolver.v();
+    } else {
+      resolver = JastAddInitialResolver.v();
+    }
 
     if (fullPath != null) {
       resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);

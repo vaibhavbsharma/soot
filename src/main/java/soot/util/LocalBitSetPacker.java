@@ -35,7 +35,9 @@ public class LocalBitSetPacker {
 
   /** Restores the original local numbering */
   public void unpack() {
-    for (int i = 0; i < locals.length; i++) locals[i].setNumber(oldNumbers[i]);
+    for (int i = 0; i < locals.length; i++) {
+      locals[i].setNumber(oldNumbers[i]);
+    }
     locals = null;
     oldNumbers = null;
   }

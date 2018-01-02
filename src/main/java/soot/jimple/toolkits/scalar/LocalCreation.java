@@ -25,14 +25,14 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.Local;
-import soot.Type;
-import soot.jimple.Jimple;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import soot.Local;
+import soot.Type;
+import soot.jimple.Jimple;
 
 /**
  * provides an easy interface to handle new var-names. New names are automatically added to the
@@ -64,7 +64,7 @@ public class LocalCreation {
    * @param String prefix overrides the DEFAULT-PREFIX
    */
   public LocalCreation(Collection<Local> locals, String prefix) {
-    this.locals = new HashSet<String>(locals.size());
+    this.locals = new HashSet<>(locals.size());
     localChain = locals;
     Iterator<Local> it = locals.iterator();
     while (it.hasNext()) {
@@ -104,7 +104,9 @@ public class LocalCreation {
       suffix = counter;
     }
 
-    while (locals.contains(prefix + suffix)) suffix++;
+    while (locals.contains(prefix + suffix)) {
+      suffix++;
+    }
 
     if (prefix == this.prefix || prefix.equals(this.prefix)) {
       counter = suffix + 1;

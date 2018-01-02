@@ -1,5 +1,8 @@
 package soot.asm;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Trap;
@@ -9,9 +12,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.ReturnStmt;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Transformers that inlines returns that cast and return an object. We take a = .. goto l0;
@@ -48,12 +48,17 @@ public class CastAndReturnInliner extends BodyTransformer {
                 ReturnStmt newStmt = (ReturnStmt) retStmt.clone();
                 newStmt.setOp(ce.getOp());
 
-                for (Trap t : body.getTraps())
-                  for (UnitBox ubox : t.getUnitBoxes())
-                    if (ubox.getUnit() == gtStmt) ubox.setUnit(newStmt);
+                for (Trap t : body.getTraps()) {
+                  for (UnitBox ubox : t.getUnitBoxes()) {
+                    if (ubox.getUnit() == gtStmt) {
+                      ubox.setUnit(newStmt);
+                    }
+                  }
+                }
 
-                while (!gtStmt.getBoxesPointingToThis().isEmpty())
+                while (!gtStmt.getBoxesPointingToThis().isEmpty()) {
                   gtStmt.getBoxesPointingToThis().get(0).setUnit(newStmt);
+                }
                 body.getUnits().swapWith(gtStmt, newStmt);
               }
             }

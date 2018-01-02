@@ -36,12 +36,14 @@ public class LocalStmtPair {
     this.stmt = stmt;
   }
 
+  @Override
   public boolean equals(Object other) {
     return other instanceof LocalStmtPair
         && ((LocalStmtPair) other).local == this.local
         && ((LocalStmtPair) other).stmt == this.stmt;
   }
 
+  @Override
   public int hashCode() {
     return local.hashCode() * 101 + stmt.hashCode() + 17;
   }

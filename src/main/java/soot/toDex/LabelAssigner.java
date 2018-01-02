@@ -1,14 +1,15 @@
 package soot.toDex;
 
-import org.jf.dexlib2.builder.Label;
-import org.jf.dexlib2.builder.MethodImplementationBuilder;
-import soot.jimple.Stmt;
-import soot.toDex.instructions.AbstractPayload;
-import soot.toDex.instructions.SwitchPayload;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jf.dexlib2.builder.Label;
+import org.jf.dexlib2.builder.MethodImplementationBuilder;
+
+import soot.jimple.Stmt;
+import soot.toDex.instructions.AbstractPayload;
+import soot.toDex.instructions.SwitchPayload;
 
 public class LabelAssigner {
 
@@ -16,18 +17,20 @@ public class LabelAssigner {
 
   private int lastLabelId = 0;
 
-  private Map<Stmt, Label> stmtToLabel = new HashMap<Stmt, Label>();
-  private Map<Stmt, String> stmtToLabelName = new HashMap<Stmt, String>();
+  private Map<Stmt, Label> stmtToLabel = new HashMap<>();
+  private Map<Stmt, String> stmtToLabelName = new HashMap<>();
 
-  private Map<AbstractPayload, Label> payloadToLabel = new HashMap<AbstractPayload, Label>();
-  private Map<AbstractPayload, String> payloadToLabelName = new HashMap<AbstractPayload, String>();
+  private Map<AbstractPayload, Label> payloadToLabel = new HashMap<>();
+  private Map<AbstractPayload, String> payloadToLabelName = new HashMap<>();
 
   public LabelAssigner(MethodImplementationBuilder builder) {
     this.builder = builder;
   }
 
   public Label getOrCreateLabel(Stmt stmt) {
-    if (stmt == null) throw new RuntimeException("Cannot create label for NULL statement");
+    if (stmt == null) {
+      throw new RuntimeException("Cannot create label for NULL statement");
+    }
 
     Label lbl = stmtToLabel.get(stmt);
     if (lbl == null) {
@@ -40,7 +43,9 @@ public class LabelAssigner {
   }
 
   public Label getOrCreateLabel(AbstractPayload payload) {
-    if (payload == null) throw new RuntimeException("Cannot create label for NULL payload");
+    if (payload == null) {
+      throw new RuntimeException("Cannot create label for NULL payload");
+    }
 
     Label lbl = payloadToLabel.get(payload);
     if (lbl == null) {
@@ -54,7 +59,9 @@ public class LabelAssigner {
 
   public Label getLabel(Stmt stmt) {
     Label lbl = getLabelUnsafe(stmt);
-    if (lbl == null) throw new RuntimeException("Statement has no label: " + stmt);
+    if (lbl == null) {
+      throw new RuntimeException("Statement has no label: " + stmt);
+    }
     return lbl;
   }
 
@@ -64,7 +71,9 @@ public class LabelAssigner {
 
   public Label getLabel(SwitchPayload payload) {
     Label lbl = payloadToLabel.get(payload);
-    if (lbl == null) throw new RuntimeException("Switch payload has no label: " + payload);
+    if (lbl == null) {
+      throw new RuntimeException("Switch payload has no label: " + payload);
+    }
     return lbl;
   }
 
@@ -77,8 +86,11 @@ public class LabelAssigner {
   }
 
   public Label getLabelAtAddress(int address) {
-    for (Label lb : stmtToLabel.values())
-      if (lb.isPlaced() && lb.getCodeAddress() == address) return lb;
+    for (Label lb : stmtToLabel.values()) {
+      if (lb.isPlaced() && lb.getCodeAddress() == address) {
+        return lb;
+      }
+    }
     return null;
   }
 

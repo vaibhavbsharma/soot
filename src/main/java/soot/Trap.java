@@ -70,6 +70,7 @@ public interface Trap extends UnitBoxOwner {
   UnitBox getHandlerUnitBox();
 
   /** Returns the boxes for first, last and handler units. */
+  @Override
   List<UnitBox> getUnitBoxes();
 
   /** Returns the exception being caught. */

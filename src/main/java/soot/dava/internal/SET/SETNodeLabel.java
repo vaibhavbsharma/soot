@@ -29,13 +29,16 @@ public class SETNodeLabel {
   }
 
   public void set_Name() {
-    if (name == null) name = "label_" + Integer.toString(G.v().SETNodeLabel_uniqueId++);
+    if (name == null) {
+      name = "label_" + Integer.toString(G.v().SETNodeLabel_uniqueId++);
+    }
   }
 
   public void set_Name(String name) {
     this.name = name;
   }
 
+  @Override
   public String toString() {
     return name;
   }

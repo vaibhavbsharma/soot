@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -37,9 +40,6 @@ import soot.jbco.util.Rand;
 import soot.jbco.util.ThrowSet;
 import soot.jimple.NullConstant;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class ConstructorConfuser extends BodyTransformer implements IJbcoTransform {
 
   static int count = 0;
@@ -48,25 +48,33 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
 
   public static String dependancies[] = new String[] {"bb.jbco_dcc", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_dcc";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Constructor methods have been jumbled: " + count);
   }
 
+  @Override
   @SuppressWarnings("fallthrough")
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (!b.getMethod().getSubSignature().equals("void <init>()")) return;
+    if (!b.getMethod().getSubSignature().equals("void <init>()")) {
+      return;
+    }
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     SootClass origClass = b.getMethod().getDeclaringClass();
     SootClass c = origClass;
@@ -96,15 +104,20 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
       prev = u;
     }
 
-    if (sii == null) return;
+    if (sii == null) {
+      return;
+    }
 
     int lowi = -1, lowest = 99999999, rand = Rand.getInt(4);
-    for (int i = 0; i < instances.length; i++)
+    for (int i = 0; i < instances.length; i++) {
       if (lowest > instances[i]) {
         lowest = instances[i];
         lowi = i;
       }
-    if (instances[rand] > instances[lowi]) rand = lowi;
+    }
+    if (instances[rand] > instances[lowi]) {
+      rand = lowi;
+    }
 
     boolean done = false;
     switch (rand) {
@@ -135,7 +148,9 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
                 units.insertBefore(pop, sii);
                 units.insertBefore(Baf.v().newGotoInst(sii), pop);
                 units.add(Baf.v().newJSRInst(pop));
-              } else units.add(Baf.v().newGotoInst(sii));
+              } else {
+                units.add(Baf.v().newGotoInst(sii));
+              }
               done = true;
               break;
             }
@@ -148,11 +163,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
           b.getTraps()
               .add(
                   Baf.v()
-                      .newTrap(
-                          ThrowSet.getRandomThrowable(),
-                          sii,
-                          units.getSuccOf(sii),
-                          handler));
+                      .newTrap(ThrowSet.getRandomThrowable(), sii, units.getSuccOf(sii), handler));
           done = true;
           break;
         }
@@ -168,11 +179,16 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
               break;
             }
 
-            if (c.hasSuperclass()) c = c.getSuperclass();
-            else c = null;
+            if (c.hasSuperclass()) {
+              c = c.getSuperclass();
+            } else {
+              c = null;
+            }
           }
         }
-        if (done) break;
+        if (done) {
+          break;
+        }
       case 3:
         Unit pop = Baf.v().newPopInst(RefType.v());
         units.insertBefore(pop, sii);
@@ -186,6 +202,8 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
       count++;
     }
 
-    if (debug) StackTypeHeightCalculator.calculateStackHeights(b);
+    if (debug) {
+      StackTypeHeightCalculator.calculateStackHeights(b);
+    }
   }
 }

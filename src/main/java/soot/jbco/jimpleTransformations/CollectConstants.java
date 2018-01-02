@@ -19,6 +19,13 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -46,13 +53,6 @@ import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 31-May-2006
@@ -62,6 +62,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
   int updatedConstants = 0;
   int constants = 0;
 
+  @Override
   public void outputSummary() {
     out.println(constants + " constants found");
     out.println(updatedConstants + " static fields created");
@@ -69,25 +70,30 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
   public static String dependancies[] = new String[] {"wjtp.jbco_cc"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "wjtp.jbco_cc";
 
+  @Override
   public String getName() {
     return name;
   }
 
-  public static HashMap<Constant, SootField> constantsToFields = new HashMap<Constant, SootField>();
-  public static HashMap<Type, List<Constant>> typesToValues = new HashMap<Type, List<Constant>>();
+  public static HashMap<Constant, SootField> constantsToFields = new HashMap<>();
+  public static HashMap<Type, List<Constant>> typesToValues = new HashMap<>();
 
   public static SootField field = null;
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     Scene scene = G.v().soot_Scene();
 
-    if (output) out.println("Collecting Constant Data");
+    if (output) {
+      out.println("Collecting Constant Data");
+    }
 
     soot.jbco.util.BodyBuilder.retrieveAllNames();
 
@@ -95,7 +101,9 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
     for (SootClass cl : appClasses) {
       for (SootMethod m : cl.getMethods()) {
-        if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName)) continue;
+        if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName)) {
+          continue;
+        }
 
         for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
           Value v = useBox.getValue();
@@ -104,7 +112,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
             Type t = c.getType();
             List<Constant> values = typesToValues.get(t);
             if (values == null) {
-              values = new ArrayList<Constant>();
+              values = new ArrayList<>();
               typesToValues.put(t, values);
             }
 
@@ -132,7 +140,9 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     Iterator<Type> it = typesToValues.keySet().iterator();
     while (it.hasNext()) {
       Type t = it.next();
-      if (t instanceof NullType) continue; // t = RefType.v("java.lang.Object");
+      if (t instanceof NullType) {
+        continue; // t = RefType.v("java.lang.Object");
+      }
       Iterator<Constant> cit = typesToValues.get(t).iterator();
       while (cit.hasNext()) {
         Constant c = cit.next();
@@ -162,15 +172,25 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     if (con instanceof NullConstant) {
       return;
     } else if (con instanceof IntConstant) {
-      if (((IntConstant) con).value == 0) return;
+      if (((IntConstant) con).value == 0) {
+        return;
+      }
     } else if (con instanceof LongConstant) {
-      if (((LongConstant) con).value == 0) return;
+      if (((LongConstant) con).value == 0) {
+        return;
+      }
     } else if (con instanceof StringConstant) {
-      if (((StringConstant) con).value == null) return;
+      if (((StringConstant) con).value == null) {
+        return;
+      }
     } else if (con instanceof DoubleConstant) {
-      if (((DoubleConstant) con).value == 0) return;
+      if (((DoubleConstant) con).value == 0) {
+        return;
+      }
     } else if (con instanceof FloatConstant) {
-      if (((FloatConstant) con).value == 0) return;
+      if (((FloatConstant) con).value == 0) {
+        return;
+      }
     }
 
     Body b;
@@ -201,6 +221,8 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     PatchingChain<Unit> units = b.getUnits();
 
     units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), con));
-    if (newInit) units.addLast(Jimple.v().newReturnVoidStmt());
+    if (newInit) {
+      units.addLast(Jimple.v().newReturnVoidStmt());
+    }
   }
 }

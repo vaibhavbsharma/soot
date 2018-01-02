@@ -25,14 +25,13 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.G;
-import soot.util.BitSetIterator;
-import soot.util.BitVector;
-
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
+
+import soot.G;
+import soot.util.BitSetIterator;
+import soot.util.BitVector;
 
 /** @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead */
 @Deprecated
@@ -43,7 +42,7 @@ class StronglyConnectedComponentsBV {
 
   TypeResolverBV resolver;
 
-  LinkedList<LinkedList<TypeVariableBV>> forest = new LinkedList<LinkedList<TypeVariableBV>>();
+  LinkedList<LinkedList<TypeVariableBV>> forest = new LinkedList<>();
   LinkedList<TypeVariableBV> current_tree;
 
   private static final boolean DEBUG = false;
@@ -53,8 +52,8 @@ class StronglyConnectedComponentsBV {
     this.resolver = resolver;
     variables = typeVariableList;
 
-    black = new TreeSet<TypeVariableBV>();
-    finished = new LinkedList<TypeVariableBV>();
+    black = new TreeSet<>();
+    finished = new LinkedList<>();
 
     for (BitSetIterator i = variables.iterator(); i.hasNext(); ) {
       TypeVariableBV var = resolver.typeVariableForId(i.next());
@@ -65,28 +64,25 @@ class StronglyConnectedComponentsBV {
       }
     }
 
-    black = new TreeSet<TypeVariableBV>();
+    black = new TreeSet<>();
 
     for (TypeVariableBV var : finished) {
       if (!black.contains(var)) {
-        current_tree = new LinkedList<TypeVariableBV>();
+        current_tree = new LinkedList<>();
         forest.add(current_tree);
         black.add(var);
         dfsgt_visit(var);
       }
     }
 
-    for (Iterator<LinkedList<TypeVariableBV>> i = forest.iterator(); i.hasNext(); ) {
-      LinkedList<TypeVariableBV> list = i.next();
+    for (LinkedList<TypeVariableBV> list : forest) {
       TypeVariableBV previous = null;
       StringBuffer s = null;
       if (DEBUG) {
         s = new StringBuffer("scc:\n");
       }
 
-      for (Iterator<TypeVariableBV> j = list.iterator(); j.hasNext(); ) {
-        TypeVariableBV current = j.next();
-
+      for (TypeVariableBV current : list) {
         if (DEBUG) {
           s.append(" " + current + "\n");
         }

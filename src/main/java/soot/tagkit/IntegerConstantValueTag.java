@@ -45,6 +45,7 @@ public class IntegerConstantValueTag extends ConstantValueTag {
     return value;
   }
 
+  @Override
   public String toString() {
     return "ConstantValue: " + Integer.toString(value);
   }
@@ -64,9 +65,15 @@ public class IntegerConstantValueTag extends ConstantValueTag {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (!super.equals(obj)) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     IntegerConstantValueTag other = (IntegerConstantValueTag) obj;
     return value == other.value;
   }

@@ -31,15 +31,18 @@ public class IteratorMapper<T, U> implements Iterator<U> {
     this.delegate = delegate;
   }
 
+  @Override
   public boolean hasNext() {
     return delegate.hasNext();
   }
 
+  @Override
   public U next() {
     // TODO Auto-generated method stub
     return mapper.map(delegate.next());
   }
 
+  @Override
   public void remove() {
     delegate.remove();
   }

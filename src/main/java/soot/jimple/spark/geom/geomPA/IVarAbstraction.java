@@ -18,8 +18,12 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import java.io.PrintStream;
+import java.util.Set;
+
 import soot.SootMethod;
 import soot.Type;
+import soot.jimple.spark.geom.dataMgr.Obj_full_extractor;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.dataRep.RectangleNode;
@@ -27,9 +31,6 @@ import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
-
-import java.io.PrintStream;
-import java.util.Set;
 
 /**
  * Pointer/object representation in geomPTA. This interface defines the operations needed for
@@ -68,7 +69,9 @@ public abstract class IVarAbstraction implements Numberable {
 
   /** Used by ordering the nodes in priority worklist. */
   public boolean lessThan(IVarAbstraction other) {
-    if (lrf_value != other.lrf_value) return lrf_value < other.lrf_value;
+    if (lrf_value != other.lrf_value) {
+      return lrf_value < other.lrf_value;
+    }
 
     return top_value < other.top_value;
   }
@@ -101,7 +104,9 @@ public abstract class IVarAbstraction implements Numberable {
 
   @Override
   public String toString() {
-    if (me != null) return me.toString();
+    if (me != null) {
+      return me.toString();
+    }
     return super.toString();
   }
 
@@ -135,7 +140,9 @@ public abstract class IVarAbstraction implements Numberable {
   }
 
   public SootMethod enclosingMethod() {
-    if (me instanceof LocalVarNode) return ((LocalVarNode) me).getMethod();
+    if (me instanceof LocalVarNode) {
+      return ((LocalVarNode) me).getMethod();
+    }
     return null;
   }
 

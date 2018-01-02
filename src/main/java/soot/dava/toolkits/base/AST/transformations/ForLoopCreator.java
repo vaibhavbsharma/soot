@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.SootClass;
@@ -37,10 +41,6 @@ import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -64,6 +64,7 @@ public class ForLoopCreator extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
   /*
@@ -73,6 +74,7 @@ public class ForLoopCreator extends DepthFirstAdapter {
     ASTUnconditionalWhileNode      ASTWhileNode                ASTDoWhileNode    ASTForLoopNode
     ASTLabeledBlockNode            ASTSynchronizedBlockNode
   */
+  @Override
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
       dealWithSwitchNode((ASTSwitchNode) node);
@@ -186,6 +188,7 @@ public class ForLoopCreator extends DepthFirstAdapter {
     } // end of going over subBodies
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     inASTTryNode(node);
 

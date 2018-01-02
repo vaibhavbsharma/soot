@@ -37,11 +37,15 @@ public class DIntConstant extends IntConstant {
     return new DIntConstant(value, type);
   }
 
+  @Override
   public String toString() {
-    if (type != null)
+    if (type != null) {
       if (type instanceof BooleanType) {
-        if (value == 0) return "false";
-        else return "true";
+        if (value == 0) {
+          return "false";
+        } else {
+          return "true";
+        }
       } else if (type instanceof CharType) {
         String ch = "";
 
@@ -72,20 +76,28 @@ public class DIntConstant extends IntConstant {
             break;
 
           default:
-            if ((value > 31) && (value < 127)) ch = new Character((char) value).toString();
-            else {
+            if ((value > 31) && (value < 127)) {
+              ch = new Character((char) value).toString();
+            } else {
               ch = Integer.toHexString(value);
 
-              while (ch.length() < 4) ch = "0" + ch;
+              while (ch.length() < 4) {
+                ch = "0" + ch;
+              }
 
-              if (ch.length() > 4) ch = ch.substring(ch.length() - 4);
+              if (ch.length() > 4) {
+                ch = ch.substring(ch.length() - 4);
+              }
 
               ch = "\\u" + ch;
             }
         }
 
         return "'" + ch + "'";
-      } else if (type instanceof ByteType) return "(byte) " + new Integer(value).toString();
+      } else if (type instanceof ByteType) {
+        return "(byte) " + new Integer(value).toString();
+      }
+    }
 
     return new Integer(value).toString();
   }

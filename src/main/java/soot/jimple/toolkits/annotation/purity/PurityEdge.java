@@ -59,12 +59,16 @@ public class PurityEdge {
     return inside;
   }
 
+  @Override
   public int hashCode() {
     return field.hashCode() + target.hashCode() + source.hashCode() + (inside ? 69 : 0);
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (!(o instanceof PurityEdge)) return false;
+    if (!(o instanceof PurityEdge)) {
+      return false;
+    }
     PurityEdge e = (PurityEdge) o;
     return source.equals(e.source)
         && field.equals(e.field)
@@ -72,8 +76,12 @@ public class PurityEdge {
         && inside == e.inside;
   }
 
+  @Override
   public String toString() {
-    if (inside) return source.toString() + " = " + field + " => " + target.toString();
-    else return source.toString() + " - " + field + " -> " + target.toString();
+    if (inside) {
+      return source.toString() + " = " + field + " => " + target.toString();
+    } else {
+      return source.toString() + " - " + field + " -> " + target.toString();
+    }
   }
 }

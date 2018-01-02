@@ -26,6 +26,8 @@
 
 package soot.jimple.internal;
 
+import java.util.List;
+
 import soot.SootMethodRef;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -38,27 +40,32 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.VirtualInvokeExpr;
 import soot.util.Switch;
 
-import java.util.List;
-
 @SuppressWarnings("serial")
 public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
     implements VirtualInvokeExpr, ConvertToBaf {
   protected AbstractVirtualInvokeExpr(
       ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
     super(methodRef, baseBox, argBoxes);
-    if (methodRef.isStatic()) throw new RuntimeException("wrong static-ness");
+    if (methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractVirtualInvokeExpr) {
       AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr) o;
       if (!(baseBox.getValue().equivTo(ie.baseBox.getValue())
           && getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) return false;
+              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+        return false;
+      }
       if (argBoxes != null) {
         for (int i = 0; i < argBoxes.length; i++) {
-          if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue())) return false;
+          if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue())) {
+            return false;
+          }
         }
       }
       return true;
@@ -67,16 +74,20 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
   }
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseVirtualInvokeExpr(this);
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 
@@ -90,7 +101,9 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) buffer.append(", ");
+        if (i != 0) {
+          buffer.append(", ");
+        }
 
         buffer.append(argBoxes[i].getValue().toString());
       }
@@ -101,6 +114,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.VIRTUALINVOKE);
     up.literal(" ");
@@ -111,7 +125,9 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {
-        if (i != 0) up.literal(", ");
+        if (i != 0) {
+          up.literal(", ");
+        }
 
         argBoxes[i].toString(up);
       }
@@ -120,6 +136,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     up.literal(")");
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) (getBase())).convertToBaf(context, out);
 

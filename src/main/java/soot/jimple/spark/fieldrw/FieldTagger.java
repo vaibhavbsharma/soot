@@ -19,6 +19,10 @@
 
 package soot.jimple.spark.fieldrw;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,10 +39,6 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.TransitiveTargets;
 import soot.util.HashMultiMap;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
 public class FieldTagger extends BodyTransformer {
   public FieldTagger(Singletons.Global g) {}
 
@@ -46,17 +46,23 @@ public class FieldTagger extends BodyTransformer {
     return G.v().soot_jimple_spark_fieldrw_FieldTagger();
   }
 
-  private final HashSet<SootMethod> processedMethods = new HashSet<SootMethod>();
+  private final HashSet<SootMethod> processedMethods = new HashSet<>();
   private final HashMultiMap methodToWrite = new HashMultiMap();
   private final HashMultiMap methodToRead = new HashMultiMap();
 
   protected void ensureProcessed(SootMethod m) {
-    if (processedMethods.contains(m)) return;
+    if (processedMethods.contains(m)) {
+      return;
+    }
     processedMethods.add(m);
-    if (!m.isConcrete()) return;
-    if (m.isPhantom()) return;
-    for (Iterator sIt = m.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
+    if (!m.isConcrete()) {
+      return;
+    }
+    if (m.isPhantom()) {
+      return;
+    }
+    for (Object element : m.retrieveActiveBody().getUnits()) {
+      final Stmt s = (Stmt) element;
       if (s instanceof AssignStmt) {
         AssignStmt as = (AssignStmt) s;
         Value l = as.getLeftOp();
@@ -71,6 +77,7 @@ public class FieldTagger extends BodyTransformer {
     }
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map options) {
     int threshold = PhaseOptions.getInt(options, "threshold");
 
@@ -79,16 +86,20 @@ public class FieldTagger extends BodyTransformer {
     CallGraph cg = Scene.v().getCallGraph();
     TransitiveTargets tt = new TransitiveTargets(cg);
     statement:
-    for (Iterator sIt = body.getUnits().iterator(); sIt.hasNext(); ) {
-      final Stmt s = (Stmt) sIt.next();
+    for (Object element : body.getUnits()) {
+      final Stmt s = (Stmt) element;
       HashSet read = new HashSet();
       HashSet write = new HashSet();
       Iterator<MethodOrMethodContext> it = tt.iterator(s);
       while (it.hasNext()) {
         SootMethod target = (SootMethod) it.next();
         ensureProcessed(target);
-        if (target.isNative()) continue statement;
-        if (target.isPhantom()) continue statement;
+        if (target.isNative()) {
+          continue statement;
+        }
+        if (target.isPhantom()) {
+          continue statement;
+        }
         read.addAll(methodToRead.get(target));
         write.addAll(methodToWrite.get(target));
         if (read.size() + write.size() > threshold) {

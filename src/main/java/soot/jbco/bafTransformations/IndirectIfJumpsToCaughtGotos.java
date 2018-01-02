@@ -19,6 +19,11 @@
 
 package soot.jbco.bafTransformations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Stack;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.ByteType;
@@ -44,11 +49,6 @@ import soot.jbco.util.Rand;
 import soot.jbco.util.ThrowSet;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 2-May-2006
@@ -60,38 +60,46 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
 
   public static String dependancies[] = new String[] {"bb.jbco_iii", "bb.jbco_ful", "bb.lp"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_iii";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Indirected Ifs through Traps: " + count);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     PatchingChain<Unit> units = b.getUnits();
     Unit nonTrap = findNonTrappedUnit(units, b.getTraps());
     if (nonTrap == null) {
       Unit last = null;
       nonTrap = Baf.v().newNopInst();
-      for (Iterator<Unit> it = units.iterator(); it.hasNext(); ) {
-        Unit u = it.next();
+      for (Unit u : units) {
         if (u instanceof IdentityInst && ((IdentityInst) u).getLeftOp() instanceof Local) {
           last = u;
           continue;
         } else {
-          if (last != null) units.insertAfter(nonTrap, last);
-          else units.addFirst(nonTrap);
+          if (last != null) {
+            units.insertAfter(nonTrap, last);
+          } else {
+            units.addFirst(nonTrap);
+          }
           break;
         }
       }
@@ -99,7 +107,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
 
     Stack<Type> stack = StackTypeHeightCalculator.getAfterStack(b, nonTrap);
 
-    ArrayList<Unit> addedUnits = new ArrayList<Unit>();
+    ArrayList<Unit> addedUnits = new ArrayList<>();
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit u = it.next();
@@ -112,12 +120,14 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
       }
     }
 
-    if (addedUnits.size() <= 0) return;
+    if (addedUnits.size() <= 0) {
+      return;
+    }
 
     Unit nop = Baf.v().newNopInst();
     units.add(nop);
 
-    ArrayList<Unit> toinsert = new ArrayList<Unit>();
+    ArrayList<Unit> toinsert = new ArrayList<>();
     SootField field = null;
     try {
       field = soot.jbco.jimpleTransformations.FieldRenamer.getRandomOpaques()[Rand.getInt(2)];
@@ -151,8 +161,10 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
       toinsert.add(Baf.v().newIfEqInst(units.getSuccOf(nonTrap)));
     }
 
-    ArrayList<Unit> toinserttry = new ArrayList<Unit>();
-    while (stack.size() > 0) toinserttry.add(Baf.v().newPopInst(stack.pop()));
+    ArrayList<Unit> toinserttry = new ArrayList<>();
+    while (stack.size() > 0) {
+      toinserttry.add(Baf.v().newPopInst(stack.pop()));
+    }
     toinserttry.add(Baf.v().newPushInst(soot.jimple.NullConstant.v()));
 
     Unit handler = Baf.v().newThrowInst();
@@ -183,18 +195,24 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
 
   private Unit findNonTrappedUnit(PatchingChain<Unit> units, Chain<Trap> traps) {
     int intrap = 0;
-    ArrayList<Unit> untrapped = new ArrayList<Unit>();
+    ArrayList<Unit> untrapped = new ArrayList<>();
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit u = it.next();
       Iterator<Trap> tit = traps.iterator();
       while (tit.hasNext()) {
         Trap t = tit.next();
-        if (u == t.getBeginUnit()) intrap++;
-        if (u == t.getEndUnit()) intrap--;
+        if (u == t.getBeginUnit()) {
+          intrap++;
+        }
+        if (u == t.getEndUnit()) {
+          intrap--;
+        }
       }
 
-      if (intrap == 0) untrapped.add(u);
+      if (intrap == 0) {
+        untrapped.add(u);
+      }
     }
 
     Unit result = null;
@@ -205,7 +223,9 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
         result = untrapped.get(Rand.getInt(999999) % untrapped.size());
         if (!result.fallsThrough()
             || units.getSuccOf(result) == null
-            || units.getSuccOf(result) instanceof ThrowInst) result = null;
+            || units.getSuccOf(result) instanceof ThrowInst) {
+          result = null;
+        }
       }
     }
 

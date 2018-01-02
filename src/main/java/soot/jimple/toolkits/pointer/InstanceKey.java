@@ -104,7 +104,9 @@ public class InstanceKey {
     }
     // different methods or local not-may-alias was not successful: get points-to info
     PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-    if (pta == null) return false; // no info; hence don't know for sure
+    if (pta == null) {
+      return false; // no info; hence don't know for sure
+    }
     // may not alias if we have an empty intersection
     return !pts.hasNonEmptyIntersection(otherKey.pts);
   }
@@ -121,6 +123,7 @@ public class InstanceKey {
     return stmtAfterAssignStmt != null;
   }
 
+  @Override
   public String toString() {
     String instanceKeyString =
         stmtAfterAssignStmt != null
@@ -153,13 +156,23 @@ public class InstanceKey {
   /** {@inheritDoc} */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     final InstanceKey other = (InstanceKey) obj;
     if (owner == null) {
-      if (other.owner != null) return false;
-    } else if (!owner.equals(other.owner)) return false;
+      if (other.owner != null) {
+        return false;
+      }
+    } else if (!owner.equals(other.owner)) {
+      return false;
+    }
     // two keys are equal if they must alias
     if (mustAlias(other)) {
       return true;

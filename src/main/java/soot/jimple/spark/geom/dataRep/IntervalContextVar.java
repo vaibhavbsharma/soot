@@ -60,13 +60,17 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
   public int hashCode() {
     int ch = (int) ((L + R) % Integer.MAX_VALUE);
     int ans = var.hashCode() + ch;
-    if (ans < 0) ans = var.hashCode();
+    if (ans < 0) {
+      ans = var.hashCode();
+    }
     return ans;
   }
 
   @Override
   public int compareTo(IntervalContextVar o) {
-    if (L == o.L) return R < o.R ? -1 : 1;
+    if (L == o.L) {
+      return R < o.R ? -1 : 1;
+    }
 
     return L < o.L ? -1 : 1;
   }
@@ -84,12 +88,16 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
     if (icv.L < L) {
       if (L <= icv.R) {
         L = icv.L;
-        if (R < icv.R) R = icv.R;
+        if (R < icv.R) {
+          R = icv.R;
+        }
         return true;
       }
     } else {
       if (icv.L <= R) {
-        if (R < icv.R) R = icv.R;
+        if (R < icv.R) {
+          R = icv.R;
+        }
         return true;
       }
     }
@@ -101,7 +109,9 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
   public boolean intersect(ContextVar cv) {
     IntervalContextVar icv = (IntervalContextVar) cv;
 
-    if (L <= icv.L && icv.L < R) return true;
+    if (L <= icv.L && icv.L < R) {
+      return true;
+    }
     return icv.L <= L && L < icv.R;
   }
 }

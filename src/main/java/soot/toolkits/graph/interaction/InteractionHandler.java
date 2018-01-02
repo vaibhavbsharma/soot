@@ -19,6 +19,8 @@
 
 package soot.toolkits.graph.interaction;
 
+import java.util.ArrayList;
+
 import soot.Body;
 import soot.G;
 import soot.PhaseOptions;
@@ -28,8 +30,6 @@ import soot.Transform;
 import soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
-
-import java.util.ArrayList;
 
 public class InteractionHandler {
 
@@ -47,7 +47,7 @@ public class InteractionHandler {
 
   public void addToStopUnitList(Object elem) {
     if (stopUnitList == null) {
-      stopUnitList = new ArrayList<Object>();
+      stopUnitList = new ArrayList<>();
     }
     stopUnitList.add(elem);
   }

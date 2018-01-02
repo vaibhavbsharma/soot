@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import soot.Local;
 import soot.RefLikeType;
 import soot.Unit;
@@ -27,10 +31,6 @@ import soot.ValueBox;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A special version of the local must-alias analysis that takes redefinitions within loops into
@@ -52,12 +52,11 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
 
   public StrongLocalMustAliasAnalysis(UnitGraph g) {
     super(g);
-    invalidInstanceKeys = new HashSet<Integer>();
+    invalidInstanceKeys = new HashSet<>();
     /*
      * Find all SCCs, then invalidate all instance keys for variable defined within an SCC.
      */
-    StronglyConnectedComponentsFast<Unit> sccAnalysis =
-        new StronglyConnectedComponentsFast<Unit>(g);
+    StronglyConnectedComponentsFast<Unit> sccAnalysis = new StronglyConnectedComponentsFast<>(g);
     for (List<Unit> scc : sccAnalysis.getTrueComponents()) {
       for (Unit unit : scc) {
         for (ValueBox vb : unit.getDefBoxes()) {
@@ -93,7 +92,9 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
     if (l1n == null
         || l2n == null
         || invalidInstanceKeys.contains(l1n)
-        || invalidInstanceKeys.contains(l2n)) return false;
+        || invalidInstanceKeys.contains(l2n)) {
+      return false;
+    }
 
     return l1n == l2n;
   }

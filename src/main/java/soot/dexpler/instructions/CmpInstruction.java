@@ -28,6 +28,7 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -54,9 +55,10 @@ public class CmpInstruction extends TaggedInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    if (!(instruction instanceof Instruction23x))
+    if (!(instruction instanceof Instruction23x)) {
       throw new IllegalArgumentException(
           "Expected Instruction23x but got: " + instruction.getClass());
+    }
 
     Instruction23x cmpInstr = (Instruction23x) instruction;
     int dest = cmpInstr.getRegisterA();

@@ -25,9 +25,9 @@
 
 package soot.coffi;
 
-import soot.G;
-
 import java.util.List;
+
+import soot.G;
 
 /**
  * Represents a single method_info object.
@@ -109,7 +109,9 @@ public class method_info {
 
     for (i = 0; i < attributes_count; i++) {
       ai = attributes[i];
-      if (ai instanceof Code_attribute) return (Code_attribute) ai;
+      if (ai instanceof Code_attribute) {
+        return (Code_attribute) ai;
+      }
     }
     return null;
   }
@@ -129,7 +131,9 @@ public class method_info {
     name = toName(constant_pool);
     params =
         ClassFile.parseMethodDesc_params(cp_info.getTypeDescr(constant_pool, descriptor_index));
-    if (access.length() > 0) return access + " " + rt + " " + name + "(" + params + ")";
+    if (access.length() > 0) {
+      return access + " " + rt + " " + name + "(" + params + ")";
+    }
     return rt + " " + name + "(" + params + ")";
   }
 

@@ -19,15 +19,15 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /*
 Will contain the For loop Construct
@@ -86,14 +86,16 @@ public class ASTForLoopNode extends ASTControlFlowNode {
 
   public void replaceBody(List<Object> body) {
     this.body = body;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(body);
   }
 
+  @Override
   public Object clone() {
     return new ASTForLoopNode(get_Label(), init, get_Condition(), update, body);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -140,6 +142,7 @@ public class ASTForLoopNode extends ASTControlFlowNode {
     up.newline();
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -180,6 +183,7 @@ public class ASTForLoopNode extends ASTControlFlowNode {
     return b.toString();
   }
 
+  @Override
   public void apply(Analysis a) {
     a.caseASTForLoopNode(this);
   }

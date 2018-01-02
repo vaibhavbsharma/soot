@@ -1,5 +1,8 @@
 package soot.dexpler;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -12,9 +15,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Transformer that simplifies array initializations. It converts
@@ -40,7 +40,9 @@ public class DexArrayInitReducer extends BodyTransformer {
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // Make sure that we only have linear control flow
-    if (!b.getTraps().isEmpty()) return;
+    if (!b.getTraps().isEmpty()) {
+      return;
+    }
 
     // Look for a chain of two constant assignments followed by an array put
     Unit u1 = null, u2 = null;
@@ -68,14 +70,18 @@ public class DexArrayInitReducer extends BodyTransformer {
           Value u2val = u2.getDefBoxes().get(0).getValue();
 
           // index
-          if (arrayRef.getIndex() == u1val) arrayRef.setIndex(((AssignStmt) u1).getRightOp());
-          else if (arrayRef.getIndex() == u2val) arrayRef.setIndex(((AssignStmt) u2).getRightOp());
+          if (arrayRef.getIndex() == u1val) {
+            arrayRef.setIndex(((AssignStmt) u1).getRightOp());
+          } else if (arrayRef.getIndex() == u2val) {
+            arrayRef.setIndex(((AssignStmt) u2).getRightOp());
+          }
 
           // value
-          if (assignStmt.getRightOp() == u1val)
+          if (assignStmt.getRightOp() == u1val) {
             assignStmt.setRightOp(((AssignStmt) u1).getRightOp());
-          else if (assignStmt.getRightOp() == u2val)
+          } else if (assignStmt.getRightOp() == u2val) {
             assignStmt.setRightOp(((AssignStmt) u2).getRightOp());
+          }
 
           // Remove the unnecessary assignments
           Unit checkU = u;
@@ -83,14 +89,21 @@ public class DexArrayInitReducer extends BodyTransformer {
           while (!(doneU1 && doneU2) && !(foundU1 && foundU2) && checkU != null) {
             // Does the current statement use the value?
             for (ValueBox vb : checkU.getUseBoxes()) {
-              if (!doneU1 && vb.getValue() == u1val) foundU1 = true;
-              if (!doneU2 && vb.getValue() == u2val) foundU2 = true;
+              if (!doneU1 && vb.getValue() == u1val) {
+                foundU1 = true;
+              }
+              if (!doneU2 && vb.getValue() == u2val) {
+                foundU2 = true;
+              }
             }
 
             // Does the current statement overwrite the value?
             for (ValueBox vb : checkU.getDefBoxes()) {
-              if (vb.getValue() == u1val) doneU1 = true;
-              else if (vb.getValue() == u2val) doneU2 = true;
+              if (vb.getValue() == u1val) {
+                doneU1 = true;
+              } else if (vb.getValue() == u2val) {
+                doneU2 = true;
+              }
             }
 
             // If this statement branches, we abort

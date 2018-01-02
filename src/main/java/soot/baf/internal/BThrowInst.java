@@ -32,34 +32,42 @@ import soot.util.Switch;
 public class BThrowInst extends AbstractInst implements ThrowInst {
   public BThrowInst() {}
 
+  @Override
   public int getInCount() {
     return 1;
   }
 
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public final String getName() {
     return "athrow";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseThrowInst(this);
   }
 
+  @Override
   public Object clone() {
     return new BThrowInst();
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }

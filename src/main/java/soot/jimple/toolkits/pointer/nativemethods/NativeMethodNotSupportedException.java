@@ -42,6 +42,7 @@ public class NativeMethodNotSupportedException extends RuntimeException {
 
   public NativeMethodNotSupportedException() {}
 
+  @Override
   public String toString() {
     return msg;
   }

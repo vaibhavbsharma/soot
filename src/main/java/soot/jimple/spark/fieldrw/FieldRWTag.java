@@ -19,10 +19,10 @@
 
 package soot.jimple.spark.fieldrw;
 
+import java.util.Set;
+
 import soot.SootField;
 import soot.tagkit.Tag;
-
-import java.util.Set;
 
 /** Implements a tag that holds a list of fields read or written by a call. */
 public abstract class FieldRWTag implements Tag {
@@ -32,7 +32,9 @@ public abstract class FieldRWTag implements Tag {
     StringBuffer sb = new StringBuffer();
     boolean first = true;
     for (SootField field : fields) {
-      if (!first) sb.append("%");
+      if (!first) {
+        sb.append("%");
+      }
       first = false;
       sb.append(field.getDeclaringClass().getName());
       sb.append(":");
@@ -41,8 +43,10 @@ public abstract class FieldRWTag implements Tag {
     fieldNames = sb.toString();
   }
 
+  @Override
   public abstract String getName();
 
+  @Override
   public byte[] getValue() {
     byte[] bytes = fieldNames.getBytes();
     byte[] ret = new byte[bytes.length + 2];
@@ -52,6 +56,7 @@ public abstract class FieldRWTag implements Tag {
     return ret;
   }
 
+  @Override
   public String toString() {
     return getName() + fieldNames;
   }

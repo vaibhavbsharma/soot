@@ -18,11 +18,11 @@ package soot;
  * Boston, MA 02111-1307, USA.
  */
 
+import java.io.File;
+
 import soot.dexpler.DexResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
-
-import java.io.File;
 
 /** Responsible for resolving a single class from a dex source format. */
 public class DexClassSource extends ClassSource {
@@ -42,9 +42,11 @@ public class DexClassSource extends ClassSource {
    * @param sc The SootClass to resolve into.
    * @return Dependencies of class (Strings or Types referenced).
    */
+  @Override
   public Dependencies resolve(SootClass sc) {
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("resolving " + className + " from file " + path.getPath());
+    }
     return DexResolver.v().resolveFromFile(path, className, sc);
   }
 }

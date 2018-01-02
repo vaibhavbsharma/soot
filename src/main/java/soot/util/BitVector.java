@@ -55,10 +55,14 @@ public class BitVector {
   }
 
   public void and(BitVector other) {
-    if (this == other) return;
+    if (this == other) {
+      return;
+    }
     long[] otherBits = other.bits;
     int numToAnd = otherBits.length;
-    if (bits.length < numToAnd) numToAnd = bits.length;
+    if (bits.length < numToAnd) {
+      numToAnd = bits.length;
+    }
     int i;
     for (i = 0; i < numToAnd; i++) {
       bits[i] = bits[i] & otherBits[i];
@@ -71,16 +75,21 @@ public class BitVector {
   public void andNot(BitVector other) {
     long[] otherBits = other.bits;
     int numToAnd = otherBits.length;
-    if (bits.length < numToAnd) numToAnd = bits.length;
+    if (bits.length < numToAnd) {
+      numToAnd = bits.length;
+    }
     for (int i = 0; i < numToAnd; i++) {
       bits[i] = bits[i] & ~otherBits[i];
     }
   }
 
   public void clear(int bit) {
-    if (indexOf(bit) < bits.length) bits[indexOf(bit)] &= ~mask(bit);
+    if (indexOf(bit) < bits.length) {
+      bits[indexOf(bit)] &= ~mask(bit);
+    }
   }
 
+  @Override
   public Object clone() {
     try {
       BitVector ret = (BitVector) super.clone();
@@ -92,8 +101,11 @@ public class BitVector {
     }
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (!(o instanceof BitVector)) return false;
+    if (!(o instanceof BitVector)) {
+      return false;
+    }
     BitVector other = (BitVector) o;
     int min = bits.length;
     long[] longer = other.bits;
@@ -103,19 +115,26 @@ public class BitVector {
     }
     int i;
     for (i = 0; i < min; i++) {
-      if (bits[i] != other.bits[i]) return false;
+      if (bits[i] != other.bits[i]) {
+        return false;
+      }
     }
     for (; i < longer.length; i++) {
-      if (longer[i] != 0L) return false;
+      if (longer[i] != 0L) {
+        return false;
+      }
     }
     return true;
   }
 
   public boolean get(int bit) {
-    if (indexOf(bit) >= bits.length) return false;
+    if (indexOf(bit) >= bits.length) {
+      return false;
+    }
     return (bits[indexOf(bit)] & mask(bit)) != 0L;
   }
 
+  @Override
   public int hashCode() {
     long ret = 0;
     for (long element : bits) {
@@ -127,22 +146,31 @@ public class BitVector {
   public int length() {
     int i;
     for (i = bits.length - 1; i >= 0; i--) {
-      if (bits[i] != 0L) break;
+      if (bits[i] != 0L) {
+        break;
+      }
     }
-    if (i < 0) return 0;
+    if (i < 0) {
+      return 0;
+    }
     long j = bits[i];
     i++;
     i <<= 6;
-    for (long k = 1L << 63; (k & j) == 0L; k >>= 1, i--) ;
+    for (long k = 1L << 63; (k & j) == 0L; k >>= 1, i--) {;
+    }
     return i;
   }
 
   public void copyFrom(BitVector other) {
-    if (this == other) return;
+    if (this == other) {
+      return;
+    }
     long[] otherBits = other.bits;
     int j;
     for (j = otherBits.length - 1; j >= 0; j--) {
-      if (otherBits[j] != 0L) break;
+      if (otherBits[j] != 0L) {
+        break;
+      }
     }
     expand(j << 6);
     int i = j + 1;
@@ -155,11 +183,15 @@ public class BitVector {
   }
 
   public void or(BitVector other) {
-    if (this == other) return;
+    if (this == other) {
+      return;
+    }
     long[] otherBits = other.bits;
     int j;
     for (j = otherBits.length - 1; j >= 0; j--) {
-      if (otherBits[j] != 0L) break;
+      if (otherBits[j] != 0L) {
+        break;
+      }
     }
     expand(j << 6);
     for (; j >= 0; j--) {
@@ -193,29 +225,41 @@ public class BitVector {
   public boolean intersects(BitVector other) {
     long[] otherBits = other.bits;
     int numToCheck = otherBits.length;
-    if (bits.length < numToCheck) numToCheck = bits.length;
+    if (bits.length < numToCheck) {
+      numToCheck = bits.length;
+    }
     int i;
     for (i = 0; i < numToCheck; i++) {
-      if ((bits[i] & otherBits[i]) != 0) return true;
+      if ((bits[i] & otherBits[i]) != 0) {
+        return true;
+      }
     }
     return false;
   }
 
   private void expand(int bit) {
     int n = indexOf(bit) + 1;
-    if (n <= bits.length) return;
-    if (bits.length * 2 > n) n = bits.length * 2;
+    if (n <= bits.length) {
+      return;
+    }
+    if (bits.length * 2 > n) {
+      n = bits.length * 2;
+    }
     long[] newBits = new long[n];
     System.arraycopy(bits, 0, newBits, 0, bits.length);
     bits = newBits;
   }
 
   public void xor(BitVector other) {
-    if (this == other) return;
+    if (this == other) {
+      return;
+    }
     long[] otherBits = other.bits;
     int j;
     for (j = otherBits.length - 1; j >= 0; j--) {
-      if (otherBits[j] != 0L) break;
+      if (otherBits[j] != 0L) {
+        break;
+      }
     }
     expand(j << 6);
     for (; j >= 0; j--) {
@@ -234,6 +278,7 @@ public class BitVector {
     return bits.length << 6;
   }
 
+  @Override
   public String toString() {
     StringBuffer ret = new StringBuffer();
     ret.append('{');
@@ -241,7 +286,9 @@ public class BitVector {
     BitSetIterator it = new BitSetIterator(bits);
     while (it.hasNext()) {
       int bit = it.next();
-      if (!start) ret.append(", ");
+      if (!start) {
+        ret.append(", ");
+      }
       start = false;
       ret.append(bit);
     }
@@ -307,20 +354,26 @@ public class BitVector {
       if (dl <= bl) {
         while (i < dl) {
           l = b[i] & ~d[i];
-          if ((l & ~e[i]) != 0) ret = true;
+          if ((l & ~e[i]) != 0) {
+            ret = true;
+          }
           e[i] |= l;
           i++;
         }
         while (i < bl) {
           l = b[i];
-          if ((l & ~e[i]) != 0) ret = true;
+          if ((l & ~e[i]) != 0) {
+            ret = true;
+          }
           e[i] |= l;
           i++;
         }
       } else {
         while (i < bl) {
           l = b[i] & ~d[i];
-          if ((l & ~e[i]) != 0) ret = true;
+          if ((l & ~e[i]) != 0) {
+            ret = true;
+          }
           e[i] |= l;
           i++;
         }
@@ -329,7 +382,9 @@ public class BitVector {
       // bl is the shortest
       while (i < bl) {
         l = b[i] & c[i] & ~d[i];
-        if ((l & ~e[i]) != 0) ret = true;
+        if ((l & ~e[i]) != 0) {
+          ret = true;
+        }
         e[i] |= l;
         i++;
       }
@@ -337,7 +392,9 @@ public class BitVector {
       // cl is the shortest
       while (i < cl) {
         l = b[i] & c[i] & ~d[i];
-        if ((l & ~e[i]) != 0) ret = true;
+        if ((l & ~e[i]) != 0) {
+          ret = true;
+        }
         e[i] |= l;
         i++;
       }
@@ -345,15 +402,21 @@ public class BitVector {
       // dl is the shortest
       while (i < dl) {
         l = b[i] & c[i] & ~d[i];
-        if ((l & ~e[i]) != 0) ret = true;
+        if ((l & ~e[i]) != 0) {
+          ret = true;
+        }
         e[i] |= l;
         i++;
       }
       int shorter = cl;
-      if (bl < shorter) shorter = bl;
+      if (bl < shorter) {
+        shorter = bl;
+      }
       while (i < shorter) {
         l = b[i] & c[i];
-        if ((l & ~e[i]) != 0) ret = true;
+        if ((l & ~e[i]) != 0) {
+          ret = true;
+        }
         e[i] |= l;
         i++;
       }

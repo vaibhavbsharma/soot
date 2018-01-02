@@ -36,6 +36,7 @@ public class LocalClassDeclFinder extends polyglot.visit.NodeVisitor {
     declFound = null;
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
 
     if (n instanceof polyglot.ast.LocalClassDecl) {

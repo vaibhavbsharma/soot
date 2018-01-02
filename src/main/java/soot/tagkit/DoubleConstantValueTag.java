@@ -38,6 +38,7 @@ public class DoubleConstantValueTag extends ConstantValueTag {
     this.value = val;
   }
 
+  @Override
   public String toString() {
     return "ConstantValue: " + Double.toString(value);
   }
@@ -59,9 +60,15 @@ public class DoubleConstantValueTag extends ConstantValueTag {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (!super.equals(obj)) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     DoubleConstantValueTag other = (DoubleConstantValueTag) obj;
     return Double.doubleToLongBits(value) == Double.doubleToLongBits(other.value);
   }

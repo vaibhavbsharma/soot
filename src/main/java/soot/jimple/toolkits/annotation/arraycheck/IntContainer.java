@@ -29,7 +29,9 @@ class IntContainer {
   static IntContainer[] pool = new IntContainer[100];
 
   static {
-    for (int i = 0; i < 100; i++) pool[i] = new IntContainer(i - 50);
+    for (int i = 0; i < 100; i++) {
+      pool[i] = new IntContainer(i - 50);
+    }
   }
 
   int value;
@@ -41,17 +43,21 @@ class IntContainer {
   public static IntContainer v(int v) {
     if ((v >= -50) && (v <= 49)) {
       return pool[v + 50];
-    } else return new IntContainer(v);
+    } else {
+      return new IntContainer(v);
+    }
   }
 
   public IntContainer dup() {
     return new IntContainer(value);
   }
 
+  @Override
   public int hashCode() {
     return value;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof IntContainer) {
       return ((IntContainer) other).value == this.value;
@@ -60,6 +66,7 @@ class IntContainer {
     return false;
   }
 
+  @Override
   public String toString() {
     return "" + value;
   }

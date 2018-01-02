@@ -25,13 +25,13 @@
 
 package soot.coffi;
 
-import soot.G;
-import soot.jimple.Stmt;
-import soot.util.ArraySet;
-
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+
+import soot.G;
+import soot.jimple.Stmt;
+import soot.util.ArraySet;
 
 /**
  * Represents one basic block in a control flow graph.
@@ -108,16 +108,16 @@ class BasicBlock {
         tail = tail.next;
       }
     }
-    succ = new Vector<BasicBlock>(2, 10);
-    pred = new Vector<BasicBlock>(2, 3);
+    succ = new Vector<>(2, 10);
+    pred = new Vector<>(2, 3);
   }
 
   public BasicBlock(Instruction headinsn, Instruction tailinsn) {
     id = G.v().coffi_BasicBlock_ids++;
     head = headinsn;
     tail = tailinsn;
-    succ = new Vector<BasicBlock>(2, 10);
-    pred = new Vector<BasicBlock>(2, 3);
+    succ = new Vector<>(2, 10);
+    pred = new Vector<>(2, 3);
   }
 
   /**
@@ -126,6 +126,7 @@ class BasicBlock {
    * @return the hash code.
    * @see Instruction#label
    */
+  @Override
   public int hashCode() {
     return (new Integer(head.label)).hashCode();
   }
@@ -142,6 +143,7 @@ class BasicBlock {
   }
 
   /** For printing the string "BB: " + id. */
+  @Override
   public String toString() {
     return "BB: " + id;
   }

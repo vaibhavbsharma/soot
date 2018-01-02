@@ -1,15 +1,5 @@
 package soot.dexpler;
 
-import org.jf.dexlib2.DexFileFactory;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.MultiDexContainer;
-import soot.CompilationDeathException;
-import soot.G;
-import soot.Scene;
-import soot.Singletons;
-import soot.options.Options;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -24,6 +14,17 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+
+import org.jf.dexlib2.DexFileFactory;
+import org.jf.dexlib2.Opcodes;
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.MultiDexContainer;
+
+import soot.CompilationDeathException;
+import soot.G;
+import soot.Scene;
+import soot.Singletons;
+import soot.options.Options;
 
 /**
  * Class providing dex files from a given source, e.g., jar, apk, dex, folder containing multiple
@@ -41,15 +42,21 @@ public class DexFileProvider {
           String s1 = o1.getDexName(), s2 = o2.getDexName();
 
           // "classes.dex" has highest priority
-          if (s1.equals("classes.dex")) return 1;
-          else if (s2.equals("classes.dex")) return -1;
+          if (s1.equals("classes.dex")) {
+            return 1;
+          } else if (s2.equals("classes.dex")) {
+            return -1;
+          }
 
           // if one of the strings starts with "classes", we give it the edge right here
           boolean s1StartsClasses = s1.startsWith("classes");
           boolean s2StartsClasses = s2.startsWith("classes");
 
-          if (s1StartsClasses && !s2StartsClasses) return 1;
-          else if (s2StartsClasses && !s1StartsClasses) return -1;
+          if (s1StartsClasses && !s2StartsClasses) {
+            return 1;
+          } else if (s2StartsClasses && !s1StartsClasses) {
+            return -1;
+          }
 
           // otherwise, use natural string ordering
           return s1.compareTo(s2);
@@ -91,7 +98,9 @@ public class DexFileProvider {
       resultList.addAll(dexMap.get(theSource.getCanonicalPath()).values());
     }
 
-    if (resultList.size() > 1) Collections.sort(resultList, Collections.reverseOrder(prioritizer));
+    if (resultList.size() > 1) {
+      Collections.sort(resultList, Collections.reverseOrder(prioritizer));
+    }
     return resultList;
   }
 
@@ -109,7 +118,9 @@ public class DexFileProvider {
     // we take the first dex we find with the given name
     for (File theSource : allSources) {
       DexContainer dexFile = dexMap.get(theSource.getCanonicalPath()).get(dexName);
-      if (dexFile != null) return dexFile;
+      if (dexFile != null) {
+        return dexFile;
+      }
     }
 
     throw new CompilationDeathException(
@@ -128,12 +139,16 @@ public class DexFileProvider {
                     + file.getCanonicalPath()
                     + "'. Use '-process-multiple-dex' option to process them all.");
         return Collections.singletonList(file);
-      } else return dexFiles;
+      } else {
+        return dexFiles;
+      }
     } else {
       String ext = com.google.common.io.Files.getFileExtension(dexSource.getName()).toLowerCase();
-      if ((ext.equals("jar") || ext.equals("zip")) && !Options.v().search_dex_in_archives())
+      if ((ext.equals("jar") || ext.equals("zip")) && !Options.v().search_dex_in_archives()) {
         return Collections.EMPTY_LIST;
-      else return Collections.singletonList(dexSource);
+      } else {
+        return Collections.singletonList(dexSource);
+      }
     }
   }
 
@@ -170,8 +185,9 @@ public class DexFileProvider {
     int dexFileCount = dexEntryNameList.size();
 
     if (dexFileCount < 1) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         G.v().out.println(String.format("Warning: No dex file found in '%s'", dexSourceFile));
+      }
       return Collections.emptyMap();
     }
 
@@ -192,20 +208,22 @@ public class DexFileProvider {
                   "Found dex file '%s' with %d classes in '%s'",
                   entryName, entry.getClasses().size(), dexSourceFile.getCanonicalPath()));
 
-      if (multiple_dex) dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));
-      else if (dexMap.isEmpty()
+      if (multiple_dex) {
+        dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));
+      } else if (dexMap.isEmpty()
           && (entryName.equals("classes.dex") || !entryNameIterator.hasPrevious())) {
         // We prefer to have classes.dex in single dex mode.
         // If we haven't found a classes.dex until the last element, take the last!
         dexMap =
             Collections.singletonMap(entryName, new DexContainer(entry, entryName, dexSourceFile));
-        if (dexFileCount > 1)
+        if (dexFileCount > 1) {
           G.v()
               .out
               .println(
                   "WARNING: Multiple dex files detected, only processing '"
                       + entryName
                       + "'. Use '-process-multiple-dex' option to process them all.");
+        }
       }
     }
     return Collections.unmodifiableMap(dexMap);
@@ -216,13 +234,15 @@ public class DexFileProvider {
   }
 
   private List<File> getAllDexFilesInDirectory(File path) {
-    Queue<File> toVisit = new ArrayDeque<File>();
-    Set<File> visited = new HashSet<File>();
-    List<File> ret = new ArrayList<File>();
+    Queue<File> toVisit = new ArrayDeque<>();
+    Set<File> visited = new HashSet<>();
+    List<File> ret = new ArrayList<>();
     toVisit.add(path);
     while (!toVisit.isEmpty()) {
       File cur = toVisit.poll();
-      if (visited.contains(cur)) continue;
+      if (visited.contains(cur)) {
+        continue;
+      }
       visited.add(cur);
       if (cur.isDirectory()) {
         toVisit.addAll(Arrays.asList(cur.listFiles()));

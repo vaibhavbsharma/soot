@@ -19,13 +19,12 @@
 
 package soot.jimple.spark.sets;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 
 /**
  * HashSet implementation of points-to set.
@@ -38,10 +37,12 @@ public final class HashPointsToSet extends PointsToSetInternal {
     this.pag = pag;
   }
   /** Returns true if this set contains no run-time objects. */
+  @Override
   public final boolean isEmpty() {
     return s.isEmpty();
   }
   /** Adds contents of other into this set, returns true if this set changed. */
+  @Override
   public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
     if (other instanceof HashPointsToSet
         && exclude == null
@@ -54,13 +55,15 @@ public final class HashPointsToSet extends PointsToSetInternal {
     }
   }
   /** Calls v's visit method on all nodes in this set. */
+  @Override
   public final boolean forall(P2SetVisitor v) {
-    for (Iterator<Node> it = new ArrayList<Node>(s).iterator(); it.hasNext(); ) {
-      v.visit(it.next());
+    for (Node node : new ArrayList<>(s)) {
+      v.visit(node);
     }
     return v.getReturnValue();
   }
   /** Adds n to this set, returns true if n was not already in this set. */
+  @Override
   public final boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
 
@@ -69,12 +72,14 @@ public final class HashPointsToSet extends PointsToSetInternal {
     return false;
   }
   /** Returns true iff the set contains n. */
+  @Override
   public final boolean contains(Node n) {
     return s.contains(n);
   }
 
   public static P2SetFactory getFactory() {
     return new P2SetFactory() {
+      @Override
       public PointsToSetInternal newSet(Type type, PAG pag) {
         return new HashPointsToSet(type, pag);
       }
@@ -84,6 +89,6 @@ public final class HashPointsToSet extends PointsToSetInternal {
   /* End of public methods. */
   /* End of package methods. */
 
-  private final HashSet<Node> s = new HashSet<Node>(4);
+  private final HashSet<Node> s = new HashSet<>(4);
   private PAG pag = null;
 }

@@ -20,13 +20,13 @@
 
 package soot.dava.internal.AST;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.UnitPrinter;
 import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
 import soot.jimple.ConditionExpr;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ASTIfNode extends ASTControlFlowNode {
   private List<Object> body;
@@ -58,6 +58,7 @@ public class ASTIfNode extends ASTControlFlowNode {
     return body;
   }
 
+  @Override
   public Object clone() {
     return new ASTIfNode(get_Label(), get_Condition(), body);
   }
@@ -68,7 +69,7 @@ public class ASTIfNode extends ASTControlFlowNode {
   */
   public void replace(SETNodeLabel label, ASTCondition condition, List<Object> body) {
     this.body = body;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(body);
     set_Condition(condition);
     set_Label(label);
@@ -80,10 +81,11 @@ public class ASTIfNode extends ASTControlFlowNode {
   */
   public void replaceBody(List<Object> body) {
     this.body = body;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
     subBodies.add(body);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -105,6 +107,7 @@ public class ASTIfNode extends ASTControlFlowNode {
     up.newline();
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -131,6 +134,7 @@ public class ASTIfNode extends ASTControlFlowNode {
     Part of Visitor Design Implementation for AST
     See: soot.dava.toolkits.base.AST.analysis For details
   */
+  @Override
   public void apply(Analysis a) {
     a.caseASTIfNode(this);
   }

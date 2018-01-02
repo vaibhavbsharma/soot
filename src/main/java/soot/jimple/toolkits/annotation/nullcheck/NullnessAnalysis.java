@@ -20,6 +20,9 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import java.util.HashMap;
+import java.util.List;
+
 import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
@@ -51,10 +54,6 @@ import soot.shimple.PhiExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * An intraprocedural nullness analysis that computes for each location and each value in a method
  * if the value is (before or after that location) definitely null, definitely non-null or neither.
@@ -84,7 +83,9 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     public int get(Value key) {
-      if (!valueToIndex.containsKey(key)) return BOTTOM;
+      if (!valueToIndex.containsKey(key)) {
+        return BOTTOM;
+      }
 
       int index = valueToIndex.get(key);
       int result = get(index) ? 2 : 0;
@@ -112,7 +113,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
   protected static final int NON_NULL = 2;
   protected static final int TOP = 3;
 
-  protected final HashMap<Value, Integer> valueToIndex = new HashMap<Value, Integer>();
+  protected final HashMap<Value, Integer> valueToIndex = new HashMap<>();
   protected int used = 0;
 
   /**
@@ -178,11 +179,11 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     // now copy the computed info to all successors
-    for (Iterator<AnalysisInfo> it = fallOut.iterator(); it.hasNext(); ) {
-      copy(out, it.next());
+    for (AnalysisInfo analysisInfo : fallOut) {
+      copy(out, analysisInfo);
     }
-    for (Iterator<AnalysisInfo> it = branchOuts.iterator(); it.hasNext(); ) {
-      copy(outBranch, it.next());
+    for (AnalysisInfo analysisInfo : branchOuts) {
+      copy(outBranch, analysisInfo);
     }
   }
 
@@ -228,13 +229,15 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
     // if we compare a local with null then process further...
     if (val != null && val instanceof Local) {
-      if (eqExpr instanceof JEqExpr)
+      if (eqExpr instanceof JEqExpr) {
         // a==null
         handleEquality(val, out, outBranch);
-      else if (eqExpr instanceof JNeExpr)
+      } else if (eqExpr instanceof JNeExpr) {
         // a!=null
         handleNonEquality(val, out, outBranch);
-      else throw new IllegalStateException("unexpected condition: " + eqExpr.getClass());
+      } else {
+        throw new IllegalStateException("unexpected condition: " + eqExpr.getClass());
+      }
     }
   }
 

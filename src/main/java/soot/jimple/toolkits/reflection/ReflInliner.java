@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.reflection;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import soot.CompilationDeathException;
 import soot.G;
 import soot.PackManager;
@@ -33,9 +36,6 @@ import soot.rtlib.tamiflex.ReflectiveCalls;
 import soot.rtlib.tamiflex.SootSig;
 import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class ReflInliner {
 
   public static void main(String[] args) {
@@ -49,7 +49,7 @@ public class ReflInliner {
     Scene.v().addBasicClass(DefaultHandler.class.getName(), SootClass.BODIES);
     Scene.v().addBasicClass(OpaquePredicate.class.getName(), SootClass.BODIES);
     Scene.v().addBasicClass(ReflectiveCalls.class.getName(), SootClass.BODIES);
-    ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
+    ArrayList<String> argList = new ArrayList<>(Arrays.asList(args));
     argList.add("-w");
     argList.add("-p");
     argList.add("cg");

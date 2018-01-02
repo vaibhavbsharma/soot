@@ -19,10 +19,10 @@
 
 package soot.util;
 
-import heros.solver.Pair;
-
 import java.util.Map;
 import java.util.Set;
+
+import heros.solver.Pair;
 
 /**
  * A map with sets as values.
@@ -60,8 +60,10 @@ public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
 
   Set<V> values();
 
+  @Override
   boolean equals(Object o);
 
+  @Override
   int hashCode();
 
   /**

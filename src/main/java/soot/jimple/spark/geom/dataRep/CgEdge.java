@@ -66,7 +66,9 @@ public class CgEdge {
 
   @Override
   public String toString() {
-    if (sootEdge != null) return sootEdge.toString();
+    if (sootEdge != null) {
+      return sootEdge.toString();
+    }
 
     return "(" + s + "->" + t + ", " + map_offset + ")";
   }

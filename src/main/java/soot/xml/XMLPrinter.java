@@ -25,6 +25,15 @@
 
 package soot.xml;
 
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import soot.Body;
 import soot.G;
 import soot.LabeledUnitPrinter;
@@ -45,15 +54,6 @@ import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.util.Chain;
 
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
 /** XML printing routines all XML output comes through here */
 public class XMLPrinter {
   // xml and dtd header
@@ -65,9 +65,13 @@ public class XMLPrinter {
   public XMLRoot root;
 
   // returns the buffer - this is the XML output
+  @Override
   public String toString() {
-    if (root != null) return root.toString();
-    else throw new RuntimeException("Error generating XML!");
+    if (root != null) {
+      return root.toString();
+    } else {
+      throw new RuntimeException("Error generating XML!");
+    }
   }
 
   // add single element <...>...</...>
@@ -127,12 +131,12 @@ public class XMLPrinter {
     long labelID = 0;
 
     // lists
-    Vector<String> useList = new Vector<String>();
-    Vector<Vector<Long>> useDataList = new Vector<Vector<Long>>();
-    Vector<String> defList = new Vector<String>();
-    Vector<Vector<Long>> defDataList = new Vector<Vector<Long>>();
-    Vector<Vector<String>> paramData = new Vector<Vector<String>>();
-    Vector<XMLLabel> xmlLabelsList = new Vector<XMLLabel>();
+    Vector<String> useList = new Vector<>();
+    Vector<Vector<Long>> useDataList = new Vector<>();
+    Vector<String> defList = new Vector<>();
+    Vector<Vector<Long>> defDataList = new Vector<>();
+    Vector<Vector<String>> paramData = new Vector<>();
+    Vector<XMLLabel> xmlLabelsList = new Vector<>();
     long maxStmtCount = 0;
 
     /*
@@ -217,7 +221,9 @@ public class XMLPrinter {
             new Float(
                     (new Float(labelID).floatValue() / new Float(units.size()).intValue()) * 100.0)
                 .longValue();
-        if (xmlLabel.stmtPercentage > maxStmtCount) maxStmtCount = xmlLabel.stmtPercentage;
+        if (xmlLabel.stmtPercentage > maxStmtCount) {
+          maxStmtCount = xmlLabel.stmtPercentage;
+        }
 
         xmlLabelsList.addElement(xmlLabel);
         // xmlLabel.clear();
@@ -269,7 +275,7 @@ public class XMLPrinter {
           if (useDataList.size() > useIndex) {
             tempVector = useDataList.elementAt(useIndex);
             if (tempVector == null) {
-              tempVector = new Vector<Long>();
+              tempVector = new Vector<>();
             }
             tempVector.addElement(new Long(statementCount));
             useDataList.setElementAt(tempVector, useIndex);
@@ -301,7 +307,7 @@ public class XMLPrinter {
           if (defDataList.size() > defIndex) {
             tempVector = defDataList.elementAt(defIndex);
             if (tempVector == null) {
-              tempVector = new Vector<Long>();
+              tempVector = new Vector<>();
             }
             tempVector.addElement(new Long(statementCount));
             defDataList.setElementAt(tempVector, defIndex);
@@ -392,7 +398,7 @@ public class XMLPrinter {
 
       // parameters
       for (int i = 0; i < body.getMethod().getParameterTypes().size(); i++) {
-        Vector<String> tempVec = new Vector<String>();
+        Vector<String> tempVec = new Vector<>();
         paramData.addElement(tempVec);
       }
 
@@ -403,11 +409,17 @@ public class XMLPrinter {
           && jimpleStr.indexOf("@parameter") != -1) {
         // this line is a use of a parameter
         String tempStr = jimpleStr.substring(jimpleStr.indexOf("@parameter") + 10);
-        if (tempStr.indexOf(":") != -1) tempStr = tempStr.substring(0, tempStr.indexOf(":")).trim();
-        if (tempStr.indexOf(" ") != -1) tempStr = tempStr.substring(0, tempStr.indexOf(" ")).trim();
+        if (tempStr.indexOf(":") != -1) {
+          tempStr = tempStr.substring(0, tempStr.indexOf(":")).trim();
+        }
+        if (tempStr.indexOf(" ") != -1) {
+          tempStr = tempStr.substring(0, tempStr.indexOf(" ")).trim();
+        }
         int paramIndex = new Integer(tempStr).intValue();
         Vector<String> tempVec = paramData.elementAt(paramIndex);
-        if (tempVec != null) tempVec.addElement(Long.toString(statementCount));
+        if (tempVec != null) {
+          tempVec.addElement(Long.toString(statementCount));
+        }
         paramData.setElementAt(tempVec, paramIndex);
       }
 
@@ -464,15 +476,17 @@ public class XMLPrinter {
     xmlLabel.stmtPercentage =
         new Float((new Float(labelID).floatValue() / new Float(units.size()).floatValue()) * 100.0)
             .longValue();
-    if (xmlLabel.stmtPercentage > maxStmtCount) maxStmtCount = xmlLabel.stmtPercentage;
+    if (xmlLabel.stmtPercentage > maxStmtCount) {
+      maxStmtCount = xmlLabel.stmtPercentage;
+    }
     xmlLabelsList.addElement(xmlLabel);
 
     // print out locals
     Collection<Local> locals = body.getLocals();
     Iterator<Local> localsIterator = locals.iterator();
-    Vector<String> localTypes = new Vector<String>();
-    Vector<Vector<XMLNode>> typedLocals = new Vector<Vector<XMLNode>>();
-    Vector<Integer> typeCounts = new Vector<Integer>();
+    Vector<String> localTypes = new Vector<>();
+    Vector<Vector<XMLNode>> typedLocals = new Vector<>();
+    Vector<Integer> typeCounts = new Vector<>();
     int j = 0;
     int currentType = 0;
 
@@ -519,9 +533,7 @@ public class XMLPrinter {
             sootlocalNode.addChild(
                 "use",
                 new String[] {"id", "line", "method"},
-                new String[] {
-                  i + "", tempVector.elementAt(i).toString(), cleanMethodName
-                });
+                new String[] {i + "", tempVector.elementAt(i).toString(), cleanMethodName});
           }
           useCount = tempVector.size();
           break;
@@ -538,9 +550,7 @@ public class XMLPrinter {
             sootlocalNode.addChild(
                 "definition",
                 new String[] {"id", "line", "method"},
-                new String[] {
-                  i + "", tempVector.elementAt(i).toString(), cleanMethodName
-                });
+                new String[] {i + "", tempVector.elementAt(i).toString(), cleanMethodName});
           }
           defineCount = tempVector.size();
           break;
@@ -661,7 +671,9 @@ public class XMLPrinter {
   }
 
   private String boolToString(boolean bool) {
-    if (bool) return "true";
+    if (bool) {
+      return "true";
+    }
     return "false";
   }
 
@@ -711,17 +723,20 @@ public class XMLPrinter {
               "class",
               new String[] {"name"},
               new String[] {Scene.v().quotedNameOf(cl.getName()).toString()});
-      if (cl.getPackageName().length() > 0)
+      if (cl.getPackageName().length() > 0) {
         xmlClassNode.addAttribute("package", cl.getPackageName());
-      if (cl.hasSuperclass())
+      }
+      if (cl.hasSuperclass()) {
         xmlClassNode.addAttribute(
             "extends", Scene.v().quotedNameOf(cl.getSuperclass().getName()).toString());
+      }
 
       // add modifiers subnode
       xmlTempNode = xmlClassNode.addChild("modifiers");
       StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers()));
-      while (st.hasMoreTokens())
+      while (st.hasMoreTokens()) {
         xmlTempNode.addChild("modifier", new String[] {"name"}, new String[] {st.nextToken() + ""});
+      }
       xmlTempNode.addAttribute("count", xmlTempNode.getNumberOfChildren() + "");
     }
 
@@ -733,12 +748,13 @@ public class XMLPrinter {
 
       Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
       if (interfaceIt.hasNext()) {
-        while (interfaceIt.hasNext())
+        while (interfaceIt.hasNext()) {
           xmlTempNode.addChild(
               "implements",
               "",
               new String[] {"class"},
               new String[] {Scene.v().quotedNameOf(interfaceIt.next().getName()).toString()});
+        }
       }
     }
 
@@ -754,7 +770,9 @@ public class XMLPrinter {
         while (fieldIt.hasNext()) {
           SootField f = fieldIt.next();
 
-          if (f.isPhantom()) continue;
+          if (f.isPhantom()) {
+            continue;
+          }
 
           String type = f.getType().toString();
           String name = f.getName().toString();
@@ -769,9 +787,10 @@ public class XMLPrinter {
           XMLNode xmlModifiersNode = xmlFieldNode.addChild("modifiers");
 
           StringTokenizer st = new StringTokenizer(Modifier.toString(f.getModifiers()));
-          while (st.hasMoreTokens())
+          while (st.hasMoreTokens()) {
             xmlModifiersNode.addChild(
                 "modifier", new String[] {"name"}, new String[] {st.nextToken() + ""});
+          }
 
           xmlModifiersNode.addAttribute("count", xmlModifiersNode.getNumberOfChildren() + "");
         }
@@ -789,13 +808,17 @@ public class XMLPrinter {
       while (methodIt.hasNext()) {
         SootMethod method = methodIt.next();
 
-        if (method.isPhantom()) continue;
+        if (method.isPhantom()) {
+          continue;
+        }
 
         if (!Modifier.isAbstract(method.getModifiers())
             && !Modifier.isNative(method.getModifiers())) {
-          if (!method.hasActiveBody())
+          if (!method.hasActiveBody()) {
             throw new RuntimeException("method " + method.getName() + " has no active body!");
-          else printTo(method.getActiveBody(), out);
+          } else {
+            printTo(method.getActiveBody(), out);
+          }
         }
       }
     }

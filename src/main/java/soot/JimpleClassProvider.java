@@ -30,6 +30,7 @@ public class JimpleClassProvider implements ClassProvider {
    * Look for the specified class. Return a ClassSource for it if found, or null if it was not
    * found.
    */
+  @Override
   public ClassSource find(String className) {
     // String fileName = className.replace('.', '/') + ".jimple";
     String fileName = className + ".jimple";
@@ -39,7 +40,9 @@ public class JimpleClassProvider implements ClassProvider {
         fileName = className.replace('.', '/') + ".jimple";
         file = SourceLocator.v().lookupInClassPath(fileName);
       }
-      if (file == null) return null;
+      if (file == null) {
+        return null;
+      }
     }
     return new JimpleClassSource(className, file);
   }

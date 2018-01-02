@@ -75,14 +75,17 @@ public final class Kind implements Numberable {
     return name;
   }
 
+  @Override
   public int getNumber() {
     return num;
   }
 
+  @Override
   public void setNumber(int num) {
     this.num = num;
   }
 
+  @Override
   public String toString() {
     return name();
   }

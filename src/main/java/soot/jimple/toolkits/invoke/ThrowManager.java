@@ -25,6 +25,10 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
 import soot.Body;
 import soot.Hierarchy;
 import soot.Local;
@@ -48,10 +52,6 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-
 /** Utility methods for dealing with traps. */
 public class ThrowManager {
   /**
@@ -67,33 +67,53 @@ public class ThrowManager {
     Set<Unit> trappedUnits = TrapManager.getTrappedUnitsOf(b);
 
     for (Stmt s = (Stmt) units.getLast(); s != units.getFirst(); s = (Stmt) units.getPredOf(s)) {
-      if (trappedUnits.contains(s)) continue;
+      if (trappedUnits.contains(s)) {
+        continue;
+      }
       if (s instanceof ThrowStmt) {
         Value throwee = ((ThrowStmt) s).getOp();
-        if (throwee instanceof Constant) continue;
+        if (throwee instanceof Constant) {
+          continue;
+        }
 
-        if (s == units.getFirst()) break;
+        if (s == units.getFirst()) {
+          break;
+        }
         Stmt prosInvoke = (Stmt) units.getPredOf(s);
 
-        if (!(prosInvoke instanceof InvokeStmt)) continue;
+        if (!(prosInvoke instanceof InvokeStmt)) {
+          continue;
+        }
 
-        if (prosInvoke == units.getFirst()) break;
+        if (prosInvoke == units.getFirst()) {
+          break;
+        }
         Stmt prosNew = (Stmt) units.getPredOf(prosInvoke);
 
-        if (!(prosNew instanceof AssignStmt)) continue;
+        if (!(prosNew instanceof AssignStmt)) {
+          continue;
+        }
 
         InvokeExpr ie = prosInvoke.getInvokeExpr();
-        if (!(ie instanceof SpecialInvokeExpr)) continue;
+        if (!(ie instanceof SpecialInvokeExpr)) {
+          continue;
+        }
 
         if (((SpecialInvokeExpr) ie).getBase() != throwee
-            || !ie.getMethodRef().name().equals("<init>")) continue;
+            || !ie.getMethodRef().name().equals("<init>")) {
+          continue;
+        }
 
         Value lo = ((AssignStmt) prosNew).getLeftOp();
         Value ro = ((AssignStmt) prosNew).getRightOp();
-        if (lo != throwee || !(ro instanceof NewExpr)) continue;
+        if (lo != throwee || !(ro instanceof NewExpr)) {
+          continue;
+        }
 
         Type newType = ((NewExpr) ro).getBaseType();
-        if (!newType.equals(RefType.v("java.lang.NullPointerException"))) continue;
+        if (!newType.equals(RefType.v("java.lang.NullPointerException"))) {
+          continue;
+        }
 
         // Whew!
         return prosNew;
@@ -118,9 +138,13 @@ public class ThrowManager {
       Iterator<Local> localIt = locals.iterator();
       while (localIt.hasNext()) {
         Local l = localIt.next();
-        if (l.getName().equals("__throwee" + i)) canAddI = false;
+        if (l.getName().equals("__throwee" + i)) {
+          canAddI = false;
+        }
       }
-      if (!canAddI) i++;
+      if (!canAddI) {
+        i++;
+      }
     } while (!canAddI);
 
     Local l = Jimple.v().newLocal("__throwee" + i, RefType.v("java.lang.NullPointerException"));
@@ -164,7 +188,11 @@ public class ThrowManager {
       /* Ah ha, we might win. */
       if (h.isClassSubclassOfIncluding(e, t.getException())) {
         Iterator<Unit> it = b.getUnits().iterator(t.getBeginUnit(), t.getEndUnit());
-        while (it.hasNext()) if (stmt.equals(it.next())) return true;
+        while (it.hasNext()) {
+          if (stmt.equals(it.next())) {
+            return true;
+          }
+        }
       }
     }
 

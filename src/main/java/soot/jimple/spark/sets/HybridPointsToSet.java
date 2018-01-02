@@ -39,13 +39,16 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     this.pag = pag;
   }
   /** Returns true if this set contains no run-time objects. */
+  @Override
   public final boolean isEmpty() {
     return empty;
   }
 
   private boolean superAddAll(PointsToSetInternal other, PointsToSetInternal exclude) {
     boolean ret = super.addAll(other, exclude);
-    if (ret) empty = false;
+    if (ret) {
+      empty = false;
+    }
     return ret;
   }
 
@@ -66,29 +69,40 @@ public final class HybridPointsToSet extends PointsToSetInternal {
       ret = bits.orAndAndNot(other.bits, mask, ebits);
     } else {
       for (int i = 0; i < nodes.length; i++) {
-        if (other.nodes[i] == null) break;
+        if (other.nodes[i] == null) {
+          break;
+        }
         if (exclude == null || !exclude.contains(other.nodes[i])) {
           ret = add(other.nodes[i]) | ret;
         }
       }
     }
-    if (ret) empty = false;
+    if (ret) {
+      empty = false;
+    }
     return ret;
   }
 
   /** Adds contents of other into this set, returns true if this set changed. */
+  @Override
   public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
-    if (other != null && !(other instanceof HybridPointsToSet)) return superAddAll(other, exclude);
-    if (exclude != null && !(exclude instanceof HybridPointsToSet))
+    if (other != null && !(other instanceof HybridPointsToSet)) {
       return superAddAll(other, exclude);
+    }
+    if (exclude != null && !(exclude instanceof HybridPointsToSet)) {
+      return superAddAll(other, exclude);
+    }
     return nativeAddAll((HybridPointsToSet) other, (HybridPointsToSet) exclude);
   }
 
   /** Calls v's visit method on all nodes in this set. */
+  @Override
   public final boolean forall(P2SetVisitor v) {
     if (bits == null) {
       for (Node node : nodes) {
-        if (node == null) return v.getReturnValue();
+        if (node == null) {
+          return v.getReturnValue();
+        }
         v.visit(node);
       }
     } else {
@@ -99,6 +113,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     return v.getReturnValue();
   }
   /** Adds n to this set, returns true if n was not already in this set. */
+  @Override
   public final boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
       return fastAdd(n);
@@ -106,10 +121,13 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     return false;
   }
   /** Returns true iff the set contains n. */
+  @Override
   public final boolean contains(Node n) {
     if (bits == null) {
       for (Node node : nodes) {
-        if (node == n) return true;
+        if (node == n) {
+          return true;
+        }
         if (node == null) {
           break;
         }
@@ -122,6 +140,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
   public static P2SetFactory getFactory() {
     return new P2SetFactory() {
+      @Override
       public final PointsToSetInternal newSet(Type type, PAG pag) {
         return new HybridPointsToSet(type, pag);
       }
@@ -145,12 +164,16 @@ public final class HybridPointsToSet extends PointsToSetInternal {
       convertToBits();
     }
     boolean ret = bits.set(n.getNumber());
-    if (ret) empty = false;
+    if (ret) {
+      empty = false;
+    }
     return ret;
   }
 
   protected final void convertToBits() {
-    if (bits != null) return;
+    if (bits != null) {
+      return;
+    }
     //		++numBitVectors;
     bits = new BitVector(pag.getAllocNodeNumberer().size());
     for (Node node : nodes) {
@@ -178,7 +201,9 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             new P2SetVisitor() {
               @Override
               public void visit(Node n) {
-                if (set1.contains(n)) ret.add(n);
+                if (set1.contains(n)) {
+                  ret.add(n);
+                }
               }
             });
       } else {
@@ -187,7 +212,9 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             new P2SetVisitor() {
               @Override
               public void visit(Node n) {
-                if (set2.contains(n)) ret.add(n);
+                if (set2.contains(n)) {
+                  ret.add(n);
+                }
               }
             });
       }

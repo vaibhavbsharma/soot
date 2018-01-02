@@ -1,10 +1,10 @@
 package soot.javaToJimple;
 
-import polyglot.types.Type;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import polyglot.types.Type;
 
 public class AnonConstructorFinder extends polyglot.visit.ContextVisitor {
 
@@ -13,10 +13,11 @@ public class AnonConstructorFinder extends polyglot.visit.ContextVisitor {
     super(job, ts, nf);
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     if (n instanceof polyglot.ast.New && ((polyglot.ast.New) n).anonType() != null) {
       try {
-        List<Type> argTypes = new ArrayList<Type>();
+        List<Type> argTypes = new ArrayList<>();
         for (Iterator it = ((polyglot.ast.New) n).arguments().iterator(); it.hasNext(); ) {
           argTypes.add(((polyglot.ast.Expr) it.next()).type());
         }

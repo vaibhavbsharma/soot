@@ -19,6 +19,10 @@
 
 package soot.dava.toolkits.base.AST.interProcedural;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
@@ -38,10 +42,6 @@ import soot.dava.toolkits.base.renamer.Renamer;
 import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 public class InterProceduralAnalyses {
   public static boolean DEBUG = false;
   /*
@@ -53,11 +53,15 @@ public class InterProceduralAnalyses {
   public static void applyInterProceduralAnalyses() {
     Chain classes = Scene.v().getApplicationClasses();
 
-    if (DEBUG) System.out.println("\n\nInvoking redundantFielduseEliminator");
+    if (DEBUG) {
+      System.out.println("\n\nInvoking redundantFielduseEliminator");
+    }
     ConstantFieldValueFinder finder = new ConstantFieldValueFinder(classes);
 
     HashMap<String, Object> constantValueFields = finder.getFieldsWithConstantValues();
-    if (DEBUG) finder.printConstantValueFields();
+    if (DEBUG) {
+      finder.printConstantValueFields();
+    }
 
     /*
      * The code above this gathers interprocedural information
@@ -81,14 +85,17 @@ public class InterProceduralAnalyses {
         }
         ASTNode AST = (ASTNode) body.getUnits().getFirst();
 
-        if (!(AST instanceof ASTMethodNode)) continue;
+        if (!(AST instanceof ASTMethodNode)) {
+          continue;
+        }
 
         Map options = PhaseOptions.v().getPhaseOptions("db.deobfuscate");
         boolean deobfuscate = PhaseOptions.getBoolean(options, "enabled");
         // System.out.println("force is "+force);
         if (deobfuscate) {
-          if (DEBUG)
+          if (DEBUG) {
             System.out.println("\nSTART CP Class:" + s.getName() + " Method: " + m.getName());
+          }
           CPApplication CPApp =
               new CPApplication(
                   (ASTMethodNode) AST,
@@ -96,7 +103,9 @@ public class InterProceduralAnalyses {
                   finder.getClassNameFieldNameToSootFieldMapping());
           AST.apply(CPApp);
 
-          if (DEBUG) System.out.println("DONE CP for " + m.getName());
+          if (DEBUG) {
+            System.out.println("DONE CP for " + m.getName());
+          }
         }
 
         // expression simplification
@@ -118,7 +127,9 @@ public class InterProceduralAnalyses {
 
         // VERY EXPENSIVE STAGE of redoing all analyses!!!!
         if (deobfuscate) {
-          if (DEBUG) System.out.println("reinvoking analyzeAST");
+          if (DEBUG) {
+            System.out.println("reinvoking analyzeAST");
+          }
           UselessLabelFinder.DEBUG = false;
           body.analyzeAST();
         }

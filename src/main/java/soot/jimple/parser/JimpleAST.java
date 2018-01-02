@@ -25,6 +25,14 @@
 
 package soot.jimple.parser;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackReader;
+import java.util.HashMap;
+import java.util.Set;
+
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
@@ -36,14 +44,6 @@ import soot.jimple.parser.lexer.LexerException;
 import soot.jimple.parser.node.Start;
 import soot.jimple.parser.parser.Parser;
 import soot.jimple.parser.parser.ParserException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackReader;
-import java.util.HashMap;
-import java.util.Set;
 
 /** This class encapsulates a JimpleAST instance and provides methods to act on it. */
 public class JimpleAST {
@@ -91,7 +91,9 @@ public class JimpleAST {
   public Body getBody(SootMethod m) {
     if (methodToParsedBodyMap == null) {
       synchronized (this) {
-        if (methodToParsedBodyMap == null) stashBodiesForClass(m.getDeclaringClass());
+        if (methodToParsedBodyMap == null) {
+          stashBodiesForClass(m.getDeclaringClass());
+        }
       }
     }
     return methodToParsedBodyMap.get(m);
@@ -116,7 +118,7 @@ public class JimpleAST {
    * The SootClass which we want bodies for is passed as the argument.
    */
   private void stashBodiesForClass(SootClass sc) {
-    HashMap<SootMethod, JimpleBody> methodToBodyMap = new HashMap<SootMethod, JimpleBody>();
+    HashMap<SootMethod, JimpleBody> methodToBodyMap = new HashMap<>();
 
     Walker w = new BodyExtractorWalker(sc, SootResolver.v(), methodToBodyMap);
 

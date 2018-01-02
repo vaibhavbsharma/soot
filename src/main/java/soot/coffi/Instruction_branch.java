@@ -68,6 +68,7 @@ abstract class Instruction_branch extends Instruction {
     branches = true;
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool)
         + argsep
@@ -76,15 +77,19 @@ abstract class Instruction_branch extends Instruction {
         + "]";
   }
 
+  @Override
   public void offsetToPointer(ByteCode bc) {
     target = bc.locateInst(arg_i + label);
     if (target == null) {
       G.v().out.println("Warning: can't locate target of instruction");
       G.v().out.println(" which should be at byte address " + (label + arg_i));
-    } else target.labelled = true;
+    } else {
+      target.labelled = true;
+    }
   }
   // returns the array of instructions which might be the target of a
   // branch with this instruction, assuming the next instruction is next
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[2];
     i[0] = target;
@@ -92,6 +97,7 @@ abstract class Instruction_branch extends Instruction {
     return i;
   }
 
+  @Override
   public String toString() {
     return super.toString() + "\t" + target.label;
   }

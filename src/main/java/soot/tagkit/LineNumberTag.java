@@ -33,10 +33,12 @@ public class LineNumberTag implements Tag {
     line_number = ln;
   }
 
+  @Override
   public String getName() {
     return "LineNumberTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[2];
     v[0] = (byte) (line_number / 256);
@@ -52,6 +54,7 @@ public class LineNumberTag implements Tag {
     line_number = value;
   }
 
+  @Override
   public String toString() {
     return String.valueOf(line_number);
   }

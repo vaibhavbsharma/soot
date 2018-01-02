@@ -18,13 +18,14 @@
  */
 package soot.asm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.objectweb.asm.tree.AbstractInsnNode;
+
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Stack operand.
@@ -56,7 +57,9 @@ final class Operand {
    */
   @SuppressWarnings("unchecked")
   void removeBox(ValueBox vb) {
-    if (vb == null) return;
+    if (vb == null) {
+      return;
+    }
     if (boxes == vb) {
       boxes = null;
     } else if (boxes instanceof List) {
@@ -77,7 +80,7 @@ final class Operand {
       list.add(vb);
     } else if (boxes instanceof ValueBox) {
       ValueBox ovb = (ValueBox) boxes;
-      List<ValueBox> list = new ArrayList<ValueBox>();
+      List<ValueBox> list = new ArrayList<>();
       list.add(ovb);
       list.add(vb);
       boxes = list;
@@ -91,7 +94,9 @@ final class Operand {
   void updateBoxes() {
     Value val = stackOrValue();
     if (boxes instanceof List) {
-      for (ValueBox vb : (List<ValueBox>) boxes) vb.setValue(val);
+      for (ValueBox vb : (List<ValueBox>) boxes) {
+        vb.setValue(val);
+      }
     } else if (boxes instanceof ValueBox) {
       ((ValueBox) boxes).setValue(val);
     }
@@ -119,7 +124,9 @@ final class Operand {
    * @return {@code true} if this operand is equal to another operand, {@code false} otherwise.
    */
   boolean equivTo(Operand other) {
-    if (other.value == null && value == null) return true;
+    if (other.value == null && value == null) {
+      return true;
+    }
     return stackOrValue().equivTo(other.stackOrValue());
   }
 

@@ -19,14 +19,6 @@
 
 package soot.jimple.toolkits.annotation.logic;
 
-import soot.Body;
-import soot.BodyTransformer;
-import soot.Unit;
-import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.MHGDominatorsFinder;
-import soot.toolkits.graph.UnitGraph;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import soot.Body;
+import soot.BodyTransformer;
+import soot.Unit;
+import soot.jimple.Stmt;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.MHGDominatorsFinder;
+import soot.toolkits.graph.UnitGraph;
+
 public class LoopFinder extends BodyTransformer {
 
   private UnitGraph g;
@@ -43,28 +43,29 @@ public class LoopFinder extends BodyTransformer {
   private HashMap<Stmt, List<Stmt>> loops;
 
   public Collection<Loop> loops() {
-    Collection<Loop> result = new HashSet<Loop>();
+    Collection<Loop> result = new HashSet<>();
     for (Map.Entry<Stmt, List<Stmt>> entry : loops.entrySet()) {
       result.add(new Loop(entry.getKey(), entry.getValue(), g));
     }
     return result;
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 
     g = new ExceptionalUnitGraph(b);
     MHGDominatorsFinder a = new MHGDominatorsFinder(g);
 
-    loops = new HashMap<Stmt, List<Stmt>>();
+    loops = new HashMap<>();
 
     Iterator<Unit> stmtsIt = b.getUnits().iterator();
     while (stmtsIt.hasNext()) {
       Stmt s = (Stmt) stmtsIt.next();
 
       List<Unit> succs = g.getSuccsOf(s);
-      Collection<Unit> dominaters = (Collection<Unit>) a.getDominators(s);
+      Collection<Unit> dominaters = a.getDominators(s);
 
-      ArrayList<Stmt> headers = new ArrayList<Stmt>();
+      ArrayList<Stmt> headers = new ArrayList<>();
 
       Iterator<Unit> succsIt = succs.iterator();
       while (succsIt.hasNext()) {
@@ -95,8 +96,8 @@ public class LoopFinder extends BodyTransformer {
 
   private List<Stmt> getLoopBodyFor(Stmt header, Stmt node) {
 
-    ArrayList<Stmt> loopBody = new ArrayList<Stmt>();
-    Stack<Unit> stack = new Stack<Unit>();
+    ArrayList<Stmt> loopBody = new ArrayList<>();
+    Stack<Unit> stack = new Stack<>();
 
     loopBody.add(header);
     stack.push(node);

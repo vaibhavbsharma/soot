@@ -31,7 +31,9 @@ public class ThrowSet {
   private static SootClass throwable[] = null;
 
   public static SootClass getRandomThrowable() {
-    if (throwable == null) initThrowables();
+    if (throwable == null) {
+      initThrowables();
+    }
 
     return throwable[Rand.getInt(throwable.length)];
   }

@@ -1,9 +1,9 @@
 package soot.jimple.spark.sets;
 
+import java.util.LinkedList;
+
 import soot.G;
 import soot.Singletons;
-
-import java.util.LinkedList;
 
 /** A singleton to hold the hash table for SharedHybridSet */
 public class AllSharedHybridNodes {
@@ -36,7 +36,9 @@ public class AllSharedHybridNodes {
         map = newMap;
       }
 
-      if (map[size] == null) map[size] = new LinkedList();
+      if (map[size] == null) {
+        map[size] = new LinkedList();
+      }
       map[size].add(toAdd);
     }
 

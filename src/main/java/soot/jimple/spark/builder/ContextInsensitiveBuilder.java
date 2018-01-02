@@ -19,6 +19,8 @@
 
 package soot.jimple.spark.builder;
 
+import java.util.ArrayList;
+
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -36,9 +38,6 @@ import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.options.SparkOptions;
 import soot.util.queue.QueueReader;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 /**
  * A context insensitive pointer assignment graph builder.
  *
@@ -49,13 +48,17 @@ public class ContextInsensitiveBuilder {
     boolean change = true;
     while (change) {
       change = false;
-      for (Iterator<SootClass> cIt = new ArrayList<SootClass>(Scene.v().getClasses()).iterator();
-          cIt.hasNext(); ) {
-        final SootClass c = cIt.next();
+      for (SootClass c : new ArrayList<>(Scene.v().getClasses())) {
         for (final SootMethod m : c.getMethods()) {
-          if (!m.isConcrete()) continue;
-          if (m.isNative()) continue;
-          if (m.isPhantom()) continue;
+          if (!m.isConcrete()) {
+            continue;
+          }
+          if (m.isNative()) {
+            continue;
+          }
+          if (m.isPhantom()) {
+            continue;
+          }
           if (!m.hasActiveBody()) {
             change = true;
             m.retrieveActiveBody();
@@ -99,7 +102,9 @@ public class ContextInsensitiveBuilder {
     while (callEdges.hasNext()) {
       Edge e = callEdges.next();
       if (e.getTgt().method().getDeclaringClass().isConcrete()) {
-        if (e.tgt().isConcrete() || e.tgt().isNative()) MethodPAG.v(pag, e.tgt()).addToPAG(null);
+        if (e.tgt().isConcrete() || e.tgt().isNative()) {
+          MethodPAG.v(pag, e.tgt()).addToPAG(null);
+        }
         pag.addCallTarget(e);
       }
     }
@@ -115,9 +120,11 @@ public class ContextInsensitiveBuilder {
   /* End of package methods. */
   protected void handleClass(SootClass c) {
     boolean incedClasses = false;
-    if (c.isConcrete())
+    if (c.isConcrete()) {
       for (SootMethod m : c.getMethods()) {
-        if (!m.isConcrete() && !m.isNative()) continue;
+        if (!m.isConcrete() && !m.isNative()) {
+          continue;
+        }
         totalMethods++;
         if (reachables.contains(m)) {
           MethodPAG mpag = MethodPAG.v(pag, m);
@@ -130,6 +137,7 @@ public class ContextInsensitiveBuilder {
           }
         }
       }
+    }
   }
 
   private PAG pag;

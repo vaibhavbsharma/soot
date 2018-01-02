@@ -63,32 +63,44 @@ public class Evaluator {
 
   public static boolean isValueConstantValued(Value op) {
 
-    if (op instanceof Constant) return true;
-    else if ((op instanceof UnopExpr)) {
+    if (op instanceof Constant) {
+      return true;
+    } else if ((op instanceof UnopExpr)) {
       Value innerOp = ((UnopExpr) op).getOp();
-      if (innerOp == NullConstant.v())
+      if (innerOp == NullConstant.v()) {
         // operations on null will throw an exception and the operation
         // is therefore not considered constant-valued; see posting on Soot list
         // on 18 September 2007 14:36
         return false;
-      if (isValueConstantValued(innerOp)) return true;
+      }
+      if (isValueConstantValued(innerOp)) {
+        return true;
+      }
     } else if (op instanceof BinopExpr) {
       /* Handle weird cases. */
       if (op instanceof DivExpr || op instanceof RemExpr) {
         if (!isValueConstantValued(((BinopExpr) op).getOp1())
-            || !isValueConstantValued(((BinopExpr) op).getOp2())) return false;
+            || !isValueConstantValued(((BinopExpr) op).getOp2())) {
+          return false;
+        }
 
         Value c1 = getConstantValueOf(((BinopExpr) op).getOp1());
         Value c2 = getConstantValueOf(((BinopExpr) op).getOp2());
 
         /* check for a 0 value.  If so, punt. */
-        if (c2 instanceof IntConstant && ((IntConstant) c2).value == 0) return false;
+        if (c2 instanceof IntConstant && ((IntConstant) c2).value == 0) {
+          return false;
+        }
 
-        if (c2 instanceof LongConstant && ((LongConstant) c2).value == 0) return false;
+        if (c2 instanceof LongConstant && ((LongConstant) c2).value == 0) {
+          return false;
+        }
       }
 
       if (isValueConstantValued(((BinopExpr) op).getOp1())
-          && isValueConstantValued(((BinopExpr) op).getOp2())) return true;
+          && isValueConstantValued(((BinopExpr) op).getOp2())) {
+        return true;
+      }
     }
     return false;
   } // isValueConstantValued
@@ -99,26 +111,37 @@ public class Evaluator {
    */
   public static Value getConstantValueOf(Value op) {
 
-    if (!isValueConstantValued(op)) return null;
+    if (!isValueConstantValued(op)) {
+      return null;
+    }
 
-    if (op instanceof Constant) return op;
-    else if (op instanceof UnopExpr) {
+    if (op instanceof Constant) {
+      return op;
+    } else if (op instanceof UnopExpr) {
       Value c = getConstantValueOf(((UnopExpr) op).getOp());
-      if (op instanceof NegExpr) return ((NumericConstant) c).negate();
+      if (op instanceof NegExpr) {
+        return ((NumericConstant) c).negate();
+      }
     } else if (op instanceof BinopExpr) {
       Value c1 = getConstantValueOf(((BinopExpr) op).getOp1());
       Value c2 = getConstantValueOf(((BinopExpr) op).getOp2());
-      if (op instanceof AddExpr) return ((NumericConstant) c1).add((NumericConstant) c2);
-      else if (op instanceof SubExpr) return ((NumericConstant) c1).subtract((NumericConstant) c2);
-      else if (op instanceof MulExpr) return ((NumericConstant) c1).multiply((NumericConstant) c2);
-      // punting handled by isValueConstantValued().
-      else if (op instanceof DivExpr) return ((NumericConstant) c1).divide((NumericConstant) c2);
-      else if (op instanceof RemExpr) return ((NumericConstant) c1).remainder((NumericConstant) c2);
-      else if (op instanceof EqExpr || op instanceof NeExpr) {
+      if (op instanceof AddExpr) {
+        return ((NumericConstant) c1).add((NumericConstant) c2);
+      } else if (op instanceof SubExpr) {
+        return ((NumericConstant) c1).subtract((NumericConstant) c2);
+      } else if (op instanceof MulExpr) {
+        return ((NumericConstant) c1).multiply((NumericConstant) c2);
+      } else if (op instanceof DivExpr) {
+        return ((NumericConstant) c1).divide((NumericConstant) c2);
+      } else if (op instanceof RemExpr) {
+        return ((NumericConstant) c1).remainder((NumericConstant) c2);
+      } else if (op instanceof EqExpr || op instanceof NeExpr) {
         if (c1 instanceof NumericConstant) {
-          if (op instanceof EqExpr) return ((NumericConstant) c1).equalEqual((NumericConstant) c2);
-          else if (op instanceof NeExpr)
+          if (op instanceof EqExpr) {
+            return ((NumericConstant) c1).equalEqual((NumericConstant) c2);
+          } else if (op instanceof NeExpr) {
             return ((NumericConstant) c1).notEqual((NumericConstant) c2);
+          }
         } else if (c1 instanceof StringConstant
             || c1 instanceof NullConstant
             || c1 instanceof ClassConstant) {
@@ -131,34 +154,47 @@ public class Evaluator {
           return beauty;
         }
         throw new RuntimeException("constant neither numeric nor string");
-      } else if (op instanceof GtExpr)
+      } else if (op instanceof GtExpr) {
         return ((NumericConstant) c1).greaterThan((NumericConstant) c2);
-      else if (op instanceof GeExpr)
+      } else if (op instanceof GeExpr) {
         return ((NumericConstant) c1).greaterThanOrEqual((NumericConstant) c2);
-      else if (op instanceof LtExpr) return ((NumericConstant) c1).lessThan((NumericConstant) c2);
-      else if (op instanceof LeExpr)
+      } else if (op instanceof LtExpr) {
+        return ((NumericConstant) c1).lessThan((NumericConstant) c2);
+      } else if (op instanceof LeExpr) {
         return ((NumericConstant) c1).lessThanOrEqual((NumericConstant) c2);
-      else if (op instanceof AndExpr) return ((ArithmeticConstant) c1).and((ArithmeticConstant) c2);
-      else if (op instanceof OrExpr) return ((ArithmeticConstant) c1).or((ArithmeticConstant) c2);
-      else if (op instanceof XorExpr) return ((ArithmeticConstant) c1).xor((ArithmeticConstant) c2);
-      else if (op instanceof ShlExpr)
+      } else if (op instanceof AndExpr) {
+        return ((ArithmeticConstant) c1).and((ArithmeticConstant) c2);
+      } else if (op instanceof OrExpr) {
+        return ((ArithmeticConstant) c1).or((ArithmeticConstant) c2);
+      } else if (op instanceof XorExpr) {
+        return ((ArithmeticConstant) c1).xor((ArithmeticConstant) c2);
+      } else if (op instanceof ShlExpr) {
         return ((ArithmeticConstant) c1).shiftLeft((ArithmeticConstant) c2);
-      else if (op instanceof ShrExpr)
+      } else if (op instanceof ShrExpr) {
         return ((ArithmeticConstant) c1).shiftRight((ArithmeticConstant) c2);
-      else if (op instanceof UshrExpr)
+      } else if (op instanceof UshrExpr) {
         return ((ArithmeticConstant) c1).unsignedShiftRight((ArithmeticConstant) c2);
-      else if (op instanceof CmpExpr) {
-        if ((c1 instanceof LongConstant) && (c2 instanceof LongConstant))
+      } else if (op instanceof CmpExpr) {
+        if ((c1 instanceof LongConstant) && (c2 instanceof LongConstant)) {
           return ((LongConstant) c1).cmp((LongConstant) c2);
-        else throw new IllegalArgumentException("CmpExpr: LongConstant(s) expected");
+        } else {
+          throw new IllegalArgumentException("CmpExpr: LongConstant(s) expected");
+        }
       } else if ((op instanceof CmpgExpr) || (op instanceof CmplExpr)) {
         if ((c1 instanceof RealConstant) && (c2 instanceof RealConstant)) {
 
-          if (op instanceof CmpgExpr) return ((RealConstant) c1).cmpg((RealConstant) c2);
-          else if (op instanceof CmplExpr) return ((RealConstant) c1).cmpl((RealConstant) c2);
+          if (op instanceof CmpgExpr) {
+            return ((RealConstant) c1).cmpg((RealConstant) c2);
+          } else if (op instanceof CmplExpr) {
+            return ((RealConstant) c1).cmpl((RealConstant) c2);
+          }
 
-        } else throw new IllegalArgumentException("CmpExpr: RealConstant(s) expected");
-      } else throw new RuntimeException("unknown binop: " + op);
+        } else {
+          throw new IllegalArgumentException("CmpExpr: RealConstant(s) expected");
+        }
+      } else {
+        throw new RuntimeException("unknown binop: " + op);
+      }
     }
 
     throw new RuntimeException("couldn't getConstantValueOf of: " + op);

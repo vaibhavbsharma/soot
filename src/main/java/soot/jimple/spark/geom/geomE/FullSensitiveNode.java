@@ -18,6 +18,13 @@
  */
 package soot.jimple.spark.geom.geomE;
 
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 import soot.Hierarchy;
 import soot.RefType;
 import soot.Scene;
@@ -38,13 +45,6 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
-
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 /**
  * This class defines an abstract pointer in the geometric points-to solver. All the
@@ -91,9 +91,9 @@ public class FullSensitiveNode extends IVarAbstraction {
 
   @Override
   public void reconstruct() {
-    flowto = new HashMap<FullSensitiveNode, GeometricManager>();
-    pt_objs = new HashMap<AllocNode, GeometricManager>();
-    new_pts = new HashMap<AllocNode, GeometricManager>();
+    flowto = new HashMap<>();
+    pt_objs = new HashMap<>();
+    new_pts = new HashMap<>();
     complex_cons = null;
     lrf_value = 0;
   }
@@ -162,24 +162,32 @@ public class FullSensitiveNode extends IVarAbstraction {
         gm.flush();
       }
     }
-    new_pts = new HashMap<AllocNode, GeometricManager>();
+    new_pts = new HashMap<>();
   }
 
   @Override
   public int num_of_diff_objs() {
     // If this pointer is not a representative pointer
-    if (parent != this) return getRepresentative().num_of_diff_objs();
+    if (parent != this) {
+      return getRepresentative().num_of_diff_objs();
+    }
 
-    if (pt_objs == null) return -1;
+    if (pt_objs == null) {
+      return -1;
+    }
 
     return pt_objs.size();
   }
 
   @Override
   public int num_of_diff_edges() {
-    if (parent != this) return getRepresentative().num_of_diff_objs();
+    if (parent != this) {
+      return getRepresentative().num_of_diff_objs();
+    }
 
-    if (flowto == null) return -1;
+    if (flowto == null) {
+      return -1;
+    }
 
     return flowto.size();
   }
@@ -224,7 +232,9 @@ public class FullSensitiveNode extends IVarAbstraction {
 
   @Override
   public void put_complex_constraint(PlainConstraint cons) {
-    if (complex_cons == null) complex_cons = new Vector<PlainConstraint>();
+    if (complex_cons == null) {
+      complex_cons = new Vector<>();
+    }
     complex_cons.add(cons);
   }
 
@@ -245,8 +255,10 @@ public class FullSensitiveNode extends IVarAbstraction {
     FullSensitiveNode qn, objn;
     boolean added, hasNewPointsTo;
 
-    if (pt_objs.size() == 0) return;
-    //		System.err.println("+++ Process assignment for: " + toString());
+    if (pt_objs.size() == 0) {
+      return;
+      //		System.err.println("+++ Process assignment for: " + toString());
+    }
 
     // We first build the flow edges that flow in to/out of object fields
     if (complex_cons != null) {
@@ -285,14 +297,16 @@ public class FullSensitiveNode extends IVarAbstraction {
               switch (pcons.type) {
                 case Constants.STORE_CONS:
                   // Store, qv -> pv.field
-                  if (instantiateStoreConstraint(qn, objn, pts, (pcons.code << 8) | i))
+                  if (instantiateStoreConstraint(qn, objn, pts, (pcons.code << 8) | i)) {
                     worklist.push(qn);
+                  }
                   break;
 
                 case Constants.LOAD_CONS:
                   // Load, pv.field -> qv
-                  if (instantiateLoadConstraint(objn, qn, pts, (pcons.code << 8) | i))
+                  if (instantiateLoadConstraint(objn, qn, pts, (pcons.code << 8) | i)) {
                     worklist.push(objn);
+                  }
                   break;
               }
 
@@ -303,7 +317,9 @@ public class FullSensitiveNode extends IVarAbstraction {
       }
     }
 
-    if (flowto.size() == 0) return;
+    if (flowto.size() == 0) {
+      return;
+    }
 
     // Next, we process the assignments (e.g. p = q)
     for (Map.Entry<FullSensitiveNode, GeometricManager> entry1 : flowto.entrySet()) {
@@ -324,10 +340,14 @@ public class FullSensitiveNode extends IVarAbstraction {
           gm2 = entry2.getValue();
 
           // Avoid the garbage
-          if (gm2 == deadManager) continue;
+          if (gm2 == deadManager) {
+            continue;
+          }
 
           // Type filtering and flow-to-this filtering, a simple approach
-          if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) continue;
+          if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) {
+            continue;
+          }
 
           entry_pts = gm2.getFigures();
           hasNewPointsTo = gm2.isThereUnprocessedFigures();
@@ -337,14 +357,18 @@ public class FullSensitiveNode extends IVarAbstraction {
             pe = entry_pe[j];
 
             while (pe != null) {
-              if (pe.is_new == false && hasNewPointsTo == false) break;
+              if (pe.is_new == false && hasNewPointsTo == false) {
+                break;
+              }
 
               for (i = 0; i < GeometricManager.Divisions; ++i) {
                 pts = entry_pts[i];
 
                 while (pts != null && (pts.is_new || pe.is_new)) {
                   // Propagate this object
-                  if (reasonAndPropagate(qn, obj, pts, pe, (i << 8) | j)) added = true;
+                  if (reasonAndPropagate(qn, obj, pts, pe, (i << 8) | j)) {
+                    added = true;
+                  }
                   pts = pts.next;
                 }
               }
@@ -363,10 +387,14 @@ public class FullSensitiveNode extends IVarAbstraction {
           gm2 = entry2.getValue();
 
           // Avoid the garbage
-          if (gm2 == deadManager) continue;
+          if (gm2 == deadManager) {
+            continue;
+          }
 
           // Type filtering and flow-to-this filtering, a simple approach
-          if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) continue;
+          if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) {
+            continue;
+          }
 
           entry_pts = gm2.getFigures();
 
@@ -380,7 +408,9 @@ public class FullSensitiveNode extends IVarAbstraction {
 
                 while (pe != null) {
                   // Propagate this object
-                  if (reasonAndPropagate(qn, obj, pts, pe, (i << 8) | j)) added = true;
+                  if (reasonAndPropagate(qn, obj, pts, pe, (i << 8) | j)) {
+                    added = true;
+                  }
                   pe = pe.next;
                 }
               }
@@ -391,7 +421,9 @@ public class FullSensitiveNode extends IVarAbstraction {
         }
       }
 
-      if (added) worklist.push(qn);
+      if (added) {
+        worklist.push(qn);
+      }
     }
 
     //		System.err.println();
@@ -444,12 +476,17 @@ public class FullSensitiveNode extends IVarAbstraction {
     qn = (FullSensitiveNode) qv;
     localToSameMethod = (enclosingMethod() == qv.enclosingMethod());
 
-    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext(); ) {
-      AllocNode an = it.next();
-      if (an instanceof ClassConstantNode) continue;
-      if (an instanceof StringConstantNode) continue;
+    for (AllocNode an : pt_objs.keySet()) {
+      if (an instanceof ClassConstantNode) {
+        continue;
+      }
+      if (an instanceof StringConstantNode) {
+        continue;
+      }
       qt = qn.find_points_to(an);
-      if (qt == null) continue;
+      if (qt == null) {
+        continue;
+      }
       pt = find_points_to(an);
 
       for (i = 0; i < GeometricManager.Divisions; ++i) {
@@ -460,9 +497,13 @@ public class FullSensitiveNode extends IVarAbstraction {
             while (q != null) {
               if (localToSameMethod) {
                 // We can use a more precise alias testing
-                if (p.intersect(q)) return true;
+                if (p.intersect(q)) {
+                  return true;
+                }
               } else {
-                if (p.projYIntersect(q)) return true;
+                if (p.projYIntersect(q)) {
+                  return true;
+                }
               }
               q = q.next;
             }
@@ -478,15 +519,16 @@ public class FullSensitiveNode extends IVarAbstraction {
   @Override
   public Set<AllocNode> get_all_points_to_objects() {
     // If this pointer is not a representative pointer
-    if (parent != this) return getRepresentative().get_all_points_to_objects();
+    if (parent != this) {
+      return getRepresentative().get_all_points_to_objects();
+    }
 
     return pt_objs.keySet();
   }
 
   @Override
   public void print_context_sensitive_points_to(PrintStream outPrintStream) {
-    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext(); ) {
-      AllocNode obj = it.next();
+    for (AllocNode obj : pt_objs.keySet()) {
       SegmentNode[] int_entry = find_points_to(obj);
 
       for (int j = 0; j < GeometricManager.Divisions; ++j) {
@@ -494,7 +536,9 @@ public class FullSensitiveNode extends IVarAbstraction {
         while (p != null) {
           outPrintStream.print(
               "(" + obj.toString() + ", " + p.I1 + ", " + p.I2 + ", " + p.L + ", ");
-          if (p instanceof RectangleNode) outPrintStream.print(((RectangleNode) p).L_prime + ", ");
+          if (p instanceof RectangleNode) {
+            outPrintStream.print(((RectangleNode) p).L_prime + ", ");
+          }
 
           outPrintStream.println(symbols[j] + ")");
           p = p.next;
@@ -510,15 +554,16 @@ public class FullSensitiveNode extends IVarAbstraction {
   @Override
   public void injectPts() {
     final GeomPointsTo geomPTA = (GeomPointsTo) Scene.v().getPointsToAnalysis();
-    pt_objs = new HashMap<AllocNode, GeometricManager>();
+    pt_objs = new HashMap<>();
 
     me.getP2Set()
         .forall(
             new P2SetVisitor() {
               @Override
               public void visit(Node n) {
-                if (geomPTA.isValidGeometricNode(n))
+                if (geomPTA.isValidGeometricNode(n)) {
                   pt_objs.put((AllocNode) n, (GeometricManager) stubManager);
+                }
               }
             });
 
@@ -533,7 +578,9 @@ public class FullSensitiveNode extends IVarAbstraction {
       SegmentNode p = int_entry[i];
       while (p != null) {
         long R = p.I1 + p.L;
-        if ((l <= p.I1 && p.I1 < r) || (p.I1 <= l && l < R)) return true;
+        if ((l <= p.I1 && p.I1 < r) || (p.I1 <= l && l < R)) {
+          return true;
+        }
         p = p.next;
       }
     }
@@ -559,7 +606,9 @@ public class FullSensitiveNode extends IVarAbstraction {
       AllocNode obj = entry.getKey();
       SootMethod sm = obj.getMethod();
       int sm_int = geomPTA.getIDFromSootMethod(sm);
-      if (sm_int == -1) continue;
+      if (sm_int == -1) {
+        continue;
+      }
 
       GeometricManager gm = entry.getValue();
       SegmentNode[] int_entry = gm.getFigures();
@@ -580,7 +629,9 @@ public class FullSensitiveNode extends IVarAbstraction {
             //    L------------R
             if (i == GeometricManager.ONE_TO_ONE) {
               long d = r - L;
-              if (R < r) d = p.L;
+              if (R < r) {
+                d = p.L;
+              }
               objL = p.I2;
               objR = objL + d;
             } else {
@@ -593,7 +644,9 @@ public class FullSensitiveNode extends IVarAbstraction {
             // L--------------------R
             if (i == GeometricManager.ONE_TO_ONE) {
               long d = R - l;
-              if (R > r) d = r - l;
+              if (R > r) {
+                d = r - l;
+              }
               objL = p.I2 + l - L;
               objR = objL + d;
             } else {
@@ -603,7 +656,9 @@ public class FullSensitiveNode extends IVarAbstraction {
           }
 
           // Now we test which context versions this interval [objL, objR) maps to
-          if (objL != -1 && objR != -1) visitor.visit(obj, objL, objR, sm_int);
+          if (objL != -1 && objR != -1) {
+            visitor.visit(obj, objL, objR, sm_int);
+          }
 
           p = p.next;
         }
@@ -661,7 +716,6 @@ public class FullSensitiveNode extends IVarAbstraction {
     }
 
     return gm.addNewFigure(code, pres) != null;
-
   }
 
   private void do_pts_interval_merge() {
@@ -773,7 +827,9 @@ public class FullSensitiveNode extends IVarAbstraction {
         break;
     }
 
-    if (ret_type != GeometricManager.Undefined_Mapping) return qn.addPointsTo(ret_type, obj);
+    if (ret_type != GeometricManager.Undefined_Mapping) {
+      return qn.addPointsTo(ret_type, obj);
+    }
 
     return false;
   }

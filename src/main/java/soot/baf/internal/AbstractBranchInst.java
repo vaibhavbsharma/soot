@@ -25,13 +25,13 @@
 
 package soot.baf.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
 import soot.util.Switch;
-
-import java.util.Collections;
-import java.util.List;
 
 public abstract class AbstractBranchInst extends AbstractInst {
   UnitBox targetBox;
@@ -44,16 +44,22 @@ public abstract class AbstractBranchInst extends AbstractInst {
     targetBoxes = Collections.singletonList(targetBox);
   }
 
+  @Override
   public abstract String getName();
 
+  @Override
   public String toString() {
     String target = "";
     Unit targetUnit = getTarget();
-    if (this == targetUnit) target = getName();
-    else target = getTarget().toString();
+    if (this == targetUnit) {
+      target = getName();
+    } else {
+      target = getTarget().toString();
+    }
     return getName() + " " + target;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(getName());
     up.literal(" ");
@@ -72,12 +78,15 @@ public abstract class AbstractBranchInst extends AbstractInst {
     return targetBox;
   }
 
+  @Override
   public List<UnitBox> getUnitBoxes() {
     return targetBoxes;
   }
 
+  @Override
   public abstract void apply(Switch sw);
 
+  @Override
   public boolean branches() {
     return true;
   }

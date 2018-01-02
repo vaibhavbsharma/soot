@@ -37,6 +37,7 @@ public class GRValueBox extends AbstractValueBox {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof Local
         || value instanceof Constant
@@ -44,6 +45,7 @@ public class GRValueBox extends AbstractValueBox {
         || value instanceof Expr;
   }
 
+  @Override
   public Object clone() {
     throw new RuntimeException();
   }

@@ -25,14 +25,14 @@
 
 package soot.baf.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.Type;
 import soot.baf.Baf;
 import soot.baf.Dup2_x2Inst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
   private final Type mOp1Type;
@@ -47,52 +47,65 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
     mUnder2Type = Baf.getDescriptorTypeOf(aUnder2Type);
   }
 
+  @Override
   public Type getOp1Type() {
     return mOp1Type;
   }
 
+  @Override
   public Type getOp2Type() {
     return mOp2Type;
   }
 
+  @Override
   public Type getUnder1Type() {
     return mUnder1Type;
   }
 
+  @Override
   public Type getUnder2Type() {
     return mUnder2Type;
   }
 
+  @Override
   public List<Type> getOpTypes() {
-    List<Type> res = new ArrayList<Type>();
+    List<Type> res = new ArrayList<>();
     res.add(mOp1Type);
 
     // 07-20-2006 Michael Batchelder
     // previously did not handle all types of dup2_x2   Now, will take null as mOp2Type, so
     // don't add to overtypes if it is null
-    if (mOp2Type != null) res.add(mOp2Type);
+    if (mOp2Type != null) {
+      res.add(mOp2Type);
+    }
     return res;
   }
 
+  @Override
   public List<Type> getUnderTypes() {
-    List<Type> res = new ArrayList<Type>();
+    List<Type> res = new ArrayList<>();
     res.add(mUnder1Type);
 
     // 07-20-2006 Michael Batchelder
     // previously did not handle all types of dup2_x2   Now, will take null as mUnder2Type, so
     // don't add to undertypes if it is null
-    if (mUnder2Type != null) res.add(mUnder2Type);
+    if (mUnder2Type != null) {
+      res.add(mUnder2Type);
+    }
     return res;
   }
 
+  @Override
   public final String getName() {
     return "dup2_x2";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDup2_x2Inst(this);
   }
 
+  @Override
   public String toString() {
     // 07-20-2006 Michael Batchelder
     // previously did not handle all types of dup2_x2   Now, will take null as either mOp2Type
@@ -103,10 +116,14 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
     // "_" + Baf.bafDescriptorOf(mUnder1Type) + "." + Baf.bafDescriptorOf(mUnder2Type);
 
     String optypes = Baf.bafDescriptorOf(mOp1Type);
-    if (mOp2Type != null) optypes += "." + Baf.bafDescriptorOf(mOp2Type);
+    if (mOp2Type != null) {
+      optypes += "." + Baf.bafDescriptorOf(mOp2Type);
+    }
 
     String undertypes = Baf.bafDescriptorOf(mUnder1Type);
-    if (mUnder2Type != null) optypes += "." + Baf.bafDescriptorOf(mUnder2Type);
+    if (mUnder2Type != null) {
+      optypes += "." + Baf.bafDescriptorOf(mUnder2Type);
+    }
 
     return "dup2_x2." + optypes + "_" + undertypes;
     // END 07-20-2006 Michael Batchelder

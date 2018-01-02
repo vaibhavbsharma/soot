@@ -31,13 +31,13 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import java.util.Iterator;
+
 import soot.Local;
 import soot.Value;
 import soot.dava.internal.AST.ASTUnaryBinaryCondition;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
 
 /*
 ReachingCopies
@@ -86,6 +86,7 @@ public class ReachingCopies extends StructuredAnalysis {
       return rightLocal;
     }
 
+    @Override
     public boolean equals(Object other) {
       if (other instanceof LocalPair) {
         if (this.leftLocal.toString().equals(((LocalPair) other).getLeftLocal().toString())) {
@@ -106,6 +107,7 @@ public class ReachingCopies extends StructuredAnalysis {
           || rightLocal.toString().equals(local.toString());
     }
 
+    @Override
     public String toString() {
       StringBuffer b = new StringBuffer();
       b.append("<" + leftLocal.toString() + "," + rightLocal.toString() + ">");
@@ -121,10 +123,12 @@ public class ReachingCopies extends StructuredAnalysis {
     DavaFlowSet temp = process(analyze, new DavaFlowSet());
   }
 
+  @Override
   public DavaFlowSet emptyFlowSet() {
     return new DavaFlowSet();
   }
 
+  @Override
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
   }

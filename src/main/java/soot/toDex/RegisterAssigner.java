@@ -1,6 +1,13 @@
 package soot.toDex;
 
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
 import org.jf.dexlib2.Opcode;
+
 import soot.jimple.Stmt;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.Insn;
@@ -8,12 +15,6 @@ import soot.toDex.instructions.Insn11n;
 import soot.toDex.instructions.Insn21s;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.TwoRegInsn;
-
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 /**
  * Assigns final register numbers in instructions so that they fit into their format and obey the
@@ -63,16 +64,19 @@ class RegisterAssigner {
       LocalRegisterAssignmentInformation originalRegisterLocal =
           this.insnRegisterMap.get(forOriginal);
       if (originalRegisterLocal != null) {
-        if (newRegister != null)
+        if (newRegister != null) {
           this.insnRegisterMap.put(
               element,
               LocalRegisterAssignmentInformation.v(
                   newRegister, this.insnRegisterMap.get(forOriginal).getLocal()));
-        else this.insnRegisterMap.put(element, originalRegisterLocal);
+        } else {
+          this.insnRegisterMap.put(element, originalRegisterLocal);
+        }
       }
 
-      if (this.insnStmtMap.containsKey(forOriginal))
+      if (this.insnStmtMap.containsKey(forOriginal)) {
         this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
+      }
       this.insnsIterator.add(element);
     }
 
@@ -327,9 +331,11 @@ class RegisterAssigner {
     }
     insns.next(); // get past current insn again
 
-    if (moveResultInsn != null) insns.add(moveResultInsn, curInsn, newRegister); // advances the
-    // cursor, so no
-    // next() needed
+    if (moveResultInsn != null) {
+      insns.add(moveResultInsn, curInsn, newRegister); // advances the
+      // cursor, so no
+      // next() needed
+    }
   }
 
   private Insn findFittingInsn(Insn insn) {

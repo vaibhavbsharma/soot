@@ -25,6 +25,16 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.G;
 import soot.Hierarchy;
@@ -66,16 +76,6 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.SlowPseudoTopologicalOrderer;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 class ArrayBoundsCheckerAnalysis {
   protected Map<Block, WeightedDirectedSparseGraph> blockToBeforeFlow;
@@ -125,8 +125,9 @@ class ArrayBoundsCheckerAnalysis {
 
     SootMethod thismethod = body.getMethod();
 
-    if (Options.v().debug())
+    if (Options.v().debug()) {
       G.v().out.println("ArrayBoundsCheckerAnalysis started on  " + thismethod.getName());
+    }
 
     ailanalysis =
         new ArrayIndexLivenessAnalysis(
@@ -140,7 +141,7 @@ class ArrayBoundsCheckerAnalysis {
     if (arrayin) {
       if (rectarray) {
         this.multiarraylocals = ailanalysis.getMultiArrayLocals();
-        this.rectarrayset = new HashSet<Local>();
+        this.rectarrayset = new HashSet<>();
 
         RectangularArrayFinder pgbuilder = RectangularArrayFinder.v();
 
@@ -150,7 +151,9 @@ class ArrayBoundsCheckerAnalysis {
 
           MethodLocal mlocal = new MethodLocal(thismethod, local);
 
-          if (pgbuilder.isRectangular(mlocal)) this.rectarrayset.add(local);
+          if (pgbuilder.isRectangular(mlocal)) {
+            this.rectarrayset.add(local);
+          }
         }
       }
     }
@@ -165,9 +168,9 @@ class ArrayBoundsCheckerAnalysis {
 
     this.graph = new ArrayRefBlockGraph(body);
 
-    blockToBeforeFlow = new HashMap<Block, WeightedDirectedSparseGraph>(graph.size() * 2 + 1, 0.7f);
+    blockToBeforeFlow = new HashMap<>(graph.size() * 2 + 1, 0.7f);
 
-    edgeMap = new HashMap<FlowGraphEdge, WeightedDirectedSparseGraph>(graph.size() * 2 + 1, 0.7f);
+    edgeMap = new HashMap<>(graph.size() * 2 + 1, 0.7f);
 
     edgeSet = buildEdgeSet(graph);
 
@@ -175,11 +178,13 @@ class ArrayBoundsCheckerAnalysis {
 
     convertToUnitEntry();
 
-    if (Options.v().debug()) G.v().out.println("ArrayBoundsCheckerAnalysis finished.");
+    if (Options.v().debug()) {
+      G.v().out.println("ArrayBoundsCheckerAnalysis finished.");
+    }
   }
 
   private void convertToUnitEntry() {
-    unitToBeforeFlow = new HashMap<Unit, WeightedDirectedSparseGraph>();
+    unitToBeforeFlow = new HashMap<>();
     Iterator<Block> blockIt = blockToBeforeFlow.keySet().iterator();
     while (blockIt.hasNext()) {
       Block block = blockIt.next();
@@ -190,7 +195,7 @@ class ArrayBoundsCheckerAnalysis {
 
   /** buildEdgeSet creates a set of edges from directed graph. */
   public Set<FlowGraphEdge> buildEdgeSet(DirectedGraph<Block> dg) {
-    HashSet<FlowGraphEdge> edges = new HashSet<FlowGraphEdge>();
+    HashSet<FlowGraphEdge> edges = new HashSet<>();
 
     Iterator<Block> blockIt = dg.iterator();
     while (blockIt.hasNext()) {
@@ -229,7 +234,9 @@ class ArrayBoundsCheckerAnalysis {
 
     WeightedDirectedSparseGraph[] ingraphs = new WeightedDirectedSparseGraph[ins.length];
 
-    for (int i = 0; i < ins.length; i++) ingraphs[i] = (WeightedDirectedSparseGraph) ins[i];
+    for (int i = 0; i < ins.length; i++) {
+      ingraphs[i] = (WeightedDirectedSparseGraph) ins[i];
+    }
 
     {
       outgraph.addBoundedAll(ingraphs[0]);
@@ -275,7 +282,9 @@ class ArrayBoundsCheckerAnalysis {
    */
   private void doAnalysis() {
     Date start = new Date();
-    if (Options.v().debug()) G.v().out.println("Building PseudoTopological order list on " + start);
+    if (Options.v().debug()) {
+      G.v().out.println("Building PseudoTopological order list on " + start);
+    }
 
     LinkedList allUnits = (LinkedList) SlowPseudoTopologicalOrderer.v().newList(this.graph, false);
 
@@ -310,7 +319,7 @@ class ArrayBoundsCheckerAnalysis {
 
     /* If any output flow set has unknow value, it will be put in this set
      */
-    HashSet<Block> unvisitedNodes = new HashSet<Block>(graph.size() * 2 + 1, 0.7f);
+    HashSet<Block> unvisitedNodes = new HashSet<>(graph.size() * 2 + 1, 0.7f);
 
     /* adjust livelocals set */
     {
@@ -325,7 +334,7 @@ class ArrayBoundsCheckerAnalysis {
 
     /* Set initial values and nodes to visit. */
     {
-      stableRoundOfUnits = new HashMap<Block, Integer>();
+      stableRoundOfUnits = new HashMap<>();
 
       Iterator it = graph.iterator();
 
@@ -479,7 +488,7 @@ class ArrayBoundsCheckerAnalysis {
    * the changed succ will be in a list to return back.
    */
   private List<Object> flowThrough(Object inValue, Object unit) {
-    ArrayList<Object> changedSuccs = new ArrayList<Object>();
+    ArrayList<Object> changedSuccs = new ArrayList<>();
 
     WeightedDirectedSparseGraph ingraph = (WeightedDirectedSparseGraph) inValue;
 
@@ -503,8 +512,9 @@ class ArrayBoundsCheckerAnalysis {
 
     // at the end of block, it should update the out edges.
     if (s instanceof IfStmt) {
-      if (!assertBranchStmt(ingraph, s, block, succs, changedSuccs))
+      if (!assertBranchStmt(ingraph, s, block, succs, changedSuccs)) {
         updateOutEdges(ingraph, block, succs, changedSuccs);
+      }
     } else {
       assertArrayRef(ingraph, s);
       assertNormalExpr(ingraph, s);
@@ -515,7 +525,9 @@ class ArrayBoundsCheckerAnalysis {
   }
 
   private void assertArrayRef(Object in, Unit unit) {
-    if (!(unit instanceof AssignStmt)) return;
+    if (!(unit instanceof AssignStmt)) {
+      return;
+    }
 
     Stmt s = (Stmt) unit;
 
@@ -537,7 +549,9 @@ class ArrayBoundsCheckerAnalysis {
         return;
     */
 
-    if (!s.containsArrayRef()) return;
+    if (!s.containsArrayRef()) {
+      return;
+    }
 
     ArrayRef op = s.getArrayRef();
 
@@ -545,7 +559,9 @@ class ArrayBoundsCheckerAnalysis {
     Value index = (op).getIndex();
 
     HashSet livelocals = (HashSet) ailanalysis.getFlowAfter(s);
-    if (!livelocals.contains(base) && !livelocals.contains(index)) return;
+    if (!livelocals.contains(base) && !livelocals.contains(index)) {
+      return;
+    }
 
     if (index instanceof IntConstant) {
       int weight = ((IntConstant) index).value;
@@ -629,8 +645,9 @@ class ArrayBoundsCheckerAnalysis {
         /* kill all instance field reference. */
         if (strictness == 1) {
           boolean killall = false;
-          if (expr instanceof InstanceInvokeExpr) killall = true;
-          else {
+          if (expr instanceof InstanceInvokeExpr) {
+            killall = true;
+          } else {
             for (int i = 0; i < parameters.size(); i++) {
               Value para = (Value) parameters.get(i);
               if (para.getType() instanceof RefType) {
@@ -653,7 +670,9 @@ class ArrayBoundsCheckerAnalysis {
           Iterator nodeIt = vertexes.iterator();
           while (nodeIt.hasNext()) {
             Object node = nodeIt.next();
-            if (node instanceof FieldRef) ingraph.killNode(node);
+            if (node instanceof FieldRef) {
+              ingraph.killNode(node);
+            }
           }
         }
 
@@ -681,7 +700,9 @@ class ArrayBoundsCheckerAnalysis {
           Iterator nodeIt = vertexes.iterator();
           while (nodeIt.hasNext()) {
             Object node = nodeIt.next();
-            if (node instanceof ArrayRef) ingraph.killNode(node);
+            if (node instanceof ArrayRef) {
+              ingraph.killNode(node);
+            }
 
             /*
             if (rectarray)
@@ -693,7 +714,9 @@ class ArrayBoundsCheckerAnalysis {
       }
     }
 
-    if (!(s instanceof AssignStmt)) return;
+    if (!(s instanceof AssignStmt)) {
+      return;
+    }
 
     Value leftOp = ((AssignStmt) s).getLeftOp();
     Value rightOp = ((AssignStmt) s).getRightOp();
@@ -708,7 +731,9 @@ class ArrayBoundsCheckerAnalysis {
           Iterator refsIt = fieldrefs.iterator();
           while (refsIt.hasNext()) {
             Object ref = refsIt.next();
-            if (livelocals.contains(ref)) ingraph.killNode(ref);
+            if (livelocals.contains(ref)) {
+              ingraph.killNode(ref);
+            }
           }
         }
       } else if (leftOp instanceof InstanceFieldRef) {
@@ -720,7 +745,9 @@ class ArrayBoundsCheckerAnalysis {
           Iterator refsIt = fieldrefs.iterator();
           while (refsIt.hasNext()) {
             Object ref = refsIt.next();
-            if (livelocals.contains(ref)) ingraph.killNode(ref);
+            if (livelocals.contains(ref)) {
+              ingraph.killNode(ref);
+            }
           }
         }
       }
@@ -752,13 +779,17 @@ class ArrayBoundsCheckerAnalysis {
             Value base = ((ArrayRef) node).getBase();
             Value index = ((ArrayRef) node).getIndex();
 
-            if (base.equals(leftOp) || index.equals(leftOp)) ingraph.killNode(node);
+            if (base.equals(leftOp) || index.equals(leftOp)) {
+              ingraph.killNode(node);
+            }
           }
 
           if (rectarray) {
             if (node instanceof Array2ndDimensionSymbol) {
               Object base = ((Array2ndDimensionSymbol) node).getVar();
-              if (base.equals(leftOp)) ingraph.killNode(node);
+              if (base.equals(leftOp)) {
+                ingraph.killNode(node);
+              }
             }
           }
         }
@@ -778,7 +809,9 @@ class ArrayBoundsCheckerAnalysis {
           Iterator nodeIt = vertexes.iterator();
           while (nodeIt.hasNext()) {
             Object node = nodeIt.next();
-            if (node instanceof ArrayRef) ingraph.killNode(node);
+            if (node instanceof ArrayRef) {
+              ingraph.killNode(node);
+            }
           }
         }
 
@@ -803,10 +836,14 @@ class ArrayBoundsCheckerAnalysis {
       }
     }
 
-    if (!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) return;
+    if (!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) {
+      return;
+    }
 
     // i = i;
-    if (rightOp.equals(leftOp)) return;
+    if (rightOp.equals(leftOp)) {
+      return;
+    }
 
     if (csin) {
       HashSet exprs = localToExpr.get(leftOp);
@@ -1035,7 +1072,9 @@ class ArrayBoundsCheckerAnalysis {
     // take out the condition.
     Value cmpcond = ifstmt.getCondition();
 
-    if (!(cmpcond instanceof ConditionExpr)) return false;
+    if (!(cmpcond instanceof ConditionExpr)) {
+      return false;
+    }
 
     // how may succs?
     if (succs.size() != 2) {
@@ -1057,7 +1096,9 @@ class ArrayBoundsCheckerAnalysis {
 
     HashSet livelocals = (HashSet) ailanalysis.getFlowAfter(s);
 
-    if (!livelocals.contains(op1) && !livelocals.contains(op2)) return false;
+    if (!livelocals.contains(op1) && !livelocals.contains(op2)) {
+      return false;
+    }
 
     WeightedDirectedSparseGraph ingraph = (WeightedDirectedSparseGraph) in;
 
@@ -1076,10 +1117,15 @@ class ArrayBoundsCheckerAnalysis {
         node2 = zero;
       }
 
-      if (node1 == node2) return false;
+      if (node1 == node2) {
+        return false;
+      }
 
-      if (cmpcond instanceof EqExpr) targetgraph.addMutualEdges(node1, node2, weight);
-      else ingraph.addMutualEdges(node1, node2, weight);
+      if (cmpcond instanceof EqExpr) {
+        targetgraph.addMutualEdges(node1, node2, weight);
+      } else {
+        ingraph.addMutualEdges(node1, node2, weight);
+      }
     } else
     // i > j
     if ((cmpcond instanceof GtExpr)
@@ -1099,7 +1145,9 @@ class ArrayBoundsCheckerAnalysis {
         node2 = zero;
       }
 
-      if (node1 == node2) return false;
+      if (node1 == node2) {
+        return false;
+      }
 
       if (cmpcond instanceof GtExpr) {
         targetgraph.addEdge(node1, node2, weight - 1);
@@ -1124,7 +1172,9 @@ class ArrayBoundsCheckerAnalysis {
         node2 = zero;
       }
 
-      if (node1 == node2) return false;
+      if (node1 == node2) {
+        return false;
+      }
 
       if (cmpcond instanceof LtExpr) {
         targetgraph.addEdge(node2, node1, weight - 1);
@@ -1133,7 +1183,9 @@ class ArrayBoundsCheckerAnalysis {
         targetgraph.addEdge(node2, node1, weight);
         ingraph.addEdge(node1, node2, -weight - 1);
       }
-    } else return false;
+    } else {
+      return false;
+    }
 
     // update out edges and changed succs.
     // targetgraph -> targetBlock
@@ -1154,7 +1206,9 @@ class ArrayBoundsCheckerAnalysis {
       changed = true;
     }
 
-    if (changed) changedSuccs.add(targetBlock);
+    if (changed) {
+      changedSuccs.add(targetBlock);
+    }
 
     // ingraph -> nextBlock
     FlowGraphEdge nextEdge = new FlowGraphEdge(current, nextBlock);
@@ -1172,7 +1226,9 @@ class ArrayBoundsCheckerAnalysis {
       changed = true;
     }
 
-    if (changed) changedSuccs.add(nextBlock);
+    if (changed) {
+      changedSuccs.add(nextBlock);
+    }
 
     return true;
   }
@@ -1201,7 +1257,9 @@ class ArrayBoundsCheckerAnalysis {
         changed = true;
       }
 
-      if (changed) changedSuccs.add(next);
+      if (changed) {
+        changedSuccs.add(next);
+      }
     }
   }
 

@@ -25,6 +25,8 @@
 
 package soot.toolkits.scalar;
 
+import java.util.List;
+
 import soot.G;
 import soot.Local;
 import soot.Timers;
@@ -32,9 +34,8 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.List;
 
 /** Analysis that provides an implementation of the LiveLocals interface. */
 public class SimpleLiveLocals implements LiveLocals {
@@ -49,32 +50,43 @@ public class SimpleLiveLocals implements LiveLocals {
    * @see ExceptionalUnitGraph
    */
   public SimpleLiveLocals(UnitGraph graph) {
-    if (Options.v().time()) Timers.v().liveTimer.start();
+    if (Options.v().time()) {
+      Timers.v().liveTimer.start();
+    }
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v()
           .out
           .println(
               "["
                   + graph.getBody().getMethod().getName()
                   + "]     Constructing SimpleLiveLocals...");
+    }
 
     analysis = new Analysis(graph);
 
-    if (Options.v().time()) Timers.v().liveAnalysisTimer.start();
+    if (Options.v().time()) {
+      Timers.v().liveAnalysisTimer.start();
+    }
 
     analysis.doAnalysis();
 
-    if (Options.v().time()) Timers.v().liveAnalysisTimer.end();
+    if (Options.v().time()) {
+      Timers.v().liveAnalysisTimer.end();
+    }
 
-    if (Options.v().time()) Timers.v().liveTimer.end();
+    if (Options.v().time()) {
+      Timers.v().liveTimer.end();
+    }
   }
 
+  @Override
   public List<Local> getLiveLocalsAfter(Unit s) {
     // ArraySparseSet returns a unbacked list of elements!
     return analysis.getFlowAfter(s).toList();
   }
 
+  @Override
   public List<Local> getLiveLocalsBefore(Unit s) {
     // ArraySparseSet returns a unbacked list of elements!
     return analysis.getFlowBefore(s).toList();
@@ -87,7 +99,7 @@ public class SimpleLiveLocals implements LiveLocals {
 
     @Override
     protected FlowSet<Local> newInitialFlow() {
-      return new ArraySparseSet<Local>();
+      return new ArraySparseSet<>();
     }
 
     @Override

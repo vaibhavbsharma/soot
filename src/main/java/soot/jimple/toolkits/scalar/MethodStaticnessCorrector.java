@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -12,9 +15,6 @@ import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Transformer that checks whether an instance method is used like a static method, and can easily
@@ -46,8 +46,9 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
             if (isClassLoaded(iexpr.getMethodRef().declaringClass())) {
               SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
               if (target != null && !target.isStatic()) {
-                if (canBeMadeStatic(target))
+                if (canBeMadeStatic(target)) {
                   target.setModifiers(target.getModifiers() | Modifier.STATIC);
+                }
               }
             }
           }
@@ -68,7 +69,9 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
       Value thisLocal = body.getThisLocal();
       for (Unit u : body.getUnits()) {
         for (ValueBox vb : u.getUseBoxes()) {
-          if (vb.getValue() == thisLocal) return false;
+          if (vb.getValue() == thisLocal) {
+            return false;
+          }
         }
       }
       return true;

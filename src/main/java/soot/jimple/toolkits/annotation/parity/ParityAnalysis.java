@@ -19,6 +19,15 @@
 
 package soot.jimple.toolkits.annotation.parity;
 
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.BOTTOM;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.EVEN;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.ODD;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.TOP;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.valueOf;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
@@ -38,15 +47,6 @@ import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.toolkits.scalar.LiveLocals;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.BOTTOM;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.EVEN;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.ODD;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.TOP;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.valueOf;
 
 // STEP 1: What are we computing?
 // SETS OF PAIRS of form (X, T) => Use ArraySparseSet.
@@ -85,10 +85,10 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
 
     this.filter = filter;
 
-    filterUnitToBeforeFlow = new HashMap<Unit, Map<Value, Parity>>();
+    filterUnitToBeforeFlow = new HashMap<>();
     buildBeforeFilterMap();
 
-    filterUnitToAfterFlow = new HashMap<Unit, Map<Value, Parity>>();
+    filterUnitToAfterFlow = new HashMap<>();
 
     doAnalysis();
   }
@@ -110,7 +110,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
       // if (!((left.getType() instanceof IntegerType) || (left.getType() instanceof
       // LongType))) continue;
 
-      Map<Value, Parity> map = new HashMap<Value, Parity>();
+      Map<Value, Parity> map = new HashMap<>();
       for (Local l : filter.getLiveLocalsBefore(s)) {
         map.put(l, BOTTOM);
       }
@@ -225,7 +225,9 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     }
 
     Parity p = in.get(val);
-    if (p == null) return TOP;
+    if (p == null) {
+      return TOP;
+    }
     return p;
   }
 
@@ -272,7 +274,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
 
   private void buildAfterFilterMap(Unit s) {
 
-    Map<Value, Parity> map = new HashMap<Value, Parity>();
+    Map<Value, Parity> map = new HashMap<>();
     for (Local local : filter.getLiveLocalsAfter(s)) {
       map.put(local, BOTTOM);
     }
@@ -316,7 +318,9 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
   private Map<Value, Parity> updateFilter(
       Map<Value, Parity> allData, Map<Value, Parity> filterData) {
 
-    if (allData == null) return filterData;
+    if (allData == null) {
+      return filterData;
+    }
 
     for (Value v : filterData.keySet()) {
       Parity d = allData.get(v);
@@ -332,7 +336,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
 
   @Override
   protected Map<Value, Parity> newInitialFlow() {
-    Map<Value, Parity> initMap = new HashMap<Value, Parity>();
+    Map<Value, Parity> initMap = new HashMap<>();
 
     for (Local l : g.getBody().getLocals()) {
       Type t = l.getType();

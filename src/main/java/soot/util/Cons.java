@@ -40,17 +40,31 @@ public final class Cons<U, V> {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     @SuppressWarnings("unchecked")
     Cons<U, V> other = (Cons<U, V>) obj;
     if (car == null) {
-      if (other.car != null) return false;
-    } else if (!car.equals(other.car)) return false;
+      if (other.car != null) {
+        return false;
+      }
+    } else if (!car.equals(other.car)) {
+      return false;
+    }
     if (cdr == null) {
-      if (other.cdr != null) return false;
-    } else if (!cdr.equals(other.cdr)) return false;
+      if (other.cdr != null) {
+        return false;
+      }
+    } else if (!cdr.equals(other.cdr)) {
+      return false;
+    }
     return true;
   }
 

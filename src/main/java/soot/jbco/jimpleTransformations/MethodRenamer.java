@@ -19,6 +19,13 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -37,13 +44,6 @@ import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 24-Jan-2006
@@ -52,26 +52,32 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
   public static String dependancies[] = new String[] {"wjtp.jbco_mr"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "wjtp.jbco_mr";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {}
 
   private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
 
-  public static Vector<?> namesToNotRename = new Vector<Object>();
-  public static HashMap<String, String> oldToNewMethodNames = new HashMap<String, String>();
+  public static Vector<?> namesToNotRename = new Vector<>();
+  public static HashMap<String, String> oldToNewMethodNames = new HashMap<>();
   private static Hierarchy hierarchy;
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
-    if (output) out.println("Transforming Method Names...");
+    if (output) {
+      out.println("Transforming Method Names...");
+    }
 
     BodyBuilder.retrieveAllBodies();
     BodyBuilder.retrieveAllNames();
@@ -82,7 +88,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
     // iterate through application classes, rename methods with junk
     for (SootClass c : scene.getApplicationClasses()) {
-      Vector<String> fields = new Vector<String>();
+      Vector<String> fields = new Vector<>();
       Iterator<SootField> fIt = c.getFields().iterator();
       while (fIt.hasNext()) {
         fields.add(fIt.next().getName());
@@ -92,16 +98,19 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
       for (SootMethod m : methods) {
         String subSig = m.getSubSignature();
 
-        if (!allowsRename(c, m)) continue;
+        if (!allowsRename(c, m)) {
+          continue;
+        }
 
         boolean rename = true;
         for (SootClass _c : hierarchy.getSuperclassesOfIncluding(c.getSuperclass())) {
           if (_c.declaresMethod(subSig)
               && hierarchy.isVisible(c, _c.getMethod(subSig))
               && _c.isLibraryClass()) {
-            if (output)
+            if (output) {
               out.println(
                   "\t" + _c.getName() + "'s method " + subSig + " is overridden in " + c.getName());
+            }
             rename = false;
             break;
           }
@@ -115,13 +124,17 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
             if (fields.size() > 0) {
               int rand = Rand.getInt(fields.size());
               newName = fields.remove(rand);
-              if (oldToNewMethodNames.containsValue(newName)) newName = getNewName();
+              if (oldToNewMethodNames.containsValue(newName)) {
+                newName = getNewName();
+              }
             } else {
               newName = getNewName();
             }
           }
           oldToNewMethodNames.put(m.getName(), newName);
-          if (output) out.println("\tChanged " + m.getSignature() + " to " + newName);
+          if (output) {
+            out.println("\tChanged " + m.getSignature() + " to " + newName);
+          }
           m.setName(newName);
         }
       }
@@ -130,7 +143,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
     for (SootClass c : scene.getApplicationClasses()) {
       final List<SootMethod> methods = new ArrayList<>(c.getMethods());
       for (SootMethod m : methods) {
-        if (!m.isConcrete() || m.getDeclaringClass().isLibraryClass()) continue;
+        if (!m.isConcrete() || m.getDeclaringClass().isLibraryClass()) {
+          continue;
+        }
         Body aBody = null;
         try {
           aBody = m.getActiveBody();
@@ -143,7 +158,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
           Iterator<ValueBox> ubIt = uIt.next().getUseBoxes().iterator();
           while (ubIt.hasNext()) {
             Value v = ubIt.next().getValue();
-            if (!(v instanceof InvokeExpr)) continue;
+            if (!(v instanceof InvokeExpr)) {
+              continue;
+            }
 
             InvokeExpr ie = (InvokeExpr) v;
             SootMethodRef methodRef = ie.getMethodRef();
@@ -156,7 +173,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
             }
 
             String newName = oldToNewMethodNames.get(methodRef.name());
-            if (newName == null) continue;
+            if (newName == null) {
+              continue;
+            }
 
             methodRef =
                 scene.makeMethodRef(
@@ -214,7 +233,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
   private static boolean allowsRename(SootClass c, SootMethod m) {
 
-    if (soot.jbco.Main.getWeight(MethodRenamer.name, m.getName()) == 0) return false;
+    if (soot.jbco.Main.getWeight(MethodRenamer.name, m.getName()) == 0) {
+      return false;
+    }
 
     String subSig = m.getSubSignature();
     if (subSig.equals("void main(java.lang.String[])") && m.isPublic() && m.isStatic()) {
@@ -231,7 +252,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
       }
 
       do {
-        if (checkInterfacesForMethod(c, m)) return false;
+        if (checkInterfacesForMethod(c, m)) {
+          return false;
+        }
       } while (c.hasSuperclass() && (c = c.getSuperclass()) != null);
     }
 
@@ -241,7 +264,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   private static boolean checkInterfacesForMethod(SootClass c, SootMethod m) {
     for (SootClass sc : c.getInterfaces()) {
       if (sc.isLibraryClass()
-          && sc.declaresMethod(m.getName(), m.getParameterTypes(), m.getReturnType())) return true;
+          && sc.declaresMethod(m.getName(), m.getParameterTypes(), m.getReturnType())) {
+        return true;
+      }
     }
     return false;
   }

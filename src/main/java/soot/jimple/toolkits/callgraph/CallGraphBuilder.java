@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import soot.EntryPoints;
 import soot.G;
 import soot.Local;
@@ -36,11 +40,6 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Models the call graph.
@@ -90,7 +89,7 @@ public final class CallGraphBuilder {
     pa = soot.jimple.toolkits.pointer.DumbPointerAnalysis.v();
     cg = new CallGraph();
     Scene.v().setCallGraph(cg);
-    List<MethodOrMethodContext> entryPoints = new ArrayList<MethodOrMethodContext>();
+    List<MethodOrMethodContext> entryPoints = new ArrayList<>();
     entryPoints.addAll(EntryPoints.v().methodsOfApplicationClasses());
     entryPoints.addAll(EntryPoints.v().implicit());
     reachables = new ReachableMethods(cg, entryPoints);
@@ -103,18 +102,19 @@ public final class CallGraphBuilder {
     while (true) {
       ofcgb.processReachables();
       reachables.update();
-      if (!worklist.hasNext()) break;
+      if (!worklist.hasNext()) {
+        break;
+      }
       final MethodOrMethodContext momc = worklist.next();
       List<Local> receivers = ofcgb.methodToReceivers().get(momc.method());
-      if (receivers != null)
-        for (Iterator<Local> receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {
-          final Local receiver = receiverIt.next();
+      if (receivers != null) {
+        for (Local receiver : receivers) {
           final PointsToSet p2set = pa.reachingObjects(receiver);
-          for (Iterator<Type> typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
-            final Type type = typeIt.next();
+          for (Type type : p2set.possibleTypes()) {
             ofcgb.addType(receiver, momc.context(), type, null);
           }
         }
+      }
       List<Local> bases = ofcgb.methodToInvokeArgs().get(momc.method());
       if (bases != null) {
         for (Local base : bases) {
@@ -157,22 +157,19 @@ public final class CallGraphBuilder {
         }
       }
       List<Local> stringConstants = ofcgb.methodToStringConstants().get(momc.method());
-      if (stringConstants != null)
-        for (Iterator<Local> stringConstantIt = stringConstants.iterator();
-            stringConstantIt.hasNext(); ) {
-          final Local stringConstant = stringConstantIt.next();
+      if (stringConstants != null) {
+        for (Local stringConstant : stringConstants) {
           PointsToSet p2set = pa.reachingObjects(stringConstant);
           Collection<String> possibleStringConstants = p2set.possibleStringConstants();
           if (possibleStringConstants == null) {
             ofcgb.addStringConstant(stringConstant, momc.context(), null);
           } else {
-            for (Iterator<String> constantIt = possibleStringConstants.iterator();
-                constantIt.hasNext(); ) {
-              final String constant = constantIt.next();
+            for (String constant : possibleStringConstants) {
               ofcgb.addStringConstant(stringConstant, momc.context(), constant);
             }
           }
         }
+      }
     }
   }
 }

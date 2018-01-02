@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import polyglot.util.IdentityKey;
-
 import java.util.ArrayList;
+
+import polyglot.util.IdentityKey;
 
 public class AnonLocalClassInfo {
 
@@ -53,6 +53,7 @@ public class AnonLocalClassInfo {
     finalLocalsUsed = list;
   }
 
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
     sb.append("static: ");

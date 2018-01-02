@@ -25,10 +25,10 @@
 
 package soot.tagkit;
 
+import java.util.LinkedList;
+
 import soot.Unit;
 import soot.baf.Inst;
-
-import java.util.LinkedList;
 
 /**
  * A tag aggregator that associates a tag with the <b>most important</b> instruction that is tagged
@@ -37,9 +37,11 @@ import java.util.LinkedList;
  */
 public abstract class ImportantTagAggregator extends TagAggregator {
   /** Decide whether this tag should be aggregated by this aggregator. */
+  @Override
   public abstract boolean wantTag(Tag t);
 
   /** Return name of the resulting aggregated tag. */
+  @Override
   public abstract String aggregatedName();
 
   /** Decide whether this tag should be aggregated by this aggregator. */
@@ -49,7 +51,9 @@ public abstract class ImportantTagAggregator extends TagAggregator {
     if (!(i.containsInvokeExpr()
         || i.containsFieldRef()
         || i.containsArrayRef()
-        || i.containsNewExpr())) return;
+        || i.containsNewExpr())) {
+      return;
+    }
     units.add(u);
     tags.add(t);
   }

@@ -19,6 +19,8 @@
 
 package soot.shimple;
 
+import java.util.List;
+
 import soot.Local;
 import soot.Type;
 import soot.Unit;
@@ -26,8 +28,6 @@ import soot.Value;
 import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
-
-import java.util.List;
 
 /**
  * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the
@@ -179,7 +179,9 @@ public interface PhiExpr extends ShimpleExpr {
   int getBlockId();
 
   /** The type of the PhiExpr is usually the same as the type of its arguments. */
+  @Override
   Type getType();
 
+  @Override
   void apply(Switch sw);
 }

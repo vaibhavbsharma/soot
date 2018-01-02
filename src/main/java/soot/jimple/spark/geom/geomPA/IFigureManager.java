@@ -44,7 +44,9 @@ public abstract class IFigureManager {
       segHeader = ret.next;
       ret.next = null;
       ret.is_new = true;
-    } else ret = new SegmentNode();
+    } else {
+      ret = new SegmentNode();
+    }
 
     return ret;
   }
@@ -62,7 +64,9 @@ public abstract class IFigureManager {
       rectHeader = ret.next;
       ret.next = null;
       ret.is_new = true;
-    } else ret = new RectangleNode();
+    } else {
+      ret = new RectangleNode();
+    }
 
     return ret;
   }

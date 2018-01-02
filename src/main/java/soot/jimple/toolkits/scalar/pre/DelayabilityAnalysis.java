@@ -25,6 +25,8 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
@@ -34,8 +36,6 @@ import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.Map;
 
 /**
  * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the
@@ -73,8 +73,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
         dg,
         earliest,
         equivRhsMap,
-        new ArrayPackedSet<EquivalentValue>(
-            new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(equivRhsMap.values())));
   }
 
   /**
@@ -129,7 +128,9 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
     {
       /* Perform kill */
       EquivalentValue equiVal = unitToKillValue.get(u);
-      if (equiVal != null) out.remove(equiVal);
+      if (equiVal != null) {
+        out.remove(equiVal);
+      }
     }
   }
 
@@ -141,6 +142,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   protected void copy(FlowSet<EquivalentValue> sourceSet, FlowSet<EquivalentValue> destSet) {
     sourceSet.copy(destSet);
   }

@@ -24,6 +24,12 @@
 
 package soot.dexpler;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -61,12 +67,6 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * BodyTransformer to find and change IntConstant(0) to NullConstant where locals are used as
@@ -272,7 +272,9 @@ public class DexNullTransformer extends AbstractNullTransformer {
 
           @Override
           public void caseIdentityStmt(IdentityStmt stmt) {
-            if (stmt.getLeftOp() == l) throw new RuntimeException("IMPOSSIBLE 0");
+            if (stmt.getLeftOp() == l) {
+              throw new RuntimeException("IMPOSSIBLE 0");
+            }
           }
 
           @Override
@@ -324,30 +326,39 @@ public class DexNullTransformer extends AbstractNullTransformer {
 
         // check defs
         u.apply(checkDef);
-        if (doBreak) break;
+        if (doBreak) {
+          break;
+        }
 
         // check uses
         for (Unit use : localDefs.getUsesOf(l)) {
           use.apply(checkUse);
 
-          if (doBreak) break;
+          if (doBreak) {
+            break;
+          }
         } // for uses
-        if (doBreak) break;
+        if (doBreak) {
+          break;
+        }
       } // for defs
 
       // change values
       if (usedAsObject) {
         for (Unit u : defs) {
           replaceWithNull(u);
-          Set<Value> defLocals = new HashSet<Value>();
-          for (ValueBox vb : u.getDefBoxes()) defLocals.add(vb.getValue());
+          Set<Value> defLocals = new HashSet<>();
+          for (ValueBox vb : u.getDefBoxes()) {
+            defLocals.add(vb.getValue());
+          }
 
           Local l = (Local) ((DefinitionStmt) u).getLeftOp();
           for (Unit uuse : localDefs.getUsesOf(l)) {
             Stmt use = (Stmt) uuse;
             // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-            if (!use.containsArrayRef() || !defLocals.contains(use.getArrayRef().getBase()))
+            if (!use.containsArrayRef() || !defLocals.contains(use.getArrayRef().getBase())) {
               replaceWithNull(use);
+            }
           }
         }
       } // end if
@@ -384,7 +395,9 @@ public class DexNullTransformer extends AbstractNullTransformer {
           }
 
           private boolean isConstZero(Value rightOp) {
-            if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) return true;
+            if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) {
+              return true;
+            }
             return rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0;
           }
 
@@ -399,14 +412,16 @@ public class DexNullTransformer extends AbstractNullTransformer {
 
           @Override
           public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
-            if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0)
+            if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0) {
               stmt.setOp(nullConstant);
+            }
           }
 
           @Override
           public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
-            if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0)
+            if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0) {
               stmt.setOp(nullConstant);
+            }
           }
         };
 
@@ -417,13 +432,15 @@ public class DexNullTransformer extends AbstractNullTransformer {
         Stmt stmt = (Stmt) u;
         if (stmt.containsInvokeExpr()) {
           InvokeExpr invExpr = stmt.getInvokeExpr();
-          for (int i = 0; i < invExpr.getArgCount(); i++)
-            if (isObject(invExpr.getMethodRef().parameterType(i)))
+          for (int i = 0; i < invExpr.getArgCount(); i++) {
+            if (isObject(invExpr.getMethodRef().parameterType(i))) {
               if (invExpr.getArg(i) instanceof IntConstant) {
                 IntConstant iconst = (IntConstant) invExpr.getArg(i);
                 assert iconst.value == 0;
                 invExpr.setArg(i, nullConstant);
               }
+            }
+          }
         }
       }
     }
@@ -436,11 +453,16 @@ public class DexNullTransformer extends AbstractNullTransformer {
         if (assign.getLeftOp() == v) {
           if (assign.getRightOp() instanceof NewArrayExpr) {
             NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
-            if (isObject(nea.getBaseType())) return true;
+            if (isObject(nea.getBaseType())) {
+              return true;
+            }
           } else if (assign.getRightOp() instanceof FieldRef) {
             FieldRef fr = (FieldRef) assign.getRightOp();
-            if (fr.getType() instanceof ArrayType)
-              if (isObject(((ArrayType) fr.getType()).getArrayElementType())) return true;
+            if (fr.getType() instanceof ArrayType) {
+              if (isObject(((ArrayType) fr.getType()).getArrayElementType())) {
+                return true;
+              }
+            }
           }
         }
       }
@@ -459,18 +481,24 @@ public class DexNullTransformer extends AbstractNullTransformer {
     for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt a = (AssignStmt) u;
-        if (!(a.getLeftOp() instanceof Local)) continue;
+        if (!(a.getLeftOp() instanceof Local)) {
+          continue;
+        }
         Local l = (Local) a.getLeftOp();
         Value r = a.getRightOp();
         if ((r instanceof IntConstant && ((IntConstant) r).value == 0)
             || (r instanceof LongConstant && ((LongConstant) r).value == 0)) {
-          if (candidates == null) candidates = new HashSet<Local>();
+          if (candidates == null) {
+            candidates = new HashSet<>();
+          }
           candidates.add(l);
         }
       } else if (u instanceof IfStmt) {
         ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
         if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
-          if (candidates == null) candidates = new HashSet<Local>();
+          if (candidates == null) {
+            candidates = new HashSet<>();
+          }
           candidates.add((Local) expr.getOp1());
         }
       }

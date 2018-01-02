@@ -32,14 +32,17 @@ public class DNewArrayExpr extends AbstractNewArrayExpr implements Precedence {
     super(type, Grimp.v().newExprBox(size));
   }
 
+  @Override
   public int getPrecedence() {
     return 850;
   }
 
+  @Override
   public Object clone() {
     return new DNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("new");
     up.literal(" ");
@@ -61,6 +64,7 @@ public class DNewArrayExpr extends AbstractNewArrayExpr implements Precedence {
     }
   }
 
+  @Override
   public String toString() {
     return "new " + getBaseType() + "[" + getSize() + "]";
   }

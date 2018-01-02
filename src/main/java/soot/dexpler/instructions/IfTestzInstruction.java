@@ -26,6 +26,7 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21t;
+
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.jimple.BinopExpr;

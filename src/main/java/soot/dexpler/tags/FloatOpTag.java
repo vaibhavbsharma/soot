@@ -23,10 +23,12 @@ package soot.dexpler.tags;
 import soot.tagkit.Tag;
 
 public class FloatOpTag implements Tag {
+  @Override
   public String getName() {
     return "FloatOpTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] b = new byte[1];
     b[0] = 0;

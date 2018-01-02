@@ -33,27 +33,36 @@ public class PurityParamNode implements PurityNode {
     this.id = id;
   }
 
+  @Override
   public String toString() {
     return "P_" + id;
   }
 
+  @Override
   public int hashCode() {
     return id;
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (o instanceof PurityParamNode) return ((PurityParamNode) o).id == id;
-    else return false;
+    if (o instanceof PurityParamNode) {
+      return ((PurityParamNode) o).id == id;
+    } else {
+      return false;
+    }
   }
 
+  @Override
   public boolean isInside() {
     return false;
   }
 
+  @Override
   public boolean isLoad() {
     return false;
   }
 
+  @Override
   public boolean isParam() {
     return true;
   }

@@ -26,6 +26,13 @@
 
 package soot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
@@ -34,13 +41,6 @@ import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
 import soot.util.Numberable;
 import soot.util.NumberedString;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Soot representation of a Java method. Can be declared to belong to a SootClass. Does not contain
@@ -113,12 +113,15 @@ public class SootMethod extends AbstractHost
     // Method sources are not expected to be thread safe
     synchronized (this) {
       if (this.activeBody == null) {
-        if (ms == null)
+        if (ms == null) {
           throw new RuntimeException("No method source set for method " + this.getSignature());
+        }
 
         // Method sources are not expected to be thread safe
         return ms.getBody(this, phaseName);
-      } else return this.activeBody;
+      } else {
+        return this.activeBody;
+      }
     }
   }
 
@@ -159,14 +162,15 @@ public class SootMethod extends AbstractHost
       List<SootClass> thrownExceptions) {
     this.name = name;
 
-    if (parameterTypes != null && !parameterTypes.isEmpty())
+    if (parameterTypes != null && !parameterTypes.isEmpty()) {
       this.parameterTypes = parameterTypes.toArray(new Type[parameterTypes.size()]);
+    }
 
     this.returnType = returnType;
     this.modifiers = modifiers;
 
     if (exceptions == null && !thrownExceptions.isEmpty()) {
-      exceptions = new ArrayList<SootClass>();
+      exceptions = new ArrayList<>();
       this.exceptions.addAll(thrownExceptions);
       /*
        * DEBUG=true; if(DEBUG)
@@ -202,7 +206,9 @@ public class SootMethod extends AbstractHost
   /** Returns the class which declares the current <code>SootMethod</code>. */
   @Override
   public SootClass getDeclaringClass() {
-    if (!isDeclared) throw new RuntimeException("not declared: " + getName());
+    if (!isDeclared) {
+      throw new RuntimeException("not declared: " + getName());
+    }
 
     return declaringClass;
   }
@@ -238,9 +244,12 @@ public class SootMethod extends AbstractHost
   @Override
   public void setPhantom(boolean value) {
     if (value) {
-      if (!Scene.v().allowsPhantomRefs()) throw new RuntimeException("Phantom refs not allowed");
-      if (declaringClass != null && !declaringClass.isPhantom())
+      if (!Scene.v().allowsPhantomRefs()) {
+        throw new RuntimeException("Phantom refs not allowed");
+      }
+      if (declaringClass != null && !declaringClass.isPhantom()) {
         throw new RuntimeException("Declaring class would have to be phantom");
+      }
     }
     isPhantom = value;
   }
@@ -249,10 +258,14 @@ public class SootMethod extends AbstractHost
   public void setName(String name) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
-    if (wasDeclared) oldDeclaringClass.removeMethod(this);
+    if (wasDeclared) {
+      oldDeclaringClass.removeMethod(this);
+    }
     this.name = name;
     subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
-    if (wasDeclared) oldDeclaringClass.addMethod(this);
+    if (wasDeclared) {
+      oldDeclaringClass.addMethod(this);
+    }
   }
 
   /**
@@ -272,8 +285,9 @@ public class SootMethod extends AbstractHost
    */
   @Override
   public void setModifiers(int modifiers) {
-    if ((declaringClass != null) && (!declaringClass.isApplicationClass()))
+    if ((declaringClass != null) && (!declaringClass.isApplicationClass())) {
       throw new RuntimeException("Cannot set modifiers of a method from a non-app class!");
+    }
     this.modifiers = modifiers;
   }
 
@@ -286,10 +300,14 @@ public class SootMethod extends AbstractHost
   public void setReturnType(Type t) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
-    if (wasDeclared) oldDeclaringClass.removeMethod(this);
+    if (wasDeclared) {
+      oldDeclaringClass.removeMethod(this);
+    }
     returnType = t;
     subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
-    if (wasDeclared) oldDeclaringClass.addMethod(this);
+    if (wasDeclared) {
+      oldDeclaringClass.addMethod(this);
+    }
   }
 
   /** Returns the number of parameters taken by this method. */
@@ -311,22 +329,30 @@ public class SootMethod extends AbstractHost
   public void setParameterTypes(List<Type> l) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
-    if (wasDeclared) oldDeclaringClass.removeMethod(this);
+    if (wasDeclared) {
+      oldDeclaringClass.removeMethod(this);
+    }
     this.parameterTypes = l.toArray(new Type[l.size()]);
     subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
-    if (wasDeclared) oldDeclaringClass.addMethod(this);
+    if (wasDeclared) {
+      oldDeclaringClass.addMethod(this);
+    }
   }
 
   /** Retrieves the active body for this method. */
   public Body getActiveBody() {
-    if (activeBody != null) return activeBody;
+    if (activeBody != null) {
+      return activeBody;
+    }
 
-    if (declaringClass != null && declaringClass.isPhantomClass())
+    if (declaringClass != null && declaringClass.isPhantomClass()) {
       throw new RuntimeException("cannot get active body for phantom class: " + getSignature());
+    }
 
     // ignore empty body exceptions if we are just computing coffi metrics
-    if (!soot.jbco.Main.metrics && !hasActiveBody())
+    if (!soot.jbco.Main.metrics && !hasActiveBody()) {
       throw new RuntimeException("no active body present for method " + getSignature());
+    }
 
     return activeBody;
   }
@@ -342,37 +368,46 @@ public class SootMethod extends AbstractHost
     // If we already have a body for some reason, we just take it. In this
     // case,
     // we don't care about resolving levels or whatever.
-    if (hasActiveBody()) return getActiveBody();
+    if (hasActiveBody()) {
+      return getActiveBody();
+    }
 
     declaringClass.checkLevel(SootClass.BODIES);
-    if (declaringClass.isPhantomClass())
+    if (declaringClass.isPhantomClass()) {
       throw new RuntimeException(
           "cannot get resident body for phantom class : "
               + getSignature()
               + "; maybe you want to call c.setApplicationClass() on this class!");
+    }
 
     Body b = this.getBodyFromMethodSource("jb");
     setActiveBody(b);
 
     // If configured, we drop the method source to save memory
-    if (Options.v().drop_bodies_after_load()) ms = null;
+    if (Options.v().drop_bodies_after_load()) {
+      ms = null;
+    }
 
     return b;
   }
 
   /** Sets the active body for this method. */
   public void setActiveBody(Body body) {
-    if ((declaringClass != null) && declaringClass.isPhantomClass())
+    if ((declaringClass != null) && declaringClass.isPhantomClass()) {
       throw new RuntimeException("cannot set active body for phantom class! " + this);
+    }
 
     // If someone sets a body for a phantom method, this method then is no
     // longer phantom
     setPhantom(false);
 
-    if (!isConcrete())
+    if (!isConcrete()) {
       throw new RuntimeException("cannot set body for non-concrete method! " + this);
+    }
 
-    if (body != null && body.getMethod() != this) body.setMethod(this);
+    if (body != null && body.getMethod() != this) {
+      body.setMethod(this);
+    }
 
     activeBody = body;
   }
@@ -392,28 +427,39 @@ public class SootMethod extends AbstractHost
    * is already in the list.
    */
   public void addExceptionIfAbsent(SootClass e) {
-    if (!throwsException(e)) addException(e);
+    if (!throwsException(e)) {
+      addException(e);
+    }
   }
 
   /** Adds the given exception to the list of exceptions thrown by this method. */
   public void addException(SootClass e) {
-    if (DEBUG) System.out.println("Adding exception " + e);
+    if (DEBUG) {
+      System.out.println("Adding exception " + e);
+    }
 
-    if (exceptions == null) exceptions = new ArrayList<SootClass>();
-    else if (exceptions.contains(e))
+    if (exceptions == null) {
+      exceptions = new ArrayList<>();
+    } else if (exceptions.contains(e)) {
       throw new RuntimeException("already throws exception " + e.getName());
+    }
 
     exceptions.add(e);
   }
 
   /** Removes the given exception from the list of exceptions thrown by this method. */
   public void removeException(SootClass e) {
-    if (DEBUG) System.out.println("Removing exception " + e);
+    if (DEBUG) {
+      System.out.println("Removing exception " + e);
+    }
 
-    if (exceptions == null) throw new RuntimeException("does not throw exception " + e.getName());
-
-    if (!exceptions.contains(e))
+    if (exceptions == null) {
       throw new RuntimeException("does not throw exception " + e.getName());
+    }
+
+    if (!exceptions.contains(e)) {
+      throw new RuntimeException("does not throw exception " + e.getName());
+    }
 
     exceptions.remove(e);
   }
@@ -425,13 +471,17 @@ public class SootMethod extends AbstractHost
 
   public void setExceptions(List<SootClass> exceptions) {
     if (exceptions != null && !exceptions.isEmpty()) {
-      this.exceptions = new ArrayList<SootClass>(exceptions);
-    } else this.exceptions = null;
+      this.exceptions = new ArrayList<>(exceptions);
+    } else {
+      this.exceptions = null;
+    }
   }
 
   /** Returns a backed list of the exceptions thrown by this method. */
   public List<SootClass> getExceptions() {
-    if (exceptions == null) exceptions = new ArrayList<SootClass>();
+    if (exceptions == null) {
+      exceptions = new ArrayList<>();
+    }
 
     return exceptions;
   }
@@ -489,7 +539,9 @@ public class SootMethod extends AbstractHost
     if (isPublic() && isStatic()) {
       NumberedString main_sig =
           Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])");
-      if (main_sig.equals(subsignature)) return true;
+      if (main_sig.equals(subsignature)) {
+        return true;
+      }
     }
 
     return false;
@@ -510,7 +562,9 @@ public class SootMethod extends AbstractHost
 
   /** @return yes, if this is a class initializer or main function. */
   public boolean isEntryMethod() {
-    if (isStatic() && subsignature.equals(VirtualCalls.v().sigClinit)) return true;
+    if (isStatic() && subsignature.equals(VirtualCalls.v().sigClinit)) {
+      return true;
+    }
 
     return isMain();
   }
@@ -524,8 +578,7 @@ public class SootMethod extends AbstractHost
   /** Returns the parameters part of the signature in the format in which it appears in bytecode. */
   public String getBytecodeParms() {
     StringBuffer buffer = new StringBuffer();
-    for (Iterator<Type> typeIt = getParameterTypes().iterator(); typeIt.hasNext(); ) {
-      final Type type = typeIt.next();
+    for (Type type : getParameterTypes()) {
       buffer.append(AbstractJasminClass.jasminDescriptorOf(type));
     }
     return buffer.toString().intern();
@@ -590,7 +643,9 @@ public class SootMethod extends AbstractHost
     if (params != null) {
       for (int i = 0; i < params.size(); i++) {
         buffer.append(params.get(i).toQuotedString());
-        if (i < params.size() - 1) buffer.append(",");
+        if (i < params.size() - 1) {
+          buffer.append(",");
+        }
       }
     }
     buffer.append(")");
@@ -616,23 +671,31 @@ public class SootMethod extends AbstractHost
    * DavaDeclaration from within DavaBody
    */
   public String getDavaDeclaration() {
-    if (getName().equals(staticInitializerName)) return "static";
+    if (getName().equals(staticInitializerName)) {
+      return "static";
+    }
 
     StringBuffer buffer = new StringBuffer();
 
     // modifiers
     StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
-    if (st.hasMoreTokens()) buffer.append(st.nextToken());
+    if (st.hasMoreTokens()) {
+      buffer.append(st.nextToken());
+    }
 
-    while (st.hasMoreTokens()) buffer.append(" " + st.nextToken());
+    while (st.hasMoreTokens()) {
+      buffer.append(" " + st.nextToken());
+    }
 
-    if (buffer.length() != 0) buffer.append(" ");
+    if (buffer.length() != 0) {
+      buffer.append(" ");
+    }
 
     // return type + name
 
-    if (getName().equals(constructorName))
+    if (getName().equals(constructorName)) {
       buffer.append(getDeclaringClass().getShortJavaStyleName());
-    else {
+    } else {
       Type t = this.getReturnType();
 
       String tempString = t.toString();
@@ -686,21 +749,36 @@ public class SootMethod extends AbstractHost
       if (hasActiveBody()) {
         buffer.append(((DavaBody) getActiveBody()).get_ParamMap().get(new Integer(count++)));
       } else {
-        if (t == BooleanType.v()) buffer.append("z" + count++);
-        else if (t == ByteType.v()) buffer.append("b" + count++);
-        else if (t == ShortType.v()) buffer.append("s" + count++);
-        else if (t == CharType.v()) buffer.append("c" + count++);
-        else if (t == IntType.v()) buffer.append("i" + count++);
-        else if (t == LongType.v()) buffer.append("l" + count++);
-        else if (t == DoubleType.v()) buffer.append("d" + count++);
-        else if (t == FloatType.v()) buffer.append("f" + count++);
-        else if (t == StmtAddressType.v()) buffer.append("a" + count++);
-        else if (t == ErroneousType.v()) buffer.append("e" + count++);
-        else if (t == NullType.v()) buffer.append("n" + count++);
-        else buffer.append("r" + count++);
+        if (t == BooleanType.v()) {
+          buffer.append("z" + count++);
+        } else if (t == ByteType.v()) {
+          buffer.append("b" + count++);
+        } else if (t == ShortType.v()) {
+          buffer.append("s" + count++);
+        } else if (t == CharType.v()) {
+          buffer.append("c" + count++);
+        } else if (t == IntType.v()) {
+          buffer.append("i" + count++);
+        } else if (t == LongType.v()) {
+          buffer.append("l" + count++);
+        } else if (t == DoubleType.v()) {
+          buffer.append("d" + count++);
+        } else if (t == FloatType.v()) {
+          buffer.append("f" + count++);
+        } else if (t == StmtAddressType.v()) {
+          buffer.append("a" + count++);
+        } else if (t == ErroneousType.v()) {
+          buffer.append("e" + count++);
+        } else if (t == NullType.v()) {
+          buffer.append("n" + count++);
+        } else {
+          buffer.append("r" + count++);
+        }
       }
 
-      if (typeIt.hasNext()) buffer.append(", ");
+      if (typeIt.hasNext()) {
+        buffer.append(", ");
+      }
     }
 
     buffer.append(")");
@@ -730,11 +808,17 @@ public class SootMethod extends AbstractHost
 
     // modifiers
     StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
-    if (st.hasMoreTokens()) buffer.append(st.nextToken());
+    if (st.hasMoreTokens()) {
+      buffer.append(st.nextToken());
+    }
 
-    while (st.hasMoreTokens()) buffer.append(" " + st.nextToken());
+    while (st.hasMoreTokens()) {
+      buffer.append(" " + st.nextToken());
+    }
 
-    if (buffer.length() != 0) buffer.append(" ");
+    if (buffer.length() != 0) {
+      buffer.append(" ");
+    }
 
     // return type + name
 
@@ -751,7 +835,9 @@ public class SootMethod extends AbstractHost
 
       buffer.append(t.toQuotedString());
 
-      if (typeIt.hasNext()) buffer.append(", ");
+      if (typeIt.hasNext()) {
+        buffer.append(", ");
+      }
     }
 
     buffer.append(")");

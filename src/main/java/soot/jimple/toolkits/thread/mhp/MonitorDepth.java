@@ -37,8 +37,11 @@ public class MonitorDepth {
   }
 
   protected void decreaseDepth() {
-    if (depth > 0) depth = depth - 1;
-    else throw new RuntimeException("Error! You can not decrease a monitor depth of " + depth);
+    if (depth > 0) {
+      depth = depth - 1;
+    } else {
+      throw new RuntimeException("Error! You can not decrease a monitor depth of " + depth);
+    }
   }
 
   protected void increaseDepth() {

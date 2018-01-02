@@ -1,12 +1,13 @@
 package soot.toDex.instructions;
 
+import java.util.BitSet;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction51l;
+
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-
-import java.util.BitSet;
 
 /**
  * The "51l" instruction format: It needs five 16-bit code units, has one register and is used for a
@@ -24,6 +25,7 @@ public class Insn51l extends AbstractInsn implements OneRegInsn {
     this.litB = litB;
   }
 
+  @Override
   public Register getRegA() {
     return regs.get(REG_A_IDX);
   }

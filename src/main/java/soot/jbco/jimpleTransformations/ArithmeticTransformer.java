@@ -19,6 +19,12 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -42,12 +48,6 @@ import soot.jimple.LongConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.NumericConstant;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 6-Mar-2006
@@ -69,26 +69,32 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
 
   public static String dependancies[] = new String[] {"jtp.jbco_cae2bo"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "jtp.jbco_cae2bo";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     PatchingChain<Unit> units = b.getUnits();
 
     int localCount = 0;
     Collection<Local> locals = b.getLocals();
-    if (output)
+    if (output) {
       out.println("*** Performing Arithmetic Transformation on " + b.getMethod().getSignature());
+    }
 
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
@@ -112,7 +118,9 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
           }
 
           if (nc != null) {
-            if (output) out.println("Considering: " + as + "\r");
+            if (output) {
+              out.println("Considering: " + as + "\r");
+            }
 
             Type opType = op.getType();
             int max = opType instanceof IntType ? 32 : opType instanceof LongType ? 64 : 0;
@@ -122,7 +130,7 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
               if (shft_rem[0] != null
                   && ((Integer) shft_rem[0]).intValue() < max
                   && Rand.getInt(10) <= weight) {
-                List<Unit> unitsBuilt = new ArrayList<Unit>();
+                List<Unit> unitsBuilt = new ArrayList<>();
                 int rand = Rand.getInt(16);
                 int shift = ((Integer) shft_rem[0]).intValue();
                 boolean neg = ((Boolean) shft_rem[2]).booleanValue();
@@ -149,11 +157,13 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
                   // grab remainder (that not part of the 2^x)
                   double rem = ((Double) shft_rem[1]).doubleValue();
                   if (rem != 1) {
-                    if (rem == ((int) rem) && opType instanceof IntType)
+                    if (rem == ((int) rem) && opType instanceof IntType) {
                       nc = IntConstant.v((int) rem);
-                    else if (rem == ((long) rem) && opType instanceof LongType)
+                    } else if (rem == ((long) rem) && opType instanceof LongType) {
                       nc = LongConstant.v((long) rem);
-                    else nc = DoubleConstant.v(rem);
+                    } else {
+                      nc = DoubleConstant.v(rem);
+                    }
 
                     if (nc instanceof DoubleConstant && !(opType instanceof DoubleType)) {
                       tmp2 = Jimple.v().newLocal("__tmp_shft_lcl" + localCount++, DoubleType.v());
@@ -251,7 +261,7 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
                 if (shft_rem[0] != null
                     && ((Integer) shft_rem[0]).intValue() < max
                     && Rand.getInt(10) <= weight) {
-                  List<Unit> unitsBuilt = new ArrayList<Unit>();
+                  List<Unit> unitsBuilt = new ArrayList<>();
                   int rand = Rand.getInt(16);
                   int shift = ((Integer) shft_rem[0]).intValue();
                   boolean neg = ((Boolean) shft_rem[2]).booleanValue();
@@ -308,6 +318,7 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
     }
   }
 
+  @Override
   public void outputSummary() {
     out.println("Replaced mul/div expressions: " + (divPerformed + mulPerformed));
     out.println("Total mul/div expressions: " + total);
@@ -331,9 +342,14 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
       double tmp[] = checkShiftValue(d.doubleValue());
       if (tmp[0] != 0) {
         shift[0] = new Integer((int) tmp[0]);
-        if (tmp[1] != 0) shift[1] = new Double(tmp[1]);
-        else shift[1] = null;
-      } else d = null;
+        if (tmp[1] != 0) {
+          shift[1] = new Double(tmp[1]);
+        } else {
+          shift[1] = null;
+        }
+      } else {
+        d = null;
+      }
     }
 
     if (d == null) {
@@ -356,7 +372,9 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
       if (shift_dbl == shift_int) {
         shift[1] = 0;
       } else {
-        if (Math.pow(2, shift_int) > val) shift_int--;
+        if (Math.pow(2, shift_int) > val) {
+          shift_int--;
+        }
         shift[1] = val - Math.pow(2, shift_int);
       }
       shift[0] = shift_int;

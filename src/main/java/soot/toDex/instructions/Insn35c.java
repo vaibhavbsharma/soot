@@ -1,13 +1,14 @@
 package soot.toDex.instructions;
 
+import java.util.BitSet;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction35c;
 import org.jf.dexlib2.iface.reference.Reference;
+
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-
-import java.util.BitSet;
 
 /**
  * The "35c" instruction format: It needs three 16-bit code units, has five registers and is used
@@ -45,22 +46,27 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
     this.referencedItem = referencedItem;
   }
 
+  @Override
   public Register getRegD() {
     return regs.get(REG_D_IDX);
   }
 
+  @Override
   public Register getRegE() {
     return regs.get(REG_E_IDX);
   }
 
+  @Override
   public Register getRegF() {
     return regs.get(REG_F_IDX);
   }
 
+  @Override
   public Register getRegG() {
     return regs.get(REG_G_IDX);
   }
 
+  @Override
   public Register getRegA() {
     return regs.get(REG_A_IDX);
   }

@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.annotation.qualifiers;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.MethodOrMethodContext;
@@ -38,10 +42,6 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * a scene transformer that add tags to indicate the tightest qualifies possible for fields and
  * methods (ie: private, protected or public)
@@ -59,10 +59,11 @@ public class TightestQualifiersTagger extends SceneTransformer {
   public static final int RESULT_PROTECTED = 2;
   public static final int RESULT_PRIVATE = 3;
 
-  private final HashMap<SootMethod, Integer> methodResultsMap = new HashMap<SootMethod, Integer>();
-  private final HashMap<SootField, Integer> fieldResultsMap = new HashMap<SootField, Integer>();
+  private final HashMap<SootMethod, Integer> methodResultsMap = new HashMap<>();
+  private final HashMap<SootField, Integer> fieldResultsMap = new HashMap<>();
   private MethodToContexts methodToContexts;
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
 
     handleMethods();
@@ -77,7 +78,9 @@ public class TightestQualifiersTagger extends SceneTransformer {
       while (methsIt.hasNext()) {
         SootMethod sm = (SootMethod) methsIt.next();
         // for now if its unreachable do nothing
-        if (!Scene.v().getReachableMethods().contains(sm)) continue;
+        if (!Scene.v().getReachableMethods().contains(sm)) {
+          continue;
+        }
         analyzeMethod(sm);
       }
     }
@@ -153,12 +156,14 @@ public class TightestQualifiersTagger extends SceneTransformer {
       methodToContexts = new MethodToContexts(Scene.v().getReachableMethods().listener());
     }
 
-    for (Iterator momcIt = methodToContexts.get(sm).iterator(); momcIt.hasNext(); ) {
-      final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
+    for (Object element : methodToContexts.get(sm)) {
+      final MethodOrMethodContext momc = (MethodOrMethodContext) element;
       Iterator callerEdges = cg.edgesInto(momc);
       while (callerEdges.hasNext()) {
         Edge callEdge = (Edge) callerEdges.next();
-        if (!callEdge.isExplicit()) continue;
+        if (!callEdge.isExplicit()) {
+          continue;
+        }
         SootMethod methodCaller = callEdge.src();
         // System.out.println("Caller edge type: "+Edge.kindToString(callEdge.kind()));
         SootClass callingClass = methodCaller.getDeclaringClass();
@@ -278,7 +283,9 @@ public class TightestQualifiersTagger extends SceneTransformer {
   }
 
   private boolean isCallClassSubClass(SootClass call, SootClass check) {
-    if (!call.hasSuperclass()) return false;
+    if (!call.hasSuperclass()) {
+      return false;
+    }
     return call.getSuperclass().equals(check);
   }
 
@@ -352,8 +359,12 @@ public class TightestQualifiersTagger extends SceneTransformer {
       Iterator mIt = appClass.getMethods().iterator();
       while (mIt.hasNext()) {
         SootMethod sm = (SootMethod) mIt.next();
-        if (!sm.hasActiveBody()) continue;
-        if (!Scene.v().getReachableMethods().contains(sm)) continue;
+        if (!sm.hasActiveBody()) {
+          continue;
+        }
+        if (!Scene.v().getReachableMethods().contains(sm)) {
+          continue;
+        }
         Body b = sm.getActiveBody();
 
         Iterator usesIt = b.getUseBoxes().iterator();
@@ -365,7 +376,9 @@ public class TightestQualifiersTagger extends SceneTransformer {
             SootField f = fieldRef.getField();
             if (f.equals(sf)) {
               if (Modifier.isPublic(sf.getModifiers())) {
-                if (analyzePublicField(sf, appClass)) return;
+                if (analyzePublicField(sf, appClass)) {
+                  return;
+                }
               } else if (Modifier.isProtected(sf.getModifiers())) {
                 analyzeProtectedField(sf, appClass);
               } else if (Modifier.isPrivate(sf.getModifiers())) {

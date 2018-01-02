@@ -35,6 +35,7 @@ public class GInstanceOfExpr extends AbstractInstanceOfExpr {
     super(Grimp.v().newObjExprBox(op), checkType);
   }
 
+  @Override
   public Object clone() {
     return new GInstanceOfExpr(Grimp.cloneIfNecessary(getOp()), getCheckType());
   }

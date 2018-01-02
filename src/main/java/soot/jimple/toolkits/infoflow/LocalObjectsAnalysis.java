@@ -1,5 +1,11 @@
 package soot.jimple.toolkits.infoflow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.EquivalentValue;
 import soot.G;
@@ -24,12 +30,6 @@ import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.scalar.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 // LocalObjectsAnalysis written by Richard L. Halpert, 2007-02-24
 // Constructs data flow tables for each method of every application class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -53,8 +53,8 @@ public class LocalObjectsAnalysis {
     this.uf = new UseFinder();
     this.cg = Scene.v().getCallGraph();
 
-    classToClassLocalObjectsAnalysis = new HashMap<SootClass, ClassLocalObjectsAnalysis>();
-    mloaCache = new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
+    classToClassLocalObjectsAnalysis = new HashMap<>();
+    mloaCache = new HashMap<>();
   }
 
   public ClassLocalObjectsAnalysis getClassLocalObjectsAnalysis(SootClass sc) {
@@ -73,7 +73,9 @@ public class LocalObjectsAnalysis {
 
   public boolean isObjectLocalToParent(Value localOrRef, SootMethod sm) {
     // Handle obvious case
-    if (localOrRef instanceof StaticFieldRef) return false;
+    if (localOrRef instanceof StaticFieldRef) {
+      return false;
+    }
 
     ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(sm.getDeclaringClass());
     return cloa.isObjectLocal(localOrRef, sm);
@@ -82,7 +84,9 @@ public class LocalObjectsAnalysis {
   public boolean isFieldLocalToParent(SootField sf) // To parent class!
       {
     // Handle obvious case
-    if (sf.isStatic()) return false;
+    if (sf.isStatic()) {
+      return false;
+    }
 
     ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(sf.getDeclaringClass());
     return cloa.isFieldLocal(sf);
@@ -93,7 +97,7 @@ public class LocalObjectsAnalysis {
     if (sm == context) {
       //			G.v().out.println("      Directly Reachable: ");
       boolean isLocal = isObjectLocalToParent(localOrRef, sm);
-      if (dfa.printDebug())
+      if (dfa.printDebug()) {
         G.v()
             .out
             .println(
@@ -109,12 +113,13 @@ public class LocalObjectsAnalysis {
                             + "."
                             + context.getName()
                             + ")"));
+      }
       return isLocal;
     }
 
     // Handle obvious case
     if (localOrRef instanceof StaticFieldRef) {
-      if (dfa.printDebug())
+      if (dfa.printDebug()) {
         G.v()
             .out
             .println(
@@ -123,6 +128,7 @@ public class LocalObjectsAnalysis {
                     + "."
                     + context.getName()
                     + ")");
+      }
       return false;
     }
 
@@ -156,7 +162,7 @@ public class LocalObjectsAnalysis {
     CallLocalityContext mergedContext =
         getClassLocalObjectsAnalysis(context.getDeclaringClass()).getMergedContext(sm);
     if (mergedContext == null) {
-      if (dfa.printDebug())
+      if (dfa.printDebug()) {
         G.v()
             .out
             .println(
@@ -165,6 +171,7 @@ public class LocalObjectsAnalysis {
                     + "."
                     + context.getName()
                     + ")");
+      }
       return true; // it's not non-local...
     }
 
@@ -235,7 +242,7 @@ public class LocalObjectsAnalysis {
           }
           return isLocal;
         } else {
-          if (dfa.printDebug())
+          if (dfa.printDebug()) {
             G.v()
                 .out
                 .println(
@@ -244,6 +251,7 @@ public class LocalObjectsAnalysis {
                         + "."
                         + context.getName()
                         + ")");
+          }
           return isLocal;
         }
       }
@@ -334,7 +342,7 @@ public class LocalObjectsAnalysis {
   		return true;
   	}
   */
-  Map<SootMethod, ReachableMethods> rmCache = new HashMap<SootMethod, ReachableMethods>();
+  Map<SootMethod, ReachableMethods> rmCache = new HashMap<>();
 
   public CallChain getNextCallChainBetween(
       SootMethod start, SootMethod goal, List previouslyFound) {
@@ -345,9 +353,10 @@ public class LocalObjectsAnalysis {
     // If method is unreachable, don't bother trying to make chains
     // CACHEABLE?
     ReachableMethods rm = null;
-    if (rmCache.containsKey(start)) rm = rmCache.get(start);
-    else {
-      List<MethodOrMethodContext> entryPoints = new ArrayList<MethodOrMethodContext>();
+    if (rmCache.containsKey(start)) {
+      rm = rmCache.get(start);
+    } else {
+      List<MethodOrMethodContext> entryPoints = new ArrayList<>();
       entryPoints.add(start);
       rm = new ReachableMethods(cg, entryPoints);
       rm.update();
@@ -414,7 +423,9 @@ public class LocalObjectsAnalysis {
                 rm, start, node, e, path, previouslyFound); // node is supposed to be a method
         if (newpath != null) {
           //		        	G.v().out.print("|");
-          if (!previouslyFound.contains(newpath)) return newpath;
+          if (!previouslyFound.contains(newpath)) {
+            return newpath;
+          }
         }
         //				Iterator newpathsIt = newpaths.iterator();
         //				while(newpathsIt.hasNext())
@@ -427,7 +438,9 @@ public class LocalObjectsAnalysis {
     }
     //		G.v().out.print("(" + paths.size() + ")");
     //		if(paths.size() < 100)
-    if (previouslyFound.size() == 0) callChainsCache.put(cacheKey, null);
+    if (previouslyFound.size() == 0) {
+      callChainsCache.put(cacheKey, null);
+    }
     //		G.v().out.print("|");
     return null;
   }
@@ -602,22 +615,28 @@ public class LocalObjectsAnalysis {
 
     // Get list of reachable methods declared in this class
     // Also get list of fields declared in this class
-    List<SootMethod> scopeMethods = new ArrayList<SootMethod>();
+    List<SootMethod> scopeMethods = new ArrayList<>();
     Iterator scopeMethodsIt = sootClass.methodIterator();
     while (scopeMethodsIt.hasNext()) {
       SootMethod scopeMethod = (SootMethod) scopeMethodsIt.next();
-      if (rm.contains(scopeMethod)) scopeMethods.add(scopeMethod);
+      if (rm.contains(scopeMethod)) {
+        scopeMethods.add(scopeMethod);
+      }
     }
 
     // Add reachable methods and fields declared in superclasses
     SootClass superclass = sootClass;
-    if (superclass.hasSuperclass()) superclass = sootClass.getSuperclass();
+    if (superclass.hasSuperclass()) {
+      superclass = sootClass.getSuperclass();
+    }
     while (superclass.hasSuperclass()) // we don't want to process Object
     {
       Iterator scMethodsIt = superclass.methodIterator();
       while (scMethodsIt.hasNext()) {
         SootMethod scMethod = (SootMethod) scMethodsIt.next();
-        if (rm.contains(scMethod)) scopeMethods.add(scMethod);
+        if (rm.contains(scMethod)) {
+          scopeMethods.add(scMethod);
+        }
       }
       superclass = superclass.getSuperclass();
     }
@@ -648,8 +667,9 @@ public class LocalObjectsAnalysis {
               || dataFlowGraph.getSuccsOf(nodeEqVal).size() > 0) {
             ParameterRef pr = (ParameterRef) node;
             if (pr.getIndex() != -1) {
-              if (!isObjectLocalToContext(ie.getArg(pr.getIndex()), containingMethod, context))
+              if (!isObjectLocalToContext(ie.getArg(pr.getIndex()), containingMethod, context)) {
                 return true;
+              }
             }
           }
         }
@@ -673,8 +693,9 @@ public class LocalObjectsAnalysis {
                 || dataFlowGraph.getSuccsOf(nodeEqVal).size() > 0) {
               ParameterRef pr = (ParameterRef) node;
               if (pr.getIndex() != -1) {
-                if (!isObjectLocalToContext(ie.getArg(pr.getIndex()), containingMethod, context))
+                if (!isObjectLocalToContext(ie.getArg(pr.getIndex()), containingMethod, context)) {
                   return true;
+                }
               }
             }
           }
@@ -697,8 +718,9 @@ public class LocalObjectsAnalysis {
                 || dataFlowGraph.getSuccsOf(nodeEqVal).size() > 0) {
               ParameterRef pr = (ParameterRef) node;
               if (pr.getIndex() != -1) {
-                if (!isObjectLocalToContext(ie.getArg(pr.getIndex()), containingMethod, context))
+                if (!isObjectLocalToContext(ie.getArg(pr.getIndex()), containingMethod, context)) {
                   return true;
+                }
               }
             }
           }

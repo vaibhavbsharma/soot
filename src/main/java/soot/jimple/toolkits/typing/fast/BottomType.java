@@ -33,10 +33,12 @@ public class BottomType extends Type {
 
   public BottomType(Singletons.Global g) {}
 
+  @Override
   public String toString() {
     return "bottom_type";
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }

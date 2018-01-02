@@ -33,27 +33,39 @@ import java.util.HashMap;
  */
 public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N> {
 
-  HashMap<N, N> self = new HashMap<N, N>();
+  HashMap<N, N> self = new HashMap<>();
 
+  @Override
   public void addNode(N o) {
     super.addNode(o);
     self.put(o, o);
   }
 
+  @Override
   public void removeNode(N o) {
     super.removeNode(o);
     self.remove(o);
   }
 
+  @Override
   public void addEdge(N from, N to) {
-    if (containsNode(from) && containsNode(to)) super.addEdge(self.get(from), self.get(to));
-    else if (!containsNode(from)) throw new RuntimeException(from.toString() + " not in graph!");
-    else throw new RuntimeException(to.toString() + " not in graph!");
+    if (containsNode(from) && containsNode(to)) {
+      super.addEdge(self.get(from), self.get(to));
+    } else if (!containsNode(from)) {
+      throw new RuntimeException(from.toString() + " not in graph!");
+    } else {
+      throw new RuntimeException(to.toString() + " not in graph!");
+    }
   }
 
+  @Override
   public void removeEdge(N from, N to) {
-    if (containsNode(from) && containsNode(to)) super.removeEdge(self.get(from), self.get(to));
-    else if (!containsNode(from)) throw new RuntimeException(from.toString() + " not in graph!");
-    else throw new RuntimeException(to.toString() + " not in graph!");
+    if (containsNode(from) && containsNode(to)) {
+      super.removeEdge(self.get(from), self.get(to));
+    } else if (!containsNode(from)) {
+      throw new RuntimeException(from.toString() + " not in graph!");
+    } else {
+      throw new RuntimeException(to.toString() + " not in graph!");
+    }
   }
 }

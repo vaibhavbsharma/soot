@@ -44,19 +44,23 @@ public class GeometricManager extends IFigureManager {
   private int size[] = {0, 0};
   private boolean hasNewFigure = false;
 
+  @Override
   public SegmentNode[] getFigures() {
     return header;
   }
 
+  @Override
   public int[] getSizes() {
     return size;
   }
 
+  @Override
   public boolean isThereUnprocessedFigures() {
     return hasNewFigure;
   }
 
   /** Remove the new labels for all the figures. */
+  @Override
   public void flush() {
     hasNewFigure = false;
 
@@ -70,11 +74,14 @@ public class GeometricManager extends IFigureManager {
   }
 
   /** Insert a new figure into this manager if it is not covered by any exisiting figure. */
+  @Override
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
 
     // We first check if there is an existing object contains this new object
-    if (checkRedundancy(code, pnew)) return null;
+    if (checkRedundancy(code, pnew)) {
+      return null;
+    }
 
     // Oppositely, we check if any existing objects are obsoleted
     filterOutDuplicates(code, pnew);
@@ -97,11 +104,14 @@ public class GeometricManager extends IFigureManager {
   }
 
   /** Merge the set of objects in the same category into one. */
+  @Override
   public void mergeFigures(int buget_size) {
     RectangleNode p;
 
     // We don't merge the figures if there are no new figures in this geometric manager
-    if (!hasNewFigure) return;
+    if (!hasNewFigure) {
+      return;
+    }
 
     for (int i = 0; i < Divisions; ++i) {
       p = null;
@@ -122,7 +132,9 @@ public class GeometricManager extends IFigureManager {
 
       if (p != null) {
         if (i == GeometricManager.ONE_TO_ONE) {
-          if (checkRedundancy(GeometricManager.MANY_TO_MANY, p)) continue;
+          if (checkRedundancy(GeometricManager.MANY_TO_MANY, p)) {
+            continue;
+          }
           filterOutDuplicates(GeometricManager.MANY_TO_MANY, p);
         }
 
@@ -134,6 +146,7 @@ public class GeometricManager extends IFigureManager {
   }
 
   /** The lines that are included in some rectangles can be deleted. */
+  @Override
   public void removeUselessSegments() {
     SegmentNode p = header[GeometricManager.ONE_TO_ONE];
     SegmentNode q = null;
@@ -167,7 +180,9 @@ public class GeometricManager extends IFigureManager {
     while (p != null) {
       if (pnew.I1 >= p.I1 && pnew.I2 >= p.I2) {
         if ((pnew.I1 + pnew.L) <= (p.I1 + p.L)
-            && (pnew.I2 + pnew.L) <= (p.I2 + ((RectangleNode) p).L_prime)) return true;
+            && (pnew.I2 + pnew.L) <= (p.I2 + ((RectangleNode) p).L_prime)) {
+          return true;
+        }
       }
 
       p = p.next;
@@ -185,7 +200,9 @@ public class GeometricManager extends IFigureManager {
    */
   private boolean checkRedundancy(int code, RectangleNode pnew) {
     // Expand it temporarily
-    if (code == GeometricManager.ONE_TO_ONE) pnew.L_prime = pnew.L;
+    if (code == GeometricManager.ONE_TO_ONE) {
+      pnew.L_prime = pnew.L;
+    }
 
     // Check redundancy
     for (int i = code; i <= GeometricManager.MANY_TO_MANY; ++i) {
@@ -197,14 +214,18 @@ public class GeometricManager extends IFigureManager {
             if ((p.I2 - p.I1) == (pnew.I2 - pnew.I1)) {
               // Have the same intercept and it is completely contained in an existing
               // segment
-              if (pnew.I1 >= p.I1 && (pnew.I1 + pnew.L) <= (p.I1 + p.L)) return true;
+              if (pnew.I1 >= p.I1 && (pnew.I1 + pnew.L) <= (p.I1 + p.L)) {
+                return true;
+              }
             }
             break;
 
           case GeometricManager.MANY_TO_MANY:
             if (pnew.I1 >= p.I1 && pnew.I2 >= p.I2) {
               if ((pnew.I1 + pnew.L) <= (p.I1 + p.L)
-                  && (pnew.I2 + pnew.L_prime) <= (p.I2 + ((RectangleNode) p).L_prime)) return true;
+                  && (pnew.I2 + pnew.L_prime) <= (p.I2 + ((RectangleNode) p).L_prime)) {
+                return true;
+              }
             }
             break;
         }
@@ -242,11 +263,15 @@ public class GeometricManager extends IFigureManager {
             if (code == GeometricManager.MANY_TO_MANY) {
               if (pold.I1 >= p.I1 && pold.I2 >= p.I2) {
                 if ((pold.I1 + pold.L) <= (p.I1 + p.L)
-                    && (pold.I2 + pold.L) <= (p.I2 + ((RectangleNode) p).L_prime)) flag = true;
+                    && (pold.I2 + pold.L) <= (p.I2 + ((RectangleNode) p).L_prime)) {
+                  flag = true;
+                }
               }
             } else {
               if ((p.I2 - p.I1) == (pold.I2 - pold.I1)) {
-                if (pold.I1 >= p.I1 && (pold.I1 + pold.L) <= (p.I1 + p.L)) flag = true;
+                if (pold.I1 >= p.I1 && (pold.I1 + pold.L) <= (p.I1 + p.L)) {
+                  flag = true;
+                }
               }
             }
             break;
@@ -255,27 +280,37 @@ public class GeometricManager extends IFigureManager {
             if (pold.I1 >= p.I1 && pold.I2 >= p.I2) {
               if ((pold.I1 + pold.L) <= (p.I1 + p.L)
                   && (pold.I2 + ((RectangleNode) pold).L_prime)
-                      <= (p.I2 + ((RectangleNode) p).L_prime)) flag = true;
+                      <= (p.I2 + ((RectangleNode) p).L_prime)) {
+                flag = true;
+              }
             }
             break;
         }
 
         if (flag == false) {
           // We keep this figure
-          if (q_head == null) q_head = pold;
-          else q_tail.next = pold;
+          if (q_head == null) {
+            q_head = pold;
+          } else {
+            q_tail.next = pold;
+          }
           q_tail = pold;
 
           ++countAll;
           pold = pold.next;
         } else {
           // We reclaim this figure
-          if (i == GeometricManager.ONE_TO_ONE) pold = reclaimSegmentNode(pold);
-          else pold = reclaimRectangleNode(pold);
+          if (i == GeometricManager.ONE_TO_ONE) {
+            pold = reclaimSegmentNode(pold);
+          } else {
+            pold = reclaimRectangleNode(pold);
+          }
         }
       }
 
-      if (q_tail != null) q_tail.next = null;
+      if (q_tail != null) {
+        q_tail.next = null;
+      }
 
       header[i] = q_head;
       size[i] = countAll;
@@ -296,10 +331,18 @@ public class GeometricManager extends IFigureManager {
     size[GeometricManager.MANY_TO_MANY] = 0;
 
     while (p != null) {
-      if (p.I1 < x_min) x_min = p.I1;
-      if (p.I2 < y_min) y_min = p.I2;
-      if (p.I1 + p.L > x_max) x_max = p.I1 + p.L;
-      if (p.I2 + p.L_prime > y_max) y_max = p.I2 + p.L_prime;
+      if (p.I1 < x_min) {
+        x_min = p.I1;
+      }
+      if (p.I2 < y_min) {
+        y_min = p.I2;
+      }
+      if (p.I1 + p.L > x_max) {
+        x_max = p.I1 + p.L;
+      }
+      if (p.I2 + p.L_prime > y_max) {
+        y_max = p.I2 + p.L_prime;
+      }
       p = (RectangleNode) reclaimRectangleNode(p);
     }
 
@@ -328,10 +371,18 @@ public class GeometricManager extends IFigureManager {
     size[GeometricManager.ONE_TO_ONE] = 0;
 
     while (p != null) {
-      if (p.I1 < x_min) x_min = p.I1;
-      if (p.I2 < y_min) y_min = p.I2;
-      if (p.I1 + p.L > x_max) x_max = p.I1 + p.L;
-      if (p.I2 + p.L > y_max) y_max = p.I2 + p.L;
+      if (p.I1 < x_min) {
+        x_min = p.I1;
+      }
+      if (p.I2 < y_min) {
+        y_min = p.I2;
+      }
+      if (p.I1 + p.L > x_max) {
+        x_max = p.I1 + p.L;
+      }
+      if (p.I2 + p.L > y_max) {
+        y_max = p.I2 + p.L;
+      }
       p = reclaimSegmentNode(p);
     }
 

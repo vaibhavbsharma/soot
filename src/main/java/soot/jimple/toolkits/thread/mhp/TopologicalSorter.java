@@ -1,11 +1,11 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.util.Chain;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import soot.util.Chain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -21,8 +21,8 @@ import java.util.List;
 public class TopologicalSorter {
   Chain chain;
   PegGraph pg;
-  LinkedList<Object> sorter = new LinkedList<Object>();
-  List<Object> visited = new ArrayList<Object>();
+  LinkedList<Object> sorter = new LinkedList<>();
+  List<Object> visited = new ArrayList<>();
 
   public TopologicalSorter(Chain chain, PegGraph pg) {
     this.chain = chain;
@@ -40,7 +40,9 @@ public class TopologicalSorter {
   }
 
   private void dfsVisit(Object m) {
-    if (visited.contains(m)) return;
+    if (visited.contains(m)) {
+      return;
+    }
     visited.add(m);
     Iterator targetsIt = pg.getSuccsOf(m).iterator();
     while (targetsIt.hasNext()) {

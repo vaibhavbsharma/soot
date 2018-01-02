@@ -20,12 +20,12 @@
 
 package soot.dava.internal.javaRep;
 
+import java.util.HashSet;
+
 import soot.SootFieldRef;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.grimp.internal.GInstanceFieldRef;
-
-import java.util.HashSet;
 
 public class DInstanceFieldRef extends GInstanceFieldRef {
   private HashSet<Object> thisLocals;
@@ -36,6 +36,7 @@ public class DInstanceFieldRef extends GInstanceFieldRef {
     this.thisLocals = thisLocals;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     if (thisLocals.contains(getBase())) {
       up.fieldRef(fieldRef);
@@ -44,12 +45,16 @@ public class DInstanceFieldRef extends GInstanceFieldRef {
     }
   }
 
+  @Override
   public String toString() {
-    if (thisLocals.contains(getBase())) return fieldRef.name();
+    if (thisLocals.contains(getBase())) {
+      return fieldRef.name();
+    }
 
     return super.toString();
   }
 
+  @Override
   public Object clone() {
     return new DInstanceFieldRef(getBase(), fieldRef, thisLocals);
   }

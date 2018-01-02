@@ -18,10 +18,37 @@
  */
 package soot.asm;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
+import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
+import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.INT_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.INVOKE_DYNAMIC_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.JUMP_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
+import static org.objectweb.asm.tree.AbstractInsnNode.LDC_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.LINE;
+import static org.objectweb.asm.tree.AbstractInsnNode.LOOKUPSWITCH_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.METHOD_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -42,6 +69,12 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -111,172 +144,6 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.D2F;
-import static org.objectweb.asm.Opcodes.D2I;
-import static org.objectweb.asm.Opcodes.D2L;
-import static org.objectweb.asm.Opcodes.DADD;
-import static org.objectweb.asm.Opcodes.DALOAD;
-import static org.objectweb.asm.Opcodes.DASTORE;
-import static org.objectweb.asm.Opcodes.DCMPG;
-import static org.objectweb.asm.Opcodes.DCMPL;
-import static org.objectweb.asm.Opcodes.DCONST_0;
-import static org.objectweb.asm.Opcodes.DCONST_1;
-import static org.objectweb.asm.Opcodes.DDIV;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DMUL;
-import static org.objectweb.asm.Opcodes.DNEG;
-import static org.objectweb.asm.Opcodes.DREM;
-import static org.objectweb.asm.Opcodes.DRETURN;
-import static org.objectweb.asm.Opcodes.DSTORE;
-import static org.objectweb.asm.Opcodes.DSUB;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.DUP2;
-import static org.objectweb.asm.Opcodes.DUP2_X1;
-import static org.objectweb.asm.Opcodes.DUP2_X2;
-import static org.objectweb.asm.Opcodes.DUP_X1;
-import static org.objectweb.asm.Opcodes.DUP_X2;
-import static org.objectweb.asm.Opcodes.F2D;
-import static org.objectweb.asm.Opcodes.F2I;
-import static org.objectweb.asm.Opcodes.F2L;
-import static org.objectweb.asm.Opcodes.FCMPG;
-import static org.objectweb.asm.Opcodes.FCMPL;
-import static org.objectweb.asm.Opcodes.FCONST_0;
-import static org.objectweb.asm.Opcodes.FCONST_2;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.I2B;
-import static org.objectweb.asm.Opcodes.I2C;
-import static org.objectweb.asm.Opcodes.I2D;
-import static org.objectweb.asm.Opcodes.I2F;
-import static org.objectweb.asm.Opcodes.I2L;
-import static org.objectweb.asm.Opcodes.I2S;
-import static org.objectweb.asm.Opcodes.IADD;
-import static org.objectweb.asm.Opcodes.IALOAD;
-import static org.objectweb.asm.Opcodes.IAND;
-import static org.objectweb.asm.Opcodes.IASTORE;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ICONST_M1;
-import static org.objectweb.asm.Opcodes.IDIV;
-import static org.objectweb.asm.Opcodes.IFEQ;
-import static org.objectweb.asm.Opcodes.IFGE;
-import static org.objectweb.asm.Opcodes.IFGT;
-import static org.objectweb.asm.Opcodes.IFLE;
-import static org.objectweb.asm.Opcodes.IFLT;
-import static org.objectweb.asm.Opcodes.IFNE;
-import static org.objectweb.asm.Opcodes.IFNONNULL;
-import static org.objectweb.asm.Opcodes.IFNULL;
-import static org.objectweb.asm.Opcodes.IF_ACMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ACMPNE;
-import static org.objectweb.asm.Opcodes.IF_ICMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ICMPGE;
-import static org.objectweb.asm.Opcodes.IF_ICMPGT;
-import static org.objectweb.asm.Opcodes.IF_ICMPLE;
-import static org.objectweb.asm.Opcodes.IF_ICMPLT;
-import static org.objectweb.asm.Opcodes.IF_ICMPNE;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.IMUL;
-import static org.objectweb.asm.Opcodes.INEG;
-import static org.objectweb.asm.Opcodes.INSTANCEOF;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IOR;
-import static org.objectweb.asm.Opcodes.IREM;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.ISHL;
-import static org.objectweb.asm.Opcodes.ISHR;
-import static org.objectweb.asm.Opcodes.ISTORE;
-import static org.objectweb.asm.Opcodes.ISUB;
-import static org.objectweb.asm.Opcodes.IUSHR;
-import static org.objectweb.asm.Opcodes.IXOR;
-import static org.objectweb.asm.Opcodes.JSR;
-import static org.objectweb.asm.Opcodes.L2D;
-import static org.objectweb.asm.Opcodes.L2F;
-import static org.objectweb.asm.Opcodes.L2I;
-import static org.objectweb.asm.Opcodes.LADD;
-import static org.objectweb.asm.Opcodes.LALOAD;
-import static org.objectweb.asm.Opcodes.LAND;
-import static org.objectweb.asm.Opcodes.LASTORE;
-import static org.objectweb.asm.Opcodes.LCMP;
-import static org.objectweb.asm.Opcodes.LCONST_0;
-import static org.objectweb.asm.Opcodes.LCONST_1;
-import static org.objectweb.asm.Opcodes.LDIV;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.LMUL;
-import static org.objectweb.asm.Opcodes.LNEG;
-import static org.objectweb.asm.Opcodes.LOR;
-import static org.objectweb.asm.Opcodes.LREM;
-import static org.objectweb.asm.Opcodes.LRETURN;
-import static org.objectweb.asm.Opcodes.LSHL;
-import static org.objectweb.asm.Opcodes.LSHR;
-import static org.objectweb.asm.Opcodes.LSTORE;
-import static org.objectweb.asm.Opcodes.LSUB;
-import static org.objectweb.asm.Opcodes.LUSHR;
-import static org.objectweb.asm.Opcodes.LXOR;
-import static org.objectweb.asm.Opcodes.MONITORENTER;
-import static org.objectweb.asm.Opcodes.MONITOREXIT;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
-import static org.objectweb.asm.Opcodes.NOP;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.POP2;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RET;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.SALOAD;
-import static org.objectweb.asm.Opcodes.SASTORE;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-import static org.objectweb.asm.Opcodes.SWAP;
-import static org.objectweb.asm.Opcodes.T_BOOLEAN;
-import static org.objectweb.asm.Opcodes.T_BYTE;
-import static org.objectweb.asm.Opcodes.T_CHAR;
-import static org.objectweb.asm.Opcodes.T_DOUBLE;
-import static org.objectweb.asm.Opcodes.T_FLOAT;
-import static org.objectweb.asm.Opcodes.T_INT;
-import static org.objectweb.asm.Opcodes.T_LONG;
-import static org.objectweb.asm.Opcodes.T_SHORT;
-import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
-import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.INT_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.INVOKE_DYNAMIC_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.JUMP_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
-import static org.objectweb.asm.tree.AbstractInsnNode.LDC_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.LINE;
-import static org.objectweb.asm.tree.AbstractInsnNode.LOOKUPSWITCH_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.METHOD_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
-
 /**
  * Generates Jimple bodies from bytecode.
  *
@@ -302,8 +169,8 @@ final class AsmMethodSource implements MethodSource {
   private final List<LocalVariableNode> localVars;
   private final List<TryCatchBlockNode> tryCatchBlocks;
 
-  private final Set<LabelNode> inlineExceptionLabels = new HashSet<LabelNode>();
-  private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
+  private final Set<LabelNode> inlineExceptionLabels = new HashSet<>();
+  private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<>();
 
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
@@ -328,7 +195,9 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private Local getLocal(int idx) {
-    if (idx >= maxLocals) throw new IllegalArgumentException("Invalid local index: " + idx);
+    if (idx >= maxLocals) {
+      throw new IllegalArgumentException("Invalid local index: " + idx);
+    }
     Integer i = idx;
     Local l = locals.get(i);
     if (l == null) {
@@ -342,7 +211,9 @@ final class AsmMethodSource implements MethodSource {
           }
         }
         /* normally for try-catch blocks */
-        if (name == null) name = "l" + idx;
+        if (name == null) {
+          name = "l" + idx;
+        }
       } else {
         name = "l" + idx;
       }
@@ -366,20 +237,26 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private void push(Type t, Operand opr) {
-    if (AsmUtil.isDWord(t)) pushDual(opr);
-    else push(opr);
+    if (AsmUtil.isDWord(t)) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private Operand pop() {
-    if (stack.isEmpty()) throw new RuntimeException("Stack underrun");
+    if (stack.isEmpty()) {
+      throw new RuntimeException("Stack underrun");
+    }
     return stack.remove(stack.size() - 1);
   }
 
   private Operand popDual() {
     Operand o = pop();
     Operand o2 = pop();
-    if (o2 != DWORD_DUMMY && o2 != o)
+    if (o2 != DWORD_DUMMY && o2 != o) {
       throw new AssertionError("Not dummy operand, " + o2.value + " -- " + o.value);
+    }
     return o;
   }
 
@@ -464,12 +341,15 @@ final class AsmMethodSource implements MethodSource {
       if (lineTag == null) {
         lineTag = new LineNumberTag(lastLineNumber);
         u.addTag(lineTag);
-      } else if (((LineNumberTag) lineTag).getLineNumber() != lastLineNumber)
+      } else if (((LineNumberTag) lineTag).getLineNumber() != lastLineNumber) {
         throw new RuntimeException("Line tag mismatch");
+      }
     }
 
     Unit o = units.put(insn, u);
-    if (o != null) throw new AssertionError(insn.getOpcode() + " already has a unit, " + o);
+    if (o != null) {
+      throw new AssertionError(insn.getOpcode() + " already has a unit, " + o);
+    }
   }
 
   void mergeUnits(AbstractInsnNode insn, Unit u) {
@@ -493,10 +373,13 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private void assignReadOps(Local l) {
-    if (stack.isEmpty()) return;
+    if (stack.isEmpty()) {
+      return;
+    }
     for (Operand opr : stack) {
-      if (opr == DWORD_DUMMY || opr.stack != null || (l == null && opr.value instanceof Local))
+      if (opr == DWORD_DUMMY || opr.stack != null || (l == null && opr.value instanceof Local)) {
         continue;
+      }
       if (l != null && !opr.value.equivTo(l)) {
         List<ValueBox> uses = opr.value.getUseBoxes();
         boolean noref = true;
@@ -507,10 +390,14 @@ final class AsmMethodSource implements MethodSource {
             break;
           }
         }
-        if (noref) continue;
+        if (noref) {
+          continue;
+        }
       }
       int op = opr.insn.getOpcode();
-      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD && op > SALOAD)) continue;
+      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD && op > SALOAD)) {
+        continue;
+      }
       Local stack = newStackLocal();
       opr.stack = stack;
       AssignStmt as = Jimple.v().newAssignStmt(stack, opr.value);
@@ -546,7 +433,9 @@ final class AsmMethodSource implements MethodSource {
     } else {
       opr = out[0];
       type = opr.<FieldRef>value().getFieldRef().type();
-      if (insn.getOpcode() == GETFIELD) frame.mergeIn(pop());
+      if (insn.getOpcode() == GETFIELD) {
+        frame.mergeIn(pop());
+      }
     }
     push(type, opr);
   }
@@ -607,8 +496,11 @@ final class AsmMethodSource implements MethodSource {
 
   private void convertFieldInsn(FieldInsnNode insn) {
     int op = insn.getOpcode();
-    if (op == GETSTATIC || op == GETFIELD) convertGetFieldInsn(insn);
-    else convertPutFieldInsn(insn);
+    if (op == GETSTATIC || op == GETFIELD) {
+      convertGetFieldInsn(insn);
+    } else {
+      convertPutFieldInsn(insn);
+    }
   }
 
   private void convertIincInsn(IincInsnNode insn) {
@@ -627,12 +519,19 @@ final class AsmMethodSource implements MethodSource {
     Operand opr;
     if (out == null) {
       Value v;
-      if (op == ACONST_NULL) v = NullConstant.v();
-      else if (op >= ICONST_M1 && op <= ICONST_5) v = IntConstant.v(op - ICONST_0);
-      else if (op == LCONST_0 || op == LCONST_1) v = LongConstant.v(op - LCONST_0);
-      else if (op >= FCONST_0 && op <= FCONST_2) v = FloatConstant.v(op - FCONST_0);
-      else if (op == DCONST_0 || op == DCONST_1) v = DoubleConstant.v(op - DCONST_0);
-      else throw new AssertionError("Unknown constant opcode: " + op);
+      if (op == ACONST_NULL) {
+        v = NullConstant.v();
+      } else if (op >= ICONST_M1 && op <= ICONST_5) {
+        v = IntConstant.v(op - ICONST_0);
+      } else if (op == LCONST_0 || op == LCONST_1) {
+        v = LongConstant.v(op - LCONST_0);
+      } else if (op >= FCONST_0 && op <= FCONST_2) {
+        v = FloatConstant.v(op - FCONST_0);
+      } else if (op == DCONST_0 || op == DCONST_1) {
+        v = DoubleConstant.v(op - DCONST_0);
+      } else {
+        throw new AssertionError("Unknown constant opcode: " + op);
+      }
       opr = new Operand(insn, v);
       frame.out(opr);
     } else {
@@ -664,8 +563,11 @@ final class AsmMethodSource implements MethodSource {
       frame.mergeIn(pop(), pop());
     }
     int op = insn.getOpcode();
-    if (op == DALOAD || op == LALOAD) pushDual(opr);
-    else push(opr);
+    if (op == DALOAD || op == LALOAD) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private void convertArrayStoreInsn(InsnNode insn) {
@@ -741,7 +643,9 @@ final class AsmMethodSource implements MethodSource {
       if (peek() == DWORD_DUMMY) {
         pop();
         dupd2 = dupd;
-      } else dupd2 = popImmediate();
+      } else {
+        dupd2 = popImmediate();
+      }
     }
 
     if (op == DUP) {
@@ -824,21 +728,37 @@ final class AsmMethodSource implements MethodSource {
       Value v1 = op1.stackOrValue();
       Value v2 = op2.stackOrValue();
       BinopExpr binop;
-      if (op >= IADD && op <= DADD) binop = Jimple.v().newAddExpr(v1, v2);
-      else if (op >= ISUB && op <= DSUB) binop = Jimple.v().newSubExpr(v1, v2);
-      else if (op >= IMUL && op <= DMUL) binop = Jimple.v().newMulExpr(v1, v2);
-      else if (op >= IDIV && op <= DDIV) binop = Jimple.v().newDivExpr(v1, v2);
-      else if (op >= IREM && op <= DREM) binop = Jimple.v().newRemExpr(v1, v2);
-      else if (op >= ISHL && op <= LSHL) binop = Jimple.v().newShlExpr(v1, v2);
-      else if (op >= ISHR && op <= LSHR) binop = Jimple.v().newShrExpr(v1, v2);
-      else if (op >= IUSHR && op <= LUSHR) binop = Jimple.v().newUshrExpr(v1, v2);
-      else if (op >= IAND && op <= LAND) binop = Jimple.v().newAndExpr(v1, v2);
-      else if (op >= IOR && op <= LOR) binop = Jimple.v().newOrExpr(v1, v2);
-      else if (op >= IXOR && op <= LXOR) binop = Jimple.v().newXorExpr(v1, v2);
-      else if (op == LCMP) binop = Jimple.v().newCmpExpr(v1, v2);
-      else if (op == FCMPL || op == DCMPL) binop = Jimple.v().newCmplExpr(v1, v2);
-      else if (op == FCMPG || op == DCMPG) binop = Jimple.v().newCmpgExpr(v1, v2);
-      else throw new AssertionError("Unknown binop: " + op);
+      if (op >= IADD && op <= DADD) {
+        binop = Jimple.v().newAddExpr(v1, v2);
+      } else if (op >= ISUB && op <= DSUB) {
+        binop = Jimple.v().newSubExpr(v1, v2);
+      } else if (op >= IMUL && op <= DMUL) {
+        binop = Jimple.v().newMulExpr(v1, v2);
+      } else if (op >= IDIV && op <= DDIV) {
+        binop = Jimple.v().newDivExpr(v1, v2);
+      } else if (op >= IREM && op <= DREM) {
+        binop = Jimple.v().newRemExpr(v1, v2);
+      } else if (op >= ISHL && op <= LSHL) {
+        binop = Jimple.v().newShlExpr(v1, v2);
+      } else if (op >= ISHR && op <= LSHR) {
+        binop = Jimple.v().newShrExpr(v1, v2);
+      } else if (op >= IUSHR && op <= LUSHR) {
+        binop = Jimple.v().newUshrExpr(v1, v2);
+      } else if (op >= IAND && op <= LAND) {
+        binop = Jimple.v().newAndExpr(v1, v2);
+      } else if (op >= IOR && op <= LOR) {
+        binop = Jimple.v().newOrExpr(v1, v2);
+      } else if (op >= IXOR && op <= LXOR) {
+        binop = Jimple.v().newXorExpr(v1, v2);
+      } else if (op == LCMP) {
+        binop = Jimple.v().newCmpExpr(v1, v2);
+      } else if (op == FCMPL || op == DCMPL) {
+        binop = Jimple.v().newCmplExpr(v1, v2);
+      } else if (op == FCMPG || op == DCMPG) {
+        binop = Jimple.v().newCmpgExpr(v1, v2);
+      } else {
+        throw new AssertionError("Unknown binop: " + op);
+      }
       op1.addBox(binop.getOp1Box());
       op2.addBox(binop.getOp2Box());
       opr = new Operand(insn, binop);
@@ -848,14 +768,20 @@ final class AsmMethodSource implements MethodSource {
     } else {
       opr = out[0];
       if (dword) {
-        if (op != LSHL && op != LSHR && op != LUSHR) frame.mergeIn(popDual(), popDual());
-        else frame.mergeIn(pop(), popDual());
+        if (op != LSHL && op != LSHR && op != LUSHR) {
+          frame.mergeIn(popDual(), popDual());
+        } else {
+          frame.mergeIn(pop(), popDual());
+        }
       } else {
         frame.mergeIn(pop(), pop());
       }
     }
-    if (dword && (op < LCMP || op > DCMPG)) pushDual(opr);
-    else push(opr);
+    if (dword && (op < LCMP || op > DCMPG)) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private void convertUnopInsn(InsnNode insn) {
@@ -868,9 +794,13 @@ final class AsmMethodSource implements MethodSource {
       Operand op1 = dword ? popImmediateDual() : popImmediate();
       Value v1 = op1.stackOrValue();
       UnopExpr unop;
-      if (op >= INEG && op <= DNEG) unop = Jimple.v().newNegExpr(v1);
-      else if (op == ARRAYLENGTH) unop = Jimple.v().newLengthExpr(v1);
-      else throw new AssertionError("Unknown unop: " + op);
+      if (op >= INEG && op <= DNEG) {
+        unop = Jimple.v().newNegExpr(v1);
+      } else if (op == ARRAYLENGTH) {
+        unop = Jimple.v().newLengthExpr(v1);
+      } else {
+        throw new AssertionError("Unknown unop: " + op);
+      }
       op1.addBox(unop.getOpBox());
       opr = new Operand(insn, unop);
       frame.in(op1);
@@ -880,8 +810,11 @@ final class AsmMethodSource implements MethodSource {
       opr = out[0];
       frame.mergeIn(dword ? popDual() : pop());
     }
-    if (dword) pushDual(opr);
-    else push(opr);
+    if (dword) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private void convertPrimCastInsn(InsnNode insn) {
@@ -893,14 +826,23 @@ final class AsmMethodSource implements MethodSource {
     Operand opr;
     if (out == null) {
       Type totype;
-      if (op == I2L || op == F2L || op == D2L) totype = LongType.v();
-      else if (op == L2I || op == F2I || op == D2I) totype = IntType.v();
-      else if (op == I2F || op == L2F || op == D2F) totype = FloatType.v();
-      else if (op == I2D || op == L2D || op == F2D) totype = DoubleType.v();
-      else if (op == I2B) totype = ByteType.v();
-      else if (op == I2S) totype = ShortType.v();
-      else if (op == I2C) totype = CharType.v();
-      else throw new AssertionError("Unknonw prim cast op: " + op);
+      if (op == I2L || op == F2L || op == D2L) {
+        totype = LongType.v();
+      } else if (op == L2I || op == F2I || op == D2I) {
+        totype = IntType.v();
+      } else if (op == I2F || op == L2F || op == D2F) {
+        totype = FloatType.v();
+      } else if (op == I2D || op == L2D || op == F2D) {
+        totype = DoubleType.v();
+      } else if (op == I2B) {
+        totype = ByteType.v();
+      } else if (op == I2S) {
+        totype = ShortType.v();
+      } else if (op == I2C) {
+        totype = CharType.v();
+      } else {
+        throw new AssertionError("Unknonw prim cast op: " + op);
+      }
       Operand val = fromd ? popImmediateDual() : popImmediate();
       CastExpr cast = Jimple.v().newCastExpr(val.stackOrValue(), totype);
       opr = new Operand(insn, cast);
@@ -912,8 +854,11 @@ final class AsmMethodSource implements MethodSource {
       opr = out[0];
       frame.mergeIn(fromd ? popDual() : pop());
     }
-    if (tod) pushDual(opr);
-    else push(opr);
+    if (tod) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private void convertReturnInsn(InsnNode insn) {
@@ -939,7 +884,9 @@ final class AsmMethodSource implements MethodSource {
        * We can ignore NOP instructions, but
        * for completeness, we handle them
        */
-      if (!units.containsKey(insn)) units.put(insn, Jimple.v().newNopStmt());
+      if (!units.containsKey(insn)) {
+        units.put(insn, Jimple.v().newNopStmt());
+      }
     } else if (op >= ACONST_NULL && op <= DCONST_1) {
       convertConstInsn(insn);
     } else if (op >= IALOAD && op <= SALOAD) {
@@ -950,8 +897,11 @@ final class AsmMethodSource implements MethodSource {
       popImmediate();
     } else if (op == POP2) {
       popImmediate();
-      if (peek() == DWORD_DUMMY) pop();
-      else popImmediate();
+      if (peek() == DWORD_DUMMY) {
+        pop();
+      } else {
+        popImmediate();
+      }
     } else if (op >= DUP && op <= DUP2_X2) {
       convertDupInsn(insn);
     } else if (op == SWAP) {
@@ -970,7 +920,9 @@ final class AsmMethodSource implements MethodSource {
     } else if (op >= IRETURN && op <= ARETURN) {
       convertReturnInsn(insn);
     } else if (op == RETURN) {
-      if (!units.containsKey(insn)) setUnit(insn, Jimple.v().newReturnVoidStmt());
+      if (!units.containsKey(insn)) {
+        setUnit(insn, Jimple.v().newReturnVoidStmt());
+      }
     } else if (op == ATHROW) {
       StackFrame frame = getFrame(insn);
       Operand opr;
@@ -1057,7 +1009,9 @@ final class AsmMethodSource implements MethodSource {
       frame.out(opr);
     } else {
       opr = out[0];
-      if (op == NEWARRAY) frame.mergeIn(pop());
+      if (op == NEWARRAY) {
+        frame.mergeIn(pop());
+      }
     }
     push(opr);
   }
@@ -1081,29 +1035,49 @@ final class AsmMethodSource implements MethodSource {
       if (op >= IF_ICMPEQ && op <= IF_ACMPNE) {
         Operand val1 = popImmediate();
         Value v1 = val1.stackOrValue();
-        if (op == IF_ICMPEQ) cond = Jimple.v().newEqExpr(v1, v);
-        else if (op == IF_ICMPNE) cond = Jimple.v().newNeExpr(v1, v);
-        else if (op == IF_ICMPLT) cond = Jimple.v().newLtExpr(v1, v);
-        else if (op == IF_ICMPGE) cond = Jimple.v().newGeExpr(v1, v);
-        else if (op == IF_ICMPGT) cond = Jimple.v().newGtExpr(v1, v);
-        else if (op == IF_ICMPLE) cond = Jimple.v().newLeExpr(v1, v);
-        else if (op == IF_ACMPEQ) cond = Jimple.v().newEqExpr(v1, v);
-        else if (op == IF_ACMPNE) cond = Jimple.v().newNeExpr(v1, v);
-        else throw new AssertionError("Unknown if op: " + op);
+        if (op == IF_ICMPEQ) {
+          cond = Jimple.v().newEqExpr(v1, v);
+        } else if (op == IF_ICMPNE) {
+          cond = Jimple.v().newNeExpr(v1, v);
+        } else if (op == IF_ICMPLT) {
+          cond = Jimple.v().newLtExpr(v1, v);
+        } else if (op == IF_ICMPGE) {
+          cond = Jimple.v().newGeExpr(v1, v);
+        } else if (op == IF_ICMPGT) {
+          cond = Jimple.v().newGtExpr(v1, v);
+        } else if (op == IF_ICMPLE) {
+          cond = Jimple.v().newLeExpr(v1, v);
+        } else if (op == IF_ACMPEQ) {
+          cond = Jimple.v().newEqExpr(v1, v);
+        } else if (op == IF_ACMPNE) {
+          cond = Jimple.v().newNeExpr(v1, v);
+        } else {
+          throw new AssertionError("Unknown if op: " + op);
+        }
         val1.addBox(cond.getOp1Box());
         val.addBox(cond.getOp2Box());
         frame.boxes(cond.getOp2Box(), cond.getOp1Box());
         frame.in(val, val1);
       } else {
-        if (op == IFEQ) cond = Jimple.v().newEqExpr(v, IntConstant.v(0));
-        else if (op == IFNE) cond = Jimple.v().newNeExpr(v, IntConstant.v(0));
-        else if (op == IFLT) cond = Jimple.v().newLtExpr(v, IntConstant.v(0));
-        else if (op == IFGE) cond = Jimple.v().newGeExpr(v, IntConstant.v(0));
-        else if (op == IFGT) cond = Jimple.v().newGtExpr(v, IntConstant.v(0));
-        else if (op == IFLE) cond = Jimple.v().newLeExpr(v, IntConstant.v(0));
-        else if (op == IFNULL) cond = Jimple.v().newEqExpr(v, NullConstant.v());
-        else if (op == IFNONNULL) cond = Jimple.v().newNeExpr(v, NullConstant.v());
-        else throw new AssertionError("Unknown if op: " + op);
+        if (op == IFEQ) {
+          cond = Jimple.v().newEqExpr(v, IntConstant.v(0));
+        } else if (op == IFNE) {
+          cond = Jimple.v().newNeExpr(v, IntConstant.v(0));
+        } else if (op == IFLT) {
+          cond = Jimple.v().newLtExpr(v, IntConstant.v(0));
+        } else if (op == IFGE) {
+          cond = Jimple.v().newGeExpr(v, IntConstant.v(0));
+        } else if (op == IFGT) {
+          cond = Jimple.v().newGtExpr(v, IntConstant.v(0));
+        } else if (op == IFLE) {
+          cond = Jimple.v().newLeExpr(v, IntConstant.v(0));
+        } else if (op == IFNULL) {
+          cond = Jimple.v().newEqExpr(v, NullConstant.v());
+        } else if (op == IFNONNULL) {
+          cond = Jimple.v().newNeExpr(v, NullConstant.v());
+        } else {
+          throw new AssertionError("Unknown if op: " + op);
+        }
         val.addBox(cond.getOp1Box());
         frame.boxes(cond.getOp1Box());
         frame.in(val);
@@ -1112,8 +1086,11 @@ final class AsmMethodSource implements MethodSource {
       labels.put(insn.label, box);
       setUnit(insn, Jimple.v().newIfStmt(cond, box));
     } else {
-      if (op >= IF_ICMPEQ && op <= IF_ACMPNE) frame.mergeIn(pop(), pop());
-      else frame.mergeIn(pop());
+      if (op >= IF_ICMPEQ && op <= IF_ACMPNE) {
+        frame.mergeIn(pop(), pop());
+      } else {
+        frame.mergeIn(pop());
+      }
     }
   }
 
@@ -1130,22 +1107,32 @@ final class AsmMethodSource implements MethodSource {
     } else {
       opr = out[0];
     }
-    if (dword) pushDual(opr);
-    else push(opr);
+    if (dword) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private Value toSootValue(Object val) throws AssertionError {
     Value v;
-    if (val instanceof Integer) v = IntConstant.v((Integer) val);
-    else if (val instanceof Float) v = FloatConstant.v((Float) val);
-    else if (val instanceof Long) v = LongConstant.v((Long) val);
-    else if (val instanceof Double) v = DoubleConstant.v((Double) val);
-    else if (val instanceof String) v = StringConstant.v(val.toString());
-    else if (val instanceof org.objectweb.asm.Type)
+    if (val instanceof Integer) {
+      v = IntConstant.v((Integer) val);
+    } else if (val instanceof Float) {
+      v = FloatConstant.v((Float) val);
+    } else if (val instanceof Long) {
+      v = LongConstant.v((Long) val);
+    } else if (val instanceof Double) {
+      v = DoubleConstant.v((Double) val);
+    } else if (val instanceof String) {
+      v = StringConstant.v(val.toString());
+    } else if (val instanceof org.objectweb.asm.Type) {
       v = ClassConstant.v(((org.objectweb.asm.Type) val).getDescriptor());
-    else if (val instanceof Handle)
+    } else if (val instanceof Handle) {
       v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
-    else throw new AssertionError("Unknown constant type: " + val.getClass());
+    } else {
+      throw new AssertionError("Unknown constant type: " + val.getClass());
+    }
     return v;
   }
 
@@ -1158,7 +1145,7 @@ final class AsmMethodSource implements MethodSource {
     Operand key = popImmediate();
     UnitBox dflt = Jimple.v().newStmtBox(null);
 
-    List<UnitBox> targets = new ArrayList<UnitBox>(insn.labels.size());
+    List<UnitBox> targets = new ArrayList<>(insn.labels.size());
     labels.put(insn.dflt, dflt);
     for (LabelNode ln : insn.labels) {
       UnitBox box = Jimple.v().newStmtBox(null);
@@ -1166,8 +1153,10 @@ final class AsmMethodSource implements MethodSource {
       labels.put(ln, box);
     }
 
-    List<IntConstant> keys = new ArrayList<IntConstant>(insn.keys.size());
-    for (Integer i : insn.keys) keys.add(IntConstant.v(i));
+    List<IntConstant> keys = new ArrayList<>(insn.keys.size());
+    for (Integer i : insn.keys) {
+      keys.add(IntConstant.v(i));
+    }
 
     LookupSwitchStmt lss = Jimple.v().newLookupSwitchStmt(key.stackOrValue(), keys, targets, dflt);
     key.addBox(lss.getKeyBox());
@@ -1185,7 +1174,9 @@ final class AsmMethodSource implements MethodSource {
     Type returnType;
     if (out == null) {
       String clsName = AsmUtil.toQualifiedName(insn.owner);
-      if (clsName.charAt(0) == '[') clsName = "java.lang.Object";
+      if (clsName.charAt(0) == '[') {
+        clsName = "java.lang.Object";
+      }
       SootClass cls = Scene.v().getSootClass(clsName);
       List<Type> sigTypes = AsmUtil.toJimpleDesc(insn.desc);
       returnType = sigTypes.remove(sigTypes.size() - 1);
@@ -1195,17 +1186,25 @@ final class AsmMethodSource implements MethodSource {
       List<Value> argList = Collections.emptyList();
       if (!instance) {
         args = nrArgs == 0 ? null : new Operand[nrArgs];
-        if (args != null) argList = new ArrayList<Value>(nrArgs);
+        if (args != null) {
+          argList = new ArrayList<>(nrArgs);
+        }
       } else {
         args = new Operand[nrArgs + 1];
-        if (nrArgs != 0) argList = new ArrayList<Value>(nrArgs);
+        if (nrArgs != 0) {
+          argList = new ArrayList<>(nrArgs);
+        }
       }
       while (nrArgs-- != 0) {
         args[nrArgs] = popImmediate(sigTypes.get(nrArgs));
         argList.add(args[nrArgs].stackOrValue());
       }
-      if (argList.size() > 1) Collections.reverse(argList);
-      if (instance) args[args.length - 1] = popLocal();
+      if (argList.size() > 1) {
+        Collections.reverse(argList);
+      }
+      if (instance) {
+        args[args.length - 1] = popLocal();
+      }
       ValueBox[] boxes = args == null ? null : new ValueBox[args.length];
       InvokeExpr invoke;
       if (!instance) {
@@ -1213,11 +1212,15 @@ final class AsmMethodSource implements MethodSource {
       } else {
         Local base = (Local) args[args.length - 1].stackOrValue();
         InstanceInvokeExpr iinvoke;
-        if (op == INVOKESPECIAL) iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
-        else if (op == INVOKEVIRTUAL) iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
-        else if (op == INVOKEINTERFACE)
+        if (op == INVOKESPECIAL) {
+          iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
+        } else if (op == INVOKEVIRTUAL) {
+          iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
+        } else if (op == INVOKEINTERFACE) {
           iinvoke = Jimple.v().newInterfaceInvokeExpr(base, ref, argList);
-        else throw new AssertionError("Unknown invoke op:" + op);
+        } else {
+          throw new AssertionError("Unknown invoke op:" + op);
+        }
         boxes[boxes.length - 1] = iinvoke.getBaseBox();
         args[args.length - 1].addBox(boxes[boxes.length - 1]);
         invoke = iinvoke;
@@ -1238,21 +1241,30 @@ final class AsmMethodSource implements MethodSource {
       List<Type> types = expr.getMethodRef().parameterTypes();
       Operand[] oprs;
       int nrArgs = types.size();
-      if (expr.getMethodRef().isStatic()) oprs = nrArgs == 0 ? null : new Operand[nrArgs];
-      else oprs = new Operand[nrArgs + 1];
+      if (expr.getMethodRef().isStatic()) {
+        oprs = nrArgs == 0 ? null : new Operand[nrArgs];
+      } else {
+        oprs = new Operand[nrArgs + 1];
+      }
       if (oprs != null) {
         while (nrArgs-- != 0) {
           oprs[nrArgs] = pop(types.get(nrArgs));
         }
-        if (!expr.getMethodRef().isStatic()) oprs[oprs.length - 1] = pop();
+        if (!expr.getMethodRef().isStatic()) {
+          oprs[oprs.length - 1] = pop();
+        }
         frame.mergeIn(oprs);
         nrArgs = types.size();
       }
       returnType = expr.getMethodRef().returnType();
     }
-    if (AsmUtil.isDWord(returnType)) pushDual(opr);
-    else if (!(returnType instanceof VoidType)) push(opr);
-    else if (!units.containsKey(insn)) setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+    if (AsmUtil.isDWord(returnType)) {
+      pushDual(opr);
+    } else if (!(returnType instanceof VoidType)) {
+      push(opr);
+    } else if (!units.containsKey(insn)) {
+      setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+    }
     /*
      * assign all read ops in case the method modifies any of the fields
      */
@@ -1267,7 +1279,7 @@ final class AsmMethodSource implements MethodSource {
     if (out == null) {
       // convert info on bootstrap method
       SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
-      List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
+      List<Value> bsmMethodArgs = new ArrayList<>(insn.bsmArgs.length);
       for (Object bsmArg : insn.bsmArgs) {
         bsmMethodArgs.add(toSootValue(bsmArg));
       }
@@ -1277,8 +1289,8 @@ final class AsmMethodSource implements MethodSource {
 
       // Generate parameters & returnType & parameterTypes
       Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
-      List<Type> parameterTypes = new ArrayList<Type>(types.length);
-      List<Value> methodArgs = new ArrayList<Value>(types.length);
+      List<Type> parameterTypes = new ArrayList<>(types.length);
+      List<Value> methodArgs = new ArrayList<>(types.length);
 
       Operand[] args = new Operand[types.length - 1];
       ValueBox[] boxes = new ValueBox[args.length];
@@ -1320,21 +1332,30 @@ final class AsmMethodSource implements MethodSource {
       List<Type> types = expr.getMethodRef().parameterTypes();
       Operand[] oprs;
       int nrArgs = types.size();
-      if (expr.getMethodRef().isStatic()) oprs = nrArgs == 0 ? null : new Operand[nrArgs];
-      else oprs = new Operand[nrArgs + 1];
+      if (expr.getMethodRef().isStatic()) {
+        oprs = nrArgs == 0 ? null : new Operand[nrArgs];
+      } else {
+        oprs = new Operand[nrArgs + 1];
+      }
       if (oprs != null) {
         while (nrArgs-- != 0) {
           oprs[nrArgs] = pop(types.get(types.size() - nrArgs - 1));
         }
-        if (!expr.getMethodRef().isStatic()) oprs[oprs.length - 1] = pop();
+        if (!expr.getMethodRef().isStatic()) {
+          oprs[oprs.length - 1] = pop();
+        }
         frame.mergeIn(oprs);
         nrArgs = types.size();
       }
       returnType = expr.getMethodRef().returnType();
     }
-    if (AsmUtil.isDWord(returnType)) pushDual(opr);
-    else if (!(returnType instanceof VoidType)) push(opr);
-    else if (!units.containsKey(insn)) setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+    if (AsmUtil.isDWord(returnType)) {
+      pushDual(opr);
+    } else if (!(returnType instanceof VoidType)) {
+      push(opr);
+    } else if (!units.containsKey(insn)) {
+      setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+    }
     /*
      * assign all read ops in case the method modifies any of the fields
      */
@@ -1379,7 +1400,9 @@ final class AsmMethodSource implements MethodSource {
       opr = out[0];
       int dims = insn.dims;
       Operand[] sizes = new Operand[dims];
-      while (dims-- != 0) sizes[dims] = pop();
+      while (dims-- != 0) {
+        sizes[dims] = pop();
+      }
       frame.mergeIn(sizes);
     }
     push(opr);
@@ -1393,7 +1416,7 @@ final class AsmMethodSource implements MethodSource {
     }
     Operand key = popImmediate();
     UnitBox dflt = Jimple.v().newStmtBox(null);
-    List<UnitBox> targets = new ArrayList<UnitBox>(insn.labels.size());
+    List<UnitBox> targets = new ArrayList<>(insn.labels.size());
     labels.put(insn.dflt, dflt);
     for (LabelNode ln : insn.labels) {
       UnitBox box = Jimple.v().newStmtBox(null);
@@ -1445,7 +1468,9 @@ final class AsmMethodSource implements MethodSource {
       frame.out(opr);
     } else {
       opr = out[0];
-      if (op != NEW) frame.mergeIn(pop());
+      if (op != NEW) {
+        frame.mergeIn(pop());
+      }
     }
     push(opr);
   }
@@ -1462,8 +1487,11 @@ final class AsmMethodSource implements MethodSource {
     } else {
       opr = out[0];
     }
-    if (dword) pushDual(opr);
-    else push(opr);
+    if (dword) {
+      pushDual(opr);
+    } else {
+      push(opr);
+    }
   }
 
   private void convertVarStoreInsn(VarInsnNode insn) {
@@ -1492,14 +1520,18 @@ final class AsmMethodSource implements MethodSource {
       convertVarStoreInsn(insn);
     } else if (op == RET) {
       /* we handle it, even thought it should be removed */
-      if (!units.containsKey(insn)) setUnit(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
+      if (!units.containsKey(insn)) {
+        setUnit(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
+      }
     } else {
       throw new AssertionError("Unknown var op: " + op);
     }
   }
 
   private void convertLabel(LabelNode ln) {
-    if (!trapHandlers.containsKey(ln)) return;
+    if (!trapHandlers.containsKey(ln)) {
+      return;
+    }
 
     // We create a nop statement as a placeholder so that we can jump
     // somewhere from the real exception handler in case this is inline
@@ -1545,12 +1577,12 @@ final class AsmMethodSource implements MethodSource {
 
     Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
       this.insn = insn;
-      this.prevStacks = new LinkedList<Operand[]>();
+      this.prevStacks = new LinkedList<>();
       this.stack = stack;
     }
 
     Edge(AbstractInsnNode insn) {
-      this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
+      this(insn, new ArrayList<>(AsmMethodSource.this.stack));
     }
   }
 
@@ -1559,7 +1591,7 @@ final class AsmMethodSource implements MethodSource {
 
   private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
     int lastIdx = tgts == null ? -1 : tgts.size() - 1;
-    Operand[] stackss = (new ArrayList<Operand>(stack)).toArray(new Operand[stack.size()]);
+    Operand[] stackss = (new ArrayList<>(stack)).toArray(new Operand[stack.size()]);
     AbstractInsnNode tgt = tgt1;
     int i = 0;
     tgt_loop:
@@ -1578,25 +1610,31 @@ final class AsmMethodSource implements MethodSource {
           throw new AssertionError("Multiple un-equal stacks!");
         }
         for (int j = 0; j != stackss.length; j++) {
-          if (!stackTemp.get(j).equivTo(stackss[j]))
+          if (!stackTemp.get(j).equivTo(stackss[j])) {
             throw new AssertionError("Multiple un-equal stacks!");
+          }
         }
         continue;
       }
       for (Operand[] ps : edge.prevStacks) {
-        if (Arrays.equals(ps, stackss)) continue tgt_loop;
+        if (Arrays.equals(ps, stackss)) {
+          continue tgt_loop;
+        }
       }
-      edge.stack = new ArrayList<Operand>(stack);
+      edge.stack = new ArrayList<>(stack);
       edge.prevStacks.add(stackss);
       conversionWorklist.add(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
   }
 
   private void convert() {
-    ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
+    ArrayDeque<Edge> worklist = new ArrayDeque<>();
     for (LabelNode ln : trapHandlers.keySet()) {
-      if (checkInlineExceptionHandler(ln)) handleInlineExceptionHandler(ln, worklist);
-      else worklist.add(new Edge(ln, new ArrayList<Operand>()));
+      if (checkInlineExceptionHandler(ln)) {
+        handleInlineExceptionHandler(ln, worklist);
+      } else {
+        worklist.add(new Edge(ln, new ArrayList<Operand>()));
+      }
     }
     worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
     conversionWorklist = worklist;
@@ -1627,7 +1665,9 @@ final class AsmMethodSource implements MethodSource {
           JumpInsnNode jmp = (JumpInsnNode) insn;
           convertJumpInsn(jmp);
           int op = jmp.getOpcode();
-          if (op == JSR) throw new UnsupportedOperationException("JSR!");
+          if (op == JSR) {
+            throw new UnsupportedOperationException("JSR!");
+          }
           if (op != GOTO) {
             /* ifX opcode, i.e. two successors */
             AbstractInsnNode next = insn.getNext();
@@ -1656,7 +1696,9 @@ final class AsmMethodSource implements MethodSource {
         } else if (type == TYPE_INSN) {
           convertTypeInsn((TypeInsnNode) insn);
         } else if (type == VAR_INSN) {
-          if (insn.getOpcode() == RET) throw new UnsupportedOperationException("RET!");
+          if (insn.getOpcode() == RET) {
+            throw new UnsupportedOperationException("RET!");
+          }
           convertVarInsn((VarInsnNode) insn);
         } else if (type == LABEL) {
           convertLabel((LabelNode) insn);
@@ -1664,7 +1706,9 @@ final class AsmMethodSource implements MethodSource {
           convertLine((LineNumberNode) insn);
         } else if (type == FRAME) {
           // we can ignore it
-        } else throw new RuntimeException("Unknown instruction type: " + type);
+        } else {
+          throw new RuntimeException("Unknown instruction type: " + type);
+        }
       } while ((insn = insn.getNext()) != null);
     } while (!worklist.isEmpty());
     conversionWorklist = null;
@@ -1680,7 +1724,7 @@ final class AsmMethodSource implements MethodSource {
     Operand opr = new Operand(ln, ref);
     opr.stack = local;
 
-    ArrayList<Operand> stack = new ArrayList<Operand>();
+    ArrayList<Operand> stack = new ArrayList<>();
     stack.add(opr);
     worklist.add(new Edge(ln, stack));
 
@@ -1731,8 +1775,11 @@ final class AsmMethodSource implements MethodSource {
       Type t = (Type) ot;
       Local l = getLocal(iloc);
       jbu.add(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(t, nrp++)));
-      if (AsmUtil.isDWord(t)) iloc += 2;
-      else iloc++;
+      if (AsmUtil.isDWord(t)) {
+        iloc += 2;
+      } else {
+        iloc++;
+      }
     }
     for (Local l : locals.values()) {
       jbl.add(l);
@@ -1742,8 +1789,7 @@ final class AsmMethodSource implements MethodSource {
   private void emitTraps() {
     Chain<Trap> traps = body.getTraps();
     SootClass throwable = Scene.v().getSootClass("java.lang.Throwable");
-    Map<LabelNode, Iterator<UnitBox>> handlers =
-        new HashMap<LabelNode, Iterator<UnitBox>>(tryCatchBlocks.size());
+    Map<LabelNode, Iterator<UnitBox>> handlers = new HashMap<>(tryCatchBlocks.size());
     for (TryCatchBlockNode tc : tryCatchBlocks) {
       UnitBox start = Jimple.v().newStmtBox(null);
       UnitBox end = Jimple.v().newStmtBox(null);
@@ -1764,7 +1810,9 @@ final class AsmMethodSource implements MethodSource {
 
   private void emitUnits(Unit u) {
     if (u instanceof UnitContainer) {
-      for (Unit uu : ((UnitContainer) u).units) emitUnits(uu);
+      for (Unit uu : ((UnitContainer) u).units) {
+        emitUnits(uu);
+      }
     } else {
       body.getUnits().add(u);
     }
@@ -1772,11 +1820,13 @@ final class AsmMethodSource implements MethodSource {
 
   private void emitUnits() {
     AbstractInsnNode insn = instructions.getFirst();
-    ArrayDeque<LabelNode> labls = new ArrayDeque<LabelNode>();
+    ArrayDeque<LabelNode> labls = new ArrayDeque<>();
 
     while (insn != null) {
       // Save the label to assign it to the next real unit
-      if (insn instanceof LabelNode) labls.add((LabelNode) insn);
+      if (insn instanceof LabelNode) {
+        labls.add((LabelNode) insn);
+      }
 
       // Get the unit associated with the current instruction
       Unit u = units.get(insn);
@@ -1790,16 +1840,20 @@ final class AsmMethodSource implements MethodSource {
       // If this is an exception handler, register the starting unit for it
       {
         IdentityStmt caughtEx = null;
-        if (u instanceof IdentityStmt) caughtEx = (IdentityStmt) u;
-        else if (u instanceof UnitContainer)
+        if (u instanceof IdentityStmt) {
+          caughtEx = (IdentityStmt) u;
+        } else if (u instanceof UnitContainer) {
           caughtEx = getIdentityRefFromContrainer((UnitContainer) u);
+        }
 
         if (insn instanceof LabelNode
             && caughtEx != null
             && caughtEx.getRightOp() instanceof CaughtExceptionRef) {
           // We directly place this label
           Collection<UnitBox> traps = trapHandlers.get((LabelNode) insn);
-          for (UnitBox ub : traps) ub.setUnit(caughtEx);
+          for (UnitBox ub : traps) {
+            ub.setUnit(caughtEx);
+          }
         }
       }
 
@@ -1822,7 +1876,9 @@ final class AsmMethodSource implements MethodSource {
       emitUnits(handler);
 
       Collection<UnitBox> traps = trapHandlers.get(ln);
-      for (UnitBox ub : traps) ub.setUnit(handler);
+      for (UnitBox ub : traps) {
+        ub.setUnit(handler);
+      }
 
       // We need to jump to the original implementation
       Unit targetUnit = units.get(ln);
@@ -1831,14 +1887,18 @@ final class AsmMethodSource implements MethodSource {
     }
 
     /* set remaining labels & boxes to last unit of chain */
-    if (labls.isEmpty()) return;
+    if (labls.isEmpty()) {
+      return;
+    }
     Unit end = Jimple.v().newNopStmt();
     body.getUnits().add(end);
     while (!labls.isEmpty()) {
       LabelNode ln = labls.poll();
       Collection<UnitBox> boxes = labels.get(ln);
       if (boxes != null) {
-        for (UnitBox box : boxes) box.setUnit(end);
+        for (UnitBox box : boxes) {
+          box.setUnit(end);
+        }
       }
     }
   }
@@ -1847,28 +1907,32 @@ final class AsmMethodSource implements MethodSource {
     for (Unit uu : u.units) {
       if (uu instanceof IdentityStmt) {
         return (IdentityStmt) uu;
-      } else if (uu instanceof UnitContainer)
+      } else if (uu instanceof UnitContainer) {
         return getIdentityRefFromContrainer((UnitContainer) uu);
+      }
     }
     return null;
   }
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {
-    if (!m.isConcrete()) return null;
+    if (!m.isConcrete()) {
+      return null;
+    }
     JimpleBody jb = Jimple.v().newBody(m);
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
-    locals = new HashMap<Integer, Local>(maxLocals + (maxLocals / 2));
+    locals = new HashMap<>(maxLocals + (maxLocals / 2));
     labels = ArrayListMultimap.create(4, 1);
-    units = new HashMap<AbstractInsnNode, Unit>(nrInsn);
-    frames = new HashMap<AbstractInsnNode, StackFrame>(nrInsn);
+    units = new HashMap<>(nrInsn);
+    frames = new HashMap<>(nrInsn);
     trapHandlers = ArrayListMultimap.create(tryCatchBlocks.size(), 1);
     body = jb;
     /* retrieve all trap handlers */
-    for (TryCatchBlockNode tc : tryCatchBlocks)
+    for (TryCatchBlockNode tc : tryCatchBlocks) {
       trapHandlers.put(tc.handler, Jimple.v().newStmtBox(null));
+    }
     /* convert instructions */
     try {
       convert();

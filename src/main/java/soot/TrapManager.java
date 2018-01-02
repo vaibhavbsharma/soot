@@ -25,13 +25,13 @@
 
 package soot;
 
-import soot.util.Chain;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import soot.util.Chain;
 
 /** Utility methods for dealing with traps. */
 public class TrapManager {
@@ -48,7 +48,11 @@ public class TrapManager {
       /* Ah ha, we might win. */
       if (h.isClassSubclassOfIncluding(e, t.getException())) {
         Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
-        while (it.hasNext()) if (u.equals(it.next())) return true;
+        while (it.hasNext()) {
+          if (u.equals(it.next())) {
+            return true;
+          }
+        }
       }
     }
 
@@ -57,12 +61,16 @@ public class TrapManager {
 
   /** Returns the list of traps caught at Unit u in Body b. */
   public static List<Trap> getTrapsAt(Unit unit, Body b) {
-    List<Trap> trapsList = new ArrayList<Trap>();
+    List<Trap> trapsList = new ArrayList<>();
     Chain<Unit> units = b.getUnits();
 
     for (Trap t : b.getTraps()) {
       Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
-      while (it.hasNext()) if (unit.equals(it.next())) trapsList.add(t);
+      while (it.hasNext()) {
+        if (unit.equals(it.next())) {
+          trapsList.add(t);
+        }
+      }
     }
 
     return trapsList;
@@ -70,12 +78,14 @@ public class TrapManager {
 
   /** Returns a set of units which lie inside the range of any trap. */
   public static Set<Unit> getTrappedUnitsOf(Body b) {
-    Set<Unit> trapsSet = new HashSet<Unit>();
+    Set<Unit> trapsSet = new HashSet<>();
     Chain<Unit> units = b.getUnits();
 
     for (Trap t : b.getTraps()) {
       Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
-      while (it.hasNext()) trapsSet.add(it.next());
+      while (it.hasNext()) {
+        trapsSet.add(it.next());
+      }
     }
     return trapsSet;
   }
@@ -98,7 +108,9 @@ public class TrapManager {
 
       while (unitIt.hasNext()) {
         Unit u = unitIt.next();
-        if (u.equals(rangeStart)) insideRange = true;
+        if (u.equals(rangeStart)) {
+          insideRange = true;
+        }
         if (!unitIt.hasNext()) // i.e. u.equals(t.getEndUnit())
         {
           if (insideRange) {
@@ -106,11 +118,15 @@ public class TrapManager {
             t.setBeginUnit(rangeStart);
             newTrap.setEndUnit(rangeStart);
             traps.insertAfter(newTrap, t);
-          } else break;
+          } else {
+            break;
+          }
         }
         if (u.equals(rangeEnd)) {
           // insideRange had better be true now.
-          if (!insideRange) throw new RuntimeException("inversed range?");
+          if (!insideRange) {
+            throw new RuntimeException("inversed range?");
+          }
           Trap firstTrap = (Trap) t.clone();
           Trap secondTrap = (Trap) t.clone();
           firstTrap.setEndUnit(rangeStart);
@@ -130,7 +146,7 @@ public class TrapManager {
    * caught by the handler.
    */
   public static List<RefType> getExceptionTypesOf(Unit u, Body body) {
-    List<RefType> possibleTypes = new ArrayList<RefType>();
+    List<RefType> possibleTypes = new ArrayList<>();
 
     for (Trap trap : body.getTraps()) {
       if (trap.getHandlerUnit() == u) {

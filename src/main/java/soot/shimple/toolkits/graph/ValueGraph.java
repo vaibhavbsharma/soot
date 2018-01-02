@@ -24,6 +24,14 @@
 
 package soot.shimple.toolkits.graph;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -95,14 +103,6 @@ import soot.toolkits.graph.Orderer;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 // consider implementing DirectedGraph
 public class ValueGraph {
   // can we handle field writes/reads?
@@ -117,20 +117,21 @@ public class ValueGraph {
   protected int currentNodeNumber;
 
   public ValueGraph(BlockGraph cfg) {
-    if (!(cfg.getBody() instanceof ShimpleBody))
+    if (!(cfg.getBody() instanceof ShimpleBody)) {
       throw new RuntimeException("ValueGraph requires SSA form");
+    }
 
-    localToNode = new HashMap<Value, Node>();
-    nodeToLocal = new HashMap<Node, Value>();
-    nodeList = new ArrayList<Node>();
+    localToNode = new HashMap<>();
+    nodeToLocal = new HashMap<>();
+    nodeList = new ArrayList<>();
     currentNodeNumber = 0;
-    Orderer<Block> pto = new PseudoTopologicalOrderer<Block>();
+    Orderer<Block> pto = new PseudoTopologicalOrderer<>();
     List<Block> blocks = pto.newList(cfg, false);
 
-    for (Iterator<Block> blocksIt = blocks.iterator(); blocksIt.hasNext(); ) {
-      Block block = blocksIt.next();
-      for (Iterator<Unit> blockIt = block.iterator(); blockIt.hasNext(); )
-        handleStmt((Stmt) blockIt.next());
+    for (Block block : blocks) {
+      for (Unit unit : block) {
+        handleStmt((Stmt) unit);
+      }
     }
 
     for (Node node : nodeList) {
@@ -139,18 +140,24 @@ public class ValueGraph {
   }
 
   protected void handleStmt(Stmt stmt) {
-    if (!(stmt instanceof DefinitionStmt)) return;
+    if (!(stmt instanceof DefinitionStmt)) {
+      return;
+    }
     DefinitionStmt dStmt = (DefinitionStmt) stmt;
 
     Value leftOp = dStmt.getLeftOp();
-    if (!(leftOp instanceof Local)) return;
+    if (!(leftOp instanceof Local)) {
+      return;
+    }
 
     Value rightOp = dStmt.getRightOp();
     Node node = fetchGraph(rightOp);
     localToNode.put(leftOp, node);
 
     // only update for non-trivial assignments and non-stubs
-    if (!(rightOp instanceof Local) && !node.isStub()) nodeToLocal.put(node, leftOp);
+    if (!(rightOp instanceof Local) && !node.isStub()) {
+      nodeToLocal.put(node, leftOp);
+    }
   }
 
   protected Node fetchNode(Value value) {
@@ -163,11 +170,12 @@ public class ValueGraph {
       // or maybe not...  a PhiExpr may refer to a local that
       // has not been seen yet in the pseudo topological order.
       // use a stub node in that case and fill in the details later.
-      if (ret == null) ret = new Node(value, true);
+      if (ret == null) {
+        ret = new Node(value, true);
+      }
+    } else {
+      ret = new Node(value);
     }
-
-    // theoretically we could share Constant nodes...
-    else ret = new Node(value);
 
     return ret;
   }
@@ -179,11 +187,13 @@ public class ValueGraph {
         vs =
             new AbstractShimpleValueSwitch() {
               /** No default case, we implement explicit handling for each situation. */
+              @Override
               public void defaultCase(Object object) {
                 throw new RuntimeException("Internal error: " + object + " unhandled case.");
               }
 
               /** Handle a trivial assignment. */
+              @Override
               public void caseLocal(Local l) {
                 setResult(fetchNode(l));
               }
@@ -202,7 +212,7 @@ public class ValueGraph {
                 Node nop1 = fetchNode(binop.getOp1());
                 Node nop2 = fetchNode(binop.getOp2());
 
-                List<Node> children = new ArrayList<Node>();
+                List<Node> children = new ArrayList<>();
                 children.add(nop1);
                 children.add(nop2);
 
@@ -222,161 +232,198 @@ public class ValueGraph {
                 setResult(new Node(unop, true, child));
               }
 
+              @Override
               public void caseFloatConstant(FloatConstant v) {
                 handleConstant(v);
               }
 
+              @Override
               public void caseIntConstant(IntConstant v) {
                 handleConstant(v);
               }
 
+              @Override
               public void caseLongConstant(LongConstant v) {
                 handleConstant(v);
               }
 
+              @Override
               public void caseNullConstant(NullConstant v) {
                 handleConstant(v);
               }
 
+              @Override
               public void caseStringConstant(StringConstant v) {
                 handleConstant(v);
               }
 
+              @Override
               public void caseArrayRef(ArrayRef v) {
                 handleRef(v);
               }
 
+              @Override
               public void caseStaticFieldRef(StaticFieldRef v) {
                 handleRef(v);
               }
 
+              @Override
               public void caseInstanceFieldRef(InstanceFieldRef v) {
                 handleRef(v);
               }
 
+              @Override
               public void caseParameterRef(ParameterRef v) {
                 handleRef(v);
               }
 
+              @Override
               public void caseCaughtExceptionRef(CaughtExceptionRef v) {
                 handleRef(v);
               }
 
+              @Override
               public void caseThisRef(ThisRef v) {
                 handleRef(v);
               }
 
+              @Override
               public void caseAddExpr(AddExpr v) {
                 handleBinop(v, false);
               }
 
+              @Override
               public void caseAndExpr(AndExpr v) {
                 handleBinop(v, false);
               }
 
+              @Override
               public void caseCmpExpr(CmpExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseCmpgExpr(CmpgExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseCmplExpr(CmplExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseDivExpr(DivExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseEqExpr(EqExpr v) {
                 handleBinop(v, false);
               }
 
+              @Override
               public void caseNeExpr(NeExpr v) {
                 handleBinop(v, false);
               }
 
+              @Override
               public void caseGeExpr(GeExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseGtExpr(GtExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseLeExpr(LeExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseLtExpr(LtExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseMulExpr(MulExpr v) {
                 handleBinop(v, false);
               }
 
               // *** check
+              @Override
               public void caseOrExpr(OrExpr v) {
                 handleBinop(v, false);
               }
 
+              @Override
               public void caseRemExpr(RemExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseShlExpr(ShlExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseShrExpr(ShrExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseUshrExpr(UshrExpr v) {
                 handleBinop(v, true);
               }
 
+              @Override
               public void caseSubExpr(SubExpr v) {
                 handleBinop(v, true);
               }
 
               // *** check
+              @Override
               public void caseXorExpr(XorExpr v) {
                 handleBinop(v, false);
               }
 
+              @Override
               public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v) {
                 handleUnknown(v);
               }
 
+              @Override
               public void caseSpecialInvokeExpr(SpecialInvokeExpr v) {
                 handleUnknown(v);
               }
 
+              @Override
               public void caseStaticInvokeExpr(StaticInvokeExpr v) {
                 handleUnknown(v);
               }
 
+              @Override
               public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
                 handleUnknown(v);
               }
 
               /** Handle like a trivial assignment. */
+              @Override
               public void caseCastExpr(CastExpr v) {
                 setResult(fetchNode(v.getOp()));
               }
 
               /** Handle like an ordered binop. */
+              @Override
               public void caseInstanceOfExpr(InstanceOfExpr v) {
                 Node nop1 = fetchNode(v.getOp());
 
                 Value op2 = new TypeValueWrapper(v.getCheckType());
                 Node nop2 = fetchNode(op2);
 
-                List<Node> children = new ArrayList<Node>();
+                List<Node> children = new ArrayList<>();
                 children.add(nop1);
                 children.add(nop2);
 
@@ -384,28 +431,34 @@ public class ValueGraph {
               }
 
               // *** perhaps New expressions require special handling?
+              @Override
               public void caseNewArrayExpr(NewArrayExpr v) {
                 handleUnknown(v);
               }
 
+              @Override
               public void caseNewMultiArrayExpr(NewMultiArrayExpr v) {
                 handleUnknown(v);
               }
 
+              @Override
               public void caseNewExpr(NewExpr v) {
                 handleUnknown(v);
               }
 
+              @Override
               public void caseLengthExpr(LengthExpr v) {
                 handleUnop(v);
               }
 
+              @Override
               public void caseNegExpr(NegExpr v) {
                 handleUnop(v);
               }
 
+              @Override
               public void casePhiExpr(PhiExpr v) {
-                List<Node> children = new ArrayList<Node>();
+                List<Node> children = new ArrayList<>();
                 Iterator<Value> argsIt = v.getValues().iterator();
 
                 while (argsIt.hasNext()) {
@@ -435,6 +488,7 @@ public class ValueGraph {
     return (Local) nodeToLocal.get(node);
   }
 
+  @Override
   public String toString() {
     StringBuffer tmp = new StringBuffer();
 
@@ -477,7 +531,9 @@ public class ValueGraph {
 
     protected void patchStubs() {
       // can't patch self
-      if (isStub()) throw new RuntimeException("Assertion failed.");
+      if (isStub()) {
+        throw new RuntimeException("Assertion failed.");
+      }
 
       // if any immediate children are stubs, patch them
       for (int i = 0; i < children.size(); i++) {
@@ -485,16 +541,18 @@ public class ValueGraph {
 
         if (child.isStub()) {
           Node newChild = localToNode.get(child.node);
-          if (newChild == null || newChild.isStub())
+          if (newChild == null || newChild.isStub()) {
             throw new RuntimeException("Assertion failed.");
+          }
           children.set(i, newChild);
         }
       }
     }
 
     protected void checkIfStub() {
-      if (isStub())
+      if (isStub()) {
         throw new RuntimeException("Assertion failed:  Attempted operation on invalid node (stub)");
+      }
     }
 
     protected Node(Value node) {
@@ -527,7 +585,9 @@ public class ValueGraph {
     protected void updateLabel() {
       if (!children.isEmpty()) {
         nodeLabel = node.getClass().getName();
-        if (node instanceof PhiExpr) nodeLabel = nodeLabel + ((PhiExpr) node).getBlockId();
+        if (node instanceof PhiExpr) {
+          nodeLabel = nodeLabel + ((PhiExpr) node).getBlockId();
+        }
       } else {
         // *** FIXME
 
@@ -553,7 +613,9 @@ public class ValueGraph {
             || (node instanceof NewArrayExpr)
             || (node instanceof NewMultiArrayExpr)
             || (node instanceof Ref)
-            || (node instanceof InvokeExpr)) nodeLabel = nodeLabel + " " + getNodeNumber();
+            || (node instanceof InvokeExpr)) {
+          nodeLabel = nodeLabel + " " + getNodeNumber();
+        }
       }
     }
 
@@ -582,13 +644,16 @@ public class ValueGraph {
       return nodeNumber;
     }
 
+    @Override
     public String toString() {
       checkIfStub();
 
       StringBuffer tmp = new StringBuffer();
 
       Local local = getLocal(this);
-      if (local != null) tmp.append(local.toString());
+      if (local != null) {
+        tmp.append(local.toString());
+      }
 
       tmp.append("\tNode " + getNodeNumber() + ": " + getLabel());
 
@@ -597,7 +662,9 @@ public class ValueGraph {
       if (!children.isEmpty()) {
         tmp.append(" [" + (isOrdered() ? "ordered" : "unordered") + ": ");
         for (int i = 0; i < children.size(); i++) {
-          if (i != 0) tmp.append(", ");
+          if (i != 0) {
+            tmp.append(", ");
+          }
           tmp.append(children.get(i).getNodeNumber());
         }
         tmp.append("]");
@@ -614,40 +681,51 @@ public class ValueGraph {
       this.type = type;
     }
 
+    @Override
     public List<ValueBox> getUseBoxes() {
       return Collections.emptyList();
     }
 
+    @Override
     public Type getType() {
       return type;
     }
 
+    @Override
     public Object clone() {
       return new TypeValueWrapper(type);
     }
 
+    @Override
     public void toString(UnitPrinter up) {
       up.literal("[Wrapped] " + type);
     }
 
+    @Override
     public void apply(Switch sw) {
       throw new RuntimeException("Not Implemented.");
     }
 
+    @Override
     public boolean equals(Object o) {
-      if (!(o instanceof TypeValueWrapper)) return false;
+      if (!(o instanceof TypeValueWrapper)) {
+        return false;
+      }
 
       return getType().equals(((TypeValueWrapper) o).getType());
     }
 
+    @Override
     public int hashCode() {
       return getType().hashCode();
     }
 
+    @Override
     public boolean equivTo(Object o) {
       return equals(o);
     }
 
+    @Override
     public int equivHashCode() {
       return hashCode();
     }

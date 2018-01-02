@@ -18,6 +18,9 @@
  */
 package soot.asm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -32,9 +35,6 @@ import soot.ShortType;
 import soot.SootClass;
 import soot.Type;
 import soot.VoidType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Contains static utility methods.
@@ -152,7 +152,9 @@ class AsmUtil {
     int idx = desc.lastIndexOf('[');
     int nrDims = idx + 1;
     if (nrDims > 0) {
-      if (desc.charAt(0) != '[') throw new AssertionError("Invalid array descriptor: " + desc);
+      if (desc.charAt(0) != '[') {
+        throw new AssertionError("Invalid array descriptor: " + desc);
+      }
       desc = desc.substring(idx + 1);
     }
     Type baseType;
@@ -182,8 +184,9 @@ class AsmUtil {
         baseType = DoubleType.v();
         break;
       case 'L':
-        if (desc.charAt(desc.length() - 1) != ';')
+        if (desc.charAt(desc.length() - 1) != ';') {
           throw new AssertionError("Invalid reference descriptor: " + desc);
+        }
         String name = desc.substring(1, desc.length() - 1);
         name = toQualifiedName(name);
         baseType = RefType.v(name);
@@ -191,8 +194,9 @@ class AsmUtil {
       default:
         throw new AssertionError("Unknown descriptor: " + desc);
     }
-    if (!(baseType instanceof RefLikeType) && desc.length() > 1)
+    if (!(baseType instanceof RefLikeType) && desc.length() > 1) {
       throw new AssertionError("Invalid primitive type descriptor: " + desc);
+    }
     return nrDims > 0 ? ArrayType.v(baseType, nrDims) : baseType;
   }
 
@@ -204,7 +208,7 @@ class AsmUtil {
    * @return list of types.
    */
   public static List<Type> toJimpleDesc(String desc) {
-    ArrayList<Type> types = new ArrayList<Type>(2);
+    ArrayList<Type> types = new ArrayList<>(2);
     int len = desc.length();
     int idx = 0;
     all:
@@ -250,7 +254,8 @@ class AsmUtil {
             break this_type;
           case 'L':
             int begin = idx;
-            while (desc.charAt(++idx) != ';') ;
+            while (desc.charAt(++idx) != ';') {;
+            }
             String cls = desc.substring(begin, idx++);
             baseType = RefType.v(toQualifiedName(cls));
             break this_type;
@@ -258,8 +263,11 @@ class AsmUtil {
             throw new AssertionError("Unknown type: " + c);
         }
       }
-      if (baseType != null && nrDims > 0) types.add(ArrayType.v(baseType, nrDims));
-      else types.add(baseType);
+      if (baseType != null && nrDims > 0) {
+        types.add(ArrayType.v(baseType, nrDims));
+      } else {
+        types.add(baseType);
+      }
     }
     return types;
   }

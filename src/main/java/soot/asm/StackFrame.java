@@ -18,14 +18,14 @@
  */
 package soot.asm;
 
+import java.util.ArrayList;
+
 import soot.Local;
 import soot.Unit;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
-
-import java.util.ArrayList;
 
 /**
  * Frame of stack for an instruction.
@@ -62,7 +62,7 @@ final class StackFrame {
   void in(Operand... oprs) {
     ArrayList<Operand[]> in = this.in;
     if (in == null) {
-      in = this.in = new ArrayList<Operand[]>(1);
+      in = this.in = new ArrayList<>(1);
     } else {
       in.clear();
     }
@@ -97,8 +97,9 @@ final class StackFrame {
    */
   void mergeIn(Operand... oprs) {
     ArrayList<Operand[]> in = this.in;
-    if (in.get(0).length != oprs.length)
+    if (in.get(0).length != oprs.length) {
       throw new IllegalArgumentException("Invalid in operands length!");
+    }
     int nrIn = in.size();
     boolean diff = false;
     for (int i = 0; i != oprs.length; i++) {
@@ -121,17 +122,23 @@ final class StackFrame {
       } else {
         for (int j = 0; j != nrIn; j++) {
           stack = in.get(j)[i].stack;
-          if (stack != null) break;
+          if (stack != null) {
+            break;
+          }
         }
         if (stack == null) {
           stack = newOp.stack;
-          if (stack == null) stack = src.newStackLocal();
+          if (stack == null) {
+            stack = src.newStackLocal();
+          }
         }
         /* add assign statement for prevOp */
         ValueBox box = boxes == null ? null : boxes[i];
         for (int j = 0; j != nrIn; j++) {
           Operand prevOp = in.get(j)[i];
-          if (prevOp.stack == stack) continue;
+          if (prevOp.stack == stack) {
+            continue;
+          }
           prevOp.removeBox(box);
           if (prevOp.stack == null) {
             prevOp.stack = stack;
@@ -166,7 +173,9 @@ final class StackFrame {
           }
           newOp.updateBoxes();
         }
-        if (box != null) box.setValue(stack);
+        if (box != null) {
+          box.setValue(stack);
+        }
         inStackLocals[i] = stack;
       }
 
@@ -209,6 +218,8 @@ final class StackFrame {
       }
       newOp.addBox(as.getRightOpBox());*/
     }
-    if (diff) in.add(oprs);
+    if (diff) {
+      in.add(oprs);
+    }
   }
 }

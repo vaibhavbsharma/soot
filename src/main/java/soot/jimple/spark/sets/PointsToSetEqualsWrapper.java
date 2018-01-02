@@ -18,11 +18,11 @@
  */
 package soot.jimple.spark.sets;
 
+import java.util.Set;
+
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.ClassConstant;
-
-import java.util.Set;
 
 /**
  * A decorator that implements equals/hashCode for {@link PointsToSet} supporting the {@link
@@ -63,6 +63,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
    * @return
    * @see soot.PointsToSet#hasNonEmptyIntersection(soot.PointsToSet)
    */
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     // unwrap other
     other = (PointsToSet) unwrapIfNecessary(other);
@@ -73,6 +74,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
    * @return
    * @see soot.PointsToSet#isEmpty()
    */
+  @Override
   public boolean isEmpty() {
     return pts.isEmpty();
   }
@@ -81,6 +83,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
    * @return
    * @see soot.PointsToSet#possibleClassConstants()
    */
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
     return pts.possibleClassConstants();
   }
@@ -89,6 +92,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
    * @return
    * @see soot.PointsToSet#possibleStringConstants()
    */
+  @Override
   public Set<String> possibleStringConstants() {
     return pts.possibleStringConstants();
   }
@@ -97,6 +101,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
    * @return
    * @see soot.PointsToSet#possibleTypes()
    */
+  @Override
   public Set<Type> possibleTypes() {
     return pts.possibleTypes();
   }

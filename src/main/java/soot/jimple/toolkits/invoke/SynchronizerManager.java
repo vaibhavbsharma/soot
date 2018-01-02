@@ -25,6 +25,13 @@
 
 package soot.jimple.toolkits.invoke;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -51,13 +58,6 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 /** Utility methods for dealing with synchronization. */
 public class SynchronizerManager {
   public SynchronizerManager(Singletons.Global g) {}
@@ -67,7 +67,7 @@ public class SynchronizerManager {
   }
 
   /** Maps classes to class$ fields. Don't trust default. */
-  public HashMap<SootClass, SootField> classToClassField = new HashMap<SootClass, SootField>();
+  public HashMap<SootClass, SootField> classToClassField = new HashMap<>();
 
   /**
    * Adds code to fetch the static Class object to the given JimpleBody before the target Stmt.
@@ -92,7 +92,9 @@ public class SynchronizerManager {
     if (classCacher == null) {
       // Add a unique field named [__]class$name
       String n = "class$" + sc.getName().replace('.', '$');
-      while (sc.declaresFieldByName(n)) n = "_" + n;
+      while (sc.declaresFieldByName(n)) {
+        n = "_" + n;
+      }
 
       classCacher = Scene.v().makeSootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
       sc.addField(classCacher);
@@ -107,9 +109,13 @@ public class SynchronizerManager {
       boolean oops = false;
       while (it.hasNext()) {
         Local jbLocal = (Local) it.next();
-        if (jbLocal.getName().equals(lName)) oops = true;
+        if (jbLocal.getName().equals(lName)) {
+          oops = true;
+        }
       }
-      if (!oops) break;
+      if (!oops) {
+        break;
+      }
       lName = "_" + lName;
     }
 
@@ -149,7 +155,9 @@ public class SynchronizerManager {
     String methodName = "class$";
     for (; true; methodName = "_" + methodName) {
       SootMethod m = c.getMethodByNameUnsafe(methodName);
-      if (m == null) return createClassFetcherFor(c, methodName);
+      if (m == null) {
+        return createClassFetcherFor(c, methodName);
+      }
 
       // Check signature.
       if (!m.getSignature()
@@ -158,7 +166,9 @@ public class SynchronizerManager {
                   + c.getName().replace('.', '$')
                   + ": java.lang.Class "
                   + methodName
-                  + "(java.lang.String)>")) continue;
+                  + "(java.lang.String)>")) {
+        continue;
+      }
 
       Body b = null;
       b = m.retrieveActiveBody();
@@ -174,23 +184,35 @@ public class SynchronizerManager {
        * Ignore the catching code; this is enough.
        */
 
-      if (!unitsIt.hasNext()) continue;
+      if (!unitsIt.hasNext()) {
+        continue;
+      }
 
       Stmt s = (Stmt) unitsIt.next();
-      if (!(s instanceof IdentityStmt)) continue;
+      if (!(s instanceof IdentityStmt)) {
+        continue;
+      }
 
       IdentityStmt is = (IdentityStmt) s;
       Value lo = is.getLeftOp(), ro = is.getRightOp();
 
-      if (!(ro instanceof ParameterRef)) continue;
+      if (!(ro instanceof ParameterRef)) {
+        continue;
+      }
 
       ParameterRef pr = (ParameterRef) ro;
-      if (pr.getIndex() != 0) continue;
+      if (pr.getIndex() != 0) {
+        continue;
+      }
 
-      if (!unitsIt.hasNext()) continue;
+      if (!unitsIt.hasNext()) {
+        continue;
+      }
 
       s = (Stmt) unitsIt.next();
-      if (!(s instanceof AssignStmt)) continue;
+      if (!(s instanceof AssignStmt)) {
+        continue;
+      }
 
       AssignStmt as = (AssignStmt) s;
       Value retVal = as.getLeftOp(), ie = as.getRightOp();
@@ -199,15 +221,23 @@ public class SynchronizerManager {
           .equals(
               ".staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>("
                   + lo
-                  + ")")) continue;
+                  + ")")) {
+        continue;
+      }
 
-      if (!unitsIt.hasNext()) continue;
+      if (!unitsIt.hasNext()) {
+        continue;
+      }
 
       s = (Stmt) unitsIt.next();
-      if (!(s instanceof ReturnStmt)) continue;
+      if (!(s instanceof ReturnStmt)) {
+        continue;
+      }
 
       ReturnStmt rs = (ReturnStmt) s;
-      if (!rs.getOp().equivTo(retVal)) continue;
+      if (!rs.getOp().equivTo(retVal)) {
+        continue;
+      }
 
       /* don't care about rest. we have sufficient code. */
       /* in particular, it certainly returns Class.forName(arg). */
@@ -411,7 +441,7 @@ public class SynchronizerManager {
       Stmt newGoto = Jimple.v().newGotoStmt((Stmt) units.getSuccOf(exitMon));
       units.insertAfter(newGoto, exitMon);
 
-      List<Unit> l = new ArrayList<Unit>();
+      List<Unit> l = new ArrayList<>();
       Local eRef = Jimple.v().newLocal("__exception", RefType.v("java.lang.Throwable"));
       b.getLocals().add(eRef);
       Stmt handlerStmt = Jimple.v().newIdentityStmt(eRef, Jimple.v().newCaughtExceptionRef());

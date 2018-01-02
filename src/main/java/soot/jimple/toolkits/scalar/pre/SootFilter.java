@@ -52,7 +52,9 @@ public class SootFilter {
    * @return the EquivalentValue containing val.
    */
   public static EquivalentValue equiVal(Value val) {
-    if (val == null) return null;
+    if (val == null) {
+      return null;
+    }
     return new EquivalentValue(val);
   }
 
@@ -64,8 +66,11 @@ public class SootFilter {
    *     assignment-stmt.
    */
   public static Value rhs(Unit unit) {
-    if (unit instanceof AssignStmt) return ((AssignStmt) unit).getRightOp();
-    else return null;
+    if (unit instanceof AssignStmt) {
+      return ((AssignStmt) unit).getRightOp();
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -75,8 +80,12 @@ public class SootFilter {
    * @return <code>val</code> if it is a binary expression. otherwise <code>null</code>.
    */
   public static Value binop(Value val) {
-    if (val == null) return null;
-    if (val instanceof BinopExpr) return val;
+    if (val == null) {
+      return null;
+    }
+    if (val instanceof BinopExpr) {
+      return val;
+    }
     return null;
   }
 
@@ -100,8 +109,12 @@ public class SootFilter {
    * @return the <code>val</code> if it was a concrete reference. otherwise <code>null</code>.
    */
   public static Value concreteRef(Value val) {
-    if (val == null) return null;
-    if (val instanceof ConcreteRef) return val;
+    if (val == null) {
+      return null;
+    }
+    if (val instanceof ConcreteRef) {
+      return val;
+    }
     return null;
   }
 
@@ -113,9 +126,14 @@ public class SootFilter {
    * @return <code>val</code> if val doesn't throw any exception, or <code>null</code> otherwise.
    */
   public static Value noExceptionThrowing(Value val) {
-    if (val == null) return null;
-    if (!throwsException(val)) return val;
-    else return null;
+    if (val == null) {
+      return null;
+    }
+    if (!throwsException(val)) {
+      return val;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -146,8 +164,11 @@ public class SootFilter {
    * @return <code>val</code>, if val is not an invoke, <code>null</code> otherwise.
    */
   public static Value noInvoke(Value val) {
-    if (val == null || isInvoke(val)) return null;
-    else return val;
+    if (val == null || isInvoke(val)) {
+      return null;
+    } else {
+      return val;
+    }
   }
 
   /**
@@ -169,8 +190,11 @@ public class SootFilter {
    * @return <code>val</code>, if it is a Local, <code>null</code> otherwise.
    */
   public static Value local(Value val) {
-    if (val != null && isLocal(val)) return val;
-    else return null;
+    if (val != null && isLocal(val)) {
+      return val;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -181,8 +205,11 @@ public class SootFilter {
    * @return <code>val</code>, if it is not a Local, <code>null</code> otherwise.
    */
   public static Value noLocal(Value val) {
-    if (val != null && !isLocal(val)) return val;
-    else return null;
+    if (val != null && !isLocal(val)) {
+      return val;
+    } else {
+      return null;
+    }
   }
 
   /** returns true, if <code>val</code> is a Local. */
@@ -199,10 +226,14 @@ public class SootFilter {
    * @return val, if val is not an EquivalentValue, or the deepest Value otherwise.
    */
   public static Value getEquivalentValueRoot(Value val) {
-    if (val == null) return null;
+    if (val == null) {
+      return null;
+    }
     /* extract the Value, if val is an EquivalentValue. One of the reasons, why
      * testing for "instanceof" is sometimes not a good idea.*/
-    while (val instanceof EquivalentValue) val = ((EquivalentValue) val).getValue();
+    while (val instanceof EquivalentValue) {
+      val = ((EquivalentValue) val).getValue();
+    }
     return val;
   }
 

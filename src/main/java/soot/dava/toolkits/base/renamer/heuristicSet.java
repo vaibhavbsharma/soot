@@ -19,17 +19,17 @@
 
 package soot.dava.toolkits.base.renamer;
 
-import soot.Local;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import soot.Local;
 
 public class heuristicSet {
   HashMap<Local, heuristicTuple> set;
 
   public heuristicSet() {
-    set = new HashMap<Local, heuristicTuple>();
+    set = new HashMap<>();
   }
 
   private heuristicTuple getTuple(Local var) {

@@ -19,6 +19,14 @@
 
 package soot.jimple.spark.internal;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -38,14 +46,6 @@ import soot.util.BitVector;
 import soot.util.LargeNumberedMap;
 import soot.util.queue.QueueReader;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * A map of bit-vectors representing subtype relationships.
  *
@@ -58,9 +58,8 @@ import java.util.Map;
  *     concrete implementers. In fact, Reference types are visited in reversed-topological-order.
  */
 public final class TypeManager {
-  private Map<SootClass, List<AllocNode>> class2allocs =
-      new HashMap<SootClass, List<AllocNode>>(1024);
-  private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
+  private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<>(1024);
+  private List<AllocNode> anySubtypeAllocs = new LinkedList<>();
 
   public TypeManager(PAG pag) {
     this.pag = pag;
@@ -71,21 +70,33 @@ public final class TypeManager {
       ArrayType at = (ArrayType) type;
       type = at.getArrayElementType();
     }
-    if (!(type instanceof RefType)) return false;
+    if (!(type instanceof RefType)) {
+      return false;
+    }
     RefType rt = (RefType) type;
-    if (!rt.hasSootClass()) return true;
+    if (!rt.hasSootClass()) {
+      return true;
+    }
     SootClass cl = rt.getSootClass();
     return cl.resolvingLevel() < SootClass.HIERARCHY;
   }
 
   public final BitVector get(Type type) {
-    if (type == null) return null;
+    if (type == null) {
+      return null;
+    }
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
       for (final Type t : Scene.v().getTypeNumberer()) {
-        if (!(t instanceof RefLikeType)) continue;
-        if (t instanceof AnySubType) continue;
-        if (isUnresolved(t)) continue;
+        if (!(t instanceof RefLikeType)) {
+          continue;
+        }
+        if (t instanceof AnySubType) {
+          continue;
+        }
+        if (isUnresolved(t)) {
+          continue;
+        }
         if (castNeverFails(n.getType(), t)) {
           BitVector mask = typeMask.get(t);
           if (mask == null) {
@@ -106,12 +117,15 @@ public final class TypeManager {
       // If we have a phantom class and have no type mask, we assume that
       // it is not cast-compatible to anything
       SootClass curClass = ((RefType) type).getSootClass();
-      if (type instanceof RefType && curClass.isPhantom()) return new BitVector();
-      else {
+      if (type instanceof RefType && curClass.isPhantom()) {
+        return new BitVector();
+      } else {
         // Scan through the hierarchy. We might have a phantom class higher up
         while (curClass.hasSuperclass()) {
           curClass = curClass.getSuperclass();
-          if (type instanceof RefType && curClass.isPhantom()) return new BitVector();
+          if (type instanceof RefType && curClass.isPhantom()) {
+            return new BitVector();
+          }
         }
 
         throw new RuntimeException("Type mask not found for type " + type);
@@ -126,11 +140,15 @@ public final class TypeManager {
 
   public final void makeTypeMask() {
     RefType.v("java.lang.Class");
-    typeMask = new LargeNumberedMap<Type, BitVector>(Scene.v().getTypeNumberer());
-    if (fh == null) return;
+    typeMask = new LargeNumberedMap<>(Scene.v().getTypeNumberer());
+    if (fh == null) {
+      return;
+    }
 
     int numTypes = Scene.v().getTypeNumberer().size();
-    if (pag.getOpts().verbose()) G.v().out.println("Total types: " + numTypes);
+    if (pag.getOpts().verbose()) {
+      G.v().out.println("Total types: " + numTypes);
+    }
     // **
     initClass2allocs();
     makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
@@ -145,9 +163,15 @@ public final class TypeManager {
     // **
     ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
     for (Type t : Scene.v().getTypeNumberer()) {
-      if (!(t instanceof RefLikeType)) continue;
-      if (t instanceof AnySubType) continue;
-      if (isUnresolved(t)) continue;
+      if (!(t instanceof RefLikeType)) {
+        continue;
+      }
+      if (t instanceof AnySubType) {
+        continue;
+      }
+      if (isUnresolved(t)) {
+        continue;
+      }
       // **
       if (t instanceof RefType
           && !t.equals(RefType.v("java.lang.Object"))
@@ -179,15 +203,33 @@ public final class TypeManager {
   private LargeNumberedMap<Type, BitVector> typeMask = null;
 
   public final boolean castNeverFails(Type src, Type dst) {
-    if (fh == null) return true;
-    if (dst == null) return true;
-    if (dst == src) return true;
-    if (src == null) return false;
-    if (dst.equals(src)) return true;
-    if (src instanceof NullType) return true;
-    if (src instanceof AnySubType) return true;
-    if (dst instanceof NullType) return false;
-    if (dst instanceof AnySubType) throw new RuntimeException("oops src=" + src + " dst=" + dst);
+    if (fh == null) {
+      return true;
+    }
+    if (dst == null) {
+      return true;
+    }
+    if (dst == src) {
+      return true;
+    }
+    if (src == null) {
+      return false;
+    }
+    if (dst.equals(src)) {
+      return true;
+    }
+    if (src instanceof NullType) {
+      return true;
+    }
+    if (src instanceof AnySubType) {
+      return true;
+    }
+    if (dst instanceof NullType) {
+      return false;
+    }
+    if (dst instanceof AnySubType) {
+      throw new RuntimeException("oops src=" + src + " dst=" + dst);
+    }
     return fh.canStoreType(src, dst);
   }
 
@@ -214,16 +256,18 @@ public final class TypeManager {
         .getType()
         .apply(
             new TypeSwitch() {
+              @Override
               public final void caseRefType(RefType t) {
                 SootClass cl = t.getSootClass();
                 List<AllocNode> list;
                 if ((list = class2allocs.get(cl)) == null) {
-                  list = new LinkedList<AllocNode>();
+                  list = new LinkedList<>();
                   class2allocs.put(cl, list);
                 }
                 list.add(alloc);
               }
 
+              @Override
               public final void caseAnySubType(AnySubType t) {
                 anySubtypeAllocs.add(alloc);
               }
@@ -269,7 +313,9 @@ public final class TypeManager {
   }
 
   private final BitVector makeMaskOfInterface(SootClass interf) {
-    if (!(interf.isInterface())) throw new RuntimeException();
+    if (!(interf.isInterface())) {
+      throw new RuntimeException();
+    }
 
     BitVector ret = new BitVector(pag.getAllocNodeNumberer().size());
     typeMask.put(interf.getType(), ret);
@@ -277,13 +323,17 @@ public final class TypeManager {
 
     for (SootClass impl : implementers) {
       BitVector other = typeMask.get(impl.getType());
-      if (other == null) other = makeClassTypeMask(impl);
+      if (other == null) {
+        other = makeClassTypeMask(impl);
+      }
       ret.or(other);
     }
     // I think, the following can be eliminated. It is added to make
     // type-masks exactly the same as the original type-masks
     if (implementers.size() == 0) {
-      for (AllocNode an : anySubtypeAllocs) ret.set(an.getNumber());
+      for (AllocNode an : anySubtypeAllocs) {
+        ret.set(an.getNumber());
+      }
     }
     return ret;
   }

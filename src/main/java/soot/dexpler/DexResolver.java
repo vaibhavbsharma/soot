@@ -24,18 +24,18 @@
 
 package soot.dexpler;
 
+import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
+
 import soot.G;
 import soot.Singletons;
 import soot.SootClass;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
-import java.io.File;
-import java.util.Map;
-import java.util.TreeMap;
-
 public class DexResolver {
 
-  protected Map<File, DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
+  protected Map<File, DexlibWrapper> cache = new TreeMap<>();
 
   public DexResolver(Singletons.Global g) {}
 

@@ -47,6 +47,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
   public BooleanConditionSimplification() {}
@@ -55,6 +56,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     is a comparison of a local with a boolean
     If so the ASTBinaryCondition is replaced by a ASTUnaryCondition
   */
+  @Override
   public void outASTIfNode(ASTIfNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -66,6 +68,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -77,6 +80,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -88,6 +92,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -114,7 +119,9 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
         if (op2Type instanceof BooleanType) {
           return decideCondition(op1, op2.toString(), condition);
         }
-      } else return null; // meaning no Value used as boolean found
+      } else {
+        return null; // meaning no Value used as boolean found
+      }
     }
     return null; // meaning no local used as boolean found
   }
@@ -131,16 +138,22 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     boolean notEqual = false;
 
     // find out whether we are dealing with a false or true
-    if (truthString.compareTo("false") == 0) truthValue = 0;
-    else if (truthString.compareTo("true") == 0) truthValue = 1;
-    else throw new RuntimeException();
+    if (truthString.compareTo("false") == 0) {
+      truthValue = 0;
+    } else if (truthString.compareTo("true") == 0) {
+      truthValue = 1;
+    } else {
+      throw new RuntimeException();
+    }
 
     // find out whether the comparison operator is != or ==
     if (condition instanceof NeExpr) {
       notEqual = true;
     } else if (condition instanceof EqExpr) {
       notEqual = false;
-    } else throw new RuntimeException();
+    } else {
+      throw new RuntimeException();
+    }
 
     // decide and return
     if (notEqual && truthValue == 0) { // A != false -->A
@@ -148,13 +161,19 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     } else if (notEqual && truthValue == 1) { // A != true --> !A
       if (A instanceof DNotExpr) { // A is actually !B
         return ((DNotExpr) A).getOp();
-      } else return (new DNotExpr(A));
+      } else {
+        return (new DNotExpr(A));
+      }
     } else if (!notEqual && truthValue == 0) { // A == false --> !A
       if (A instanceof DNotExpr) { // A is actually !B
         return ((DNotExpr) A).getOp();
-      } else return new DNotExpr(A);
+      } else {
+        return new DNotExpr(A);
+      }
     } else if (!notEqual && truthValue == 1) { // A == true --> A
       return A;
-    } else throw new RuntimeException();
+    } else {
+      throw new RuntimeException();
+    }
   }
 }

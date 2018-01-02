@@ -25,6 +25,16 @@
 
 package soot.jimple.toolkits.typing;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -51,16 +61,6 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
 /**
  * This class resolves the type of local variables.
  *
@@ -72,12 +72,12 @@ public class TypeResolverBV {
   private final ClassHierarchy hierarchy;
 
   /** All type variable instances * */
-  private final List<TypeVariableBV> typeVariableList = new ArrayList<TypeVariableBV>();
+  private final List<TypeVariableBV> typeVariableList = new ArrayList<>();
 
   private final BitVector invalidIds = new BitVector();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariableBV * */
-  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<Object, TypeVariableBV>();
+  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<>();
 
   private final JimpleBody stmtBody;
 
@@ -236,8 +236,8 @@ public class TypeResolverBV {
   private void debug_body() {
     if (DEBUG) {
       G.v().out.println("-- Body Start --");
-      for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
-        final Stmt stmt = (Stmt) stmtIt.next();
+      for (Unit unit : stmtBody.getUnits()) {
+        final Stmt stmt = (Stmt) unit;
         G.v().out.println(stmt);
       }
       G.v().out.println("-- Body End --");
@@ -312,9 +312,9 @@ public class TypeResolverBV {
   private void collect_constraints_1_2() {
     ConstraintCollectorBV collector = new ConstraintCollectorBV(this, true);
 
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for (Unit unit : stmtBody.getUnits()) {
 
-      final Stmt stmt = (Stmt) stmtIt.next();
+      final Stmt stmt = (Stmt) unit;
       if (DEBUG) {
         G.v().out.print("stmt: ");
       }
@@ -328,9 +328,9 @@ public class TypeResolverBV {
   private void collect_constraints_3() {
     ConstraintCollectorBV collector = new ConstraintCollectorBV(this, false);
 
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for (Unit unit : stmtBody.getUnits()) {
 
-      final Stmt stmt = (Stmt) stmtIt.next();
+      final Stmt stmt = (Stmt) unit;
       if (DEBUG) {
         G.v().out.print("stmt: ");
       }
@@ -375,7 +375,7 @@ public class TypeResolverBV {
     @SuppressWarnings("unchecked")
     LinkedList<TypeVariableBV>[] lists = new LinkedList[max + 1];
     for (int i = 0; i <= max; i++) {
-      lists[i] = new LinkedList<TypeVariableBV>();
+      lists[i] = new LinkedList<>();
     }
 
     for (TypeVariableBV var : typeVariableList) {
@@ -608,7 +608,7 @@ public class TypeResolverBV {
       for (BitSetIterator varIt = multiple_parents.iterator(); varIt.hasNext(); ) {
 
         final TypeVariableBV var = typeVariableForId(varIt.next());
-        LinkedList<TypeVariableBV> hp = new LinkedList<TypeVariableBV>(); // hard parents
+        LinkedList<TypeVariableBV> hp = new LinkedList<>(); // hard parents
 
         for (BitSetIterator parentIt = var.parents().iterator(); parentIt.hasNext(); ) {
 
@@ -643,8 +643,7 @@ public class TypeResolverBV {
   }
 
   private void assign_types_1_2() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-      final Local local = localIt.next();
+    for (Local local : stmtBody.getLocals()) {
       TypeVariableBV var = typeVariable(local);
 
       if (var == null) {
@@ -698,8 +697,7 @@ public class TypeResolverBV {
   }
 
   private void assign_types_3() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-      final Local local = localIt.next();
+    for (Local local : stmtBody.getLocals()) {
       TypeVariableBV var = typeVariable(local);
 
       if (var == null || var.approx() == null || var.approx().type() == null) {
@@ -718,9 +716,9 @@ public class TypeResolverBV {
       s = new StringBuffer("Checking:\n");
     }
 
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for (Unit unit : stmtBody.getUnits()) {
 
-      final Stmt stmt = (Stmt) stmtIt.next();
+      final Stmt stmt = (Stmt) unit;
       if (DEBUG) {
         s.append(" " + stmt + "\n");
       }
@@ -762,7 +760,7 @@ public class TypeResolverBV {
   }
 
   private void compute_approximate_types() throws TypeException {
-    TreeSet<TypeVariableBV> workList = new TreeSet<TypeVariableBV>();
+    TreeSet<TypeVariableBV> workList = new TreeSet<>();
 
     for (TypeVariableBV var : typeVariableList) {
 

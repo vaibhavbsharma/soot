@@ -25,13 +25,13 @@
 
 package soot.toolkits.graph;
 
+import java.util.HashMap;
+import java.util.List;
+
 import soot.Body;
 import soot.Timers;
 import soot.Unit;
 import soot.options.Options;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Represents a CFG where the nodes are Unit instances, and where no edges are included to account
@@ -50,15 +50,19 @@ public class BriefUnitGraph extends UnitGraph {
     super(body);
     int size = unitChain.size();
 
-    if (Options.v().time()) Timers.v().graphTimer.start();
+    if (Options.v().time()) {
+      Timers.v().graphTimer.start();
+    }
 
-    unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-    unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+    unitToSuccs = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToPreds = new HashMap<>(size * 2 + 1, 0.7f);
     buildUnexceptionalEdges(unitToSuccs, unitToPreds);
 
     buildHeadsAndTails();
 
-    if (Options.v().time()) Timers.v().graphTimer.end();
+    if (Options.v().time()) {
+      Timers.v().graphTimer.end();
+    }
 
     soot.util.PhaseDumper.v().dumpGraph(this, body);
   }

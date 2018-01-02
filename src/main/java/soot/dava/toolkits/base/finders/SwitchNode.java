@@ -19,14 +19,14 @@
 
 package soot.dava.toolkits.base.finders;
 
-import soot.dava.internal.asg.AugmentedStmt;
-import soot.util.IterableSet;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
+
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.util.IterableSet;
 
 public class SwitchNode implements Comparable {
   private final LinkedList preds, succs;
@@ -57,7 +57,9 @@ public class SwitchNode implements Comparable {
           SwitchNode ssn = (SwitchNode) sit.next();
 
           int curScore = ssn.get_Score();
-          if (score < curScore) score = curScore;
+          if (score < curScore) {
+            score = curScore;
+          }
         }
 
         score++;
@@ -80,7 +82,7 @@ public class SwitchNode implements Comparable {
   }
 
   public TreeSet<Object> get_IndexSet() {
-    return new TreeSet<Object>(indexSet);
+    return new TreeSet<>(indexSet);
   }
 
   public IterableSet get_Body() {
@@ -100,9 +102,13 @@ public class SwitchNode implements Comparable {
       SwitchNode pred = binding.get(rit.next());
 
       if (pred != null) {
-        if (preds.contains(pred) == false) preds.add(pred);
+        if (preds.contains(pred) == false) {
+          preds.add(pred);
+        }
 
-        if (pred.succs.contains(this) == false) pred.succs.add(this);
+        if (pred.succs.contains(this) == false) {
+          pred.succs.add(this);
+        }
       }
     }
   }
@@ -111,27 +117,39 @@ public class SwitchNode implements Comparable {
    *  Can compare to an Integer, a String, a set of Indices, and another SwitchNode.
    */
 
+  @Override
   public int compareTo(Object o) {
-    if (o == this) return 0;
+    if (o == this) {
+      return 0;
+    }
 
-    if (indexSet.last() instanceof String) return 1;
+    if (indexSet.last() instanceof String) {
+      return 1;
+    }
 
-    if (o instanceof String) return -1;
+    if (o instanceof String) {
+      return -1;
+    }
 
-    if (o instanceof Integer)
+    if (o instanceof Integer) {
       return ((Integer) indexSet.last()).intValue() - ((Integer) o).intValue();
+    }
 
     if (o instanceof TreeSet) {
       TreeSet other = (TreeSet) o;
 
-      if (other.last() instanceof String) return -1;
+      if (other.last() instanceof String) {
+        return -1;
+      }
 
       return ((Integer) indexSet.last()).intValue() - ((Integer) other.last()).intValue();
     }
 
     SwitchNode other = (SwitchNode) o;
 
-    if (other.indexSet.last() instanceof String) return -1;
+    if (other.indexSet.last() instanceof String) {
+      return -1;
+    }
 
     return ((Integer) indexSet.last()).intValue() - ((Integer) other.indexSet.last()).intValue();
   }

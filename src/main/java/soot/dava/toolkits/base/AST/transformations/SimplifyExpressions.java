@@ -47,6 +47,7 @@ public class SimplifyExpressions extends DepthFirstAdapter {
   }
   */
 
+  @Override
   public void outExprOrRefValueBox(ValueBox vb) {
     // System.out.println("here"+vb);
     Value v = vb.getValue();
@@ -55,16 +56,24 @@ public class SimplifyExpressions extends DepthFirstAdapter {
     }
 
     BinopExpr binop = (BinopExpr) v;
-    if (DEBUG) System.out.println("calling getResult");
+    if (DEBUG) {
+      System.out.println("calling getResult");
+    }
     NumericConstant constant = getResult(binop);
 
-    if (constant == null) return;
-    if (DEBUG) System.out.println("Changin" + vb + " to...." + constant);
+    if (constant == null) {
+      return;
+    }
+    if (DEBUG) {
+      System.out.println("Changin" + vb + " to...." + constant);
+    }
     vb.setValue(constant);
   }
 
   public NumericConstant getResult(BinopExpr binop) {
-    if (DEBUG) System.out.println("Binop expr" + binop);
+    if (DEBUG) {
+      System.out.println("Binop expr" + binop);
+    }
     Value leftOp = binop.getOp1();
     Value rightOp = binop.getOp2();
 
@@ -89,26 +98,50 @@ public class SimplifyExpressions extends DepthFirstAdapter {
     }
     NumericConstant constant = null;
     if (leftOp instanceof LongConstant && rightOp instanceof LongConstant) {
-      if (DEBUG) System.out.println("long constants!!");
-      if (op == 1) constant = ((LongConstant) leftOp).add((LongConstant) rightOp);
-      else if (op == 2) constant = ((LongConstant) leftOp).subtract((LongConstant) rightOp);
-      else if (op == 3) constant = ((LongConstant) leftOp).multiply((LongConstant) rightOp);
+      if (DEBUG) {
+        System.out.println("long constants!!");
+      }
+      if (op == 1) {
+        constant = ((LongConstant) leftOp).add((LongConstant) rightOp);
+      } else if (op == 2) {
+        constant = ((LongConstant) leftOp).subtract((LongConstant) rightOp);
+      } else if (op == 3) {
+        constant = ((LongConstant) leftOp).multiply((LongConstant) rightOp);
+      }
     } else if (leftOp instanceof DoubleConstant && rightOp instanceof DoubleConstant) {
-      if (DEBUG) System.out.println("double constants!!");
-      if (op == 1) constant = ((DoubleConstant) leftOp).add((DoubleConstant) rightOp);
-      else if (op == 2) constant = ((DoubleConstant) leftOp).subtract((DoubleConstant) rightOp);
-      else if (op == 3) constant = ((DoubleConstant) leftOp).multiply((DoubleConstant) rightOp);
+      if (DEBUG) {
+        System.out.println("double constants!!");
+      }
+      if (op == 1) {
+        constant = ((DoubleConstant) leftOp).add((DoubleConstant) rightOp);
+      } else if (op == 2) {
+        constant = ((DoubleConstant) leftOp).subtract((DoubleConstant) rightOp);
+      } else if (op == 3) {
+        constant = ((DoubleConstant) leftOp).multiply((DoubleConstant) rightOp);
+      }
 
     } else if (leftOp instanceof FloatConstant && rightOp instanceof FloatConstant) {
-      if (DEBUG) System.out.println("Float constants!!");
-      if (op == 1) constant = ((FloatConstant) leftOp).add((FloatConstant) rightOp);
-      else if (op == 2) constant = ((FloatConstant) leftOp).subtract((FloatConstant) rightOp);
-      else if (op == 3) constant = ((FloatConstant) leftOp).multiply((FloatConstant) rightOp);
+      if (DEBUG) {
+        System.out.println("Float constants!!");
+      }
+      if (op == 1) {
+        constant = ((FloatConstant) leftOp).add((FloatConstant) rightOp);
+      } else if (op == 2) {
+        constant = ((FloatConstant) leftOp).subtract((FloatConstant) rightOp);
+      } else if (op == 3) {
+        constant = ((FloatConstant) leftOp).multiply((FloatConstant) rightOp);
+      }
     } else if (leftOp instanceof IntConstant && rightOp instanceof IntConstant) {
-      if (DEBUG) System.out.println("Integer constants!!");
-      if (op == 1) constant = ((IntConstant) leftOp).add((IntConstant) rightOp);
-      else if (op == 2) constant = ((IntConstant) leftOp).subtract((IntConstant) rightOp);
-      else if (op == 3) constant = ((IntConstant) leftOp).multiply((IntConstant) rightOp);
+      if (DEBUG) {
+        System.out.println("Integer constants!!");
+      }
+      if (op == 1) {
+        constant = ((IntConstant) leftOp).add((IntConstant) rightOp);
+      } else if (op == 2) {
+        constant = ((IntConstant) leftOp).subtract((IntConstant) rightOp);
+      } else if (op == 3) {
+        constant = ((IntConstant) leftOp).multiply((IntConstant) rightOp);
+      }
     }
 
     return constant;

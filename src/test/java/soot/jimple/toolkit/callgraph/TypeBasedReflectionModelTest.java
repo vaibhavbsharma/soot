@@ -1,9 +1,15 @@
 package soot.jimple.toolkit.callgraph;
 
+import static soot.SootClass.BODIES;
+import static soot.SootClass.HIERARCHY;
+
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
 import soot.ArrayType;
 import soot.G;
 import soot.Local;
@@ -24,11 +30,6 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.Options;
-
-import java.util.Collections;
-
-import static soot.SootClass.BODIES;
-import static soot.SootClass.HIERARCHY;
 
 /**
  * This class contains tests for {@link
@@ -160,8 +161,9 @@ public class TypeBasedReflectionModelTest {
     // prepare base object for reflective call
     String baseString = "Reflective call base ";
     Value base;
-    if (useConstantBase) base = StringConstant.v(baseString);
-    else {
+    if (useConstantBase) {
+      base = StringConstant.v(baseString);
+    } else {
       Local l = Jimple.v().newLocal("base", Scene.v().getType("java.lang.String"));
       base = l;
       b.getLocals().add(l);

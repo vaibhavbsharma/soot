@@ -30,10 +30,10 @@ public class BiMap {
 
   public void put(Object key, Object val) {
     if (keyVal == null) {
-      keyVal = new HashMap<Object, Object>();
+      keyVal = new HashMap<>();
     }
     if (valKey == null) {
-      valKey = new HashMap<Object, Object>();
+      valKey = new HashMap<>();
     }
 
     keyVal.put(key, val);
@@ -41,22 +41,30 @@ public class BiMap {
   }
 
   public Object getKey(Object val) {
-    if (valKey == null) return null;
+    if (valKey == null) {
+      return null;
+    }
     return valKey.get(val);
   }
 
   public Object getVal(Object key) {
-    if (keyVal == null) return null;
+    if (keyVal == null) {
+      return null;
+    }
     return keyVal.get(key);
   }
 
   public boolean containsKey(Object key) {
-    if (keyVal == null) return false;
+    if (keyVal == null) {
+      return false;
+    }
     return keyVal.containsKey(key);
   }
 
   public boolean containsVal(Object val) {
-    if (valKey == null) return false;
+    if (valKey == null) {
+      return false;
+    }
     return valKey.containsKey(val);
   }
 }

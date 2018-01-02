@@ -1,11 +1,11 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
-import soot.jimple.toolkits.thread.mhp.SCC;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import soot.jimple.toolkits.thread.mhp.SCC;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -35,7 +35,7 @@ public class CheckRecursiveCalls {
   }
 
   private List<List> updateScc(List<List<Object>> sccList, PegCallGraph pcg) {
-    List<List> newList = new ArrayList<List>();
+    List<List> newList = new ArrayList<>();
     Iterator<List<Object>> listIt = sccList.iterator();
     while (listIt.hasNext()) {
       List s = listIt.next();
@@ -46,7 +46,9 @@ public class CheckRecursiveCalls {
           // sccList.remove(s);
           newList.add(s);
         }
-      } else newList.add(s);
+      } else {
+        newList.add(s);
+      }
     }
     return newList;
   }

@@ -26,9 +26,9 @@
 
 package soot;
 
-import soot.util.Switch;
-
 import java.util.List;
+
+import soot.util.Switch;
 
 /**
  * Encapsulates the Value class, but uses EquivTo for equality comparisons. Also uses equivHashCode
@@ -39,12 +39,17 @@ public class EquivalentValue implements Value {
   Value e;
 
   public EquivalentValue(Value e) {
-    if (e instanceof EquivalentValue) e = ((EquivalentValue) e).e;
+    if (e instanceof EquivalentValue) {
+      e = ((EquivalentValue) e).e;
+    }
     this.e = e;
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (o instanceof EquivalentValue) o = ((EquivalentValue) o).e;
+    if (o instanceof EquivalentValue) {
+      o = ((EquivalentValue) o).e;
+    }
     return e.equivTo(o);
   }
 
@@ -67,10 +72,12 @@ public class EquivalentValue implements Value {
     return getValue();
   }
 
+  @Override
   public int hashCode() {
     return e.equivHashCode();
   }
 
+  @Override
   public String toString() {
     return e.toString();
   }
@@ -82,31 +89,38 @@ public class EquivalentValue implements Value {
   /** ****************************** */
   /* implement the Value-interface */
   /** ****************************** */
+  @Override
   public List<ValueBox> getUseBoxes() {
     return e.getUseBoxes();
   }
 
+  @Override
   public Type getType() {
     return e.getType();
   }
 
+  @Override
   public Object clone() {
     EquivalentValue equiVal = new EquivalentValue((Value) e.clone());
     return equiVal;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     return e.equivTo(o);
   }
 
+  @Override
   public int equivHashCode() {
     return e.equivHashCode();
   }
 
+  @Override
   public void apply(Switch sw) {
     e.apply(sw);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     e.toString(up);
   }

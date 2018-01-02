@@ -19,6 +19,10 @@
 
 package soot.jimple.spark.pag;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.Context;
@@ -39,10 +43,6 @@ import soot.options.CGOptions;
 import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Part of a pointer assignment graph for a single method.
@@ -66,13 +66,21 @@ public final class MethodPAG {
 
   /** Adds this method to the main PAG, with all VarNodes parameterized by varNodeParameter. */
   public void addToPAG(Context varNodeParameter) {
-    if (!hasBeenBuilt) throw new RuntimeException();
+    if (!hasBeenBuilt) {
+      throw new RuntimeException();
+    }
     if (varNodeParameter == null) {
-      if (hasBeenAdded) return;
+      if (hasBeenAdded) {
+        return;
+      }
       hasBeenAdded = true;
     } else {
-      if (addedContexts == null) addedContexts = new HashSet<Context>();
-      if (!addedContexts.add(varNodeParameter)) return;
+      if (addedContexts == null) {
+        addedContexts = new HashSet<>();
+      }
+      if (!addedContexts.add(varNodeParameter)) {
+        return;
+      }
     }
     QueueReader<Node> reader = internalReader.clone();
     while (reader.hasNext()) {
@@ -99,7 +107,9 @@ public final class MethodPAG {
   }
 
   public void addInternalEdge(Node src, Node dst) {
-    if (src == null) return;
+    if (src == null) {
+      return;
+    }
     internalEdges.add(src);
     internalEdges.add(dst);
     if (hasBeenAdded) {
@@ -108,7 +118,9 @@ public final class MethodPAG {
   }
 
   public void addInEdge(Node src, Node dst) {
-    if (src == null) return;
+    if (src == null) {
+      return;
+    }
     inEdges.add(src);
     inEdges.add(dst);
     if (hasBeenAdded) {
@@ -117,7 +129,9 @@ public final class MethodPAG {
   }
 
   public void addOutEdge(Node src, Node dst) {
-    if (src == null) return;
+    if (src == null) {
+      return;
+    }
     outEdges.add(src);
     outEdges.add(dst);
     if (hasBeenAdded) {
@@ -125,9 +139,9 @@ public final class MethodPAG {
     }
   }
 
-  private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<Node>();
-  private final ChunkedQueue<Node> inEdges = new ChunkedQueue<Node>();
-  private final ChunkedQueue<Node> outEdges = new ChunkedQueue<Node>();
+  private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<>();
+  private final ChunkedQueue<Node> inEdges = new ChunkedQueue<>();
+  private final ChunkedQueue<Node> outEdges = new ChunkedQueue<>();
   private final QueueReader<Node> internalReader = internalEdges.reader();
   private final QueueReader<Node> inReader = inEdges.reader();
   private final QueueReader<Node> outReader = outEdges.reader();
@@ -154,7 +168,9 @@ public final class MethodPAG {
   }
 
   public void build() {
-    if (hasBeenBuilt) return;
+    if (hasBeenBuilt) {
+      return;
+    }
     hasBeenBuilt = true;
     if (method.isNative()) {
       if (pag().getOpts().simulate_natives()) {
@@ -170,9 +186,10 @@ public final class MethodPAG {
 
   protected VarNode parameterize(LocalVarNode vn, Context varNodeParameter) {
     SootMethod m = vn.getMethod();
-    if (m != method && m != null)
+    if (m != method && m != null) {
       throw new RuntimeException(
           "VarNode " + vn + " with method " + m + " parameterized in method " + method);
+    }
     // System.out.println( "parameterizing "+vn+" with "+varNodeParameter );
     return pag().makeContextVarNode(vn, varNodeParameter);
   }
@@ -183,9 +200,15 @@ public final class MethodPAG {
   }
 
   public Node parameterize(Node n, Context varNodeParameter) {
-    if (varNodeParameter == null) return n;
-    if (n instanceof LocalVarNode) return parameterize((LocalVarNode) n, varNodeParameter);
-    if (n instanceof FieldRefNode) return parameterize((FieldRefNode) n, varNodeParameter);
+    if (varNodeParameter == null) {
+      return n;
+    }
+    if (n instanceof LocalVarNode) {
+      return parameterize((LocalVarNode) n, varNodeParameter);
+    }
+    if (n instanceof FieldRefNode) {
+      return parameterize((FieldRefNode) n, varNodeParameter);
+    }
     return n;
   }
 
@@ -194,7 +217,9 @@ public final class MethodPAG {
 
   protected void buildNormal() {
     Body b = method.retrieveActiveBody();
-    for (Unit u : b.getUnits()) nodeFactory.handleStmt((Stmt) u);
+    for (Unit u : b.getUnits()) {
+      nodeFactory.handleStmt((Stmt) u);
+    }
   }
 
   protected void buildNative() {
@@ -216,7 +241,9 @@ public final class MethodPAG {
     }
     ValNode[] args = new ValNode[method.getParameterCount()];
     for (int i = 0; i < method.getParameterCount(); i++) {
-      if (!(method.getParameterType(i) instanceof RefLikeType)) continue;
+      if (!(method.getParameterType(i) instanceof RefLikeType)) {
+        continue;
+      }
       args[i] = (ValNode) nodeFactory.caseParm(i);
     }
     pag.nativeMethodDriver.process(method, thisNode, retNode, args);
@@ -259,7 +286,9 @@ public final class MethodPAG {
         if (cl.equals(Scene.v().getSootClass("java.io.FileSystem"))) {
           addInEdge(pag.nodeFactory().caseCanonicalPath(), nodeFactory.caseRet());
         }
-        if (!cl.hasSuperclass()) break;
+        if (!cl.hasSuperclass()) {
+          break;
+        }
         cl = cl.getSuperclass();
       }
     }
@@ -281,7 +310,9 @@ public final class MethodPAG {
           }
           c = c.getSuperclass();
         }
-        if (method.getName().equals("<init>")) continue;
+        if (method.getName().equals("<init>")) {
+          continue;
+        }
         addInEdge(pag().nodeFactory().caseDefaultClassLoader(), nodeFactory.caseThis());
         addInEdge(pag().nodeFactory().caseMainClassNameString(), nodeFactory.caseParm(0));
       } while (false);

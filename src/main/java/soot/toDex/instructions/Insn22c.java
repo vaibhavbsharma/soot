@@ -1,13 +1,14 @@
 package soot.toDex.instructions;
 
+import java.util.BitSet;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction22c;
 import org.jf.dexlib2.iface.reference.Reference;
+
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-
-import java.util.BitSet;
 
 /**
  * The "22c" instruction format: It needs two 16-bit code units, has two registers and is used for
@@ -26,10 +27,12 @@ public class Insn22c extends AbstractInsn implements TwoRegInsn {
     this.referencedItem = referencedItem;
   }
 
+  @Override
   public Register getRegA() {
     return regs.get(REG_A_IDX);
   }
 
+  @Override
   public Register getRegB() {
     return regs.get(REG_B_IDX);
   }

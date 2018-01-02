@@ -25,6 +25,11 @@
 
 package soot.baf;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.DoubleType;
 import soot.G;
@@ -43,11 +48,6 @@ import soot.jimple.JimpleBody;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.Stmt;
 import soot.options.Options;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BafBody extends Body {
   private JimpleToBafContext jimpleToBafContext;
@@ -70,11 +70,13 @@ public class BafBody extends Body {
   public BafBody(Body body, Map<String, String> options) {
     super(body.getMethod());
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + getMethod().getName() + "] Constructing BafBody...");
+    }
 
-    if (!(body instanceof JimpleBody))
+    if (!(body instanceof JimpleBody)) {
       throw new RuntimeException("Can only construct BafBody's directly" + " from JimpleBody's.");
+    }
 
     JimpleBody jimpleBody = (JimpleBody) body;
     jimpleBody.validate();
@@ -87,9 +89,11 @@ public class BafBody extends Body {
         Type t = l.getType();
         Local newLocal = Baf.v().newLocal(l.getName(), UnknownType.v());
 
-        if (t.equals(DoubleType.v()) || t.equals(LongType.v()))
+        if (t.equals(DoubleType.v()) || t.equals(LongType.v())) {
           newLocal.setType(DoubleWordType.v());
-        else newLocal.setType(WordType.v());
+        } else {
+          newLocal.setType(WordType.v());
+        }
 
         context.setBafLocalOfJimpleLocal(l, newLocal);
 
@@ -102,13 +106,13 @@ public class BafBody extends Body {
       }
     }
 
-    Map<Stmt, Unit> stmtToFirstInstruction = new HashMap<Stmt, Unit>();
+    Map<Stmt, Unit> stmtToFirstInstruction = new HashMap<>();
 
     // Convert all jimple instructions
     {
       for (Unit u : jimpleBody.getUnits()) {
         Stmt s = (Stmt) u;
-        List<Unit> conversionList = new ArrayList<Unit>();
+        List<Unit> conversionList = new ArrayList<>();
 
         context.setCurrentUnit(s);
         ((ConvertToBaf) s).convertToBaf(context, conversionList);

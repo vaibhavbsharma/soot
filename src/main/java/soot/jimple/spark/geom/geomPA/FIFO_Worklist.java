@@ -31,7 +31,7 @@ public class FIFO_Worklist implements IWorklist {
 
   @Override
   public void initialize(int size) {
-    Q = new LinkedList<IVarAbstraction>();
+    Q = new LinkedList<>();
   }
 
   @Override

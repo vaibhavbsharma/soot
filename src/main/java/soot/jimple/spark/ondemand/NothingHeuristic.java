@@ -22,14 +22,17 @@ import soot.jimple.spark.pag.SparkField;
 
 public class NothingHeuristic implements FieldCheckHeuristic {
 
+  @Override
   public boolean runNewPass() {
     return false;
   }
 
+  @Override
   public boolean validateMatchesForField(SparkField field) {
     return false;
   }
 
+  @Override
   public boolean validFromBothEnds(SparkField field) {
     return false;
   }

@@ -50,6 +50,11 @@ e, CAN BE USED in a stmt    TICK
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Local;
 import soot.SootField;
 import soot.Value;
@@ -72,11 +77,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /*
  * Creates a mapping of locals and all places where they might be used
@@ -102,13 +102,14 @@ public class AllVariableUses extends DepthFirstAdapter {
   }
 
   public void init() {
-    localsToUses = new HashMap<Local, List>();
-    fieldsToUses = new HashMap<SootField, List>();
+    localsToUses = new HashMap<>();
+    fieldsToUses = new HashMap<>();
   }
 
   /*
    * Notice as things stand synchblocks cant have the use of a SootField
    */
+  @Override
   public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     Local local = node.getLocal();
     addLocalUse(local, node);
@@ -120,10 +121,11 @@ public class AllVariableUses extends DepthFirstAdapter {
    *
    * Hence the some what indirect approach
    */
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value val = node.get_Key();
-    List<Value> localUses = new ArrayList<Value>();
-    List<Value> fieldUses = new ArrayList<Value>();
+    List<Value> localUses = new ArrayList<>();
+    List<Value> fieldUses = new ArrayList<>();
 
     if (val instanceof Local) {
       localUses.add(val);
@@ -167,6 +169,7 @@ public class AllVariableUses extends DepthFirstAdapter {
     } // end of going through all FieldRef uses in switch key
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -184,6 +187,7 @@ public class AllVariableUses extends DepthFirstAdapter {
    * node can use a local/SootField The update in a for loop can use a
    * local/SootField
    */
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
 
     // checking uses in init
@@ -248,6 +252,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of an if node can use a local
    */
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -256,6 +261,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of an ifElse node can use a local
    */
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -264,6 +270,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of a while node can use a local
    */
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -272,6 +279,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of a doWhile node can use a local
    */
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -286,14 +294,14 @@ public class AllVariableUses extends DepthFirstAdapter {
    * @return a list containing all Locals and FieldRefs used in this condition
    */
   public List<Value> getUseList(ASTCondition cond) {
-    ArrayList<Value> useList = new ArrayList<Value>();
+    ArrayList<Value> useList = new ArrayList<>();
     if (cond instanceof ASTAggregatedCondition) {
       useList.addAll(getUseList(((ASTAggregatedCondition) cond).getLeftOp()));
       useList.addAll(getUseList(((ASTAggregatedCondition) cond).getRightOp()));
       return useList;
     } else if (cond instanceof ASTUnaryCondition) {
       // get uses from unary condition
-      List<Value> uses = new ArrayList<Value>();
+      List<Value> uses = new ArrayList<>();
 
       Value val = ((ASTUnaryCondition) cond).getValue();
       if (val instanceof Local || val instanceof FieldRef) {
@@ -317,8 +325,11 @@ public class AllVariableUses extends DepthFirstAdapter {
   private void addLocalUse(Local local, Object obj) {
     Object temp = localsToUses.get(local);
     List<Object> uses;
-    if (temp == null) uses = new ArrayList<Object>();
-    else uses = (ArrayList<Object>) temp;
+    if (temp == null) {
+      uses = new ArrayList<>();
+    } else {
+      uses = (ArrayList<Object>) temp;
+    }
 
     // add local to useList
     uses.add(obj);
@@ -331,8 +342,11 @@ public class AllVariableUses extends DepthFirstAdapter {
 
     Object temp = fieldsToUses.get(field);
     List<Object> uses;
-    if (temp == null) uses = new ArrayList<Object>();
-    else uses = (ArrayList<Object>) temp;
+    if (temp == null) {
+      uses = new ArrayList<>();
+    } else {
+      uses = (ArrayList<Object>) temp;
+    }
 
     // add field to useList
     uses.add(obj);
@@ -346,11 +360,13 @@ public class AllVariableUses extends DepthFirstAdapter {
    * returned which are locals or FieldRefs
    */
   private List<Value> getUsesFromBoxes(List useBoxes) {
-    ArrayList<Value> toReturn = new ArrayList<Value>();
+    ArrayList<Value> toReturn = new ArrayList<>();
     Iterator it = useBoxes.iterator();
     while (it.hasNext()) {
       Value val = ((ValueBox) it.next()).getValue();
-      if (val instanceof Local || val instanceof FieldRef) toReturn.add(val);
+      if (val instanceof Local || val instanceof FieldRef) {
+        toReturn.add(val);
+      }
     }
     // System.out.println("VALUES:"+toReturn);
     return toReturn;
@@ -358,13 +374,19 @@ public class AllVariableUses extends DepthFirstAdapter {
 
   public List getUsesForField(SootField field) {
     Object temp = fieldsToUses.get(field);
-    if (temp == null) return null;
-    else return (List) temp;
+    if (temp == null) {
+      return null;
+    } else {
+      return (List) temp;
+    }
   }
 
   public List getUsesForLocal(Local local) {
     Object temp = localsToUses.get(local);
-    if (temp == null) return null;
-    else return (List) temp;
+    if (temp == null) {
+      return null;
+    } else {
+      return (List) temp;
+    }
   }
 }

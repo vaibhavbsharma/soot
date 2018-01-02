@@ -19,6 +19,15 @@
 
 package soot.shimple.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.G;
 import soot.Local;
 import soot.Type;
@@ -34,15 +43,6 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Internal implementation of Phi nodes.
  *
@@ -50,8 +50,8 @@ import java.util.Set;
  * @see soot.shimple.PhiExpr
  */
 public class SPhiExpr implements PhiExpr {
-  protected List<ValueUnitPair> argPairs = new ArrayList<ValueUnitPair>();
-  protected Map<Unit, ValueUnitPair> predToPair = new HashMap<Unit, ValueUnitPair>(); // cache
+  protected List<ValueUnitPair> argPairs = new ArrayList<>();
+  protected Map<Unit, ValueUnitPair> predToPair = new HashMap<>(); // cache
   protected Type type;
 
   /**
@@ -68,10 +68,13 @@ public class SPhiExpr implements PhiExpr {
 
   /** Create a Phi expression from the given list of Values and Blocks. */
   public SPhiExpr(List<Value> args, List<Unit> preds) {
-    if (args.size() == 0) throw new RuntimeException("Arg list may not be empty");
+    if (args.size() == 0) {
+      throw new RuntimeException("Arg list may not be empty");
+    }
 
-    if (args.size() != preds.size())
+    if (args.size() != preds.size()) {
       throw new RuntimeException("Arg list does not match Pred list");
+    }
 
     type = args.get(0).getType();
     Iterator<Value> argsIt = args.iterator();
@@ -81,20 +84,26 @@ public class SPhiExpr implements PhiExpr {
       Value arg = argsIt.next();
       Object pred = predsIt.next();
 
-      if (pred instanceof Block) addArg(arg, (Block) pred);
-      else if (pred instanceof Unit) addArg(arg, (Unit) pred);
-      else throw new RuntimeException("Must be a CFG block or tail unit.");
+      if (pred instanceof Block) {
+        addArg(arg, (Block) pred);
+      } else if (pred instanceof Unit) {
+        addArg(arg, (Unit) pred);
+      } else {
+        throw new RuntimeException("Must be a CFG block or tail unit.");
+      }
     }
   }
 
   /* get-accessor implementations */
 
+  @Override
   public List<ValueUnitPair> getArgs() {
     return Collections.unmodifiableList(argPairs);
   }
 
+  @Override
   public List<Value> getValues() {
-    List<Value> args = new ArrayList<Value>();
+    List<Value> args = new ArrayList<>();
     for (ValueUnitPair vup : argPairs) {
       Value arg = vup.getValue();
       args.add(arg);
@@ -103,8 +112,9 @@ public class SPhiExpr implements PhiExpr {
     return args;
   }
 
+  @Override
   public List<Unit> getPreds() {
-    List<Unit> preds = new ArrayList<Unit>();
+    List<Unit> preds = new ArrayList<>();
     for (ValueUnitPair up : argPairs) {
       Unit arg = up.getUnit();
       preds.add(arg);
@@ -113,32 +123,44 @@ public class SPhiExpr implements PhiExpr {
     return preds;
   }
 
+  @Override
   public int getArgCount() {
     return argPairs.size();
   }
 
+  @Override
   public ValueUnitPair getArgBox(int index) {
-    if (index < 0 || index >= argPairs.size()) return null;
+    if (index < 0 || index >= argPairs.size()) {
+      return null;
+    }
     return argPairs.get(index);
   }
 
+  @Override
   public Value getValue(int index) {
     ValueUnitPair arg = getArgBox(index);
-    if (arg == null) return null;
+    if (arg == null) {
+      return null;
+    }
     return arg.getValue();
   }
 
+  @Override
   public Unit getPred(int index) {
     ValueUnitPair arg = getArgBox(index);
-    if (arg == null) return null;
+    if (arg == null) {
+      return null;
+    }
     return arg.getUnit();
   }
 
+  @Override
   public int getArgIndex(Unit predTailUnit) {
     ValueUnitPair pair = getArgBox(predTailUnit);
     return argPairs.indexOf(pair); // (-1 on null)
   }
 
+  @Override
   public ValueUnitPair getArgBox(Unit predTailUnit) {
     ValueUnitPair vup = predToPair.get(predTailUnit);
 
@@ -147,25 +169,31 @@ public class SPhiExpr implements PhiExpr {
     if (vup == null || vup.getUnit() != predTailUnit) {
       updateCache();
       vup = predToPair.get(predTailUnit);
-      if ((vup != null) && (vup.getUnit() != predTailUnit))
+      if ((vup != null) && (vup.getUnit() != predTailUnit)) {
         throw new RuntimeException("Assertion failed.");
+      }
     }
 
     // (null if not found)
     return vup;
   }
 
+  @Override
   public Value getValue(Unit predTailUnit) {
     ValueBox vb = getArgBox(predTailUnit);
-    if (vb == null) return null;
+    if (vb == null) {
+      return null;
+    }
     return vb.getValue();
   }
 
+  @Override
   public int getArgIndex(Block pred) {
     ValueUnitPair box = getArgBox(pred);
     return argPairs.indexOf(box); // (-1 on null)
   }
 
+  @Override
   public ValueUnitPair getArgBox(Block pred) {
     Unit predTailUnit = pred.getTail();
     ValueUnitPair box = getArgBox(predTailUnit);
@@ -175,52 +203,69 @@ public class SPhiExpr implements PhiExpr {
     // (eg, fall-through pointer not moved)
     while (box == null) {
       predTailUnit = pred.getPredOf(predTailUnit);
-      if (predTailUnit == null) break;
+      if (predTailUnit == null) {
+        break;
+      }
       box = getArgBox(predTailUnit);
     }
 
     return box;
   }
 
+  @Override
   public Value getValue(Block pred) {
     ValueBox vb = getArgBox(pred);
-    if (vb == null) return null;
+    if (vb == null) {
+      return null;
+    }
     return vb.getValue();
   }
 
   /* set-accessor implementations */
 
+  @Override
   public boolean setArg(int index, Value arg, Unit predTailUnit) {
     boolean ret1 = setValue(index, arg);
     boolean ret2 = setPred(index, predTailUnit);
-    if (ret1 != ret2) throw new RuntimeException("Assertion failed.");
+    if (ret1 != ret2) {
+      throw new RuntimeException("Assertion failed.");
+    }
     return ret1;
   }
 
+  @Override
   public boolean setArg(int index, Value arg, Block pred) {
     return setArg(index, arg, pred.getTail());
   }
 
+  @Override
   public boolean setValue(int index, Value arg) {
     ValueUnitPair argPair = getArgBox(index);
-    if (argPair == null) return false;
+    if (argPair == null) {
+      return false;
+    }
     argPair.setValue(arg);
     return true;
   }
 
+  @Override
   public boolean setValue(Unit predTailUnit, Value arg) {
     int index = getArgIndex(predTailUnit);
     return setValue(index, arg);
   }
 
+  @Override
   public boolean setValue(Block pred, Value arg) {
     int index = getArgIndex(pred);
     return setValue(index, arg);
   }
 
+  @Override
   public boolean setPred(int index, Unit predTailUnit) {
     ValueUnitPair argPair = getArgBox(index);
-    if (argPair == null) return false;
+    if (argPair == null) {
+      return false;
+    }
 
     int other = getArgIndex(predTailUnit);
     if (other != -1) {
@@ -243,27 +288,32 @@ public class SPhiExpr implements PhiExpr {
     return true;
   }
 
+  @Override
   public boolean setPred(int index, Block pred) {
     return setPred(index, pred.getTail());
   }
 
   /* add/remove implementations */
 
+  @Override
   public boolean removeArg(int index) {
     ValueUnitPair arg = getArgBox(index);
     return removeArg(arg);
   }
 
+  @Override
   public boolean removeArg(Unit predTailUnit) {
     ValueUnitPair arg = getArgBox(predTailUnit);
     return removeArg(arg);
   }
 
+  @Override
   public boolean removeArg(Block pred) {
     ValueUnitPair arg = getArgBox(pred);
     return removeArg(arg);
   }
 
+  @Override
   public boolean removeArg(ValueUnitPair arg) {
     if (argPairs.remove(arg)) {
       // update cache
@@ -276,16 +326,22 @@ public class SPhiExpr implements PhiExpr {
     return false;
   }
 
+  @Override
   public boolean addArg(Value arg, Block pred) {
     return addArg(arg, pred.getTail());
   }
 
+  @Override
   public boolean addArg(Value arg, Unit predTailUnit) {
     // Do not allow phi nodes for dummy blocks
-    if (predTailUnit == null) return false;
+    if (predTailUnit == null) {
+      return false;
+    }
 
     // we disallow duplicate arguments
-    if (predToPair.keySet().contains(predTailUnit)) return false;
+    if (predToPair.keySet().contains(predTailUnit)) {
+      return false;
+    }
 
     ValueUnitPair vup = new SValueUnitPair(arg, predTailUnit);
 
@@ -297,12 +353,16 @@ public class SPhiExpr implements PhiExpr {
 
   int blockId = -1;
 
+  @Override
   public void setBlockId(int blockId) {
     this.blockId = blockId;
   }
 
+  @Override
   public int getBlockId() {
-    if (blockId == -1) throw new RuntimeException("Assertion failed:  Block Id unknown.");
+    if (blockId == -1) {
+      throw new RuntimeException("Assertion failed:  Block Id unknown.");
+    }
     return blockId;
   }
 
@@ -315,21 +375,26 @@ public class SPhiExpr implements PhiExpr {
   protected void updateCache() {
     int needed = argPairs.size();
     predToPair =
-        new HashMap<Unit, ValueUnitPair>(
+        new HashMap<>(
             needed << 1, 1.0F); // Always attempt to allocate the next power of 2 sized map
     for (ValueUnitPair vup : argPairs) {
       predToPair.put(vup.getUnit(), vup);
     }
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof SPhiExpr) {
       SPhiExpr pe = (SPhiExpr) o;
 
-      if (getArgCount() != pe.getArgCount()) return false;
+      if (getArgCount() != pe.getArgCount()) {
+        return false;
+      }
 
       for (int i = 0; i < getArgCount(); i++) {
-        if (!getArgBox(i).equivTo(pe.getArgBox(i))) return false;
+        if (!getArgBox(i).equivTo(pe.getArgBox(i))) {
+          return false;
+        }
       }
 
       return true;
@@ -338,6 +403,7 @@ public class SPhiExpr implements PhiExpr {
     return false;
   }
 
+  @Override
   public int equivHashCode() {
     int hashcode = 1;
 
@@ -350,37 +416,45 @@ public class SPhiExpr implements PhiExpr {
 
   @Override
   public List<UnitBox> getUnitBoxes() {
-    Set<UnitBox> boxes = new HashSet<UnitBox>(argPairs.size());
-    for (ValueUnitPair up : argPairs) boxes.add(up);
-    return new ArrayList<UnitBox>(boxes);
+    Set<UnitBox> boxes = new HashSet<>(argPairs.size());
+    for (ValueUnitPair up : argPairs) {
+      boxes.add(up);
+    }
+    return new ArrayList<>(boxes);
   }
 
+  @Override
   public void clearUnitBoxes() {
     for (UnitBox box : getUnitBoxes()) {
       box.setUnit(null);
     }
   }
 
+  @Override
   public List<ValueBox> getUseBoxes() {
-    Set<ValueBox> set = new HashSet<ValueBox>();
+    Set<ValueBox> set = new HashSet<>();
 
     for (ValueUnitPair argPair : argPairs) {
       set.addAll(argPair.getValue().getUseBoxes());
       set.add(argPair);
     }
 
-    return new ArrayList<ValueBox>(set);
+    return new ArrayList<>(set);
   }
 
+  @Override
   public Type getType() {
     return type;
   }
 
+  @Override
   public String toString() {
     StringBuffer expr = new StringBuffer(Shimple.PHI + "(");
     boolean isFirst = true;
     for (ValueUnitPair vuPair : argPairs) {
-      if (!isFirst) expr.append(", ");
+      if (!isFirst) {
+        expr.append(", ");
+      }
       Value arg = vuPair.getValue();
       expr.append(arg.toString());
       isFirst = false;
@@ -391,13 +465,16 @@ public class SPhiExpr implements PhiExpr {
     return expr.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Shimple.PHI);
     up.literal("(");
 
     boolean isFirst = true;
     for (ValueUnitPair vuPair : argPairs) {
-      if (!isFirst) up.literal(", ");
+      if (!isFirst) {
+        up.literal(", ");
+      }
       vuPair.toString(up);
       isFirst = false;
     }
@@ -405,10 +482,12 @@ public class SPhiExpr implements PhiExpr {
     up.literal(")");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ShimpleExprSwitch) sw).casePhiExpr(this);
   }
 
+  @Override
   public Object clone() {
     // Note to self: Do not try to "fix" this *again*.  Yes, it
     // should be a shallow copy in order to conform with the rest

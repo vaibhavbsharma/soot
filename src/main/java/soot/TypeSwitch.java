@@ -29,66 +29,82 @@ package soot;
 public class TypeSwitch implements ITypeSwitch {
   Object result;
 
+  @Override
   public void caseArrayType(ArrayType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseBooleanType(BooleanType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseByteType(ByteType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseCharType(CharType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseDoubleType(DoubleType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseFloatType(FloatType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseIntType(IntType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseLongType(LongType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseRefType(RefType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseShortType(ShortType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseStmtAddressType(StmtAddressType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseUnknownType(UnknownType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseVoidType(VoidType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseAnySubType(AnySubType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseNullType(NullType t) {
     defaultCase(t);
   }
 
+  @Override
   public void caseErroneousType(ErroneousType t) {
     defaultCase(t);
   }
@@ -99,6 +115,7 @@ public class TypeSwitch implements ITypeSwitch {
    * @deprecated Replaced by defaultCase(Type)
    * @see #defaultCase(Type) *
    */
+  @Override
   @Deprecated
   public void caseDefault(Type t) {}
 

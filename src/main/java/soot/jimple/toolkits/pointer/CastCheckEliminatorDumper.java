@@ -19,13 +19,13 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Singletons;
 import soot.toolkits.graph.BriefUnitGraph;
-
-import java.util.Map;
 
 /** A body transformer that simply calls the CastCheckEliminator analysis. */
 public class CastCheckEliminatorDumper extends BodyTransformer {
@@ -39,6 +39,7 @@ public class CastCheckEliminatorDumper extends BodyTransformer {
     return "";
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
     CastCheckEliminator cce = new CastCheckEliminator(new BriefUnitGraph(b));
   }

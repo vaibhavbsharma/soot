@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
@@ -32,9 +35,6 @@ import soot.toolkits.scalar.ArrayPackedSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Performs a Latest-Computation on the given graph. a computation is latest, when we can't delay it
@@ -62,8 +62,7 @@ public class LatestComputation {
         unitGraph,
         delayed,
         equivRhsMap,
-        new ArrayPackedSet<EquivalentValue>(
-            new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(equivRhsMap.values())));
   }
 
   /**
@@ -84,7 +83,7 @@ public class LatestComputation {
       DelayabilityAnalysis delayed,
       Map<Unit, EquivalentValue> equivRhsMap,
       BoundedFlowSet<EquivalentValue> set) {
-    unitToLatest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
+    unitToLatest = new HashMap<>(unitGraph.size() + 1, 0.7f);
 
     for (Unit currentUnit : unitGraph) {
       /* create a new Earliest-list for each unit */
@@ -105,7 +104,9 @@ public class LatestComputation {
        * remove the computation of this set: succCompSet is then:
        * ((INTERSECTION_successors Delayed) MINUS comp)
        */
-      if (equivRhsMap.get(currentUnit) != null) succCompSet.remove(equivRhsMap.get(currentUnit));
+      if (equivRhsMap.get(currentUnit) != null) {
+        succCompSet.remove(equivRhsMap.get(currentUnit));
+      }
 
       /* make the difference: */
       FlowSet<EquivalentValue> latest = delaySet.emptySet();

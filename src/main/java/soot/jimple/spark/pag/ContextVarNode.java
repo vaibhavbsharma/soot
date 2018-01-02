@@ -29,10 +29,12 @@ import soot.Context;
 public class ContextVarNode extends LocalVarNode {
   private Context context;
 
+  @Override
   public Context context() {
     return context;
   }
 
+  @Override
   public String toString() {
     return "ContextVarNode " + getNumber() + " " + variable + " " + method + " " + context;
   }

@@ -153,15 +153,18 @@ public class ColorTag implements Tag {
     return foreground;
   }
 
+  @Override
   public String getName() {
     return "ColorTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[2];
     return v;
   }
 
+  @Override
   public String toString() {
     return "" + red + " " + green + " " + blue;
   }

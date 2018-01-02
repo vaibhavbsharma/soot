@@ -20,6 +20,15 @@
 
 package soot.dava;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+
 import soot.Body;
 import soot.CompilationDeathException;
 import soot.G;
@@ -29,15 +38,6 @@ import soot.SootMethod;
 import soot.Type;
 import soot.jimple.Jimple;
 import soot.util.IterableSet;
-
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 
 public class Dava {
   public Dava(Singletons.Global g) {}
@@ -89,7 +89,7 @@ public class Dava {
     }
 
     if (LOG_TO_FILE != null) {
-      if (iOut == null)
+      if (iOut == null) {
         try {
           iOut =
               new BufferedWriter(
@@ -103,6 +103,7 @@ public class Dava {
           uee.printStackTrace();
           throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
         }
+      }
 
       try {
         iOut.write(s);

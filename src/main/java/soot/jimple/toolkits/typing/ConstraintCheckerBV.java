@@ -25,6 +25,11 @@
 
 package soot.jimple.toolkits.typing;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -102,11 +107,6 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.List;
 
 /** @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead */
 @Deprecated
@@ -285,14 +285,17 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
     // Do nothing
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     handleInvokeExpr(stmt.getInvokeExpr(), stmt);
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -676,6 +679,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
     TypeNode left = hierarchy.typeNode(stmt.getLeftOp().getType());
 
@@ -704,6 +708,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
     if (stmt.getOp() instanceof Local) {
       TypeNode op = hierarchy.typeNode(stmt.getOp().getType());
@@ -714,6 +719,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
     if (stmt.getOp() instanceof Local) {
       TypeNode op = hierarchy.typeNode(stmt.getOp().getType());
@@ -724,8 +730,10 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {}
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     ConditionExpr cond = (ConditionExpr) stmt.getCondition();
 
@@ -786,20 +794,21 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     Value key = stmt.getKey();
 
     if (key instanceof Local) {
-      if (!hierarchy
-          .typeNode(key.getType())
-          .hasAncestorOrSelf(hierarchy.typeNode(IntType.v()))) {
+      if (!hierarchy.typeNode(key.getType()).hasAncestorOrSelf(hierarchy.typeNode(IntType.v()))) {
         error("Type Error(50)");
       }
     }
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {}
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     if (stmt.getOp() instanceof Local) {
       if (!hierarchy
@@ -814,20 +823,21 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     Value key = stmt.getKey();
 
     if (key instanceof Local) {
-      if (!hierarchy
-          .typeNode(key.getType())
-          .hasAncestorOrSelf(hierarchy.typeNode(IntType.v()))) {
+      if (!hierarchy.typeNode(key.getType()).hasAncestorOrSelf(hierarchy.typeNode(IntType.v()))) {
         error("Type Error(52)");
       }
     }
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {
     if (stmt.getOp() instanceof Local) {
       TypeNode op = hierarchy.typeNode(stmt.getOp().getType());

@@ -29,15 +29,18 @@ public class DIncrementStmt extends GAssignStmt {
     super(variable, rvalue);
   }
 
+  @Override
   public Object clone() {
     return new DIncrementStmt(
         Grimp.cloneIfNecessary(getLeftOp()), Grimp.cloneIfNecessary(getRightOp()));
   }
 
+  @Override
   public String toString() {
     return getLeftOpBox().getValue().toString() + "++";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     getLeftOpBox().toString(up);
     up.literal("++");

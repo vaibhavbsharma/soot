@@ -19,6 +19,14 @@
 
 package soot.jbco.jimpleTransformations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -39,14 +47,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.toolkits.graph.BriefUnitGraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 10-Jul-2006
@@ -55,6 +55,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
   int switchesadded = 0;
 
+  @Override
   public void outputSummary() {
     out.println("Switches added: " + switchesadded);
   }
@@ -62,12 +63,14 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
   public static String dependancies[] =
       new String[] {"wjtp.jbco_fr", "jtp.jbco_adss", "bb.jbco_ful"};
 
+  @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
   public static String name = "jtp.jbco_adss";
 
+  @Override
   public String getName() {
     return name;
   }
@@ -76,25 +79,34 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     Iterator<Trap> it = b.getTraps().iterator();
     while (it.hasNext()) {
       Trap t = it.next();
-      if (t.getBeginUnit() == u || t.getEndUnit() == u || t.getHandlerUnit() == u) return true;
+      if (t.getBeginUnit() == u || t.getEndUnit() == u || t.getHandlerUnit() == u) {
+        return true;
+      }
     }
 
     return false;
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (b.getMethod().getSignature().indexOf("<clinit>") >= 0) return;
+    if (b.getMethod().getSignature().indexOf("<clinit>") >= 0) {
+      return;
+    }
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
-    if (weight == 0) return;
+    if (weight == 0) {
+      return;
+    }
 
     New2InitFlowAnalysis fa = new New2InitFlowAnalysis(new BriefUnitGraph(b));
 
-    Vector<Unit> zeroheight = new Vector<Unit>();
+    Vector<Unit> zeroheight = new Vector<>();
     PatchingChain<Unit> units = b.getUnits();
 
     Unit first = null;
     for (Unit unit : units) {
-      if (unit instanceof IdentityStmt) continue;
+      if (unit instanceof IdentityStmt) {
+        continue;
+      }
 
       first = unit;
       break;
@@ -103,25 +115,33 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit unit = it.next();
-      if (unit instanceof IdentityStmt || checkTraps(unit, b)) continue;
+      if (unit instanceof IdentityStmt || checkTraps(unit, b)) {
+        continue;
+      }
       // very conservative estimate about where new-<init> ranges are
       if (fa.getFlowAfter(unit).isEmpty() && fa.getFlowBefore(unit).isEmpty()) {
         zeroheight.add(unit);
       }
     }
 
-    if (zeroheight.size() < 3) return;
+    if (zeroheight.size() < 3) {
+      return;
+    }
 
     int idx = 0;
     Unit u = null;
     for (int i = 0; i < zeroheight.size(); i++) {
       idx = Rand.getInt(zeroheight.size() - 1) + 1;
       u = zeroheight.get(idx);
-      if (u.fallsThrough()) break;
+      if (u.fallsThrough()) {
+        break;
+      }
       u = null;
     }
     // couldn't find a unit that fell through
-    if (u == null || Rand.getInt(10) > weight) return;
+    if (u == null || Rand.getInt(10) > weight) {
+      return;
+    }
 
     zeroheight.remove(idx);
     while (zeroheight.size() > (weight > 3 ? weight : 3)) {
@@ -129,7 +149,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     }
 
     Collection<Local> locals = b.getLocals();
-    List<Unit> targs = new ArrayList<Unit>();
+    List<Unit> targs = new ArrayList<>();
     targs.addAll(zeroheight);
 
     SootField ops[] = FieldRenamer.getRandomOpaques();
@@ -152,8 +172,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       units.insertBefore(
           Jimple.v()
               .newAssignStmt(
-                  b1,
-                  Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.emptyList())),
+                  b1, Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.emptyList())),
           u);
     }
     if (ops[1].getType() instanceof PrimType) {
@@ -169,8 +188,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       units.insertBefore(
           Jimple.v()
               .newAssignStmt(
-                  b2,
-                  Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.emptyList())),
+                  b2, Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.emptyList())),
           u);
     }
 

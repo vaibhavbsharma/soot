@@ -46,10 +46,12 @@ public abstract class ASTAggregatedCondition extends ASTCondition {
     this.right = right;
   }
 
+  @Override
   public void flip() {
     not = !not;
   }
 
+  @Override
   public boolean isNotted() {
     return not;
   }

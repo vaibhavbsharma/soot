@@ -19,13 +19,13 @@
 
 package soot.toolkits.graph;
 
-import soot.Body;
-import soot.Trap;
-import soot.Unit;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
 
 /**
  * Represents a CFG where the nodes are {@link Block}s and the edges are derived from control flow.
@@ -67,7 +67,7 @@ public class ClassicCompleteBlockGraph extends BlockGraph {
     super(unitGraph);
     // Adjust the heads and tails to match the old CompleteBlockGraph.
     Unit entryPoint = getBody().getUnits().getFirst();
-    List<Block> newHeads = new ArrayList<Block>(1);
+    List<Block> newHeads = new ArrayList<>(1);
     for (Block b : getBlocks()) {
       if (b.getHead() == entryPoint) {
         newHeads.add(b);

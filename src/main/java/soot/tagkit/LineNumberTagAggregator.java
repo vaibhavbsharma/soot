@@ -25,12 +25,12 @@
 
 package soot.tagkit;
 
+import java.util.LinkedList;
+
 import soot.G;
 import soot.IdentityUnit;
 import soot.Singletons;
 import soot.Unit;
-
-import java.util.LinkedList;
 
 /** The aggregator for LineNumberTable attribute. */
 public class LineNumberTagAggregator extends FirstTagAggregator {
@@ -41,10 +41,12 @@ public class LineNumberTagAggregator extends FirstTagAggregator {
   }
 
   /** Decide whether this tag should be aggregated by this aggregator. */
+  @Override
   public boolean wantTag(Tag t) {
     return (t instanceof LineNumberTag) || (t instanceof SourceLnPosTag);
   }
 
+  @Override
   public String aggregatedName() {
     return "LineNumberTable";
   }
@@ -52,6 +54,8 @@ public class LineNumberTagAggregator extends FirstTagAggregator {
   @Override
   public void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units) {
     // System.out.println("consider tag for unit: "+u.getClass());
-    if (!(u instanceof IdentityUnit)) super.considerTag(t, u, tags, units);
+    if (!(u instanceof IdentityUnit)) {
+      super.considerTag(t, u, tags, units);
+    }
   }
 }

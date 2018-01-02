@@ -18,14 +18,15 @@
  */
 package soot.toolkits.scalar;
 
+import java.util.Map;
+
 import com.google.common.collect.Maps;
+
 import soot.Body;
 import soot.G;
 import soot.Singletons;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
-
-import java.util.Map;
 
 /**
  * This class implements a pool for {@link SmartLocalDefs} instances. This is useful, as these
@@ -55,7 +56,7 @@ public class SmartLocalDefsPool {
     } else {
       ExceptionalUnitGraph g = new ExceptionalUnitGraph(b);
       SmartLocalDefs newSLD = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-      pool.put(b, new Pair<Long, SmartLocalDefs>(b.getModificationCount(), newSLD));
+      pool.put(b, new Pair<>(b.getModificationCount(), newSLD));
       return newSLD;
     }
   }

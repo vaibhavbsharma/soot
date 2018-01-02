@@ -1,5 +1,7 @@
 package soot.validation;
 
+import java.util.List;
+
 import soot.Body;
 import soot.Local;
 import soot.Unit;
@@ -9,8 +11,6 @@ import soot.toolkits.exceptions.ThrowAnalysisFactory;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.InitAnalysis;
-
-import java.util.List;
 
 public enum CheckInitValidator implements BodyValidator {
   INSTANCE;
@@ -31,7 +31,7 @@ public enum CheckInitValidator implements BodyValidator {
         Value v = vBox.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
-          if (!init.contains(l))
+          if (!init.contains(l)) {
             throw new ValidationException(
                 s,
                 "Local variable $1 is not definitively defined at this point"
@@ -43,6 +43,7 @@ public enum CheckInitValidator implements BodyValidator {
                     + " in "
                     + body.getMethod(),
                 false);
+          }
         }
       }
     }

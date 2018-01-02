@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import java.util.Iterator;
+import java.util.List;
+
 import soot.G;
 import soot.dava.internal.AST.ASTLabeledBlockNode;
 import soot.dava.internal.AST.ASTLabeledNode;
@@ -30,9 +33,6 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
-
-import java.util.Iterator;
-import java.util.List;
 
 /*
 Nomair A. Naeem 18-FEB-2005
@@ -96,8 +96,10 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
 
+  @Override
   public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {
     String label = node.get_Label().toString();
     List<Object> subBodies = node.get_SubBodies();
@@ -187,7 +189,9 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
       if (node instanceof ASTTryNode) {
         ASTTryNode.container subBodyContainer = (ASTTryNode.container) subIt.next();
         subBody = (List) subBodyContainer.o;
-      } else subBody = (List) subIt.next();
+      } else {
+        subBody = (List) subIt.next();
+      }
 
       Iterator it = subBody.iterator();
       while (it.hasNext()) {
@@ -211,7 +215,9 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
         else {
           // otherwise recursion
           boolean returnVal = replaceBreakLabels(temp, toReplace, replaceWith);
-          if (returnVal) toReturn = true;
+          if (returnVal) {
+            toReturn = true;
+          }
         }
       } // end of while
     }
@@ -298,7 +304,9 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
     if (abStmt.is_Break() || abStmt.is_Continue()) {
       SETNodeLabel label = abStmt.getLabel();
       return label.toString();
-    } else return null;
+    } else {
+      return null;
+    }
   }
 
   private void replaceLabel(Stmt s, String replaceWith) {

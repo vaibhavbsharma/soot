@@ -25,6 +25,8 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import java.util.Map;
+
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
@@ -33,8 +35,6 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.Map;
 
 /**
  * Performs a Not-Isolated-analysis on the given graph, which is basically the same as an
@@ -65,8 +65,7 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equi
         dg,
         latest,
         equivRhsMap,
-        new ArrayPackedSet<EquivalentValue>(
-            new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(equivRhsMap.values())));
   }
 
   /**
@@ -109,7 +108,9 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equi
 
     // Perform generation
     EquivalentValue rhs = unitToGen.get(unit);
-    if (rhs != null) out.add(rhs);
+    if (rhs != null) {
+      out.add(rhs);
+    }
 
     // perform kill
     FlowSet<EquivalentValue> latest = unitToLatest.getFlowBefore(unit);

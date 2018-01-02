@@ -55,7 +55,9 @@ class IntValueContainer {
   }
 
   public int getValue() {
-    if (this.type != INT) throw new RuntimeException("IntValueContainer: not integer type");
+    if (this.type != INT) {
+      throw new RuntimeException("IntValueContainer: not integer type");
+    }
 
     return this.value;
   }
@@ -73,19 +75,30 @@ class IntValueContainer {
     this.type = BOT;
   }
 
+  @Override
   public String toString() {
-    if (type == BOT) return "[B]";
-    else if (type == TOP) return "[T]";
-    else return "[" + value + "]";
+    if (type == BOT) {
+      return "[B]";
+    } else if (type == TOP) {
+      return "[T]";
+    } else {
+      return "[" + value + "]";
+    }
   }
 
+  @Override
   public boolean equals(Object other) {
-    if (!(other instanceof IntValueContainer)) return false;
+    if (!(other instanceof IntValueContainer)) {
+      return false;
+    }
 
     IntValueContainer otherv = (IntValueContainer) other;
 
-    if ((this.type == INT) && (otherv.type == INT)) return (this.value == otherv.value);
-    else return (this.type == otherv.type);
+    if ((this.type == INT) && (otherv.type == INT)) {
+      return (this.value == otherv.value);
+    } else {
+      return (this.type == otherv.type);
+    }
   }
 
   public IntValueContainer dup() {

@@ -31,6 +31,7 @@ public class ASTUnaryCondition extends ASTUnaryBinaryCondition {
     this.value = value;
   }
 
+  @Override
   public void apply(Analysis a) {
     a.caseASTUnaryCondition(this);
   }
@@ -43,14 +44,17 @@ public class ASTUnaryCondition extends ASTUnaryBinaryCondition {
     this.value = value;
   }
 
+  @Override
   public String toString() {
     return value.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     value.toString(up);
   }
 
+  @Override
   public void flip() {
     /*
     Since its a unarycondition we know this is a flag
@@ -64,6 +68,7 @@ public class ASTUnaryCondition extends ASTUnaryBinaryCondition {
     }
   }
 
+  @Override
   public boolean isNotted() {
     return (value instanceof DNotExpr);
   }

@@ -19,15 +19,15 @@
 
 package soot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.jimple.JimpleMethodSource;
 import soot.jimple.parser.lexer.LexerException;
 import soot.jimple.parser.parser.ParserException;
 import soot.options.Options;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 
 /** A class source for resolving from .jimple files using the Jimple parser. */
 public class JimpleClassSource extends ClassSource {
@@ -36,13 +36,17 @@ public class JimpleClassSource extends ClassSource {
 
   public JimpleClassSource(String className, FoundFile foundFile) {
     super(className);
-    if (foundFile == null)
+    if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");
+    }
     this.foundFile = foundFile;
   }
 
+  @Override
   public Dependencies resolve(SootClass sc) {
-    if (Options.v().verbose()) G.v().out.println("resolving [from .jimple]: " + className);
+    if (Options.v().verbose()) {
+      G.v().out.println("resolving [from .jimple]: " + className);
+    }
 
     InputStream classFile = null;
     try {
@@ -85,7 +89,9 @@ public class JimpleClassSource extends ClassSource {
       for (String t : jimpAST.getCstPool()) {
         deps.typesToSignature.add(RefType.v(t));
       }
-      if (outerClassName != null) deps.typesToSignature.add(RefType.v(outerClassName));
+      if (outerClassName != null) {
+        deps.typesToSignature.add(RefType.v(outerClassName));
+      }
 
       return deps;
     } catch (IOException e) {

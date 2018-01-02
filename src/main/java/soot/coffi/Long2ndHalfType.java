@@ -40,6 +40,7 @@ public class Long2ndHalfType extends Type {
     return otherType instanceof Long2ndHalfType;
   }
 
+  @Override
   public String toString() {
     return "long2ndhalf";
   }

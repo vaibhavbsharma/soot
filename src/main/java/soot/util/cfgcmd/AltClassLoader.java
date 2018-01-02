@@ -19,9 +19,6 @@
 
 package soot.util.cfgcmd;
 
-import soot.G;
-import soot.Singletons;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -29,6 +26,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import soot.G;
+import soot.Singletons;
 
 /**
  * A {@link ClassLoader} that loads specified classes from a different class path than that given by
@@ -44,20 +44,18 @@ public class AltClassLoader extends ClassLoader {
 
   private String[] locations; // Locations in the alternate
   // classpath.
-  private final Map<String, Class<?>> alreadyFound =
-      new HashMap<String, Class<?>>(); // Maps from already loaded
+  private final Map<String, Class<?>> alreadyFound = new HashMap<>(); // Maps from already loaded
   // classnames to their
   // Class objects.
 
-  private final Map<String, String> nameToMangledName =
-      new HashMap<String, String>(); // Maps from the names
+  private final Map<String, String> nameToMangledName = new HashMap<>(); // Maps from the names
   // of classes to be
   // loaded from the alternate
   // classpath to mangled
   // names to use for them.
 
   private final Map<String, String> mangledNameToName =
-      new HashMap<String, String>(); // Maps from the mangled names
+      new HashMap<>(); // Maps from the mangled names
   // of classes back to their
   // original names.
 
@@ -86,9 +84,10 @@ public class AltClassLoader extends ClassLoader {
    *     {@link File#pathSeparator}.
    */
   public void setAltClassPath(String altClassPath) {
-    List<String> locationList = new LinkedList<String>();
+    List<String> locationList = new LinkedList<>();
     for (StringTokenizer tokens = new StringTokenizer(altClassPath, File.pathSeparator, false);
-        tokens.hasMoreTokens(); ) {
+        tokens.hasMoreTokens();
+        ) {
       String location = tokens.nextToken();
       locationList.add(location);
     }
@@ -157,6 +156,7 @@ public class AltClassLoader extends ClassLoader {
    * @return the loaded class.
    * @throws ClassNotFoundException if the class cannot be loaded.
    */
+  @Override
   protected Class<?> findClass(String maybeMangledName) throws ClassNotFoundException {
     if (DEBUG) {
       G.v().out.println("AltClassLoader.findClass(" + maybeMangledName + ')');
@@ -206,6 +206,7 @@ public class AltClassLoader extends ClassLoader {
    * @return the loaded class.
    * @throws ClassNotFoundException if the class cannot be loaded.
    */
+  @Override
   public Class<?> loadClass(String name) throws ClassNotFoundException {
     if (DEBUG) {
       G.v().out.println("AltClassLoader.loadClass(" + name + ")");

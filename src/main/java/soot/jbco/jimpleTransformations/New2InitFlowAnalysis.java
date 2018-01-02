@@ -52,7 +52,9 @@ public class New2InitFlowAnalysis extends BackwardFlowAnalysis<Unit, FlowSet> {
       DefinitionStmt ds = (DefinitionStmt) d;
       if (ds.getRightOp() instanceof NewExpr) {
         Value v = ds.getLeftOp();
-        if (v instanceof Local && in.contains(v)) out.remove(v);
+        if (v instanceof Local && in.contains(v)) {
+          out.remove(v);
+        }
       }
     } else {
       for (ValueBox useBox : d.getUseBoxes()) {

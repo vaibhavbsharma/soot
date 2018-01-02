@@ -25,16 +25,16 @@
 
 package soot.toolkits.graph;
 
-import soot.G;
-import soot.options.Options;
-import soot.util.StationaryArrayList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import soot.G;
+import soot.options.Options;
+import soot.util.StationaryArrayList;
 
 /**
  * Identifies and provides an interface to query the strongly-connected components of DirectedGraph
@@ -49,8 +49,8 @@ public class StronglyConnectedComponents {
   private static final Object Visited = new Object();
   private static final Object Black = new Object();
   private final LinkedList<Object> finishingOrder;
-  private List<List> componentList = new ArrayList<List>();
-  private final HashMap<Object, List<Object>> nodeToComponent = new HashMap<Object, List<Object>>();
+  private List<List> componentList = new ArrayList<>();
+  private final HashMap<Object, List<Object>> nodeToComponent = new HashMap<>();
   MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
   private final int[] indexStack;
   private final Object[] nodeStack;
@@ -61,10 +61,10 @@ public class StronglyConnectedComponents {
    * @see DirectedGraph
    */
   public StronglyConnectedComponents(DirectedGraph g) {
-    nodeToColor = new HashMap<Object, Object>((3 * g.size()) / 2, 0.7f);
+    nodeToColor = new HashMap<>((3 * g.size()) / 2, 0.7f);
     indexStack = new int[g.size()];
     nodeStack = new Object[g.size()];
-    finishingOrder = new LinkedList<Object>();
+    finishingOrder = new LinkedList<>();
 
     // Visit each node
     {
@@ -73,12 +73,14 @@ public class StronglyConnectedComponents {
       while (nodeIt.hasNext()) {
         Object s = nodeIt.next();
 
-        if (nodeToColor.get(s) == null) visitNode(g, s);
+        if (nodeToColor.get(s) == null) {
+          visitNode(g, s);
+        }
       }
     }
 
     // Re-color all nodes white
-    nodeToColor = new HashMap<Object, Object>((3 * g.size()), 0.7f);
+    nodeToColor = new HashMap<>((3 * g.size()), 0.7f);
 
     // Visit each node via transpose edges
     {
@@ -168,8 +170,9 @@ public class StronglyConnectedComponents {
           indexStack[last++] = -1;
         } else if (nodeToColor.get(childNode) == Black) {
           /* we may be visiting a node in another component.  if so, add edge to sccGraph. */
-          if (nodeToComponent.get(childNode) != currentComponent)
+          if (nodeToComponent.get(childNode) != currentComponent) {
             sccGraph.addEdge(nodeToComponent.get(childNode), currentComponent);
+          }
         }
       }
     }

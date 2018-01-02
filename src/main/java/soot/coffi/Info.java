@@ -72,9 +72,15 @@ class Info {
     total = attribsave + attribcpsave + psave;
     if (total > 0) {
       ps.println("<INFO> -- Savings through debigulation --");
-      if (attribsave > 0) ps.println("<INFO>         Attributes: " + attribsave);
-      if (attribcpsave > 0) ps.println("<INFO>     CP Compression: " + attribcpsave);
-      if (psave > 0) ps.println("<INFO>   Private renaming: " + psave);
+      if (attribsave > 0) {
+        ps.println("<INFO>         Attributes: " + attribsave);
+      }
+      if (attribcpsave > 0) {
+        ps.println("<INFO>     CP Compression: " + attribcpsave);
+      }
+      if (psave > 0) {
+        ps.println("<INFO>   Private renaming: " + psave);
+      }
       ps.println("<INFO>  Total savings: " + total);
       double d = ((total) * 100000.0) / (flength);
       int x = (int) d;

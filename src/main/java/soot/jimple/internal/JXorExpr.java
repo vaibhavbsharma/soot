@@ -38,18 +38,22 @@ public class JXorExpr extends AbstractJimpleIntLongBinopExpr implements XorExpr 
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " ^ ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseXorExpr(this);
   }
 
+  @Override
   Object makeBafInst(Type opType) {
     return Baf.v().newXorInst(this.getOp1().getType());
   }
 
+  @Override
   public Object clone() {
     return new JXorExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }

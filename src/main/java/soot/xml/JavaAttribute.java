@@ -19,6 +19,10 @@
 
 package soot.xml;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
@@ -29,10 +33,6 @@ import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.SourcePositionTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
-
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class JavaAttribute {
 
@@ -61,14 +61,14 @@ public class JavaAttribute {
 
   public void addTag(Tag t) {
     if (tags == null) {
-      tags = new ArrayList<Tag>();
+      tags = new ArrayList<>();
     }
     tags.add(t);
   }
 
   public void addVbAttr(PosColorAttribute vbAttr) {
     if (vbAttrs == null) {
-      vbAttrs = new ArrayList<PosColorAttribute>();
+      vbAttrs = new ArrayList<>();
     }
     vbAttrs.add(vbAttr);
   }
@@ -78,14 +78,18 @@ public class JavaAttribute {
       Iterator<Tag> it = tags.iterator();
       while (it.hasNext()) {
         Tag t = it.next();
-        if (t instanceof ColorTag) return true;
+        if (t instanceof ColorTag) {
+          return true;
+        }
       }
     }
     if (vbAttrs != null) {
       Iterator<PosColorAttribute> vbIt = vbAttrs.iterator();
       while (vbIt.hasNext()) {
         PosColorAttribute t = vbIt.next();
-        if (t.hasColor()) return true;
+        if (t.hasColor()) {
+          return true;
+        }
       }
     }
     return false;

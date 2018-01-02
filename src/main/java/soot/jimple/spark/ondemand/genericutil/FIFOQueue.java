@@ -84,7 +84,9 @@ public final class FIFOQueue {
   /** remove the top element from the buffer */
   public Object remove() {
     // check if buffer is empty
-    if (_bottom == _top) return null;
+    if (_bottom == _top) {
+      return null;
+    }
     Object ret = _buf[_top];
     // increment top, wrapping if necessary
     _top = (_top == _buf.length - 1) ? 0 : _top + 1;
@@ -95,6 +97,7 @@ public final class FIFOQueue {
     return _bottom == _top;
   }
 
+  @Override
   public String toString() {
     return _bottom + " " + _top;
   }

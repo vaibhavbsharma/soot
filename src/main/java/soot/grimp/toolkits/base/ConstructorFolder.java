@@ -25,6 +25,12 @@
 
 package soot.grimp.toolkits.base;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -44,12 +50,6 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 public class ConstructorFolder extends BodyTransformer {
   public ConstructorFolder(Singletons.Global g) {}
 
@@ -58,14 +58,16 @@ public class ConstructorFolder extends BodyTransformer {
   }
 
   /** This method change all new Obj/<init>(args) pairs to new Obj(args) idioms. */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
     GrimpBody body = (GrimpBody) b;
 
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Folding constructors...");
+    }
 
     Chain units = body.getUnits();
-    List<Unit> stmtList = new ArrayList<Unit>();
+    List<Unit> stmtList = new ArrayList<>();
     stmtList.addAll(units);
 
     Iterator<Unit> it = stmtList.iterator();
@@ -76,14 +78,20 @@ public class ConstructorFolder extends BodyTransformer {
     while (it.hasNext()) {
       Stmt s = (Stmt) it.next();
 
-      if (!(s instanceof AssignStmt)) continue;
+      if (!(s instanceof AssignStmt)) {
+        continue;
+      }
 
       /* this should be generalized to ArrayRefs */
       Value lhs = ((AssignStmt) s).getLeftOp();
-      if (!(lhs instanceof Local)) continue;
+      if (!(lhs instanceof Local)) {
+        continue;
+      }
 
       Value rhs = ((AssignStmt) s).getRightOp();
-      if (!(rhs instanceof NewExpr)) continue;
+      if (!(rhs instanceof NewExpr)) {
+        continue;
+      }
 
       /* TO BE IMPLEMENTED LATER: move any copy of the object reference
       for lhs down beyond the NewInvokeExpr, with the rationale
@@ -99,14 +107,20 @@ public class ConstructorFolder extends BodyTransformer {
 
       while (luIter.hasNext()) {
         Unit use = ((UnitValueBoxPair) (luIter.next())).unit;
-        if (!(use instanceof InvokeStmt)) continue;
+        if (!(use instanceof InvokeStmt)) {
+          continue;
+        }
         InvokeStmt is = (InvokeStmt) use;
         if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr)
-            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) continue;
+            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) {
+          continue;
+        }
 
         SpecialInvokeExpr oldInvoke = ((SpecialInvokeExpr) is.getInvokeExpr());
         LinkedList invokeArgs = new LinkedList();
-        for (int i = 0; i < oldInvoke.getArgCount(); i++) invokeArgs.add(oldInvoke.getArg(i));
+        for (int i = 0; i < oldInvoke.getArgCount(); i++) {
+          invokeArgs.add(oldInvoke.getArg(i));
+        }
 
         AssignStmt constructStmt = Grimp.v().newAssignStmt((AssignStmt) s);
         constructStmt.setRightOp(

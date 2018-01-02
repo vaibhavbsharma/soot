@@ -21,6 +21,17 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.Hierarchy;
 import soot.SootMethod;
@@ -39,17 +50,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Oct. 7, 2003 modify buildPegChain() for building chain without inliner. June 19, 2003 add begin
@@ -205,10 +205,10 @@ public class PegGraph implements DirectedGraph
     }
 
     body = unitBody;
-    synch = new HashSet<List>();
-    exceHandlers = new HashSet<Unit>();
+    synch = new HashSet<>();
+    exceHandlers = new HashSet<>();
     needInlining = true;
-    monitorObjs = new HashSet<Object>();
+    monitorObjs = new HashSet<>();
     startToBeginNodes = new HashMap();
     unitChain = body.getUnits();
     int size = unitChain.size();
@@ -219,19 +219,19 @@ public class PegGraph implements DirectedGraph
     unitToPegMap = new HashMap(size * 2 + 1, 0.7f);
     startToThread = new HashMap(size * 2 + 1, 0.7f);
     startToAllocNodes = new HashMap(size * 2 + 1, 0.7f);
-    waitingNodes = new HashMap<String, FlowSet>(size * 2 + 1, 0.7f);
-    joinStmtToThread = new HashMap<JPegStmt, Chain>();
+    waitingNodes = new HashMap<>(size * 2 + 1, 0.7f);
+    joinStmtToThread = new HashMap<>();
     threadNo = new HashMap();
     threadNameToStart = new HashMap();
-    this.allocNodeToObj = new HashMap<AllocNode, String>(size * 2 + 1, 0.7f);
-    allocNodeToThread = new HashMap<AllocNode, PegChain>(size * 2 + 1, 0.7f);
-    notifyAll = new HashMap<String, Set<JPegStmt>>(size * 2 + 1, 0.7f);
+    this.allocNodeToObj = new HashMap<>(size * 2 + 1, 0.7f);
+    allocNodeToThread = new HashMap<>(size * 2 + 1, 0.7f);
+    notifyAll = new HashMap<>(size * 2 + 1, 0.7f);
 
     methodsNeedingInlining = new HashSet();
     allNodes = new ArraySparseSet();
     canNotBeCompacted = new HashSet();
     threadAllocSites = new HashSet();
-    specialJoin = new HashSet<JPegStmt>();
+    specialJoin = new HashSet<>();
     //       if(Main.isVerbose)
     //   System.out.println("     Constructing PegGraph...");
 
@@ -487,7 +487,7 @@ public class PegGraph implements DirectedGraph
         nextNode = pegIt.hasNext() ? (JPegStmt) pegIt.next() : null;
 
         if (currentNode.getName().equals("begin")) {
-          List<JPegStmt> successors = new ArrayList<JPegStmt>();
+          List<JPegStmt> successors = new ArrayList<>();
           successors.add(nextNode);
           unitToSuccs.put(currentNode, successors);
 
@@ -505,7 +505,7 @@ public class PegGraph implements DirectedGraph
             currentNode = pegIt.hasNext() ? (JPegStmt) pegIt.next() : null;
             continue;
           }
-          List<JPegStmt> successors = new ArrayList<JPegStmt>();
+          List<JPegStmt> successors = new ArrayList<>();
           Unit unit = currentNode.getUnit();
 
           UnitGraph unitGraph = currentNode.getUnitGraph();
@@ -521,7 +521,9 @@ public class PegGraph implements DirectedGraph
               continue;
             } else if (unitToPeg.containsKey(un)) {
               JPegStmt pp = (JPegStmt) (unitToPeg.get(un));
-              if (pp != null && !successors.contains(pp)) successors.add(pp);
+              if (pp != null && !successors.contains(pp)) {
+                successors.add(pp);
+              }
             }
           } // end while
 
@@ -548,7 +550,9 @@ public class PegGraph implements DirectedGraph
                   // System.out.println("build succ for subChain");
                   // buildSuccessor(subGraph, subChain, addExceptionEdges);
                   buildSuccessor(subChain);
-                } else System.out.println("*********subgraph is null!!!");
+                } else {
+                  System.out.println("*********subgraph is null!!!");
+                }
               }
             }
           }
@@ -672,13 +676,17 @@ public class PegGraph implements DirectedGraph
         JPegStmt s = (JPegStmt) unitIt.next();
 
         List succs = unitToSuccs.get(s);
-        if (succs.size() == 0) tailList.add(s);
+        if (succs.size() == 0) {
+          tailList.add(s);
+        }
         if (!unitToPreds.containsKey(s)) {
           throw new RuntimeException("unitToPreds does not contain key: " + s);
         }
         List preds = unitToPreds.get(s);
-        if (preds.size() == 0) headList.add(s);
-        // System.out.println("head is:");
+        if (preds.size() == 0) {
+          headList.add(s);
+          // System.out.println("head is:");
+        }
       }
     }
     tails = tailList;
@@ -697,8 +705,10 @@ public class PegGraph implements DirectedGraph
   }
 
   public boolean addPeg(PegGraph pg, Chain chain) {
-    if (!pg.removeBeginNode()) return false;
-    //		System.out.println("adding one peg into another");
+    if (!pg.removeBeginNode()) {
+      return false;
+      //		System.out.println("adding one peg into another");
+    }
 
     //		System.out.println("after removeBeginNode===");
     //	pg.testPegChain();
@@ -725,7 +735,9 @@ public class PegGraph implements DirectedGraph
       // System.out.println("add to allNodes: "+s);
       if (allNodes.contains(s)) {
         throw new RuntimeException("error! allNodes contains: " + s);
-      } else allNodes.add(s);
+      } else {
+        allNodes.add(s);
+      }
     }
     //	testPegChain();
     //	testIterator();
@@ -1039,7 +1051,9 @@ public class PegGraph implements DirectedGraph
       Iterator it = fs.iterator();
       while (it.hasNext()) {
         Object obj = it.next();
-        if (!monitorObjs.contains(obj)) monitorObjs.add(obj);
+        if (!monitorObjs.contains(obj)) {
+          monitorObjs.add(obj);
+        }
       }
     }
   }
@@ -1066,20 +1080,26 @@ public class PegGraph implements DirectedGraph
   }
 
   /* DirectedGraph implementation */
+  @Override
   public List getHeads() {
     return heads;
   }
 
+  @Override
   public List getTails() {
     return tails;
   }
 
+  @Override
   public List getPredsOf(Object s) {
-    if (!unitToPreds.containsKey(s)) throw new RuntimeException("Invalid stmt" + s);
+    if (!unitToPreds.containsKey(s)) {
+      throw new RuntimeException("Invalid stmt" + s);
+    }
 
     return unitToPreds.get(s);
   }
 
+  @Override
   public List getSuccsOf(Object s) {
 
     if (!unitToSuccs.containsKey(s)) {
@@ -1094,6 +1114,7 @@ public class PegGraph implements DirectedGraph
     return canNotBeCompacted;
   }
 
+  @Override
   public int size() {
     return allNodes.size();
     //		return pegSize;
@@ -1104,11 +1125,13 @@ public class PegGraph implements DirectedGraph
     return mainPegChain.iterator();
   }
 
+  @Override
   public Iterator iterator() {
 
     return allNodes.iterator();
   }
 
+  @Override
   public String toString() {
     Iterator it = iterator();
     StringBuffer buf = new StringBuffer();
@@ -1469,7 +1492,9 @@ public class PegGraph implements DirectedGraph
                 JPegStmt unit = (JPegStmt) oo;
                 Tag tag = unit.getTags().get(0);
                 System.out.println(tag + " " + unit);
-              } else System.out.println(oo);
+              } else {
+                System.out.println(oo);
+              }
             }
             System.out.println("---list--end-");
           }

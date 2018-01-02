@@ -42,50 +42,76 @@ import java.util.List;
  * </pre>
  */
 public abstract class AbstractFlowSet<T> implements FlowSet<T> {
+  @Override
   public abstract AbstractFlowSet<T> clone();
 
   /** implemented, but inefficient. */
+  @Override
   public FlowSet<T> emptySet() {
     FlowSet<T> t = clone();
     t.clear();
     return t;
   }
 
+  @Override
   public void copy(FlowSet<T> dest) {
-    if (this == dest) return;
+    if (this == dest) {
+      return;
+    }
     dest.clear();
-    for (T t : this) dest.add(t);
+    for (T t : this) {
+      dest.add(t);
+    }
   }
 
   /** implemented, but *very* inefficient. */
+  @Override
   public void clear() {
-    for (T t : this) remove(t);
+    for (T t : this) {
+      remove(t);
+    }
   }
 
+  @Override
   public void union(FlowSet<T> other) {
-    if (this == other) return;
+    if (this == other) {
+      return;
+    }
     union(other, this);
   }
 
+  @Override
   public void union(FlowSet<T> other, FlowSet<T> dest) {
-    if (dest != this && dest != other) dest.clear();
+    if (dest != this && dest != other) {
+      dest.clear();
+    }
 
     if (dest != null && dest != this) {
-      for (T t : this) dest.add(t);
+      for (T t : this) {
+        dest.add(t);
+      }
     }
 
     if (other != null && dest != other) {
-      for (T t : other) dest.add(t);
+      for (T t : other) {
+        dest.add(t);
+      }
     }
   }
 
+  @Override
   public void intersection(FlowSet<T> other) {
-    if (this == other) return;
+    if (this == other) {
+      return;
+    }
     intersection(other, this);
   }
 
+  @Override
   public void intersection(FlowSet<T> other, FlowSet<T> dest) {
-    if (dest == this && dest == other) return;
+    if (dest == this && dest == other) {
+      return;
+    }
     FlowSet<T> elements = null;
     FlowSet<T> flowSet = null;
     if (dest == this) {
@@ -102,14 +128,18 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     }
     dest.clear();
     for (T t : elements) {
-      if (flowSet.contains(t)) dest.add(t);
+      if (flowSet.contains(t)) {
+        dest.add(t);
+      }
     }
   }
 
+  @Override
   public void difference(FlowSet<T> other) {
     difference(other, this);
   }
 
+  @Override
   public void difference(FlowSet<T> other, FlowSet<T> dest) {
     if (dest == this && dest == other) {
       dest.clear();
@@ -119,64 +149,100 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     FlowSet<T> flowSet = (other == dest) ? other.clone() : other;
     dest.clear(); // now safe, since we have copies of this & other
 
-    for (T t : this) if (!flowSet.contains(t)) dest.add(t);
+    for (T t : this) {
+      if (!flowSet.contains(t)) {
+        dest.add(t);
+      }
+    }
   }
 
+  @Override
   public abstract boolean isEmpty();
 
+  @Override
   public abstract int size();
 
+  @Override
   public abstract void add(T obj);
 
+  @Override
   public void add(T obj, FlowSet<T> dest) {
-    if (dest != this) copy(dest);
+    if (dest != this) {
+      copy(dest);
+    }
     dest.add(obj);
   }
 
+  @Override
   public abstract void remove(T obj);
 
+  @Override
   public void remove(T obj, FlowSet<T> dest) {
-    if (dest != this) copy(dest);
+    if (dest != this) {
+      copy(dest);
+    }
     dest.remove(obj);
   }
 
   @Override
   public boolean isSubSet(FlowSet<T> other) {
-    if (other == this) return true;
+    if (other == this) {
+      return true;
+    }
 
     for (T t : other) {
-      if (!contains(t)) return false;
+      if (!contains(t)) {
+        return false;
+      }
     }
     return true;
   }
 
+  @Override
   public abstract boolean contains(T obj);
 
+  @Override
   public abstract Iterator<T> iterator();
 
+  @Override
   public abstract List<T> toList();
 
+  @Override
   @SuppressWarnings("unchecked")
   public boolean equals(Object o) {
-    if (!(o instanceof FlowSet)) return false;
+    if (!(o instanceof FlowSet)) {
+      return false;
+    }
     FlowSet<T> other = (FlowSet<T>) o;
-    if (size() != other.size()) return false;
-    for (T t : this) if (!other.contains(t)) return false;
+    if (size() != other.size()) {
+      return false;
+    }
+    for (T t : this) {
+      if (!other.contains(t)) {
+        return false;
+      }
+    }
     return true;
   }
 
+  @Override
   public int hashCode() {
     int result = 1;
-    for (T t : this) result += t.hashCode();
+    for (T t : this) {
+      result += t.hashCode();
+    }
     return result;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer("{");
 
     boolean isFirst = true;
     for (T t : this) {
-      if (!isFirst) buffer.append(", ");
+      if (!isFirst) {
+        buffer.append(", ");
+      }
       isFirst = false;
 
       buffer.append(t);

@@ -37,11 +37,13 @@ public interface InstanceOfExpr extends Expr {
 
   ValueBox getOpBox();
 
+  @Override
   Type getType();
 
   Type getCheckType();
 
   void setCheckType(Type checkType);
 
+  @Override
   void apply(Switch sw);
 }

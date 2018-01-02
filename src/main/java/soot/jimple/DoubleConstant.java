@@ -40,118 +40,161 @@ public class DoubleConstant extends RealConstant {
     return new DoubleConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return (c instanceof DoubleConstant && ((DoubleConstant) c).value == this.value);
   }
 
   /** Returns a hash code for this DoubleConstant object. */
+  @Override
   public int hashCode() {
     long v = Double.doubleToLongBits(value);
     return (int) (v ^ (v >>> 32));
   }
 
   // PTC 1999/06/28
+  @Override
   public NumericConstant add(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return DoubleConstant.v(this.value + ((DoubleConstant) c).value);
   }
 
+  @Override
   public NumericConstant subtract(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return DoubleConstant.v(this.value - ((DoubleConstant) c).value);
   }
 
+  @Override
   public NumericConstant multiply(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return DoubleConstant.v(this.value * ((DoubleConstant) c).value);
   }
 
+  @Override
   public NumericConstant divide(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return DoubleConstant.v(this.value / ((DoubleConstant) c).value);
   }
 
+  @Override
   public NumericConstant remainder(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return DoubleConstant.v(this.value % ((DoubleConstant) c).value);
   }
 
+  @Override
   public NumericConstant equalEqual(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return IntConstant.v((this.value == ((DoubleConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant notEqual(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return IntConstant.v((this.value != ((DoubleConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant lessThan(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return IntConstant.v((this.value < ((DoubleConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant lessThanOrEqual(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return IntConstant.v((this.value <= ((DoubleConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant greaterThan(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return IntConstant.v((this.value > ((DoubleConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant greaterThanOrEqual(NumericConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     return IntConstant.v((this.value >= ((DoubleConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public IntConstant cmpg(RealConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     double cValue = ((DoubleConstant) c).value;
-    if (this.value < cValue) return IntConstant.v(-1);
-    else if (this.value == cValue) return IntConstant.v(0);
-    else /* this or c could be NaN */ return IntConstant.v(1);
+    if (this.value < cValue) {
+      return IntConstant.v(-1);
+    } else if (this.value == cValue) {
+      return IntConstant.v(0);
+    } else {
+      /* this or c could be NaN */ return IntConstant.v(1);
+    }
   }
 
+  @Override
   public IntConstant cmpl(RealConstant c) {
-    if (!(c instanceof DoubleConstant))
+    if (!(c instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
+    }
     double cValue = ((DoubleConstant) c).value;
-    if (this.value > cValue) return IntConstant.v(1);
-    else if (this.value == cValue) return IntConstant.v(0);
-    else /* this or c could be NaN */ return IntConstant.v(-1);
+    if (this.value > cValue) {
+      return IntConstant.v(1);
+    } else if (this.value == cValue) {
+      return IntConstant.v(0);
+    } else {
+      /* this or c could be NaN */ return IntConstant.v(-1);
+    }
   }
 
+  @Override
   public NumericConstant negate() {
     return DoubleConstant.v(-(this.value));
   }
 
+  @Override
   public String toString() {
     String doubleString = new Double(value).toString();
 
     if (doubleString.equals("NaN")
         || doubleString.equals("Infinity")
-        || doubleString.equals("-Infinity")) return "#" + doubleString;
-    else return doubleString;
+        || doubleString.equals("-Infinity")) {
+      return "#" + doubleString;
+    } else {
+      return doubleString;
+    }
   }
 
+  @Override
   public Type getType() {
     return DoubleType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseDoubleConstant(this);
   }

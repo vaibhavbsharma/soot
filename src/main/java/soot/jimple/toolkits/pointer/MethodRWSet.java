@@ -19,16 +19,16 @@
 
 package soot.jimple.toolkits.pointer;
 
-import soot.G;
-import soot.PointsToSet;
-import soot.SootField;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import soot.G;
+import soot.PointsToSet;
+import soot.SootField;
 
 /** Represents the read or write set of a statement. */
 public class MethodRWSet extends RWSet {
@@ -38,6 +38,7 @@ public class MethodRWSet extends RWSet {
   protected boolean isFull = false;
   public static final int MAX_SIZE = Integer.MAX_VALUE;
 
+  @Override
   public String toString() {
     boolean empty = true;
     StringBuffer ret = new StringBuffer();
@@ -55,17 +56,26 @@ public class MethodRWSet extends RWSet {
         empty = false;
       }
     }
-    if (empty) ret.append("empty");
+    if (empty) {
+      ret.append("empty");
+    }
     return ret.toString();
   }
 
+  @Override
   public int size() {
     if (globals == null) {
-      if (fields == null) return 0;
-      else return fields.size();
+      if (fields == null) {
+        return 0;
+      } else {
+        return fields.size();
+      }
     } else {
-      if (fields == null) return globals.size();
-      else return globals.size() + fields.size();
+      if (fields == null) {
+        return globals.size();
+      } else {
+        return globals.size() + fields.size();
+      }
     }
   }
 
@@ -79,10 +89,12 @@ public class MethodRWSet extends RWSet {
            */
   }
 
+  @Override
   public boolean getCallsNative() {
     return callsNative;
   }
 
+  @Override
   public boolean setCallsNative() {
     boolean ret = !callsNative;
     callsNative = true;
@@ -90,28 +102,46 @@ public class MethodRWSet extends RWSet {
   }
 
   /** Returns an iterator over any globals read/written. */
+  @Override
   public Set getGlobals() {
-    if (isFull) return G.v().MethodRWSet_allGlobals;
-    if (globals == null) return Collections.EMPTY_SET;
+    if (isFull) {
+      return G.v().MethodRWSet_allGlobals;
+    }
+    if (globals == null) {
+      return Collections.EMPTY_SET;
+    }
     return globals;
   }
 
   /** Returns an iterator over any fields read/written. */
+  @Override
   public Set getFields() {
-    if (isFull) return G.v().MethodRWSet_allFields;
-    if (fields == null) return Collections.EMPTY_SET;
+    if (isFull) {
+      return G.v().MethodRWSet_allFields;
+    }
+    if (fields == null) {
+      return Collections.EMPTY_SET;
+    }
     return fields.keySet();
   }
 
   /** Returns a set of base objects whose field f is read/written. */
+  @Override
   public PointsToSet getBaseForField(Object f) {
-    if (isFull) return FullObjectSet.v();
-    if (fields == null) return null;
+    if (isFull) {
+      return FullObjectSet.v();
+    }
+    if (fields == null) {
+      return null;
+    }
     return fields.get(f);
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(RWSet oth) {
-    if (isFull) return oth != null;
+    if (isFull) {
+      return oth != null;
+    }
     if (!(oth instanceof MethodRWSet)) {
       return oth.hasNonEmptyIntersection(this);
     }
@@ -121,7 +151,9 @@ public class MethodRWSet extends RWSet {
         && !globals.isEmpty()
         && !other.globals.isEmpty()) {
       for (Iterator it = other.globals.iterator(); it.hasNext(); ) {
-        if (globals.contains(it.next())) return true;
+        if (globals.contains(it.next())) {
+          return true;
+        }
       }
     }
     if (fields != null && other.fields != null && !fields.isEmpty() && !other.fields.isEmpty()) {
@@ -138,9 +170,14 @@ public class MethodRWSet extends RWSet {
   }
 
   /** Adds the RWSet other into this set. */
+  @Override
   public boolean union(RWSet other) {
-    if (other == null) return false;
-    if (isFull) return false;
+    if (other == null) {
+      return false;
+    }
+    if (isFull) {
+      return false;
+    }
     boolean ret = false;
     if (other instanceof MethodRWSet) {
       MethodRWSet o = (MethodRWSet) other;
@@ -151,13 +188,17 @@ public class MethodRWSet extends RWSet {
       if (o.isFull) {
         ret = !isFull | ret;
         isFull = true;
-        if (true) throw new RuntimeException("attempt to add full set " + o + " into " + this);
+        if (true) {
+          throw new RuntimeException("attempt to add full set " + o + " into " + this);
+        }
         globals = null;
         fields = null;
         return ret;
       }
       if (o.globals != null) {
-        if (globals == null) globals = new HashSet();
+        if (globals == null) {
+          globals = new HashSet();
+        }
         ret = globals.addAll(o.globals) | ret;
         if (globals.size() > MAX_SIZE) {
           globals = null;
@@ -187,8 +228,11 @@ public class MethodRWSet extends RWSet {
     return ret;
   }
 
+  @Override
   public boolean addGlobal(SootField global) {
-    if (globals == null) globals = new HashSet();
+    if (globals == null) {
+      globals = new HashSet();
+    }
     boolean ret = globals.add(global);
     if (globals.size() > MAX_SIZE) {
       globals = null;
@@ -198,29 +242,41 @@ public class MethodRWSet extends RWSet {
     return ret;
   }
 
+  @Override
   public boolean addFieldRef(PointsToSet otherBase, Object field) {
     boolean ret = false;
-    if (fields == null) fields = new HashMap();
+    if (fields == null) {
+      fields = new HashMap();
+    }
     PointsToSet base = getBaseForField(field);
-    if (base instanceof FullObjectSet) return false;
+    if (base instanceof FullObjectSet) {
+      return false;
+    }
     if (otherBase instanceof FullObjectSet) {
       fields.put(field, otherBase);
       return true;
     }
-    if (otherBase.equals(base)) return false;
+    if (otherBase.equals(base)) {
+      return false;
+    }
     Union u;
     if (base == null || !(base instanceof Union)) {
       u = G.v().Union_factory.newUnion();
-      if (base != null) u.addAll(base);
+      if (base != null) {
+        u.addAll(base);
+      }
       fields.put(field, u);
-      if (base == null) addedField(fields.size());
+      if (base == null) {
+        addedField(fields.size());
+      }
       ret = true;
       if (fields.keySet().size() > MAX_SIZE) {
         fields = null;
         isFull = true;
-        if (true)
+        if (true) {
           throw new RuntimeException(
               "attempt to add more than " + MAX_SIZE + " fields into " + this);
+        }
         return true;
       }
     } else {
@@ -232,6 +288,7 @@ public class MethodRWSet extends RWSet {
 
   static void addedField(int size) {}
 
+  @Override
   public boolean isEquivTo(RWSet other) {
     return other == this;
   }

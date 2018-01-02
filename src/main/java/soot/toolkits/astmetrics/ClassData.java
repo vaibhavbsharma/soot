@@ -33,7 +33,7 @@ public class ClassData {
 
   public ClassData(String name) {
     className = name;
-    metricData = new ArrayList<MetricData>();
+    metricData = new ArrayList<>();
   }
 
   public String getClassName() {
@@ -64,6 +64,7 @@ public class ClassData {
     metricData.add(data);
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     b.append("<Class>\n");

@@ -42,7 +42,7 @@ public class Parm implements SparkField {
   }
 
   public static Parm v(SootMethod m, int index) {
-    Pair<SootMethod, Integer> p = new Pair<SootMethod, Integer>(m, new Integer(index));
+    Pair<SootMethod, Integer> p = new Pair<>(m, new Integer(index));
     Parm ret = G.v().Parm_pairToElement.get(p);
     if (ret == null) {
       G.v().Parm_pairToElement.put(p, ret = new Parm(m, index));
@@ -54,14 +54,17 @@ public class Parm implements SparkField {
     G.v().Parm_pairToElement = null;
   }
 
+  @Override
   public String toString() {
     return "Parm " + index + " to " + method;
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }
@@ -70,8 +73,11 @@ public class Parm implements SparkField {
     return index;
   }
 
+  @Override
   public Type getType() {
-    if (index == PointsToAnalysis.RETURN_NODE) return method.getReturnType();
+    if (index == PointsToAnalysis.RETURN_NODE) {
+      return method.getReturnType();
+    }
 
     return method.getParameterType(index);
   }

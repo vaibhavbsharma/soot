@@ -108,7 +108,9 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   private void handleInvokeExpr(InvokeExpr ie) {
-    if (!uses) return;
+    if (!uses) {
+      return;
+    }
 
     // Handle the parameters
     SootMethodRef method = ie.getMethodRef();
@@ -137,14 +139,17 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
     // Do nothing
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     handleInvokeExpr(stmt.getInvokeExpr());
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -214,10 +219,15 @@ class ConstraintCollector extends AbstractStmtSwitch {
           if ((base.numDimensions == 1) && (base.baseType instanceof IntegerType)) {
             right = resolver.typeVariable(base.baseType);
           }
-        } else if (baset instanceof IntegerType) right = resolver.typeVariable(baset);
+        } else if (baset instanceof IntegerType) {
+          right = resolver.typeVariable(baset);
+        }
 
-        if (uses)
-          if (index instanceof Local) resolver.typeVariable((Local) index).addParent(resolver.INT);
+        if (uses) {
+          if (index instanceof Local) {
+            resolver.typeVariable((Local) index).addParent(resolver.INT);
+          }
+        }
       }
     } else if (r instanceof DoubleConstant) {
     } else if (r instanceof FloatConstant) {
@@ -349,8 +359,12 @@ class ConstraintCollector extends AbstractStmtSwitch {
       } else if ((be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
         if (lop != null && rop != null) {
           TypeVariable common = resolver.typeVariable();
-          if (rop != null) rop.addParent(common);
-          if (lop != null) lop.addParent(common);
+          if (rop != null) {
+            rop.addParent(common);
+          }
+          if (lop != null) {
+            lop.addParent(common);
+          }
 
           right = common;
         }
@@ -388,8 +402,12 @@ class ConstraintCollector extends AbstractStmtSwitch {
           || (be instanceof NeExpr)) {
         if (uses) {
           TypeVariable common = resolver.typeVariable();
-          if (rop != null) rop.addParent(common);
-          if (lop != null) lop.addParent(common);
+          if (rop != null) {
+            rop.addParent(common);
+          }
+          if (lop != null) {
+            lop.addParent(common);
+          }
         }
 
         right = resolver.BOOLEAN;
@@ -507,6 +525,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -521,12 +540,16 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {}
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {}
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {}
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     if (uses) {
       ConditionExpr cond = (ConditionExpr) stmt.getCondition();
@@ -612,12 +635,17 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       if (rop != null && lop != null) {
         TypeVariable common = resolver.typeVariable();
-        if (rop != null) rop.addParent(common);
-        if (lop != null) lop.addParent(common);
+        if (rop != null) {
+          rop.addParent(common);
+        }
+        if (lop != null) {
+          lop.addParent(common);
+        }
       }
     }
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     if (uses) {
       Value key = stmt.getKey();
@@ -628,8 +656,10 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {}
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     if (uses) {
       if (stmt.getOp() instanceof Local) {
@@ -642,8 +672,10 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     if (uses) {
       Value key = stmt.getKey();
@@ -654,6 +686,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {}
 
   public void defaultCase(Stmt stmt) {

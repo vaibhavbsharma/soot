@@ -19,6 +19,11 @@
 
 package soot.jbco.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.Local;
 import soot.PatchingChain;
 import soot.RefType;
@@ -46,11 +51,6 @@ import soot.jimple.Jimple;
 import soot.jimple.ThisRef;
 import soot.util.Chain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * @author Michael Batchelder
  *     <p>Created on 7-Feb-2006
@@ -59,18 +59,24 @@ public class BodyBuilder {
 
   public static boolean bodiesHaveBeenBuilt = false;
   public static boolean namesHaveBeenRetrieved = false;
-  public static List<String> nameList = new ArrayList<String>();
+  public static List<String> nameList = new ArrayList<>();
 
   public static void retrieveAllBodies() {
-    if (bodiesHaveBeenBuilt) return;
+    if (bodiesHaveBeenBuilt) {
+      return;
+    }
 
     //  iterate through application classes, rename fields with junk
     for (SootClass c : soot.Scene.v().getApplicationClasses()) {
 
       for (SootMethod m : c.getMethods()) {
-        if (!m.isConcrete()) continue;
+        if (!m.isConcrete()) {
+          continue;
+        }
 
-        if (!m.hasActiveBody()) m.retrieveActiveBody();
+        if (!m.hasActiveBody()) {
+          m.retrieveActiveBody();
+        }
       }
     }
 
@@ -78,7 +84,9 @@ public class BodyBuilder {
   }
 
   public static void retrieveAllNames() {
-    if (namesHaveBeenRetrieved) return;
+    if (namesHaveBeenRetrieved) {
+      return;
+    }
 
     //  iterate through application classes, rename fields with junk
 
@@ -106,7 +114,7 @@ public class BodyBuilder {
 
   public static List<Local> buildParameterLocals(
       PatchingChain<Unit> units, Collection<Local> locals, List<Type> paramTypes) {
-    List<Local> args = new ArrayList<Local>();
+    List<Local> args = new ArrayList<>();
     for (int k = 0; k < paramTypes.size(); k++) {
       Type type = paramTypes.get(k);
       Local loc = Jimple.v().newLocal("l" + k, type);
@@ -121,13 +129,21 @@ public class BodyBuilder {
 
   public static void updateTraps(Unit oldu, Unit newu, Chain<Trap> traps) {
     int size = traps.size();
-    if (size == 0) return;
+    if (size == 0) {
+      return;
+    }
 
     Trap t = traps.getFirst();
     do {
-      if (t.getBeginUnit() == oldu) t.setBeginUnit(newu);
-      if (t.getEndUnit() == oldu) t.setEndUnit(newu);
-      if (t.getHandlerUnit() == oldu) t.setHandlerUnit(newu);
+      if (t.getBeginUnit() == oldu) {
+        t.setBeginUnit(newu);
+      }
+      if (t.getEndUnit() == oldu) {
+        t.setEndUnit(newu);
+      }
+      if (t.getHandlerUnit() == oldu) {
+        t.setHandlerUnit(newu);
+      }
     } while ((--size > 0) && (t = traps.getSuccOf(t)) != null);
   }
 
@@ -135,7 +151,11 @@ public class BodyBuilder {
     while (trapsIt.hasNext()) {
       Trap t = trapsIt.next();
       Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
-      while (it.hasNext()) if (u.equals(it.next())) return true;
+      while (it.hasNext()) {
+        if (u.equals(it.next())) {
+          return true;
+        }
+      }
     }
 
     return false;
@@ -146,7 +166,9 @@ public class BodyBuilder {
 
     int r2 = Rand.getInt(28) * 9;
 
-    if (r2 > 126) r2 += 4;
+    if (r2 > 126) {
+      r2 += 4;
+    }
 
     return r1 + r2;
   }

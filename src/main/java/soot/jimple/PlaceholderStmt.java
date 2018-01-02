@@ -32,10 +32,12 @@ import soot.jimple.internal.AbstractStmt;
 public class PlaceholderStmt extends AbstractStmt {
   private Unit source;
 
+  @Override
   public String toString() {
     return "<placeholder: " + source.toString() + ">";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("<placeholder: ");
     source.toString(up);
@@ -50,14 +52,17 @@ public class PlaceholderStmt extends AbstractStmt {
     return source;
   }
 
+  @Override
   public boolean fallsThrough() {
     throw new RuntimeException();
   }
 
+  @Override
   public boolean branches() {
     throw new RuntimeException();
   }
 
+  @Override
   public Object clone() {
     throw new RuntimeException();
   }

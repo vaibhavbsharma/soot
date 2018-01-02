@@ -20,14 +20,6 @@
 
 package soot.dava.internal.AST;
 
-import soot.Local;
-import soot.SootClass;
-import soot.UnitPrinter;
-import soot.dava.internal.SET.SETNodeLabel;
-import soot.dava.toolkits.base.AST.ASTAnalysis;
-import soot.dava.toolkits.base.AST.TryContentsFinder;
-import soot.dava.toolkits.base.AST.analysis.Analysis;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +27,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import soot.Local;
+import soot.SootClass;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.ASTAnalysis;
+import soot.dava.toolkits.base.AST.TryContentsFinder;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
 public class ASTTryNode extends ASTLabeledNode {
   private List<Object> tryBody, catchList;
@@ -64,18 +64,20 @@ public class ASTTryNode extends ASTLabeledNode {
     this.tryBody = tryBody;
     tryBodyContainer = new container(tryBody);
 
-    this.catchList = new ArrayList<Object>();
+    this.catchList = new ArrayList<>();
     Iterator<Object> cit = catchList.iterator();
-    while (cit.hasNext()) this.catchList.add(new container(cit.next()));
+    while (cit.hasNext()) {
+      this.catchList.add(new container(cit.next()));
+    }
 
-    this.exceptionMap = new HashMap<Object, Object>();
+    this.exceptionMap = new HashMap<>();
     cit = this.catchList.iterator();
     while (cit.hasNext()) {
       container c = (container) cit.next();
       this.exceptionMap.put(c, exceptionMap.get(c.o));
     }
 
-    this.paramMap = new HashMap<Object, Object>();
+    this.paramMap = new HashMap<>();
     cit = this.catchList.iterator();
     while (cit.hasNext()) {
       container c = (container) cit.next();
@@ -84,7 +86,9 @@ public class ASTTryNode extends ASTLabeledNode {
 
     subBodies.add(tryBodyContainer);
     cit = this.catchList.iterator();
-    while (cit.hasNext()) subBodies.add(cit.next());
+    while (cit.hasNext()) {
+      subBodies.add(cit.next());
+    }
   }
 
   /*
@@ -96,7 +100,7 @@ public class ASTTryNode extends ASTLabeledNode {
     tryBodyContainer = new container(tryBody);
 
     List<Object> oldSubBodies = subBodies;
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
 
     subBodies.add(tryBodyContainer);
 
@@ -104,9 +108,12 @@ public class ASTTryNode extends ASTLabeledNode {
     // discard the first since that was the old tryBodyContainer
     oldIt.next();
 
-    while (oldIt.hasNext()) subBodies.add(oldIt.next());
+    while (oldIt.hasNext()) {
+      subBodies.add(oldIt.next());
+    }
   }
 
+  @Override
   protected void perform_AnalysisOnSubBodies(ASTAnalysis a) {
     if (a instanceof TryContentsFinder) {
       Iterator<Object> sbit = subBodies.iterator();
@@ -124,7 +131,9 @@ public class ASTTryNode extends ASTLabeledNode {
       }
 
       a.analyseASTNode(this);
-    } else super.perform_AnalysisOnSubBodies(a);
+    } else {
+      super.perform_AnalysisOnSubBodies(a);
+    }
   }
 
   public boolean isEmpty() {
@@ -156,22 +165,28 @@ public class ASTTryNode extends ASTLabeledNode {
   }
 
   public Set<Object> get_ExceptionSet() {
-    HashSet<Object> s = new HashSet<Object>();
+    HashSet<Object> s = new HashSet<>();
 
     Iterator<Object> it = catchList.iterator();
-    while (it.hasNext()) s.add(exceptionMap.get(it.next()));
+    while (it.hasNext()) {
+      s.add(exceptionMap.get(it.next()));
+    }
 
     return s;
   }
 
+  @Override
   public Object clone() {
-    ArrayList<Object> newCatchList = new ArrayList<Object>();
+    ArrayList<Object> newCatchList = new ArrayList<>();
     Iterator<Object> it = catchList.iterator();
-    while (it.hasNext()) newCatchList.add(((container) it.next()).o);
+    while (it.hasNext()) {
+      newCatchList.add(((container) it.next()).o);
+    }
 
     return new ASTTryNode(get_Label(), tryBody, newCatchList, exceptionMap, paramMap);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -213,6 +228,7 @@ public class ASTTryNode extends ASTLabeledNode {
     }
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -257,6 +273,7 @@ public class ASTTryNode extends ASTLabeledNode {
     Part of Visitor Design Implementation for AST
     See: soot.dava.toolkits.base.AST.analysis For details
   */
+  @Override
   public void apply(Analysis a) {
     a.caseASTTryNode(this);
   }

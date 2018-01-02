@@ -7,7 +7,6 @@ package soot.toolkits.purity;
  *
  * <p>by Antoine Mine, 2005/02/08
  */
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -29,20 +28,30 @@ public class BinarySearchTree {
       this.o = o;
     }
 
+    @Override
     public boolean equals(Object o) {
-      if (!(o instanceof Wrapper)) return false;
+      if (!(o instanceof Wrapper)) {
+        return false;
+      }
       return this.o == ((Wrapper) o).o;
     }
 
+    @Override
     public int hashCode() {
       return System.identityHashCode(o);
     }
   }
 
   boolean repOk() {
-    if (root == null) return size == 0;
-    if (!isTree()) return false;
-    if (numNodes(root) != size) return false;
+    if (root == null) {
+      return size == 0;
+    }
+    if (!isTree()) {
+      return false;
+    }
+    if (numNodes(root) != size) {
+      return false;
+    }
     return isOrdered(root, null, null);
   }
 
@@ -54,11 +63,15 @@ public class BinarySearchTree {
     while (!workList.isEmpty()) {
       Node current = (Node) workList.removeFirst();
       if (current.left != null) {
-        if (!visited.add(new Wrapper(current.left))) return false;
+        if (!visited.add(new Wrapper(current.left))) {
+          return false;
+        }
         workList.add(current.left);
       }
       if (current.right != null) {
-        if (!visited.add(new Wrapper(current.right))) return false;
+        if (!visited.add(new Wrapper(current.right))) {
+          return false;
+        }
         workList.add(current.right);
       }
     }
@@ -66,20 +79,34 @@ public class BinarySearchTree {
   }
 
   int numNodes(Node n) {
-    if (n == null) return 0;
+    if (n == null) {
+      return 0;
+    }
     return 1 + numNodes(n.left) + numNodes(n.right);
   }
 
   boolean isOrdered(Node n, Comparable min, Comparable max) {
-    if ((min != null && n.info.compareTo(min) <= 0) || (max != null && n.info.compareTo(max) >= 0))
+    if ((min != null && n.info.compareTo(min) <= 0)
+        || (max != null && n.info.compareTo(max) >= 0)) {
       return false;
-    if (n.left != null) if (!isOrdered(n.left, min, n.info)) return false;
-    if (n.right != null) if (!isOrdered(n.right, n.info, max)) return false;
+    }
+    if (n.left != null) {
+      if (!isOrdered(n.left, min, n.info)) {
+        return false;
+      }
+    }
+    if (n.right != null) {
+      if (!isOrdered(n.right, n.info, max)) {
+        return false;
+      }
+    }
     return true;
   }
 
   static Node create(int i) {
-    if (i == 0) return null;
+    if (i == 0) {
+      return null;
+    }
     Node n = new Node();
     n.left = create(i - 1);
     n.right = create(i - 1);

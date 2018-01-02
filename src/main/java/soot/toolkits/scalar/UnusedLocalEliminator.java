@@ -25,6 +25,10 @@
 
 package soot.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,10 +39,6 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.util.Chain;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A BodyTransformer that removes all unused local variables from a given Body. Implemented as a
@@ -56,8 +56,9 @@ public class UnusedLocalEliminator extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unused locals...");
+    }
 
     int i = 0;
     int n = body.getLocals().size();
@@ -92,7 +93,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
     }
 
     // Remove all locals that are unused.
-    List<Local> keep = new ArrayList<Local>(body.getLocalCount());
+    List<Local> keep = new ArrayList<>(body.getLocalCount());
     for (Local local : locals) {
       int lno = local.getNumber();
       local.setNumber(oldNumbers[lno]);

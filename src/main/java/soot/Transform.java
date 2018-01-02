@@ -25,10 +25,10 @@
 
 package soot;
 
+import java.util.Map;
+
 import soot.options.Options;
 import soot.util.PhaseDumper;
-
-import java.util.Map;
 
 /** Maintains the pair (phaseName, singleton) needed for a transformation. */
 public class Transform implements HasPhaseOptions {
@@ -42,6 +42,7 @@ public class Transform implements HasPhaseOptions {
     this.t = t;
   }
 
+  @Override
   public String getPhaseName() {
     return phaseName;
   }
@@ -53,13 +54,19 @@ public class Transform implements HasPhaseOptions {
   private String declaredOpts;
   private String defaultOpts;
 
+  @Override
   public String getDeclaredOptions() {
-    if (declaredOpts != null) return declaredOpts;
+    if (declaredOpts != null) {
+      return declaredOpts;
+    }
     return Options.getDeclaredOptionsForPhase(phaseName);
   }
 
+  @Override
   public String getDefaultOptions() {
-    if (defaultOpts != null) return defaultOpts;
+    if (defaultOpts != null) {
+      return defaultOpts;
+    }
     return Options.getDefaultOptionsForPhase(phaseName);
   }
 
@@ -88,11 +95,15 @@ public class Transform implements HasPhaseOptions {
         G.v().out.println("Applying phase " + phaseName + " to the scene.");
       }
     }
-    if (DEBUG) PhaseDumper.v().dumpBefore(getPhaseName());
+    if (DEBUG) {
+      PhaseDumper.v().dumpBefore(getPhaseName());
+    }
 
     ((SceneTransformer) t).transform(phaseName, options);
 
-    if (DEBUG) PhaseDumper.v().dumpAfter(getPhaseName());
+    if (DEBUG) {
+      PhaseDumper.v().dumpAfter(getPhaseName());
+    }
   }
 
   public void apply(Body b) {
@@ -102,11 +113,15 @@ public class Transform implements HasPhaseOptions {
         G.v().out.println("Applying phase " + phaseName + " to " + b.getMethod() + ".");
       }
     }
-    if (DEBUG) PhaseDumper.v().dumpBefore(b, getPhaseName());
+    if (DEBUG) {
+      PhaseDumper.v().dumpBefore(b, getPhaseName());
+    }
 
     ((BodyTransformer) t).transform(b, phaseName, options);
 
-    if (DEBUG) PhaseDumper.v().dumpAfter(b, getPhaseName());
+    if (DEBUG) {
+      PhaseDumper.v().dumpAfter(b, getPhaseName());
+    }
   }
 
   @Override

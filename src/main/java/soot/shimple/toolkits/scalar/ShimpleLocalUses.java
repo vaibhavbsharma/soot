@@ -19,6 +19,13 @@
 
 package soot.shimple.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import soot.G;
 import soot.Local;
 import soot.Unit;
@@ -27,13 +34,6 @@ import soot.ValueBox;
 import soot.shimple.ShimpleBody;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class implements the LocalUses interface for Shimple. ShimpleLocalUses can be used in
@@ -58,12 +58,13 @@ public class ShimpleLocalUses implements LocalUses {
   public ShimpleLocalUses(ShimpleBody sb) {
     // Instead of rebuilding the ShimpleBody without the
     // programmer's knowledge, throw a RuntimeException
-    if (!sb.isSSA())
+    if (!sb.isSSA()) {
       throw new RuntimeException(
           "ShimpleBody is not in proper SSA form as required by ShimpleLocalUses.  You may need to rebuild it or use SimpleLocalUses instead.");
+    }
 
     // initialise the map
-    localToUses = new HashMap<Local, ArrayList>();
+    localToUses = new HashMap<>();
     Iterator localsIt = sb.getLocals().iterator();
     while (localsIt.hasNext()) {
       Local local = (Local) localsIt.next();
@@ -82,7 +83,9 @@ public class ShimpleLocalUses implements LocalUses {
         ValueBox box = (ValueBox) boxIt.next();
         Value value = box.getValue();
 
-        if (!(value instanceof Local)) continue;
+        if (!(value instanceof Local)) {
+          continue;
+        }
 
         List<UnitValueBoxPair> useList = localToUses.get(value);
         useList.add(new UnitValueBoxPair(unit, box));
@@ -98,7 +101,9 @@ public class ShimpleLocalUses implements LocalUses {
    */
   public List getUsesOf(Local local) {
     List uses = localToUses.get(local);
-    if (uses == null) return Collections.EMPTY_LIST;
+    if (uses == null) {
+      return Collections.EMPTY_LIST;
+    }
     return uses;
   }
 
@@ -107,6 +112,7 @@ public class ShimpleLocalUses implements LocalUses {
    * UnitValueBoxPairs, each containing a Unit that uses the local and the corresponding ValueBox
    * containing the Local.
    */
+  @Override
   public List getUsesOf(Unit unit) {
     List defBoxes = unit.getDefBoxes();
 
@@ -115,7 +121,9 @@ public class ShimpleLocalUses implements LocalUses {
         return Collections.EMPTY_LIST;
       case 1:
         Value local = ((ValueBox) defBoxes.get(0)).getValue();
-        if (!(local instanceof Local)) return Collections.EMPTY_LIST;
+        if (!(local instanceof Local)) {
+          return Collections.EMPTY_LIST;
+        }
         return getUsesOf((Local) local);
       default:
         G.v().out.println("Warning: Unit has multiple definition boxes?");
@@ -123,7 +131,9 @@ public class ShimpleLocalUses implements LocalUses {
         Iterator defBoxesIt = defBoxes.iterator();
         while (defBoxesIt.hasNext()) {
           Value def = ((ValueBox) defBoxesIt.next()).getValue();
-          if (def instanceof Local) usesList.addAll(getUsesOf((Local) def));
+          if (def instanceof Local) {
+            usesList.addAll(getUsesOf((Local) def));
+          }
         }
         return usesList;
     }

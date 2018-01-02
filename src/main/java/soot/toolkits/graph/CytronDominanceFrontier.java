@@ -38,7 +38,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
 
   public CytronDominanceFrontier(DominatorTree<N> dt) {
     this.dt = dt;
-    nodeToFrontier = new HashMap<DominatorNode<N>, List<DominatorNode<N>>>();
+    nodeToFrontier = new HashMap<>();
     for (DominatorNode<N> head : dt.getHeads()) {
       bottomUpDispatch(head);
     }
@@ -55,10 +55,13 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
     }
   }
 
+  @Override
   public List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node) {
     List<DominatorNode<N>> frontier = nodeToFrontier.get(node);
-    if (frontier == null) throw new RuntimeException("Frontier not defined for node: " + node);
-    return new ArrayList<DominatorNode<N>>(frontier);
+    if (frontier == null) {
+      throw new RuntimeException("Frontier not defined for node: " + node);
+    }
+    return new ArrayList<>(frontier);
   }
 
   protected boolean isFrontierKnown(DominatorNode<N> node) {
@@ -71,10 +74,14 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
     // *** inefficient in that in traverses the tree from the head
     // *** to the tail before it does anything.
 
-    if (isFrontierKnown(node)) return;
+    if (isFrontierKnown(node)) {
+      return;
+    }
 
     for (DominatorNode<N> child : dt.getChildrenOf(node)) {
-      if (!isFrontierKnown(child)) bottomUpDispatch(child);
+      if (!isFrontierKnown(child)) {
+        bottomUpDispatch(child);
+      }
     }
 
     processNode(node);
@@ -100,7 +107,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
    * </pre>
    */
   protected void processNode(DominatorNode<N> node) {
-    List<DominatorNode<N>> dominanceFrontier = new ArrayList<DominatorNode<N>>();
+    List<DominatorNode<N>> dominanceFrontier = new ArrayList<>();
 
     // local
     {
@@ -109,7 +116,9 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
       while (succsIt.hasNext()) {
         DominatorNode<N> succ = succsIt.next();
 
-        if (!dt.isImmediateDominatorOf(node, succ)) dominanceFrontier.add(succ);
+        if (!dt.isImmediateDominatorOf(node, succ)) {
+          dominanceFrontier.add(succ);
+        }
       }
     }
 

@@ -19,6 +19,11 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -34,12 +39,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.tagkit.ColorTag;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
 /** Adds colour tags to indicate potential aliasing between method parameters. */
 public class ParameterAliasTagger extends BodyTransformer {
   public ParameterAliasTagger(Singletons.Global g) {}
@@ -48,19 +47,26 @@ public class ParameterAliasTagger extends BodyTransformer {
     return G.v().soot_jimple_toolkits_pointer_ParameterAliasTagger();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
     PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
-    Set<IdentityStmt> parms = new HashSet<IdentityStmt>();
+    Set<IdentityStmt> parms = new HashSet<>();
 
-    for (Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
+    for (Object element : b.getUnits()) {
 
-      final Stmt s = (Stmt) sIt.next();
-      if (!(s instanceof IdentityStmt)) continue;
+      final Stmt s = (Stmt) element;
+      if (!(s instanceof IdentityStmt)) {
+        continue;
+      }
       IdentityStmt is = (IdentityStmt) s;
       ValueBox vb = is.getRightOpBox();
-      if (!(vb.getValue() instanceof ParameterRef)) continue;
+      if (!(vb.getValue() instanceof ParameterRef)) {
+        continue;
+      }
       ParameterRef pr = (ParameterRef) vb.getValue();
-      if (!(pr.getType() instanceof RefLikeType)) continue;
+      if (!(pr.getType() instanceof RefLikeType)) {
+        continue;
+      }
       parms.add(is);
     }
 
@@ -71,13 +77,13 @@ public class ParameterAliasTagger extends BodyTransformer {
   }
 
   private void fill(Set<IdentityStmt> parms, IdentityStmt parm, int colour, PointsToAnalysis pa) {
-    if (!parms.contains(parm)) return;
+    if (!parms.contains(parm)) {
+      return;
+    }
     parm.getRightOpBox().addTag(new ColorTag(colour, "Parameter Alias"));
     parms.remove(parm);
     PointsToSet ps = pa.reachingObjects((Local) parm.getLeftOp());
-    for (Iterator<IdentityStmt> parm2It = (new LinkedList<IdentityStmt>(parms)).iterator();
-        parm2It.hasNext(); ) {
-      final IdentityStmt parm2 = parm2It.next();
+    for (IdentityStmt parm2 : (new LinkedList<>(parms))) {
       if (ps.hasNonEmptyIntersection(pa.reachingObjects((Local) parm2.getLeftOp()))) {
         fill(parms, parm2, colour, pa);
       }

@@ -41,59 +41,73 @@ public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayIns
     baseType = opType;
   }
 
+  @Override
   public int getInCount() {
     return dimensionCount;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getInMachineCount() {
     return dimensionCount;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   public Object clone() {
     return new BNewMultiArrayInst(getBaseType(), getDimensionCount());
   }
 
+  @Override
   public final String getName() {
     return "newmultiarray";
   }
 
+  @Override
   final String getParameters() {
     return " " + dimensionCount;
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     up.literal(new Integer(dimensionCount).toString());
   }
 
+  @Override
   public ArrayType getBaseType() {
     return baseType;
   }
 
+  @Override
   public void setBaseType(ArrayType type) {
     baseType = type;
   }
 
+  @Override
   public int getDimensionCount() {
     return dimensionCount;
   }
 
+  @Override
   public void setDimensionCount(int x) {
     x = dimensionCount;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseNewMultiArrayInst(this);
   }
 
+  @Override
   public boolean containsNewExpr() {
     return true;
   }

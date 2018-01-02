@@ -1,5 +1,8 @@
 package soot.validation;
 
+import java.util.Collection;
+import java.util.List;
+
 import soot.Body;
 import soot.Local;
 import soot.Unit;
@@ -10,9 +13,6 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
-
-import java.util.Collection;
-import java.util.List;
 
 public enum UsesValidator implements BodyValidator {
   INSTANCE;
@@ -89,7 +89,9 @@ public enum UsesValidator implements BodyValidator {
 
   private boolean graphEdgesAreValid(UnitGraph g, Unit u) {
     for (Unit p : g.getPredsOf(u)) {
-      if (!g.getSuccsOf(p).contains(u)) return false;
+      if (!g.getSuccsOf(p).contains(u)) {
+        return false;
+      }
     }
     return true;
   }

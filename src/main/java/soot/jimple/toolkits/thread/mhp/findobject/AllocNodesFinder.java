@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import soot.PointsToAnalysis;
 import soot.RefType;
 import soot.SootMethod;
@@ -16,10 +20,6 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -42,9 +42,9 @@ public class AllocNodesFinder {
   public AllocNodesFinder(PegCallGraph pcg, CallGraph cg, PAG pag) {
     // System.out.println("===inside AllocNodesFinder===");
     this.pag = pag;
-    allocNodes = new HashSet<AllocNode>();
-    multiRunAllocNodes = new HashSet<AllocNode>();
-    multiCalledMethods = new HashSet<SootMethod>();
+    allocNodes = new HashSet<>();
+    multiRunAllocNodes = new HashSet<>();
+    multiCalledMethods = new HashSet<>();
     MultiCalledMethods mcm = new MultiCalledMethods(pcg, multiCalledMethods);
 
     find(mcm.getMultiCalledMethods(), pcg, cg);

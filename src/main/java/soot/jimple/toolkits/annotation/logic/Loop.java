@@ -18,13 +18,13 @@
  */
 package soot.jimple.toolkits.annotation.logic;
 
-import soot.Unit;
-import soot.jimple.Stmt;
-import soot.toolkits.graph.UnitGraph;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+
+import soot.Unit;
+import soot.jimple.Stmt;
+import soot.toolkits.graph.UnitGraph;
 
 /**
  * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In
@@ -90,7 +90,7 @@ public class Loop {
    */
   public Collection<Stmt> getLoopExits() {
     if (loopExists == null) {
-      loopExists = new HashSet<Stmt>();
+      loopExists = new HashSet<>();
       for (Stmt s : loopStatements) {
         for (Unit succ : g.getSuccsOf(s)) {
           if (!loopStatements.contains(succ)) {
@@ -109,7 +109,7 @@ public class Loop {
   public Collection<Stmt> targetsOfLoopExit(Stmt loopExit) {
     assert getLoopExits().contains(loopExit);
     List<Unit> succs = g.getSuccsOf(loopExit);
-    Collection<Stmt> res = new HashSet<Stmt>();
+    Collection<Stmt> res = new HashSet<>();
     for (Unit u : succs) {
       Stmt s = (Stmt) u;
       res.add(s);
@@ -149,16 +149,30 @@ public class Loop {
   /** {@inheritDoc} */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     final Loop other = (Loop) obj;
     if (header == null) {
-      if (other.header != null) return false;
-    } else if (!header.equals(other.header)) return false;
+      if (other.header != null) {
+        return false;
+      }
+    } else if (!header.equals(other.header)) {
+      return false;
+    }
     if (loopStatements == null) {
-      if (other.loopStatements != null) return false;
-    } else if (!loopStatements.equals(other.loopStatements)) return false;
+      if (other.loopStatements != null) {
+        return false;
+      }
+    } else if (!loopStatements.equals(other.loopStatements)) {
+      return false;
+    }
     return true;
   }
 }

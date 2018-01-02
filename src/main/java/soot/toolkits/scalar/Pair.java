@@ -51,17 +51,31 @@ public class Pair<T, U> {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     @SuppressWarnings("rawtypes")
     Pair other = (Pair) obj;
     if (o1 == null) {
-      if (other.o1 != null) return false;
-    } else if (!o1.equals(other.o1)) return false;
+      if (other.o1 != null) {
+        return false;
+      }
+    } else if (!o1.equals(other.o1)) {
+      return false;
+    }
     if (o2 == null) {
-      if (other.o2 != null) return false;
-    } else if (!o2.equals(other.o2)) return false;
+      if (other.o2 != null) {
+        return false;
+      }
+    } else if (!o2.equals(other.o2)) {
+      return false;
+    }
     return true;
   }
 
@@ -75,6 +89,7 @@ public class Pair<T, U> {
     return o1 instanceof SootMethod && o2.equals(PointsToAnalysis.THIS_NODE);
   }
 
+  @Override
   public String toString() {
     return "Pair " + o1 + "," + o2;
   }

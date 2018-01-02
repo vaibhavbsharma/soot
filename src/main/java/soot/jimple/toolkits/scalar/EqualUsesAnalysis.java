@@ -1,5 +1,13 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.EquivalentValue;
 import soot.Local;
 import soot.Unit;
@@ -11,14 +19,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 // EqualUsesAnalysis written by Richard L. Halpert, 2006-12-04
 // Determines if a set of uses of locals all use the same value
@@ -62,7 +62,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
 
   public boolean areEqualUses(
       Stmt firstStmt, Local firstLocal, Stmt secondStmt, Local secondLocal) {
-    Map<Stmt, Local> stmtToLocal = new HashMap<Stmt, Local>();
+    Map<Stmt, Local> stmtToLocal = new HashMap<>();
     stmtToLocal.put(firstStmt, firstLocal);
     stmtToLocal.put(secondStmt, secondLocal);
     return areEqualUses(stmtToLocal, new ArrayList());
@@ -70,7 +70,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
 
   public boolean areEqualUses(
       Stmt firstStmt, Local firstLocal, Stmt secondStmt, Local secondLocal, List boundaryStmts) {
-    Map<Stmt, Local> stmtToLocal = new HashMap<Stmt, Local>();
+    Map<Stmt, Local> stmtToLocal = new HashMap<>();
     stmtToLocal.put(firstStmt, firstLocal);
     stmtToLocal.put(secondStmt, secondLocal);
     return areEqualUses(stmtToLocal, boundaryStmts);
@@ -88,8 +88,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     this.useStmts = stmtToLocal.keySet();
     this.useLocals = stmtToLocal.values();
     this.boundaryStmts = boundaryStmts;
-    this.redefStmts = new ArrayList<Stmt>();
-    this.firstUseToAliasSet = new HashMap<Stmt, List>();
+    this.redefStmts = new ArrayList<>();
+    this.firstUseToAliasSet = new HashMap<>();
 
     //		G.v().out.println("Checking for Locals " + useLocals + " in these statements: " +
     // useStmts);
@@ -112,7 +112,9 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
       Iterator fsIt = fs.iterator();
       while (fsIt.hasNext()) {
         Object o = fsIt.next();
-        if (o instanceof List) aliases = (List) o;
+        if (o instanceof List) {
+          aliases = (List) o;
+        }
       }
       if (aliases != null && !aliases.contains(new EquivalentValue(stmtToLocal.get(u)))) {
         //				G.v().out.print("LIF = false ");
@@ -127,6 +129,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     return firstUseToAliasSet;
   }
 
+  @Override
   protected void merge(FlowSet inSet1, FlowSet inSet2, FlowSet outSet) {
 
     inSet1.union(inSet2, outSet);
@@ -136,8 +139,11 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     while (outIt.hasNext()) {
       Object o = outIt.next();
       if (o instanceof List) {
-        if (aliases1 == null) aliases1 = (List) o;
-        else aliases2 = (List) o;
+        if (aliases1 == null) {
+          aliases1 = (List) o;
+        } else {
+          aliases2 = (List) o;
+        }
       }
     }
     if (aliases1 != null && aliases2 != null) {
@@ -145,18 +151,21 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
       Iterator aliasIt = aliases1.iterator();
       while (aliasIt.hasNext()) {
         Object o = aliasIt.next();
-        if (!aliases2.contains(o)) aliasIt.remove();
+        if (!aliases2.contains(o)) {
+          aliasIt.remove();
+        }
       }
     }
   }
 
+  @Override
   protected void flowThrough(FlowSet in, Unit unit, FlowSet out) {
     Stmt stmt = (Stmt) unit;
 
     in.copy(out);
 
     // get list of definitions at this unit
-    List<Value> newDefs = new ArrayList<Value>();
+    List<Value> newDefs = new ArrayList<>();
     Iterator<ValueBox> newDefBoxesIt = stmt.getDefBoxes().iterator();
     while (newDefBoxesIt.hasNext()) {
       newDefs.add(newDefBoxesIt.next().getValue());
@@ -173,8 +182,9 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
           Object o = outIt.next();
           if (o instanceof Stmt) {
             Stmt s = (Stmt) o;
-            if (stmtToLocal.get(s) == useLocal) // if a use of this local exists in the flow set
-            redefStmts.add(stmt); // mark this as an active redef stmt
+            if (stmtToLocal.get(s) == useLocal) {
+              redefStmts.add(stmt); // mark this as an active redef stmt
+            }
           }
         }
       }
@@ -210,8 +220,9 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
         // Add a list of aliases to the used value
         Local l = stmtToLocal.get(stmt);
         List aliasList = el.getCopiesOfAt(l, stmt);
-        if (aliasList.size() == 0)
+        if (aliasList.size() == 0) {
           aliasList.add(l); // covers the case of this or a parameter, where getCopiesOfAt
+        }
         // doesn't seem to work right now
         List newAliasList = new ArrayList();
         newAliasList.addAll(aliasList);
@@ -228,28 +239,37 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
       Iterator outIt = out.iterator();
       while (outIt.hasNext()) {
         Object o = outIt.next();
-        if (o instanceof List) aliases = (List<EquivalentValue>) o;
+        if (o instanceof List) {
+          aliases = (List<EquivalentValue>) o;
+        }
       }
       if (aliases != null) {
         if (aliases.contains(new EquivalentValue(((DefinitionStmt) stmt).getRightOp()))) {
           Iterator<Value> newDefsIt = newDefs.iterator();
-          while (newDefsIt.hasNext()) aliases.add(new EquivalentValue(newDefsIt.next()));
+          while (newDefsIt.hasNext()) {
+            aliases.add(new EquivalentValue(newDefsIt.next()));
+          }
         } else {
           Iterator<Value> newDefsIt = newDefs.iterator();
-          while (newDefsIt.hasNext()) aliases.remove(new EquivalentValue(newDefsIt.next()));
+          while (newDefsIt.hasNext()) {
+            aliases.remove(new EquivalentValue(newDefsIt.next()));
+          }
         }
       }
     }
   }
 
+  @Override
   protected void copy(FlowSet source, FlowSet dest) {
     source.copy(dest);
   }
 
+  @Override
   protected FlowSet entryInitialFlow() {
     return new ArraySparseSet();
   }
 
+  @Override
   protected FlowSet newInitialFlow() {
     return new ArraySparseSet();
   }

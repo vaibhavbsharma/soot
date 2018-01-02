@@ -34,7 +34,9 @@ public final class NumberedSet<N extends Numberable> {
   public boolean add(Numberable o) {
     if (array != null) {
       int pos = findPosition(o);
-      if (array[pos] == o) return false;
+      if (array[pos] == o) {
+        return false;
+      }
       size++;
       if (size * 3 > array.length * 2) {
         doubleSize();
@@ -42,7 +44,9 @@ public final class NumberedSet<N extends Numberable> {
           pos = findPosition(o);
         } else {
           int number = o.getNumber();
-          if (number == 0) throw new RuntimeException("unnumbered");
+          if (number == 0) {
+            throw new RuntimeException("unnumbered");
+          }
           return bits.set(number);
         }
       }
@@ -50,7 +54,9 @@ public final class NumberedSet<N extends Numberable> {
       return true;
     } else {
       int number = o.getNumber();
-      if (number == 0) throw new RuntimeException("unnumbered");
+      if (number == 0) {
+        throw new RuntimeException("unnumbered");
+      }
       if (bits.set(number)) {
         size++;
         return true;
@@ -65,7 +71,9 @@ public final class NumberedSet<N extends Numberable> {
       return array[findPosition(o)] != null;
     } else {
       int number = o.getNumber();
-      if (number == 0) throw new RuntimeException("unnumbered");
+      if (number == 0) {
+        throw new RuntimeException("unnumbered");
+      }
       return bits.get(number);
     }
   }
@@ -74,11 +82,17 @@ public final class NumberedSet<N extends Numberable> {
 
   private final int findPosition(Numberable o) {
     int number = o.getNumber();
-    if (number == 0) throw new RuntimeException("unnumbered");
+    if (number == 0) {
+      throw new RuntimeException("unnumbered");
+    }
     number = number & (array.length - 1);
     while (true) {
-      if (array[number] == o) return number;
-      if (array[number] == null) return number;
+      if (array[number] == o) {
+        return number;
+      }
+      if (array[number] == null) {
+        return number;
+      }
       number = (number + 1) & (array.length - 1);
     }
   }
@@ -106,8 +120,11 @@ public final class NumberedSet<N extends Numberable> {
   }
 
   public Iterator<N> iterator() {
-    if (array == null) return new BitSetIterator(this);
-    else return new NumberedSetIterator(this);
+    if (array == null) {
+      return new BitSetIterator(this);
+    } else {
+      return new NumberedSetIterator(this);
+    }
   }
 
   class BitSetIterator implements Iterator<N> {
@@ -117,14 +134,17 @@ public final class NumberedSet<N extends Numberable> {
       iter = set.bits.iterator();
     }
 
+    @Override
     public final boolean hasNext() {
       return iter.hasNext();
     }
 
+    @Override
     public void remove() {
       throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public final N next() {
       return universe.get(iter.next());
     }
@@ -149,14 +169,17 @@ public final class NumberedSet<N extends Numberable> {
       }
     }
 
+    @Override
     public final boolean hasNext() {
       return cur != -1;
     }
 
+    @Override
     public void remove() {
       throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public final N next() {
       @SuppressWarnings("unchecked")
       N ret = (N) set.array[cur];

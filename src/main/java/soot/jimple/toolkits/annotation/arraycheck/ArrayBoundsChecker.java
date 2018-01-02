@@ -25,6 +25,10 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -49,10 +53,6 @@ import soot.tagkit.KeyTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-
 public class ArrayBoundsChecker extends BodyTransformer {
   public ArrayBoundsChecker(Singletons.Global g) {}
 
@@ -67,6 +67,7 @@ public class ArrayBoundsChecker extends BodyTransformer {
   protected boolean takeRectArray = false;
   protected boolean addColorTags = false;
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map opts) {
     ABCOptions options = new ABCOptions(opts);
     if (options.with_all()) {
@@ -236,7 +237,9 @@ public class ArrayBoundsChecker extends BodyTransformer {
 
             if (options.profiling()) {
               int lowercounter = 0;
-              if (!lowercheck) lowercounter = 1;
+              if (!lowercheck) {
+                lowercounter = 1;
+              }
 
               units.insertBefore(
                   Jimple.v()
@@ -247,7 +250,9 @@ public class ArrayBoundsChecker extends BodyTransformer {
                   stmt);
 
               int uppercounter = 2;
-              if (!uppercheck) uppercounter = 3;
+              if (!uppercheck) {
+                uppercounter = 3;
+              }
 
               units.insertBefore(
                   Jimple.v()
@@ -282,14 +287,20 @@ public class ArrayBoundsChecker extends BodyTransformer {
 
       if (addColorTags && takeRectArray) {
         RectangularArrayFinder raf = RectangularArrayFinder.v();
-        for (Iterator vbIt = body.getUseAndDefBoxes().iterator(); vbIt.hasNext(); ) {
-          final ValueBox vb = (ValueBox) vbIt.next();
+        for (Object element : body.getUseAndDefBoxes()) {
+          final ValueBox vb = (ValueBox) element;
           Value v = vb.getValue();
-          if (!(v instanceof Local)) continue;
+          if (!(v instanceof Local)) {
+            continue;
+          }
           Type t = v.getType();
-          if (!(t instanceof ArrayType)) continue;
+          if (!(t instanceof ArrayType)) {
+            continue;
+          }
           ArrayType at = (ArrayType) t;
-          if (at.numDimensions <= 1) continue;
+          if (at.numDimensions <= 1) {
+            continue;
+          }
           vb.addTag(
               new ColorTag(
                   raf.isRectangular(new MethodLocal(m, (Local) v))
@@ -320,7 +331,9 @@ public class ArrayBoundsChecker extends BodyTransformer {
 
     while (localIt.hasNext()) {
       Local local = (Local) localIt.next();
-      if (local.getType() instanceof ArrayType) return true;
+      if (local.getType() instanceof ArrayType) {
+        return true;
+      }
     }
 
     return false;
@@ -349,27 +362,40 @@ public class ArrayBoundsChecker extends BodyTransformer {
         if (vgraph.hasEdge(base, zero)) {
           int alength = vgraph.edgeWeight(base, zero);
 
-          if (-alength > indexv) uppercheck = false;
+          if (-alength > indexv) {
+            uppercheck = false;
+          }
         }
 
-        if (indexv >= 0) lowercheck = false;
+        if (indexv >= 0) {
+          lowercheck = false;
+        }
       } else {
         if (vgraph.hasEdge(base, index)) {
           int upperdistance = vgraph.edgeWeight(base, index);
-          if (upperdistance < 0) uppercheck = false;
+          if (upperdistance < 0) {
+            uppercheck = false;
+          }
         }
 
         if (vgraph.hasEdge(index, zero)) {
           int lowerdistance = vgraph.edgeWeight(index, zero);
 
-          if (lowerdistance <= 0) lowercheck = false;
+          if (lowerdistance <= 0) {
+            lowercheck = false;
+          }
         }
       }
     }
 
-    if (lowercheck && uppercheck) return 0;
-    else if (lowercheck && !uppercheck) return 1;
-    else if (!lowercheck && uppercheck) return 2;
-    else return 3;
+    if (lowercheck && uppercheck) {
+      return 0;
+    } else if (lowercheck && !uppercheck) {
+      return 1;
+    } else if (!lowercheck && uppercheck) {
+      return 2;
+    } else {
+      return 3;
+    }
   }
 }

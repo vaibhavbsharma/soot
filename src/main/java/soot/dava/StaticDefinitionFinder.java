@@ -51,6 +51,7 @@ public class StaticDefinitionFinder extends DepthFirstAdapter {
     finalFieldDefined = false;
   }
 
+  @Override
   public void inDefinitionStmt(DefinitionStmt s) {
     Value leftOp = s.getLeftOp();
     if (leftOp instanceof FieldRef) {

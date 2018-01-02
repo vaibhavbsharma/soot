@@ -22,29 +22,33 @@ public class FoundFile {
 
   public FoundFile(ZipFile file, ZipEntry entry) {
     this();
-    if (file == null || entry == null)
+    if (file == null || entry == null) {
       throw new IllegalArgumentException("Error: The archive and entry cannot be null.");
+    }
     this.zipFile = file;
     this.zipEntry = entry;
   }
 
   public FoundFile(String archivePath, String entryName) {
     this();
-    if (archivePath == null || entryName == null)
+    if (archivePath == null || entryName == null) {
       throw new IllegalArgumentException("Error: The archive path and entry name cannot be null.");
+    }
     this.file = new File(archivePath);
     this.entryName = entryName;
   }
 
   public FoundFile(File file) {
     this();
-    if (file == null) throw new IllegalArgumentException("Error: The file cannot be null.");
+    if (file == null) {
+      throw new IllegalArgumentException("Error: The file cannot be null.");
+    }
     this.file = file;
     this.entryName = null;
   }
 
   private FoundFile() {
-    this.openedInputStreams = new ArrayList<InputStream>();
+    this.openedInputStreams = new ArrayList<>();
   }
 
   public String getFilePath() {
@@ -131,7 +135,7 @@ public class FoundFile {
 
   public void close() {
     // Try to close all opened input streams
-    List<Exception> errs = new ArrayList<Exception>(0);
+    List<Exception> errs = new ArrayList<>(0);
     for (InputStream is : openedInputStreams) {
       try {
         is.close();

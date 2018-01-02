@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.pointer;
 
+import java.util.Collections;
+import java.util.Set;
+
 import soot.AnySubType;
 import soot.G;
 import soot.PointsToSet;
@@ -26,9 +29,6 @@ import soot.RefType;
 import soot.Singletons;
 import soot.Type;
 import soot.jimple.ClassConstant;
-
-import java.util.Collections;
-import java.util.Set;
 
 public class FullObjectSet extends Union {
   public FullObjectSet(Singletons.Global g) {
@@ -58,10 +58,12 @@ public class FullObjectSet extends Union {
   }
 
   /** Returns true if this set contains no run-time objects. */
+  @Override
   public boolean isEmpty() {
     return false;
   }
   /** Returns true if this set is a subset of other. */
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     return other != null;
   }
@@ -73,14 +75,17 @@ public class FullObjectSet extends Union {
   }
 
   /** Adds all objects in s into this union of sets, returning true if this union was changed. */
+  @Override
   public boolean addAll(PointsToSet s) {
     return false;
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
     return null;
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
     return null;
   }

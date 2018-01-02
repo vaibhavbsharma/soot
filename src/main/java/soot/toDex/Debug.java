@@ -36,6 +36,8 @@ public class Debug {
   }
 
   public static void printDbg(boolean c, String s, Object... objects) {
-    if (c) printDbg(s, objects);
+    if (c) {
+      printDbg(s, objects);
+    }
   }
 }

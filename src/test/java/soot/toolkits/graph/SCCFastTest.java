@@ -1,9 +1,9 @@
 package soot.toolkits.graph;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 public class SCCFastTest {
 
@@ -15,7 +15,7 @@ public class SCCFastTest {
     Graph g = new Graph(rootNode);
     rootNode.addkid(left0);
     rootNode.addkid(left1);
-    StronglyConnectedComponentsFast<Node> scc = new StronglyConnectedComponentsFast<Node>(g);
+    StronglyConnectedComponentsFast<Node> scc = new StronglyConnectedComponentsFast<>(g);
     Assert.assertTrue(scc.getTrueComponents().isEmpty());
   }
 
@@ -32,7 +32,7 @@ public class SCCFastTest {
     left0.addkid(left0a);
     left0a.addkid(left0b);
     left0b.addkid(left0);
-    StronglyConnectedComponentsFast<Node> scc = new StronglyConnectedComponentsFast<Node>(g);
+    StronglyConnectedComponentsFast<Node> scc = new StronglyConnectedComponentsFast<>(g);
     Assert.assertEquals(1, scc.getTrueComponents().size());
 
     List<Node> nodes = scc.getTrueComponents().get(0);

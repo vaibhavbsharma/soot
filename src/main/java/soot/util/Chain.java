@@ -96,6 +96,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
    * Removes the given object from this Chain. Parameter has to be of type {@link Object} to be
    * compatible with the {@link Collection} interface.
    */
+  @Override
   boolean remove(Object u);
 
   /** Adds the given object at the beginning of the Chain. */
@@ -135,6 +136,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
   Iterator<E> snapshotIterator();
 
   /** Returns an iterator over this Chain. */
+  @Override
   Iterator<E> iterator();
 
   /** Returns an iterator over this Chain, starting at the given object. */
@@ -144,6 +146,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
   Iterator<E> iterator(E head, E tail);
 
   /** Returns the size of this Chain. */
+  @Override
   int size();
 
   /** Returns the number of times this chain has been modified. */

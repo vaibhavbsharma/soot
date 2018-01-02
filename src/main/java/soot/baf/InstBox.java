@@ -33,6 +33,7 @@ class InstBox extends AbstractUnitBox {
     setUnit(s);
   }
 
+  @Override
   public boolean canContainUnit(Unit u) {
     return u instanceof Inst || u == null;
   }

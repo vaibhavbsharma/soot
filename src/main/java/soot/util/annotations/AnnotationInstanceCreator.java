@@ -1,16 +1,19 @@
 package soot.util.annotations;
 
-import com.google.common.reflect.AbstractInvocationHandler;
-import org.jboss.util.Classes;
-import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationTag;
-import soot.util.annotations.AnnotationElemSwitch.AnnotationElemResult;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.util.Classes;
+
+import com.google.common.reflect.AbstractInvocationHandler;
+
+import soot.tagkit.AnnotationElem;
+import soot.tagkit.AnnotationEnumElem;
+import soot.tagkit.AnnotationTag;
+import soot.util.annotations.AnnotationElemSwitch.AnnotationElemResult;
 
 /**
  * A simple helper class with the ability to create an instance of {@link Proxy} implementing the
@@ -41,7 +44,7 @@ public class AnnotationInstanceCreator {
     try {
       // load the class of the annotation to be created
       final Class<?> clazz = Classes.loadClass(tag.getType().replace('/', '.'));
-      final Map<String, Object> map = new HashMap<String, Object>();
+      final Map<String, Object> map = new HashMap<>();
 
       // for every element generate the result
       for (AnnotationElem elem : tag.getElems()) {

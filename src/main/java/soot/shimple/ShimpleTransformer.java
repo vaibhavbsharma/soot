@@ -19,6 +19,9 @@
 
 package soot.shimple;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import soot.Body;
 import soot.G;
 import soot.MethodSource;
@@ -28,9 +31,6 @@ import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.options.Options;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Traverses all methods, in all classes from the Scene, and transforms them to Shimple. Typically
@@ -45,9 +45,11 @@ public class ShimpleTransformer extends SceneTransformer {
     return G.v().soot_shimple_ShimpleTransformer();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
-    if (Options.v().verbose())
+    if (Options.v().verbose()) {
       G.v().out.println("Transforming all classes in the Scene to Shimple...");
+    }
 
     // *** FIXME: Add debug output to indicate which class/method is being shimplified.
     // *** FIXME: Is ShimpleTransformer the right solution?  The call graph may deem
@@ -56,12 +58,16 @@ public class ShimpleTransformer extends SceneTransformer {
     Iterator classesIt = Scene.v().getClasses().iterator();
     while (classesIt.hasNext()) {
       SootClass sClass = (SootClass) classesIt.next();
-      if (sClass.isPhantom()) continue;
+      if (sClass.isPhantom()) {
+        continue;
+      }
 
       Iterator methodsIt = sClass.getMethods().iterator();
       while (methodsIt.hasNext()) {
         SootMethod method = (SootMethod) methodsIt.next();
-        if (!method.isConcrete()) continue;
+        if (!method.isConcrete()) {
+          continue;
+        }
 
         if (method.hasActiveBody()) {
           Body body = method.getActiveBody();
@@ -69,7 +75,9 @@ public class ShimpleTransformer extends SceneTransformer {
 
           if (body instanceof ShimpleBody) {
             sBody = (ShimpleBody) body;
-            if (!sBody.isSSA()) sBody.rebuild();
+            if (!sBody.isSSA()) {
+              sBody.rebuild();
+            }
           } else {
             sBody = Shimple.v().newBody(body);
           }

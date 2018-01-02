@@ -1,13 +1,14 @@
 package soot.toDex.instructions;
 
+import java.util.BitSet;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction21c;
 import org.jf.dexlib2.iface.reference.Reference;
+
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-
-import java.util.BitSet;
 
 /**
  * The "21c" instruction format: It needs two 16-bit code units, has one register and is used for
@@ -25,6 +26,7 @@ public class Insn21c extends AbstractInsn implements OneRegInsn {
     this.referencedItem = referencedItem;
   }
 
+  @Override
   public Register getRegA() {
     return regs.get(REG_A_IDX);
   }
