@@ -25,23 +25,31 @@
 
 package soot.tagkit;
 
-import java.util.LinkedList;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.baf.BafBody;
 
-/** Interface to aggregate tags of units. */
+import java.util.LinkedList;
+import java.util.Map;
+
+/**
+ * Interface to aggregate tags of units.
+ */
 public abstract class TagAggregator extends BodyTransformer {
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   public abstract boolean wantTag(Tag t);
 
-  /** Aggregate the given tag assigned to the given unit */
+  /**
+   * Aggregate the given tag assigned to the given unit
+   */
   public abstract void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units);
 
-  /** Return name of the resulting aggregated tag. */
+  /**
+   * Return name of the resulting aggregated tag.
+   */
   public abstract String aggregatedName();
 
   @Override
@@ -67,6 +75,9 @@ public abstract class TagAggregator extends BodyTransformer {
     fini();
   }
 
-  /** Called after all tags for a method have been aggregated. */
-  public void fini() {}
+  /**
+   * Called after all tags for a method have been aggregated.
+   */
+  public void fini() {
+  }
 }

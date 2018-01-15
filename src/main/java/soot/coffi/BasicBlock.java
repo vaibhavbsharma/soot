@@ -25,29 +25,33 @@
 
 package soot.coffi;
 
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
 import soot.G;
 import soot.jimple.Stmt;
 import soot.util.ArraySet;
 
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * Represents one basic block in a control flow graph.
  *
+ * @author Clark Verbrugge
  * @see CFG
  * @see ClassFile#parse
- * @author Clark Verbrugge
  */
 class BasicBlock {
-  /** Number of instructions in this block. */
+  /**
+   * Number of instructions in this block.
+   */
   public int size;
-  /** Head of the list of instructions. */
+  /**
+   * Head of the list of instructions.
+   */
   public Instruction head;
   /**
    * Tail of the list of instructions.
-   *
+   * <p>
    * <p>Normally, the last instruction will have a next pointer with value <i>null</i>. After a
    * Instruction sequences are reconstructed though, the instruction lists are rejoined in order,
    * and so the tail instruction will not have a <i>null</i> next pointer.
@@ -69,32 +73,30 @@ class BasicBlock {
   public Vector<BasicBlock> pred;
 
   public boolean inq;
-  /** Flag for whether starting an exception or not. */
+  /**
+   * Flag for whether starting an exception or not.
+   */
   public boolean beginException;
-  /** Flag for whether starting main code block or not. */
+  /**
+   * Flag for whether starting main code block or not.
+   */
   public boolean beginCode;
+  /**
+   * Next BasicBlock in the CFG, in the parse order.
+   */
+  public BasicBlock next;
+  /**
+   * Unique (among basic blocks) id.
+   */
+  public long id; // unique id
   /**
    * Flag for semantic stack analysis fixup pass.
    *
    * @see CFG#jimplify
    */
   boolean done;
-
-  /** Next BasicBlock in the CFG, in the parse order. */
-  public BasicBlock next;
-  /** Unique (among basic blocks) id. */
-  public long id; // unique id
-
   List<Stmt> statements;
   Set addressesToFixup = new ArraySet();
-
-  soot.jimple.Stmt getHeadJStmt() {
-    return statements.get(0);
-  }
-
-  soot.jimple.Stmt getTailJStmt() {
-    return statements.get(statements.size() - 1);
-  }
 
   public BasicBlock(Instruction insts) {
     id = G.v().coffi_BasicBlock_ids++;
@@ -120,6 +122,14 @@ class BasicBlock {
     pred = new Vector<>(2, 3);
   }
 
+  soot.jimple.Stmt getHeadJStmt() {
+    return statements.get(0);
+  }
+
+  soot.jimple.Stmt getTailJStmt() {
+    return statements.get(statements.size() - 1);
+  }
+
   /**
    * Computes a hash code for this block from the label of the first instruction in its contents.
    *
@@ -142,7 +152,9 @@ class BasicBlock {
     return (this == b);
   }
 
-  /** For printing the string "BB: " + id. */
+  /**
+   * For printing the string "BB: " + id.
+   */
   @Override
   public String toString() {
     return "BB: " + id;

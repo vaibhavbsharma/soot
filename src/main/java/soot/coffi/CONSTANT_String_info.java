@@ -31,8 +31,8 @@ import soot.jimple.StringConstant;
 /**
  * A constant pool entry of type CONSTANT_String.
  *
- * @see cp_info
  * @author Clark Verbrugge
+ * @see cp_info
  */
 class CONSTANT_String_info extends cp_info {
   /**
@@ -41,6 +41,7 @@ class CONSTANT_String_info extends cp_info {
    * @see CONSTANT_Utf8_info
    */
   public int string_index;
+
   /**
    * Returns the size of this cp_info object.
    *
@@ -51,6 +52,7 @@ class CONSTANT_String_info extends cp_info {
   public int size() {
     return 3;
   }
+
   /**
    * Returns a String representation of this entry.
    *
@@ -63,6 +65,7 @@ class CONSTANT_String_info extends cp_info {
     CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info) (constant_pool[string_index]);
     return "\"" + ci.convert() + "\"";
   }
+
   /**
    * Returns a String description of what kind of entry this is.
    *
@@ -73,12 +76,13 @@ class CONSTANT_String_info extends cp_info {
   public String typeName() {
     return "string";
   }
+
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant
    * pool).
    *
-   * @param constant_pool constant pool of ClassFile for this.
-   * @param cp constant pool entry to compare against.
+   * @param constant_pool    constant pool of ClassFile for this.
+   * @param cp               constant pool entry to compare against.
    * @param cp_constant_pool constant pool of ClassFile for cp.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo

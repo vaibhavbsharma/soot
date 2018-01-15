@@ -33,10 +33,10 @@ import java.util.Enumeration;
  * efficient (ie to avoid allocating an object in each call to nextElement), the return value is
  * accessed by this object's 'c' field, and nextElement merely returns this.
  *
+ * @author Clark Verbrugge
  * @see CONSTANT_Utf8_info
  * @see Utf8_Enumeration#c
  * @see Utf8_Enumeration#nextElement
- * @author Clark Verbrugge
  */
 public class Utf8_Enumeration implements Enumeration {
 
@@ -57,7 +57,9 @@ public class Utf8_Enumeration implements Enumeration {
    *
    * @see Utf8_Enumeration#reset
    */
-  public Utf8_Enumeration() {}
+  public Utf8_Enumeration() {
+  }
+
   /**
    * For creating a normal enumeration of the given Utf8 string.
    *
@@ -68,6 +70,7 @@ public class Utf8_Enumeration implements Enumeration {
     curindex = (short) 2;
     length = (short) (((((bytes[0])) & 0xff) << 8) + (((bytes[1])) & 0xff) + 2);
   }
+
   /**
    * Resets this object to be an enumeration of the given Utf8 string.
    *
@@ -79,7 +82,9 @@ public class Utf8_Enumeration implements Enumeration {
     length = (short) (((((bytes[0])) & 0xff) << 8) + (((bytes[1])) & 0xff) + 2);
   }
 
-  /** <i>true</i> if the entire string hasn't been enumerated yet. */
+  /**
+   * <i>true</i> if the entire string hasn't been enumerated yet.
+   */
   @Override
   public boolean hasMoreElements() {
     return curindex < length;

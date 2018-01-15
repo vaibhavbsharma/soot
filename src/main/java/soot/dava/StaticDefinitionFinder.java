@@ -26,6 +26,7 @@
  * If any of the fields which are assigned is a final field the boolean
  * finalFieldDefined is set to true
  */
+
 package soot.dava;
 
 import soot.SootField;

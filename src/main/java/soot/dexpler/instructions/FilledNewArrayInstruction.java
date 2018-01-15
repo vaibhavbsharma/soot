@@ -24,12 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import static soot.dexpler.Util.isFloatLike;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.reference.TypeReference;
-
 import soot.ArrayType;
 import soot.Local;
 import soot.Type;
@@ -42,6 +39,8 @@ import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
+
+import static soot.dexpler.Util.isFloatLike;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
@@ -58,11 +57,11 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
     Instruction35c filledNewArrayInstr = (Instruction35c) instruction;
     int[] regs = {
-      filledNewArrayInstr.getRegisterC(),
-      filledNewArrayInstr.getRegisterD(),
-      filledNewArrayInstr.getRegisterE(),
-      filledNewArrayInstr.getRegisterF(),
-      filledNewArrayInstr.getRegisterG(),
+        filledNewArrayInstr.getRegisterC(),
+        filledNewArrayInstr.getRegisterD(),
+        filledNewArrayInstr.getRegisterE(),
+        filledNewArrayInstr.getRegisterF(),
+        filledNewArrayInstr.getRegisterG(),
     };
     //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
     //        body.add(nopStmtBeginning);
@@ -106,7 +105,9 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
     return isRegisterUsed(register) && isFloatLike(arrayType);
   }
 
-  /** Check if register is referenced by this instruction. */
+  /**
+   * Check if register is referenced by this instruction.
+   */
   private boolean isRegisterUsed(int register) {
     Instruction35c i = (Instruction35c) instruction;
     return register == i.getRegisterD()

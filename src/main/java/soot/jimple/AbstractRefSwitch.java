@@ -57,5 +57,6 @@ public abstract class AbstractRefSwitch implements RefSwitch {
   }
 
   @Override
-  public void defaultCase(Object obj) {}
+  public void defaultCase(Object obj) {
+  }
 }

@@ -36,14 +36,16 @@ import soot.util.Switch;
 public class ArrayType extends RefLikeType {
   /**
    * baseType can be any type except for an array type, null and void
-   *
+   * <p>
    * <p>What is the base type of the array? That is, for an array of type A[][][], how do I find out
    * what the A is? The accepted way of doing this has always been to look at the public field
    * baseType in ArrayType, ever since the very beginning of Soot.
    */
   public final Type baseType;
 
-  /** dimension count for the array type */
+  /**
+   * dimension count for the array type
+   */
   public final int numDimensions;
 
   private ArrayType(Type baseType, int numDimensions) {
@@ -63,7 +65,7 @@ public class ArrayType extends RefLikeType {
   /**
    * Creates an ArrayType parametrized by a given Type and dimension count.
    *
-   * @param baseType a Type to parametrize the ArrayType
+   * @param baseType      a Type to parametrize the ArrayType
    * @param numDimensions the dimension count to parametrize the ArrayType.
    * @return an ArrayType parametrized accrodingly.
    */
@@ -169,6 +171,7 @@ public class ArrayType extends RefLikeType {
   public Type getArrayElementType() {
     return getElementType();
   }
+
   /**
    * If I get an element of the array, what will be its type? That is, if I have an array a of type
    * A[][][], what is the type of a[] (it's A[][])? The getElementType() method in ArrayType was

@@ -34,23 +34,29 @@ import java.util.Set;
 /**
  * Implementation of HashMap which guarantees a stable (between executions) order for its elements
  * upon iteration.
- *
+ * <p>
  * <p>This is quite useful for maps of Locals, to avoid nondeterministic local-name drift.
  */
 public class DeterministicHashMap<K, V> extends HashMap<K, V> {
   Set<K> keys = new TrustingMonotonicArraySet<>();
 
-  /** Constructs a DeterministicHashMap with the given initial capacity. */
+  /**
+   * Constructs a DeterministicHashMap with the given initial capacity.
+   */
   public DeterministicHashMap(int initialCapacity) {
     super(initialCapacity);
   }
 
-  /** Constructs a DeterministicHashMap with the given initial capacity and load factor. */
+  /**
+   * Constructs a DeterministicHashMap with the given initial capacity and load factor.
+   */
   public DeterministicHashMap(int initialCapacity, float loadFactor) {
     super(initialCapacity, loadFactor);
   }
 
-  /** Inserts a mapping in this HashMap from <code>key</code> to <code>value</code>. */
+  /**
+   * Inserts a mapping in this HashMap from <code>key</code> to <code>value</code>.
+   */
   @Override
   public V put(K key, V value) {
     if (!containsKey(key)) {
@@ -60,20 +66,26 @@ public class DeterministicHashMap<K, V> extends HashMap<K, V> {
     return super.put(key, value);
   }
 
-  /** Removes the given object from this HashMap (unsupported). */
+  /**
+   * Removes the given object from this HashMap (unsupported).
+   */
   @Override
   public V remove(Object obj) {
     throw new UnsupportedOperationException();
   }
 
-  /** Returns a backed list of keys for this HashMap (unsupported). */
+  /**
+   * Returns a backed list of keys for this HashMap (unsupported).
+   */
   @Override
   public Set<K> keySet() {
     return keys;
   }
 }
 
-/** ArraySet which doesn't check that the elements that you insert are previous uncontained. */
+/**
+ * ArraySet which doesn't check that the elements that you insert are previous uncontained.
+ */
 class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
   private static final int DEFAULT_SIZE = 8;
 
@@ -88,7 +100,9 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
     numElements = 0;
   }
 
-  /** Create a set which contains the given elements. */
+  /**
+   * Create a set which contains the given elements.
+   */
   public TrustingMonotonicArraySet(T[] elements) {
     this();
 
@@ -135,38 +149,6 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
     return new ArrayIterator();
   }
 
-  private class ArrayIterator implements Iterator<T> {
-    int nextIndex;
-
-    ArrayIterator() {
-      nextIndex = 0;
-    }
-
-    @Override
-    public boolean hasNext() {
-      return nextIndex < numElements;
-    }
-
-    @Override
-    public T next() throws NoSuchElementException {
-      if (!(nextIndex < numElements)) {
-        throw new NoSuchElementException();
-      }
-
-      return elements[nextIndex++];
-    }
-
-    @Override
-    public void remove() throws NoSuchElementException {
-      if (nextIndex == 0) {
-        throw new NoSuchElementException();
-      } else {
-        removeElementAt(nextIndex - 1);
-        nextIndex = nextIndex - 1;
-      }
-    }
-  }
-
   private void removeElementAt(int index) {
     throw new UnsupportedOperationException();
     /*
@@ -200,5 +182,37 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
 
     System.arraycopy(elements, 0, array, 0, numElements);
     return array;
+  }
+
+  private class ArrayIterator implements Iterator<T> {
+    int nextIndex;
+
+    ArrayIterator() {
+      nextIndex = 0;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return nextIndex < numElements;
+    }
+
+    @Override
+    public T next() throws NoSuchElementException {
+      if (!(nextIndex < numElements)) {
+        throw new NoSuchElementException();
+      }
+
+      return elements[nextIndex++];
+    }
+
+    @Override
+    public void remove() throws NoSuchElementException {
+      if (nextIndex == 0) {
+        throw new NoSuchElementException();
+      } else {
+        removeElementAt(nextIndex - 1);
+        nextIndex = nextIndex - 1;
+      }
+    }
   }
 }

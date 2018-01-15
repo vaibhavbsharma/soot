@@ -25,13 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -58,24 +51,36 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
 
-/** Utility methods for dealing with synchronization. */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Utility methods for dealing with synchronization.
+ */
 public class SynchronizerManager {
-  public SynchronizerManager(Singletons.Global g) {}
+  /**
+   * Maps classes to class$ fields. Don't trust default.
+   */
+  public HashMap<SootClass, SootField> classToClassField = new HashMap<>();
+
+  public SynchronizerManager(Singletons.Global g) {
+  }
 
   public static SynchronizerManager v() {
     return G.v().soot_jimple_toolkits_invoke_SynchronizerManager();
   }
 
-  /** Maps classes to class$ fields. Don't trust default. */
-  public HashMap<SootClass, SootField> classToClassField = new HashMap<>();
-
   /**
    * Adds code to fetch the static Class object to the given JimpleBody before the target Stmt.
-   *
+   * <p>
    * <p>Uses our custom classToClassField field to cache the results.
-   *
+   * <p>
    * <p>The code will look like this:
-   *
+   * <p>
    * <pre>
    * $r3 = <quack: java.lang.Class class$quack>;
    * .if $r3 != .null .goto label2;
@@ -148,7 +153,7 @@ public class SynchronizerManager {
   /**
    * Finds a method which calls java.lang.Class.forName(String). Searches for names class$, _class$,
    * __class$, etc. If no such method is found, creates one and returns it.
-   *
+   * <p>
    * <p>Uses dumb matching to do search. Not worth doing symbolic analysis for this!
    */
   public SootMethod getClassFetcherFor(SootClass c) {
@@ -247,9 +252,9 @@ public class SynchronizerManager {
 
   /**
    * Creates a method which calls java.lang.Class.forName(String).
-   *
+   * <p>
    * <p>The method should look like the following:
-   *
+   * <p>
    * <pre>
    * .static java.lang.Class class$(java.lang.String)
    * {

@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -64,7 +65,7 @@ public class JavaLangReflectFieldNative extends NativeMethodClass {
   /** ********************* java.lang.reflect.Field ******************** */
   /**
    * NOTE: make all fields pointing to @param1
-   *
+   * <p>
    * <p>public native void set(java.lang.Object, java.lang.Object) throws
    * java.lang.IllegalArgumentException, java.lang.IllegalAccessException;
    */
@@ -80,10 +81,10 @@ public class JavaLangReflectFieldNative extends NativeMethodClass {
   /**
    * Returns the value of the field represented by this Field, on the specified object. The value is
    * automatically wrapped in an object if it has a primitive type.
-   *
+   * <p>
    * <p>NOTE: this really needs precise info of @this (its name). conservative way, makes return
    * value possibly point to universal objects.
-   *
+   * <p>
    * <p>public native java.lang.Object get(java.lang.Object) throws
    * java.lang.IllegalArgumentException, java.lang.IllegalAccessException;
    */

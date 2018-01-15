@@ -32,7 +32,8 @@ package soot;
  * @see soot.coffi.CoffiMethodSource
  */
 public class UnknownMethodSource implements MethodSource {
-  UnknownMethodSource() {}
+  UnknownMethodSource() {
+  }
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {

@@ -28,7 +28,9 @@ public class UntypedLongOrDoubleConstant extends UntypedConstant {
         && ((UntypedLongOrDoubleConstant) c).value == this.value;
   }
 
-  /** Returns a hash code for this DoubleConstant object. */
+  /**
+   * Returns a hash code for this DoubleConstant object.
+   */
   @Override
   public int hashCode() {
     return (int) (value ^ (value >>> 32));

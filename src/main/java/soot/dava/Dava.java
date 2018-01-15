@@ -20,15 +20,6 @@
 
 package soot.dava;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-
 import soot.Body;
 import soot.CompilationDeathException;
 import soot.G;
@@ -39,41 +30,51 @@ import soot.Type;
 import soot.jimple.Jimple;
 import soot.util.IterableSet;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+
 public class Dava {
-  public Dava(Singletons.Global g) {}
-
-  public static Dava v() {
-    return G.v().soot_dava_Dava();
-  }
-
   private static final String LOG_TO_FILE = null;
   private static final PrintStream LOG_TO_SCREEN = null;
-
   private Writer iOut = null;
   private IterableSet currentPackageContext = null;
   private String currentPackage;
+  public Dava(Singletons.Global g) {
+  }
 
-  public void set_CurrentPackage(String cp) {
-    currentPackage = cp;
+  public static Dava v() {
+    return G.v().soot_dava_Dava();
   }
 
   public String get_CurrentPackage() {
     return currentPackage;
   }
 
-  public void set_CurrentPackageContext(IterableSet cpc) {
-    currentPackageContext = cpc;
+  public void set_CurrentPackage(String cp) {
+    currentPackage = cp;
   }
 
   public IterableSet get_CurrentPackageContext() {
     return currentPackageContext;
   }
 
+  public void set_CurrentPackageContext(IterableSet cpc) {
+    currentPackageContext = cpc;
+  }
+
   public DavaBody newBody(SootMethod m) {
     return new DavaBody(m);
   }
 
-  /** Returns a DavaBody constructed from the given body b. */
+  /**
+   * Returns a DavaBody constructed from the given body b.
+   */
   public DavaBody newBody(Body b) {
     return new DavaBody(b);
   }

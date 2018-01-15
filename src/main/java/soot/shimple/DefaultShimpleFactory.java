@@ -40,7 +40,9 @@ import soot.toolkits.graph.ReversibleGraph;
 import soot.toolkits.graph.SimpleDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
 
-/** @author Navindra Umanee */
+/**
+ * @author Navindra Umanee
+ */
 public class DefaultShimpleFactory implements ShimpleFactory {
   protected final Body body;
   protected BlockGraph bg;

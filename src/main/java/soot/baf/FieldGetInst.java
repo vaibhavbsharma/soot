@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface FieldGetInst extends FieldArgInst {}
+public interface FieldGetInst extends FieldArgInst {
+}

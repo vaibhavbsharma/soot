@@ -28,12 +28,16 @@ package soot.coffi;
 /**
  * There can be several parameter annotations in each Parameter Visibility attribute
  *
- * @see attribute_info
  * @author Jennifer Lhotak
+ * @see attribute_info
  */
 public class parameter_annotation extends attribute_info {
-  /** number of annotations */
+  /**
+   * number of annotations
+   */
   public int num_annotations;
-  /** Each entry represents a single annotation. */
+  /**
+   * Each entry represents a single annotation.
+   */
   public annotation annotations[];
 }

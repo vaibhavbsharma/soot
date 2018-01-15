@@ -25,18 +25,17 @@
 
 package soot.baf.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
 import soot.util.Switch;
 
-public abstract class AbstractBranchInst extends AbstractInst {
-  UnitBox targetBox;
+import java.util.Collections;
+import java.util.List;
 
+public abstract class AbstractBranchInst extends AbstractInst {
   final List<UnitBox> targetBoxes;
+  UnitBox targetBox;
 
   AbstractBranchInst(UnitBox targetBox) {
     this.targetBox = targetBox;

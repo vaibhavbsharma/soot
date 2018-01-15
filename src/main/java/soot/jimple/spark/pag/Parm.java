@@ -34,6 +34,7 @@ import soot.toolkits.scalar.Pair;
 public class Parm implements SparkField {
   private final int index;
   private final SootMethod method;
+  private int number = 0;
 
   private Parm(SootMethod m, int i) {
     index = i;
@@ -81,6 +82,4 @@ public class Parm implements SparkField {
 
     return method.getParameterType(index);
   }
-
-  private int number = 0;
 }

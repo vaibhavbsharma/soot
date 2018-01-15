@@ -16,17 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.helper;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.spark.geom.helper;
 
 import soot.AnySubType;
 import soot.ArrayType;
@@ -57,10 +48,20 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * We provide a set of methods to evaluate the quality of geometric points-to analysis. The
  * evaluation methods are:
- *
+ * <p>
  * <p>1. Count the basic points-to information, such as average points-to set size, constraints
  * evaluation graph size, etc; 2. Virtual function resolution comparison; 3. Static casts checking;
  * 4. All pairs alias analysis; 5. Building heap graph (not used yet).
@@ -80,7 +81,9 @@ public class GeomEvaluator {
     evalRes = new EvalResults();
   }
 
-  /** Collecting basic statistical information for SPARK. */
+  /**
+   * Collecting basic statistical information for SPARK.
+   */
   public void profileSparkBasicMetrics() {
     int n_legal_var = 0;
 
@@ -107,7 +110,9 @@ public class GeomEvaluator {
     evalRes.avg_spark_pts = (double) evalRes.total_spark_pts / n_legal_var;
   }
 
-  /** Summarize the geometric points-to analysis and report the basic metrics. */
+  /**
+   * Summarize the geometric points-to analysis and report the basic metrics.
+   */
   public void profileGeomBasicMetrics(boolean testSpark) {
     int n_legal_var = 0, n_alloc_dot_fields = 0;
 
@@ -208,7 +213,9 @@ public class GeomEvaluator {
         outputer, "Points-to Set Sizes Distribution [core pointers]:", evalRes.pts_size_bar_spark);
   }
 
-  /** We assess the quality of building the 1-cfa call graph with the geometric points-to result. */
+  /**
+   * We assess the quality of building the 1-cfa call graph with the geometric points-to result.
+   */
   private void test_1cfa_call_graph(
       LocalVarNode vn, SootMethod caller, SootMethod callee_signature, Histogram ce_range) {
     long l, r;
@@ -257,7 +264,9 @@ public class GeomEvaluator {
     }
   }
 
-  /** Report the virtual callsites resolution result for the user's code. */
+  /**
+   * Report the virtual callsites resolution result for the user's code.
+   */
   public void checkCallGraph() {
     int[] limits = new int[] {1, 2, 4, 8};
     evalRes.total_call_edges = new Histogram(limits);
@@ -340,7 +349,9 @@ public class GeomEvaluator {
     }
   }
 
-  /** Count how many aliased base pointers appeared in all user's functions. */
+  /**
+   * Count how many aliased base pointers appeared in all user's functions.
+   */
   public void checkAliasAnalysis() {
     Set<IVarAbstraction> access_expr = new HashSet<>();
     ArrayList<IVarAbstraction> al = new ArrayList<>();
@@ -446,7 +457,9 @@ public class GeomEvaluator {
     ptsProvider.ps.println();
   }
 
-  /** Count how many static casts can be determined safe. */
+  /**
+   * Count how many static casts can be determined safe.
+   */
   public void checkCastsSafety() {
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {

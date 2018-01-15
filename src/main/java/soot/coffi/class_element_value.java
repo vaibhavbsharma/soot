@@ -28,8 +28,8 @@ package soot.coffi;
 /**
  * There can be many element_value pairs in each annotation
  *
- * @see attribute_info
  * @author Jennifer Lhotak
+ * @see attribute_info
  */
 public class class_element_value extends element_value {
   int class_info_index;

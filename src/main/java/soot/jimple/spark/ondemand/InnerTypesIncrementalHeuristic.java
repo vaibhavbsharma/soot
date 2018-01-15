@@ -16,10 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand;
 
-import java.util.HashSet;
-import java.util.Set;
+package soot.jimple.spark.ondemand;
 
 import soot.RefType;
 import soot.Scene;
@@ -30,22 +28,19 @@ import soot.jimple.spark.ondemand.pautil.SootUtil;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.SparkField;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
 
   private final TypeManager manager;
 
   private final Set<RefType> typesToCheck = new HashSet<>();
-
-  private String newTypeOnQuery = null;
-
   private final Set<RefType> bothEndsTypes = new HashSet<>();
-
   private final Set<RefType> notBothEndsTypes = new HashSet<>();
-
-  private int numPasses = 0;
-
   private final int passesInDirection;
-
+  private String newTypeOnQuery = null;
+  private int numPasses = 0;
   private boolean allNotBothEnds = false;
 
   public InnerTypesIncrementalHeuristic(TypeManager manager, int maxPasses) {

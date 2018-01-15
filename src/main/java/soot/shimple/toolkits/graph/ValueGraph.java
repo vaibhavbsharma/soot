@@ -24,14 +24,6 @@
 
 package soot.shimple.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -103,6 +95,14 @@ import soot.toolkits.graph.Orderer;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.util.Switch;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 // consider implementing DirectedGraph
 public class ValueGraph {
   // can we handle field writes/reads?
@@ -137,6 +137,20 @@ public class ValueGraph {
     for (Node node : nodeList) {
       node.patchStubs();
     }
+  }
+
+  // testing
+  public static void main(String[] args) {
+    // assumes 2 args:  Class + Method
+
+    Scene.v().loadClassAndSupport(args[0]);
+    SootClass sc = Scene.v().getSootClass(args[0]);
+    SootMethod sm = sc.getMethod(args[1]);
+    Body b = sm.retrieveActiveBody();
+    ShimpleBody sb = Shimple.v().newBody(b);
+    CompleteBlockGraph cfg = new CompleteBlockGraph(sb);
+    ValueGraph vg = new ValueGraph(cfg);
+    System.out.println(vg);
   }
 
   protected void handleStmt(Stmt stmt) {
@@ -500,180 +514,6 @@ public class ValueGraph {
     return tmp.toString();
   }
 
-  // testing
-  public static void main(String[] args) {
-    // assumes 2 args:  Class + Method
-
-    Scene.v().loadClassAndSupport(args[0]);
-    SootClass sc = Scene.v().getSootClass(args[0]);
-    SootMethod sm = sc.getMethod(args[1]);
-    Body b = sm.retrieveActiveBody();
-    ShimpleBody sb = Shimple.v().newBody(b);
-    CompleteBlockGraph cfg = new CompleteBlockGraph(sb);
-    ValueGraph vg = new ValueGraph(cfg);
-    System.out.println(vg);
-  }
-
-  public class Node {
-    protected int nodeNumber;
-    protected Value node;
-    protected String nodeLabel;
-    protected boolean ordered;
-    protected List<Node> children;
-
-    protected boolean stub = false;
-
-    // stub node
-    protected Node(Value local, boolean ignored) {
-      this.stub = true;
-      setNode(local);
-    }
-
-    protected void patchStubs() {
-      // can't patch self
-      if (isStub()) {
-        throw new RuntimeException("Assertion failed.");
-      }
-
-      // if any immediate children are stubs, patch them
-      for (int i = 0; i < children.size(); i++) {
-        Node child = children.get(i);
-
-        if (child.isStub()) {
-          Node newChild = localToNode.get(child.node);
-          if (newChild == null || newChild.isStub()) {
-            throw new RuntimeException("Assertion failed.");
-          }
-          children.set(i, newChild);
-        }
-      }
-    }
-
-    protected void checkIfStub() {
-      if (isStub()) {
-        throw new RuntimeException("Assertion failed:  Attempted operation on invalid node (stub)");
-      }
-    }
-
-    protected Node(Value node) {
-      this(node, true, Collections.emptyList());
-    }
-
-    protected Node(Value node, boolean ordered, List<Node> children) {
-      setNode(node);
-      setOrdered(ordered);
-      setChildren(children);
-
-      // updateLabel() relies on nodeNumber being set
-      nodeNumber = currentNodeNumber++;
-      updateLabel();
-      nodeList.add(nodeNumber, this);
-    }
-
-    protected void setNode(Value node) {
-      this.node = node;
-    }
-
-    protected void setOrdered(boolean ordered) {
-      this.ordered = ordered;
-    }
-
-    protected void setChildren(List<Node> children) {
-      this.children = children;
-    }
-
-    protected void updateLabel() {
-      if (!children.isEmpty()) {
-        nodeLabel = node.getClass().getName();
-        if (node instanceof PhiExpr) {
-          nodeLabel = nodeLabel + ((PhiExpr) node).getBlockId();
-        }
-      } else {
-        // *** FIXME
-
-        // NewExpr
-        // NewArrayExpr
-        // NewMultiArrayExpr
-
-        // Ref
-        // FieldRef?
-        // InstanceFieldRef?
-        // IdentityRef?
-        // ArrayRef?
-        // CaughtExceptionRef
-
-        // InvokeExpr?
-        // InstanceInvokeExpr?
-        // InterfaceInvokeExpr?
-        // SpecialInvokeExpr
-        // StaticInvokeExpr
-        // VirtualInvokeExpr
-        nodeLabel = node.toString();
-        if ((node instanceof NewExpr)
-            || (node instanceof NewArrayExpr)
-            || (node instanceof NewMultiArrayExpr)
-            || (node instanceof Ref)
-            || (node instanceof InvokeExpr)) {
-          nodeLabel = nodeLabel + " " + getNodeNumber();
-        }
-      }
-    }
-
-    public boolean isStub() {
-      return stub;
-    }
-
-    public String getLabel() {
-      checkIfStub();
-      return nodeLabel;
-    }
-
-    public boolean isOrdered() {
-      checkIfStub();
-      return ordered;
-    }
-
-    public List<Node> getChildren() {
-      checkIfStub();
-      return children;
-      // return Collections.unmodifiableList(children);
-    }
-
-    public int getNodeNumber() {
-      checkIfStub();
-      return nodeNumber;
-    }
-
-    @Override
-    public String toString() {
-      checkIfStub();
-
-      StringBuffer tmp = new StringBuffer();
-
-      Local local = getLocal(this);
-      if (local != null) {
-        tmp.append(local.toString());
-      }
-
-      tmp.append("\tNode " + getNodeNumber() + ": " + getLabel());
-
-      List<Node> children = getChildren();
-
-      if (!children.isEmpty()) {
-        tmp.append(" [" + (isOrdered() ? "ordered" : "unordered") + ": ");
-        for (int i = 0; i < children.size(); i++) {
-          if (i != 0) {
-            tmp.append(", ");
-          }
-          tmp.append(children.get(i).getNodeNumber());
-        }
-        tmp.append("]");
-      }
-
-      return tmp.toString();
-    }
-  }
-
   protected static class TypeValueWrapper implements Value {
     protected Type type;
 
@@ -728,6 +568,166 @@ public class ValueGraph {
     @Override
     public int equivHashCode() {
       return hashCode();
+    }
+  }
+
+  public class Node {
+    protected int nodeNumber;
+    protected Value node;
+    protected String nodeLabel;
+    protected boolean ordered;
+    protected List<Node> children;
+
+    protected boolean stub = false;
+
+    // stub node
+    protected Node(Value local, boolean ignored) {
+      this.stub = true;
+      setNode(local);
+    }
+
+    protected Node(Value node) {
+      this(node, true, Collections.emptyList());
+    }
+
+    protected Node(Value node, boolean ordered, List<Node> children) {
+      setNode(node);
+      setOrdered(ordered);
+      setChildren(children);
+
+      // updateLabel() relies on nodeNumber being set
+      nodeNumber = currentNodeNumber++;
+      updateLabel();
+      nodeList.add(nodeNumber, this);
+    }
+
+    protected void patchStubs() {
+      // can't patch self
+      if (isStub()) {
+        throw new RuntimeException("Assertion failed.");
+      }
+
+      // if any immediate children are stubs, patch them
+      for (int i = 0; i < children.size(); i++) {
+        Node child = children.get(i);
+
+        if (child.isStub()) {
+          Node newChild = localToNode.get(child.node);
+          if (newChild == null || newChild.isStub()) {
+            throw new RuntimeException("Assertion failed.");
+          }
+          children.set(i, newChild);
+        }
+      }
+    }
+
+    protected void checkIfStub() {
+      if (isStub()) {
+        throw new RuntimeException("Assertion failed:  Attempted operation on invalid node (stub)");
+      }
+    }
+
+    protected void setNode(Value node) {
+      this.node = node;
+    }
+
+    protected void updateLabel() {
+      if (!children.isEmpty()) {
+        nodeLabel = node.getClass().getName();
+        if (node instanceof PhiExpr) {
+          nodeLabel = nodeLabel + ((PhiExpr) node).getBlockId();
+        }
+      } else {
+        // *** FIXME
+
+        // NewExpr
+        // NewArrayExpr
+        // NewMultiArrayExpr
+
+        // Ref
+        // FieldRef?
+        // InstanceFieldRef?
+        // IdentityRef?
+        // ArrayRef?
+        // CaughtExceptionRef
+
+        // InvokeExpr?
+        // InstanceInvokeExpr?
+        // InterfaceInvokeExpr?
+        // SpecialInvokeExpr
+        // StaticInvokeExpr
+        // VirtualInvokeExpr
+        nodeLabel = node.toString();
+        if ((node instanceof NewExpr)
+            || (node instanceof NewArrayExpr)
+            || (node instanceof NewMultiArrayExpr)
+            || (node instanceof Ref)
+            || (node instanceof InvokeExpr)) {
+          nodeLabel = nodeLabel + " " + getNodeNumber();
+        }
+      }
+    }
+
+    public boolean isStub() {
+      return stub;
+    }
+
+    public String getLabel() {
+      checkIfStub();
+      return nodeLabel;
+    }
+
+    public boolean isOrdered() {
+      checkIfStub();
+      return ordered;
+    }
+
+    protected void setOrdered(boolean ordered) {
+      this.ordered = ordered;
+    }
+
+    public List<Node> getChildren() {
+      checkIfStub();
+      return children;
+      // return Collections.unmodifiableList(children);
+    }
+
+    protected void setChildren(List<Node> children) {
+      this.children = children;
+    }
+
+    public int getNodeNumber() {
+      checkIfStub();
+      return nodeNumber;
+    }
+
+    @Override
+    public String toString() {
+      checkIfStub();
+
+      StringBuffer tmp = new StringBuffer();
+
+      Local local = getLocal(this);
+      if (local != null) {
+        tmp.append(local.toString());
+      }
+
+      tmp.append("\tNode " + getNodeNumber() + ": " + getLabel());
+
+      List<Node> children = getChildren();
+
+      if (!children.isEmpty()) {
+        tmp.append(" [" + (isOrdered() ? "ordered" : "unordered") + ": ");
+        for (int i = 0; i < children.size(); i++) {
+          if (i != 0) {
+            tmp.append(", ");
+          }
+          tmp.append(children.get(i).getNodeNumber());
+        }
+        tmp.append("]");
+      }
+
+      return tmp.toString();
     }
   }
 }

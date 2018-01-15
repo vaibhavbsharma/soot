@@ -51,7 +51,9 @@ public class EnclosingMethodTag implements Tag {
         + enclosingMethodSig;
   }
 
-  /** Returns the tag name. */
+  /**
+   * Returns the tag name.
+   */
   @Override
   public String getName() {
     return "EnclosingMethodTag";
@@ -73,7 +75,9 @@ public class EnclosingMethodTag implements Tag {
     return enclosingMethodSig;
   }
 
-  /** Returns the tag raw data. */
+  /**
+   * Returns the tag raw data.
+   */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("EnclosingMethodTag has no value for bytecode");

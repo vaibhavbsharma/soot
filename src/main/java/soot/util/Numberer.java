@@ -25,15 +25,24 @@ package soot.util;
  * @author xiao, generalize the interface
  */
 public interface Numberer<E> {
-  /** Tells the numberer that a new object needs to be assigned a number. */
+  /**
+   * Tells the numberer that a new object needs to be assigned a number.
+   */
   void add(E o);
+
   /**
    * Should return the number that was assigned to object o that was previously passed as an
    * argument to add().
    */
   long get(E o);
-  /** Should return the object that was assigned the number number. */
+
+  /**
+   * Should return the object that was assigned the number number.
+   */
   E get(long number);
-  /** Should return the number of objects that have been assigned numbers. */
+
+  /**
+   * Should return the number of objects that have been assigned numbers.
+   */
   int size();
 }

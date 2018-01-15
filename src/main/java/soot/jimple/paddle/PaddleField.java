@@ -26,4 +26,5 @@ import soot.util.Numberable;
  *
  * @author Ondrej Lhotak
  */
-public interface PaddleField extends Numberable {}
+public interface PaddleField extends Numberable {
+}

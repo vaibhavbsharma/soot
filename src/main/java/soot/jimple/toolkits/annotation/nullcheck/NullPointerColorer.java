@@ -19,9 +19,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -38,9 +35,13 @@ import soot.tagkit.Tag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class NullPointerColorer extends BodyTransformer {
 
-  public NullPointerColorer(Singletons.Global g) {}
+  public NullPointerColorer(Singletons.Global g) {
+  }
 
   public static NullPointerColorer v() {
     return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer();
@@ -105,34 +106,30 @@ public class NullPointerColorer extends BodyTransformer {
       int vInfo = analysis.anyRefInfo(val, set);
 
       switch (vInfo) {
-        case 1:
-          {
-            // analysis.kNull
-            s.addTag(new StringTag(val + ": Null", "NullCheckTag"));
-            vBox.addTag(new ColorTag(ColorTag.RED, "NullCheckTag"));
-            break;
-          }
-        case 2:
-          {
-            // analysis.kNonNull
-            s.addTag(new StringTag(val + ": NonNull", "NullCheckTag"));
-            vBox.addTag(new ColorTag(ColorTag.GREEN, "NullCheckTag"));
-            break;
-          }
-        case 99:
-          {
-            // analysis.KTop:
-            s.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
-            vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
-            break;
-          }
-        case 0:
-          {
-            // analysis.kBottom
-            s.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
-            vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
-            break;
-          }
+        case 1: {
+          // analysis.kNull
+          s.addTag(new StringTag(val + ": Null", "NullCheckTag"));
+          vBox.addTag(new ColorTag(ColorTag.RED, "NullCheckTag"));
+          break;
+        }
+        case 2: {
+          // analysis.kNonNull
+          s.addTag(new StringTag(val + ": NonNull", "NullCheckTag"));
+          vBox.addTag(new ColorTag(ColorTag.GREEN, "NullCheckTag"));
+          break;
+        }
+        case 99: {
+          // analysis.KTop:
+          s.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
+          vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
+          break;
+        }
+        case 0: {
+          // analysis.kBottom
+          s.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
+          vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
+          break;
+        }
       }
     } else {
 

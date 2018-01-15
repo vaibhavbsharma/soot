@@ -25,14 +25,6 @@
 
 package soot.jimple.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -47,6 +39,14 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.BriefBlockGraph;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * "unrolls" the condition of while/for loops.<br>
@@ -72,7 +72,9 @@ public class LoopConditionUnroller extends BodyTransformer {
 
   private Map<Unit, List<Trap>> unitsToTraps;
 
-  /** unrolls conditions. */
+  /**
+   * unrolls conditions.
+   */
   /*
    * this implementation still fails in finding all possible while-loops, but
    * does a good job.
@@ -103,10 +105,8 @@ public class LoopConditionUnroller extends BodyTransformer {
    * <code>node</code> in the <code>unitChain</code> of the body.<br>
    * As we use <code>JGoto</code> the chain must contain Jimple-stmts.
    *
-   * @param node
-   *            the <code>Goto</code> will be inserted just after this node.
-   * @param target
-   *            is the Unit the <code>goto</code> will jump to.
+   * @param node   the <code>Goto</code> will be inserted just after this node.
+   * @param target is the Unit the <code>goto</code> will jump to.
    * @return the newly inserted <code>Goto</code>
    */
   private Unit insertGotoAfter(Unit node, Unit target) {
@@ -120,7 +120,7 @@ public class LoopConditionUnroller extends BodyTransformer {
    * <br>
    * Everything is done in Jimple.
    *
-   * @param node the Unit after which we insert the clone.
+   * @param node    the Unit after which we insert the clone.
    * @param toClone the Unit that will get cloned and then inserted.
    */
   private Unit insertCloneAfter(Chain<Unit> unitChain, Unit node, Unit toClone) {
@@ -204,8 +204,8 @@ public class LoopConditionUnroller extends BodyTransformer {
     boolean first = true;
     Unit copiedHead = null;
     for (Unit currentUnit = block.getHead();
-        currentUnit != newGoto;
-        currentUnit = unitChain.getSuccOf(currentUnit)) {
+         currentUnit != newGoto;
+         currentUnit = unitChain.getSuccOf(currentUnit)) {
       last = insertCloneAfter(unitChain, last, currentUnit);
       if (first) {
         first = false;

@@ -28,7 +28,9 @@ package soot.toolkits.scalar;
 import soot.Local;
 import soot.Unit;
 
-/** Utility class used to package a Local and a Unit together. */
+/**
+ * Utility class used to package a Local and a Unit together.
+ */
 public class LocalUnitPair {
   Local local;
   Unit unit;
@@ -37,7 +39,7 @@ public class LocalUnitPair {
    * Constructs a LocalUnitPair from a Unit object and a Local object.
    *
    * @param local some Local
-   * @param unit some Unit.
+   * @param unit  some Unit.
    */
   public LocalUnitPair(Local local, Unit unit) {
     this.local = local;

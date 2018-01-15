@@ -19,11 +19,10 @@
 
 package soot.jbco.gui;
 
+import javax.swing.JScrollBar;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-
-import javax.swing.JScrollBar;
 
 public class RunnerThread implements Runnable {
 

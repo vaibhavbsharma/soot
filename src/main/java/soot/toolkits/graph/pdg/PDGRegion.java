@@ -16,13 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.graph.pdg;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+package soot.toolkits.graph.pdg;
 
 import soot.G;
 import soot.SootClass;
@@ -31,6 +26,12 @@ import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This represents a region of control dependence obtained by constructing a program dependence
@@ -117,88 +118,6 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   @Override
   public UnitGraph getUnitGraph() {
     return this.m_unitGraph;
-  }
-
-  /**
-   * This is an iterator that knows how to follow the control flow in a region. It only iterates
-   * through the dependent nodes that contribute to the list of units in a region as defined by a
-   * weak region.
-   */
-  class ChildPDGFlowIterator implements Iterator<PDGNode> {
-    List<PDGNode> m_list = null;
-    PDGNode m_current = null;
-    boolean beginning = true;
-
-    public ChildPDGFlowIterator(List<PDGNode> list) {
-      m_list = list;
-    }
-
-    @Override
-    public boolean hasNext() {
-      if (beginning) {
-        if (m_list.size() > 0) {
-          return true;
-        }
-      }
-
-      return (m_current != null && m_current.getNext() != null);
-    }
-
-    @Override
-    public PDGNode next() {
-
-      if (beginning) {
-        beginning = false;
-        m_current = m_list.get(0);
-        // Find the first node in the control flow
-
-        /*
-         * There cannot be more than one CFG node in a region
-         * unless there is a control flow edge between them. However,
-         * there could be a CFG node and other region nodes (back
-         * dependency, or other.) In such cases, the one CFG node
-         * should be found and returned, and other region nodes should
-         * be ignored. Unless it's a LoopedPDGNode (in which case control
-         * flow edge should still exist if there are other sibling Looped
-         * PDGNodes or CFG nodes.)
-         *
-         */
-        while (m_current.getPrev() != null) {
-          m_current = m_current.getPrev();
-        }
-
-        if (m_current.getType() != PDGNode.Type.CFGNODE
-            && m_current.getAttrib() != PDGNode.Attribute.LOOPHEADER) {
-          /*
-           * Look for useful dependence whose units are considered to be part of this region (loop header
-           * or CFG block nodes.)
-           *
-           */
-
-          for (PDGNode dep : m_list) {
-            if (dep.getType() == PDGNode.Type.CFGNODE
-                || dep.getAttrib() == PDGNode.Attribute.LOOPHEADER) {
-              m_current = dep;
-              // go to the beginning of the flow
-              while (m_current.getPrev() != null) {
-                m_current = m_current.getPrev();
-              }
-              break;
-            }
-          }
-        }
-        return m_current;
-      }
-
-      if (!hasNext()) {
-        throw new RuntimeException("No more nodes!");
-      }
-      m_current = m_current.getNext();
-      return m_current;
-    }
-
-    @Override
-    public void remove() {}
   }
 
   /**
@@ -319,13 +238,13 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   @Override
-  public void setParent(IRegion pr) {
-    this.m_parent = pr;
+  public IRegion getParent() {
+    return this.m_parent;
   }
 
   @Override
-  public IRegion getParent() {
-    return this.m_parent;
+  public void setParent(IRegion pr) {
+    this.m_parent = pr;
   }
 
   @Override
@@ -362,5 +281,88 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     str += "End of PDG Region " + this.m_id + " -----------------------------\n";
 
     return str;
+  }
+
+  /**
+   * This is an iterator that knows how to follow the control flow in a region. It only iterates
+   * through the dependent nodes that contribute to the list of units in a region as defined by a
+   * weak region.
+   */
+  class ChildPDGFlowIterator implements Iterator<PDGNode> {
+    List<PDGNode> m_list = null;
+    PDGNode m_current = null;
+    boolean beginning = true;
+
+    public ChildPDGFlowIterator(List<PDGNode> list) {
+      m_list = list;
+    }
+
+    @Override
+    public boolean hasNext() {
+      if (beginning) {
+        if (m_list.size() > 0) {
+          return true;
+        }
+      }
+
+      return (m_current != null && m_current.getNext() != null);
+    }
+
+    @Override
+    public PDGNode next() {
+
+      if (beginning) {
+        beginning = false;
+        m_current = m_list.get(0);
+        // Find the first node in the control flow
+
+        /*
+         * There cannot be more than one CFG node in a region
+         * unless there is a control flow edge between them. However,
+         * there could be a CFG node and other region nodes (back
+         * dependency, or other.) In such cases, the one CFG node
+         * should be found and returned, and other region nodes should
+         * be ignored. Unless it's a LoopedPDGNode (in which case control
+         * flow edge should still exist if there are other sibling Looped
+         * PDGNodes or CFG nodes.)
+         *
+         */
+        while (m_current.getPrev() != null) {
+          m_current = m_current.getPrev();
+        }
+
+        if (m_current.getType() != PDGNode.Type.CFGNODE
+            && m_current.getAttrib() != PDGNode.Attribute.LOOPHEADER) {
+          /*
+           * Look for useful dependence whose units are considered to be part of this region (loop header
+           * or CFG block nodes.)
+           *
+           */
+
+          for (PDGNode dep : m_list) {
+            if (dep.getType() == PDGNode.Type.CFGNODE
+                || dep.getAttrib() == PDGNode.Attribute.LOOPHEADER) {
+              m_current = dep;
+              // go to the beginning of the flow
+              while (m_current.getPrev() != null) {
+                m_current = m_current.getPrev();
+              }
+              break;
+            }
+          }
+        }
+        return m_current;
+      }
+
+      if (!hasNext()) {
+        throw new RuntimeException("No more nodes!");
+      }
+      m_current = m_current.getNext();
+      return m_current;
+    }
+
+    @Override
+    public void remove() {
+    }
   }
 }

@@ -25,12 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -53,24 +47,33 @@ import soot.tagkit.StringTag;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Runs an available expressions analysis on a body, then eliminates common subexpressions.
- *
+ * <p>
  * <p>This implementation is especially slow, as it does not run on basic blocks. A better
  * implementation (which wouldn't catch every single cse, but would get most) would use basic blocks
  * instead.
- *
+ * <p>
  * <p>It is also slow because the flow universe is explicitly created; it need not be. A better
  * implementation would implicitly compute the kill sets at every node.
  */
 public class CommonSubexpressionEliminator extends BodyTransformer {
-  public CommonSubexpressionEliminator(Singletons.Global g) {}
+  public CommonSubexpressionEliminator(Singletons.Global g) {
+  }
 
   public static CommonSubexpressionEliminator v() {
     return G.v().soot_jimple_toolkits_scalar_CommonSubexpressionEliminator();
   }
 
-  /** Common subexpression eliminator. */
+  /**
+   * Common subexpression eliminator.
+   */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int counter = 0;

@@ -46,15 +46,15 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
     Type op1t = op1.getType();
     Type op2t = op2.getType();
     if ((op1t.equals(IntType.v())
-            || op1t.equals(ByteType.v())
-            || op1t.equals(ShortType.v())
-            || op1t.equals(CharType.v())
-            || op1t.equals(BooleanType.v()))
+        || op1t.equals(ByteType.v())
+        || op1t.equals(ShortType.v())
+        || op1t.equals(CharType.v())
+        || op1t.equals(BooleanType.v()))
         && (op2t.equals(IntType.v())
-            || op2t.equals(ByteType.v())
-            || op2t.equals(ShortType.v())
-            || op2t.equals(CharType.v())
-            || op2t.equals(BooleanType.v()))) {
+        || op2t.equals(ByteType.v())
+        || op2t.equals(ShortType.v())
+        || op2t.equals(CharType.v())
+        || op2t.equals(BooleanType.v()))) {
       return IntType.v();
     } else if (op1t.equals(LongType.v()) || op2t.equals(LongType.v())) {
       return LongType.v();

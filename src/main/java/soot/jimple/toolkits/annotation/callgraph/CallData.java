@@ -51,12 +51,12 @@ public class CallData {
     }
   }
 
-  public void setData(String d) {
-    data = d;
-  }
-
   public String getData() {
     return data;
+  }
+
+  public void setData(String d) {
+    data = d;
   }
 
   public ArrayList<CallData> getChildren() {

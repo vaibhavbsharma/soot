@@ -16,16 +16,17 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.ide.icfg;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+package soot.jimple.toolkits.ide.icfg;
 
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs. This should be

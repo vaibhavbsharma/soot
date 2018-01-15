@@ -294,17 +294,97 @@ class ByteCode {
   private int icount;
   private Instruction instructions[];
 
-  /** Constructor---does nothing. */
-  ByteCode() {}
+  /**
+   * Constructor---does nothing.
+   */
+  ByteCode() {
+  }
+
+  /**
+   * Displays the code (in the form of Instructions) for the given list of Instructions.
+   *
+   * @param inst          input list of instructions.
+   * @param constant_pool constant pool of the ClassFile object.
+   * @see ByteCode#showCode(Instruction, int, cp_info)
+   */
+  public static void showCode(Instruction inst, cp_info constant_pool[]) {
+    showCode(inst, 0, constant_pool);
+  }
+
+  /**
+   * Displays the code (in the form of Instructions) for the given list of Instructions.
+   *
+   * @param inst          input list of instructions.
+   * @param startinst     index of the label of the instruction at which to begin.
+   * @param constant_pool constant pool of the ClassFile object.
+   * @see ByteCode#showCode(Instruction, cp_info)
+   */
+  public static void showCode(Instruction inst, int startinst, cp_info constant_pool[]) {
+    int i;
+    Instruction j = inst;
+    String pref;
+    i = startinst;
+    while (j != null) {
+      if (i > 999) {
+        pref = "";
+      } else if (i > 99) {
+        pref = " ";
+      } else if (i > 9) {
+        pref = "  ";
+      } else {
+        pref = "   ";
+      }
+      G.v().out.print(pref + i + ": ");
+      G.v().out.println(j.toString(constant_pool));
+      i = j.nextOffset(i);
+      j = j.next;
+    }
+  }
+
+  /**
+   * Returns true if the bytecode is a local store
+   */
+  public static boolean isLocalStore(int bc) {
+    switch (bc) {
+      case ByteCode.ISTORE:
+      case ByteCode.FSTORE:
+      case ByteCode.ASTORE:
+      case ByteCode.LSTORE:
+      case ByteCode.DSTORE:
+      case ByteCode.ISTORE_0:
+      case ByteCode.ISTORE_1:
+      case ByteCode.ISTORE_2:
+      case ByteCode.ISTORE_3:
+      case ByteCode.FSTORE_0:
+      case ByteCode.FSTORE_1:
+      case ByteCode.FSTORE_2:
+      case ByteCode.FSTORE_3:
+      case ByteCode.ASTORE_0:
+      case ByteCode.ASTORE_1:
+      case ByteCode.ASTORE_2:
+      case ByteCode.ASTORE_3:
+      case ByteCode.LSTORE_0:
+      case ByteCode.LSTORE_1:
+      case ByteCode.LSTORE_2:
+      case ByteCode.LSTORE_3:
+      case ByteCode.DSTORE_0:
+      case ByteCode.DSTORE_1:
+      case ByteCode.DSTORE_2:
+      case ByteCode.DSTORE_3:
+        return true;
+      default:
+        return false;
+    }
+  }
 
   /**
    * Main.v() entry point for disassembling bytecode into Instructions; this method converts the
    * given single bytecode into an Instruction (with label set to index).
    *
-   * @param bc complete array of bytecode.
+   * @param bc    complete array of bytecode.
    * @param index offset within bc of the bytecode to parse.
    * @return a single Instruction object; note that Instruction references will not be filled in
-   *     (use build to post-process).
+   * (use build to post-process).
    * @see ClassFile#parseMethod
    * @see Instruction#parse
    * @see ByteCode#build
@@ -533,68 +613,67 @@ class ByteCode {
       case IINC:
         i = new Instruction_Iinc();
         break;
-      case WIDE:
-        {
-          int nextIndex = (bc[index + 1]) & 0xff;
+      case WIDE: {
+        int nextIndex = (bc[index + 1]) & 0xff;
 
-          switch (nextIndex) {
-            case ILOAD:
-              i = new Instruction_Iload();
-              break;
+        switch (nextIndex) {
+          case ILOAD:
+            i = new Instruction_Iload();
+            break;
 
-            case FLOAD:
-              i = new Instruction_Fload();
-              break;
+          case FLOAD:
+            i = new Instruction_Fload();
+            break;
 
-            case ALOAD:
-              i = new Instruction_Aload();
-              break;
+          case ALOAD:
+            i = new Instruction_Aload();
+            break;
 
-            case LLOAD:
-              i = new Instruction_Lload();
-              break;
+          case LLOAD:
+            i = new Instruction_Lload();
+            break;
 
-            case DLOAD:
-              i = new Instruction_Dload();
-              break;
+          case DLOAD:
+            i = new Instruction_Dload();
+            break;
 
-            case ISTORE:
-              i = new Instruction_Istore();
-              break;
+          case ISTORE:
+            i = new Instruction_Istore();
+            break;
 
-            case FSTORE:
-              i = new Instruction_Fstore();
-              break;
+          case FSTORE:
+            i = new Instruction_Fstore();
+            break;
 
-            case ASTORE:
-              i = new Instruction_Astore();
-              break;
+          case ASTORE:
+            i = new Instruction_Astore();
+            break;
 
-            case LSTORE:
-              i = new Instruction_Lstore();
-              break;
+          case LSTORE:
+            i = new Instruction_Lstore();
+            break;
 
-            case DSTORE:
-              i = new Instruction_Dstore();
-              break;
+          case DSTORE:
+            i = new Instruction_Dstore();
+            break;
 
-            case RET:
-              i = new Instruction_Ret();
-              break;
+          case RET:
+            i = new Instruction_Ret();
+            break;
 
-            case IINC:
-              i = new Instruction_Iinc();
-              break;
+          case IINC:
+            i = new Instruction_Iinc();
+            break;
 
-            default:
-              throw new RuntimeException("invalid wide instruction: " + nextIndex);
-          }
-
-          ((Instruction_bytevar) i).isWide = true;
-          isWide = true;
+          default:
+            throw new RuntimeException("invalid wide instruction: " + nextIndex);
         }
 
-        break;
+        ((Instruction_bytevar) i).isWide = true;
+        isWide = true;
+      }
+
+      break;
 
       case NEWARRAY:
         i = new Instruction_Newarray();
@@ -1055,46 +1134,6 @@ class ByteCode {
   }
 
   /**
-   * Displays the code (in the form of Instructions) for the given list of Instructions.
-   *
-   * @param inst input list of instructions.
-   * @param constant_pool constant pool of the ClassFile object.
-   * @see ByteCode#showCode(Instruction, int, cp_info)
-   */
-  public static void showCode(Instruction inst, cp_info constant_pool[]) {
-    showCode(inst, 0, constant_pool);
-  }
-  /**
-   * Displays the code (in the form of Instructions) for the given list of Instructions.
-   *
-   * @param inst input list of instructions.
-   * @param startinst index of the label of the instruction at which to begin.
-   * @param constant_pool constant pool of the ClassFile object.
-   * @see ByteCode#showCode(Instruction, cp_info)
-   */
-  public static void showCode(Instruction inst, int startinst, cp_info constant_pool[]) {
-    int i;
-    Instruction j = inst;
-    String pref;
-    i = startinst;
-    while (j != null) {
-      if (i > 999) {
-        pref = "";
-      } else if (i > 99) {
-        pref = " ";
-      } else if (i > 9) {
-        pref = "  ";
-      } else {
-        pref = "   ";
-      }
-      G.v().out.print(pref + i + ": ");
-      G.v().out.println(j.toString(constant_pool));
-      i = j.nextOffset(i);
-      j = j.next;
-    }
-  }
-
-  /**
    * Locates the Instruction in the list with the given label.
    *
    * @param index label of desired instruction
@@ -1104,7 +1143,10 @@ class ByteCode {
   public Instruction locateInst(int index) {
     return locateInstr(index, 0, icount);
   }
-  /** Performs a binary search of the instructions[] array. */
+
+  /**
+   * Performs a binary search of the instructions[] array.
+   */
   private Instruction locateInstr(int index, int mini, int maxi) {
     int mid = (maxi - mini) / 2 + mini;
 
@@ -1118,39 +1160,5 @@ class ByteCode {
       return locateInstr(index, mini, mid - 1);
     }
     return locateInstr(index, mid + 1, maxi);
-  }
-
-  /** Returns true if the bytecode is a local store */
-  public static boolean isLocalStore(int bc) {
-    switch (bc) {
-      case ByteCode.ISTORE:
-      case ByteCode.FSTORE:
-      case ByteCode.ASTORE:
-      case ByteCode.LSTORE:
-      case ByteCode.DSTORE:
-      case ByteCode.ISTORE_0:
-      case ByteCode.ISTORE_1:
-      case ByteCode.ISTORE_2:
-      case ByteCode.ISTORE_3:
-      case ByteCode.FSTORE_0:
-      case ByteCode.FSTORE_1:
-      case ByteCode.FSTORE_2:
-      case ByteCode.FSTORE_3:
-      case ByteCode.ASTORE_0:
-      case ByteCode.ASTORE_1:
-      case ByteCode.ASTORE_2:
-      case ByteCode.ASTORE_3:
-      case ByteCode.LSTORE_0:
-      case ByteCode.LSTORE_1:
-      case ByteCode.LSTORE_2:
-      case ByteCode.LSTORE_3:
-      case ByteCode.DSTORE_0:
-      case ByteCode.DSTORE_1:
-      case ByteCode.DSTORE_2:
-      case ByteCode.DSTORE_3:
-        return true;
-      default:
-        return false;
-    }
   }
 }

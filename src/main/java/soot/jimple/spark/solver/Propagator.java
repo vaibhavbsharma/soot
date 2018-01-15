@@ -26,6 +26,8 @@ package soot.jimple.spark.solver;
  * @author Ondrej Lhotak
  */
 public abstract class Propagator {
-  /** Actually does the propagation. */
+  /**
+   * Actually does the propagation.
+   */
   public abstract void propagate();
 }

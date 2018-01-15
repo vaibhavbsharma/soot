@@ -59,11 +59,11 @@ public abstract class AbstractGrimpIntBinopExpr extends AbstractIntBinopExpr imp
 
       if ((opPrec < myPrec)
           || ((opPrec == myPrec)
-              && ((this instanceof SubExpr)
-                  || (this instanceof DivExpr)
-                  || (this instanceof DCmpExpr)
-                  || (this instanceof DCmpgExpr)
-                  || (this instanceof DCmplExpr)))) {
+          && ((this instanceof SubExpr)
+          || (this instanceof DivExpr)
+          || (this instanceof DCmpExpr)
+          || (this instanceof DCmpgExpr)
+          || (this instanceof DCmplExpr)))) {
         rightOp = "(" + rightOp + ")";
       }
     }

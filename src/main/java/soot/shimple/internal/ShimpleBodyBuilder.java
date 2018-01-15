@@ -19,15 +19,6 @@
 
 package soot.shimple.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -52,43 +43,63 @@ import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
 /**
  * This class does the real high-level work. It takes a Jimple body or Jimple/Shimple hybrid body
  * and produces pure Shimple.
- *
+ * <p>
  * <p>The work is done in two main steps:
- *
+ * <p>
  * <ol>
- *   <li>Trivial Phi nodes are added.
- *   <li>A renaming algorithm is executed.
+ * <li>Trivial Phi nodes are added.
+ * <li>A renaming algorithm is executed.
  * </ol>
- *
+ * <p>
  * <p>This class can also translate out of Shimple by producing an equivalent Jimple body with all
  * Phi nodes removed.
- *
+ * <p>
  * <p>Note that this is an internal class, understanding it should not be necessary from a user
  * point-of-view and relying on it directly is not recommended.
  *
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  */
 public class ShimpleBodyBuilder {
+  public PhiNodeManager phi;
+  public PiNodeManager pi;
   protected ShimpleBody body;
   protected ShimpleFactory sf;
   protected DominatorTree<Block> dt;
   protected BlockGraph cfg;
-
-  /** A fixed list of all original Locals. */
+  /**
+   * A fixed list of all original Locals.
+   */
   protected List<Local> origLocals;
-
-  public PhiNodeManager phi;
-  public PiNodeManager pi;
-
+  /**
+   * Maps new name Strings to Locals.
+   */
+  protected Map<String, Local> newLocals;
+  /**
+   * Maps renamed Locals to original Locals.
+   */
+  protected Map<Local, Local> newLocalsToOldLocal;
+  protected int[] assignmentCounters;
+  protected Stack<Integer>[] namingStacks;
   ShimpleOptions options;
 
-  /** Transforms the provided body to pure SSA form. */
+  /**
+   * Transforms the provided body to pure SSA form.
+   */
   public ShimpleBodyBuilder(ShimpleBody body) {
     // Must remove nops prior to building the CFG because NopStmt appearing
     //  before the IdentityStmt in a trap handler that is itself protected
@@ -155,7 +166,7 @@ public class ShimpleBodyBuilder {
 
   /**
    * Remove Phi nodes from current body, high probablity this destroys SSA form.
-   *
+   * <p>
    * <p>Dead code elimination + register aggregation are performed as recommended by Cytron. The
    * Aggregator looks like it could use some improvements.
    *
@@ -171,15 +182,6 @@ public class ShimpleBodyBuilder {
     boolean optElim = options.node_elim_opt();
     pi.eliminatePiNodes(optElim);
   }
-
-  /** Maps new name Strings to Locals. */
-  protected Map<String, Local> newLocals;
-
-  /** Maps renamed Locals to original Locals. */
-  protected Map<Local, Local> newLocalsToOldLocal;
-
-  protected int[] assignmentCounters;
-  protected Stack<Integer>[] namingStacks;
 
   /**
    * Variable Renaming Algorithm from Cytron et al 91, P26-8, implemented in various bits and pieces
@@ -211,7 +213,9 @@ public class ShimpleBodyBuilder {
     renameLocalsSearch(entry);
   }
 
-  /** Driven by renameLocals(). */
+  /**
+   * Driven by renameLocals().
+   */
   public void renameLocalsSearch(Block block) {
     // accumulated in Step 1 to be re-processed in Step 4
     List<Local> lhsLocals = new ArrayList<>();
@@ -440,7 +444,9 @@ public class ShimpleBodyBuilder {
     }
   }
 
-  /** Given a set of Strings, return a new name for dupName that is not currently in the set. */
+  /**
+   * Given a set of Strings, return a new name for dupName that is not currently in the set.
+   */
   public String makeUniqueLocalName(String dupName, Set<String> localNames) {
     int counter = 1;
     String newName = dupName;

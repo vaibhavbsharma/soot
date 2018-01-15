@@ -21,6 +21,10 @@ import soot.jimple.NullConstant;
  */
 public abstract class AbstractNullTransformer extends DexTransformer {
 
+  protected static boolean isObject(Type t) {
+    return t instanceof RefLikeType;
+  }
+
   /**
    * Examine expr if it is a comparison with 0.
    *
@@ -63,9 +67,5 @@ public abstract class AbstractNullTransformer extends DexTransformer {
         }
       }
     }
-  }
-
-  protected static boolean isObject(Type t) {
-    return t instanceof RefLikeType;
   }
 }

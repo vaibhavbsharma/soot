@@ -19,9 +19,9 @@
 
 package soot;
 
-import java.util.ArrayDeque;
-
 import soot.options.Options;
+
+import java.util.ArrayDeque;
 
 /**
  * Representation of a reference to a field as it appears in a class file. Note that the field
@@ -30,6 +30,10 @@ import soot.options.Options;
  * 5.4.3.2.
  */
 class AbstractSootFieldRef implements SootFieldRef {
+  private final SootClass declaringClass;
+  private final String name;
+  private final Type type;
+  private final boolean isStatic;
   public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
     this.declaringClass = declaringClass;
     this.name = name;
@@ -45,11 +49,6 @@ class AbstractSootFieldRef implements SootFieldRef {
       throw new RuntimeException("Attempt to create SootFieldRef with null type");
     }
   }
-
-  private final SootClass declaringClass;
-  private final String name;
-  private final Type type;
-  private final boolean isStatic;
 
   @Override
   public SootClass declaringClass() {
@@ -74,30 +73,6 @@ class AbstractSootFieldRef implements SootFieldRef {
   @Override
   public String getSignature() {
     return SootField.getSignature(declaringClass, name, type);
-  }
-
-  public class FieldResolutionFailedException extends ResolutionFailedException {
-    /** */
-    private static final long serialVersionUID = -4657113720516199499L;
-
-    public FieldResolutionFailedException() {
-      super(
-          "Class "
-              + declaringClass
-              + " doesn't have field "
-              + name
-              + " : "
-              + type
-              + "; failed to resolve in superclasses and interfaces");
-    }
-
-    @Override
-    public String toString() {
-      StringBuffer ret = new StringBuffer();
-      ret.append(super.toString());
-      resolve(ret);
-      return ret.toString();
-    }
   }
 
   @Override
@@ -282,5 +257,29 @@ class AbstractSootFieldRef implements SootFieldRef {
       return false;
     }
     return true;
+  }
+
+  public class FieldResolutionFailedException extends ResolutionFailedException {
+    /** */
+    private static final long serialVersionUID = -4657113720516199499L;
+
+    public FieldResolutionFailedException() {
+      super(
+          "Class "
+              + declaringClass
+              + " doesn't have field "
+              + name
+              + " : "
+              + type
+              + "; failed to resolve in superclasses and interfaces");
+    }
+
+    @Override
+    public String toString() {
+      StringBuffer ret = new StringBuffer();
+      ret.append(super.toString());
+      resolve(ret);
+      return ret.toString();
+    }
   }
 }

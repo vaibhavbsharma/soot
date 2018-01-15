@@ -19,10 +19,6 @@
 
 package soot.jbco.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.PatchingChain;
 import soot.Trap;
@@ -30,6 +26,10 @@ import soot.Unit;
 import soot.baf.JSRInst;
 import soot.baf.TableSwitchInst;
 import soot.baf.TargetArgInst;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Debugger {
 
@@ -51,8 +51,8 @@ public class Debugger {
               + o
               + " "
               + (o instanceof TargetArgInst
-                  ? index.get(((TargetArgInst) o).getTarget()).toString()
-                  : ""));
+              ? index.get(((TargetArgInst) o).getTarget()).toString()
+              : ""));
     }
     System.out.println("\n");
   }

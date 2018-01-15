@@ -25,13 +25,16 @@ import soot.tagkit.ImportantTagAggregator;
 import soot.tagkit.Tag;
 
 public class FieldReadTagAggregator extends ImportantTagAggregator {
-  public FieldReadTagAggregator(Singletons.Global g) {}
+  public FieldReadTagAggregator(Singletons.Global g) {
+  }
 
   public static FieldReadTagAggregator v() {
     return G.v().soot_jimple_spark_fieldrw_FieldReadTagAggregator();
   }
 
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   @Override
   public boolean wantTag(Tag t) {
     return (t instanceof FieldReadTag);

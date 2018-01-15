@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.baf.Baf;
@@ -36,8 +34,11 @@ import soot.jimple.NopStmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
+import java.util.List;
+
 public class JNopStmt extends AbstractStmt implements NopStmt {
-  public JNopStmt() {}
+  public JNopStmt() {
+  }
 
   @Override
   public Object clone() {

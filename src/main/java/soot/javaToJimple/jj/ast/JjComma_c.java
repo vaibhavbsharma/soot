@@ -19,13 +19,13 @@
 
 package soot.javaToJimple.jj.ast;
 
-import java.util.List;
-
 import polyglot.ast.Expr;
 import polyglot.ast.Term;
 import polyglot.ext.jl.ast.Expr_c;
 import polyglot.util.Position;
 import polyglot.visit.CFGBuilder;
+
+import java.util.List;
 
 public class JjComma_c extends Expr_c implements Expr {
 

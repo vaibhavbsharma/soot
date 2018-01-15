@@ -19,14 +19,14 @@
 
 package soot.toolkits.graph;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.Iterator;
+import java.util.List;
 
 // STEP 1: What are we computing?
 // SETS OF Units that are post-dominators => Use ArraySparseSet.
@@ -38,7 +38,10 @@ import soot.toolkits.scalar.FlowSet;
 // FORWARDS
 //
 //
-/** @deprecated use {@link MHGPostDominatorsFinder} instead */
+
+/**
+ * @deprecated use {@link MHGPostDominatorsFinder} instead
+ */
 @Deprecated
 public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Unit>> {
 
@@ -140,7 +143,9 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Un
     return allNodes.clone();
   }
 
-  /** Returns true if s post-dominates t. */
+  /**
+   * Returns true if s post-dominates t.
+   */
   public boolean postDominates(Stmt s, Stmt t) {
     return getFlowBefore(t).contains(s);
   }

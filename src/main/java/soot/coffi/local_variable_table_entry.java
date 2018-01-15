@@ -28,13 +28,17 @@ package soot.coffi;
 /**
  * An entry in a local variable table.
  *
- * @see LocalVariableTable_attribute
  * @author Clark Verbrugge
+ * @see LocalVariableTable_attribute
  */
 class local_variable_table_entry {
-  /** Code offset of start of code wherein this entry applies. */
+  /**
+   * Code offset of start of code wherein this entry applies.
+   */
   public int start_pc;
-  /** Length of code sequence in which this name applies. */
+  /**
+   * Length of code sequence in which this name applies.
+   */
   public int length;
   /**
    * Constant pool index of string giving this local variable's name.
@@ -48,7 +52,9 @@ class local_variable_table_entry {
    * @see CONSTANT_Utf8_info
    */
   public int descriptor_index;
-  /** The index in the local variable array of this local variable. */
+  /**
+   * The index in the local variable array of this local variable.
+   */
   public int index;
 
   @Override

@@ -45,7 +45,9 @@ public class DoubleConstant extends RealConstant {
     return (c instanceof DoubleConstant && ((DoubleConstant) c).value == this.value);
   }
 
-  /** Returns a hash code for this DoubleConstant object. */
+  /**
+   * Returns a hash code for this DoubleConstant object.
+   */
   @Override
   public int hashCode() {
     long v = Double.doubleToLongBits(value);
@@ -152,7 +154,8 @@ public class DoubleConstant extends RealConstant {
     } else if (this.value == cValue) {
       return IntConstant.v(0);
     } else {
-      /* this or c could be NaN */ return IntConstant.v(1);
+      /* this or c could be NaN */
+      return IntConstant.v(1);
     }
   }
 
@@ -167,7 +170,8 @@ public class DoubleConstant extends RealConstant {
     } else if (this.value == cValue) {
       return IntConstant.v(0);
     } else {
-      /* this or c could be NaN */ return IntConstant.v(-1);
+      /* this or c could be NaN */
+      return IntConstant.v(-1);
     }
   }
 

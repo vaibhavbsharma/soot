@@ -19,14 +19,6 @@
 
 package soot.jbco;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import soot.G;
 import soot.Local;
 import soot.Pack;
@@ -62,9 +54,17 @@ import soot.jbco.jimpleTransformations.GotoInstrumenter;
 import soot.jbco.jimpleTransformations.LibraryMethodWrappersBuilder;
 import soot.jbco.jimpleTransformations.MethodRenamer;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 24-Jan-2006
+ * <p>Created on 24-Jan-2006
  */
 public class Main {
 
@@ -85,46 +85,46 @@ public class Main {
 
   static String[][] optionStrings =
       new String[][] {
-        {
-          "Rename Classes",
-          "Rename Methods",
-          "Rename Fields",
-          "Build API Buffer Methods",
-          "Build Library Buffer Classes",
-          "Goto Instruction Augmentation",
-          "Add Dead Switche Statements",
-          "Convert Arith. Expr. To Bitshifting Ops",
-          "Convert Branches to JSR Instructions",
-          "Disobey Constructor Conventions",
-          "Reuse Duplicate Sequences",
-          "Replace If(Non)Nulls with Try-Catch",
-          "Indirect If Instructions",
-          "Pack Locals into Bitfields",
-          "Reorder Loads Above Ifs",
-          "Combine Try and Catch Blocks",
-          "Embed Constants in Fields",
-          "Partially Trap Switches"
-        },
-        {
-          "wjtp.jbco_cr",
-          "wjtp.jbco_mr",
-          "wjtp.jbco_fr",
-          "wjtp.jbco_blbc",
-          "wjtp.jbco_bapibm",
-          "jtp.jbco_gia",
-          "jtp.jbco_adss",
-          "jtp.jbco_cae2bo",
-          "bb.jbco_cb2ji",
-          "bb.jbco_dcc",
-          "bb.jbco_rds",
-          "bb.jbco_riitcb",
-          "bb.jbco_iii",
-          "bb.jbco_plvb",
-          "bb.jbco_rlaii",
-          "bb.jbco_ctbcb",
-          "bb.jbco_ecvf",
-          "bb.jbco_ptss"
-        }
+          {
+              "Rename Classes",
+              "Rename Methods",
+              "Rename Fields",
+              "Build API Buffer Methods",
+              "Build Library Buffer Classes",
+              "Goto Instruction Augmentation",
+              "Add Dead Switche Statements",
+              "Convert Arith. Expr. To Bitshifting Ops",
+              "Convert Branches to JSR Instructions",
+              "Disobey Constructor Conventions",
+              "Reuse Duplicate Sequences",
+              "Replace If(Non)Nulls with Try-Catch",
+              "Indirect If Instructions",
+              "Pack Locals into Bitfields",
+              "Reorder Loads Above Ifs",
+              "Combine Try and Catch Blocks",
+              "Embed Constants in Fields",
+              "Partially Trap Switches"
+          },
+          {
+              "wjtp.jbco_cr",
+              "wjtp.jbco_mr",
+              "wjtp.jbco_fr",
+              "wjtp.jbco_blbc",
+              "wjtp.jbco_bapibm",
+              "jtp.jbco_gia",
+              "jtp.jbco_adss",
+              "jtp.jbco_cae2bo",
+              "bb.jbco_cb2ji",
+              "bb.jbco_dcc",
+              "bb.jbco_rds",
+              "bb.jbco_riitcb",
+              "bb.jbco_iii",
+              "bb.jbco_plvb",
+              "bb.jbco_rlaii",
+              "bb.jbco_ctbcb",
+              "bb.jbco_ecvf",
+              "bb.jbco_ptss"
+          }
       };
 
   public static void main(String[] argv) {
@@ -352,8 +352,8 @@ public class Main {
                   i == 0
                       ? "Whole Program Jimple Transformations:"
                       : i == 1
-                          ? "Jimple Method Body Transformations:"
-                          : "Baf Method Body Transformations:");
+                      ? "Jimple Method Body Transformations:"
+                      : "Baf Method Body Transformations:");
           while (phases.hasNext()) {
             Transform o = phases.next();
             Transformer t = o.getTransformer();

@@ -19,14 +19,6 @@
 
 package soot.javaToJimple;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import polyglot.frontend.ExtensionInfo;
 import polyglot.frontend.FileSource;
 import polyglot.frontend.Job;
@@ -34,6 +26,14 @@ import polyglot.frontend.Pass;
 import polyglot.frontend.SourceJob;
 import polyglot.frontend.SourceLoader;
 import polyglot.frontend.VisitorPass;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class JavaToJimple {
 
@@ -46,7 +46,9 @@ public class JavaToJimple {
   public static final polyglot.frontend.Pass.ID SAVE_AST =
       new polyglot.frontend.Pass.ID("save-ast");
 
-  /** sets up the info needed to invoke polyglot */
+  /**
+   * sets up the info needed to invoke polyglot
+   */
   public polyglot.frontend.ExtensionInfo initExtInfo(
       String fileName, List<String> sourceLocations) {
 
@@ -99,7 +101,9 @@ public class JavaToJimple {
     return extInfo;
   }
 
-  /** uses polyglot to compile source and build AST */
+  /**
+   * uses polyglot to compile source and build AST
+   */
   public polyglot.ast.Node compile(
       polyglot.frontend.Compiler compiler,
       String fileName,

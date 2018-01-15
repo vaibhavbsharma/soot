@@ -19,7 +19,9 @@
 
 package soot.util;
 
-/** A Lisp-style cons cell. */
+/**
+ * A Lisp-style cons cell.
+ */
 public final class Cons<U, V> {
   private final U car;
   private final V cdr;

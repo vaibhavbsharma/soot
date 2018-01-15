@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -59,12 +54,18 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public class CopyPropagator extends BodyTransformer {
 
   protected ThrowAnalysis throwAnalysis = null;
   protected boolean forceOmitExceptingUnitEdges = false;
 
-  public CopyPropagator(Singletons.Global g) {}
+  public CopyPropagator(Singletons.Global g) {
+  }
 
   public CopyPropagator(ThrowAnalysis ta) {
     this.throwAnalysis = ta;
@@ -81,15 +82,15 @@ public class CopyPropagator extends BodyTransformer {
 
   /**
    * Cascaded copy propagator.
-   *
+   * <p>
    * <p>If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); where a
    * has only one definition, and x has only one definition (B), then it can propagate immediately
    * without checking between B and C for redefinitions of a (namely) A because they cannot occur.
    * In this case the propagator is global.
-   *
+   * <p>
    * <p>Otherwise, if a has multiple definitions then it only checks for redefinitions of Propagates
    * constants and copies in extended basic blocks.
-   *
+   * <p>
    * <p>Does not propagate stack locals when the "only-regular-locals" option is true.
    */
   @Override

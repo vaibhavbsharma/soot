@@ -19,22 +19,26 @@
 
 package soot;
 
+import soot.jimple.IdentityRef;
+import soot.util.Chain;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import soot.jimple.IdentityRef;
-import soot.util.Chain;
 
 /**
  * UnitPrinter implementation for representations that have labelled stmts, such as Jimple, Grimp,
  * and Baf
  */
 public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
-  /** branch targets * */
+  /**
+   * branch targets *
+   */
   protected Map<Unit, String> labels;
-  /** for unit references in Phi nodes * */
+  /**
+   * for unit references in Phi nodes *
+   */
   protected Map<Unit, String> references;
 
   protected String labelIndent = "\u0020\u0020\u0020\u0020\u0020";

@@ -35,7 +35,7 @@ public interface DanglingInstruction {
   /**
    * Finalize this instruction taking the successor into consideration.
    *
-   * @param body to finalize into
+   * @param body      to finalize into
    * @param successor the direct successor of this instruction
    */
   void finalize(DexBody body, DexlibAbstractInstruction successor);

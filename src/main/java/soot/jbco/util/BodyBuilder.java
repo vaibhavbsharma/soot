@@ -19,11 +19,6 @@
 
 package soot.jbco.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Local;
 import soot.PatchingChain;
 import soot.RefType;
@@ -51,9 +46,14 @@ import soot.jimple.Jimple;
 import soot.jimple.ThisRef;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 7-Feb-2006
+ * <p>Created on 7-Feb-2006
  */
 public class BodyBuilder {
 

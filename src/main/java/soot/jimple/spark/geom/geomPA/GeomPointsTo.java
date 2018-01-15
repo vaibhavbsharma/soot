@@ -16,24 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Date;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.Vector;
+package soot.jimple.spark.geom.geomPA;
 
 import soot.Context;
 import soot.G;
@@ -80,6 +64,23 @@ import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * The main interface for the points-to analysis with geometric encodings. Since we need SPARK to
  * bootstrap our analysis, thus, we identify ourself to be a subclass of SPARK.
@@ -87,57 +88,43 @@ import soot.util.queue.QueueReader;
  * @author xiao
  */
 public class GeomPointsTo extends PAG {
-  // Worklist, the core data structure for fixed point computation
-  // Other choice, FIFO_Worklist
-  protected IWorklist worklist = null;
-
-  // The generator that is used to generate the internal representations for the pointers and
-  // objects
-  protected IEncodingBroker nodeGenerator = null;
-
-  // The same type manager used by SPARK
-  protected TypeManager typeManager = null;
-
-  // The offline processing strategies for the constraints
-  protected OfflineProcessor offlineProcessor = null;
-
   // A table that maps the SPARK nodes to the geometric nodes
   public Map<Node, IVarAbstraction> consG = null;
-
   // Stores all the pointers including the instance fields
   public ZArrayNumberer<IVarAbstraction> pointers = null;
-
   // Stores all the symbolic objects
   public ZArrayNumberer<IVarAbstraction> allocations = null;
-
   // Store all the constraints, initially generated from SPARK
   public ZArrayNumberer<PlainConstraint> constraints = null;
-
   // All the callsites that spawn a new thread
   public Set<Stmt> thread_run_callsites = null;
-
   // The virtual callsites (and base pointers) that have multiple call targets
   public Set<Stmt> multiCallsites = null;
-
   /*
    * Context size records the total number of instances for a function.
    * max_context_size_block is the context size of the largest block for a function in cycle
    */
   public long context_size[], max_context_size_block[];
-
   // Number of context blocks for a function
   public int block_num[];
-
   // Analysis statistics
   public int max_scc_size, max_scc_id;
   public int n_func, n_calls;
   public int n_reach_methods, n_reach_user_methods, n_reach_spark_user_methods;
   public int n_init_constraints;
-
   // Output options
   public String dump_dir = null;
   public PrintStream ps = null;
-
+  // Worklist, the core data structure for fixed point computation
+  // Other choice, FIFO_Worklist
+  protected IWorklist worklist = null;
+  // The generator that is used to generate the internal representations for the pointers and
+  // objects
+  protected IEncodingBroker nodeGenerator = null;
+  // The same type manager used by SPARK
+  protected TypeManager typeManager = null;
+  // The offline processing strategies for the constraints
+  protected OfflineProcessor offlineProcessor = null;
   /*
    * This container contains the methods that are considered "valid" by user.
    * For example, we want to compare the geometric points-to result with 1-obj analysis.
@@ -537,7 +524,7 @@ public class GeomPointsTo extends PAG {
   /**
    * As pointed out by the single entry graph contraction, temporary variables incur high redundancy
    * in points-to relations. Find and eliminate the redundancies as early as possible.
-   *
+   * <p>
    * <p>Methodology: If q has unique incoming edge p -> q, p and q are both local to the same
    * function, and they have the same type, we merge them.
    */
@@ -611,7 +598,9 @@ public class GeomPointsTo extends PAG {
     }
   }
 
-  /** Using Tarjan's algorithm to contract the SCCs. */
+  /**
+   * Using Tarjan's algorithm to contract the SCCs.
+   */
   private void callGraphDFS(int s) {
     int t;
     CgEdge p;
@@ -877,7 +866,9 @@ public class GeomPointsTo extends PAG {
     ps.printf("The maximum context size = %e\n", (double) max_contexts);
   }
 
-  /** We iteratively update the call graph and the constraints list until our demand is satisfied */
+  /**
+   * We iteratively update the call graph and the constraints list until our demand is satisfied
+   */
   private void solveConstraints() {
     IWorklist ptaList = worklist;
 
@@ -889,7 +880,9 @@ public class GeomPointsTo extends PAG {
     }
   }
 
-  /** Obtain the set of possible call targets at given @param callsite. */
+  /**
+   * Obtain the set of possible call targets at given @param callsite.
+   */
   private void getCallTargets(
       IVarAbstraction pn, SootMethod src, Stmt callsite, ChunkedQueue<SootMethod> targetsQueue) {
     InstanceInvokeExpr iie = (InstanceInvokeExpr) callsite.getInvokeExpr();
@@ -1015,7 +1008,9 @@ public class GeomPointsTo extends PAG {
     return n_obsoleted;
   }
 
-  /** Prepare for the next iteration. */
+  /**
+   * Prepare for the next iteration.
+   */
   private void prepareNextRun() {
     // Clean the context sensitive points-to results for the representative pointers
     for (IVarAbstraction pn : pointers) {
@@ -1028,7 +1023,9 @@ public class GeomPointsTo extends PAG {
     System.gc();
   }
 
-  /** Scan the call graph and mark the reachable methods. */
+  /**
+   * Scan the call graph and mark the reachable methods.
+   */
   private void markReachableMethods() {
     int ans = 0;
     CgEdge p;
@@ -1076,7 +1073,9 @@ public class GeomPointsTo extends PAG {
     n_reach_user_methods = ans;
   }
 
-  /** The reversed call graph might be used by evaluating queries. */
+  /**
+   * The reversed call graph might be used by evaluating queries.
+   */
   private void buildRevCallGraph() {
     rev_call_graph = new HashMap<>();
 
@@ -1204,7 +1203,9 @@ public class GeomPointsTo extends PAG {
     constraints.reassign();
   }
 
-  /** Stuff that is useless for querying is released. */
+  /**
+   * Stuff that is useless for querying is released.
+   */
   private void releaseUselessResources() {
     offlineProcessor.destroy();
     offlineProcessor = null;
@@ -1212,7 +1213,9 @@ public class GeomPointsTo extends PAG {
     System.gc();
   }
 
-  /** Update the reachable methods and SPARK points-to results. */
+  /**
+   * Update the reachable methods and SPARK points-to results.
+   */
   private void finalizeSootData() {
     // We remove the unreachable functions from Soot internal structures
     Scene.v().releaseReachableMethods();
@@ -1490,18 +1493,24 @@ public class GeomPointsTo extends PAG {
     return int2func.get(fid);
   }
 
-  /** Deciding if the given method represented by @param fid is reachable. */
+  /**
+   * Deciding if the given method represented by @param fid is reachable.
+   */
   public boolean isReachableMethod(int fid) {
     return fid != Constants.UNKNOWN_FUNCTION && vis_cg[fid] != 0;
   }
 
-  /** Deciding if the given method represented by @param sm is reachable. */
+  /**
+   * Deciding if the given method represented by @param sm is reachable.
+   */
   public boolean isReachableMethod(SootMethod sm) {
     int id = getIDFromSootMethod(sm);
     return isReachableMethod(id);
   }
 
-  /** Telling if the given method is in the file given by the option "cg.spark geom-verify-name". */
+  /**
+   * Telling if the given method is in the file given by the option "cg.spark geom-verify-name".
+   */
   public boolean isValidMethod(SootMethod sm) {
     if (validMethods != null) {
       String sig = sm.toString();
@@ -1537,12 +1546,16 @@ public class GeomPointsTo extends PAG {
     return func2int.keySet();
   }
 
-  /** Get the call edges calling from the method @param fid. */
+  /**
+   * Get the call edges calling from the method @param fid.
+   */
   public CgEdge getCallEgesOutFrom(int fid) {
     return call_graph[fid];
   }
 
-  /** Get the call edges calling into the method @param fid. */
+  /**
+   * Get the call edges calling into the method @param fid.
+   */
   public LinkedList<CgEdge> getCallEdgesInto(int fid) {
     if (rev_call_graph == null) {
       // We build the reversed call graph on demand
@@ -1552,7 +1565,9 @@ public class GeomPointsTo extends PAG {
     return rev_call_graph.get(fid);
   }
 
-  /** Get the index of the enclosing function of the specified node. */
+  /**
+   * Get the index of the enclosing function of the specified node.
+   */
   public int getMethodIDFromPtr(IVarAbstraction pn) {
     SootMethod sm = null;
     int ret = Constants.SUPER_MAIN;
@@ -1579,7 +1594,9 @@ public class GeomPointsTo extends PAG {
     return ret;
   }
 
-  /** Transform the SPARK node @param v representation to our representation. */
+  /**
+   * Transform the SPARK node @param v representation to our representation.
+   */
   public IVarAbstraction makeInternalNode(Node v) {
     IVarAbstraction ret = consG.get(v);
     if (ret == null) {
@@ -1607,7 +1624,9 @@ public class GeomPointsTo extends PAG {
     return typeManager.castNeverFails(src, dst);
   }
 
-  /** Get the number of valid pointers currently reachable by geomPTA. */
+  /**
+   * Get the number of valid pointers currently reachable by geomPTA.
+   */
   public int getNumberOfPointers() {
     return pointers.size();
   }
@@ -1621,12 +1640,16 @@ public class GeomPointsTo extends PAG {
     return allocations.size();
   }
 
-  /** Return the number of functions that are reachable by SPARK. */
+  /**
+   * Return the number of functions that are reachable by SPARK.
+   */
   public int getNumberOfSparkMethods() {
     return n_func;
   }
 
-  /** Return the number of functions that are reachable after the geometric points-to analysis. */
+  /**
+   * Return the number of functions that are reachable after the geometric points-to analysis.
+   */
   public int getNumberOfMethods() {
     return n_reach_methods;
   }
@@ -1635,13 +1658,17 @@ public class GeomPointsTo extends PAG {
     return worklist;
   }
 
-  /** Obtain the internal representation of an object field. */
+  /**
+   * Obtain the internal representation of an object field.
+   */
   public IVarAbstraction findInstanceField(AllocNode obj, SparkField field) {
     AllocDotField af = findAllocDotField(obj, field);
     return consG.get(af);
   }
 
-  /** Obtain or create an internal representation of an object field. */
+  /**
+   * Obtain or create an internal representation of an object field.
+   */
   public IVarAbstraction findAndInsertInstanceField(AllocNode obj, SparkField field) {
     AllocDotField af = findAllocDotField(obj, field);
     IVarAbstraction pn = null;
@@ -1663,7 +1690,9 @@ public class GeomPointsTo extends PAG {
     return pn;
   }
 
-  /** Obtain the edge representation internal to geomPTA. */
+  /**
+   * Obtain the edge representation internal to geomPTA.
+   */
   public CgEdge getInternalEdgeFromSootEdge(Edge e) {
     return edgeMapping.get(e);
   }
@@ -1673,8 +1702,8 @@ public class GeomPointsTo extends PAG {
       SootClass sc = ((RefType) v.getType()).getSootClass();
       if (!sc.isInterface()
           && Scene.v()
-              .getActiveHierarchy()
-              .isClassSubclassOfIncluding(sc, Constants.exeception_type.getSootClass())) {
+          .getActiveHierarchy()
+          .isClassSubclassOfIncluding(sc, Constants.exeception_type.getSootClass())) {
         return true;
       }
     }
@@ -1682,7 +1711,9 @@ public class GeomPointsTo extends PAG {
     return false;
   }
 
-  /** Given a valid SPARK node, we test if it is still valid after the geometric analysis. */
+  /**
+   * Given a valid SPARK node, we test if it is still valid after the geometric analysis.
+   */
   public boolean isValidGeometricNode(Node sparkNode) {
     IVarAbstraction pNode = consG.get(sparkNode);
     return pNode != null && pNode.reachable();

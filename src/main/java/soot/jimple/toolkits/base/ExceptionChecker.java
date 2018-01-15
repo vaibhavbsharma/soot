@@ -19,12 +19,6 @@
 
 package soot.jimple.toolkits.base;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -43,6 +37,12 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.tagkit.SourceLnPosTag;
 import soot.util.NumberedString;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 public class ExceptionChecker extends BodyTransformer {
 
@@ -142,7 +142,7 @@ public class ExceptionChecker extends BodyTransformer {
       Trap trap = (Trap) it.next();
       if (trap.getException().getType().equals(throwType)
           || hierarchy.isSubclass(
-              throwType.getSootClass(), (trap.getException().getType()).getSootClass())) {
+          throwType.getSootClass(), (trap.getException().getType()).getSootClass())) {
         if (isThrowInStmtRange(b, (Stmt) trap.getBeginUnit(), (Stmt) trap.getEndUnit(), s)) {
           return true;
         }
@@ -217,7 +217,7 @@ public class ExceptionChecker extends BodyTransformer {
             // actually need to look at the intersection of all declarations of
             // the method in supertypes.
             ? getExceptionSpec(
-                ie.getMethodRef().declaringClass(), ie.getMethodRef().getSubSignature())
+            ie.getMethodRef().declaringClass(), ie.getMethodRef().getSubSignature())
             // Otherwise, we just do normal resolution.
             : ie.getMethod().getExceptionsUnsafe();
     if (exceptions == null) {

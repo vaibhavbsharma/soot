@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface ReturnVoidStmt extends Stmt {}
+public interface ReturnVoidStmt extends Stmt {
+}

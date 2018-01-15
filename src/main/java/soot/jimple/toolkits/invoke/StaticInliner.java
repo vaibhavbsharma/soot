@@ -25,13 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 import soot.G;
 import soot.Hierarchy;
 import soot.PackManager;
@@ -52,9 +45,21 @@ import soot.jimple.toolkits.callgraph.TopologicalOrderer;
 import soot.options.Options;
 import soot.tagkit.Host;
 
-/** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+/**
+ * Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites.
+ */
 public class StaticInliner extends SceneTransformer {
-  public StaticInliner(Singletons.Global g) {}
+  private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<>();
+
+  public StaticInliner(Singletons.Global g) {
+  }
 
   public static StaticInliner v() {
     return G.v().soot_jimple_toolkits_invoke_StaticInliner();
@@ -185,8 +190,6 @@ public class StaticInliner extends SceneTransformer {
       }
     }
   }
-
-  private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<>();
 
   private void computeAverageMethodSizeAndSaveOriginalSizes() {
     long sum = 0, count = 0;

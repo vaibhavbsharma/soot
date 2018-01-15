@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -155,7 +156,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * NOTE: the semantic of forName0 follows forName method.
-   *
+   * <p>
    * <p>Returns the Class object associated with the class or interface with the given string name,
    * using the given class loader. Given the fully qualified name for a class or interface (in the
    * same format returned by getName) this method attempts to locate, load, and link the class or
@@ -163,17 +164,17 @@ public class JavaLangClassNative extends NativeMethodClass {
    * loader is null, the class is loaded through the bootstrap class loader. The class is
    * initialized only if the initialize parameter is true and if it has not been initialized
    * earlier.
-   *
+   * <p>
    * <p>If name denotes a primitive type or void, an attempt will be made to locate a user-defined
    * class in the unnamed package whose name is name. Therefore, this method cannot be used to
    * obtain any of the Class objects representing primitive types or void.
-   *
+   * <p>
    * <p>If name denotes an array class, the component type of the array class is loaded but not
    * initialized.
-   *
+   * <p>
    * <p>For example, in an instance method the expression: Class.forName("Foo") is equivalent to:
    * Class.forName("Foo", true, this.getClass().getClassLoader())
-   *
+   * <p>
    * <p>private static native java.lang.Class forName0(java.lang.String, boolean,
    * java.lang.ClassLoader) throws java.lang.ClassNotFoundException;
    */
@@ -187,7 +188,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * NOTE: creates an object.
-   *
+   * <p>
    * <p>private native java.lang.Object newInstance0() throws java.lang.InstantiationException,
    * java.lang.IllegalAccessException
    */
@@ -202,7 +203,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * Returns the class name.
-   *
+   * <p>
    * <p>public native java.lang.String getName();
    */
   public void java_lang_Class_getName(
@@ -215,11 +216,11 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * returns the class loader object for this class.
-   *
+   * <p>
    * <p>it is almost impossible to distinguish the dynamic class loader for classes. a conservative
    * way is to use one static representation for all class loader, which means all class loader
    * variable aliased together.
-   *
+   * <p>
    * <p>private native java.lang.ClassLoader getClassLoader0();
    */
   public void java_lang_Class_getClassLoader0(
@@ -232,7 +233,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * returns the super class of this class
-   *
+   * <p>
    * <p>public native java.lang.Class getSuperclass();
    */
   public void java_lang_Class_getSuperclass(
@@ -245,7 +246,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * Determines the interfaces implemented by the class or interface represented by this object.
-   *
+   * <p>
    * <p>public native java.lang.Class getInterfaces()[];
    */
   public void java_lang_Class_getInterfaces(
@@ -260,7 +261,7 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Returns the Class representing the component type of an array. If this class does not represent
    * an array class this method returns null.
-   *
+   * <p>
    * <p>public native java.lang.Class getComponentType();
    */
   public void java_lang_Class_getComponentType(
@@ -274,7 +275,7 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Sets the signers of a class. This should be called after defining a class. Parameters: c - the
    * Class object signers - the signers for the class
-   *
+   * <p>
    * <p>native void setSigners(java.lang.Object[]);
    */
   public void java_lang_Class_setSigners(
@@ -289,7 +290,7 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Gets the signers of this class. We need an artificial field variable to connect setSigners and
    * getSigners.
-   *
+   * <p>
    * <p>public native java.lang.Object getSigners()[];
    */
   public void java_lang_Class_getSigners(
@@ -306,9 +307,9 @@ public class JavaLangClassNative extends NativeMethodClass {
    * returns the Class object representing the class in which it was declared. This method returns
    * null if this class or interface is not a member of any other class. If this Class object
    * represents an array class, a primitive type, or void,then this method returns null.
-   *
+   * <p>
    * <p>Returns: the declaring class for this class
-   *
+   * <p>
    * <p>public native java.lang.Class getDeclaringClass();
    */
   public void java_lang_Class_getDeclaringClass(
@@ -321,9 +322,9 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * Sets or returns the ProtectionDomain of this class, called by getProtectiondomain.
-   *
+   * <p>
    * <p>We need an artificial field variable to handle this.
-   *
+   * <p>
    * <p>native void setProtectionDomain0(java.security.ProtectionDomain);
    */
   public void java_lang_Class_setProtectionDomain0(
@@ -335,7 +336,9 @@ public class JavaLangClassNative extends NativeMethodClass {
     helper.assign(protdmn, params[0]);
   }
 
-  /** private native java.security.ProtectionDomain getProtectionDomain0(); */
+  /**
+   * private native java.security.ProtectionDomain getProtectionDomain0();
+   */
   public void java_lang_Class_getProtectionDomain0(
       SootMethod method,
       ReferenceVariable thisVar,
@@ -347,7 +350,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * Undocumented. It is supposed to return a class object for primitive type named by @param0.
-   *
+   * <p>
    * <p>static native java.lang.Class getPrimitiveClass(java.lang.String);
    */
   public void java_lang_Class_getPrimitiveClass(
@@ -361,7 +364,7 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Returns an array containing Field objects reflecting all the accessible public fields of the
    * class or interface represented by this Class object.
-   *
+   * <p>
    * <p>private native java.lang.reflect.Field getFields0(int)[];
    */
   public void java_lang_Class_getFields0(
@@ -376,7 +379,7 @@ public class JavaLangClassNative extends NativeMethodClass {
    * Returns an array containing Method objects reflecting all the public member methods of the
    * class or interface represented by this Class object, including those declared by the class or
    * interface and and those inherited from superclasses and superinterfaces.
-   *
+   * <p>
    * <p>private native java.lang.reflect.Method getMethods0(int)[];
    */
   public void java_lang_Class_getMethods0(
@@ -391,7 +394,7 @@ public class JavaLangClassNative extends NativeMethodClass {
    * Returns a Constructor object that reflects the specified public constructor of the class
    * represented by this Class object. The parameterTypes parameter is an array of Class objects
    * that identify the constructor's formal parameter types, in declared order.
-   *
+   * <p>
    * <p>private native java.lang.reflect.Constructor getConstructors0(int)[];
    */
   public void java_lang_Class_getConstructors0(
@@ -405,12 +408,12 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Returns a Field object that reflects the specified public member field of the class or
    * interface represented by this Class object.
-   *
+   * <p>
    * <p>Called by getField(String)
-   *
+   * <p>
    * <p>NOTE: getField0(String name), since the name can be dynamically constructed, it may be not
    * able to know exact field name in static analysis. Uses a C.F to represent the class field.
-   *
+   * <p>
    * <p>private native java.lang.reflect.Field getField0(java.lang.String, int);
    */
   public void java_lang_Class_getField0(
@@ -424,9 +427,9 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Returns a Method object that reflects the specified public member method of the class or
    * interface represented by this Class object.
-   *
+   * <p>
    * <p>Called by getMethod()
-   *
+   * <p>
    * <p>private native java.lang.reflect.Method getMethod0(java.lang.String, java.lang.Class[],
    * int);
    */
@@ -440,7 +443,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 
   /**
    * Returns a constructor of a class
-   *
+   * <p>
    * <p>private native java.lang.reflect.Constructor getConstructor0(java.lang.Class[], int);
    */
   public void java_lang_Class_getConstructor0(
@@ -454,7 +457,7 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Returns an array of Class objects reflecting all the classes and interfaces declared as members
    * of the class represented by this Class object.
-   *
+   * <p>
    * <p>private native java.lang.Class getDeclaredClasses0()[];
    */
   public void java_lang_Class_getDeclaredClasses0(
@@ -468,7 +471,7 @@ public class JavaLangClassNative extends NativeMethodClass {
   /**
    * Returns an array of Constructor objects reflecting all the classes and interfaces declared as
    * members of the class represented by this Class object.
-   *
+   * <p>
    * <p>private native java.lang.Class getDeclaredConstructors0(boolean)[];
    */
   public void java_lang_Class_getDeclaredConstructors0(

@@ -24,20 +24,11 @@
 
 package soot.dexpler.instructions;
 
-import static soot.dexpler.Util.dottedClassName;
-import static soot.dexpler.Util.isFloatLike;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.MethodReference;
-
 import soot.Local;
 import soot.Modifier;
 import soot.RefType;
@@ -56,18 +47,19 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static soot.dexpler.Util.dottedClassName;
+import static soot.dexpler.Util.isFloatLike;
+
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction
     implements DanglingInstruction {
-  private enum InvocationType {
-    Static,
-    Interface,
-    Virtual
-  }
-
   // stores the dangling InvokeExpr
   protected InvokeExpr invocation;
   protected AssignStmt assign = null;
-
   private SootMethodRef methodRef = null;
 
   public MethodInvocationInstruction(Instruction instruction, int codeAddress) {
@@ -141,7 +133,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Determine if register is used as floating point.
-   *
+   * <p>
    * <p>Abstraction for static and non-static methods. Non-static methods need to ignore the first
    * parameter (this)
    *
@@ -173,7 +165,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Determine if register is used as object.
-   *
+   * <p>
    * <p>Abstraction for static and non-static methods. Non-static methods need to ignore the first
    * parameter (this)
    *
@@ -210,12 +202,16 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     return false;
   }
 
-  /** Return the SootMethodRef for the invoked method. */
+  /**
+   * Return the SootMethodRef for the invoked method.
+   */
   protected SootMethodRef getSootMethodRef() {
     return getSootMethodRef(InvocationType.Virtual);
   }
 
-  /** Return the static SootMethodRef for the invoked method. */
+  /**
+   * Return the static SootMethodRef for the invoked method.
+   */
   protected SootMethodRef getStaticSootMethodRef() {
     return getSootMethodRef(InvocationType.Static);
   }
@@ -274,11 +270,11 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Build the parameters of this invocation.
-   *
+   * <p>
    * <p>The first parameter is the instance for which the method is invoked (if method is
    * non-static).
    *
-   * @param body the body to build for and into
+   * @param body     the body to build for and into
    * @param isStatic if method is static
    * @return the converted parameters
    */
@@ -324,7 +320,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         "Instruction is neither a InvokeInstruction nor a InvokeRangeInstruction");
   }
 
-  /** Executes the "jimplify" operation for a virtual invocation */
+  /**
+   * Executes the "jimplify" operation for a virtual invocation
+   */
   protected void jimplifyVirtual(DexBody body) {
     // In some applications, InterfaceInvokes are disguised as VirtualInvokes.
     // We fix this silently
@@ -345,7 +343,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     body.setDanglingInstruction(this);
   }
 
-  /** Executes the "jimplify" operation for an interface invocation */
+  /**
+   * Executes the "jimplify" operation for an interface invocation
+   */
   protected void jimplifyInterface(DexBody body) {
     // In some applications, VirtualInvokes are disguised as InterfaceInvokes.
     // We fix this silently
@@ -365,7 +365,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     body.setDanglingInstruction(this);
   }
 
-  /** Executes the "jimplify" operation for a special invocation */
+  /**
+   * Executes the "jimplify" operation for a special invocation
+   */
   protected void jimplifySpecial(DexBody body) {
     List<Local> parameters = buildParameters(body, false);
     invocation =
@@ -375,10 +377,18 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     body.setDanglingInstruction(this);
   }
 
-  /** Executes the "jimplify" operation for a static invocation */
+  /**
+   * Executes the "jimplify" operation for a static invocation
+   */
   protected void jimplifyStatic(DexBody body) {
     invocation =
         Jimple.v().newStaticInvokeExpr(getStaticSootMethodRef(), buildParameters(body, true));
     body.setDanglingInstruction(this);
+  }
+
+  private enum InvocationType {
+    Static,
+    Interface,
+    Virtual
   }
 }

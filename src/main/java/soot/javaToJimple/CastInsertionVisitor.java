@@ -68,9 +68,9 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
         } else {
           newExpr =
               nf.Cast(
-                      p,
-                      nf.CanonicalTypeNode(p, toType),
-                      nf.Cast(p, nf.CanonicalTypeNode(p, ts.Int()), e).type(ts.Int()))
+                  p,
+                  nf.CanonicalTypeNode(p, toType),
+                  nf.Cast(p, nf.CanonicalTypeNode(p, ts.Int()), e).type(ts.Int()))
                   .type(toType);
         }
       } else {

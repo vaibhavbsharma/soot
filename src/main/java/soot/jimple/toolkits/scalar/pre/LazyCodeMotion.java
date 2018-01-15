@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -58,29 +54,36 @@ import soot.toolkits.scalar.FlowUniverse;
 import soot.util.Chain;
 import soot.util.UnitMap;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Performs a partial redundancy elimination (= code motion). This is done, by introducing
  * helper-vars, that store an already computed value, or if a computation only arrives partially
  * (not from all predecessors) inserts a new computation on these paths afterwards).
- *
+ * <p>
  * <p>In order to catch every redundant expression, this transformation must be done on a graph
  * without critical edges. Therefore the first thing we do, is removing them. A subsequent pass can
  * then easily remove the synthetic nodes we have introduced.
- *
+ * <p>
  * <p>The term "lazy" refers to the fact, that we move computations only if necessary.
  *
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class LazyCodeMotion extends BodyTransformer {
-  public LazyCodeMotion(Singletons.Global g) {}
+  private static final String PREFIX = "$lcm";
+
+  public LazyCodeMotion(Singletons.Global g) {
+  }
 
   public static LazyCodeMotion v() {
     return G.v().soot_jimple_toolkits_scalar_pre_LazyCodeMotion();
   }
 
-  private static final String PREFIX = "$lcm";
-
-  /** performs the lazy code motion. */
+  /**
+   * performs the lazy code motion.
+   */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
     LCMOptions options = new LCMOptions(opts);

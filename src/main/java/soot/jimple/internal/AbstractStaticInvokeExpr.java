@@ -26,8 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.SootMethodRef;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -41,6 +39,8 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.StaticInvokeExpr;
 import soot.util.Switch;
 
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
     implements StaticInvokeExpr, ConvertToBaf {
@@ -52,13 +52,21 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
     }
   }
 
+  protected AbstractStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
+    super(methodRef, argBoxes);
+    if (!methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
+    this.methodRef = methodRef;
+  }
+
   @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractStaticInvokeExpr) {
       AbstractStaticInvokeExpr ie = (AbstractStaticInvokeExpr) o;
       if (!(getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+          == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -73,7 +81,9 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return getMethod().equivHashCode();
@@ -81,14 +91,6 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr
 
   @Override
   public abstract Object clone();
-
-  protected AbstractStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
-    super(methodRef, argBoxes);
-    if (!methodRef.isStatic()) {
-      throw new RuntimeException("wrong static-ness");
-    }
-    this.methodRef = methodRef;
-  }
 
   @Override
   public String toString() {

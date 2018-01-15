@@ -19,15 +19,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.G;
 import soot.Local;
 import soot.Timers;
@@ -41,12 +32,21 @@ import soot.toolkits.graph.UnitGraph;
 import soot.util.Cons;
 import soot.util.LocalBitSetPacker;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
- *
+ * <p>
  * <p>This Analysis calculates only the definitions of the locals used by a unit. If you need all
  * definitions of local you should use {@see SimpleLocalDefs}.
- *
+ * <p>
  * <p>Be warned: This implementation requires a lot of memory and CPU time, normally {@see
  * SimpleLocalDefs} is much faster.
  */
@@ -58,33 +58,6 @@ public class SmartLocalDefs implements LocalDefs {
   private final UnitGraph graph;
   private final LocalDefsAnalysis analysis;
   private final Map<Unit, BitSet> liveLocalsAfter;
-
-  public void printAnswer() {
-    System.out.println(answer.toString());
-  }
-
-  /**
-   * Intersects 2 sets and returns the result as a list
-   *
-   * @param a
-   * @param b
-   * @return
-   */
-  private static <T> List<T> asList(Set<T> a, Set<T> b) {
-    if (a == null || b == null || a.isEmpty() || b.isEmpty()) {
-      return Collections.emptyList();
-    }
-
-    if (a.size() < b.size()) {
-      List<T> c = new ArrayList<>(a);
-      c.retainAll(b);
-      return c;
-    } else {
-      List<T> c = new ArrayList<>(b);
-      c.retainAll(a);
-      return c;
-    }
-  }
 
   public SmartLocalDefs(UnitGraph g, LiveLocals live) {
     this.graph = g;
@@ -176,6 +149,33 @@ public class SmartLocalDefs implements LocalDefs {
     }
   }
 
+  /**
+   * Intersects 2 sets and returns the result as a list
+   *
+   * @param a
+   * @param b
+   * @return
+   */
+  private static <T> List<T> asList(Set<T> a, Set<T> b) {
+    if (a == null || b == null || a.isEmpty() || b.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    if (a.size() < b.size()) {
+      List<T> c = new ArrayList<>(a);
+      c.retainAll(b);
+      return c;
+    } else {
+      List<T> c = new ArrayList<>(b);
+      c.retainAll(a);
+      return c;
+    }
+  }
+
+  public void printAnswer() {
+    System.out.println(answer.toString());
+  }
+
   private Local localDef(Unit u) {
     List<ValueBox> defBoxes = u.getDefBoxes();
     int size = defBoxes.size();
@@ -207,6 +207,33 @@ public class SmartLocalDefs implements LocalDefs {
       localToDefs.put(l, s = new HashSet<>());
     }
     s.add(u);
+  }
+
+  @Override
+  public List<Unit> getDefsOfAt(Local l, Unit s) {
+    List<Unit> lst = answer.get(new Cons<>(s, l));
+    if (lst == null) {
+      return Collections.emptyList();
+    }
+    return lst;
+  }
+
+  @Override
+  public List<Unit> getDefsOf(Local l) {
+    List<Unit> result = new ArrayList<>();
+    for (Cons<Unit, Local> cons : answer.keySet()) {
+      if (cons.cdr() == l) {
+        result.addAll(answer.get(cons));
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Returns the associated unit graph.
+   */
+  public UnitGraph getGraph() {
+    return graph;
   }
 
   class LocalDefsAnalysis extends ForwardFlowAnalysisExtended<Unit, Set<Unit>> {
@@ -289,30 +316,5 @@ public class SmartLocalDefs implements LocalDefs {
     protected Set<Unit> entryInitialFlow() {
       return new HashSet<>();
     }
-  }
-
-  @Override
-  public List<Unit> getDefsOfAt(Local l, Unit s) {
-    List<Unit> lst = answer.get(new Cons<>(s, l));
-    if (lst == null) {
-      return Collections.emptyList();
-    }
-    return lst;
-  }
-
-  @Override
-  public List<Unit> getDefsOf(Local l) {
-    List<Unit> result = new ArrayList<>();
-    for (Cons<Unit, Local> cons : answer.keySet()) {
-      if (cons.cdr() == l) {
-        result.addAll(answer.get(cons));
-      }
-    }
-    return result;
-  }
-
-  /** Returns the associated unit graph. */
-  public UnitGraph getGraph() {
-    return graph;
   }
 }

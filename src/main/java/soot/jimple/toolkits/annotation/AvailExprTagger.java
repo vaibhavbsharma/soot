@@ -19,8 +19,6 @@
 
 package soot.jimple.toolkits.annotation;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,12 +33,15 @@ import soot.jimple.toolkits.scalar.SlowAvailableExpressionsAnalysis;
 import soot.options.AETOptions;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 
+import java.util.Map;
+
 /**
  * A body transformer that records avail expression information in tags. - both pessimistic and
  * optimistic options
  */
 public class AvailExprTagger extends BodyTransformer {
-  public AvailExprTagger(Singletons.Global g) {}
+  public AvailExprTagger(Singletons.Global g) {
+  }
 
   public static AvailExprTagger v() {
     return G.v().soot_jimple_toolkits_annotation_AvailExprTagger();

@@ -30,12 +30,12 @@ import soot.jimple.DoubleConstant;
 public class DoubleConstantValueTag extends ConstantValueTag {
   private final double value;
 
-  public double getDoubleValue() {
-    return value;
-  }
-
   public DoubleConstantValueTag(double val) {
     this.value = val;
+  }
+
+  public double getDoubleValue() {
+    return value;
   }
 
   @Override

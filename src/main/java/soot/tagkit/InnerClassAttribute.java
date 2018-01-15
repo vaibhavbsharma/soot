@@ -39,7 +39,8 @@ import java.util.List;
 public class InnerClassAttribute implements Tag {
   private ArrayList<InnerClassTag> list = null;
 
-  public InnerClassAttribute() {}
+  public InnerClassAttribute() {
+  }
 
   public InnerClassAttribute(ArrayList<InnerClassTag> list) {
     this.list = list;

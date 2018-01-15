@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 import java.util.AbstractSet;
@@ -32,17 +33,10 @@ public class ArraySet<T> extends AbstractSet<T> {
           throw new RuntimeException();
         }
       };
-
-  @SuppressWarnings("all")
-  public static final <T> ArraySet<T> empty() {
-    return EMPTY;
-  }
-
+  private final boolean checkDupes;
   private T[] _elems;
 
   private int _curIndex = 0;
-
-  private final boolean checkDupes;
 
   @SuppressWarnings("all")
   public ArraySet(int numElems_, boolean checkDupes) {
@@ -66,6 +60,11 @@ public class ArraySet<T> extends AbstractSet<T> {
   public ArraySet(Collection<T> other) {
     this(other.size(), true);
     addAll(other);
+  }
+
+  @SuppressWarnings("all")
+  public static final <T> ArraySet<T> empty() {
+    return EMPTY;
   }
 
   /*
@@ -147,7 +146,8 @@ public class ArraySet<T> extends AbstractSet<T> {
   @Override
   public boolean remove(Object obj_) {
     int ind;
-    for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {}
+    for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {
+    }
     // check if object was never there
     if (ind == _curIndex) {
       return false;
@@ -240,15 +240,17 @@ public class ArraySet<T> extends AbstractSet<T> {
     return a;
   }
 
-  /** @author manu */
+  /**
+   * @author manu
+   */
   public class ArraySetIterator implements Iterator<T> {
 
+    final int setSize = size();
     int ind = 0;
 
-    final int setSize = size();
-
     /** */
-    public ArraySetIterator() {}
+    public ArraySetIterator() {
+    }
 
     /*
      * (non-Javadoc)

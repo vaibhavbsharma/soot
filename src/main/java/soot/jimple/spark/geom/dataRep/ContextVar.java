@@ -15,16 +15,17 @@ public abstract class ContextVar implements Numberable {
 
   // This class cannot be instantiated directly
   // Use its derived classes
-  protected ContextVar() {}
-
-  @Override
-  public void setNumber(int number) {
-    id = number;
+  protected ContextVar() {
   }
 
   @Override
   public int getNumber() {
     return id;
+  }
+
+  @Override
+  public void setNumber(int number) {
+    id = number;
   }
 
   /**

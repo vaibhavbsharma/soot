@@ -35,7 +35,7 @@ public interface MutableDirectedGraph<N> extends DirectedGraph<N> {
    * Adds an edge to the graph between 2 nodes. If the edge is already present no change is made.
    *
    * @param from out node for the edge.
-   * @param to in node for the edge.
+   * @param to   in node for the edge.
    */
   void addEdge(N from, N to);
 
@@ -43,14 +43,18 @@ public interface MutableDirectedGraph<N> extends DirectedGraph<N> {
    * Removes an edge between 2 nodes in the graph. If the edge is not present no change is made.
    *
    * @param from out node for the edge to remove.
-   * @param to in node for the edge to remove.
+   * @param to   in node for the edge to remove.
    */
   void removeEdge(N from, N to);
 
-  /** @return true if the graph contains an edge the 2 nodes false otherwise. */
+  /**
+   * @return true if the graph contains an edge the 2 nodes false otherwise.
+   */
   boolean containsEdge(N from, N to);
 
-  /** @return a list of the nodes that compose the graph. No ordering is implied. */
+  /**
+   * @return a list of the nodes that compose the graph. No ordering is implied.
+   */
   List<N> getNodes();
 
   /**

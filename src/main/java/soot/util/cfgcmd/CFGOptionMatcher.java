@@ -25,27 +25,11 @@ import soot.G;
 /**
  * A class used by CFG utilities that need to match different option strings with classes that
  * implement those options.
- *
+ * <p>
  * <p>A <code>CFGOptionMatcher</code> maintains a set of named options, and provides a means for
  * matching abbreviated option values against those names.
  */
 public class CFGOptionMatcher {
-
-  /**
-   * The type stored within a <code>CFGOptionMatcher</code>. Options to be stored in a <code>
-   * CFGOptionMatcher</code> must extend this class.
-   */
-  public abstract static class CFGOption {
-    private final String name;
-
-    protected CFGOption(String name) {
-      this.name = name;
-    }
-
-    public String name() {
-      return name;
-    }
-  }
 
   private CFGOption[] options;
 
@@ -64,9 +48,9 @@ public class CFGOptionMatcher {
    *
    * @param quarry The string to be matched against the stored option names.
    * @return The matching {@link CFGOption}, if exactly one of the stored option names begins with
-   *     <code>quarry</code>.
+   * <code>quarry</code>.
    * @throws soot.CompilationDeathException if <code>quarry</code> matches none of the option names,
-   *     or if it matches more than one.
+   *                                        or if it matches more than one.
    */
   public CFGOption match(String quarry) throws soot.CompilationDeathException {
     String uncasedQuarry = quarry.toLowerCase();
@@ -104,11 +88,11 @@ public class CFGOptionMatcher {
    * </code>, separated by '|' characters. The string is intended for use in help messages.
    *
    * @param initialIndent The number of blank spaces to insert at the beginning of the returned
-   *     string. Ignored if negative.
-   * @param rightMargin If positive, newlines will be inserted to try to keep the length of each
-   *     line in the returned string less than or equal to <code>rightMargin</code>.
+   *                      string. Ignored if negative.
+   * @param rightMargin   If positive, newlines will be inserted to try to keep the length of each
+   *                      line in the returned string less than or equal to <code>rightMargin</code>.
    * @param hangingIndent If positive, this number of spaces will be inserted immediately after each
-   *     newline inserted to respect the <code>rightMargin</code>.
+   *                      newline inserted to respect the <code>rightMargin</code>.
    */
   public String help(int initialIndent, int rightMargin, int hangingIndent) {
 
@@ -144,5 +128,21 @@ public class CFGOptionMatcher {
       lineLength += nameLength;
     }
     return result.toString();
+  }
+
+  /**
+   * The type stored within a <code>CFGOptionMatcher</code>. Options to be stored in a <code>
+   * CFGOptionMatcher</code> must extend this class.
+   */
+  public abstract static class CFGOption {
+    private final String name;
+
+    protected CFGOption(String name) {
+      this.name = name;
+    }
+
+    public String name() {
+      return name;
+    }
   }
 }

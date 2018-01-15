@@ -16,15 +16,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.graph.pdg;
 
-import java.util.List;
+package soot.toolkits.graph.pdg;
 
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.List;
 
 /**
  * This interface represents a region of control dependence in the control flow graph. There are
@@ -56,9 +57,9 @@ public interface IRegion {
 
   boolean occursBefore(Unit u1, Unit u2);
 
-  void setParent(IRegion pr);
-
   IRegion getParent();
+
+  void setParent(IRegion pr);
 
   void addChildRegion(IRegion chr);
 

@@ -19,23 +19,25 @@
 
 package soot.jbco.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
 import soot.toolkits.graph.TrapUnitGraph;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 15-Jun-2006
+ * <p>Created on 15-Jun-2006
  */
 public class SimpleExceptionalGraph extends TrapUnitGraph {
 
-  /** @param body */
+  /**
+   * @param body
+   */
   public SimpleExceptionalGraph(Body body) {
     super(body);
     int size = unitChain.size();
@@ -52,7 +54,7 @@ public class SimpleExceptionalGraph extends TrapUnitGraph {
     for (Trap trap : body.getTraps()) {
       Unit handler = trap.getHandlerUnit();
       for (Iterator predIt = ((List) unitToPreds.get(trap.getBeginUnit())).iterator();
-          predIt.hasNext();
+           predIt.hasNext();
           ) {
         Unit pred = (Unit) predIt.next();
         addEdge(unitToSuccs, unitToPreds, pred, handler);

@@ -26,8 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.DoubleType;
 import soot.LongType;
 import soot.SootMethodRef;
@@ -44,6 +42,8 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.util.Switch;
 
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvokeExpr
     implements InterfaceInvokeExpr, ConvertToBaf {
@@ -55,6 +55,25 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     }
   }
 
+  private static int sizeOfType(Type t) {
+    if (t instanceof DoubleType || t instanceof LongType) {
+      return 2;
+    } else if (t instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  private static int argCountOf(SootMethodRef m) {
+    int argCount = 0;
+    for (Type t : m.parameterTypes()) {
+      argCount += sizeOfType(t);
+    }
+
+    return argCount;
+  }
+
   @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractInterfaceInvokeExpr) {
@@ -62,7 +81,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
       if (!(baseBox.getValue().equivTo(ie.baseBox.getValue())
           && getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+          == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -77,7 +96,9 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
@@ -138,25 +159,6 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
   @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseInterfaceInvokeExpr(this);
-  }
-
-  private static int sizeOfType(Type t) {
-    if (t instanceof DoubleType || t instanceof LongType) {
-      return 2;
-    } else if (t instanceof VoidType) {
-      return 0;
-    } else {
-      return 1;
-    }
-  }
-
-  private static int argCountOf(SootMethodRef m) {
-    int argCount = 0;
-    for (Type t : m.parameterTypes()) {
-      argCount += sizeOfType(t);
-    }
-
-    return argCount;
   }
 
   @Override

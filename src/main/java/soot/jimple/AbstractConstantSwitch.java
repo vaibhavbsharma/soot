@@ -69,7 +69,8 @@ public abstract class AbstractConstantSwitch implements ConstantSwitch {
   }
 
   @Override
-  public void defaultCase(Object v) {}
+  public void defaultCase(Object v) {
+  }
 
   public Object getResult() {
     return result;

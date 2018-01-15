@@ -28,10 +28,6 @@ import soot.Type;
 import soot.options.CGOptions;
 
 public class TypeConstants {
-  public static TypeConstants v() {
-    return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants();
-  }
-
   public Type OBJECTCLASS;
   public Type STRINGCLASS;
   public Type CLASSLOADERCLASS;
@@ -44,7 +40,6 @@ public class TypeConstants {
   public Type CONSTRUCTORCLASS;
   public Type FILESYSTEMCLASS;
   public Type PRIVILEGEDACTIONEXCEPTION;
-
   public TypeConstants(Singletons.Global g) {
     int jdkver = new CGOptions(PhaseOptions.v().getPhaseOptions("cg")).jdkver();
 
@@ -76,5 +71,9 @@ public class TypeConstants {
       PRIVILEGEDACTIONEXCEPTION =
           AnySubType.v(RefType.v("java.security.PrivilegedActionException"));
     }
+  }
+
+  public static TypeConstants v() {
+    return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants();
   }
 }

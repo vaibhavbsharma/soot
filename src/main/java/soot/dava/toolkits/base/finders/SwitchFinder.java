@@ -19,12 +19,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.Singletons;
 import soot.Value;
@@ -40,17 +34,23 @@ import soot.jimple.Stmt;
 import soot.jimple.TableSwitchStmt;
 import soot.util.IterableSet;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.TreeSet;
+
 public class SwitchFinder implements FactFinder {
-  public SwitchFinder(Singletons.Global g) {}
-
-  public static SwitchFinder v() {
-    return G.v().soot_dava_toolkits_base_finders_SwitchFinder();
-  }
-
   private IterableSet junkBody;
   private HashSet targetSet;
   private LinkedList targetList, snTargetList, tSuccList;
   private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
+  public SwitchFinder(Singletons.Global g) {
+  }
+
+  public static SwitchFinder v() {
+    return G.v().soot_dava_toolkits_base_finders_SwitchFinder();
+  }
 
   @Override
   public void find(DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET)
@@ -178,8 +178,8 @@ public class SwitchFinder implements FactFinder {
 
           if ((targetHeads.isEmpty())
               || ((targetHeads.isEmpty() == false)
-                  && (killBodies.isEmpty() == false)
-                  && (((SwitchNode) targetHeads.first()).compareTo(killBodies.first()) > 0))) {
+              && (killBodies.isEmpty() == false)
+              && (((SwitchNode) targetHeads.first()).compareTo(killBodies.first()) > 0))) {
 
             SwitchNode nextNode = (SwitchNode) killBodies.first();
             killBodies.remove(nextNode);

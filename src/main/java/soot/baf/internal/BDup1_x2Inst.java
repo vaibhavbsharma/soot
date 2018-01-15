@@ -25,14 +25,14 @@
 
 package soot.baf.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.Type;
 import soot.baf.Baf;
 import soot.baf.Dup1_x2Inst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BDup1_x2Inst extends BDupInst implements Dup1_x2Inst {
   private final Type mOpType;

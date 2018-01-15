@@ -1,7 +1,5 @@
 package soot.jimple.validation;
 
-import java.util.List;
-
 import soot.Body;
 import soot.Unit;
 import soot.jimple.GotoStmt;
@@ -12,6 +10,8 @@ import soot.jimple.ThrowStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
+import java.util.List;
+
 public enum ReturnStatementsValidator implements BodyValidator {
   INSTANCE;
 
@@ -21,12 +21,12 @@ public enum ReturnStatementsValidator implements BodyValidator {
 
   /**
    * Checks the following invariants on this Jimple body:
-   *
+   * <p>
    * <ol>
-   *   <li>this-references may only occur in instance methods
-   *   <li>this-references may only occur as the first statement in a method, if they occur at all
-   *   <li>param-references must precede all statements that are not themselves param-references or
-   *       this-references, if they occur at all
+   * <li>this-references may only occur in instance methods
+   * <li>this-references may only occur as the first statement in a method, if they occur at all
+   * <li>param-references must precede all statements that are not themselves param-references or
+   * this-references, if they occur at all
    * </ol>
    */
   @Override

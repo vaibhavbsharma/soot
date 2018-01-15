@@ -16,15 +16,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.annotation.logic;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+package soot.jimple.toolkits.annotation.logic;
 
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In
@@ -46,9 +47,9 @@ public class Loop {
    * second-last statement is the back-jump to the head. {@link LoopFinder} will normally guarantee
    * this.
    *
-   * @param head the loop header
+   * @param head           the loop header
    * @param loopStatements an ordered list of loop statements, ending with the header
-   * @param g the unit graph according to which the loop exists
+   * @param g              the unit graph according to which the loop exists
    */
   Loop(Stmt head, List<Stmt> loopStatements, UnitGraph g) {
     this.header = head;
@@ -66,19 +67,23 @@ public class Loop {
     this.loopStatements = loopStatements;
   }
 
-  /** @return the loop head */
+  /**
+   * @return the loop head
+   */
   public Stmt getHead() {
     return header;
   }
 
-  /** Returns the statement that jumps back to the head, thereby constituing the loop. */
+  /**
+   * Returns the statement that jumps back to the head, thereby constituing the loop.
+   */
   public Stmt getBackJumpStmt() {
     return backJump;
   }
 
   /**
    * @return all statements of the loop, including the header; the header will be the first element
-   *     returned and then the other statements follow in the natural ordering of the loop
+   * returned and then the other statements follow in the natural ordering of the loop
    */
   public List<Stmt> getLoopStatements() {
     return loopStatements;
@@ -136,7 +141,9 @@ public class Loop {
     return getLoopExits().size() == 1;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -146,7 +153,9 @@ public class Loop {
     return result;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

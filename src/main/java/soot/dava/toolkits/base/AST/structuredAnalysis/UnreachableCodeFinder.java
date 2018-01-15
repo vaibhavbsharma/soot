@@ -17,15 +17,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/** Maintained by: Nomair A. Naeem */
+/**
+ * Maintained by: Nomair A. Naeem  CHANGE LOG:
+ */
 
 /** CHANGE LOG: */
-package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.Local;
 import soot.Value;
@@ -51,6 +49,11 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.FlowSet;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /*
  * Sort of the mark phase of a mark and sweep dead code eliminator.
  * Carry NOPATH information through the flowsets
@@ -69,72 +72,6 @@ import soot.toolkits.scalar.FlowSet;
 
 public class UnreachableCodeFinder extends StructuredAnalysis {
   public static boolean DEBUG = false;
-
-  public class UnreachableCodeFlowSet extends DavaFlowSet {
-
-    @Override
-    public UnreachableCodeFlowSet clone() {
-      if (this.size() != 1) {
-        throw new DecompilationException("unreachableCodeFlow set size should always be 1");
-      }
-      Boolean temp = (Boolean) this.elements[0];
-      UnreachableCodeFlowSet toReturn = new UnreachableCodeFlowSet();
-      toReturn.add(new Boolean(temp.booleanValue()));
-      toReturn.copyInternalDataFrom(this);
-      return toReturn;
-    }
-
-    @Override
-    public void intersection(FlowSet otherFlow, FlowSet destFlow) {
-      if (DEBUG) {
-        System.out.println("In intersection");
-      }
-      if (!(otherFlow instanceof UnreachableCodeFlowSet)
-          || !(destFlow instanceof UnreachableCodeFlowSet)) {
-        super.intersection(otherFlow, destFlow);
-        return;
-      }
-
-      UnreachableCodeFlowSet other = (UnreachableCodeFlowSet) otherFlow;
-      UnreachableCodeFlowSet dest = (UnreachableCodeFlowSet) destFlow;
-
-      UnreachableCodeFlowSet workingSet;
-
-      if (dest == other || dest == this) {
-        workingSet = new UnreachableCodeFlowSet();
-      } else {
-        workingSet = dest;
-        workingSet.clear();
-      }
-
-      if (other.size() != 1 || this.size() != 1) {
-        System.out.println("Other size = " + other.size());
-        System.out.println("This size = " + this.size());
-        throw new DecompilationException("UnreachableCodeFlowSet size should always be one");
-      }
-
-      Boolean thisPath = (Boolean) this.elements[0];
-      Boolean otherPath = (Boolean) other.elements[0];
-      if (!thisPath.booleanValue() && !otherPath.booleanValue()) {
-        // both say there is no path
-        workingSet.add((new Boolean(false)));
-      } else {
-        workingSet.add((new Boolean(true)));
-      }
-      (workingSet).copyInternalDataFrom(this);
-      if (otherFlow instanceof DavaFlowSet) {
-        (workingSet).copyInternalDataFrom((DavaFlowSet) otherFlow);
-      }
-
-      if (workingSet != dest) {
-        workingSet.copy(dest);
-      }
-
-      if (DEBUG) {
-        System.out.println("destFlow contains size:" + destFlow.size());
-      }
-    }
-  } // end UnreachableCodeFlowSet
 
   public UnreachableCodeFinder(Object analyze) {
     super();
@@ -581,4 +518,70 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
       return reachable.booleanValue();
     }
   }
+
+  public class UnreachableCodeFlowSet extends DavaFlowSet {
+
+    @Override
+    public UnreachableCodeFlowSet clone() {
+      if (this.size() != 1) {
+        throw new DecompilationException("unreachableCodeFlow set size should always be 1");
+      }
+      Boolean temp = (Boolean) this.elements[0];
+      UnreachableCodeFlowSet toReturn = new UnreachableCodeFlowSet();
+      toReturn.add(new Boolean(temp.booleanValue()));
+      toReturn.copyInternalDataFrom(this);
+      return toReturn;
+    }
+
+    @Override
+    public void intersection(FlowSet otherFlow, FlowSet destFlow) {
+      if (DEBUG) {
+        System.out.println("In intersection");
+      }
+      if (!(otherFlow instanceof UnreachableCodeFlowSet)
+          || !(destFlow instanceof UnreachableCodeFlowSet)) {
+        super.intersection(otherFlow, destFlow);
+        return;
+      }
+
+      UnreachableCodeFlowSet other = (UnreachableCodeFlowSet) otherFlow;
+      UnreachableCodeFlowSet dest = (UnreachableCodeFlowSet) destFlow;
+
+      UnreachableCodeFlowSet workingSet;
+
+      if (dest == other || dest == this) {
+        workingSet = new UnreachableCodeFlowSet();
+      } else {
+        workingSet = dest;
+        workingSet.clear();
+      }
+
+      if (other.size() != 1 || this.size() != 1) {
+        System.out.println("Other size = " + other.size());
+        System.out.println("This size = " + this.size());
+        throw new DecompilationException("UnreachableCodeFlowSet size should always be one");
+      }
+
+      Boolean thisPath = (Boolean) this.elements[0];
+      Boolean otherPath = (Boolean) other.elements[0];
+      if (!thisPath.booleanValue() && !otherPath.booleanValue()) {
+        // both say there is no path
+        workingSet.add((new Boolean(false)));
+      } else {
+        workingSet.add((new Boolean(true)));
+      }
+      (workingSet).copyInternalDataFrom(this);
+      if (otherFlow instanceof DavaFlowSet) {
+        (workingSet).copyInternalDataFrom((DavaFlowSet) otherFlow);
+      }
+
+      if (workingSet != dest) {
+        workingSet.copy(dest);
+      }
+
+      if (DEBUG) {
+        System.out.println("destFlow contains size:" + destFlow.size());
+      }
+    }
+  } // end UnreachableCodeFlowSet
 }

@@ -19,9 +19,9 @@
 
 package soot;
 
-import java.util.Set;
-
 import soot.jimple.ClassConstant;
+
+import java.util.Set;
 
 /**
  * A generic interface to some set of runtime objects computed by a pointer analysis.
@@ -29,11 +29,19 @@ import soot.jimple.ClassConstant;
  * @author Ondrej Lhotak
  */
 public interface PointsToSet {
-  /** Returns true if this set contains no run-time objects. */
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
   boolean isEmpty();
-  /** Returns true if this set shares some objects with other. */
+
+  /**
+   * Returns true if this set shares some objects with other.
+   */
   boolean hasNonEmptyIntersection(PointsToSet other);
-  /** Set of all possible run-time types of objects in the set. */
+
+  /**
+   * Set of all possible run-time types of objects in the set.
+   */
   Set<Type> possibleTypes();
 
   /**

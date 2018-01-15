@@ -19,10 +19,10 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.Set;
-
 import soot.PointsToSet;
 import soot.SootField;
+
+import java.util.Set;
 
 public class FullRWSet extends RWSet {
 
@@ -41,7 +41,9 @@ public class FullRWSet extends RWSet {
     throw new RuntimeException("Unsupported");
   }
 
-  /** Returns an iterator over any globals read/written. */
+  /**
+   * Returns an iterator over any globals read/written.
+   */
   @Override
   public Set getGlobals() {
     throw new RuntimeException("Unsupported");
@@ -61,7 +63,10 @@ public class FullRWSet extends RWSet {
   public boolean hasNonEmptyIntersection(RWSet other) {
     return other != null;
   }
-  /** Adds the RWSet other into this set. */
+
+  /**
+   * Adds the RWSet other into this set.
+   */
   @Override
   public boolean union(RWSet other) {
     throw new RuntimeException("Unsupported");

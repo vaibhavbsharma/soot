@@ -19,11 +19,11 @@
 
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * A predicate that accepts edges that are not part of the class library and do not have a source
@@ -43,7 +43,9 @@ public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
     this.exemptTn = exemptTn;
   }
 
-  /** Returns true iff the edge e is wanted. */
+  /**
+   * Returns true iff the edge e is wanted.
+   */
   @Override
   public boolean want(Edge e) {
     String tgtMethod = e.tgt().toString();

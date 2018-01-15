@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand;
 
 import soot.SootField;
@@ -29,6 +30,29 @@ import soot.jimple.spark.pag.SparkField;
  */
 public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
 
+  private static final String[] importantTypes =
+      new String[] {
+          //            "ca.mcgill.sable.util.ArrayList",
+          //            "ca.mcgill.sable.util.ArrayList$ArrayIterator",
+          //            "ca.mcgill.sable.util.AbstractList$AbstractListIterator",
+          /*"ca.mcgill.sable.util.VectorList",*/ "java.util.Vector",
+          "java.util.Hashtable",
+          "java.util.Hashtable$Entry",
+          "java.util.Hashtable$Enumerator",
+          "java.util.LinkedList",
+          "java.util.LinkedList$Entry",
+          "java.util.AbstractList$Itr",
+          //            "ca.mcgill.sable.util.HashMap", "ca.mcgill.sable.util.LinkedList",
+          //            "ca.mcgill.sable.util.LinkedList$LinkedListIterator",
+          //            "ca.mcgill.sable.util.LinkedList$Node",
+          /*"ca.mcgill.sable.soot.TrustingMonotonicArraySet",*/ "java.util.Vector$1",
+          "java.util.ArrayList",
+      };
+  private static final String[] notBothEndsTypes =
+      new String[] {
+          "java.util.Hashtable$Entry",
+          "java.util.LinkedList$Entry", /*"ca.mcgill.sable.util.LinkedList$Node"*/
+      };
   private boolean allNotBothEnds = false;
 
   @Override
@@ -39,31 +63,6 @@ public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
     }
     return false;
   }
-
-  private static final String[] importantTypes =
-      new String[] {
-        //            "ca.mcgill.sable.util.ArrayList",
-        //            "ca.mcgill.sable.util.ArrayList$ArrayIterator",
-        //            "ca.mcgill.sable.util.AbstractList$AbstractListIterator",
-        /*"ca.mcgill.sable.util.VectorList",*/ "java.util.Vector",
-        "java.util.Hashtable",
-        "java.util.Hashtable$Entry",
-        "java.util.Hashtable$Enumerator",
-        "java.util.LinkedList",
-        "java.util.LinkedList$Entry",
-        "java.util.AbstractList$Itr",
-        //            "ca.mcgill.sable.util.HashMap", "ca.mcgill.sable.util.LinkedList",
-        //            "ca.mcgill.sable.util.LinkedList$LinkedListIterator",
-        //            "ca.mcgill.sable.util.LinkedList$Node",
-        /*"ca.mcgill.sable.soot.TrustingMonotonicArraySet",*/ "java.util.Vector$1",
-        "java.util.ArrayList",
-      };
-
-  private static final String[] notBothEndsTypes =
-      new String[] {
-        "java.util.Hashtable$Entry",
-        "java.util.LinkedList$Entry", /*"ca.mcgill.sable.util.LinkedList$Node"*/
-      };
 
   @Override
   public boolean validateMatchesForField(SparkField field) {

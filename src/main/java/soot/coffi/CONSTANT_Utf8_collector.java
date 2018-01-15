@@ -25,20 +25,23 @@
 
 package soot.coffi;
 
-import java.util.HashMap;
-
 import soot.G;
 import soot.Singletons;
 
-/** Provides sharing for Utf8_info string objects reused in different contexts. */
+import java.util.HashMap;
+
+/**
+ * Provides sharing for Utf8_info string objects reused in different contexts.
+ */
 public class CONSTANT_Utf8_collector {
-  public CONSTANT_Utf8_collector(Singletons.Global g) {}
+  HashMap<String, CONSTANT_Utf8_info> hash = null;
+
+  public CONSTANT_Utf8_collector(Singletons.Global g) {
+  }
 
   public static CONSTANT_Utf8_collector v() {
     return G.v().soot_coffi_CONSTANT_Utf8_collector();
   }
-
-  HashMap<String, CONSTANT_Utf8_info> hash = null;
 
   synchronized CONSTANT_Utf8_info add(CONSTANT_Utf8_info _Utf8_info) {
     if (hash == null) {

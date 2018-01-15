@@ -26,9 +26,6 @@
 
 package soot.grimp.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -41,12 +38,14 @@ import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
 
-@SuppressWarnings({"serial", "rawtypes", "unchecked"})
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings( {"serial", "rawtypes", "unchecked"})
 public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInvokeExpr {
   protected ValueBox[] bsmArgBoxes;
-  private SootMethodRef bsmRef;
-
   protected int tag;
+  private SootMethodRef bsmRef;
 
   public GDynamicInvokeExpr(
       SootMethodRef bootStrapMethodRef,
@@ -102,7 +101,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
       GDynamicInvokeExpr ie = (GDynamicInvokeExpr) o;
       if (!(getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+          == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -187,7 +186,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
             + methodRef.name()
             + "\" <"
             + SootMethod.getSubSignature(
-                "" /* no method name here*/, methodRef.parameterTypes(), methodRef.returnType())
+            "" /* no method name here*/, methodRef.parameterTypes(), methodRef.returnType())
             + ">(");
 
     if (argBoxes != null) {

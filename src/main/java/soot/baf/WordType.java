@@ -31,7 +31,8 @@ import soot.Type;
 import soot.util.Switch;
 
 public class WordType extends Type {
-  public WordType(Singletons.Global g) {}
+  public WordType(Singletons.Global g) {
+  }
 
   public static WordType v() {
     return G.v().soot_baf_WordType();

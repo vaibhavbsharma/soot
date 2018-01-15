@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.EquivalentValue;
 import soot.G;
@@ -45,6 +40,11 @@ import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each
  * statement, the list of expressions available before and after it.
@@ -55,7 +55,9 @@ public class FastAvailableExpressions implements AvailableExpressions {
   Map<Unit, Chain<EquivalentValue>> unitToEquivsAfter;
   Map<Unit, Chain<EquivalentValue>> unitToEquivsBefore;
 
-  /** Wrapper for AvailableExpressionsAnalysis. */
+  /**
+   * Wrapper for AvailableExpressionsAnalysis.
+   */
   public FastAvailableExpressions(Body b, SideEffectTester st) {
     if (Options.v().verbose()) {
       G.v().out.println("[" + b.getMethod().getName() + "] Finding available expressions...");

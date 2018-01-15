@@ -34,19 +34,20 @@ import java.util.NoSuchElementException;
  */
 public class BitSetIterator {
 
+  /* Computes log_2(x) modulo 67. This uses the fact that 2 is a
+   * primitive root modulo 67 */
+  static final int[] lookup = {
+      -1, 0, 1, 39, 2, 15, 40, 23, 3, 12, 16, 59, 41, 19, 24, 54, 4, -1, 13, 10, 17, 62, 60, 28, 42,
+      30, 20, 51, 25, 44, 55, 47, 5, 32, -1, 38, 14, 22, 11, 58, 18, 53, -1, 9, 61, 27, 29, 50, 43,
+      46, 31, 37, 21, 57, 52, 8, 26, 49, 45, 36, 56, 7, 48, 35, 6, 34, 33
+  };
   long[] bits; // Bits inherited from the underlying BitVector
   int index; // The 64-bit block currently being examined
   long save = 0; // A copy of the 64-bit block (for fast access)
 
-  /* Computes log_2(x) modulo 67. This uses the fact that 2 is a
-   * primitive root modulo 67 */
-  static final int[] lookup = {
-    -1, 0, 1, 39, 2, 15, 40, 23, 3, 12, 16, 59, 41, 19, 24, 54, 4, -1, 13, 10, 17, 62, 60, 28, 42,
-    30, 20, 51, 25, 44, 55, 47, 5, 32, -1, 38, 14, 22, 11, 58, 18, 53, -1, 9, 61, 27, 29, 50, 43,
-    46, 31, 37, 21, 57, 52, 8, 26, 49, 45, 36, 56, 7, 48, 35, 6, 34, 33
-  };
-
-  /** Creates a new BitSetIterator */
+  /**
+   * Creates a new BitSetIterator
+   */
   BitSetIterator(long[] bits) {
     // this.bits = new long[bits.length];
     // System.arraycopy(bits,0,this.bits,0,bits.length);
@@ -62,12 +63,16 @@ public class BitSetIterator {
     }
   }
 
-  /** Returns true if there are more set bits in the BitVector; false otherwise. */
+  /**
+   * Returns true if there are more set bits in the BitVector; false otherwise.
+   */
   public boolean hasNext() {
     return index < bits.length;
   }
 
-  /** Returns the index of the next set bit. Note that the return type is int, and not Object. */
+  /**
+   * Returns the index of the next set bit. Note that the return type is int, and not Object.
+   */
   public int next() {
     if (index >= bits.length) {
       throw new NoSuchElementException();

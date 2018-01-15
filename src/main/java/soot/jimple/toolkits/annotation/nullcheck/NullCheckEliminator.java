@@ -19,8 +19,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Immediate;
@@ -37,13 +35,9 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 
-public class NullCheckEliminator extends BodyTransformer {
+import java.util.Map;
 
-  public static class AnalysisFactory {
-    public NullnessAnalysis newAnalysis(UnitGraph g) {
-      return new NullnessAnalysis(g);
-    }
-  }
+public class NullCheckEliminator extends BodyTransformer {
 
   private AnalysisFactory analysisFactory;
 
@@ -111,5 +105,11 @@ public class NullCheckEliminator extends BodyTransformer {
         }
       }
     } while (changed);
+  }
+
+  public static class AnalysisFactory {
+    public NullnessAnalysis newAnalysis(UnitGraph g) {
+      return new NullnessAnalysis(g);
+    }
   }
 }

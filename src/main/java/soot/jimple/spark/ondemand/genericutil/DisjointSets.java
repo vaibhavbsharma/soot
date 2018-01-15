@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public final class DisjointSets {
    * Construct a disjoint sets object.
    *
    * @param numElements the initial number of elements--also the initial number of disjoint sets,
-   *     since every element is initially in its own set.
+   *                    since every element is initially in its own set.
    */
   public DisjointSets(int numElements) {
     array = new int[numElements];

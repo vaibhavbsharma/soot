@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface LeExpr extends ConditionExpr {}
+public interface LeExpr extends ConditionExpr {
+}

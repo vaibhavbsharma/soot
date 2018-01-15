@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.heapinsE;
 
 import soot.jimple.spark.geom.dataRep.RectangleNode;
@@ -26,7 +27,7 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
 /**
  * An abstraction for the management of all the heap insensitive encoding figures. We employ the
  * naive management strategy, which is a linked list based manager.
- *
+ * <p>
  * <p>For HeapIns analysis, we have four types of figures: Type | Index all-to-many | 0 many-to-all
  * | 1 one-to-one | 2 all-to-all all-to-all is special because whenever it was presented, all others
  * can be deleted (its semantics is context insensitive). The corresponding index means header[0]
@@ -35,14 +36,12 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
  * @author xiao
  */
 public class HeapInsIntervalManager extends IFigureManager {
-  public static int Divisions = 3;
-
   // Type IDs for the figures
   public static final int ALL_TO_ALL = -1; // A special case
   public static final int ALL_TO_MANY = 0;
   public static final int MANY_TO_ALL = 1;
   public static final int ONE_TO_ONE = 2;
-
+  public static int Divisions = 3;
   // Recording the size of each type of figure
   private int size[] = {0, 0, 0};
   // Recording the geometric figures, categorized by the type IDs.
@@ -77,7 +76,9 @@ public class HeapInsIntervalManager extends IFigureManager {
     }
   }
 
-  /** Delete all the shapes recorded. */
+  /**
+   * Delete all the shapes recorded.
+   */
   public void clear() {
     for (int i = 0; i < Divisions; ++i) {
       size[i] = 0;
@@ -278,7 +279,9 @@ public class HeapInsIntervalManager extends IFigureManager {
     return mp;
   }
 
-  /** The result is in the form: (p, q, I, 0, L) */
+  /**
+   * The result is in the form: (p, q, I, 0, L)
+   */
   private SegmentNode generate_many_to_all(SegmentNode mp) {
     long left, right;
     SegmentNode p;
@@ -433,7 +436,7 @@ public class HeapInsIntervalManager extends IFigureManager {
       if ((predator.I2 - predator.I1 == list.I2 - list.I1)
           && predator.I1 <= list.I1
           && (predator.I1 + predator.L
-              >= list.I2 + L)) { // The checked figure is completely contained in the predator
+          >= list.I2 + L)) { // The checked figure is completely contained in the predator
         // So we ignore it
         ;
       } else {

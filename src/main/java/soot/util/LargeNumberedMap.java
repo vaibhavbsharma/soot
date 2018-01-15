@@ -29,6 +29,9 @@ import java.util.NoSuchElementException;
  * @author Ondrej Lhotak
  */
 public final class LargeNumberedMap<K extends Numberable, V> {
+  private Object[] values;
+  private ArrayNumberer<K> universe;
+
   public LargeNumberedMap(ArrayNumberer<K> universe) {
     this.universe = universe;
     int newsize = universe.size();
@@ -52,6 +55,8 @@ public final class LargeNumberedMap<K extends Numberable, V> {
     values[number] = value;
     return ret;
   }
+
+  /* Private stuff. */
 
   @SuppressWarnings("unchecked")
   public V get(Numberable key) {
@@ -92,9 +97,4 @@ public final class LargeNumberedMap<K extends Numberable, V> {
       }
     };
   }
-
-  /* Private stuff. */
-
-  private Object[] values;
-  private ArrayNumberer<K> universe;
 }

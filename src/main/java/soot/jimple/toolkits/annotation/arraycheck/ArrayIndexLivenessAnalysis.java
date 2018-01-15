@@ -25,13 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -65,10 +58,20 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
+  private final boolean fieldin;
+  private final boolean arrayin;
+  private final boolean csin;
+  private final boolean rectarray;
   HashSet<Local> fullSet = new HashSet<>();
   ExceptionalUnitGraph eug;
-
   /* for each unit, kill set has variables to be killed.
    * gen set was considered with conditionOfGenSet,
    * for example, gen set of unit s are valid only when the condition object.
@@ -78,26 +81,16 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
   HashMap<Stmt, HashSet<Value>> absGenOfUnit;
   HashMap<Stmt, HashSet<Value>> killOfUnit;
   HashMap<Stmt, HashSet<Value>> conditionOfGen;
-
   // s --> a kill all a[?].
   HashMap<DefinitionStmt, Value> killArrayRelated;
   // s --> true
   HashMap<DefinitionStmt, Boolean> killAllArrayRef;
-
   IntContainer zero = new IntContainer(0);
-
-  private final boolean fieldin;
   HashMap<Object, HashSet<Value>> localToFieldRef, fieldToFieldRef;
   HashSet<Value> allFieldRefs;
-
-  private final boolean arrayin;
   HashMap localToArrayRef;
   HashSet allArrayRefs;
-
-  private final boolean csin;
   HashMap<Value, HashSet<Value>> localToExpr;
-
-  private final boolean rectarray;
   HashSet<Local> multiarraylocals;
 
   public ArrayIndexLivenessAnalysis(
@@ -416,11 +409,11 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
       if (lhs instanceof Local) {
         killarrayrelated = true;
       } else
-      // a[i] = ...
-      if (lhs instanceof ArrayRef) {
-        killallarrayref = true;
-        condset.add(lhs);
-      }
+        // a[i] = ...
+        if (lhs instanceof ArrayRef) {
+          killallarrayref = true;
+          condset.add(lhs);
+        }
 
       // invokeexpr kills all array references.
       if (asstmt.containsInvokeExpr()) {

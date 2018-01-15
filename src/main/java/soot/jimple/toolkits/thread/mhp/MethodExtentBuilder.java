@@ -1,9 +1,5 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import soot.Body;
 import soot.SootMethod;
 import soot.Value;
@@ -13,6 +9,10 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.CheckRecursiveCalls;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -85,12 +85,12 @@ public class MethodExtentBuilder {
               || name.equals("notify")
               || name.equals("notifyAll")
               || ((name.equals("start")
-                      || name.equals("join")
-                      || name.equals("suspend")
-                      || name.equals("resume")
-                      || name.equals("destroy")
-                      || name.equals("stop"))
-                  && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
+              || name.equals("join")
+              || name.equals("suspend")
+              || name.equals("resume")
+              || name.equals("destroy")
+              || name.equals("stop"))
+              && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
             methodsNeedingInlining.add(targetMethod);
             return;
           } else {

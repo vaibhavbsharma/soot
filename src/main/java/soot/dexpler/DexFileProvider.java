@@ -1,5 +1,15 @@
 package soot.dexpler;
 
+import org.jf.dexlib2.DexFileFactory;
+import org.jf.dexlib2.Opcodes;
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.MultiDexContainer;
+import soot.CompilationDeathException;
+import soot.G;
+import soot.Scene;
+import soot.Singletons;
+import soot.options.Options;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -14,17 +24,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-
-import org.jf.dexlib2.DexFileFactory;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.MultiDexContainer;
-
-import soot.CompilationDeathException;
-import soot.G;
-import soot.Scene;
-import soot.Singletons;
-import soot.options.Options;
 
 /**
  * Class providing dex files from a given source, e.g., jar, apk, dex, folder containing multiple
@@ -62,10 +61,13 @@ public class DexFileProvider {
           return s1.compareTo(s2);
         }
       };
-  /** Mapping of filesystem file (apk, dex, etc.) to mapping of dex name to dex file */
+  /**
+   * Mapping of filesystem file (apk, dex, etc.) to mapping of dex name to dex file
+   */
   private final Map<String, Map<String, DexContainer>> dexMap = new HashMap<>();
 
-  public DexFileProvider(Singletons.Global g) {}
+  public DexFileProvider(Singletons.Global g) {
+  }
 
   public static DexFileProvider v() {
     return G.v().soot_dexpler_DexFileProvider();
@@ -84,7 +86,7 @@ public class DexFileProvider {
   /**
    * Returns all dex files found in dex source sorted by the default dex prioritizer
    *
-   * @param dexSource Path to a jar, apk, dex, odex or a directory containing multiple dex files
+   * @param dexSource   Path to a jar, apk, dex, odex or a directory containing multiple dex files
    * @param prioritizer A comparator that defines the ordering of dex files in the result list
    * @return List of dex files derived from source
    */
@@ -169,7 +171,7 @@ public class DexFileProvider {
 
   /**
    * @param dexSourceFile A file containing either one or multiple dex files (apk, zip, etc.) but no
-   *     directory!
+   *                      directory!
    * @return
    * @throws IOException
    */

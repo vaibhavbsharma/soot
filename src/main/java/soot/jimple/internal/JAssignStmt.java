@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.Immediate;
 import soot.IntType;
 import soot.Local;
@@ -54,59 +52,9 @@ import soot.jimple.StmtSwitch;
 import soot.jimple.SubExpr;
 import soot.util.Switch;
 
+import java.util.List;
+
 public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
-  @SuppressWarnings("serial")
-  private static class LinkedVariableBox extends VariableBox {
-    ValueBox otherBox = null;
-
-    private LinkedVariableBox(Value v) {
-      super(v);
-    }
-
-    public void setOtherBox(ValueBox otherBox) {
-      this.otherBox = otherBox;
-    }
-
-    @Override
-    public boolean canContainValue(Value v) {
-      if (super.canContainValue(v)) {
-        if (otherBox == null) {
-          return true;
-        }
-
-        Value o = otherBox.getValue();
-        return (v instanceof Immediate) || (o instanceof Immediate);
-      }
-      return false;
-    }
-  }
-
-  @SuppressWarnings("serial")
-  private static class LinkedRValueBox extends RValueBox {
-    ValueBox otherBox = null;
-
-    private LinkedRValueBox(Value v) {
-      super(v);
-    }
-
-    public void setOtherBox(ValueBox otherBox) {
-      this.otherBox = otherBox;
-    }
-
-    @Override
-    public boolean canContainValue(Value v) {
-      if (super.canContainValue(v)) {
-        if (otherBox == null) {
-          return true;
-        }
-
-        Value o = otherBox.getValue();
-        return (v instanceof Immediate) || (o instanceof Immediate);
-      }
-      return false;
-    }
-  }
-
   public JAssignStmt(Value variable, Value rvalue) {
     this(new LinkedVariableBox(variable), new LinkedRValueBox(rvalue));
 
@@ -350,5 +298,57 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
             out.add(u);
           }
         });
+  }
+
+  @SuppressWarnings("serial")
+  private static class LinkedVariableBox extends VariableBox {
+    ValueBox otherBox = null;
+
+    private LinkedVariableBox(Value v) {
+      super(v);
+    }
+
+    public void setOtherBox(ValueBox otherBox) {
+      this.otherBox = otherBox;
+    }
+
+    @Override
+    public boolean canContainValue(Value v) {
+      if (super.canContainValue(v)) {
+        if (otherBox == null) {
+          return true;
+        }
+
+        Value o = otherBox.getValue();
+        return (v instanceof Immediate) || (o instanceof Immediate);
+      }
+      return false;
+    }
+  }
+
+  @SuppressWarnings("serial")
+  private static class LinkedRValueBox extends RValueBox {
+    ValueBox otherBox = null;
+
+    private LinkedRValueBox(Value v) {
+      super(v);
+    }
+
+    public void setOtherBox(ValueBox otherBox) {
+      this.otherBox = otherBox;
+    }
+
+    @Override
+    public boolean canContainValue(Value v) {
+      if (super.canContainValue(v)) {
+        if (otherBox == null) {
+          return true;
+        }
+
+        Value o = otherBox.getValue();
+        return (v instanceof Immediate) || (o instanceof Immediate);
+      }
+      return false;
+    }
   }
 }

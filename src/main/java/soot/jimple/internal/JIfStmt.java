@@ -25,10 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -52,6 +48,10 @@ import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class JIfStmt extends AbstractStmt implements IfStmt {
   final ValueBox conditionBox;

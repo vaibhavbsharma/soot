@@ -48,6 +48,12 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import soot.EquivalentValue;
+import soot.Unit;
+import soot.Value;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.FlowSet;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,15 +62,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import soot.EquivalentValue;
-import soot.Unit;
-import soot.Value;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.FlowSet;
-
 /**
  * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so
- *     marked for future deletion, unless clients object
+ * marked for future deletion, unless clients object
  */
 @Deprecated
 public class LocalRefVarsAnalysisWrapper {
@@ -79,22 +79,6 @@ public class LocalRefVarsAnalysisWrapper {
   Map<Unit, List<RefIntPair>> unitToVarsDontNeedCheck;
 
   BranchedRefVarsAnalysis analysis;
-
-  // utility method to build lists of (ref, value) pairs for a given flow set
-  // optionally discard (ref, kTop) pairs.
-  private final List<RefIntPair> buildList(FlowSet set) {
-    List<RefIntPair> lst = new ArrayList<>();
-    Iterator<EquivalentValue> it = analysis.refTypeValues.iterator();
-    while (it.hasNext()) {
-      EquivalentValue r = it.next();
-      int refInfo = analysis.refInfo(r, set);
-      if (!(discardKTop && (refInfo == BranchedRefVarsAnalysis.kTop))) {
-        lst.add(analysis.getKRefIntPair(r, refInfo));
-        // remove tops from the list that will be printed for readability
-      }
-    }
-    return lst;
-  } // buildList
 
   // constructor, where we do all our computations
   public LocalRefVarsAnalysisWrapper(ExceptionalUnitGraph graph) {
@@ -171,6 +155,22 @@ public class LocalRefVarsAnalysisWrapper {
       } // end if computeChecks
     } // end while
   } // end constructor & computations
+
+  // utility method to build lists of (ref, value) pairs for a given flow set
+  // optionally discard (ref, kTop) pairs.
+  private final List<RefIntPair> buildList(FlowSet set) {
+    List<RefIntPair> lst = new ArrayList<>();
+    Iterator<EquivalentValue> it = analysis.refTypeValues.iterator();
+    while (it.hasNext()) {
+      EquivalentValue r = it.next();
+      int refInfo = analysis.refInfo(r, set);
+      if (!(discardKTop && (refInfo == BranchedRefVarsAnalysis.kTop))) {
+        lst.add(analysis.getKRefIntPair(r, refInfo));
+        // remove tops from the list that will be printed for readability
+      }
+    }
+    return lst;
+  } // buildList
 
   /*
 

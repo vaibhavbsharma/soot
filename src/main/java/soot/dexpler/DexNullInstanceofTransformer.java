@@ -1,8 +1,5 @@
 package soot.dexpler;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
@@ -11,13 +8,16 @@ import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.NullConstant;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformer that swaps
- *
+ * <p>
  * <p>a = 0 instanceof _class_;
- *
+ * <p>
  * <p>with
- *
+ * <p>
  * <p>a = false
  *
  * @author Steven Arzt

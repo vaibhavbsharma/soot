@@ -25,13 +25,13 @@
 
 package soot.toolkits.scalar;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.interaction.InteractionHandler;
+
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * An abstract class providing a metaframework for carrying out dataflow analysis. This class
@@ -42,16 +42,24 @@ import soot.toolkits.graph.interaction.InteractionHandler;
  * @param <A> abstraction type
  */
 public abstract class AbstractFlowAnalysis<N, A> {
-  /** Maps graph nodes to IN sets. */
+  /**
+   * Maps graph nodes to IN sets.
+   */
   protected Map<N, A> unitToBeforeFlow;
 
-  /** Filtered: Maps graph nodes to IN sets. */
+  /**
+   * Filtered: Maps graph nodes to IN sets.
+   */
   protected Map<N, A> filterUnitToBeforeFlow = Collections.emptyMap();
 
-  /** The graph being analysed. */
+  /**
+   * The graph being analysed.
+   */
   protected DirectedGraph<N> graph;
 
-  /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
+  /**
+   * Constructs a flow analysis on the given <code>DirectedGraph</code>.
+   */
   public AbstractFlowAnalysis(DirectedGraph<N> graph) {
     unitToBeforeFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
     this.graph = graph;
@@ -60,24 +68,30 @@ public abstract class AbstractFlowAnalysis<N, A> {
     }
   }
 
-  /** Returns the flow object corresponding to the initial values for each graph node. */
+  /**
+   * Returns the flow object corresponding to the initial values for each graph node.
+   */
   protected abstract A newInitialFlow();
 
   /**
    * Returns the initial flow value for entry/exit graph nodes.
-   *
+   * <p>
    * <p>This is equal to {@link #newInitialFlow()}
    */
   protected A entryInitialFlow() {
     return newInitialFlow();
   }
 
-  /** Determines whether <code>entryInitialFlow()</code> is applied to trap handlers. */
+  /**
+   * Determines whether <code>entryInitialFlow()</code> is applied to trap handlers.
+   */
   protected boolean treatTrapHandlersAsEntries() {
     return false;
   }
 
-  /** Returns true if this analysis is forwards. */
+  /**
+   * Returns true if this analysis is forwards.
+   */
   protected abstract boolean isForward();
 
   /**
@@ -96,7 +110,9 @@ public abstract class AbstractFlowAnalysis<N, A> {
     merge(in1, in2, out);
   }
 
-  /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
+  /**
+   * Creates a copy of the <code>source</code> flow object in <code>dest</code>.
+   */
   protected abstract void copy(A source, A dest);
 
   /**
@@ -105,12 +121,16 @@ public abstract class AbstractFlowAnalysis<N, A> {
    */
   protected abstract void doAnalysis();
 
-  /** Accessor function returning value of IN set for s. */
+  /**
+   * Accessor function returning value of IN set for s.
+   */
   public A getFlowBefore(N s) {
     return unitToBeforeFlow.get(s);
   }
 
-  /** Merges in into inout, just before node succNode. */
+  /**
+   * Merges in into inout, just before node succNode.
+   */
   protected void mergeInto(N succNode, A inout, A in) {
     A tmp = newInitialFlow();
     merge(succNode, inout, in, tmp);

@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -35,6 +31,10 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.StringConstant;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 public class UnreachableMethodTransformer extends BodyTransformer {
   @Override

@@ -19,12 +19,6 @@
 
 package soot.jimple.validation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -41,6 +35,12 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A relatively simple validator. It tries to check whether after each new-expression-statement
@@ -61,7 +61,9 @@ public enum NewValidator implements BodyValidator {
     return INSTANCE;
   }
 
-  /** Checks whether after each new-instruction a constructor call follows. */
+  /**
+   * Checks whether after each new-instruction a constructor call follows.
+   */
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
     UnitGraph g = new BriefUnitGraph(body);
@@ -99,12 +101,12 @@ public enum NewValidator implements BodyValidator {
    * ...<br>
    * specialinvoke $r0.<X: void <init>()>; //validator checks whether this statement is missing
    * </code>
-   *
+   * <p>
    * <p>Regarding <i>aliasingLocals</i>:<br>
    * The first local in the set is always the local on the LHS of the new-expression-assignment
    * (called: original local; in the example <code>$r0</code>).
    *
-   * @param g the unit graph of the method
+   * @param g         the unit graph of the method
    * @param exception the list of all collected exceptions
    * @return true if a call to a &lt;init&gt;-Method has been found on this way.
    */

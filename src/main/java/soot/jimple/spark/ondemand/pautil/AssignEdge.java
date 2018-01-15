@@ -16,11 +16,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.pautil;
 
 import soot.jimple.spark.pag.VarNode;
 
-/** @author manu */
+/**
+ * @author manu
+ */
 public final class AssignEdge {
 
   private static final int PARAM_MASK = 0x00000001;
@@ -28,14 +31,10 @@ public final class AssignEdge {
   private static final int RETURN_MASK = 0x00000002;
 
   private static final int CALL_MASK = PARAM_MASK | RETURN_MASK;
-
-  private Integer callSite = null;
-
   private final VarNode src;
-
-  private int scratch;
-
   private final VarNode dst;
+  private Integer callSite = null;
+  private int scratch;
 
   /**
    * @param from
@@ -70,13 +69,17 @@ public final class AssignEdge {
     scratch = 0;
   }
 
-  /** @return */
+  /**
+   * @return
+   */
   public Integer getCallSite() {
     assert callSite != null : this + " is not a call edge!";
     return callSite;
   }
 
-  /** @param i */
+  /**
+   * @param i
+   */
   public void setCallSite(Integer i) {
     callSite = i;
   }

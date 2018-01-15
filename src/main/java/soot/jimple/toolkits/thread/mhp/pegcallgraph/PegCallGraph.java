@@ -1,5 +1,12 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
+import soot.SootMethod;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.Chain;
+import soot.util.HashChain;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,13 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import soot.SootMethod;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
-import soot.toolkits.graph.DirectedGraph;
-import soot.util.Chain;
-import soot.util.HashChain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -28,15 +28,15 @@ import soot.util.HashChain;
 // -Richard L. Halpert, 2006-11-30
 
 public class PegCallGraph implements DirectedGraph {
-  List heads;
-  List tails;
-  Chain chain;
   // protected Map methodToSuccs;
   // protected Map methodToPreds;
   private final Map<Object, List> methodToSuccs;
   private final Map<Object, List> methodToPreds;
   private final Map<Object, List> methodToSuccsTrim;
   private final Set clinitMethods;
+  List heads;
+  List tails;
+  Chain chain;
 
   public PegCallGraph(CallGraph cg) {
     clinitMethods = new HashSet();

@@ -1,12 +1,9 @@
 package soot.dexpler;
 
-import java.util.Iterator;
-
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
-
 import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
@@ -19,16 +16,20 @@ import soot.tagkit.InnerClassTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
 
-/** Class for loading methods from dex files */
+import java.util.Iterator;
+
+/**
+ * Class for loading methods from dex files
+ */
 public class DexClassLoader {
 
   /**
    * Loads a single method from a dex file
    *
-   * @param dexFile The dex file from which to load the method
-   * @param method The method to load
+   * @param dexFile        The dex file from which to load the method
+   * @param method         The method to load
    * @param declaringClass The class that declares the method to load
-   * @param annotations The worker object for handling annotations
+   * @param annotations    The worker object for handling annotations
    */
   private void loadMethod(
       DexFile dexFile, Method method, SootClass declaringClass, DexAnnotation annotations) {

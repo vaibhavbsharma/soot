@@ -19,13 +19,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.ArrayType;
 import soot.EquivalentValue;
 import soot.Local;
@@ -64,6 +57,13 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.FlowUniverse;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /*
     README FIRST - IMPORTANT IMPLEMENTATION NOTE
 
@@ -101,27 +101,20 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
 */
 
-/** @deprecated THIS IS KNOWN TO BE BUGGY. USE {@link NullnessAnalysis} INSTEAD! */
+/**
+ * @deprecated THIS IS KNOWN TO BE BUGGY. USE {@link NullnessAnalysis} INSTEAD!
+ */
 @Deprecated
 public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
   /*
       COMPILATION OPTIONS
   */
 
-  // we don't want the analysis to be conservative?
-  // i.e. we don't want it to only care for locals
-  private final boolean isNotConservative = false;
-
-  // do we want the analysis to handle if statements?
-  private final boolean isBranched = true;
-
-  // do we want the analysis to care that f and g
-  // could be the same reference?
-  private final boolean careForAliases = false;
-
-  // do we want the analysis to care that a method
-  // call could have side effects?
-  private final boolean careForMethodCalls = true;
+  // constants for the analysis
+  public static final int kBottom = 0;
+  public static final int kNull = 1;
+  public static final int kNonNull = 2;
+  public static final int kTop = 99;
 
   // **** END OF COMPILATION OPTIONS *****
 
@@ -138,41 +131,65 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
           }
       } // end
   */
-
-  // constants for the analysis
-  public static final int kBottom = 0;
-  public static final int kNull = 1;
-  public static final int kNonNull = 2;
-  public static final int kTop = 99;
-
+  // we don't want the analysis to be conservative?
+  // i.e. we don't want it to only care for locals
+  private final boolean isNotConservative = false;
+  // do we want the analysis to handle if statements?
+  private final boolean isBranched = true;
+  // do we want the analysis to care that f and g
+  // could be the same reference?
+  private final boolean careForAliases = false;
+  // do we want the analysis to care that a method
+  // call could have side effects?
+  private final boolean careForMethodCalls = true;
+  // fast conversion from Value -> EquivalentValue
+  //  because used in  methods
+  private final HashMap<Value, EquivalentValue> valueToEquivValue = new HashMap<>(2293, 0.7f);
+  // constant (r, v) pairs
+  //  because used in  methods
+  private final HashMap<EquivalentValue, RefIntPair> kRefBotttomPairs = new HashMap<>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefNonNullPairs = new HashMap<>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefNullPairs = new HashMap<>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefTopPairs = new HashMap<>(2293, 0.7f);
   // bottom and top sets
   protected FlowSet emptySet;
   protected FlowSet fullSet;
-
   // gen and preserve sets (for each statement)
   protected Map<Unit, FlowSet> unitToGenerateSet;
   protected Map<Unit, FlowSet> unitToPreserveSet;
-
   // sets of variables that need a null pointer check (for each statement)
   protected Map<Unit, HashSet<Value>> unitToAnalyzedChecksSet;
   protected Map<Unit, HashSet<Value>> unitToArrayRefChecksSet;
   protected Map<Unit, HashSet<Value>> unitToInstanceFieldRefChecksSet;
   protected Map<Unit, HashSet<Value>> unitToInstanceInvokeExprChecksSet;
   protected Map<Unit, HashSet<Value>> unitToLengthExprChecksSet;
-
   // keep track of the different kinds of reference types this analysis is working on
   protected List<EquivalentValue> refTypeLocals;
   protected List<EquivalentValue> refTypeInstFields;
   protected List<EquivalentValue> refTypeInstFieldBases;
   protected List<EquivalentValue> refTypeStaticFields;
   protected List<EquivalentValue> refTypeValues; // sum of all the above
-
   // used in flowThrough.
   protected FlowSet tempFlowSet = null;
+  /**
+   * @deprecated THIS IS KNOWN TO BE BUGGY. USE {@link NullnessAnalysis} INSTEAD!
+   */
+  @Deprecated
+  public BranchedRefVarsAnalysis(UnitGraph g) {
+    super(g);
 
-  // fast conversion from Value -> EquivalentValue
-  //  because used in  methods
-  private final HashMap<Value, EquivalentValue> valueToEquivValue = new HashMap<>(2293, 0.7f);
+    // initialize all the refType lists
+    initRefTypeLists();
+
+    // initialize emptySet, fullSet and tempFlowSet
+    initUniverseSets();
+
+    // initialize unitTo...Sets
+    // perform  preservation and generation
+    initUnitSets();
+
+    doAnalysis();
+  } // end constructor
 
   public EquivalentValue getEquivalentValue(Value v) {
     if (valueToEquivValue.containsKey(v)) {
@@ -184,12 +201,13 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
     }
   } // end getEquivalentValue
 
-  // constant (r, v) pairs
-  //  because used in  methods
-  private final HashMap<EquivalentValue, RefIntPair> kRefBotttomPairs = new HashMap<>(2293, 0.7f);
-  private final HashMap<EquivalentValue, RefIntPair> kRefNonNullPairs = new HashMap<>(2293, 0.7f);
-  private final HashMap<EquivalentValue, RefIntPair> kRefNullPairs = new HashMap<>(2293, 0.7f);
-  private final HashMap<EquivalentValue, RefIntPair> kRefTopPairs = new HashMap<>(2293, 0.7f);
+  /*
+     Utility methods.
+
+     They are used all over the place. Most of them are declared
+     "private  final" so they can be inlined with javac -O.
+
+  */
 
   // make that (r, v) pairs are constants
   // i.e. the same r and v values always generate the same (r, v) object
@@ -216,14 +234,6 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
       return pair;
     }
   } // end getKRefIntPair
-
-  /*
-     Utility methods.
-
-     They are used all over the place. Most of them are declared
-     "private  final" so they can be inlined with javac -O.
-
-  */
 
   // isAlwaysNull returns true if the reference r is known to be always null
   private final boolean isAlwaysNull(Value r) {
@@ -295,20 +305,6 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
     return refInfo(getEquivalentValue(r), fs);
   } // end refInfo
 
-  // Like refInfo, but the reference doesn't have to be in the flow set
-  // note: it still need to be a reference, i.e. ArrayType or RefType
-  public int anyRefInfo(Value r, FlowSet f) {
-    if (isAlwaysNull(r)) {
-      return kNull;
-    } else if (isAlwaysTop(r)) {
-      return kTop;
-    } else if (isAlwaysNonNull(r)) {
-      return kNonNull;
-    } else {
-      return refInfo(r, f);
-    }
-  } // end anyRefInfo
-
   /*
      methods: uAddTopToFlowSet
               uAddInfoToFlowSet
@@ -324,6 +320,20 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
      generate and preserve sets.
 
   */
+
+  // Like refInfo, but the reference doesn't have to be in the flow set
+  // note: it still need to be a reference, i.e. ArrayType or RefType
+  public int anyRefInfo(Value r, FlowSet f) {
+    if (isAlwaysNull(r)) {
+      return kNull;
+    } else if (isAlwaysTop(r)) {
+      return kTop;
+    } else if (isAlwaysNonNull(r)) {
+      return kNonNull;
+    } else {
+      return refInfo(r, f);
+    }
+  } // end anyRefInfo
 
   // method to add (r, kTop) to the gen set (and remove it from the pre set)
   private final void uAddTopToFlowSet(EquivalentValue r, FlowSet genFS, FlowSet preFS) {
@@ -386,6 +396,11 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
     uAddInfoToFlowSet(r, v, fs, fs);
   } // end uAddInfoToFlowSet
 
+  /** ******** end of utility methods ******** */
+
+  // here come the method that start it all, the constructor
+  // initialize the object and run the analysis
+
   // method to apply uAddTopToFlowSet to a whole list of references
   private final void uListAddTopToFlowSet(
       List<EquivalentValue> refs, FlowSet genFS, FlowSet preFS) {
@@ -395,28 +410,6 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
       uAddTopToFlowSet(it.next(), genFS, preFS);
     }
   } // end uListAddTopToFlowSet
-
-  /** ******** end of utility methods ******** */
-
-  // here come the method that start it all, the constructor
-  // initialize the object and run the analysis
-  /** @deprecated THIS IS KNOWN TO BE BUGGY. USE {@link NullnessAnalysis} INSTEAD! */
-  @Deprecated
-  public BranchedRefVarsAnalysis(UnitGraph g) {
-    super(g);
-
-    // initialize all the refType lists
-    initRefTypeLists();
-
-    // initialize emptySet, fullSet and tempFlowSet
-    initUniverseSets();
-
-    // initialize unitTo...Sets
-    // perform  preservation and generation
-    initUnitSets();
-
-    doAnalysis();
-  } // end constructor
 
   // method to initialize refTypeLocals, refTypeInstFields, refTypeInstFieldBases
   // refTypeStaticFields, and refTypeValues
@@ -505,6 +498,7 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis {
       }
     }
   }
+
   // method to initialize the emptySet, fullSet and tempFlowSet
   // from the refTypeValues
   private void initUniverseSets() {

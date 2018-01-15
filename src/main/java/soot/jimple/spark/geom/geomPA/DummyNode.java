@@ -16,15 +16,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
 
-import java.io.PrintStream;
-import java.util.Set;
+package soot.jimple.spark.geom.geomPA;
 
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
+
+import java.io.PrintStream;
+import java.util.Set;
 
 /**
  * It is used to represent the non-pointer variables (e.g. heap variable) in the geometric encoding
@@ -38,7 +39,8 @@ public class DummyNode extends IVarAbstraction {
   }
 
   @Override
-  public void deleteAll() {}
+  public void deleteAll() {
+  }
 
   @Override
   public boolean add_points_to_3(AllocNode obj, long I1, long I2, long L) {

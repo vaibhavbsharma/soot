@@ -19,13 +19,6 @@
 
 package soot.shimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.Unit;
@@ -35,10 +28,17 @@ import soot.shimple.ShimpleBody;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This class implements the LocalUses interface for Shimple. ShimpleLocalUses can be used in
  * conjunction with SimpleLocalDefs to provide Definition/Use and Use/Definition chains in SSA.
- *
+ * <p>
  * <p>In addition to the interface required by LocalUses, ShimpleLocalUses also provides a method
  * for obtaining the list of uses given only the Local. Furthermore, unlike SimpleLocalUses, a
  * LocalDefs object is not required when constructing ShimpleLocalUses.
@@ -96,7 +96,7 @@ public class ShimpleLocalUses implements LocalUses {
   /**
    * Returns all the uses of the given Local as a list of UnitValueBoxPairs, each containing a Unit
    * that uses the local and the corresponding ValueBox containing the Local.
-   *
+   * <p>
    * <p>This method is currently not required by the LocalUses interface.
    */
   public List getUsesOf(Local local) {

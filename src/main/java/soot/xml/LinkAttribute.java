@@ -21,13 +21,13 @@ package soot.xml;
 
 public class LinkAttribute {
 
+  private final boolean isJimpleLink;
+  private final boolean isJavaLink;
+  private final String analysisType;
   private String info;
   private int jimpleLink;
   private int javaLink;
   private String className;
-  private final boolean isJimpleLink;
-  private final boolean isJavaLink;
-  private final String analysisType;
 
   public LinkAttribute(String info, int jimpleLink, int javaLink, String className, String type) {
     this.info = info;

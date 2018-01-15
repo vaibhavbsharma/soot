@@ -25,4 +25,5 @@ package soot.plugins.model;
  *
  * @author Bernhard J. Berger.
  */
-public abstract class PluginDescription {}
+public abstract class PluginDescription {
+}

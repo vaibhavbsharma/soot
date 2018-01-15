@@ -19,12 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Set;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -43,6 +37,12 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Propagates points-to sets along pointer assignment graph using a worklist.
  *
@@ -50,12 +50,19 @@ import soot.util.queue.QueueReader;
  */
 public final class PropWorklist extends Propagator {
   protected final Set<VarNode> varNodeWorkList = new TreeSet<>();
+  protected PAG pag;
+  protected OnFlyCallGraph ofcg;
+
+  /* End of public methods. */
+  /* End of package methods. */
 
   public PropWorklist(PAG pag) {
     this.pag = pag;
   }
 
-  /** Actually does the propagation. */
+  /**
+   * Actually does the propagation.
+   */
   @Override
   public final void propagate() {
     ofcg = pag.getOnFlyCallGraph();
@@ -119,10 +126,9 @@ public final class PropWorklist extends Propagator {
     } while (!varNodeWorkList.isEmpty());
   }
 
-  /* End of public methods. */
-  /* End of package methods. */
-
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
@@ -135,7 +141,9 @@ public final class PropWorklist extends Propagator {
     return ret;
   }
 
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleVarNode(final VarNode src) {
     boolean ret = false;
     boolean flush = true;
@@ -244,17 +252,17 @@ public final class PropWorklist extends Propagator {
       final SparkField f = fr.getField();
       ret =
           fr.getBase()
-                  .getP2Set()
-                  .forall(
-                      new P2SetVisitor() {
-                        @Override
-                        public final void visit(Node n) {
-                          AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
-                          if (nDotF.makeP2Set().addAll(newP2Set, null)) {
-                            returnValue = true;
-                          }
-                        }
-                      })
+              .getP2Set()
+              .forall(
+                  new P2SetVisitor() {
+                    @Override
+                    public final void visit(Node n) {
+                      AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
+                      if (nDotF.makeP2Set().addAll(newP2Set, null)) {
+                        returnValue = true;
+                      }
+                    }
+                  })
               | ret;
     }
 
@@ -315,7 +323,9 @@ public final class PropWorklist extends Propagator {
     return ret;
   }
 
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final void handleFieldRefNode(
       FieldRefNode src, final HashSet<Object[]> edgesToPropagate) {
     final Node[] loadTargets = pag.loadLookup(src);
@@ -344,7 +354,4 @@ public final class PropWorklist extends Propagator {
               }
             });
   }
-
-  protected PAG pag;
-  protected OnFlyCallGraph ofcg;
 }

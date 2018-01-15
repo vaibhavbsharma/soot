@@ -1,18 +1,26 @@
 /** */
-package soot.util;
 
-import static java.lang.Long.numberOfTrailingZeros;
+package soot.util;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** @author Steven Lambeth */
+import static java.lang.Long.numberOfTrailingZeros;
+
+/**
+ * @author Steven Lambeth
+ */
 class SmallPriorityQueue<E> extends PriorityQueue<E> {
   static final int MAX_CAPACITY = Long.SIZE;
 
   private long queue = 0;
+
+  SmallPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
+    super(universe, ordinalMap);
+    assert universe.size() <= Long.SIZE;
+  }
 
   @Override
   void addAll() {
@@ -22,11 +30,6 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
 
     queue = -1L >>> -N;
     min = 0;
-  }
-
-  SmallPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    super(universe, ordinalMap);
-    assert universe.size() <= Long.SIZE;
   }
 
   @Override

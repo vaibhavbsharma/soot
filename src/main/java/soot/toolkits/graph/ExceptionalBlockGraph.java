@@ -25,6 +25,12 @@
 
 package soot.toolkits.graph;
 
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
+import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.ThrowableSet;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,12 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import soot.Body;
-import soot.Trap;
-import soot.Unit;
-import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.exceptions.ThrowableSet;
 
 /**
  * Represents a CFG where the nodes are {@link Block}s and the edges are derived from control flow.
@@ -71,7 +71,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   /**
    * Constructs an <code>ExceptionalBlockGraph</code> for the blocks found by partitioning the the
    * units of the provided <code>Body</code> instance into basic blocks.
-   *
+   * <p>
    * <p>Note that this constructor builds an {@link ExceptionalUnitGraph} internally when splitting
    * <code>body</code>'s {@link Unit}s into {@link Block}s. Callers who already have an <code>
    * ExceptionalUnitGraph</code> to hand can use the constructor taking an <code>
@@ -88,7 +88,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    * ExceptionalUnitGraph}.
    *
    * @param unitGraph The <code>ExceptionalUnitGraph</code> whose <code>Unit</code>s are to be split
-   *     into blocks.
+   *                  into blocks.
    */
   public ExceptionalBlockGraph(ExceptionalUnitGraph unitGraph) {
     super(unitGraph);
@@ -98,7 +98,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 
   /**
    * {@inheritDoc}
-   *
+   * <p>
    * <p>This implementation calls the inherited implementation to split units into blocks, before
    * adding the distinctions between exceptional and unexceptional control flow.
    *
@@ -171,10 +171,10 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    * appear as keys, returns a <code>List</code> of the values to which the keys map, in the
    * corresponding order.
    *
-   * @param keys the keys to be looked up.
+   * @param keys       the keys to be looked up.
    * @param keyToValue the map in which to look up the keys.
    * @throws IllegalStateException if one of the elements in <code>keys</code> does not appear in
-   *     <code>keyToValue</code>
+   *                               <code>keyToValue</code>
    */
   private <K, V> List<V> mappedValues(List<K> keys, Map<K, V> keyToValue) {
     List<V> result = new ArrayList<>(keys.size());
@@ -203,12 +203,12 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    * was constructed, returns the {@link ExceptionDest}s representing the exceptions which may be
    * thrown by units in the block.
    *
-   * @param block the {@link Block} whose exceptions are to be collected.
-   * @param unitGraph the {@link ExceptionalUnitGraph} from which this graph is constructed.
+   * @param block       the {@link Block} whose exceptions are to be collected.
+   * @param unitGraph   the {@link ExceptionalUnitGraph} from which this graph is constructed.
    * @param unitToBlock a {@link Map} from the units which are block heads or tails to the blocks
-   *     that they belong to.
+   *                    that they belong to.
    * @return a {@link Collection} of {@link ExceptionDest}s representing the exceptions that may be
-   *     thrown by this block, together with their catchers.
+   * thrown by this block, together with their catchers.
    */
   private Collection<ExceptionDest> collectDests(
       Block block, ExceptionalUnitGraph unitGraph, Map<Unit, Block> unitToBlock) {

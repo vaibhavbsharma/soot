@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.annotation;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -32,12 +28,17 @@ import soot.tagkit.LinkTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.MHGDominatorsFinder;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A body transformer that records avail expression information in tags. - both pessimistic and
  * optimistic options
  */
 public class DominatorsTagger extends BodyTransformer {
-  public DominatorsTagger(Singletons.Global g) {}
+  public DominatorsTagger(Singletons.Global g) {
+  }
 
   public static DominatorsTagger v() {
     return G.v().soot_jimple_toolkits_annotation_DominatorsTagger();

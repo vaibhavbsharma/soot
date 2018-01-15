@@ -1,14 +1,5 @@
 package soot.jimple.toolkits.base;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.G;
 import soot.PhaseOptions;
 import soot.Scene;
@@ -18,16 +9,25 @@ import soot.SootClass;
 import soot.options.Options;
 import soot.util.Chain;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A scene transformer that renames the duplicated class names.
- *
+ * <p>
  * <p>The definition of duplicated class names. if (className1.equalsIgnoreCase(className2) {
  * //className1 and className2 are duplicated class names. }
- *
+ * <p>
  * <p>Because some file systems are case-insensitive (e.g., Mac OS). When file a.b.c.class exists,
  * a.b.C.class will over-write the content of a.b.c.class and case inconsistent that a.b.c.class
  * file contains the content of a.b.C.class.
- *
+ * <p>
  * <p>However, in some case, at lest in Android applications, the duplicated class names exist. For
  * example, an app (Sha256: 0015AE7C27688D45F79170DCEA16131CE557912A1A0C5F3B6B0465EE0774A452) in the
  * Genome project contains duplicated class names. When transforming the app to classes, some
@@ -36,13 +36,14 @@ import soot.util.Chain;
  * expected).
  */
 public class RenameDuplicatedClasses extends SceneTransformer {
-  public RenameDuplicatedClasses(Singletons.Global g) {}
+  private static final String FIXED_CLASS_NAME_SPERATOR = "-";
+
+  public RenameDuplicatedClasses(Singletons.Global g) {
+  }
 
   public static RenameDuplicatedClasses v() {
     return G.v().soot_jimple_toolkits_base_RenameDuplicatedClasses();
   }
-
-  private static final String FIXED_CLASS_NAME_SPERATOR = "-";
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {

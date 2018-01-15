@@ -34,12 +34,12 @@ public abstract class ASTAggregatedCondition extends ASTCondition {
     return left;
   }
 
-  public ASTCondition getRightOp() {
-    return right;
-  }
-
   public void setLeftOp(ASTCondition left) {
     this.left = left;
+  }
+
+  public ASTCondition getRightOp() {
+    return right;
   }
 
   public void setRightOp(ASTCondition right) {

@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.dava.toolkits.base.AST.transformations;
 
 import soot.BooleanType;
@@ -147,8 +148,8 @@ public class SimplifyConditions extends DepthFirstAdapter {
     }
 
     if ((left.isNotted()
-            && right.isNotted()
-            && (!(left instanceof ASTBinaryCondition) && !(right instanceof ASTBinaryCondition)))
+        && right.isNotted()
+        && (!(left instanceof ASTBinaryCondition) && !(right instanceof ASTBinaryCondition)))
         || (left.isNotted() && aggCond.isNotted() && !(left instanceof ASTBinaryCondition))
         || (right.isNotted() && aggCond.isNotted() && !(right instanceof ASTBinaryCondition))) {
       // both are notted and atleast one is not a binaryCondition

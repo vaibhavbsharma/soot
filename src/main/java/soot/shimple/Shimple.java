@@ -19,12 +19,6 @@
 
 package soot.shimple;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -43,20 +37,26 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Chain;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Contains the constructors for the components of the SSA Shimple grammar. Methods are available to
  * construct Shimple from Jimple/Shimple, create Phi nodes, and converting back from Shimple to
  * Jimple.
- *
+ * <p>
  * <p>This should normally be used in conjunction with the constructor methods from
  * soot.jimple.Jimple.
- *
+ * <p>
  * <p>Miscellaneous utility functions are also available in this class.
  *
  * @author Navindra Umanee
  * @see soot.jimple.Jimple
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  */
 public class Shimple {
   public static final String IFALIAS = "IfAlias";
@@ -65,76 +65,30 @@ public class Shimple {
   public static final String PI = "Pi";
   public static final String PHASE = "shimple";
 
-  public Shimple(Singletons.Global g) {}
+  public Shimple(Singletons.Global g) {
+  }
 
   public static Shimple v() {
     return G.v().soot_shimple_Shimple();
   }
 
-  /** Returns an empty ShimpleBody associated with method m, using default phase options. */
-  public ShimpleBody newBody(SootMethod m) {
-    Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
-    return new ShimpleBody(m, options);
-  }
-
-  /** Returns an empty ShimpleBody associated with method m, using provided option map. */
-  public ShimpleBody newBody(SootMethod m, Map<String, String> options) {
-    return new ShimpleBody(m, options);
-  }
-
-  /** Returns a ShimpleBody constructed from b, using default phase options. */
-  public ShimpleBody newBody(Body b) {
-    Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
-    return new ShimpleBody(b, options);
-  }
-
-  /** Returns a ShimpleBody constructed from b, using provided option Map. */
-  public ShimpleBody newBody(Body b, Map<String, String> options) {
-    return new ShimpleBody(b, options);
-  }
-
   /**
-   * Create a trivial PhiExpr, where preds are an ordered list of the control predecessor Blocks of
-   * the Phi expression. Instead of a list of blocks, you may provide a list of the tail Units from
-   * the corresponding blocks.
+   * Returns true if the value is a Phi expression, false otherwise.
    */
-  public PhiExpr newPhiExpr(Local leftLocal, List<Block> preds) {
-    return new SPhiExpr(leftLocal, preds);
-  }
-
-  public PiExpr newPiExpr(Local local, Unit predicate, Object targetKey) {
-    return new SPiExpr(local, predicate, targetKey);
-  }
-
-  /**
-   * Create a PhiExpr with the provided list of Values (Locals or Constants) and the corresponding
-   * control flow predecessor Blocks. Instead of a list of predecessor blocks, you may provide a
-   * list of the tail Units from the corresponding blocks.
-   */
-  public PhiExpr newPhiExpr(List<Value> args, List<Unit> preds) {
-    return new SPhiExpr(args, preds);
-  }
-
-  /**
-   * Constructs a JimpleBody from a ShimpleBody.
-   *
-   * @see soot.options.ShimpleOptions
-   */
-  public JimpleBody newJimpleBody(ShimpleBody body) {
-    return body.toJimpleBody();
-  }
-
-  /** Returns true if the value is a Phi expression, false otherwise. */
   public static boolean isPhiExpr(Value value) {
     return (value instanceof PhiExpr);
   }
 
-  /** Returns true if the unit is a Phi node, false otherwise. */
+  /**
+   * Returns true if the unit is a Phi node, false otherwise.
+   */
   public static boolean isPhiNode(Unit unit) {
     return getPhiExpr(unit) != null;
   }
 
-  /** Returns the corresponding PhiExpr if the unit is a Phi node, null otherwise. */
+  /**
+   * Returns the corresponding PhiExpr if the unit is a Phi node, null otherwise.
+   */
   public static PhiExpr getPhiExpr(Unit unit) {
     if (!(unit instanceof AssignStmt)) {
       return null;
@@ -171,7 +125,9 @@ public class Shimple {
     return null;
   }
 
-  /** Returns the corresponding left Local if the unit is a Shimple node, null otherwise. */
+  /**
+   * Returns the corresponding left Local if the unit is a Shimple node, null otherwise.
+   */
   public static Local getLhsLocal(Unit unit) {
     if (!(unit instanceof AssignStmt)) {
       return null;
@@ -191,7 +147,7 @@ public class Shimple {
    * If you are removing a Unit from a Unit chain which contains PhiExpr's, you might want to call
    * this utility function in order to update any PhiExpr pointers to the Unit to point to the
    * Unit's predecessor(s). This function will not modify "branch target" UnitBoxes.
-   *
+   * <p>
    * <p>Normally you should not have to call this function directly, since patching is taken care of
    * Shimple's internal implementation of PatchingChain.
    */
@@ -317,7 +273,7 @@ public class Shimple {
 
   /**
    * Redirects PhiExpr pointers to the given Unit to the new Unit.
-   *
+   * <p>
    * <p>Normally you should not have to call this function directly, since patching is taken care of
    * Shimple's internal implementation of PatchingChain.
    */
@@ -335,5 +291,66 @@ public class Shimple {
         box.setUnit(newLocation);
       }
     }
+  }
+
+  /**
+   * Returns an empty ShimpleBody associated with method m, using default phase options.
+   */
+  public ShimpleBody newBody(SootMethod m) {
+    Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
+    return new ShimpleBody(m, options);
+  }
+
+  /**
+   * Returns an empty ShimpleBody associated with method m, using provided option map.
+   */
+  public ShimpleBody newBody(SootMethod m, Map<String, String> options) {
+    return new ShimpleBody(m, options);
+  }
+
+  /**
+   * Returns a ShimpleBody constructed from b, using default phase options.
+   */
+  public ShimpleBody newBody(Body b) {
+    Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
+    return new ShimpleBody(b, options);
+  }
+
+  /**
+   * Returns a ShimpleBody constructed from b, using provided option Map.
+   */
+  public ShimpleBody newBody(Body b, Map<String, String> options) {
+    return new ShimpleBody(b, options);
+  }
+
+  /**
+   * Create a trivial PhiExpr, where preds are an ordered list of the control predecessor Blocks of
+   * the Phi expression. Instead of a list of blocks, you may provide a list of the tail Units from
+   * the corresponding blocks.
+   */
+  public PhiExpr newPhiExpr(Local leftLocal, List<Block> preds) {
+    return new SPhiExpr(leftLocal, preds);
+  }
+
+  public PiExpr newPiExpr(Local local, Unit predicate, Object targetKey) {
+    return new SPiExpr(local, predicate, targetKey);
+  }
+
+  /**
+   * Create a PhiExpr with the provided list of Values (Locals or Constants) and the corresponding
+   * control flow predecessor Blocks. Instead of a list of predecessor blocks, you may provide a
+   * list of the tail Units from the corresponding blocks.
+   */
+  public PhiExpr newPhiExpr(List<Value> args, List<Unit> preds) {
+    return new SPhiExpr(args, preds);
+  }
+
+  /**
+   * Constructs a JimpleBody from a ShimpleBody.
+   *
+   * @see soot.options.ShimpleOptions
+   */
+  public JimpleBody newJimpleBody(ShimpleBody body) {
+    return body.toJimpleBody();
   }
 }

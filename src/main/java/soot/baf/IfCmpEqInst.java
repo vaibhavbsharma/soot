@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface IfCmpEqInst extends TargetArgInst, OpTypeArgInst {}
+public interface IfCmpEqInst extends TargetArgInst, OpTypeArgInst {
+}

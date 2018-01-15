@@ -18,6 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.toolkits.typing.fast;
 
 import soot.G;
@@ -26,14 +27,17 @@ import soot.PrimType;
 import soot.RefType;
 import soot.Singletons;
 
-/** @author Ben Bellamy */
+/**
+ * @author Ben Bellamy
+ */
 public class Integer32767Type extends PrimType implements IntegerType {
+
+  public Integer32767Type(Singletons.Global g) {
+  }
 
   public static Integer32767Type v() {
     return G.v().soot_jimple_toolkits_typing_fast_Integer32767Type();
   }
-
-  public Integer32767Type(Singletons.Global g) {}
 
   @Override
   public String toString() {

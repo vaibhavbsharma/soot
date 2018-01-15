@@ -33,7 +33,7 @@ public interface Orderer<N> {
    * node was assigned number <i>i</i> in the order, it will be in the <i>i</i>th position of the
    * returned list.
    *
-   * @param g a DirectedGraph instance whose nodes we wish to order
+   * @param g       a DirectedGraph instance whose nodes we wish to order
    * @param reverse <code>true</code> to compute the reverse order
    * @return a somehow ordered list of the graph's nodes
    */

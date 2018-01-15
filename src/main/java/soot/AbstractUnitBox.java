@@ -25,7 +25,9 @@
 
 package soot;
 
-/** Reference implementation for UnitBox; just add a canContainUnit method. */
+/**
+ * Reference implementation for UnitBox; just add a canContainUnit method.
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractUnitBox implements UnitBox {
   protected Unit unit;
@@ -36,6 +38,11 @@ public abstract class AbstractUnitBox implements UnitBox {
   @Override
   public boolean isBranchTarget() {
     return true;
+  }
+
+  @Override
+  public Unit getUnit() {
+    return unit;
   }
 
   @Override
@@ -56,11 +63,6 @@ public abstract class AbstractUnitBox implements UnitBox {
     if (this.unit != null) {
       this.unit.addBoxPointingToThis(this);
     }
-  }
-
-  @Override
-  public Unit getUnit() {
-    return unit;
   }
 
   @Override

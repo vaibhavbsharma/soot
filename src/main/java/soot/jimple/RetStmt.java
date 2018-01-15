@@ -31,7 +31,7 @@ import soot.ValueBox;
 public interface RetStmt extends Stmt {
   Value getStmtAddress();
 
-  ValueBox getStmtAddressBox();
-
   void setStmtAddress(Value stmtAddress);
+
+  ValueBox getStmtAddressBox();
 }

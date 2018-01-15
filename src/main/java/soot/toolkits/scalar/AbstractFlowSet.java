@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * provides functional code for most of the methods. Subclasses are invited to provide a more
  * efficient version. Most often this will be done in the following way:<br>
- *
+ * <p>
  * <pre>
  * public void yyy(FlowSet dest) {
  *   if (dest instanceof xxx) {
@@ -45,7 +45,9 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
   @Override
   public abstract AbstractFlowSet<T> clone();
 
-  /** implemented, but inefficient. */
+  /**
+   * implemented, but inefficient.
+   */
   @Override
   public FlowSet<T> emptySet() {
     FlowSet<T> t = clone();
@@ -64,7 +66,9 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     }
   }
 
-  /** implemented, but *very* inefficient. */
+  /**
+   * implemented, but *very* inefficient.
+   */
   @Override
   public void clear() {
     for (T t : this) {

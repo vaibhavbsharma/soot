@@ -25,9 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.Type;
@@ -44,6 +41,9 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.util.Switch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
   final ValueBox opBox;
@@ -53,13 +53,13 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
     this(Jimple.v().newImmediateBox(op), type);
   }
 
-  @Override
-  public abstract Object clone();
-
   protected AbstractCastExpr(ValueBox opBox, Type type) {
     this.opBox = opBox;
     this.type = type;
   }
+
+  @Override
+  public abstract Object clone();
 
   @Override
   public boolean equivTo(Object o) {
@@ -70,7 +70,9 @@ public abstract class AbstractCastExpr implements CastExpr, ConvertToBaf {
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode() * 101 + type.hashCode() + 17;

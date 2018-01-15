@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @author Navindra Umanee
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  */
 public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
   protected DominatorTree<N> dt;
@@ -68,7 +68,9 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
     return nodeToFrontier.containsKey(node);
   }
 
-  /** Make sure we visit children first. This is reverse topological order. */
+  /**
+   * Make sure we visit children first. This is reverse topological order.
+   */
   protected void bottomUpDispatch(DominatorNode<N> node) {
     // *** FIXME: It's annoying that this algorithm is so
     // *** inefficient in that in traverses the tree from the head
@@ -89,9 +91,9 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
 
   /**
    * Calculate dominance frontier for a set of basic blocks.
-   *
+   * <p>
    * <p>Uses the algorithm of Cytron et al., TOPLAS Oct. 91:
-   *
+   * <p>
    * <pre>
    * for each X in a bottom-up traversal of the dominator tree do
    *

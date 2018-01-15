@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -109,6 +104,11 @@ import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
+
 class ConstraintChecker extends AbstractStmtSwitch {
   private final ClassHierarchy hierarchy;
   private final boolean fix; // if true, fix constraint violations
@@ -119,6 +119,10 @@ class ConstraintChecker extends AbstractStmtSwitch {
     this.fix = fix;
 
     hierarchy = resolver.hierarchy();
+  }
+
+  static void error(String message) {
+    throw new RuntimeTypeException(message);
   }
 
   public void check(Stmt stmt, JimpleBody stmtBody) throws TypeException {
@@ -132,17 +136,6 @@ class ConstraintChecker extends AbstractStmtSwitch {
       pw.close();
       throw new TypeException(st.toString());
     }
-  }
-
-  @SuppressWarnings("serial")
-  private static class RuntimeTypeException extends RuntimeException {
-    RuntimeTypeException(String message) {
-      super(message);
-    }
-  }
-
-  static void error(String message) {
-    throw new RuntimeTypeException(message);
   }
 
   private void handleInvokeExpr(InvokeExpr ie, Stmt invokestmt) {
@@ -679,7 +672,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseGotoStmt(GotoStmt stmt) {}
+  public void caseGotoStmt(GotoStmt stmt) {
+  }
 
   @Override
   public void caseIfStmt(IfStmt stmt) {
@@ -754,7 +748,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseNopStmt(NopStmt stmt) {}
+  public void caseNopStmt(NopStmt stmt) {
+  }
 
   @Override
   public void caseReturnStmt(ReturnStmt stmt) {
@@ -772,7 +767,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+  }
 
   @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
@@ -814,5 +810,12 @@ class ConstraintChecker extends AbstractStmtSwitch {
         .insertBefore(
             Jimple.v().newAssignStmt(newlocal, Jimple.v().newCastExpr(oldlocal, type)), u);
     return newlocal;
+  }
+
+  @SuppressWarnings("serial")
+  private static class RuntimeTypeException extends RuntimeException {
+    RuntimeTypeException(String message) {
+      super(message);
+    }
   }
 }

@@ -44,21 +44,21 @@ public class SourceLineNumberTag implements Tag {
     return startLineNumber;
   }
 
-  public int getStartLineNumber() {
-    return startLineNumber;
-  }
-
-  public int getEndLineNumber() {
-    return endLineNumber;
-  }
-
   public void setLineNumber(int value) {
     this.startLineNumber = value;
     this.endLineNumber = value;
   }
 
+  public int getStartLineNumber() {
+    return startLineNumber;
+  }
+
   public void setStartLineNumber(int value) {
     this.startLineNumber = value;
+  }
+
+  public int getEndLineNumber() {
+    return endLineNumber;
   }
 
   public void setEndLineNumber(int value) {

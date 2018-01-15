@@ -26,14 +26,14 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Jimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr {
   public JInterfaceInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args) {

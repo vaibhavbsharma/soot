@@ -38,11 +38,18 @@ import soot.jimple.spark.sets.PointsToSetInternal;
  * @author Ondrej Lhotak
  */
 public class Checker {
+  protected PAG pag;
+
   public Checker(PAG pag) {
     this.pag = pag;
   }
 
-  /** Actually does the propagation. */
+  /* End of public methods. */
+  /* End of package methods. */
+
+  /**
+   * Actually does the propagation.
+   */
   public void check() {
     for (Object object : pag.allocSources()) {
       handleAllocNode((AllocNode) object);
@@ -57,9 +64,6 @@ public class Checker {
       handleStores((VarNode) object);
     }
   }
-
-  /* End of public methods. */
-  /* End of package methods. */
 
   protected void checkAll(final Node container, PointsToSetInternal nodes, final Node upstream) {
     nodes.forall(
@@ -82,8 +86,8 @@ public class Checker {
     FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
     if (!p2set.contains(n)
         && (fh == null
-            || container.getType() == null
-            || fh.canStoreType(n.getType(), container.getType()))) {
+        || container.getType() == null
+        || fh.canStoreType(n.getType(), container.getType()))) {
       G.v()
           .out
           .println(
@@ -155,6 +159,4 @@ public class Checker {
               }
             });
   }
-
-  protected PAG pag;
 }

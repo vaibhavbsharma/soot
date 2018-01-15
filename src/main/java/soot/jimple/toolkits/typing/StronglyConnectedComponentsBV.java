@@ -25,27 +25,26 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
 
-/** @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead */
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
+
+/**
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
+ */
 @Deprecated
 class StronglyConnectedComponentsBV {
+  private static final boolean DEBUG = false;
   BitVector variables;
   Set<TypeVariableBV> black;
   LinkedList<TypeVariableBV> finished;
-
   TypeResolverBV resolver;
-
   LinkedList<LinkedList<TypeVariableBV>> forest = new LinkedList<>();
   LinkedList<TypeVariableBV> current_tree;
-
-  private static final boolean DEBUG = false;
 
   public StronglyConnectedComponentsBV(BitVector typeVariableList, TypeResolverBV resolver)
       throws TypeException {

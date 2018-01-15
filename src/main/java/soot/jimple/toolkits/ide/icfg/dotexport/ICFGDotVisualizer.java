@@ -1,29 +1,29 @@
 package soot.jimple.toolkits.ide.icfg.dotexport;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import heros.InterproceduralCFG;
 import soot.G;
 import soot.SootMethod;
 import soot.Unit;
 import soot.util.dot.DotGraph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ICFGDotVisualizer {
-  private DotGraph dotIcfg = new DotGraph("");
-  private ArrayList<Unit> visited = new ArrayList<>();
   String fileName;
   Unit startPoint;
   InterproceduralCFG<Unit, SootMethod> icfg;
+  private DotGraph dotIcfg = new DotGraph("");
+  private ArrayList<Unit> visited = new ArrayList<>();
 
   /**
    * This class will save your ICFG in DOT format by traversing the ICFG Depth-first!
    *
-   * @param fileName: Name of the file to save ICFG in DOT extension
-   * @param startPoint: This is of type Unit and is the starting point of the graph (eg. main
-   *     method)
+   * @param fileName:                Name of the file to save ICFG in DOT extension
+   * @param startPoint:              This is of type Unit and is the starting point of the graph (eg. main
+   *                                 method)
    * @param InterproceduralCFG<Unit, SootMethod>: Object of InterproceduralCFG which represents the
-   *     entire ICFG
+   *                                 entire ICFG
    */
   public ICFGDotVisualizer(
       String fileName, Unit startPoint, InterproceduralCFG<Unit, SootMethod> icfg) {

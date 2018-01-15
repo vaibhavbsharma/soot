@@ -1,13 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import soot.EquivalentValue;
 import soot.G;
 import soot.Local;
@@ -44,6 +36,14 @@ import soot.toolkits.graph.MemoryEfficientGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 // SimpleMethodInfoFlowAnalysis written by Richard L. Halpert, 2007-02-25
 // Constructs a data flow table for the given method.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -53,21 +53,18 @@ import soot.toolkits.graph.UnitGraph;
 // the parameter's one node in the data flow graph.
 
 public class SmartMethodInfoFlowAnalysis {
+  public static int counter = 0;
   UnitGraph graph;
   SootMethod sm;
   Value thisLocal;
   InfoFlowAnalysis dfa;
   boolean refOnly; // determines if primitive type data flow is included
-  boolean includeInnerFields; // determines if flow to a field of an object (other than this) is
   // treated like flow to that object
-
+  boolean includeInnerFields; // determines if flow to a field of an object (other than this) is
   HashMutableDirectedGraph<EquivalentValue> abbreviatedInfoFlowGraph;
   HashMutableDirectedGraph<EquivalentValue> infoFlowSummary;
   Ref returnRef;
-
   boolean printMessages;
-
-  public static int counter = 0;
 
   public SmartMethodInfoFlowAnalysis(UnitGraph g, InfoFlowAnalysis dfa) {
     graph = g;

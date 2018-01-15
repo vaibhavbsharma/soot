@@ -25,14 +25,14 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr {
@@ -43,8 +43,16 @@ public abstract class AbstractBinopExpr implements Expr {
     return op1Box.getValue();
   }
 
+  public void setOp1(Value op1) {
+    op1Box.setValue(op1);
+  }
+
   public Value getOp2() {
     return op2Box.getValue();
+  }
+
+  public void setOp2(Value op2) {
+    op2Box.setValue(op2);
   }
 
   public ValueBox getOp1Box() {
@@ -53,14 +61,6 @@ public abstract class AbstractBinopExpr implements Expr {
 
   public ValueBox getOp2Box() {
     return op2Box;
-  }
-
-  public void setOp1(Value op1) {
-    op1Box.setValue(op1);
-  }
-
-  public void setOp2(Value op2) {
-    op2Box.setValue(op2);
   }
 
   @Override
@@ -86,14 +86,18 @@ public abstract class AbstractBinopExpr implements Expr {
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return op1Box.getValue().equivHashCode() * 101 + op2Box.getValue().equivHashCode() + 17
         ^ getSymbol().hashCode();
   }
 
-  /** Returns the unique symbol for an operator. */
+  /**
+   * Returns the unique symbol for an operator.
+   */
   protected abstract String getSymbol();
 
   @Override

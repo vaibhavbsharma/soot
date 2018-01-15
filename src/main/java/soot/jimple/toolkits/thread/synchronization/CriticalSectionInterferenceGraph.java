@@ -1,9 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Hierarchy;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -14,6 +10,10 @@ import soot.SootClass;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class CriticalSectionInterferenceGraph {
 
@@ -145,26 +145,26 @@ public class CriticalSectionInterferenceGraph {
                   } else {
                     typeCompatible =
                         (classOne != null
-                                && Scene.v()
-                                    .getActiveHierarchy()
-                                    .getSubclassesOfIncluding(classOne)
-                                    .contains(classTwo)
+                            && Scene.v()
+                            .getActiveHierarchy()
+                            .getSubclassesOfIncluding(classOne)
+                            .contains(classTwo)
                             || classTwo != null
-                                && Scene.v()
-                                    .getActiveHierarchy()
-                                    .getSubclassesOfIncluding(classTwo)
-                                    .contains(classOne));
+                            && Scene.v()
+                            .getActiveHierarchy()
+                            .getSubclassesOfIncluding(classTwo)
+                            .contains(classOne));
                   }
                 }
               }
             }
             if ((!optionLeaveOriginalLocks
-                    && (tn1.write.hasNonEmptyIntersection(tn2.write)
-                        || tn1.write.hasNonEmptyIntersection(tn2.read)
-                        || tn1.read.hasNonEmptyIntersection(tn2.write)))
+                && (tn1.write.hasNonEmptyIntersection(tn2.write)
+                || tn1.write.hasNonEmptyIntersection(tn2.read)
+                || tn1.read.hasNonEmptyIntersection(tn2.write)))
                 || (optionLeaveOriginalLocks
-                    && typeCompatible
-                    && (optionIncludeEmptyPossibleEdges || !emptyEdge))) {
+                && typeCompatible
+                && (optionIncludeEmptyPossibleEdges || !emptyEdge))) {
               // Determine the size of the intersection for GraphViz output
               CodeBlockRWSet rw = null;
               int size;

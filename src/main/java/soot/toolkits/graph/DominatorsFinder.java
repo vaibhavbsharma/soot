@@ -28,18 +28,28 @@ import java.util.List;
  * @author Navindra Umanee
  */
 public interface DominatorsFinder<N> {
-  /** Returns the graph to which the analysis pertains. */
+  /**
+   * Returns the graph to which the analysis pertains.
+   */
   DirectedGraph<N> getGraph();
 
-  /** Returns a list of dominators for the given node in the graph. */
+  /**
+   * Returns a list of dominators for the given node in the graph.
+   */
   List<N> getDominators(N node);
 
-  /** Returns the immediate dominator of node or null if the node has no immediate dominator. */
+  /**
+   * Returns the immediate dominator of node or null if the node has no immediate dominator.
+   */
   N getImmediateDominator(N node);
 
-  /** True if "node" is dominated by "dominator" in the graph. */
+  /**
+   * True if "node" is dominated by "dominator" in the graph.
+   */
   boolean isDominatedBy(N node, N dominator);
 
-  /** True if "node" is dominated by all nodes in "dominators" in the graph. */
+  /**
+   * True if "node" is dominated by all nodes in "dominators" in the graph.
+   */
   boolean isDominatedByAll(N node, Collection<N> dominators);
 }

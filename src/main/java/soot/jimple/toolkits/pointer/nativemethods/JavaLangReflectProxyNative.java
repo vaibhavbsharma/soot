@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -61,9 +62,9 @@ public class JavaLangReflectProxyNative extends NativeMethodClass {
   /**
    * We have to assume all possible classes will be returned. But it is still possible to make a new
    * class.
-   *
+   * <p>
    * <p>NOTE: assuming a close world, and this method should not be called.
-   *
+   * <p>
    * <p>private static native java.lang.Class defineClass0(java.lang.ClassLoader, java.lang.String,
    * byte[], int, int);
    */

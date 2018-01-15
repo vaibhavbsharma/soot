@@ -30,7 +30,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/** Provides an implementation of a flow universe, wrapping collections. */
+/**
+ * Provides an implementation of a flow universe, wrapping collections.
+ */
 public class CollectionFlowUniverse<E> implements FlowUniverse<E> {
   Set<E> elements;
 

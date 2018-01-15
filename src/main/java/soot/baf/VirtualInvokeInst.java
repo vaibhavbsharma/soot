@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface VirtualInvokeInst extends MethodArgInst {}
+public interface VirtualInvokeInst extends MethodArgInst {
+}

@@ -18,15 +18,18 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.typing.fast;
 
-import java.util.Collection;
+package soot.jimple.toolkits.typing.fast;
 
 import soot.Type;
 import soot.Value;
 import soot.jimple.Stmt;
 
-/** @author Ben Bellamy */
+import java.util.Collection;
+
+/**
+ * @author Ben Bellamy
+ */
 public interface IEvalFunction {
   Collection<Type> eval(Typing tg, Value expr, Stmt stmt);
 }

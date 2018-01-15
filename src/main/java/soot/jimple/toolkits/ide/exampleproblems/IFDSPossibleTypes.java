@@ -16,14 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.ide.exampleproblems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.toolkits.ide.exampleproblems;
 
 import heros.DefaultSeeds;
 import heros.FlowFunction;
@@ -54,10 +48,17 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 import soot.toolkits.scalar.Pair;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @SuppressWarnings("serial")
 public class IFDSPossibleTypes
     extends DefaultJimpleIFDSTabulationProblem<
-        Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
+    Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
 
   public IFDSPossibleTypes(InterproceduralCFG<Unit, SootMethod> icfg) {
     super(icfg);

@@ -19,14 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -55,15 +47,25 @@ import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.ThisRef;
 
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 1-Feb-2006
- *     <p>This class builds buffer classes between Application classes and their corresponding
- *     library superclasses. This allows for the hiding of all library method overrides to be hidden
- *     in a different class, thereby cloaking somewhat the mechanisms.
+ * <p>Created on 1-Feb-2006
+ * <p>This class builds buffer classes between Application classes and their corresponding
+ * library superclasses. This allows for the hiding of all library method overrides to be hidden
+ * in a different class, thereby cloaking somewhat the mechanisms.
  */
 public class BuildIntermediateAppClasses extends SceneTransformer implements IJbcoTransform {
 
+  public static String dependancies[] = new String[] {"wjtp.jbco_bapibm"};
+  public static String name = "wjtp.jbco_bapibm";
   static int newclasses = 0;
   static int newmethods = 0;
 
@@ -73,14 +75,10 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
     out.println("New buffer class methods created: " + newmethods);
   }
 
-  public static String dependancies[] = new String[] {"wjtp.jbco_bapibm"};
-
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "wjtp.jbco_bapibm";
 
   @Override
   public String getName() {

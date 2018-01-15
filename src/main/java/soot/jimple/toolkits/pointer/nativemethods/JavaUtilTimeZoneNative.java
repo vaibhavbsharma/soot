@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -62,9 +63,9 @@ public class JavaUtilTimeZoneNative extends NativeMethodClass {
   /** ********************* java.util.TimeZone ********************* */
   /**
    * It should return a constant for TimeZone
-   *
+   * <p>
    * <p>Gets the TimeZone for the given ID.
-   *
+   * <p>
    * <p>private static native java.lang.String getSystemTimeZoneID(java.lang.String,
    * java.lang.String);
    */

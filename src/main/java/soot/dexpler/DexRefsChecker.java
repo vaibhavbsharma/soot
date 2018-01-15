@@ -24,11 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -39,16 +34,21 @@ import soot.Unit;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /** */
 public class DexRefsChecker extends DexTransformer {
   // Note: we need an instance variable for inner class access, treat this as
   // a local variable (including initialization before use)
 
+  Local l = null;
+
   public static DexRefsChecker v() {
     return new DexRefsChecker();
   }
-
-  Local l = null;
 
   @Override
   protected void internalTransform(

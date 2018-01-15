@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.annotation.profiling;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -45,14 +42,18 @@ import soot.jimple.Stmt;
 import soot.options.ProfilingOptions;
 import soot.util.Chain;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class ProfilingGenerator extends BodyTransformer {
-  public ProfilingGenerator(Singletons.Global g) {}
+  public String mainSignature = "void main(java.lang.String[])";
+
+  public ProfilingGenerator(Singletons.Global g) {
+  }
 
   public static ProfilingGenerator v() {
     return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator();
   }
-
-  public String mainSignature = "void main(java.lang.String[])";
 
   //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 

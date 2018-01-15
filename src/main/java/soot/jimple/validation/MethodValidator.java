@@ -1,11 +1,11 @@
 package soot.jimple.validation;
 
-import java.util.List;
-
 import soot.Body;
 import soot.SootMethod;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
+
+import java.util.List;
 
 public enum MethodValidator implements BodyValidator {
   INSTANCE;
@@ -16,9 +16,9 @@ public enum MethodValidator implements BodyValidator {
 
   /**
    * Checks the following invariants on this Jimple body:
-   *
+   * <p>
    * <ol>
-   *   <li>static initializer should have 'static' modifier
+   * <li>static initializer should have 'static' modifier
    * </ol>
    */
   @Override

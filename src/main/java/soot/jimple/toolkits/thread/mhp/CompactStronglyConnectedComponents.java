@@ -1,15 +1,15 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.toolkits.scalar.FlowSet;
+import soot.util.Chain;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.toolkits.scalar.FlowSet;
-import soot.util.Chain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

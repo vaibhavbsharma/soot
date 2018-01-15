@@ -17,6 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.scalar;
 
 /**
@@ -41,7 +42,9 @@ public class IdentityPair<T, U> {
     return hashCode;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   private int computeHashCode() {
     final int prime = 31;
     int result = 1;
@@ -50,7 +53,9 @@ public class IdentityPair<T, U> {
     return result;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {

@@ -25,9 +25,6 @@
 
 package soot.baf.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Local;
 import soot.UnitPrinter;
 import soot.ValueBox;
@@ -35,6 +32,9 @@ import soot.baf.IncInst;
 import soot.baf.InstSwitch;
 import soot.jimple.Constant;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class BIncInst extends AbstractInst implements IncInst {
   final ValueBox localBox;
@@ -110,13 +110,13 @@ public class BIncInst extends AbstractInst implements IncInst {
   }
 
   @Override
-  public void setLocal(Local l) {
-    localBox.setValue(l);
+  public Local getLocal() {
+    return (Local) localBox.getValue();
   }
 
   @Override
-  public Local getLocal() {
-    return (Local) localBox.getValue();
+  public void setLocal(Local l) {
+    localBox.setValue(l);
   }
 
   @Override

@@ -25,18 +25,27 @@
 
 package soot;
 
+import soot.tagkit.AbstractHost;
+import soot.util.Switch;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import soot.tagkit.AbstractHost;
-import soot.util.Switch;
-
-/** Provides default implementations for the methods in Unit. */
+/**
+ * Provides default implementations for the methods in Unit.
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractUnit extends AbstractHost implements Unit {
 
-  /** Returns a deep clone of this object. */
+  /**
+   * List of UnitBoxes pointing to this Unit.
+   */
+  List<UnitBox> boxesPointingToThis = null;
+
+  /**
+   * Returns a deep clone of this object.
+   */
   @Override
   public abstract Object clone();
 
@@ -68,10 +77,9 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
     return Collections.emptyList();
   }
 
-  /** List of UnitBoxes pointing to this Unit. */
-  List<UnitBox> boxesPointingToThis = null;
-
-  /** Returns a list of Boxes pointing to this Unit. */
+  /**
+   * Returns a list of Boxes pointing to this Unit.
+   */
   @Override
   public List<UnitBox> getBoxesPointingToThis() {
     if (boxesPointingToThis == null) {
@@ -102,7 +110,9 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
     }
   }
 
-  /** Returns a list of ValueBoxes, either used or defined in this Unit. */
+  /**
+   * Returns a list of ValueBoxes, either used or defined in this Unit.
+   */
   @Override
   public List<ValueBox> getUseAndDefBoxes() {
     List<ValueBox> useBoxes = getUseBoxes();
@@ -121,9 +131,12 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
     }
   }
 
-  /** Used to implement the Switchable construct. */
+  /**
+   * Used to implement the Switchable construct.
+   */
   @Override
-  public void apply(Switch sw) {}
+  public void apply(Switch sw) {
+  }
 
   @Override
   public void redirectJumpsToThisTo(Unit newLocation) {

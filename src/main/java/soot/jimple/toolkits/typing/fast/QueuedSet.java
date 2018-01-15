@@ -18,6 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.toolkits.typing.fast;
 
 import java.util.HashSet;
@@ -25,7 +26,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-/** @author Ben Bellamy */
+/**
+ * @author Ben Bellamy
+ */
 public class QueuedSet<E> {
   private Set<E> hs;
   private LinkedList<E> ll;

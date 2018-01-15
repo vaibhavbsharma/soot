@@ -31,13 +31,13 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.Iterator;
-
 import soot.Local;
 import soot.Value;
 import soot.dava.internal.AST.ASTUnaryBinaryCondition;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
+
+import java.util.Iterator;
 
 /*
 ReachingCopies
@@ -68,54 +68,9 @@ there is no need for such an assumption since it is never used in the structured
 
 public class ReachingCopies extends StructuredAnalysis {
 
-  /** *************** DEFINIING LOCAL PAIR CLASS *********************** */
-  public class LocalPair {
-    private final Local leftLocal;
-    private final Local rightLocal;
-
-    public LocalPair(Local left, Local right) {
-      leftLocal = left;
-      rightLocal = right;
-    }
-
-    public Local getLeftLocal() {
-      return leftLocal;
-    }
-
-    public Local getRightLocal() {
-      return rightLocal;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-      if (other instanceof LocalPair) {
-        if (this.leftLocal.toString().equals(((LocalPair) other).getLeftLocal().toString())) {
-          if (this.rightLocal.toString().equals(((LocalPair) other).getRightLocal().toString())) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    /**
-     * Method checks whether local occurs in the left or right side of the localpair different
-     * semantics than the usual contains method which checks something in a list
-     */
-    public boolean contains(Local local) {
-      return leftLocal.toString().equals(local.toString())
-          || rightLocal.toString().equals(local.toString());
-    }
-
-    @Override
-    public String toString() {
-      StringBuffer b = new StringBuffer();
-      b.append("<" + leftLocal.toString() + "," + rightLocal.toString() + ">");
-      return b.toString();
-    }
-  }
-
-  /** **************************** END OF LOCAL PAIR CLASS ********************** */
+  /**
+   * *************************** END OF LOCAL PAIR CLASS **********************
+   */
   public ReachingCopies(Object analyze) {
     super();
     // the input to the process method is an empty DavaFlow Set meaning
@@ -248,5 +203,54 @@ public class ReachingCopies extends StructuredAnalysis {
      */
 
     return beforeSet;
+  }
+
+  /**
+   * ************** DEFINIING LOCAL PAIR CLASS ***********************
+   */
+  public class LocalPair {
+    private final Local leftLocal;
+    private final Local rightLocal;
+
+    public LocalPair(Local left, Local right) {
+      leftLocal = left;
+      rightLocal = right;
+    }
+
+    public Local getLeftLocal() {
+      return leftLocal;
+    }
+
+    public Local getRightLocal() {
+      return rightLocal;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+      if (other instanceof LocalPair) {
+        if (this.leftLocal.toString().equals(((LocalPair) other).getLeftLocal().toString())) {
+          if (this.rightLocal.toString().equals(((LocalPair) other).getRightLocal().toString())) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Method checks whether local occurs in the left or right side of the localpair different
+     * semantics than the usual contains method which checks something in a list
+     */
+    public boolean contains(Local local) {
+      return leftLocal.toString().equals(local.toString())
+          || rightLocal.toString().equals(local.toString());
+    }
+
+    @Override
+    public String toString() {
+      StringBuffer b = new StringBuffer();
+      b.append("<" + leftLocal.toString() + "," + rightLocal.toString() + ">");
+      return b.toString();
+    }
   }
 }

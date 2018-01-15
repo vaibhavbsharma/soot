@@ -24,11 +24,11 @@ import java.util.Iterator;
 
 public class PrivateMethodAccMethodSource implements soot.MethodSource {
 
+  private polyglot.types.MethodInstance methodInst;
+
   public PrivateMethodAccMethodSource(polyglot.types.MethodInstance methInst) {
     this.methodInst = methInst;
   }
-
-  private polyglot.types.MethodInstance methodInst;
 
   public void setMethodInst(polyglot.types.MethodInstance mi) {
     methodInst = mi;

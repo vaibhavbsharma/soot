@@ -44,13 +44,17 @@ public class AbstractHost implements Host {
   // use lazy instantiation (in addTag) instead
   protected List<Tag> mTagList = null;
 
-  /** get the list of tags. This list should not be modified! */
+  /**
+   * get the list of tags. This list should not be modified!
+   */
   @Override
   public List<Tag> getTags() {
     return (mTagList == null) ? Collections.emptyList() : mTagList;
   }
 
-  /** remove the tag named <code>aName</code> */
+  /**
+   * remove the tag named <code>aName</code>
+   */
   @Override
   public void removeTag(String aName) {
     int tagIndex;
@@ -59,7 +63,9 @@ public class AbstractHost implements Host {
     }
   }
 
-  /** search for tag named <code>aName</code> */
+  /**
+   * search for tag named <code>aName</code>
+   */
   private int searchForTag(String aName) {
     if (mTagList == null) {
       return -1;
@@ -77,7 +83,9 @@ public class AbstractHost implements Host {
     return -1;
   }
 
-  /** get the Tag object named <code>aName</code> */
+  /**
+   * get the Tag object named <code>aName</code>
+   */
   @Override
   public Tag getTag(String aName) {
     int tagIndex;
@@ -88,13 +96,17 @@ public class AbstractHost implements Host {
     return null;
   }
 
-  /** look if this host has a tag named <code>aName</code> */
+  /**
+   * look if this host has a tag named <code>aName</code>
+   */
   @Override
   public boolean hasTag(String aName) {
     return (searchForTag(aName) != -1);
   }
 
-  /** add tag <code>t</code> to this host */
+  /**
+   * add tag <code>t</code> to this host
+   */
   @Override
   public void addTag(Tag t) {
     if (mTagList == null) {
@@ -103,13 +115,17 @@ public class AbstractHost implements Host {
     mTagList.add(t);
   }
 
-  /** Removes all the tags from this host. */
+  /**
+   * Removes all the tags from this host.
+   */
   @Override
   public void removeAllTags() {
     mTagList = null;
   }
 
-  /** Adds all the tags from h to this host. */
+  /**
+   * Adds all the tags from h to this host.
+   */
   @Override
   public void addAllTagsOf(Host h) {
     List<Tag> tags = h.getTags();

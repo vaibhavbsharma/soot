@@ -47,10 +47,13 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     super(verbose);
   }
 
-  @Override
-  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
+  public BooleanConditionSimplification() {
+  }
 
-  public BooleanConditionSimplification() {}
+  @Override
+  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
+  }
+
   /*
     The method checks whether a particular ASTBinaryCondition
     is a comparison of a local with a boolean

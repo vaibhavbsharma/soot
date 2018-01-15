@@ -25,8 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.List;
-
 import soot.G;
 import soot.Local;
 import soot.Timers;
@@ -37,7 +35,11 @@ import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
-/** Analysis that provides an implementation of the LiveLocals interface. */
+import java.util.List;
+
+/**
+ * Analysis that provides an implementation of the LiveLocals interface.
+ */
 public class SimpleLiveLocals implements LiveLocals {
   final FlowAnalysis<Unit, FlowSet<Local>> analysis;
 

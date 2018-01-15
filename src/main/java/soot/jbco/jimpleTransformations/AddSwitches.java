@@ -19,14 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -47,12 +39,23 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.toolkits.graph.BriefUnitGraph;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 10-Jul-2006
+ * <p>Created on 10-Jul-2006
  */
 public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
+  public static String dependancies[] =
+      new String[] {"wjtp.jbco_fr", "jtp.jbco_adss", "bb.jbco_ful"};
+  public static String name = "jtp.jbco_adss";
   int switchesadded = 0;
 
   @Override
@@ -60,15 +63,10 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     out.println("Switches added: " + switchesadded);
   }
 
-  public static String dependancies[] =
-      new String[] {"wjtp.jbco_fr", "jtp.jbco_adss", "bb.jbco_ful"};
-
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "jtp.jbco_adss";
 
   @Override
   public String getName() {

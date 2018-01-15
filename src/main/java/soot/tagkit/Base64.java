@@ -38,6 +38,33 @@ package soot.tagkit;
  */
 public class Base64 {
 
+  //
+  // code characters for values 0..63
+  //
+  private static final char[] alphabet =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
+  //
+  // lookup table for converting base64 characters to value in range 0..63
+  //
+  private static final byte[] codes = new byte[256];
+
+  static {
+    for (int i = 0; i < 256; i++) {
+      codes[i] = -1;
+    }
+    for (int i = 'A'; i <= 'Z'; i++) {
+      codes[i] = (byte) (i - 'A');
+    }
+    for (int i = 'a'; i <= 'z'; i++) {
+      codes[i] = (byte) (26 + i - 'a');
+    }
+    for (int i = '0'; i <= '9'; i++) {
+      codes[i] = (byte) (52 + i - '0');
+    }
+    codes['+'] = 62;
+    codes['/'] = 63;
+  }
+
   /**
    * returns an array of base64-encoded characters to represent the passed data array.
    *
@@ -80,7 +107,7 @@ public class Base64 {
   /**
    * Decodes a BASE-64 encoded stream to recover the original data. White space before and after
    * will be trimmed away, but no other manipulation of the input will be performed.
-   *
+   * <p>
    * <p>As of version 1.2 this method will properly handle input containing junk characters
    * (newlines and the like) rather than throwing an error. It does this by pre-parsing the input
    * and generating from that a count of VALID input characters.
@@ -148,33 +175,5 @@ public class Base64 {
     }
 
     return out;
-  }
-
-  //
-  // code characters for values 0..63
-  //
-  private static final char[] alphabet =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
-
-  //
-  // lookup table for converting base64 characters to value in range 0..63
-  //
-  private static final byte[] codes = new byte[256];
-
-  static {
-    for (int i = 0; i < 256; i++) {
-      codes[i] = -1;
-    }
-    for (int i = 'A'; i <= 'Z'; i++) {
-      codes[i] = (byte) (i - 'A');
-    }
-    for (int i = 'a'; i <= 'z'; i++) {
-      codes[i] = (byte) (26 + i - 'a');
-    }
-    for (int i = '0'; i <= '9'; i++) {
-      codes[i] = (byte) (52 + i - '0');
-    }
-    codes['+'] = 62;
-    codes['/'] = 63;
   }
 }

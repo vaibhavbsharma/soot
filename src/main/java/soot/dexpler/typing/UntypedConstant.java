@@ -15,7 +15,8 @@ public abstract class UntypedConstant extends Constant {
   }
 
   @Override
-  public void apply(Switch sw) {}
+  public void apply(Switch sw) {
+  }
 
   public abstract Value defineType(Type type);
 }

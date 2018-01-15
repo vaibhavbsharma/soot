@@ -25,13 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -46,16 +39,23 @@ import soot.jimple.GroupIntPair;
 import soot.options.Options;
 import soot.util.DeterministicHashMap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A BodyTransformer that attemps to minimize the number of local variables used in Body by
  * 'reusing' them when possible. Implemented as a singleton. For example the code:
- *
+ * <p>
  * <p>for(int i; i < k; i++); for(int j; j < k; j++);
- *
+ * <p>
  * <p>would be transformed into: for(int i; i < k; i++); for(int i; i < k; i++);
- *
+ * <p>
  * <p>assuming to further conflicting uses of i and j.
- *
+ * <p>
  * <p>Note: LocalSplitter is corresponds to the inverse transformation.
  *
  * @see BodyTransformer
@@ -63,7 +63,8 @@ import soot.util.DeterministicHashMap;
  * @see LocalSplitter
  */
 public class LocalPacker extends BodyTransformer {
-  public LocalPacker(Singletons.Global g) {}
+  public LocalPacker(Singletons.Global g) {
+  }
 
   public static LocalPacker v() {
     return G.v().soot_toolkits_scalar_LocalPacker();

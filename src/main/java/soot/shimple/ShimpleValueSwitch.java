@@ -21,5 +21,8 @@ package soot.shimple;
 
 import soot.jimple.JimpleValueSwitch;
 
-/** @author Navindra Umanee */
-public interface ShimpleValueSwitch extends JimpleValueSwitch, ShimpleExprSwitch {}
+/**
+ * @author Navindra Umanee
+ */
+public interface ShimpleValueSwitch extends JimpleValueSwitch, ShimpleExprSwitch {
+}

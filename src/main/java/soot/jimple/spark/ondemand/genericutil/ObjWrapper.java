@@ -16,14 +16,19 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
-/** @author manu */
+/**
+ * @author manu
+ */
 public class ObjWrapper {
 
   public final Object wrapped;
 
-  /** @param wrapped */
+  /**
+   * @param wrapped
+   */
   public ObjWrapper(final Object wrapped) {
     this.wrapped = wrapped;
   }

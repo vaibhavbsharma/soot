@@ -25,18 +25,18 @@
 
 package soot.jimple;
 
-import java.util.List;
-
 import soot.Unit;
 
-public interface LookupSwitchStmt extends SwitchStmt {
-  void setLookupValues(List<IntConstant> lookupValues);
+import java.util.List;
 
+public interface LookupSwitchStmt extends SwitchStmt {
   void setLookupValue(int index, int value);
 
   int getLookupValue(int index);
 
   List<IntConstant> getLookupValues();
+
+  void setLookupValues(List<IntConstant> lookupValues);
 
   int getTargetCount();
 

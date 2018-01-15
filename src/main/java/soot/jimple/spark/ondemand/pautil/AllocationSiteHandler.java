@@ -16,10 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand.pautil;
 
-import java.util.HashSet;
-import java.util.Set;
+package soot.jimple.spark.ondemand.pautil;
 
 import soot.AnySubType;
 import soot.ArrayType;
@@ -38,6 +36,9 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.util.NumberedString;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Interface for handler for when an allocation site is encountered in a pointer analysis query.
  *
@@ -55,6 +56,8 @@ public interface AllocationSiteHandler {
   boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack);
 
   void resetState();
+
+  boolean shouldHandle(VarNode dst);
 
   class PointsToSetHandler implements AllocationSiteHandler {
 
@@ -215,6 +218,4 @@ public interface AllocationSiteHandler {
       return false;
     }
   }
-
-  boolean shouldHandle(VarNode dst);
 }

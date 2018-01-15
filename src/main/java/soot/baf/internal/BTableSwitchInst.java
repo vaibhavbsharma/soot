@@ -25,10 +25,6 @@
 
 package soot.baf.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -36,6 +32,10 @@ import soot.baf.Baf;
 import soot.baf.InstSwitch;
 import soot.baf.TableSwitchInst;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
   UnitBox defaultTargetBox;
@@ -114,23 +114,23 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
   }
 
   @Override
-  public void setLowIndex(int lowIndex) {
-    this.lowIndex = lowIndex;
-  }
-
-  @Override
-  public void setHighIndex(int highIndex) {
-    this.highIndex = highIndex;
-  }
-
-  @Override
   public int getLowIndex() {
     return lowIndex;
   }
 
   @Override
+  public void setLowIndex(int lowIndex) {
+    this.lowIndex = lowIndex;
+  }
+
+  @Override
   public int getHighIndex() {
     return highIndex;
+  }
+
+  @Override
+  public void setHighIndex(int highIndex) {
+    this.highIndex = highIndex;
   }
 
   public int getTargetCount() {
@@ -148,13 +148,6 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
   }
 
   @Override
-  public void setTargets(List<Unit> targets) {
-    for (int i = 0; i < targets.size(); i++) {
-      targetBoxes[i].setUnit(targets.get(i));
-    }
-  }
-
-  @Override
   public UnitBox getTargetBox(int index) {
     return targetBoxes[index];
   }
@@ -168,6 +161,13 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst {
     }
 
     return targets;
+  }
+
+  @Override
+  public void setTargets(List<Unit> targets) {
+    for (int i = 0; i < targets.size(); i++) {
+      targetBoxes[i].setUnit(targets.get(i));
+    }
   }
 
   @Override

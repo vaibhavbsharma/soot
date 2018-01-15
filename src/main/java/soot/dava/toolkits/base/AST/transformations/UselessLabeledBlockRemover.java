@@ -19,10 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.G;
 import soot.dava.internal.AST.ASTDoWhileNode;
 import soot.dava.internal.AST.ASTForLoopNode;
@@ -38,6 +34,10 @@ import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * CHANGE LOG:
@@ -59,133 +59,11 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 public class UselessLabeledBlockRemover extends DepthFirstAdapter {
   boolean changed = false;
 
-  public UselessLabeledBlockRemover() {}
+  public UselessLabeledBlockRemover() {
+  }
 
   public UselessLabeledBlockRemover(boolean verbose) {
     super(verbose);
-  }
-
-  @Override
-  public void outASTMethodNode(ASTMethodNode node) {
-    if (changed) {
-      G.v().ASTTransformations_modified = true;
-    }
-  }
-
-  @Override
-  public void inASTMethodNode(ASTMethodNode node) {
-    changed = UselessLabelFinder.v().findAndKill(node);
-  }
-
-  /*    public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
-      	changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTLabeledBlockNode (ASTLabeledBlockNode node){
-      	changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTUnconditionalLoopNode (ASTUnconditionalLoopNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTSwitchNode(ASTSwitchNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTIfNode(ASTIfNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTIfElseNode(ASTIfElseNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTWhileNode(ASTWhileNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTForLoopNode(ASTForLoopNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTDoWhileNode(ASTDoWhileNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-      public void caseASTTryNode(ASTTryNode node){
-  	    changed=UselessLabelFinder.v().findAndKill(node);
-      }
-  */
-  @Override
-  public void outASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTSwitchNode(ASTSwitchNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTIfNode(ASTIfNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTIfElseNode(ASTIfElseNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTWhileNode(ASTWhileNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTForLoopNode(ASTForLoopNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTDoWhileNode(ASTDoWhileNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
-  }
-
-  @Override
-  public void outASTTryNode(ASTTryNode node) {
-    boolean modified = UselessLabelFinder.v().findAndKill(node);
-    if (modified) {
-      changed = true;
-    }
   }
 
   public static void removeLabeledBlock(
@@ -333,5 +211,128 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
 
     // newSubBody is ready return it
     return newSubBody;
+  }
+
+  @Override
+  public void outASTMethodNode(ASTMethodNode node) {
+    if (changed) {
+      G.v().ASTTransformations_modified = true;
+    }
+  }
+
+  @Override
+  public void inASTMethodNode(ASTMethodNode node) {
+    changed = UselessLabelFinder.v().findAndKill(node);
+  }
+
+  /*    public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
+      	changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTLabeledBlockNode (ASTLabeledBlockNode node){
+      	changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTUnconditionalLoopNode (ASTUnconditionalLoopNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTSwitchNode(ASTSwitchNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTIfNode(ASTIfNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTIfElseNode(ASTIfElseNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTWhileNode(ASTWhileNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTForLoopNode(ASTForLoopNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTDoWhileNode(ASTDoWhileNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+      public void caseASTTryNode(ASTTryNode node){
+  	    changed=UselessLabelFinder.v().findAndKill(node);
+      }
+  */
+  @Override
+  public void outASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTSwitchNode(ASTSwitchNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTIfNode(ASTIfNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTIfElseNode(ASTIfElseNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTWhileNode(ASTWhileNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTForLoopNode(ASTForLoopNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTDoWhileNode(ASTDoWhileNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
+  }
+
+  @Override
+  public void outASTTryNode(ASTTryNode node) {
+    boolean modified = UselessLabelFinder.v().findAndKill(node);
+    if (modified) {
+      changed = true;
+    }
   }
 }

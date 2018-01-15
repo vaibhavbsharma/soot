@@ -19,18 +19,22 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.Set;
-
 import soot.PointsToSet;
 import soot.SootField;
 
-/** Represents the read or write set of a statement. */
+import java.util.Set;
+
+/**
+ * Represents the read or write set of a statement.
+ */
 public abstract class RWSet {
   public abstract boolean getCallsNative();
 
   public abstract boolean setCallsNative();
 
-  /** Returns an iterator over any globals read/written. */
+  /**
+   * Returns an iterator over any globals read/written.
+   */
   public abstract int size();
 
   public abstract Set<?> getGlobals();
@@ -40,7 +44,10 @@ public abstract class RWSet {
   public abstract PointsToSet getBaseForField(Object f);
 
   public abstract boolean hasNonEmptyIntersection(RWSet other);
-  /** Adds the RWSet other into this set. */
+
+  /**
+   * Adds the RWSet other into this set.
+   */
   public abstract boolean union(RWSet other);
 
   public abstract boolean addGlobal(SootField global);

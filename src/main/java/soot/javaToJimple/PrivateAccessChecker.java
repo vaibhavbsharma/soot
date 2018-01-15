@@ -19,20 +19,20 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-
 import polyglot.types.MemberInstance;
+
+import java.util.ArrayList;
 
 public class PrivateAccessChecker extends polyglot.visit.NodeVisitor {
 
   private final ArrayList<MemberInstance> list;
 
-  public ArrayList<MemberInstance> getList() {
-    return list;
-  }
-
   public PrivateAccessChecker() {
     list = new ArrayList<>();
+  }
+
+  public ArrayList<MemberInstance> getList() {
+    return list;
   }
 
   @Override

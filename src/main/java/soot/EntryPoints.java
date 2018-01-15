@@ -19,13 +19,13 @@
 
 package soot;
 
+import soot.util.NumberedString;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import soot.util.NumberedString;
 
 /**
  * Returns the various potential entry points of a Java program.
@@ -33,12 +33,6 @@ import soot.util.NumberedString;
  * @author Ondrej Lhotak
  */
 public class EntryPoints {
-  public EntryPoints(Singletons.Global g) {}
-
-  public static EntryPoints v() {
-    return G.v().soot_EntryPoints();
-  }
-
   final NumberedString sigMain =
       Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])");
   final NumberedString sigFinalize = Scene.v().getSubSigNumberer().findOrAdd("void finalize()");
@@ -51,6 +45,12 @@ public class EntryPoints {
       Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object run()");
   final NumberedString sigForName =
       Scene.v().getSubSigNumberer().findOrAdd("java.lang.Class forName(java.lang.String)");
+  public EntryPoints(Singletons.Global g) {
+  }
+
+  public static EntryPoints v() {
+    return G.v().soot_EntryPoints();
+  }
 
   protected void addMethod(List<SootMethod> set, SootClass cls, NumberedString methodSubSig) {
     SootMethod sm = cls.getMethodUnsafe(methodSubSig);
@@ -80,7 +80,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns only the entry points invoked implicitly by the VM. */
+  /**
+   * Returns only the entry points invoked implicitly by the VM.
+   */
   public List<SootMethod> implicit() {
     List<SootMethod> ret = new ArrayList<>();
     addMethod(ret, "<java.lang.System: void initializeSystemClass()>");
@@ -110,7 +112,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns all the entry points. */
+  /**
+   * Returns all the entry points.
+   */
   public List<SootMethod> all() {
     List<SootMethod> ret = new ArrayList<>();
     ret.addAll(application());
@@ -118,7 +122,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns a list of all static initializers. */
+  /**
+   * Returns a list of all static initializers.
+   */
   public List<SootMethod> clinits() {
     List<SootMethod> ret = new ArrayList<>();
     for (SootClass cl : Scene.v().getClasses()) {
@@ -127,7 +133,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns a list of all constructors taking no arguments. */
+  /**
+   * Returns a list of all constructors taking no arguments.
+   */
   public List<SootMethod> inits() {
     List<SootMethod> ret = new ArrayList<>();
     for (SootClass cl : Scene.v().getClasses()) {
@@ -136,7 +144,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns a list of all constructors. */
+  /**
+   * Returns a list of all constructors.
+   */
   public List<SootMethod> allInits() {
     List<SootMethod> ret = new ArrayList<>();
     for (SootClass cl : Scene.v().getClasses()) {
@@ -149,7 +159,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns a list of all concrete methods of all application classes. */
+  /**
+   * Returns a list of all concrete methods of all application classes.
+   */
   public List<SootMethod> methodsOfApplicationClasses() {
     List<SootMethod> ret = new ArrayList<>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
@@ -162,7 +174,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns a list of all concrete main(String[]) methods of all application classes. */
+  /**
+   * Returns a list of all concrete main(String[]) methods of all application classes.
+   */
   public List<SootMethod> mainsOfApplicationClasses() {
     List<SootMethod> ret = new ArrayList<>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
@@ -176,7 +190,9 @@ public class EntryPoints {
     return ret;
   }
 
-  /** Returns a list of all clinits of class cl and its superclasses. */
+  /**
+   * Returns a list of all clinits of class cl and its superclasses.
+   */
   public Iterable<SootMethod> clinitsOf(SootClass cl) {
     // Do not create an actual list, since this method gets called quite often
     // Instead, callers usually just want to iterate over the result.

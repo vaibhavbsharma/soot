@@ -1,13 +1,5 @@
 package soot.jimple.toolkits.callgraph;
 
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -26,80 +18,21 @@ import soot.shimple.PhiExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ConstantArrayAnalysis
     extends ForwardFlowAnalysis<Unit, ConstantArrayAnalysis.ArrayState> {
-  private class ArrayTypesInternal implements Cloneable {
-    BitSet mustAssign;
-    BitSet typeState[];
-    BitSet sizeState = new BitSet(szSize);
-
-    @Override
-    public Object clone() {
-      ArrayTypesInternal s;
-      try {
-        s = (ArrayTypesInternal) super.clone();
-        s.sizeState = (BitSet) s.sizeState.clone();
-        s.typeState = s.typeState.clone();
-        s.mustAssign = (BitSet) s.mustAssign.clone();
-        return s;
-      } catch (CloneNotSupportedException e) {
-        throw new InternalError();
-      }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (!(obj instanceof ArrayTypesInternal)) {
-        return false;
-      }
-      ArrayTypesInternal otherTypes = (ArrayTypesInternal) obj;
-      return otherTypes.sizeState.equals(sizeState)
-          && Arrays.equals(typeState, otherTypes.typeState)
-          && mustAssign.equals(otherTypes.mustAssign);
-    }
-  }
-
-  public static class ArrayTypes {
-    public Set<Integer> possibleSizes;
-    public Set<Type>[] possibleTypes;
-
-    @Override
-    public String toString() {
-      return "ArrayTypes [possibleSizes="
-          + possibleSizes
-          + ", possibleTypes="
-          + Arrays.toString(possibleTypes)
-          + "]";
-    }
-  }
-
-  public class ArrayState {
-    ArrayTypesInternal[] state = new ArrayTypesInternal[size];
-    BitSet active = new BitSet(size);
-
-    @Override
-    public boolean equals(Object obj) {
-      if (!(obj instanceof ArrayState)) {
-        return false;
-      }
-      ArrayState otherState = (ArrayState) obj;
-      return otherState.active.equals(active) && Arrays.equals(state, otherState.state);
-    }
-
-    public void deepCloneLocalValueSlot(int localRef, int index) {
-      this.state[localRef] = (ArrayTypesInternal) this.state[localRef].clone();
-      this.state[localRef].typeState[index] =
-          (BitSet) this.state[localRef].typeState[index].clone();
-    }
-  }
-
   private Map<Local, Integer> localToInt = new HashMap<>();
   private Map<Type, Integer> typeToInt = new HashMap<>();
   private Map<Integer, Integer> sizeToInt = new HashMap<>();
-
   private Map<Integer, Type> rvTypeToInt = new HashMap<>();
   private Map<Integer, Integer> rvSizeToInt = new HashMap<>();
-
   private int size;
   private int typeSize;
   private int szSize;
@@ -345,5 +278,70 @@ public class ConstantArrayAnalysis
       }
     }
     return toRet;
+  }
+
+  public static class ArrayTypes {
+    public Set<Integer> possibleSizes;
+    public Set<Type>[] possibleTypes;
+
+    @Override
+    public String toString() {
+      return "ArrayTypes [possibleSizes="
+          + possibleSizes
+          + ", possibleTypes="
+          + Arrays.toString(possibleTypes)
+          + "]";
+    }
+  }
+
+  private class ArrayTypesInternal implements Cloneable {
+    BitSet mustAssign;
+    BitSet typeState[];
+    BitSet sizeState = new BitSet(szSize);
+
+    @Override
+    public Object clone() {
+      ArrayTypesInternal s;
+      try {
+        s = (ArrayTypesInternal) super.clone();
+        s.sizeState = (BitSet) s.sizeState.clone();
+        s.typeState = s.typeState.clone();
+        s.mustAssign = (BitSet) s.mustAssign.clone();
+        return s;
+      } catch (CloneNotSupportedException e) {
+        throw new InternalError();
+      }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (!(obj instanceof ArrayTypesInternal)) {
+        return false;
+      }
+      ArrayTypesInternal otherTypes = (ArrayTypesInternal) obj;
+      return otherTypes.sizeState.equals(sizeState)
+          && Arrays.equals(typeState, otherTypes.typeState)
+          && mustAssign.equals(otherTypes.mustAssign);
+    }
+  }
+
+  public class ArrayState {
+    ArrayTypesInternal[] state = new ArrayTypesInternal[size];
+    BitSet active = new BitSet(size);
+
+    @Override
+    public boolean equals(Object obj) {
+      if (!(obj instanceof ArrayState)) {
+        return false;
+      }
+      ArrayState otherState = (ArrayState) obj;
+      return otherState.active.equals(active) && Arrays.equals(state, otherState.state);
+    }
+
+    public void deepCloneLocalValueSlot(int localRef, int index) {
+      this.state[localRef] = (ArrayTypesInternal) this.state[localRef].clone();
+      this.state[localRef].typeState[index] =
+          (BitSet) this.state[localRef].typeState[index].clone();
+    }
   }
 }

@@ -19,10 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -43,22 +39,24 @@ import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
 import soot.toolkits.graph.BriefUnitGraph;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 31-Mar-2006
+ * <p>Created on 31-Mar-2006
  */
 public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform {
 
-  int movedloads = 0;
-
   public static String dependancies[] = new String[] {"bb.jbco_rlaii", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_rlaii";
+  int movedloads = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_rlaii";
 
   @Override
   public String getName() {

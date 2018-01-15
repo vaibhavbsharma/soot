@@ -16,13 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+package soot.jimple.spark.geom.geomPA;
 
 import soot.SootClass;
 import soot.jimple.InstanceInvokeExpr;
@@ -37,27 +32,21 @@ import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+
 /**
  * Implementation of pre-processing algorithms performed prior to the pointer analysis.
- *
+ * <p>
  * <p>Currently supported techniques are: 1. Pointer distillation: the library code that does not
  * impact the application code pointers is removed; 2. Pointer ranking for worklist prioritizing.
  *
  * @author xiao
  */
 public class OfflineProcessor {
-  class off_graph_edge {
-    // Start and end of this edge
-    int s, t;
-    // If this edge is created via complex constraint (e.g. p.f = q), base_var = p
-    IVarAbstraction base_var;
-
-    off_graph_edge next;
-  }
-
-  // Used in anonymous class visitor
-  private boolean visitedFlag;
-
   GeomPointsTo geomPTA;
   ZArrayNumberer<IVarAbstraction> int2var;
   ArrayList<off_graph_edge> varGraph;
@@ -65,7 +54,8 @@ public class OfflineProcessor {
   Deque<Integer> queue;
   int pre_cnt;
   int n_var;
-
+  // Used in anonymous class visitor
+  private boolean visitedFlag;
   public OfflineProcessor(GeomPointsTo pta) {
     int2var = pta.pointers;
     int size = int2var.size();
@@ -83,7 +73,9 @@ public class OfflineProcessor {
     }
   }
 
-  /** Call it before running the optimizations. */
+  /**
+   * Call it before running the optimizations.
+   */
   public void init() {
     // We prepare the essential data structures first
     // The size of the pointers may shrink after each round of analysis
@@ -211,80 +203,78 @@ public class OfflineProcessor {
       // Now we use this constraint for graph construction
       switch (cons.type) {
 
-          // rhs = lhs
+        // rhs = lhs
         case Constants.ASSIGN_CONS:
           add_graph_edge(rhs.id, lhs.id);
           break;
 
-          // rhs = lhs.f
-        case Constants.LOAD_CONS:
-          {
-            rep = lhs.getRepresentative();
+        // rhs = lhs.f
+        case Constants.LOAD_CONS: {
+          rep = lhs.getRepresentative();
 
-            if (rep.hasPTResult() == false) {
-              lhs.getWrappedNode()
-                  .getP2Set()
-                  .forall(
-                      new P2SetVisitor() {
-                        @Override
-                        public void visit(Node n) {
-                          IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                          if (padf == null || padf.reachable() == false) {
-                            return;
-                          }
-                          off_graph_edge e = add_graph_edge(rhs.id, padf.id);
-                          e.base_var = lhs;
+          if (rep.hasPTResult() == false) {
+            lhs.getWrappedNode()
+                .getP2Set()
+                .forall(
+                    new P2SetVisitor() {
+                      @Override
+                      public void visit(Node n) {
+                        IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
+                        if (padf == null || padf.reachable() == false) {
+                          return;
                         }
-                      });
-            } else {
-              // Use geom
-              for (AllocNode o : rep.get_all_points_to_objects()) {
-                IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-                if (padf == null || padf.reachable() == false) {
-                  continue;
-                }
-                off_graph_edge e = add_graph_edge(rhs.id, padf.id);
-                e.base_var = lhs;
+                        off_graph_edge e = add_graph_edge(rhs.id, padf.id);
+                        e.base_var = lhs;
+                      }
+                    });
+          } else {
+            // Use geom
+            for (AllocNode o : rep.get_all_points_to_objects()) {
+              IVarAbstraction padf = geomPTA.findInstanceField(o, field);
+              if (padf == null || padf.reachable() == false) {
+                continue;
               }
+              off_graph_edge e = add_graph_edge(rhs.id, padf.id);
+              e.base_var = lhs;
             }
           }
+        }
 
-          break;
+        break;
 
-          // rhs.f = lhs
-        case Constants.STORE_CONS:
-          {
-            rep = rhs.getRepresentative();
+        // rhs.f = lhs
+        case Constants.STORE_CONS: {
+          rep = rhs.getRepresentative();
 
-            if (rep.hasPTResult() == false) {
-              rhs.getWrappedNode()
-                  .getP2Set()
-                  .forall(
-                      new P2SetVisitor() {
-                        @Override
-                        public void visit(Node n) {
-                          IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                          if (padf == null || padf.reachable() == false) {
-                            return;
-                          }
-                          off_graph_edge e = add_graph_edge(padf.id, lhs.id);
-                          e.base_var = rhs;
+          if (rep.hasPTResult() == false) {
+            rhs.getWrappedNode()
+                .getP2Set()
+                .forall(
+                    new P2SetVisitor() {
+                      @Override
+                      public void visit(Node n) {
+                        IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
+                        if (padf == null || padf.reachable() == false) {
+                          return;
                         }
-                      });
-            } else {
-              // use geom
-              for (AllocNode o : rep.get_all_points_to_objects()) {
-                IVarAbstraction padf = geomPTA.findInstanceField(o, field);
-                if (padf == null || padf.reachable() == false) {
-                  continue;
-                }
-                off_graph_edge e = add_graph_edge(padf.id, lhs.id);
-                e.base_var = rhs;
+                        off_graph_edge e = add_graph_edge(padf.id, lhs.id);
+                        e.base_var = rhs;
+                      }
+                    });
+          } else {
+            // use geom
+            for (AllocNode o : rep.get_all_points_to_objects()) {
+              IVarAbstraction padf = geomPTA.findInstanceField(o, field);
+              if (padf == null || padf.reachable() == false) {
+                continue;
               }
+              off_graph_edge e = add_graph_edge(padf.id, lhs.id);
+              e.base_var = rhs;
             }
           }
+        }
 
-          break;
+        break;
       }
     }
   }
@@ -697,5 +687,14 @@ public class OfflineProcessor {
     }
 
     return v1;
+  }
+
+  class off_graph_edge {
+    // Start and end of this edge
+    int s, t;
+    // If this edge is created via complex constraint (e.g. p.f = q), base_var = p
+    IVarAbstraction base_var;
+
+    off_graph_edge next;
   }
 }

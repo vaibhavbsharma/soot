@@ -16,9 +16,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.graph.pdg;
 
-/** This represents a loop in the PDG. */
+/**
+ * This represents a loop in the PDG.
+ */
 public class LoopedPDGNode extends PDGNode {
 
   protected PDGNode m_header = null;
@@ -33,11 +36,11 @@ public class LoopedPDGNode extends PDGNode {
     return this.m_header;
   }
 
-  public void setBody(PDGNode b) {
-    this.m_body = b;
-  }
-
   public PDGNode getBody() {
     return this.m_body;
+  }
+
+  public void setBody(PDGNode b) {
+    this.m_body = b;
   }
 }

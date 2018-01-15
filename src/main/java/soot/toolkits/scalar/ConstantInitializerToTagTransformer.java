@@ -1,14 +1,5 @@
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import soot.ConflictingFieldRefException;
 import soot.G;
 import soot.Scene;
@@ -33,6 +24,15 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * This is the reverse operation of the {@link ConstantValueToInitializerTransformer}. We scan for
@@ -61,9 +61,9 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
    * Transforms the given class, i.e. scans for a <clinit> method and generates new constant value
    * tags for all constant assignments to static final fields.
    *
-   * @param sc The class to transform
+   * @param sc                The class to transform
    * @param removeAssignments True if the assignments inside the <clinit> method shall be removed,
-   *     otherwise false
+   *                          otherwise false
    */
   public void transformClass(SootClass sc, boolean removeAssignments) {
     // If this class has no <clinit> method, we're done
@@ -85,7 +85,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
     // removed
 
     for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator();
-        itU.hasNext();
+         itU.hasNext();
         ) {
       Unit u = itU.next();
       if (u instanceof AssignStmt) {
@@ -178,7 +178,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 
     if (removeAssignments && !newTags.isEmpty()) {
       for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator();
-          itU.hasNext();
+           itU.hasNext();
           ) {
         Unit u = itU.next();
         if (u instanceof AssignStmt) {

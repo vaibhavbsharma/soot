@@ -25,17 +25,6 @@
 
 package soot;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
@@ -58,6 +47,17 @@ import soot.validation.UsesValidator;
 import soot.validation.ValidationException;
 import soot.validation.ValueBoxesValidator;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Abstract base class that models the body (code attribute) of a Java method. Classes that
  * implement an Intermediate Representation for a method body should subclass it. In particular the
@@ -70,23 +70,37 @@ import soot.validation.ValueBoxesValidator;
  */
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable {
-  /** The method associated with this Body. */
+  private static BodyValidator[] validators;
+  /**
+   * The method associated with this Body.
+   */
   protected transient SootMethod method = null;
-
-  /** The chain of locals for this Body. */
+  /**
+   * The chain of locals for this Body.
+   */
   protected Chain<Local> localChain = new HashChain<>();
-
-  /** The chain of traps for this Body. */
+  /**
+   * The chain of traps for this Body.
+   */
   protected Chain<Trap> trapChain = new HashChain<>();
-
-  /** The chain of units for this Body. */
+  /**
+   * The chain of units for this Body.
+   */
   protected PatchingChain<Unit> unitChain = new PatchingChain<>(new HashChain<Unit>());
 
-  private static BodyValidator[] validators;
+  /**
+   * Creates a Body associated to the given method. Used by subclasses during initialization.
+   * Creation of a Body is triggered by e.g. Jimple.v().newBody(options).
+   */
+  protected Body(SootMethod m) {
+    this.method = m;
+  }
 
-  /** Creates a deep copy of this Body. */
-  @Override
-  public abstract Object clone();
+  /**
+   * Creates an extremely empty Body. The Body is not associated to any method.
+   */
+  protected Body() {
+  }
 
   /**
    * Returns an array containing some validators in order to validate the JimpleBody
@@ -97,30 +111,25 @@ public abstract class Body extends AbstractHost implements Serializable {
     if (validators == null) {
       validators =
           new BodyValidator[] {
-            LocalsValidator.v(),
-            TrapsValidator.v(),
-            UnitBoxesValidator.v(),
-            UsesValidator.v(),
-            ValueBoxesValidator.v(),
-            // CheckInitValidator.v(),
-            CheckTypesValidator.v(),
-            CheckVoidLocalesValidator.v(),
-            CheckEscapingValidator.v()
+              LocalsValidator.v(),
+              TrapsValidator.v(),
+              UnitBoxesValidator.v(),
+              UsesValidator.v(),
+              ValueBoxesValidator.v(),
+              // CheckInitValidator.v(),
+              CheckTypesValidator.v(),
+              CheckVoidLocalesValidator.v(),
+              CheckEscapingValidator.v()
           };
     }
     return validators;
   }
 
   /**
-   * Creates a Body associated to the given method. Used by subclasses during initialization.
-   * Creation of a Body is triggered by e.g. Jimple.v().newBody(options).
+   * Creates a deep copy of this Body.
    */
-  protected Body(SootMethod m) {
-    this.method = m;
-  }
-
-  /** Creates an extremely empty Body. The Body is not associated to any method. */
-  protected Body() {}
+  @Override
+  public abstract Object clone();
 
   /**
    * Returns the method associated with this Body.
@@ -143,12 +152,16 @@ public abstract class Body extends AbstractHost implements Serializable {
     this.method = method;
   }
 
-  /** Returns the number of locals declared in this body. */
+  /**
+   * Returns the number of locals declared in this body.
+   */
   public int getLocalCount() {
     return localChain.size();
   }
 
-  /** Copies the contents of the given Body into this one. */
+  /**
+   * Copies the contents of the given Body into this one.
+   */
   public Map<Object, Object> importBodyContentsFrom(Body b) {
     HashMap<Object, Object> bindings = new HashMap<>();
 
@@ -232,7 +245,9 @@ public abstract class Body extends AbstractHost implements Serializable {
     }
   }
 
-  /** Verifies a few sanity conditions on the contents on this body. */
+  /**
+   * Verifies a few sanity conditions on the contents on this body.
+   */
   public void validate() {
     List<ValidationException> exceptionList = new ArrayList<>();
     validate(exceptionList);
@@ -256,42 +271,58 @@ public abstract class Body extends AbstractHost implements Serializable {
     }
   }
 
-  /** Verifies that a ValueBox is not used in more than one place. */
+  /**
+   * Verifies that a ValueBox is not used in more than one place.
+   */
   public void validateValueBoxes() {
     runValidation(ValueBoxesValidator.v());
   }
 
-  /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
+  /**
+   * Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain.
+   */
   public void validateLocals() {
     runValidation(LocalsValidator.v());
   }
 
-  /** Verifies that the begin, end and handler units of each trap are in this body. */
+  /**
+   * Verifies that the begin, end and handler units of each trap are in this body.
+   */
   public void validateTraps() {
     runValidation(TrapsValidator.v());
   }
 
-  /** Verifies that the UnitBoxes of this Body all point to a Unit contained within this body. */
+  /**
+   * Verifies that the UnitBoxes of this Body all point to a Unit contained within this body.
+   */
   public void validateUnitBoxes() {
     runValidation(UnitBoxesValidator.v());
   }
 
-  /** Verifies that each use in this Body has a def. */
+  /**
+   * Verifies that each use in this Body has a def.
+   */
   public void validateUses() {
     runValidation(UsesValidator.v());
   }
 
-  /** Returns a backed chain of the locals declared in this Body. */
+  /**
+   * Returns a backed chain of the locals declared in this Body.
+   */
   public Chain<Local> getLocals() {
     return localChain;
   }
 
-  /** Returns a backed view of the traps found in this Body. */
+  /**
+   * Returns a backed view of the traps found in this Body.
+   */
   public Chain<Trap> getTraps() {
     return trapChain;
   }
 
-  /** Return LHS of the first identity stmt assigning from \@this. * */
+  /**
+   * Return LHS of the first identity stmt assigning from \@this. *
+   */
   public Local getThisLocal() {
     for (Unit s : getUnits()) {
       if (s instanceof IdentityStmt && ((IdentityStmt) s).getRightOp() instanceof ThisRef) {
@@ -302,7 +333,9 @@ public abstract class Body extends AbstractHost implements Serializable {
     throw new RuntimeException("couldn't find identityref!" + " in " + getMethod());
   }
 
-  /** Return LHS of the first identity stmt assigning from \@parameter i. * */
+  /**
+   * Return LHS of the first identity stmt assigning from \@parameter i. *
+   */
   public Local getParameterLocal(int i) {
     for (Unit s : getUnits()) {
       if (s instanceof IdentityStmt && ((IdentityStmt) s).getRightOp() instanceof ParameterRef) {
@@ -321,7 +354,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * Get all the LHS of the identity statements assigning from parameter references.
    *
    * @return a list of size as per <code>getMethod().getParameterCount()</code> with all elements
-   *     ordered as per the parameter index.
+   * ordered as per the parameter index.
    * @throws RuntimeException if a parameterref is missing
    */
   public List<Local> getParameterLocals() {
@@ -382,7 +415,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * UnitBoxes. All UnitBoxes thus found are returned. Branching Units and statements which use
    * PhiExpr will have UnitBoxes; a UnitBox contains a Unit that is either a target of a branch or
    * is being used as a pointer to the end of a CFG block.
-   *
+   * <p>
    * <p>This method is typically used for pointer patching, eg when the unit chain is cloned.
    *
    * @return A list of all the UnitBoxes held by this body's units.
@@ -427,7 +460,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * body and querying them for their UnitBoxes. These UnitBoxes contain Units that are the target
    * of a branch. This is useful for, say, labeling blocks or updating the targets of branching
    * statements.
-   *
+   * <p>
    * <p>If branchTarget is false, returns the result of iterating through the non-branching Units in
    * this body and querying them for their UnitBoxes. Any such UnitBoxes (typically from PhiExpr)
    * contain a Unit that indicates the end of a CFG block.
@@ -545,7 +578,9 @@ public abstract class Body extends AbstractHost implements Serializable {
     runValidation(CheckInitValidator.v());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     ByteArrayOutputStream streamOut = new ByteArrayOutputStream();

@@ -19,11 +19,6 @@
 
 package soot.dava.toolkits.base.renamer;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.BooleanType;
 import soot.Local;
 import soot.RefType;
@@ -61,34 +56,26 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.internal.AbstractInstanceFieldRef;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 public class infoGatheringAnalysis extends DepthFirstAdapter {
 
-  public boolean DEBUG = false;
-
   public static final int CLASSNAME = 0; // used by renamer
-
   public static final int METHODNAME = 1;
-
   public static final int GETSET = 2;
-
   public static final int IF = 3;
-
   public static final int WHILE = 4;
-
   public static final int SWITCH = 5;
-
   public static final int ARRAYINDEX = 6;
-
   public static final int MAINARG = 7; // used by renamer
-
   public static final int FIELDASSIGN = 8; // used by renamer
-
   public static final int FORLOOPUPDATE = 9; // used by renamer
-
   public static final int CAST = 10;
-
   public static final int NUMBITS = 11;
-
+  public boolean DEBUG = false;
   // dataset to store all information gathered
   heuristicSet info;
 
@@ -382,7 +369,8 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   @Override
-  public void inASTTryNode(ASTTryNode node) {}
+  public void inASTTryNode(ASTTryNode node) {
+  }
 
   /*
   setting flag to true

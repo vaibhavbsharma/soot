@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -60,7 +61,7 @@ public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
   /** ***************** java.io.ObjectOutputStream ****************** */
   /**
    * The object in field is retrieved out by field ID.
-   *
+   * <p>
    * <p>private static native java.lang.Object getObjectFieldValue(java.lang.Object, long);
    */
   public void java_io_ObjectOutputStream_getObjectFieldValue(

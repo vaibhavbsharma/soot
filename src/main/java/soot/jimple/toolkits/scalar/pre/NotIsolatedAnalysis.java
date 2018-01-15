@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
@@ -35,6 +33,8 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.Map;
 
 /**
  * Performs a Not-Isolated-analysis on the given graph, which is basically the same as an
@@ -55,8 +55,8 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equi
    * Latest-computation <code>latest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things again...
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param latest the latest-computation of the same graph.
+   * @param dg          a ExceptionalUnitGraph
+   * @param latest      the latest-computation of the same graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    */
   public NotIsolatedAnalysis(
@@ -75,10 +75,10 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equi
    * the shared set allows more efficient set-operations, when this analysis is joined with other
    * analyses/computations.
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param latest the latest-computation of the same graph.
+   * @param dg          a ExceptionalUnitGraph
+   * @param latest      the latest-computation of the same graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
-   * @param set the shared set.
+   * @param set         the shared set.
    */
   public NotIsolatedAnalysis(
       DirectedGraph<Unit> dg,

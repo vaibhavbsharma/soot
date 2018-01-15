@@ -21,10 +21,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.List;
+package soot.dexpler;
 
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
@@ -33,7 +31,6 @@ import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.value.ArrayEncodedValue;
 import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
-
 import soot.Body;
 import soot.G;
 import soot.MethodSource;
@@ -47,6 +44,9 @@ import soot.jimple.Jimple;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * DexMethod is a container for all methods that are declared in a class. It holds information about
  * its name, the class it belongs to, its access flags, thrown exceptions, the return type and
@@ -54,7 +54,8 @@ import soot.options.Options;
  */
 public class DexMethod {
 
-  private DexMethod() {}
+  private DexMethod() {
+  }
 
   /**
    * Retrieve the SootMethod equivalent of this method

@@ -23,12 +23,12 @@ public class ReturnStmtChecker extends polyglot.visit.NodeVisitor {
 
   private boolean hasReturn;
 
-  public boolean hasRet() {
-    return hasReturn;
-  }
-
   public ReturnStmtChecker() {
     hasReturn = false;
+  }
+
+  public boolean hasRet() {
+    return hasReturn;
   }
 
   @Override

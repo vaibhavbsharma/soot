@@ -26,8 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.SootMethodRef;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -39,6 +37,8 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.Switch;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeExpr
@@ -58,7 +58,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
       if (!(baseBox.getValue().equivTo(ie.baseBox.getValue())
           && getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+          == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -73,7 +73,9 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;

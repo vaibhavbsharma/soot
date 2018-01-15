@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * An implementor of this interface indicates that it may contain UnitBoxes.
- *
+ * <p>
  * <p>Currently this is implemented by soot.shimple.PhiExpr and used by
  * soot.jimple.internal.JAssignStmt.
  *

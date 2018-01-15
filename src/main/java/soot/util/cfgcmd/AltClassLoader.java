@@ -19,6 +19,9 @@
 
 package soot.util.cfgcmd;
 
+import soot.G;
+import soot.Singletons;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -27,13 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import soot.G;
-import soot.Singletons;
-
 /**
  * A {@link ClassLoader} that loads specified classes from a different class path than that given by
  * the value of <code>java.class.path</code> in {@link System#getProperties()}.
- *
+ * <p>
  * <p>This class is part of Soot's test infrastructure. It allows loading multiple implementations
  * of a class with a given name, and was written to compare different implementations of Soot's CFG
  * representations.
@@ -41,21 +41,18 @@ import soot.Singletons;
 public class AltClassLoader extends ClassLoader {
 
   private static final boolean DEBUG = false;
-
-  private String[] locations; // Locations in the alternate
   // classpath.
   private final Map<String, Class<?>> alreadyFound = new HashMap<>(); // Maps from already loaded
+  private final Map<String, String> nameToMangledName = new HashMap<>(); // Maps from the names
   // classnames to their
   // Class objects.
-
-  private final Map<String, String> nameToMangledName = new HashMap<>(); // Maps from the names
+  private final Map<String, String> mangledNameToName =
+      new HashMap<>(); // Maps from the mangled names
   // of classes to be
   // loaded from the alternate
   // classpath to mangled
   // names to use for them.
-
-  private final Map<String, String> mangledNameToName =
-      new HashMap<>(); // Maps from the mangled names
+  private String[] locations; // Locations in the alternate
   // of classes back to their
   // original names.
 
@@ -65,7 +62,8 @@ public class AltClassLoader extends ClassLoader {
    *
    * @param g guarantees that the constructor may only be called from {@link Singletons}.
    */
-  public AltClassLoader(Singletons.Global g) {}
+  public AltClassLoader(Singletons.Global g) {
+  }
 
   /**
    * Returns the single instance of <code>AltClassLoader</code>, which loads classes from the
@@ -75,40 +73,6 @@ public class AltClassLoader extends ClassLoader {
    */
   public static AltClassLoader v() {
     return G.v().soot_util_cfgcmd_AltClassLoader();
-  }
-
-  /**
-   * Sets the list of locations in the alternate classpath.
-   *
-   * @param classPath A list of directories and jar files to search for class files, delimited by
-   *     {@link File#pathSeparator}.
-   */
-  public void setAltClassPath(String altClassPath) {
-    List<String> locationList = new LinkedList<>();
-    for (StringTokenizer tokens = new StringTokenizer(altClassPath, File.pathSeparator, false);
-        tokens.hasMoreTokens();
-        ) {
-      String location = tokens.nextToken();
-      locationList.add(location);
-    }
-    locations = new String[locationList.size()];
-    locations = locationList.toArray(locations);
-  }
-
-  /**
-   * Specifies the set of class names that the <code>AltClassLoader</code> should load from the
-   * alternate classpath instead of the regular classpath.
-   *
-   * @param classNames[] an array containing the names of classes to be loaded from the
-   *     AltClassLoader.
-   */
-  public void setAltClasses(String[] classNames) {
-    nameToMangledName.clear();
-    for (String origName : classNames) {
-      String mangledName = mangleName(origName);
-      nameToMangledName.put(origName, mangledName);
-      mangledNameToName.put(mangledName, origName);
-    }
   }
 
   /**
@@ -122,7 +86,7 @@ public class AltClassLoader extends ClassLoader {
    * @param origName the name to be mangled.
    * @return the mangled name.
    * @throws IllegalArgumentException if <code>origName</code> is not amenable to our crude
-   *     mangling.
+   *                                  mangling.
    */
   private static String mangleName(String origName) throws IllegalArgumentException {
     final char dot = '.';
@@ -142,17 +106,157 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
+   * Returns the bytes that correspond to a CONSTANT_Utf8 constant pool entry containing the passed
+   * string.
+   */
+  private static byte[] stringToUtf8Pattern(String s) {
+    byte[] origBytes = s.getBytes();
+    int length = origBytes.length;
+    final byte CONSTANT_Utf8 = 1;
+    byte[] result = new byte[length + 3];
+    result[0] = CONSTANT_Utf8;
+    result[1] = (byte) (length & 0xff00);
+    result[2] = (byte) (length & 0x00ff);
+    for (int i = 0; i < length; i++) {
+      result[i + 3] = origBytes[i];
+    }
+    return result;
+  }
+
+  /**
+   * Returns the bytes that correspond to a type signature string containing the passed string.
+   */
+  private static byte[] stringToTypeStringPattern(String s) {
+    byte[] origBytes = s.getBytes();
+    int length = origBytes.length;
+    byte[] result = new byte[length + 2];
+    result[0] = (byte) 'L';
+    for (int i = 0; i < length; i++) {
+      result[i + 1] = origBytes[i];
+    }
+    result[length + 1] = (byte) ';';
+    return result;
+  }
+
+  /**
+   * Replaces all occurrences of the <code>pattern</code> in <code>text</code> with <code>
+   * replacement</code>.
+   *
+   * @throws IllegalArgumentException if the lengths of <code>text</code> and <code>replacement
+   *                                  </code> differ.
+   */
+  private static void findAndReplace(byte[] text, byte[] pattern, byte[] replacement)
+      throws IllegalArgumentException {
+    int patternLength = pattern.length;
+    if (patternLength != replacement.length) {
+      throw new IllegalArgumentException(
+          "findAndReplace(): The lengths of the pattern and replacement must match.");
+    }
+    int match = 0;
+    while ((match = findMatch(text, pattern, match)) >= 0) {
+      replace(text, replacement, match);
+      match += patternLength;
+    }
+  }
+
+  /**
+   * A naive string-searching algorithm for finding a pattern in a byte array.
+   *
+   * @param text    the array to search in.
+   * @param pattern the string of bytes to search for.
+   * @param start   the first position in text to search (0-based).
+   * @return the index in text where the first occurrence of <code>pattern</code> in <code>text
+   * </code> after <code>start</code> begins. Returns -1 if <code>pattern</code> does not occur
+   * in <code>text</code> after <code>start</code>.
+   */
+  private static int findMatch(byte[] text, byte[] pattern, int start) {
+    int textLength = text.length;
+    int patternLength = pattern.length;
+    nextBase:
+    for (int base = start; base < textLength; base++) {
+      for (int t = base, p = 0; p < patternLength; t++, p++) {
+        if (text[t] != pattern[p]) {
+          continue nextBase;
+        }
+      }
+      return base;
+    }
+    return -1;
+  }
+
+  /**
+   * Replace the <code>replacement.length</code> bytes in <code>text</code> starting at <code>
+   * start</code> with the bytes in <code>replacement</code>.
+   *
+   * @throws ArrayIndexOutOfBounds if there are not <code>replacement.length</code> remaining after
+   *                               <code>text[start]</code>.
+   */
+  private static void replace(byte[] text, byte[] replacement, int start) {
+    for (int t = start, p = 0; p < replacement.length; t++, p++) {
+      text[t] = replacement[p];
+    }
+  }
+
+  /**
+   * A main() entry for basic unit testing.
+   * <p>
+   * <p>Usage: path class ...
+   */
+  public static void main(String[] argv) throws ClassNotFoundException {
+    AltClassLoader.v().setAltClassPath(argv[0]);
+    for (int i = 1; i < argv.length; i++) {
+      AltClassLoader.v().setAltClasses(new String[] {argv[i]});
+      G.v().out.println("main() loadClass(" + argv[i] + ")");
+      AltClassLoader.v().loadClass(argv[i]);
+    }
+  }
+
+  /**
+   * Sets the list of locations in the alternate classpath.
+   *
+   * @param classPath A list of directories and jar files to search for class files, delimited by
+   *                  {@link File#pathSeparator}.
+   */
+  public void setAltClassPath(String altClassPath) {
+    List<String> locationList = new LinkedList<>();
+    for (StringTokenizer tokens = new StringTokenizer(altClassPath, File.pathSeparator, false);
+         tokens.hasMoreTokens();
+        ) {
+      String location = tokens.nextToken();
+      locationList.add(location);
+    }
+    locations = new String[locationList.size()];
+    locations = locationList.toArray(locations);
+  }
+
+  /**
+   * Specifies the set of class names that the <code>AltClassLoader</code> should load from the
+   * alternate classpath instead of the regular classpath.
+   *
+   * @param classNames[] an array containing the names of classes to be loaded from the
+   *                     AltClassLoader.
+   */
+  public void setAltClasses(String[] classNames) {
+    nameToMangledName.clear();
+    for (String origName : classNames) {
+      String mangledName = mangleName(origName);
+      nameToMangledName.put(origName, mangledName);
+      mangledNameToName.put(mangledName, origName);
+    }
+  }
+
+  /**
    * Loads a class from either the regular classpath, or the alternate classpath, depending on
    * whether it looks like we have already mangled its name.
-   *
+   * <p>
    * <p>This method follows the steps provided by <a
    * href="http://www.javaworld.com/javaworld/jw-03-2000/jw-03-classload.html#resources">Ken
    * McCrary's ClasssLoader tutorial</a>.
    *
    * @param maybeMangledName A string from which the desired class's name can be determined. It may
-   *     have been mangled by {@link AltClassLoader#loadClass(String) AltClassLoader.loadClass()} so
-   *     that the regular <code>ClassLoader</code> to which we are delegating won't load the class
-   *     from the regular classpath.
+   *                         have been mangled by {@link AltClassLoader#loadClass(String) AltClassLoader.loadClass()} so
+   *                         that the regular <code>ClassLoader</code> to which we are delegating won't load the class
+   *                         from the regular classpath.
    * @return the loaded class.
    * @throws ClassNotFoundException if the class cannot be loaded.
    */
@@ -240,110 +344,6 @@ public class AltClassLoader extends ClassLoader {
       findAndReplace(classBytes, stringToUtf8Pattern(origName), stringToUtf8Pattern(mangledName));
       findAndReplace(
           classBytes, stringToTypeStringPattern(origName), stringToTypeStringPattern(mangledName));
-    }
-  }
-
-  /**
-   * Returns the bytes that correspond to a CONSTANT_Utf8 constant pool entry containing the passed
-   * string.
-   */
-  private static byte[] stringToUtf8Pattern(String s) {
-    byte[] origBytes = s.getBytes();
-    int length = origBytes.length;
-    final byte CONSTANT_Utf8 = 1;
-    byte[] result = new byte[length + 3];
-    result[0] = CONSTANT_Utf8;
-    result[1] = (byte) (length & 0xff00);
-    result[2] = (byte) (length & 0x00ff);
-    for (int i = 0; i < length; i++) {
-      result[i + 3] = origBytes[i];
-    }
-    return result;
-  }
-
-  /** Returns the bytes that correspond to a type signature string containing the passed string. */
-  private static byte[] stringToTypeStringPattern(String s) {
-    byte[] origBytes = s.getBytes();
-    int length = origBytes.length;
-    byte[] result = new byte[length + 2];
-    result[0] = (byte) 'L';
-    for (int i = 0; i < length; i++) {
-      result[i + 1] = origBytes[i];
-    }
-    result[length + 1] = (byte) ';';
-    return result;
-  }
-
-  /**
-   * Replaces all occurrences of the <code>pattern</code> in <code>text</code> with <code>
-   * replacement</code>.
-   *
-   * @throws IllegalArgumentException if the lengths of <code>text</code> and <code>replacement
-   *     </code> differ.
-   */
-  private static void findAndReplace(byte[] text, byte[] pattern, byte[] replacement)
-      throws IllegalArgumentException {
-    int patternLength = pattern.length;
-    if (patternLength != replacement.length) {
-      throw new IllegalArgumentException(
-          "findAndReplace(): The lengths of the pattern and replacement must match.");
-    }
-    int match = 0;
-    while ((match = findMatch(text, pattern, match)) >= 0) {
-      replace(text, replacement, match);
-      match += patternLength;
-    }
-  }
-
-  /**
-   * A naive string-searching algorithm for finding a pattern in a byte array.
-   *
-   * @param text the array to search in.
-   * @param pattern the string of bytes to search for.
-   * @param start the first position in text to search (0-based).
-   * @return the index in text where the first occurrence of <code>pattern</code> in <code>text
-   *     </code> after <code>start</code> begins. Returns -1 if <code>pattern</code> does not occur
-   *     in <code>text</code> after <code>start</code>.
-   */
-  private static int findMatch(byte[] text, byte[] pattern, int start) {
-    int textLength = text.length;
-    int patternLength = pattern.length;
-    nextBase:
-    for (int base = start; base < textLength; base++) {
-      for (int t = base, p = 0; p < patternLength; t++, p++) {
-        if (text[t] != pattern[p]) {
-          continue nextBase;
-        }
-      }
-      return base;
-    }
-    return -1;
-  }
-
-  /**
-   * Replace the <code>replacement.length</code> bytes in <code>text</code> starting at <code>
-   * start</code> with the bytes in <code>replacement</code>.
-   *
-   * @throws ArrayIndexOutOfBounds if there are not <code>replacement.length</code> remaining after
-   *     <code>text[start]</code>.
-   */
-  private static void replace(byte[] text, byte[] replacement, int start) {
-    for (int t = start, p = 0; p < replacement.length; t++, p++) {
-      text[t] = replacement[p];
-    }
-  }
-
-  /**
-   * A main() entry for basic unit testing.
-   *
-   * <p>Usage: path class ...
-   */
-  public static void main(String[] argv) throws ClassNotFoundException {
-    AltClassLoader.v().setAltClassPath(argv[0]);
-    for (int i = 1; i < argv.length; i++) {
-      AltClassLoader.v().setAltClasses(new String[] {argv[i]});
-      G.v().out.println("main() loadClass(" + argv[i] + ")");
-      AltClassLoader.v().loadClass(argv[i]);
     }
   }
 }

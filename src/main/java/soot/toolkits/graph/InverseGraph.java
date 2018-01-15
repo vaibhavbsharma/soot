@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.graph;
 
 import java.util.Iterator;
@@ -34,37 +35,49 @@ public class InverseGraph<N> implements DirectedGraph<N> {
     this.g = g;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<N> getHeads() {
     return g.getTails();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<N> getPredsOf(N s) {
     return g.getSuccsOf(s);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<N> getSuccsOf(N s) {
     return g.getPredsOf(s);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<N> getTails() {
     return g.getHeads();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<N> iterator() {
     return g.iterator();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int size() {
     return g.size();

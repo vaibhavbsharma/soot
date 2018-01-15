@@ -1,8 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.Iterator;
-
 import soot.toolkits.scalar.ArraySparseSet;
+
+import java.util.Iterator;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -66,7 +66,8 @@ public class MonitorSet extends ArraySparseSet {
    * Returns the union (join) of this MonitorSet and <code>other</code>, putting result into <code>
    * this</code>.
    */
-  public void union(MonitorSet other) {}
+  public void union(MonitorSet other) {
+  }
 
   /**
    * Returns the union (join) of this MonitorSet and <code>other</code>, putting result into <code>

@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.sootify;
 
 import soot.AnySubType;
@@ -39,18 +40,18 @@ import soot.VoidType;
 
 public class TypeTemplatePrinter extends TypeSwitch {
 
-  private String varName;
   private final TemplatePrinter p;
+  private String varName;
+
+  public TypeTemplatePrinter(TemplatePrinter p) {
+    this.p = p;
+  }
 
   public void printAssign(String v, Type t) {
     String oldName = varName;
     varName = v;
     t.apply(this);
     varName = oldName;
-  }
-
-  public TypeTemplatePrinter(TemplatePrinter p) {
-    this.p = p;
   }
 
   public void setVariableName(String name) {

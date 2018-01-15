@@ -28,7 +28,7 @@ package soot.util;
 /**
  * This class implements an ArrayList where the equality and hashCode use object equality, not list
  * equality. This is important for putting Lists into HashMaps.
- *
+ * <p>
  * <p>The notation "Stationary" refers to the fact that the List stays "fixed" under list changes.
  */
 public class StationaryArrayList<T> extends java.util.ArrayList<T> {

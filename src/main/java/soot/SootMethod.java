@@ -26,13 +26,6 @@
 
 package soot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
@@ -41,6 +34,13 @@ import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
 import soot.util.Numberable;
 import soot.util.NumberedString;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Soot representation of a Java method. Can be declared to belong to a SootClass. Does not contain
@@ -52,37 +52,133 @@ public class SootMethod extends AbstractHost
   public static final String constructorName = "<init>";
   public static final String staticInitializerName = "<clinit>";
   public static boolean DEBUG = false;
-  /** Name of the current method. */
-  private String name;
-
   /**
    * An array of parameter types taken by this <code>SootMethod</code> object, in declaration order.
    */
   protected Type[] parameterTypes;
-
-  /** The return type of this object. */
-  private Type returnType;
-
-  /** True when some <code>SootClass</code> object declares this <code>SootMethod</code> object. */
-  private boolean isDeclared;
-
-  /** Holds the class which declares this <code>SootClass</code> method. */
-  private SootClass declaringClass;
-
-  /** Modifiers associated with this SootMethod (e.g. private, protected, etc.) */
-  private int modifiers;
-
-  /** Is this method a phantom method? */
-  private boolean isPhantom = false;
-
-  /** Declared exceptions thrown by this method. Created upon demand. */
-  private List<SootClass> exceptions = null;
-
-  /** Active body associated with this method. */
-  private volatile Body activeBody;
-
-  /** Tells this method how to find out where its body lives. */
+  /**
+   * Tells this method how to find out where its body lives.
+   */
   protected volatile MethodSource ms;
+  /**
+   * Name of the current method.
+   */
+  private String name;
+  /**
+   * The return type of this object.
+   */
+  private Type returnType;
+  /**
+   * True when some <code>SootClass</code> object declares this <code>SootMethod</code> object.
+   */
+  private boolean isDeclared;
+  /**
+   * Holds the class which declares this <code>SootClass</code> method.
+   */
+  private SootClass declaringClass;
+  /**
+   * Modifiers associated with this SootMethod (e.g. private, protected, etc.)
+   */
+  private int modifiers;
+  /**
+   * Is this method a phantom method?
+   */
+  private boolean isPhantom = false;
+  /**
+   * Declared exceptions thrown by this method. Created upon demand.
+   */
+  private List<SootClass> exceptions = null;
+  /**
+   * Active body associated with this method.
+   */
+  private volatile Body activeBody;
+  private NumberedString subsignature;
+  private int number = 0;
+
+  /**
+   * Constructs a SootMethod with the given name, parameter types and return type.
+   */
+  public SootMethod(String name, List<Type> parameterTypes, Type returnType) {
+    this(name, parameterTypes, returnType, 0, Collections.emptyList());
+  }
+
+  /**
+   * Constructs a SootMethod with the given name, parameter types, return type and modifiers.
+   */
+  public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
+    this(name, parameterTypes, returnType, modifiers, Collections.emptyList());
+  }
+
+  /**
+   * Constructs a SootMethod with the given name, parameter types, return type, and list of thrown
+   * exceptions.
+   */
+  public SootMethod(
+      String name,
+      List<Type> parameterTypes,
+      Type returnType,
+      int modifiers,
+      List<SootClass> thrownExceptions) {
+    this.name = name;
+
+    if (parameterTypes != null && !parameterTypes.isEmpty()) {
+      this.parameterTypes = parameterTypes.toArray(new Type[parameterTypes.size()]);
+    }
+
+    this.returnType = returnType;
+    this.modifiers = modifiers;
+
+    if (exceptions == null && !thrownExceptions.isEmpty()) {
+      exceptions = new ArrayList<>();
+      this.exceptions.addAll(thrownExceptions);
+      /*
+       * DEBUG=true; if(DEBUG)
+       * System.out.println("Added thrown exceptions"+thrownExceptions);
+       * DEBUG=false;
+       */
+    }
+    final Scene scene = Scene.v();
+    subsignature = scene.getSubSigNumberer().findOrAdd(getSubSignature());
+  }
+
+  public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append("<");
+    buffer.append(Scene.v().quotedNameOf(cl.getName()));
+    buffer.append(": ");
+    buffer.append(getSubSignatureImpl(name, params, returnType));
+    buffer.append(">");
+
+    // Again, memory-usage tweak depending on JDK implementation due
+    // to Michael Pan.
+    return buffer.toString().intern();
+  }
+
+  public static String getSubSignature(String name, List<Type> params, Type returnType) {
+    return getSubSignatureImpl(name, params, returnType);
+  }
+
+  private static String getSubSignatureImpl(String name, List<Type> params, Type returnType) {
+    StringBuilder buffer = new StringBuilder();
+
+    buffer.append(returnType.toQuotedString());
+
+    buffer.append(" ");
+    buffer.append(Scene.v().quotedNameOf(name));
+    buffer.append("(");
+
+    if (params != null) {
+      for (int i = 0; i < params.size(); i++) {
+        buffer.append(params.get(i).toQuotedString());
+        if (i < params.size() - 1) {
+          buffer.append(",");
+        }
+      }
+    }
+    buffer.append(")");
+
+    return buffer.toString().intern();
+  }
 
   /**
    * Uses methodSource to retrieve the method body in question; does not set it to be the active
@@ -125,66 +221,60 @@ public class SootMethod extends AbstractHost
     }
   }
 
-  /** Sets the MethodSource of the current SootMethod. */
-  public void setSource(MethodSource ms) {
-    this.ms = ms;
-  }
-
-  /** Returns the MethodSource of the current SootMethod. */
+  /**
+   * Returns the MethodSource of the current SootMethod.
+   */
   public MethodSource getSource() {
     return ms;
   }
 
-  /** Returns a hash code for this method consistent with structural equality. */
+  /**
+   * Sets the MethodSource of the current SootMethod.
+   */
+  public void setSource(MethodSource ms) {
+    this.ms = ms;
+  }
+
+  /**
+   * Returns a hash code for this method consistent with structural equality.
+   */
   public int equivHashCode() {
     return returnType.hashCode() * 101 + modifiers * 17 + name.hashCode();
   }
 
-  /** Constructs a SootMethod with the given name, parameter types and return type. */
-  public SootMethod(String name, List<Type> parameterTypes, Type returnType) {
-    this(name, parameterTypes, returnType, 0, Collections.emptyList());
-  }
-
-  /** Constructs a SootMethod with the given name, parameter types, return type and modifiers. */
-  public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
-    this(name, parameterTypes, returnType, modifiers, Collections.emptyList());
+  /**
+   * Returns the name of this method.
+   */
+  public String getName() {
+    return name;
   }
 
   /**
-   * Constructs a SootMethod with the given name, parameter types, return type, and list of thrown
-   * exceptions.
+   * Sets the name of this method.
    */
-  public SootMethod(
-      String name,
-      List<Type> parameterTypes,
-      Type returnType,
-      int modifiers,
-      List<SootClass> thrownExceptions) {
+  public void setName(String name) {
+    boolean wasDeclared = isDeclared;
+    SootClass oldDeclaringClass = declaringClass;
+    if (wasDeclared) {
+      oldDeclaringClass.removeMethod(this);
+    }
     this.name = name;
-
-    if (parameterTypes != null && !parameterTypes.isEmpty()) {
-      this.parameterTypes = parameterTypes.toArray(new Type[parameterTypes.size()]);
+    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+    if (wasDeclared) {
+      oldDeclaringClass.addMethod(this);
     }
-
-    this.returnType = returnType;
-    this.modifiers = modifiers;
-
-    if (exceptions == null && !thrownExceptions.isEmpty()) {
-      exceptions = new ArrayList<>();
-      this.exceptions.addAll(thrownExceptions);
-      /*
-       * DEBUG=true; if(DEBUG)
-       * System.out.println("Added thrown exceptions"+thrownExceptions);
-       * DEBUG=false;
-       */
-    }
-    final Scene scene = Scene.v();
-    subsignature = scene.getSubSigNumberer().findOrAdd(getSubSignature());
   }
 
-  /** Returns the name of this method. */
-  public String getName() {
-    return name;
+  /**
+   * Returns the class which declares the current <code>SootMethod</code>.
+   */
+  @Override
+  public SootClass getDeclaringClass() {
+    if (!isDeclared) {
+      throw new RuntimeException("not declared: " + getName());
+    }
+
+    return declaringClass;
   }
 
   /**
@@ -203,20 +293,6 @@ public class SootMethod extends AbstractHost
     Scene.v().getMethodNumberer().add(this);
   }
 
-  /** Returns the class which declares the current <code>SootMethod</code>. */
-  @Override
-  public SootClass getDeclaringClass() {
-    if (!isDeclared) {
-      throw new RuntimeException("not declared: " + getName());
-    }
-
-    return declaringClass;
-  }
-
-  public void setDeclared(boolean isDeclared) {
-    this.isDeclared = isDeclared;
-  }
-
   /**
    * Returns true when some <code>SootClass</code> object declares this <code>SootMethod</code>
    * object.
@@ -226,21 +302,21 @@ public class SootMethod extends AbstractHost
     return isDeclared;
   }
 
-  /** Returns true when this <code>SootMethod</code> object is phantom. */
+  public void setDeclared(boolean isDeclared) {
+    this.isDeclared = isDeclared;
+  }
+
+  /**
+   * Returns true when this <code>SootMethod</code> object is phantom.
+   */
   @Override
   public boolean isPhantom() {
     return isPhantom;
   }
 
   /**
-   * Returns true if this method is not phantom, abstract or native, i.e. this method can have a
-   * body.
+   * Sets the phantom flag on this method.
    */
-  public boolean isConcrete() {
-    return !isPhantom() && !isAbstract() && !isNative();
-  }
-
-  /** Sets the phantom flag on this method. */
   @Override
   public void setPhantom(boolean value) {
     if (value) {
@@ -254,18 +330,12 @@ public class SootMethod extends AbstractHost
     isPhantom = value;
   }
 
-  /** Sets the name of this method. */
-  public void setName(String name) {
-    boolean wasDeclared = isDeclared;
-    SootClass oldDeclaringClass = declaringClass;
-    if (wasDeclared) {
-      oldDeclaringClass.removeMethod(this);
-    }
-    this.name = name;
-    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
-    if (wasDeclared) {
-      oldDeclaringClass.addMethod(this);
-    }
+  /**
+   * Returns true if this method is not phantom, abstract or native, i.e. this method can have a
+   * body.
+   */
+  public boolean isConcrete() {
+    return !isPhantom() && !isAbstract() && !isNative();
   }
 
   /**
@@ -291,12 +361,16 @@ public class SootMethod extends AbstractHost
     this.modifiers = modifiers;
   }
 
-  /** Returns the return type of this method. */
+  /**
+   * Returns the return type of this method.
+   */
   public Type getReturnType() {
     return returnType;
   }
 
-  /** Sets the return type of this method. */
+  /**
+   * Sets the return type of this method.
+   */
   public void setReturnType(Type t) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
@@ -310,22 +384,30 @@ public class SootMethod extends AbstractHost
     }
   }
 
-  /** Returns the number of parameters taken by this method. */
+  /**
+   * Returns the number of parameters taken by this method.
+   */
   public int getParameterCount() {
     return parameterTypes == null ? 0 : parameterTypes.length;
   }
 
-  /** Gets the type of the <i>n</i>th parameter of this method. */
+  /**
+   * Gets the type of the <i>n</i>th parameter of this method.
+   */
   public Type getParameterType(int n) {
     return parameterTypes[n];
   }
 
-  /** Returns a read-only list of the parameter types of this method. */
+  /**
+   * Returns a read-only list of the parameter types of this method.
+   */
   public List<Type> getParameterTypes() {
     return parameterTypes == null ? Collections.emptyList() : Arrays.asList(parameterTypes);
   }
 
-  /** Changes the set of parameter types of this method. */
+  /**
+   * Changes the set of parameter types of this method.
+   */
   public void setParameterTypes(List<Type> l) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
@@ -339,7 +421,9 @@ public class SootMethod extends AbstractHost
     }
   }
 
-  /** Retrieves the active body for this method. */
+  /**
+   * Retrieves the active body for this method.
+   */
   public Body getActiveBody() {
     if (activeBody != null) {
       return activeBody;
@@ -358,8 +442,31 @@ public class SootMethod extends AbstractHost
   }
 
   /**
+   * Sets the active body for this method.
+   */
+  public void setActiveBody(Body body) {
+    if ((declaringClass != null) && declaringClass.isPhantomClass()) {
+      throw new RuntimeException("cannot set active body for phantom class! " + this);
+    }
+
+    // If someone sets a body for a phantom method, this method then is no
+    // longer phantom
+    setPhantom(false);
+
+    if (!isConcrete()) {
+      throw new RuntimeException("cannot set body for non-concrete method! " + this);
+    }
+
+    if (body != null && body.getMethod() != this) {
+      body.setMethod(this);
+    }
+
+    activeBody = body;
+  }
+
+  /**
    * Returns the active body if present, else constructs an active body and returns that.
-   *
+   * <p>
    * <p>If you called Scene.v().loadClassAndSupport() for a class yourself, it will not be an
    * application class, so you cannot get retrieve its active body. Please call
    * setApplicationClass() on the relevant class.
@@ -391,33 +498,16 @@ public class SootMethod extends AbstractHost
     return b;
   }
 
-  /** Sets the active body for this method. */
-  public void setActiveBody(Body body) {
-    if ((declaringClass != null) && declaringClass.isPhantomClass()) {
-      throw new RuntimeException("cannot set active body for phantom class! " + this);
-    }
-
-    // If someone sets a body for a phantom method, this method then is no
-    // longer phantom
-    setPhantom(false);
-
-    if (!isConcrete()) {
-      throw new RuntimeException("cannot set body for non-concrete method! " + this);
-    }
-
-    if (body != null && body.getMethod() != this) {
-      body.setMethod(this);
-    }
-
-    activeBody = body;
-  }
-
-  /** Returns true if this method has an active body. */
+  /**
+   * Returns true if this method has an active body.
+   */
   public boolean hasActiveBody() {
     return activeBody != null;
   }
 
-  /** Releases the active body associated with this method. */
+  /**
+   * Releases the active body associated with this method.
+   */
   public void releaseActiveBody() {
     activeBody = null;
   }
@@ -432,7 +522,9 @@ public class SootMethod extends AbstractHost
     }
   }
 
-  /** Adds the given exception to the list of exceptions thrown by this method. */
+  /**
+   * Adds the given exception to the list of exceptions thrown by this method.
+   */
   public void addException(SootClass e) {
     if (DEBUG) {
       System.out.println("Adding exception " + e);
@@ -447,7 +539,9 @@ public class SootMethod extends AbstractHost
     exceptions.add(e);
   }
 
-  /** Removes the given exception from the list of exceptions thrown by this method. */
+  /**
+   * Removes the given exception from the list of exceptions thrown by this method.
+   */
   public void removeException(SootClass e) {
     if (DEBUG) {
       System.out.println("Removing exception " + e);
@@ -464,9 +558,22 @@ public class SootMethod extends AbstractHost
     exceptions.remove(e);
   }
 
-  /** Returns true if this method throws exception <code>e</code>. */
+  /**
+   * Returns true if this method throws exception <code>e</code>.
+   */
   public boolean throwsException(SootClass e) {
     return exceptions != null && exceptions.contains(e);
+  }
+
+  /**
+   * Returns a backed list of the exceptions thrown by this method.
+   */
+  public List<SootClass> getExceptions() {
+    if (exceptions == null) {
+      exceptions = new ArrayList<>();
+    }
+
+    return exceptions;
   }
 
   public void setExceptions(List<SootClass> exceptions) {
@@ -477,64 +584,73 @@ public class SootMethod extends AbstractHost
     }
   }
 
-  /** Returns a backed list of the exceptions thrown by this method. */
-  public List<SootClass> getExceptions() {
-    if (exceptions == null) {
-      exceptions = new ArrayList<>();
-    }
-
-    return exceptions;
-  }
-
   public List<SootClass> getExceptionsUnsafe() {
     return exceptions;
   }
 
-  /** Convenience method returning true if this method is static. */
+  /**
+   * Convenience method returning true if this method is static.
+   */
   @Override
   public boolean isStatic() {
     return Modifier.isStatic(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is private. */
+  /**
+   * Convenience method returning true if this method is private.
+   */
   @Override
   public boolean isPrivate() {
     return Modifier.isPrivate(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is public. */
+  /**
+   * Convenience method returning true if this method is public.
+   */
   @Override
   public boolean isPublic() {
     return Modifier.isPublic(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is protected. */
+  /**
+   * Convenience method returning true if this method is protected.
+   */
   @Override
   public boolean isProtected() {
     return Modifier.isProtected(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is abstract. */
+  /**
+   * Convenience method returning true if this method is abstract.
+   */
   public boolean isAbstract() {
     return Modifier.isAbstract(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is final. */
+  /**
+   * Convenience method returning true if this method is final.
+   */
   public boolean isFinal() {
     return Modifier.isFinal(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is native. */
+  /**
+   * Convenience method returning true if this method is native.
+   */
   public boolean isNative() {
     return Modifier.isNative(this.getModifiers());
   }
 
-  /** Convenience method returning true if this method is synchronized. */
+  /**
+   * Convenience method returning true if this method is synchronized.
+   */
   public boolean isSynchronized() {
     return Modifier.isSynchronized(this.getModifiers());
   }
 
-  /** @return yes if this is the main method */
+  /**
+   * @return yes if this is the main method
+   */
   public boolean isMain() {
     if (isPublic() && isStatic()) {
       NumberedString main_sig =
@@ -549,18 +665,22 @@ public class SootMethod extends AbstractHost
 
   /**
    * @return yes, if this function is a constructor. Please not that <clinit> methods are not
-   *     treated as constructors in this method.
+   * treated as constructors in this method.
    */
   public boolean isConstructor() {
     return name.equals(constructorName);
   }
 
-  /** @return yes, if this function is a static initializer. */
+  /**
+   * @return yes, if this function is a static initializer.
+   */
   public boolean isStaticInitializer() {
     return name.equals(staticInitializerName);
   }
 
-  /** @return yes, if this is a class initializer or main function. */
+  /**
+   * @return yes, if this is a class initializer or main function.
+   */
   public boolean isEntryMethod() {
     if (isStatic() && subsignature.equals(VirtualCalls.v().sigClinit)) {
       return true;
@@ -569,13 +689,17 @@ public class SootMethod extends AbstractHost
     return isMain();
   }
 
-  /** We rely on the JDK class recognition to decide if a method is JDK method. */
+  /**
+   * We rely on the JDK class recognition to decide if a method is JDK method.
+   */
   public boolean isJavaLibraryMethod() {
     SootClass cl = getDeclaringClass();
     return cl.isJavaLibraryClass();
   }
 
-  /** Returns the parameters part of the signature in the format in which it appears in bytecode. */
+  /**
+   * Returns the parameters part of the signature in the format in which it appears in bytecode.
+   */
   public String getBytecodeParms() {
     StringBuffer buffer = new StringBuffer();
     for (Type type : getParameterTypes()) {
@@ -600,25 +724,16 @@ public class SootMethod extends AbstractHost
     return buffer.toString().intern();
   }
 
-  /** Returns the Soot signature of this method. Used to refer to methods unambiguously. */
+  /**
+   * Returns the Soot signature of this method. Used to refer to methods unambiguously.
+   */
   public String getSignature() {
     return getSignature(getDeclaringClass(), getName(), getParameterTypes(), getReturnType());
   }
 
-  public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append("<");
-    buffer.append(Scene.v().quotedNameOf(cl.getName()));
-    buffer.append(": ");
-    buffer.append(getSubSignatureImpl(name, params, returnType));
-    buffer.append(">");
-
-    // Again, memory-usage tweak depending on JDK implementation due
-    // to Michael Pan.
-    return buffer.toString().intern();
-  }
-
-  /** Returns the Soot subsignature of this method. Used to refer to methods unambiguously. */
+  /**
+   * Returns the Soot subsignature of this method. Used to refer to methods unambiguously.
+   */
   public String getSubSignature() {
     String name = getName();
     List<Type> params = getParameterTypes();
@@ -627,39 +742,13 @@ public class SootMethod extends AbstractHost
     return getSubSignatureImpl(name, params, returnType);
   }
 
-  public static String getSubSignature(String name, List<Type> params, Type returnType) {
-    return getSubSignatureImpl(name, params, returnType);
-  }
-
-  private static String getSubSignatureImpl(String name, List<Type> params, Type returnType) {
-    StringBuilder buffer = new StringBuilder();
-
-    buffer.append(returnType.toQuotedString());
-
-    buffer.append(" ");
-    buffer.append(Scene.v().quotedNameOf(name));
-    buffer.append("(");
-
-    if (params != null) {
-      for (int i = 0; i < params.size(); i++) {
-        buffer.append(params.get(i).toQuotedString());
-        if (i < params.size() - 1) {
-          buffer.append(",");
-        }
-      }
-    }
-    buffer.append(")");
-
-    return buffer.toString().intern();
-  }
-
-  private NumberedString subsignature;
-
   public NumberedString getNumberedSubSignature() {
     return subsignature;
   }
 
-  /** Returns the signature of this method. */
+  /**
+   * Returns the signature of this method.
+   */
   @Override
   public String toString() {
     return getSignature();
@@ -867,8 +956,6 @@ public class SootMethod extends AbstractHost
   public final void setNumber(int number) {
     this.number = number;
   }
-
-  private int number = 0;
 
   @Override
   public SootMethod method() {

@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.annotation.parity;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -40,9 +36,16 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 
-/** A body transformer that records parity analysis information in tags. */
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * A body transformer that records parity analysis information in tags.
+ */
 public class ParityTagger extends BodyTransformer {
-  public ParityTagger(Singletons.Global g) {}
+  public ParityTagger(Singletons.Global g) {
+  }
 
   public static ParityTagger v() {
     return G.v().soot_jimple_toolkits_annotation_parity_ParityTagger();

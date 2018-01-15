@@ -16,21 +16,21 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.asm;
 
-import java.lang.reflect.Field;
+package soot.asm;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.GenericAttribute;
 import soot.tagkit.Host;
 import soot.tagkit.VisibilityAnnotationTag;
+
+import java.lang.reflect.Field;
 
 /**
  * Tag builder.
@@ -39,9 +39,9 @@ import soot.tagkit.VisibilityAnnotationTag;
  */
 final class TagBuilder {
 
-  private VisibilityAnnotationTag invisibleTag, visibleTag;
   private final Host host;
   private final SootClassBuilder scb;
+  private VisibilityAnnotationTag invisibleTag, visibleTag;
 
   TagBuilder(Host host, SootClassBuilder scb) {
     this.host = host;

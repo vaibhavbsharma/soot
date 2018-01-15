@@ -25,21 +25,8 @@ package soot.jimple.spark.pag;
  * @author Ondrej Lhotak
  */
 public class AllocDotField extends Node {
-  /** Returns the base AllocNode. */
-  public AllocNode getBase() {
-    return base;
-  }
-  /** Returns the field of this node. */
-  public SparkField getField() {
-    return field;
-  }
-
-  @Override
-  public String toString() {
-    return "AllocDotField " + getNumber() + " " + base + "." + field;
-  }
-
-  /* End of public methods. */
+  protected AllocNode base;
+  protected SparkField field;
 
   AllocDotField(PAG pag, AllocNode base, SparkField field) {
     super(pag, null);
@@ -52,8 +39,26 @@ public class AllocDotField extends Node {
     pag.getAllocDotFieldNodeNumberer().add(this);
   }
 
+  /* End of public methods. */
+
+  /**
+   * Returns the base AllocNode.
+   */
+  public AllocNode getBase() {
+    return base;
+  }
+
   /* End of package methods. */
 
-  protected AllocNode base;
-  protected SparkField field;
+  /**
+   * Returns the field of this node.
+   */
+  public SparkField getField() {
+    return field;
+  }
+
+  @Override
+  public String toString() {
+    return "AllocDotField " + getNumber() + " " + base + "." + field;
+  }
 }

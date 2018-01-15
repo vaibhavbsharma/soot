@@ -19,6 +19,16 @@
 
 package soot.jimple.toolkits.reflection;
 
+import soot.Body;
+import soot.G;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.tagkit.Host;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLnPosTag;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,37 +41,13 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import soot.Body;
-import soot.G;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.Unit;
-import soot.tagkit.Host;
-import soot.tagkit.LineNumberTag;
-import soot.tagkit.SourceLnPosTag;
-
 public class ReflectionTraceInfo {
 
-  public enum Kind {
-    ClassForName,
-    ClassNewInstance,
-    ConstructorNewInstance,
-    MethodInvoke,
-    FieldSet,
-    FieldGet
-  }
-
   protected Map<SootMethod, Set<String>> classForNameReceivers;
-
   protected Map<SootMethod, Set<String>> classNewInstanceReceivers;
-
   protected Map<SootMethod, Set<String>> constructorNewInstanceReceivers;
-
   protected Map<SootMethod, Set<String>> methodInvokeReceivers;
-
   protected Map<SootMethod, Set<String>> fieldSetReceivers;
-
   protected Map<SootMethod, Set<String>> fieldGetReceivers;
 
   public ReflectionTraceInfo(String logFile) {
@@ -323,5 +309,14 @@ public class ReflectionTraceInfo {
       return Collections.emptySet();
     }
     return fieldGetReceivers.get(container);
+  }
+
+  public enum Kind {
+    ClassForName,
+    ClassNewInstance,
+    ConstructorNewInstance,
+    MethodInvoke,
+    FieldSet,
+    FieldGet
   }
 }

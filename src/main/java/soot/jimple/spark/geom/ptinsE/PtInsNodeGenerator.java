@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.ptinsE;
 
 import soot.jimple.spark.geom.dataRep.CgEdge;
@@ -39,8 +40,8 @@ import soot.jimple.toolkits.callgraph.Edge;
  */
 public class PtInsNodeGenerator extends IEncodingBroker {
   private static final int full_convertor[] = {
-    GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY,
-    GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY
+      GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY,
+      GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY
   };
 
   @Override

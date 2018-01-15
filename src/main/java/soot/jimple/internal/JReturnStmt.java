@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
@@ -38,6 +36,8 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
+
+import java.util.List;
 
 public class JReturnStmt extends AbstractOpStmt implements ReturnStmt {
   public JReturnStmt(Value returnValue) {

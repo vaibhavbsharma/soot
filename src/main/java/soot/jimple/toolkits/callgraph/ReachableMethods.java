@@ -19,14 +19,14 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import soot.MethodOrMethodContext;
+import soot.util.queue.ChunkedQueue;
+import soot.util.queue.QueueReader;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import soot.MethodOrMethodContext;
-import soot.util.queue.ChunkedQueue;
-import soot.util.queue.QueueReader;
 
 /**
  * Keeps track of the methods transitively reachable from the specified entry points through the
@@ -35,12 +35,12 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class ReachableMethods {
-  private CallGraph cg;
-  private Iterator<Edge> edgeSource;
   private final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<>();
   private final Set<MethodOrMethodContext> set = new HashSet<>();
-  private QueueReader<MethodOrMethodContext> unprocessedMethods;
   private final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
+  private CallGraph cg;
+  private Iterator<Edge> edgeSource;
+  private QueueReader<MethodOrMethodContext> unprocessedMethods;
   private Filter filter;
 
   public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints) {
@@ -75,6 +75,7 @@ public class ReachableMethods {
       reachables.add(m);
     }
   }
+
   /**
    * Causes the QueueReader objects to be filled up with any methods that have become reachable
    * since the last call.
@@ -95,6 +96,7 @@ public class ReachableMethods {
       addMethods(new Targets(targets));
     }
   }
+
   /**
    * Returns a QueueReader object containing all methods found reachable so far, and which will be
    * informed of any new methods that are later found to be reachable.
@@ -102,6 +104,7 @@ public class ReachableMethods {
   public QueueReader<MethodOrMethodContext> listener() {
     return allReachables.clone();
   }
+
   /**
    * Returns a QueueReader object which will contain ONLY NEW methods which will be found to be
    * reachable, but not those that have already been found to be reachable.
@@ -109,11 +112,17 @@ public class ReachableMethods {
   public QueueReader<MethodOrMethodContext> newListener() {
     return reachables.reader();
   }
-  /** Returns true iff method is reachable. */
+
+  /**
+   * Returns true iff method is reachable.
+   */
   public boolean contains(MethodOrMethodContext m) {
     return set.contains(m);
   }
-  /** Returns the number of methods that are reachable. */
+
+  /**
+   * Returns the number of methods that are reachable.
+   */
   public int size() {
     return set.size();
   }

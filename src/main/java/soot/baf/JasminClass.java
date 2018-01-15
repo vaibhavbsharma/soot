@@ -25,12 +25,6 @@
 
 package soot.baf;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import soot.AbstractJasminClass;
 import soot.ArrayType;
 import soot.Body;
@@ -82,6 +76,12 @@ import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.BriefBlockGraph;
 import soot.util.ArraySet;
 import soot.util.Chain;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class JasminClass extends AbstractJasminClass {
 
@@ -1859,17 +1859,17 @@ public class JasminClass extends AbstractJasminClass {
               if (op2Type == null && under1Type != null) {
                 if ((under2Type == null && isDwordType(under1Type))
                     || (!isDwordType(under1Type)
-                        && under2Type != null
-                        && !isDwordType(under2Type))) {
+                    && under2Type != null
+                    && !isDwordType(under2Type))) {
                   malformed = false;
                 }
               }
             } else if (op1Type != null && op2Type != null && !isDwordType(op2Type)) {
               if ((under2Type == null && isDwordType(under1Type))
                   || (under1Type != null
-                      && !isDwordType(under1Type)
-                      && under2Type != null
-                      && !isDwordType(under2Type))) {
+                  && !isDwordType(under1Type)
+                  && under2Type != null
+                  && !isDwordType(under2Type))) {
                 malformed = false;
               }
             }

@@ -19,15 +19,15 @@
 
 package soot.dava.internal.SET;
 
-import java.util.Iterator;
-
 import soot.G;
 import soot.util.IterableSet;
 
+import java.util.Iterator;
+
 public class SETBasicBlock implements Comparable {
 
-  private SETNode entryNode, exitNode;
   private final IterableSet predecessors, successors, body;
+  private SETNode entryNode, exitNode;
   private int priority;
 
   public SETBasicBlock() {
@@ -37,6 +37,10 @@ public class SETBasicBlock implements Comparable {
 
     entryNode = exitNode = null;
     priority = -1;
+  }
+
+  public static SETBasicBlock get_SETBasicBlock(SETNode o) {
+    return G.v().SETBasicBlock_binding.get(o);
   }
 
   @Override
@@ -54,6 +58,10 @@ public class SETBasicBlock implements Comparable {
 
     return difference;
   }
+
+  /*
+   *  adds must be done in order such that the entry node is done first and the exit is done last.
+   */
 
   private int get_Priority() {
     if (priority == -1) {
@@ -76,10 +84,6 @@ public class SETBasicBlock implements Comparable {
 
     return priority;
   }
-
-  /*
-   *  adds must be done in order such that the entry node is done first and the exit is done last.
-   */
 
   public void add(SETNode sn) {
     if (body.isEmpty()) {
@@ -110,10 +114,6 @@ public class SETBasicBlock implements Comparable {
 
   public IterableSet get_Body() {
     return body;
-  }
-
-  public static SETBasicBlock get_SETBasicBlock(SETNode o) {
-    return G.v().SETBasicBlock_binding.get(o);
   }
 
   public void printSig() {

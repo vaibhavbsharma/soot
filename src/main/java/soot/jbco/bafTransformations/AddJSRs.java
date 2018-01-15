@@ -19,12 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PatchingChain;
@@ -42,24 +36,28 @@ import soot.jbco.IJbcoTransform;
 import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 22-Mar-2006
- *     <p>This transformer transforms gotos/ifs into JSRS, but not all of them.
+ * <p>Created on 22-Mar-2006
+ * <p>This transformer transforms gotos/ifs into JSRS, but not all of them.
  */
 public class AddJSRs extends BodyTransformer implements IJbcoTransform {
 
-  int jsrcount = 0;
-
   public static String dependancies[] =
       new String[] {"jtp.jbco_jl", "bb.jbco_cb2ji", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_cb2ji";
+  int jsrcount = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_cb2ji";
 
   @Override
   public String getName() {

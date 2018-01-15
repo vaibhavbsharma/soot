@@ -25,10 +25,8 @@
  * CHANGLE LOG:
  *
  */
-package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+package soot.dava.toolkits.base.AST.traversals;
 
 import soot.G;
 import soot.Singletons;
@@ -44,31 +42,35 @@ import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * This class has been created because we need the immediate target of a implicit break/continue
  * statement i.e. a break/continue statement which does not break/continue a particular label
  * explicitly.
- *
+ * <p>
  * <p>Notice that this is only allowed for while do while, unconditional loop for loop switch
  * construct.
- *
+ * <p>
  * <p>Notice continue is not allowed for switch also
- *
+ * <p>
  * <p>Explicit breaks can on the other hand break any label (that on a construct) which we are not
  * worried about in this analysis
  */
 public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
 
-  public ClosestAbruptTargetFinder(Singletons.Global g) {}
-
-  public static ClosestAbruptTargetFinder v() {
-    return G.v().soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder();
-  }
-
   HashMap<DAbruptStmt, ASTNode> closestNode =
       new HashMap<>(); // a mapping of each abrupt statement to the node they are targeting
   ArrayList<ASTLabeledNode> nodeStack =
       new ArrayList<>(); // the last element will always be the "currentNode" meaning
+
+  public ClosestAbruptTargetFinder(Singletons.Global g) {
+  }
+
+  public static ClosestAbruptTargetFinder v() {
+    return G.v().soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder();
+  }
   // the closest target to a abrupt stmt
 
   /**

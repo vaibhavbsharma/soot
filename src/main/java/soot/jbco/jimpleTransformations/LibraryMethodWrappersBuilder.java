@@ -19,14 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -68,41 +60,91 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 7-Feb-2006
+ * <p>Created on 7-Feb-2006
  */
 public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJbcoTransform {
 
+  private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods =
+      new HashMap<>();
+  private static final Scene scene = G.v().soot_Scene();
   public static String dependancies[] = new String[] {"wjtp.jbco_blbc"};
+  public static String name = "wjtp.jbco_blbc";
+  public static ArrayList<SootMethod> builtByMe = new ArrayList<>();
+  private static int newmethods = 0;
+  private static int methodcalls = 0;
+
+  private static Type getPrimType(int idx) {
+    switch (idx) {
+      case 0:
+        return IntType.v();
+      case 1:
+        return CharType.v();
+      case 2:
+        return ByteType.v();
+      case 3:
+        return LongType.v();
+      case 4:
+        return BooleanType.v();
+      case 5:
+        return DoubleType.v();
+      case 6:
+        return FloatType.v();
+      default:
+        return IntType.v();
+    }
+  }
+
+  private static Value getConstantType(Type t) {
+    if (t instanceof BooleanType) {
+      return IntConstant.v(Rand.getInt(1));
+    }
+    if (t instanceof IntType) {
+      return IntConstant.v(Rand.getInt());
+    }
+    if (t instanceof CharType) {
+      return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
+    }
+    if (t instanceof ByteType) {
+      return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
+    }
+    if (t instanceof LongType) {
+      return LongConstant.v(Rand.getLong());
+    }
+    if (t instanceof FloatType) {
+      return FloatConstant.v(Rand.getFloat());
+    }
+    if (t instanceof DoubleType) {
+      return DoubleConstant.v(Rand.getDouble());
+    }
+
+    return Jimple.v().newCastExpr(NullConstant.v(), t);
+  }
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
-  public static String name = "wjtp.jbco_blbc";
-
   @Override
   public String getName() {
     return name;
   }
-
-  private static int newmethods = 0;
-  private static int methodcalls = 0;
 
   @Override
   public void outputSummary() {
     out.println("New Methods Created: " + newmethods);
     out.println("Method Calls Replaced: " + methodcalls);
   }
-
-  private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods =
-      new HashMap<>();
-
-  private static final Scene scene = G.v().soot_Scene();
-
-  public static ArrayList<SootMethod> builtByMe = new ArrayList<>();
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
@@ -327,7 +369,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
     int mods =
         ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
-                & (Modifier.NATIVE ^ 0xFFFF))
+            & (Modifier.NATIVE ^ 0xFFFF))
             & (Modifier.SYNCHRONIZED ^ 0xFFFF));
     SootMethod newMethod =
         Scene.v().makeSootMethod(newName, smParamTypes, sm.getReturnType(), mods);
@@ -383,52 +425,5 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
     builtByMe.add(newMethod);
 
     return newMethod.makeRef();
-  }
-
-  private static Type getPrimType(int idx) {
-    switch (idx) {
-      case 0:
-        return IntType.v();
-      case 1:
-        return CharType.v();
-      case 2:
-        return ByteType.v();
-      case 3:
-        return LongType.v();
-      case 4:
-        return BooleanType.v();
-      case 5:
-        return DoubleType.v();
-      case 6:
-        return FloatType.v();
-      default:
-        return IntType.v();
-    }
-  }
-
-  private static Value getConstantType(Type t) {
-    if (t instanceof BooleanType) {
-      return IntConstant.v(Rand.getInt(1));
-    }
-    if (t instanceof IntType) {
-      return IntConstant.v(Rand.getInt());
-    }
-    if (t instanceof CharType) {
-      return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
-    }
-    if (t instanceof ByteType) {
-      return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
-    }
-    if (t instanceof LongType) {
-      return LongConstant.v(Rand.getLong());
-    }
-    if (t instanceof FloatType) {
-      return FloatConstant.v(Rand.getFloat());
-    }
-    if (t instanceof DoubleType) {
-      return DoubleConstant.v(Rand.getDouble());
-    }
-
-    return Jimple.v().newCastExpr(NullConstant.v(), t);
   }
 }

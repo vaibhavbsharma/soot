@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -101,6 +98,9 @@ import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.jimple.toolkits.typing.Util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 class ConstraintChecker extends AbstractStmtSwitch {
   private final TypeResolver resolver;
   private final boolean fix; // if true, fix constraint violations
@@ -110,6 +110,33 @@ class ConstraintChecker extends AbstractStmtSwitch {
   public ConstraintChecker(TypeResolver resolver, boolean fix) {
     this.resolver = resolver;
     this.fix = fix;
+  }
+
+  static void error(String message) {
+    throw new RuntimeTypeException(message);
+  }
+
+  static Type getTypeForCast(TypeNode node)
+  // This method is a local kludge, for avoiding NullPointerExceptions
+  // when a R0_1, R0_127, or R0_32767 node is used in a type
+  // cast. A more elegant solution would work with the TypeNode
+  // type definition itself, but that would require a more thorough
+  // knowledge of the typing system than the kludger posesses.
+  {
+    if (node.type() == null) {
+      if (node == ClassHierarchy.v().R0_1) {
+        return BooleanType.v();
+      } else if (node == ClassHierarchy.v().R0_127) {
+        return ByteType.v();
+      } else if (node == ClassHierarchy.v().R0_32767) {
+        return ShortType.v();
+      }
+      // Perhaps we should throw an exception here, since I don't think
+      // there should be any other cases where node.type() is null.
+      // In case that supposition is incorrect, though, we'll just
+      // go on to return the null, and let the callers worry about it.
+    }
+    return node.type();
   }
 
   public void check(Stmt stmt, JimpleBody stmtBody) throws TypeException {
@@ -123,17 +150,6 @@ class ConstraintChecker extends AbstractStmtSwitch {
       pw.close();
       throw new TypeException(st.toString());
     }
-  }
-
-  @SuppressWarnings("serial")
-  private static class RuntimeTypeException extends RuntimeException {
-    RuntimeTypeException(String message) {
-      super(message);
-    }
-  }
-
-  static void error(String message) {
-    throw new RuntimeTypeException(message);
   }
 
   private void handleInvokeExpr(InvokeExpr ie, Stmt invokestmt) {
@@ -598,29 +614,6 @@ class ConstraintChecker extends AbstractStmtSwitch {
     }
   }
 
-  static Type getTypeForCast(TypeNode node)
-        // This method is a local kludge, for avoiding NullPointerExceptions
-        // when a R0_1, R0_127, or R0_32767 node is used in a type
-        // cast. A more elegant solution would work with the TypeNode
-        // type definition itself, but that would require a more thorough
-        // knowledge of the typing system than the kludger posesses.
-      {
-    if (node.type() == null) {
-      if (node == ClassHierarchy.v().R0_1) {
-        return BooleanType.v();
-      } else if (node == ClassHierarchy.v().R0_127) {
-        return ByteType.v();
-      } else if (node == ClassHierarchy.v().R0_32767) {
-        return ShortType.v();
-      }
-      // Perhaps we should throw an exception here, since I don't think
-      // there should be any other cases where node.type() is null.
-      // In case that supposition is incorrect, though, we'll just
-      // go on to return the null, and let the callers worry about it.
-    }
-    return node.type();
-  }
-
   @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
     Value l = stmt.getLeftOp();
@@ -645,13 +638,16 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {}
+  public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+  }
 
   @Override
-  public void caseExitMonitorStmt(ExitMonitorStmt stmt) {}
+  public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+  }
 
   @Override
-  public void caseGotoStmt(GotoStmt stmt) {}
+  public void caseGotoStmt(GotoStmt stmt) {
+  }
 
   @Override
   public void caseIfStmt(IfStmt stmt) {
@@ -768,7 +764,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseNopStmt(NopStmt stmt) {}
+  public void caseNopStmt(NopStmt stmt) {
+  }
 
   @Override
   public void caseReturnStmt(ReturnStmt stmt) {
@@ -789,7 +786,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+  }
 
   @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
@@ -808,7 +806,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseThrowStmt(ThrowStmt stmt) {}
+  public void caseThrowStmt(ThrowStmt stmt) {
+  }
 
   public void defaultCase(Stmt stmt) {
     throw new RuntimeException("Unhandled statement type: " + stmt.getClass());
@@ -851,5 +850,12 @@ class ConstraintChecker extends AbstractStmtSwitch {
         .insertBefore(
             Jimple.v().newAssignStmt(newlocal2, Jimple.v().newCastExpr(newlocal1, type)), u);
     return newlocal2;
+  }
+
+  @SuppressWarnings("serial")
+  private static class RuntimeTypeException extends RuntimeException {
+    RuntimeTypeException(String message) {
+      super(message);
+    }
   }
 }

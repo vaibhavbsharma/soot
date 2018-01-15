@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.annotation.qualifiers;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.MethodOrMethodContext;
@@ -42,26 +38,29 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * a scene transformer that add tags to indicate the tightest qualifies possible for fields and
  * methods (ie: private, protected or public)
  */
 public class TightestQualifiersTagger extends SceneTransformer {
 
-  public TightestQualifiersTagger(Singletons.Global g) {}
-
-  public static TightestQualifiersTagger v() {
-    return G.v().soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger();
-  }
-
   public static final int RESULT_PUBLIC = 0;
   public static final int RESULT_PACKAGE = 1;
   public static final int RESULT_PROTECTED = 2;
   public static final int RESULT_PRIVATE = 3;
-
   private final HashMap<SootMethod, Integer> methodResultsMap = new HashMap<>();
   private final HashMap<SootField, Integer> fieldResultsMap = new HashMap<>();
   private MethodToContexts methodToContexts;
+  public TightestQualifiersTagger(Singletons.Global g) {
+  }
+
+  public static TightestQualifiersTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger();
+  }
 
   @Override
   protected void internalTransform(String phaseName, Map options) {

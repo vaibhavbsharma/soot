@@ -18,13 +18,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -51,20 +44,25 @@ import soot.jimple.IntConstant;
 import soot.jimple.NullConstant;
 import soot.toolkits.graph.BriefUnitGraph;
 
-public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
-  int totalcount = 0;
-  int changedcount = 0;
+public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform {
 
   public static String dependancies[] =
       new String[] {"bb.jbco_j2bl", "bb.jbco_ctbcb", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_ctbcb";
+  int totalcount = 0;
+  int changedcount = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_ctbcb";
 
   @Override
   public String getName() {

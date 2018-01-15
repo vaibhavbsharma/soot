@@ -19,12 +19,6 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.Local;
 import soot.RefType;
 import soot.Type;
@@ -46,7 +40,15 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
-/** A flow analysis that detects redundant cast checks. */
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * A flow analysis that detects redundant cast checks.
+ */
 public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSet> {
   Map unitToKill = new HashMap();
   Map unitToGenFallThrough = new HashMap();
@@ -60,7 +62,9 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     tagCasts();
   }
 
-  /** Put the results of the analysis into tags in cast statements. */
+  /**
+   * Put the results of the analysis into tags in cast statements.
+   */
   protected void tagCasts() {
     for (Unit unit : ((UnitGraph) graph).getBody().getUnits()) {
       final Stmt s = (Stmt) unit;
@@ -118,7 +122,9 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     emptySet = new LocalTypeSet(refLocals, types);
   }
 
-  /** Returns a new, aggressive (local,type) set. */
+  /**
+   * Returns a new, aggressive (local,type) set.
+   */
   @Override
   protected LocalTypeSet newInitialFlow() {
     LocalTypeSet ret = (LocalTypeSet) emptySet.clone();
@@ -126,7 +132,9 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     return ret;
   }
 
-  /** This is the flow function as described in the assignment write-up. */
+  /**
+   * This is the flow function as described in the assignment write-up.
+   */
   @Override
   protected void flowThrough(
       LocalTypeSet in,
@@ -244,7 +252,9 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     o.and(in2);
   }
 
-  /** Returns a new, aggressive (local,type) set. */
+  /**
+   * Returns a new, aggressive (local,type) set.
+   */
   @Override
   protected LocalTypeSet entryInitialFlow() {
     LocalTypeSet ret = (LocalTypeSet) emptySet.clone();

@@ -19,13 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
@@ -122,11 +115,276 @@ import soot.baf.XorInst;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 3-May-2006
+ * <p>Created on 3-May-2006
  */
 public class StackTypeHeightCalculator {
+
+  public static StackEffectSwitch sw = new StackTypeHeightCalculator().new StackEffectSwitch();
+  public static BriefUnitGraph bug = null;
+
+  public static Map<Unit, Stack<Type>> calculateStackHeights(Body b, Map<Local, Local> b2JLocs) {
+    sw.bafToJLocals = b2JLocs;
+    return calculateStackHeights(b, true);
+  }
+
+  public static Map<Unit, Stack<Type>> calculateStackHeights(Body b) {
+    sw.bafToJLocals = null;
+    return calculateStackHeights(b, false);
+  }
+
+  public static Map<Unit, Stack<Type>> calculateStackHeights(Body b, boolean jimpleLocals) {
+    if (!(b instanceof BafBody)) {
+      throw new java.lang.RuntimeException("Expecting Baf Body");
+      // System.out.println("\n"+b.getMethod().getName());
+    }
+
+    Map<Unit, Stack<Type>> results = new HashMap<>();
+    bug = new BriefUnitGraph(b);
+    List<Unit> heads = bug.getHeads();
+    for (int i = 0; i < heads.size(); i++) {
+      Unit h = heads.get(i);
+      RefType handlerExc = isHandlerUnit(b.getTraps(), h);
+      Stack<Type> stack = results.get(h);
+      if (stack != null) {
+        if (stack.size() != (handlerExc != null ? 1 : 0)) {
+          throw new java.lang.RuntimeException(
+              "Problem with stack height - head expects ZERO or one if handler");
+        }
+        continue;
+      }
+
+      List<Unit> worklist = new ArrayList<>();
+      stack = new Stack<>();
+      if (handlerExc != null) {
+        stack.push(handlerExc);
+      }
+      results.put(h, stack);
+      worklist.add(h);
+      while (!worklist.isEmpty()) {
+        Inst inst = (Inst) worklist.remove(0);
+
+        inst.apply(sw);
+
+        stack = updateStack(sw, results.get(inst));
+        Iterator<Unit> lit = bug.getSuccsOf(inst).iterator();
+        while (lit.hasNext()) {
+          Unit next = lit.next();
+          Stack<Type> nxtStck = results.get(next);
+          if (nxtStck != null) {
+            if (nxtStck.size() != stack.size()) {
+              printStack(b.getUnits(), results, false);
+              throw new java.lang.RuntimeException(
+                  "Problem with stack height at: "
+                      + next
+                      + "\n\rHas Stack "
+                      + nxtStck
+                      + " but is expecting "
+                      + stack);
+            }
+            continue;
+          }
+
+          results.put(next, stack);
+          worklist.add(next);
+        }
+      }
+    }
+
+    return results;
+  }
+
+  public static Stack<Type> updateStack(Unit u, Stack<Type> st) {
+    u.apply(sw);
+    return updateStack(sw, st);
+  }
+
+  public static Stack<Type> updateStack(StackEffectSwitch sw, Stack<Type> st) {
+    @SuppressWarnings("unchecked")
+    Stack<Type> clone = (Stack<Type>) st.clone();
+
+    if (sw.remove_types != null) {
+      if (sw.remove_types.length > clone.size()) {
+        String exc = "Expecting values on stack: ";
+        for (Type element : sw.remove_types) {
+          String type = element.toString();
+          if (type.trim().length() == 0) {
+            type = element instanceof RefLikeType ? "L" : "U";
+          }
+
+          exc += type + "  ";
+        }
+        exc += "\n\tbut only found: ";
+        for (int i = 0; i < clone.size(); i++) {
+          String type = clone.get(i).toString();
+          if (type.trim().length() == 0) {
+            type = clone.get(i) instanceof RefLikeType ? "L" : "U";
+          }
+
+          exc += type + "  ";
+        }
+
+        if (sw.shouldThrow) {
+          throw new RuntimeException(exc);
+        } else {
+          G.v().out.println(exc);
+        }
+      }
+      for (int i = sw.remove_types.length - 1; i >= 0; i--) {
+        try {
+          Type t = clone.pop();
+
+          if (!checkTypes(t, sw.remove_types[i])) {
+            // System.out.println("Incompatible types: " + t + "  :
+            // "+sw.remove_types[i]);
+          }
+        } catch (Exception exc) {
+          return null;
+        }
+      }
+    }
+
+    if (sw.add_types != null) {
+      for (Type element : sw.add_types) {
+        clone.push(element);
+      }
+    }
+
+    return clone;
+  }
+
+  private static boolean checkTypes(Type t1, Type t2) {
+    if (t1 == t2) {
+      return true;
+    }
+
+    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
+      return true;
+    }
+
+    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
+      return true;
+    }
+
+    if (t1 instanceof LongType && t2 instanceof LongType) {
+      return true;
+    }
+
+    if (t1 instanceof DoubleType && t2 instanceof DoubleType) {
+      return true;
+    }
+
+    return t1 instanceof FloatType && t2 instanceof FloatType;
+  }
+
+  public static void printStack(
+      PatchingChain<Unit> units, Map<Unit, Stack<Type>> stacks, boolean before) {
+
+    int count = 0;
+    sw.shouldThrow = false;
+    Map<Unit, Integer> indexes = new HashMap<>();
+    Iterator<Unit> it = units.snapshotIterator();
+    while (it.hasNext()) {
+      indexes.put(it.next(), new Integer(count++));
+    }
+    it = units.snapshotIterator();
+    while (it.hasNext()) {
+      String s = "";
+      Unit unit = it.next();
+      if (unit instanceof TargetArgInst) {
+        Object t = ((TargetArgInst) unit).getTarget();
+        s = indexes.get(t).toString();
+      } else if (unit instanceof TableSwitchInst) {
+        TableSwitchInst tswi = (TableSwitchInst) unit;
+        s +=
+            "\r\tdefault: " + tswi.getDefaultTarget() + "  " + indexes.get(tswi.getDefaultTarget());
+        int index = 0;
+        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
+          s +=
+              "\r\t "
+                  + x
+                  + ": "
+                  + tswi.getTarget(index)
+                  + "  "
+                  + indexes.get(tswi.getTarget(index++));
+        }
+      }
+      try {
+        s = indexes.get(unit) + " " + unit + "  " + s + "   [";
+      } catch (Exception e) {
+        G.v().out.println("Error in StackTypeHeightCalculator trying to find index of unit");
+      }
+      Stack<Type> stack = stacks.get(unit);
+      if (stack != null) {
+        if (!before) {
+          unit.apply(sw);
+          stack = updateStack(sw, stack);
+          if (stack == null) {
+            soot.jbco.util.Debugger.printUnits(units, " StackTypeHeightCalc failed");
+            sw.shouldThrow = true;
+            return;
+          }
+        }
+        for (int i = 0; i < stack.size(); i++) {
+          s += printType(stack.get(i));
+        }
+      } else {
+        s += "***missing***";
+      }
+      System.out.println(s + "]");
+    }
+    sw.shouldThrow = true;
+  }
+
+  private static String printType(Type t) {
+    if (t instanceof IntegerType) {
+      return "I";
+    } else if (t instanceof FloatType) {
+      return "F";
+    } else if (t instanceof DoubleType) {
+      return "D";
+    } else if (t instanceof LongType) {
+      return "J";
+    } else if (t instanceof RefLikeType) {
+
+      // if (t instanceof RefType && ((RefType)t).getSootClass() != null)
+      //  return "L(" + ((RefType)t).getSootClass().getName()+")";
+      // else
+      return "L" + t.toString();
+    } else {
+      return "U(" + t.getClass().toString() + ")";
+    }
+  }
+
+  private static RefType isHandlerUnit(Chain<Trap> traps, Unit h) {
+    Iterator<Trap> it = traps.iterator();
+    while (it.hasNext()) {
+      Trap t = it.next();
+      if (t.getHandlerUnit() == h) {
+        return t.getException().getType();
+      }
+    }
+    return null;
+  }
+
+  public static Stack<Type> getAfterStack(Body b, Unit u) {
+    Stack<Type> stack = calculateStackHeights(b).get(u);
+    u.apply(sw);
+    return updateStack(sw, stack);
+  }
+
+  public static Stack<Type> getAfterStack(Stack<Type> beforeStack, Unit u) {
+    u.apply(sw);
+    return updateStack(sw, beforeStack);
+  }
 
   protected class StackEffectSwitch implements InstSwitch {
 
@@ -636,263 +894,5 @@ public class StackTypeHeightCalculator {
       remove_types = new Type[] {RefType.v("java.lang.Object")};
       add_types = null;
     }
-  }
-
-  public static StackEffectSwitch sw = new StackTypeHeightCalculator().new StackEffectSwitch();
-  public static BriefUnitGraph bug = null;
-
-  public static Map<Unit, Stack<Type>> calculateStackHeights(Body b, Map<Local, Local> b2JLocs) {
-    sw.bafToJLocals = b2JLocs;
-    return calculateStackHeights(b, true);
-  }
-
-  public static Map<Unit, Stack<Type>> calculateStackHeights(Body b) {
-    sw.bafToJLocals = null;
-    return calculateStackHeights(b, false);
-  }
-
-  public static Map<Unit, Stack<Type>> calculateStackHeights(Body b, boolean jimpleLocals) {
-    if (!(b instanceof BafBody)) {
-      throw new java.lang.RuntimeException("Expecting Baf Body");
-      // System.out.println("\n"+b.getMethod().getName());
-    }
-
-    Map<Unit, Stack<Type>> results = new HashMap<>();
-    bug = new BriefUnitGraph(b);
-    List<Unit> heads = bug.getHeads();
-    for (int i = 0; i < heads.size(); i++) {
-      Unit h = heads.get(i);
-      RefType handlerExc = isHandlerUnit(b.getTraps(), h);
-      Stack<Type> stack = results.get(h);
-      if (stack != null) {
-        if (stack.size() != (handlerExc != null ? 1 : 0)) {
-          throw new java.lang.RuntimeException(
-              "Problem with stack height - head expects ZERO or one if handler");
-        }
-        continue;
-      }
-
-      List<Unit> worklist = new ArrayList<>();
-      stack = new Stack<>();
-      if (handlerExc != null) {
-        stack.push(handlerExc);
-      }
-      results.put(h, stack);
-      worklist.add(h);
-      while (!worklist.isEmpty()) {
-        Inst inst = (Inst) worklist.remove(0);
-
-        inst.apply(sw);
-
-        stack = updateStack(sw, results.get(inst));
-        Iterator<Unit> lit = bug.getSuccsOf(inst).iterator();
-        while (lit.hasNext()) {
-          Unit next = lit.next();
-          Stack<Type> nxtStck = results.get(next);
-          if (nxtStck != null) {
-            if (nxtStck.size() != stack.size()) {
-              printStack(b.getUnits(), results, false);
-              throw new java.lang.RuntimeException(
-                  "Problem with stack height at: "
-                      + next
-                      + "\n\rHas Stack "
-                      + nxtStck
-                      + " but is expecting "
-                      + stack);
-            }
-            continue;
-          }
-
-          results.put(next, stack);
-          worklist.add(next);
-        }
-      }
-    }
-
-    return results;
-  }
-
-  public static Stack<Type> updateStack(Unit u, Stack<Type> st) {
-    u.apply(sw);
-    return updateStack(sw, st);
-  }
-
-  public static Stack<Type> updateStack(StackEffectSwitch sw, Stack<Type> st) {
-    @SuppressWarnings("unchecked")
-    Stack<Type> clone = (Stack<Type>) st.clone();
-
-    if (sw.remove_types != null) {
-      if (sw.remove_types.length > clone.size()) {
-        String exc = "Expecting values on stack: ";
-        for (Type element : sw.remove_types) {
-          String type = element.toString();
-          if (type.trim().length() == 0) {
-            type = element instanceof RefLikeType ? "L" : "U";
-          }
-
-          exc += type + "  ";
-        }
-        exc += "\n\tbut only found: ";
-        for (int i = 0; i < clone.size(); i++) {
-          String type = clone.get(i).toString();
-          if (type.trim().length() == 0) {
-            type = clone.get(i) instanceof RefLikeType ? "L" : "U";
-          }
-
-          exc += type + "  ";
-        }
-
-        if (sw.shouldThrow) {
-          throw new RuntimeException(exc);
-        } else {
-          G.v().out.println(exc);
-        }
-      }
-      for (int i = sw.remove_types.length - 1; i >= 0; i--) {
-        try {
-          Type t = clone.pop();
-
-          if (!checkTypes(t, sw.remove_types[i])) {
-            // System.out.println("Incompatible types: " + t + "  :
-            // "+sw.remove_types[i]);
-          }
-        } catch (Exception exc) {
-          return null;
-        }
-      }
-    }
-
-    if (sw.add_types != null) {
-      for (Type element : sw.add_types) {
-        clone.push(element);
-      }
-    }
-
-    return clone;
-  }
-
-  private static boolean checkTypes(Type t1, Type t2) {
-    if (t1 == t2) {
-      return true;
-    }
-
-    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
-      return true;
-    }
-
-    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
-      return true;
-    }
-
-    if (t1 instanceof LongType && t2 instanceof LongType) {
-      return true;
-    }
-
-    if (t1 instanceof DoubleType && t2 instanceof DoubleType) {
-      return true;
-    }
-
-    return t1 instanceof FloatType && t2 instanceof FloatType;
-  }
-
-  public static void printStack(
-      PatchingChain<Unit> units, Map<Unit, Stack<Type>> stacks, boolean before) {
-
-    int count = 0;
-    sw.shouldThrow = false;
-    Map<Unit, Integer> indexes = new HashMap<>();
-    Iterator<Unit> it = units.snapshotIterator();
-    while (it.hasNext()) {
-      indexes.put(it.next(), new Integer(count++));
-    }
-    it = units.snapshotIterator();
-    while (it.hasNext()) {
-      String s = "";
-      Unit unit = it.next();
-      if (unit instanceof TargetArgInst) {
-        Object t = ((TargetArgInst) unit).getTarget();
-        s = indexes.get(t).toString();
-      } else if (unit instanceof TableSwitchInst) {
-        TableSwitchInst tswi = (TableSwitchInst) unit;
-        s +=
-            "\r\tdefault: " + tswi.getDefaultTarget() + "  " + indexes.get(tswi.getDefaultTarget());
-        int index = 0;
-        for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
-          s +=
-              "\r\t "
-                  + x
-                  + ": "
-                  + tswi.getTarget(index)
-                  + "  "
-                  + indexes.get(tswi.getTarget(index++));
-        }
-      }
-      try {
-        s = indexes.get(unit) + " " + unit + "  " + s + "   [";
-      } catch (Exception e) {
-        G.v().out.println("Error in StackTypeHeightCalculator trying to find index of unit");
-      }
-      Stack<Type> stack = stacks.get(unit);
-      if (stack != null) {
-        if (!before) {
-          unit.apply(sw);
-          stack = updateStack(sw, stack);
-          if (stack == null) {
-            soot.jbco.util.Debugger.printUnits(units, " StackTypeHeightCalc failed");
-            sw.shouldThrow = true;
-            return;
-          }
-        }
-        for (int i = 0; i < stack.size(); i++) {
-          s += printType(stack.get(i));
-        }
-      } else {
-        s += "***missing***";
-      }
-      System.out.println(s + "]");
-    }
-    sw.shouldThrow = true;
-  }
-
-  private static String printType(Type t) {
-    if (t instanceof IntegerType) {
-      return "I";
-    } else if (t instanceof FloatType) {
-      return "F";
-    } else if (t instanceof DoubleType) {
-      return "D";
-    } else if (t instanceof LongType) {
-      return "J";
-    } else if (t instanceof RefLikeType) {
-
-      // if (t instanceof RefType && ((RefType)t).getSootClass() != null)
-      //  return "L(" + ((RefType)t).getSootClass().getName()+")";
-      // else
-      return "L" + t.toString();
-    } else {
-      return "U(" + t.getClass().toString() + ")";
-    }
-  }
-
-  private static RefType isHandlerUnit(Chain<Trap> traps, Unit h) {
-    Iterator<Trap> it = traps.iterator();
-    while (it.hasNext()) {
-      Trap t = it.next();
-      if (t.getHandlerUnit() == h) {
-        return t.getException().getType();
-      }
-    }
-    return null;
-  }
-
-  public static Stack<Type> getAfterStack(Body b, Unit u) {
-    Stack<Type> stack = calculateStackHeights(b).get(u);
-    u.apply(sw);
-    return updateStack(sw, stack);
-  }
-
-  public static Stack<Type> getAfterStack(Stack<Type> beforeStack, Unit u) {
-    u.apply(sw);
-    return updateStack(sw, beforeStack);
   }
 }

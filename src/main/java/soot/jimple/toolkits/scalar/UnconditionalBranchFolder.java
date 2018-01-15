@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -41,17 +37,20 @@ import soot.jimple.StmtBody;
 import soot.options.Options;
 import soot.util.Chain;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 public class UnconditionalBranchFolder extends BodyTransformer {
-  public UnconditionalBranchFolder(Singletons.Global g) {}
+  static final int JUMPOPT_TYPES = 6;
+  int numFound[], numFixed[];
+  HashMap<Stmt, Stmt> stmtMap;
+  public UnconditionalBranchFolder(Singletons.Global g) {
+  }
 
   public static UnconditionalBranchFolder v() {
     return G.v().soot_jimple_toolkits_scalar_UnconditionalBranchFolder();
   }
-
-  static final int JUMPOPT_TYPES = 6;
-  int numFound[], numFixed[];
-
-  HashMap<Stmt, Stmt> stmtMap;
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {

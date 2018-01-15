@@ -28,10 +28,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -59,6 +55,10 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
 /*
 	ArrayRef
 	GetField
@@ -73,15 +73,15 @@ import soot.util.Chain;
  */
 
 public class NullPointerChecker extends BodyTransformer {
-  public NullPointerChecker(Singletons.Global g) {}
+  private boolean isProfiling = false;
+  private boolean enableOther = true;
+
+  public NullPointerChecker(Singletons.Global g) {
+  }
 
   public static NullPointerChecker v() {
     return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker();
   }
-
-  private boolean isProfiling = false;
-
-  private boolean enableOther = true;
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
@@ -130,54 +130,54 @@ public class NullPointerChecker extends BodyTransformer {
             if (s instanceof ThrowStmt) {
               obj = ((ThrowStmt) s).getOp();
             } else
-            // Monitor enter and exit
-            if (s instanceof MonitorStmt) {
-              obj = ((MonitorStmt) s).getOp();
-            } else {
-              Iterator<ValueBox> boxIt;
-              boxIt = s.getDefBoxes().iterator();
-              while (boxIt.hasNext()) {
-                ValueBox vBox = boxIt.next();
-                Value v = vBox.getValue();
+              // Monitor enter and exit
+              if (s instanceof MonitorStmt) {
+                obj = ((MonitorStmt) s).getOp();
+              } else {
+                Iterator<ValueBox> boxIt;
+                boxIt = s.getDefBoxes().iterator();
+                while (boxIt.hasNext()) {
+                  ValueBox vBox = boxIt.next();
+                  Value v = vBox.getValue();
 
-                // putfield, and getfield
-                if (v instanceof InstanceFieldRef) {
-                  obj = ((InstanceFieldRef) v).getBase();
-                  break;
-                } else
-                // invokevirtual, invokespecial, invokeinterface
-                if (v instanceof InstanceInvokeExpr) {
-                  obj = ((InstanceInvokeExpr) v).getBase();
-                  break;
-                } else
-                // arraylength
-                if (v instanceof LengthExpr) {
-                  obj = ((LengthExpr) v).getOp();
-                  break;
+                  // putfield, and getfield
+                  if (v instanceof InstanceFieldRef) {
+                    obj = ((InstanceFieldRef) v).getBase();
+                    break;
+                  } else
+                    // invokevirtual, invokespecial, invokeinterface
+                    if (v instanceof InstanceInvokeExpr) {
+                      obj = ((InstanceInvokeExpr) v).getBase();
+                      break;
+                    } else
+                      // arraylength
+                      if (v instanceof LengthExpr) {
+                        obj = ((LengthExpr) v).getOp();
+                        break;
+                      }
+                }
+                boxIt = s.getUseBoxes().iterator();
+                while (boxIt.hasNext()) {
+                  ValueBox vBox = boxIt.next();
+                  Value v = vBox.getValue();
+
+                  // putfield, and getfield
+                  if (v instanceof InstanceFieldRef) {
+                    obj = ((InstanceFieldRef) v).getBase();
+                    break;
+                  } else
+                    // invokevirtual, invokespecial, invokeinterface
+                    if (v instanceof InstanceInvokeExpr) {
+                      obj = ((InstanceInvokeExpr) v).getBase();
+                      break;
+                    } else
+                      // arraylength
+                      if (v instanceof LengthExpr) {
+                        obj = ((LengthExpr) v).getOp();
+                        break;
+                      }
                 }
               }
-              boxIt = s.getUseBoxes().iterator();
-              while (boxIt.hasNext()) {
-                ValueBox vBox = boxIt.next();
-                Value v = vBox.getValue();
-
-                // putfield, and getfield
-                if (v instanceof InstanceFieldRef) {
-                  obj = ((InstanceFieldRef) v).getBase();
-                  break;
-                } else
-                // invokevirtual, invokespecial, invokeinterface
-                if (v instanceof InstanceInvokeExpr) {
-                  obj = ((InstanceInvokeExpr) v).getBase();
-                  break;
-                } else
-                // arraylength
-                if (v instanceof LengthExpr) {
-                  obj = ((LengthExpr) v).getOp();
-                  break;
-                }
-              }
-            }
           }
         }
 

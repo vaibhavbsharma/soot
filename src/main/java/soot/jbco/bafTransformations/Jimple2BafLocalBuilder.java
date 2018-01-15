@@ -19,30 +19,30 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.jbco.IJbcoTransform;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 16-Jun-2006
+ * <p>Created on 16-Jun-2006
  */
 public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTransform {
 
   public static String dependancies[] = new String[] {"jtp.jbco_jl", "bb.jbco_j2bl", "bb.lp"};
+  public static String name = "bb.jbco_j2bl";
+  private static boolean runOnce = false;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_j2bl";
 
   @Override
   public String getName() {
@@ -50,9 +50,8 @@ public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTran
   }
 
   @Override
-  public void outputSummary() {}
-
-  private static boolean runOnce = false;
+  public void outputSummary() {
+  }
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {

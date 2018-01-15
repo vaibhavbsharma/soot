@@ -37,6 +37,9 @@ import java.util.Set;
 public class IterableMap implements Map {
   private HashMap<Object, Object> content_map, back_map;
   private HashChain key_chain, value_chain;
+  private transient Set<Object> keySet = null;
+  private transient Set<Object> valueSet = null;
+  private transient Collection<Object> values = null;
 
   public IterableMap() {
     this(7, 0.7f);
@@ -131,10 +134,6 @@ public class IterableMap implements Map {
   public boolean isEmpty() {
     return key_chain.isEmpty();
   }
-
-  private transient Set<Object> keySet = null;
-  private transient Set<Object> valueSet = null;
-  private transient Collection<Object> values = null;
 
   @Override
   public Set<Object> keySet() {

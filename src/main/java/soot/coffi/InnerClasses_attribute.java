@@ -28,13 +28,17 @@ package soot.coffi;
 /**
  * Attribute that connects inner classes with their containing classes.
  *
- * @see attribute_info
  * @author Archie L. Cobbs
+ * @see attribute_info
  */
 class InnerClasses_attribute extends attribute_info {
-  /** Length of the inner classes table. */
+  /**
+   * Length of the inner classes table.
+   */
   public int inner_classes_length;
-  /** Actual table of local variables. */
+  /**
+   * Actual table of local variables.
+   */
   public inner_class_entry inner_classes[];
 
   @Override

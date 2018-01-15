@@ -45,7 +45,9 @@ public class FloatConstant extends RealConstant {
     return c instanceof FloatConstant && ((FloatConstant) c).value == value;
   }
 
-  /** Returns a hash code for this FloatConstant object. */
+  /**
+   * Returns a hash code for this FloatConstant object.
+   */
   @Override
   public int hashCode() {
     return Float.floatToIntBits(value);
@@ -151,7 +153,8 @@ public class FloatConstant extends RealConstant {
     } else if (this.value == cValue) {
       return IntConstant.v(0);
     } else {
-      /* this or c could be NaN */ return IntConstant.v(1);
+      /* this or c could be NaN */
+      return IntConstant.v(1);
     }
   }
 
@@ -166,7 +169,8 @@ public class FloatConstant extends RealConstant {
     } else if (this.value == cValue) {
       return IntConstant.v(0);
     } else {
-      /* this or c could be NaN */ return IntConstant.v(-1);
+      /* this or c could be NaN */
+      return IntConstant.v(-1);
     }
   }
 

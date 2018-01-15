@@ -25,14 +25,14 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.TreeSet;
-
 import soot.ArrayType;
 import soot.G;
 import soot.RefType;
 import soot.options.Options;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
+
+import java.util.TreeSet;
 
 /**
  * Represents a type variable.
@@ -80,6 +80,30 @@ class TypeVariableBV implements Comparable<Object> {
     if (type.hasElement()) {
       element = resolver.typeVariable(type.element());
       element.array = this;
+    }
+  }
+
+  static void error(String message) throws TypeException {
+    try {
+      throw new TypeException(message);
+    } catch (TypeException e) {
+      if (DEBUG) {
+        e.printStackTrace();
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Computes approximative types. The work list must be initialized with all constant type
+   * variables.
+   */
+  public static void computeApprox(TreeSet<TypeVariableBV> workList) throws TypeException {
+    while (workList.size() > 0) {
+      TypeVariableBV var = workList.first();
+      workList.remove(var);
+
+      var.fixApprox(workList);
     }
   }
 
@@ -428,30 +452,6 @@ class TypeVariableBV implements Comparable<Object> {
     }
 
     return type;
-  }
-
-  static void error(String message) throws TypeException {
-    try {
-      throw new TypeException(message);
-    } catch (TypeException e) {
-      if (DEBUG) {
-        e.printStackTrace();
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * Computes approximative types. The work list must be initialized with all constant type
-   * variables.
-   */
-  public static void computeApprox(TreeSet<TypeVariableBV> workList) throws TypeException {
-    while (workList.size() > 0) {
-      TypeVariableBV var = workList.first();
-      workList.remove(var);
-
-      var.fixApprox(workList);
-    }
   }
 
   private void fixApprox(TreeSet<TypeVariableBV> workList) throws TypeException {

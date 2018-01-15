@@ -16,13 +16,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.sets;
 
-import java.util.Set;
+package soot.jimple.spark.sets;
 
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.ClassConstant;
+
+import java.util.Set;
 
 /**
  * A decorator that implements equals/hashCode for {@link PointsToSet} supporting the {@link
@@ -38,14 +39,18 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
     this.pts = pts;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     // delegate
     return pts.pointsToSetHashCode();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj || this.pts == obj) {
@@ -114,7 +119,9 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
     return obj;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     return pts.toString();

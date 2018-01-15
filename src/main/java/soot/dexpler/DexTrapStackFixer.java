@@ -1,7 +1,5 @@
 package soot.dexpler;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -13,12 +11,14 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
+import java.util.Map;
+
 /**
  * Transformer to ensure that all exception handlers pull the exception object. In other words, if
  * an exception handler must always have a unit like
- *
+ * <p>
  * <p>$r10 = @caughtexception
- *
+ * <p>
  * <p>This is especially important if the dex code is later to be translated into Java bytecode. If
  * no one ever accesses the exception object, it will reside on the stack forever, potentially
  * leading to mismatching stack heights.

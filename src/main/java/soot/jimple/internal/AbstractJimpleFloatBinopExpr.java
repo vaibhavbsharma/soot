@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.Type;
 import soot.Unit;
 import soot.Value;
@@ -34,6 +32,8 @@ import soot.ValueBox;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractJimpleFloatBinopExpr extends AbstractFloatBinopExpr

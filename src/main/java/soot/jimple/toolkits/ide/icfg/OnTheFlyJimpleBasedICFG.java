@@ -1,18 +1,7 @@
 package soot.jimple.toolkits.ide.icfg;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 import soot.ArrayType;
@@ -38,6 +27,16 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
 import soot.options.Options;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * This is an implementation of AbstractJimpleBasedICFG that computes the ICFG on-the-fly. In other
  * words, it can be used without pre-computing a call graph. Instead this implementation resolves
@@ -45,7 +44,7 @@ import soot.options.Options;
  * supported by LocalMustNotAliasAnalysis, which is used to determine cases where the concrete type
  * of an object at an InvokeVirtual or InvokeInterface callsite is known. In these cases the call
  * can be resolved concretely, i.e., to a single target.
- *
+ * <p>
  * <p>To be sound, for InvokeInterface calls that cannot be resolved concretely,
  * OnTheFlyJimpleBasedICFG requires that all classes on the classpath be loaded at least to
  * signatures. This must be done before the FastHierarchy is computed such that the hierarchy is
@@ -131,68 +130,6 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     }
   }
 
-  protected Body initForMethod(SootMethod m) {
-    assert Scene.v().hasFastHierarchy();
-    Body b = null;
-    if (m.isConcrete()) {
-      SootClass declaringClass = m.getDeclaringClass();
-      ensureClassHasBodies(declaringClass);
-      synchronized (Scene.v()) {
-        b = m.retrieveActiveBody();
-      }
-      if (b != null) {
-        for (Unit u : b.getUnits()) {
-          if (unitToOwner.put(u, b) != null) {
-            // if the unit was registered already then so were all units;
-            // simply skip the rest
-            break;
-          }
-        }
-      }
-    }
-    assert Scene.v().hasFastHierarchy();
-    return b;
-  }
-
-  private synchronized void ensureClassHasBodies(SootClass cl) {
-    assert Scene.v().hasFastHierarchy();
-    if (cl.resolvingLevel() < SootClass.BODIES) {
-      Scene.v().forceResolve(cl.getName(), SootClass.BODIES);
-      Scene.v().getOrMakeFastHierarchy();
-    }
-    assert Scene.v().hasFastHierarchy();
-  }
-
-  @Override
-  public Set<SootMethod> getCalleesOfCallAt(Unit u) {
-    Set<SootMethod> targets = unitToCallees.getUnchecked(u);
-    for (SootMethod m : targets) {
-      addCallerForMethod(u, m);
-      initForMethod(m);
-    }
-    return targets;
-  }
-
-  private void addCallerForMethod(Unit callSite, SootMethod target) {
-    synchronized (methodToCallers) {
-      Set<Unit> callers = methodToCallers.get(target);
-      if (callers == null) {
-        callers = new HashSet<>();
-        methodToCallers.put(target, callers);
-      }
-      callers.add(callSite);
-    }
-  }
-
-  @Override
-  public Set<Unit> getCallersOf(SootMethod m) {
-    Set<Unit> callers = methodToCallers.get(m);
-    return callers == null ? Collections.emptySet() : callers;
-
-    //		throw new UnsupportedOperationException("This class is not suited for unbalanced
-    // problems");
-  }
-
   public static void loadAllClassesOnClassPathToSignatures() {
     for (String path : SourceLocator.explodeClassPath(Scene.v().getSootClassPath())) {
       for (String cl : SourceLocator.v().getClassesUnder(path)) {
@@ -261,5 +198,67 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
                 }));
     Options.v().set_on_the_fly(true);
     soot.Main.main(args);
+  }
+
+  protected Body initForMethod(SootMethod m) {
+    assert Scene.v().hasFastHierarchy();
+    Body b = null;
+    if (m.isConcrete()) {
+      SootClass declaringClass = m.getDeclaringClass();
+      ensureClassHasBodies(declaringClass);
+      synchronized (Scene.v()) {
+        b = m.retrieveActiveBody();
+      }
+      if (b != null) {
+        for (Unit u : b.getUnits()) {
+          if (unitToOwner.put(u, b) != null) {
+            // if the unit was registered already then so were all units;
+            // simply skip the rest
+            break;
+          }
+        }
+      }
+    }
+    assert Scene.v().hasFastHierarchy();
+    return b;
+  }
+
+  private synchronized void ensureClassHasBodies(SootClass cl) {
+    assert Scene.v().hasFastHierarchy();
+    if (cl.resolvingLevel() < SootClass.BODIES) {
+      Scene.v().forceResolve(cl.getName(), SootClass.BODIES);
+      Scene.v().getOrMakeFastHierarchy();
+    }
+    assert Scene.v().hasFastHierarchy();
+  }
+
+  @Override
+  public Set<SootMethod> getCalleesOfCallAt(Unit u) {
+    Set<SootMethod> targets = unitToCallees.getUnchecked(u);
+    for (SootMethod m : targets) {
+      addCallerForMethod(u, m);
+      initForMethod(m);
+    }
+    return targets;
+  }
+
+  private void addCallerForMethod(Unit callSite, SootMethod target) {
+    synchronized (methodToCallers) {
+      Set<Unit> callers = methodToCallers.get(target);
+      if (callers == null) {
+        callers = new HashSet<>();
+        methodToCallers.put(target, callers);
+      }
+      callers.add(callSite);
+    }
+  }
+
+  @Override
+  public Set<Unit> getCallersOf(SootMethod m) {
+    Set<Unit> callers = methodToCallers.get(m);
+    return callers == null ? Collections.emptySet() : callers;
+
+    //		throw new UnsupportedOperationException("This class is not suited for unbalanced
+    // problems");
   }
 }

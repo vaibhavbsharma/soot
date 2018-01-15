@@ -19,9 +19,6 @@
 
 package soot.jimple.spark.sets;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import soot.G;
 import soot.PointsToSet;
 import soot.RefType;
@@ -34,12 +31,21 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.util.BitVector;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Abstract base class for implementations of points-to sets.
  *
  * @author Ondrej Lhotak
  */
 public abstract class PointsToSetInternal implements PointsToSet, EqualsSupportingPointsToSet {
+  protected Type type;
+
+  public PointsToSetInternal(Type type) {
+    this.type = type;
+  }
+
   /**
    * Adds contents of other minus the contents of exclude into this set; returns true if this set
    * changed.
@@ -76,32 +82,54 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
           }
         });
   }
-  /** Calls v's visit method on all nodes in this set. */
+
+  /**
+   * Calls v's visit method on all nodes in this set.
+   */
   public abstract boolean forall(P2SetVisitor v);
-  /** Adds n to this set, returns true if n was not already in this set. */
+
+  /**
+   * Adds n to this set, returns true if n was not already in this set.
+   */
   public abstract boolean add(Node n);
-  /** Returns set of newly-added nodes since last call to flushNew. */
+
+  /**
+   * Returns set of newly-added nodes since last call to flushNew.
+   */
   public PointsToSetInternal getNewSet() {
     return this;
   }
-  /** Returns set of nodes already present before last call to flushNew. */
+
+  /**
+   * Returns set of nodes already present before last call to flushNew.
+   */
   public PointsToSetInternal getOldSet() {
     return EmptyPointsToSet.v();
   }
-  /** Sets all newly-added nodes to old nodes. */
-  public void flushNew() {}
-  /** Sets all nodes to newly-added nodes. */
-  public void unFlushNew() {}
-  /** Merges other into this set. */
+
+  /**
+   * Sets all newly-added nodes to old nodes.
+   */
+  public void flushNew() {
+  }
+
+  /**
+   * Sets all nodes to newly-added nodes.
+   */
+  public void unFlushNew() {
+  }
+
+  /**
+   * Merges other into this set.
+   */
   public void mergeWith(PointsToSetInternal other) {
     addAll(other, null);
   }
-  /** Returns true iff the set contains n. */
-  public abstract boolean contains(Node n);
 
-  public PointsToSetInternal(Type type) {
-    this.type = type;
-  }
+  /**
+   * Returns true iff the set contains n.
+   */
+  public abstract boolean contains(Node n);
 
   @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
@@ -174,34 +202,16 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
   public Set<String> possibleStringConstants() {
     final HashSet<String> ret = new HashSet<>();
     return this.forall(
-            new P2SetVisitor() {
-              @Override
-              public final void visit(Node n) {
-                if (n instanceof StringConstantNode) {
-                  ret.add(((StringConstantNode) n).getString());
-                } else {
-                  returnValue = true;
-                }
-              }
-            })
-        ? null
-        : ret;
-  }
-
-  @Override
-  public Set<ClassConstant> possibleClassConstants() {
-    final HashSet<ClassConstant> ret = new HashSet<>();
-    return this.forall(
-            new P2SetVisitor() {
-              @Override
-              public final void visit(Node n) {
-                if (n instanceof ClassConstantNode) {
-                  ret.add(((ClassConstantNode) n).getClassConstant());
-                } else {
-                  returnValue = true;
-                }
-              }
-            })
+        new P2SetVisitor() {
+          @Override
+          public final void visit(Node n) {
+            if (n instanceof StringConstantNode) {
+              ret.add(((StringConstantNode) n).getString());
+            } else {
+              returnValue = true;
+            }
+          }
+        })
         ? null
         : ret;
   }
@@ -209,7 +219,23 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
   /* End of public methods. */
   /* End of package methods. */
 
-  protected Type type;
+  @Override
+  public Set<ClassConstant> possibleClassConstants() {
+    final HashSet<ClassConstant> ret = new HashSet<>();
+    return this.forall(
+        new P2SetVisitor() {
+          @Override
+          public final void visit(Node n) {
+            if (n instanceof ClassConstantNode) {
+              ret.add(((ClassConstantNode) n).getClassConstant());
+            } else {
+              returnValue = true;
+            }
+          }
+        })
+        ? null
+        : ret;
+  }
 
   // Added by Adam Richard
   protected BitVector getBitMask(PointsToSetInternal other, PAG pag) {
@@ -229,7 +255,9 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     return mask;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int pointsToSetHashCode() {
     P2SetVisitorInt visitor =
@@ -246,7 +274,9 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
     return visitor.intValue;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean pointsToSetEquals(Object other) {
     if (this == other) {

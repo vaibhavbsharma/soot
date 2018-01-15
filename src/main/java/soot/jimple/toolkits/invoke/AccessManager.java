@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 import soot.Body;
 import soot.ClassMember;
 import soot.Hierarchy;
@@ -53,7 +50,12 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 
-/** Methods for checking Java scope and visibiliity requirements. */
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+/**
+ * Methods for checking Java scope and visibiliity requirements.
+ */
 public class AccessManager {
   /**
    * Returns true iff target is legally accessible from container. Illegal access occurs when any of
@@ -464,7 +466,7 @@ public class AccessManager {
   /**
    * Modifies code so that an access to <code>target</code> is legal from code in <code>container
    * </code>.
-   *
+   * <p>
    * <p>The "accessors" option assumes suitable accessor methods will be created after checking.
    */
   public static boolean ensureAccess(SootMethod container, ClassMember target, String options) {

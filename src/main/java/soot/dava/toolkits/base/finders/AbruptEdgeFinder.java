@@ -19,8 +19,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.Iterator;
-
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -34,8 +32,11 @@ import soot.dava.internal.asg.AugmentedStmtGraph;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.util.IterableSet;
 
+import java.util.Iterator;
+
 public class AbruptEdgeFinder implements FactFinder {
-  public AbruptEdgeFinder(Singletons.Global g) {}
+  public AbruptEdgeFinder(Singletons.Global g) {
+  }
 
   public static AbruptEdgeFinder v() {
     return G.v().soot_dava_toolkits_base_finders_AbruptEdgeFinder();

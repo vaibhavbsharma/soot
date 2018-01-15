@@ -19,13 +19,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -41,14 +34,22 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.asg.AugmentedStmtGraph;
 import soot.util.IterableSet;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
+
 public class LabeledBlockFinder implements FactFinder {
-  public LabeledBlockFinder(Singletons.Global g) {}
+  private final HashMap<SETNode, Integer> orderNumber = new HashMap();
+
+  public LabeledBlockFinder(Singletons.Global g) {
+  }
 
   public static LabeledBlockFinder v() {
     return G.v().soot_dava_toolkits_base_finders_LabeledBlockFinder();
   }
-
-  private final HashMap<SETNode, Integer> orderNumber = new HashMap();
 
   @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET)

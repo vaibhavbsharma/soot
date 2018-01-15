@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.dataRep;
 
 /**
@@ -35,22 +36,23 @@ public class SegmentNode implements Comparable<SegmentNode> {
   public SegmentNode next = null;
   public boolean is_new = true;
 
-  public SegmentNode() {}
+  public SegmentNode() {
+  }
 
   public SegmentNode(SegmentNode other) {
     copySegment(other);
-  }
-
-  public void copySegment(SegmentNode other) {
-    I1 = other.I1;
-    I2 = other.I2;
-    L = other.L;
   }
 
   public SegmentNode(long i1, long i2, long l) {
     I1 = i1;
     I2 = i2;
     L = l;
+  }
+
+  public void copySegment(SegmentNode other) {
+    I1 = other.I1;
+    I2 = other.I2;
+    L = other.L;
   }
 
   public boolean equals(SegmentNode other) {

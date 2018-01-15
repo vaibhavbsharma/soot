@@ -1,20 +1,20 @@
 package soot.jimple.toolkits.thread;
 
+import soot.Body;
+import soot.SootMethod;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import soot.Body;
-import soot.SootMethod;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 
 // EncapsulatedObjectAnalysis written by Richard L. Halpert, 2006-12-26
 // Checks if all methods of a class are "object-pure", meaning that
 // they read and write only themselves and new local objects
 
 public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
- {
+{
   List cachedClasses;
   List<SootMethod> objectPureMethods;
   List<SootMethod> objectPureInitMethods;

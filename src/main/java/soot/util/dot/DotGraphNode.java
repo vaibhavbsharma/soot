@@ -32,7 +32,9 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-/** A Dot graph node with various attributes. */
+/**
+ * A Dot graph node with various attributes.
+ */
 public class DotGraphNode implements Renderable {
   private String name;
   private List<DotGraphAttribute> attributes;

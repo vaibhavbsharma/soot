@@ -30,8 +30,15 @@ package soot.util;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
-/** Utility methods for string manipulations commonly used in Soot. */
+/**
+ * Utility methods for string manipulations commonly used in Soot.
+ */
 public class StringTools {
+
+  /**
+   * Convenience field storing the system line separator.
+   */
+  public static final String lineSeparator = System.getProperty("line.separator");
 
   /**
    * Returns fromString, but with non-isalpha() characters printed as <code>'\\unnnn'</code>. Used
@@ -73,9 +80,6 @@ public class StringTools {
 
     return whole.toString();
   }
-
-  /** Convenience field storing the system line separator. */
-  public static final String lineSeparator = System.getProperty("line.separator");
 
   /**
    * Returns fromString, but with certain characters printed as if they were in a Java string
@@ -185,7 +189,9 @@ public class StringTools {
     return buf.toString();
   }
 
-  /** Returns the canonical C-string representation of c. */
+  /**
+   * Returns the canonical C-string representation of c.
+   */
   public static char getCFormatChar(char c) {
     char res;
 

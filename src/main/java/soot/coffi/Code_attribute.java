@@ -29,22 +29,32 @@ package soot.coffi;
  * There should be exactly one code attribute in every method; there may also be a code attribute
  * associated with a field (as an initializer).
  *
+ * @author Clark Verbrugge
  * @see attribute_info
  * @see method_info#attributes
  * @see field_info#attributes
  * @see ClassFile@attributes
- * @author Clark Verbrugge
  */
 class Code_attribute extends attribute_info {
-  /** Maximum size of the operand stack. */
+  /**
+   * Maximum size of the operand stack.
+   */
   public int max_stack;
-  /** Maximum number of locals required. */
+  /**
+   * Maximum number of locals required.
+   */
   public int max_locals;
-  /** Length of code array. */
+  /**
+   * Length of code array.
+   */
   public long code_length;
-  /** Actual array of bytecode. */
+  /**
+   * Actual array of bytecode.
+   */
   public byte code[];
-  /** Length of exception table array. */
+  /**
+   * Length of exception table array.
+   */
   public int exception_table_length;
   /**
    * Exception table array.
@@ -52,7 +62,9 @@ class Code_attribute extends attribute_info {
    * @see exception_table_entry
    */
   public exception_table_entry exception_table[];
-  /** Length of attributes array. */
+  /**
+   * Length of attributes array.
+   */
   int attributes_count;
   /**
    * Array of attributes.

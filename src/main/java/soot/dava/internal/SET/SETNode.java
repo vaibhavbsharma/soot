@@ -19,14 +19,6 @@
 
 package soot.dava.internal.SET;
 
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.dava.DavaBody;
 import soot.dava.internal.AST.ASTNode;
@@ -37,23 +29,22 @@ import soot.dava.toolkits.base.finders.SequenceFinder;
 import soot.util.IterableSet;
 import soot.util.UnmodifiableIterableSet;
 
-public abstract class SETNode {
-  private IterableSet<AugmentedStmt> body;
-  private final SETNodeLabel label;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+public abstract class SETNode {
+  private final SETNodeLabel label;
   protected SETNode parent;
   protected AugmentedStmt entryStmt;
   protected IterableSet predecessors, successors;
   protected LinkedList<IterableSet> subBodies;
   protected Map<IterableSet, IterableSet> body2childChain;
-
-  public abstract IterableSet get_NaturalExits();
-
-  public abstract ASTNode emit_AST();
-
-  public abstract AugmentedStmt get_EntryStmt();
-
-  protected abstract boolean resolve(SETNode parent);
+  private IterableSet<AugmentedStmt> body;
 
   public SETNode(IterableSet<AugmentedStmt> body) {
     this.body = body;
@@ -65,6 +56,14 @@ public abstract class SETNode {
     predecessors = new IterableSet();
     successors = new IterableSet();
   }
+
+  public abstract IterableSet get_NaturalExits();
+
+  public abstract ASTNode emit_AST();
+
+  public abstract AugmentedStmt get_EntryStmt();
+
+  protected abstract boolean resolve(SETNode parent);
 
   public void add_SubBody(IterableSet body) {
     subBodies.add(body);

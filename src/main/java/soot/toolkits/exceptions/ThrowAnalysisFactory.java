@@ -21,7 +21,9 @@ package soot.toolkits.exceptions;
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.options.Options;
 
-/** Factory that returns an appropriate ThrowAnalysis instances for a given task. */
+/**
+ * Factory that returns an appropriate ThrowAnalysis instances for a given task.
+ */
 public class ThrowAnalysisFactory {
 
   /**

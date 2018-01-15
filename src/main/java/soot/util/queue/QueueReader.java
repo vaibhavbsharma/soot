@@ -38,7 +38,10 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     this.q = q;
     this.index = index;
   }
-  /** Returns (and removes) the next object in the queue, or null if there are none. */
+
+  /**
+   * Returns (and removes) the next object in the queue, or null if there are none.
+   */
   @Override
   @SuppressWarnings("unchecked")
   public final E next() {
@@ -60,7 +63,9 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     return ret;
   }
 
-  /** Returns true iff there is currently another object in the queue. */
+  /**
+   * Returns true iff there is currently another object in the queue.
+   */
   @Override
   @SuppressWarnings("unchecked")
   public final boolean hasNext() {

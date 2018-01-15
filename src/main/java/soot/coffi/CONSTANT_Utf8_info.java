@@ -25,31 +25,36 @@
 
 package soot.coffi;
 
+import soot.G;
+import soot.Value;
+import soot.jimple.StringConstant;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import soot.G;
-import soot.Value;
-import soot.jimple.StringConstant;
-
 /**
  * A constant pool entry of type CONSTANT_Utf8; note this is <b>not</b> multithread safe. It is,
  * however, immutable.
  *
- * @see cp_info
  * @author Clark Verbrugge
+ * @see cp_info
  */
 public class CONSTANT_Utf8_info extends cp_info {
+  /**
+   * Byte array of actual utf8 string.
+   */
+  private final byte bytes[];
   // Some local private objects to help with efficient comparisons.
   private int sHashCode;
   // for caching the conversion.
   private String s;
-  /** Byte array of actual utf8 string. */
-  private final byte bytes[];
-  /** Constructor from a DataInputSream */
+
+  /**
+   * Constructor from a DataInputSream
+   */
   public CONSTANT_Utf8_info(DataInputStream d) throws IOException {
     int len;
     len = d.readUnsignedShort();
@@ -63,17 +68,42 @@ public class CONSTANT_Utf8_info extends cp_info {
       }
     }
   }
-  /** For writing out the byte stream for this utf8 properly (incl size). */
+
+  /**
+   * Utility method; converts the given String into a utf8 encoded array of bytes.
+   *
+   * @param s String to encode.
+   * @return array of bytes, utf8 encoded version of s.
+   */
+  public static byte[] toUtf8(String s) {
+    try {
+      ByteArrayOutputStream bs = new ByteArrayOutputStream(s.length());
+      DataOutputStream d = new DataOutputStream(bs);
+      d.writeUTF(s);
+      return bs.toByteArray();
+    } catch (IOException e) {
+      G.v().out.println("Some sort of IO exception in toUtf8 with " + s);
+    }
+    return null;
+  }
+
+  /**
+   * For writing out the byte stream for this utf8 properly (incl size).
+   */
   public void writeBytes(DataOutputStream dd) throws IOException {
     int len;
     len = bytes.length;
     dd.writeShort(len - 2);
     dd.write(bytes, 2, len - 2);
   }
-  /** Length in bytes of byte array. */
+
+  /**
+   * Length in bytes of byte array.
+   */
   public int length() {
     return (((((bytes[0])) & 0xff) << 8) + (((bytes[1])) & 0xff));
   }
+
   /**
    * Returns the size of this cp_info object.
    *
@@ -84,6 +114,7 @@ public class CONSTANT_Utf8_info extends cp_info {
   public int size() {
     return length() + 3;
   }
+
   /**
    * Converts internal representation into an actual String.
    *
@@ -103,6 +134,7 @@ public class CONSTANT_Utf8_info extends cp_info {
     }
     return s;
   }
+
   /**
    * Fixes the actual String used to represent the internal representation. We must have rep ==
    * convert(); we verify hashCodes() to spot-check this. No user-visible effects.
@@ -116,6 +148,7 @@ public class CONSTANT_Utf8_info extends cp_info {
       s = rep;
     }
   }
+
   /**
    * Answers whether this utf8 string is the same as a given one.
    *
@@ -135,12 +168,13 @@ public class CONSTANT_Utf8_info extends cp_info {
     }
     return true;
   }
+
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant
    * pool).
    *
-   * @param constant_pool constant pool of ClassFile for this.
-   * @param cp constant pool entry to compare against.
+   * @param constant_pool    constant pool of ClassFile for this.
+   * @param cp               constant pool entry to compare against.
    * @param cp_constant_pool constant pool of ClassFile for cp.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
@@ -150,6 +184,7 @@ public class CONSTANT_Utf8_info extends cp_info {
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     return compareTo(cp);
   }
+
   /**
    * Compares this entry with another cp_info object; note that for Utf8 object it really doesn't
    * matter whether they're in the same or a different constant pool, since they really do carry all
@@ -158,7 +193,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @param cp constant pool entry to compare against.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
-   * @see CONSTANT_Utf8_info#compareTo(cp_info[],cp_info,cp_info[])
+   * @see CONSTANT_Utf8_info#compareTo(cp_info[], cp_info, cp_info[])
    */
   public int compareTo(cp_info cp) {
     if (tag != cp.tag) {
@@ -168,8 +203,8 @@ public class CONSTANT_Utf8_info extends cp_info {
     G.v().coffi_CONSTANT_Utf8_info_e1.reset(bytes);
     G.v().coffi_CONSTANT_Utf8_info_e2.reset(cu.bytes);
     for (;
-        G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements()
-            && G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements();
+         G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements()
+             && G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements();
         ) {
       G.v().coffi_CONSTANT_Utf8_info_e1.nextElement();
       G.v().coffi_CONSTANT_Utf8_info_e2.nextElement();
@@ -188,23 +223,7 @@ public class CONSTANT_Utf8_info extends cp_info {
     }
     return 0;
   }
-  /**
-   * Utility method; converts the given String into a utf8 encoded array of bytes.
-   *
-   * @param s String to encode.
-   * @return array of bytes, utf8 encoded version of s.
-   */
-  public static byte[] toUtf8(String s) {
-    try {
-      ByteArrayOutputStream bs = new ByteArrayOutputStream(s.length());
-      DataOutputStream d = new DataOutputStream(bs);
-      d.writeUTF(s);
-      return bs.toByteArray();
-    } catch (IOException e) {
-      G.v().out.println("Some sort of IO exception in toUtf8 with " + s);
-    }
-    return null;
-  }
+
   /**
    * Returns a String representation of this entry.
    *
@@ -216,6 +235,7 @@ public class CONSTANT_Utf8_info extends cp_info {
   public String toString(cp_info constant_pool[]) {
     return convert();
   }
+
   /**
    * Returns a String description of what kind of entry this is.
    *

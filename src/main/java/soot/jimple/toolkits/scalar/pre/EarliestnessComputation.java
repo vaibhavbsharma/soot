@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.SideEffectTester;
 import soot.Unit;
@@ -40,24 +35,29 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Computes the earliest points for the given expressions.<br>
  * This basically finds the highest point in the flow-graph where we can put each computation,
  * without introducing new computations on any path.<br>
  * More technically: A computation is earliest, if at the current point the computation is
  * down-safe, and if either:
- *
+ * <p>
  * <ul>
- *   <li>any of the predecessors is not transparent, or
- *   <li>if any predecessors is not "safe" (ie. the insertion of this computation would insert it on
- *       a path, where it was not before).
+ * <li>any of the predecessors is not transparent, or
+ * <li>if any predecessors is not "safe" (ie. the insertion of this computation would insert it on
+ * a path, where it was not before).
  * </ul>
- *
+ * <p>
  * <br>
  * Intuitively: If the one predecessor is not transparent, we can't push the computation further up.
  * If one of the predecessor is not safe, we would introduce a new computation on its path. Hence we
  * can't push further up.
- *
+ * <p>
  * <p>Note that this computation is linear in the number of units, as we don't need to find any
  * fixed-point.
  *
@@ -70,9 +70,9 @@ public class EarliestnessComputation {
   /**
    * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the earliest-computation.<br>
    *
-   * @param unitGraph the Unitgraph we'll work on.
-   * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>
-   * @param downSafe a DownSafetyAnalysis of <code>unitGraph</code>
+   * @param unitGraph  the Unitgraph we'll work on.
+   * @param upSafe     a UpSafetyAnalysis of <code>unitGraph</code>
+   * @param downSafe   a DownSafetyAnalysis of <code>unitGraph</code>
    * @param sideEffect the SideEffectTester that will tell if a node is transparent or not.
    */
   public EarliestnessComputation(
@@ -88,11 +88,11 @@ public class EarliestnessComputation {
    * allows to share sets over multiple analyses (set-operations are usually more efficient, if the
    * sets come from the same source).
    *
-   * @param unitGraph the Unitgraph we'll work on.
-   * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>
-   * @param downSafe a DownSafetyAnalysis of <code>unitGraph</code>
+   * @param unitGraph  the Unitgraph we'll work on.
+   * @param upSafe     a UpSafetyAnalysis of <code>unitGraph</code>
+   * @param downSafe   a DownSafetyAnalysis of <code>unitGraph</code>
    * @param sideEffect the SideEffectTester that will tell if a node is transparent or not.
-   * @param set the shared set.
+   * @param set        the shared set.
    */
   public EarliestnessComputation(
       UnitGraph unitGraph,
@@ -132,7 +132,7 @@ public class EarliestnessComputation {
              * passes through the predecessor
              */
             for (Iterator<EquivalentValue> downSafeIt = downSafeSet.iterator();
-                downSafeIt.hasNext();
+                 downSafeIt.hasNext();
                 ) {
               EquivalentValue equiVal = downSafeIt.next();
               Value avail = equiVal.getValue();
@@ -162,7 +162,7 @@ public class EarliestnessComputation {
              * downsafe in one of the predecessors
              */
             for (Iterator<EquivalentValue> downSafeIt = downSafeSet.iterator();
-                downSafeIt.hasNext();
+                 downSafeIt.hasNext();
                 ) {
               EquivalentValue equiVal = downSafeIt.next();
               FlowSet<EquivalentValue> preDown = downSafe.getFlowBefore(predecessor);

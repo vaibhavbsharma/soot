@@ -19,8 +19,6 @@
 
 package soot.shimple;
 
-import java.util.List;
-
 import soot.Local;
 import soot.Type;
 import soot.Unit;
@@ -29,15 +27,17 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
 
+import java.util.List;
+
 /**
  * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the
  * corresponding control flow predecessor for each argument. This may be provided either as a Soot
  * CFG Block or more directly as the Unit at the end of the corresponding CFG block.
- *
+ * <p>
  * <p>As much as possible we try to conform to the semantics as described by Cytron et al., TOPLAS
  * Oct. 91. A Phi node such as "x_1 = Phi(x_2, x_3)" is eliminated by respectively adding the
  * statements "x_1 = x_2" and "x_1 = x_3" at the end of the corresponding control flow predecessor.
- *
+ * <p>
  * <p>However, due to the fact that each argument is explicitly associated with the control flow
  * predecessor, there may be some subtle differences. We tried to make the behaviour as robust and
  * transparent as possible by handling the common cases of Unit chain manipulations in the Shimple
@@ -45,7 +45,7 @@ import soot.util.Switch;
  *
  * @author Navindra Umanee
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  * @see Shimple#newPhiExpr(List, List)
  * @see Shimple#newPhiExpr(Local, List)
  */
@@ -58,19 +58,29 @@ public interface PhiExpr extends ShimpleExpr {
    */
   List<ValueUnitPair> getArgs();
 
-  /** Returns a list of the values used by this PhiExpr. */
+  /**
+   * Returns a list of the values used by this PhiExpr.
+   */
   List<Value> getValues();
 
-  /** Returns a list of the control flow predecessor Units being tracked by this PhiExpr */
+  /**
+   * Returns a list of the control flow predecessor Units being tracked by this PhiExpr
+   */
   List<Unit> getPreds();
 
-  /** Returns the number of arguments in this PhiExpr. */
+  /**
+   * Returns the number of arguments in this PhiExpr.
+   */
   int getArgCount();
 
-  /** Returns the argument pair for the given index. Null if out-of-bounds. */
+  /**
+   * Returns the argument pair for the given index. Null if out-of-bounds.
+   */
   ValueUnitPair getArgBox(int index);
 
-  /** Returns the value for the given index into the PhiExpr. Null if out-of-bounds. */
+  /**
+   * Returns the value for the given index into the PhiExpr. Null if out-of-bounds.
+   */
   Value getValue(int index);
 
   /**
@@ -127,7 +137,9 @@ public interface PhiExpr extends ShimpleExpr {
    */
   boolean setArg(int index, Value arg, Block pred);
 
-  /** Set the value at the given index into the PhiExpr. Returns false on failure. */
+  /**
+   * Set the value at the given index into the PhiExpr. Returns false on failure.
+   */
   boolean setValue(int index, Value arg);
 
   /**
@@ -154,31 +166,49 @@ public interface PhiExpr extends ShimpleExpr {
    */
   boolean setPred(int index, Block pred);
 
-  /** Remove the argument at the given index. Returns false on failure. */
+  /**
+   * Remove the argument at the given index. Returns false on failure.
+   */
   boolean removeArg(int index);
 
-  /** Remove the argument corresponding to the given CFG predecessor. Returns false on failure. */
+  /**
+   * Remove the argument corresponding to the given CFG predecessor. Returns false on failure.
+   */
   boolean removeArg(Unit predTailUnit);
 
-  /** Remove the argument corresponding to the given CFG predecessor. Returns false on failure. */
+  /**
+   * Remove the argument corresponding to the given CFG predecessor. Returns false on failure.
+   */
   boolean removeArg(Block pred);
 
-  /** Remove the given argument. Returns false on failure. */
+  /**
+   * Remove the given argument. Returns false on failure.
+   */
   boolean removeArg(ValueUnitPair arg);
 
-  /** Add the given argument associated with the given CFG predecessor. Returns false on failure. */
+  /**
+   * Add the given argument associated with the given CFG predecessor. Returns false on failure.
+   */
   boolean addArg(Value arg, Block pred);
 
-  /** Add the given argument associated with the given CFG predecessor. Returns false on failure. */
+  /**
+   * Add the given argument associated with the given CFG predecessor. Returns false on failure.
+   */
   boolean addArg(Value arg, Unit predTailUnit);
 
-  /** Set the block number of the Phi node. */
-  void setBlockId(int blockId);
-
-  /** Returns the id number of the block from which the Phi node originated from. */
+  /**
+   * Returns the id number of the block from which the Phi node originated from.
+   */
   int getBlockId();
 
-  /** The type of the PhiExpr is usually the same as the type of its arguments. */
+  /**
+   * Set the block number of the Phi node.
+   */
+  void setBlockId(int blockId);
+
+  /**
+   * The type of the PhiExpr is usually the same as the type of its arguments.
+   */
   @Override
   Type getType();
 

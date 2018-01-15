@@ -19,15 +19,6 @@
 
 package soot.jimple.toolkits.annotation.parity;
 
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.BOTTOM;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.EVEN;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.ODD;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.TOP;
-import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.valueOf;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
@@ -48,6 +39,15 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.toolkits.scalar.LiveLocals;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.BOTTOM;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.EVEN;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.ODD;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.TOP;
+import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.valueOf;
+
 // STEP 1: What are we computing?
 // SETS OF PAIRS of form (X, T) => Use ArraySparseSet.
 //
@@ -60,23 +60,7 @@ import soot.toolkits.scalar.LiveLocals;
 //
 //
 public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityAnalysis.Parity>> {
-  public enum Parity {
-    TOP,
-    BOTTOM,
-    EVEN,
-    ODD;
-
-    static Parity valueOf(int v) {
-      return (v % 2) == 0 ? EVEN : ODD;
-    }
-
-    static Parity valueOf(long v) {
-      return (v % 2) == 0 ? EVEN : ODD;
-    }
-  }
-
   private UnitGraph g;
-
   private LiveLocals filter;
 
   public ParityAnalysis(UnitGraph g, LiveLocals filter) {
@@ -120,19 +104,6 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     // System.out.println("init filtBeforeMap: "+filterUnitToBeforeFlow);
   }
 
-  // STEP 4: Is the merge operator union or intersection?
-  //
-  // merge  | bottom | even   | odd   | top
-  // -------+--------+--------+-------+--------
-  // bottom | bottom | even   | odd   | top
-  // -------+--------+--------+-------+--------
-  // even   | even   | even   | top   | top
-  // -------+--------+--------+-------+--------
-  // odd    | odd    | top    | odd   | top
-  // -------+--------+--------+-------+--------
-  // top    | top    | top    | top   | top
-  //
-
   @Override
   protected void merge(
       Map<Value, Parity> inMap1, Map<Value, Parity> inMap2, Map<Value, Parity> outMap) {
@@ -160,8 +131,17 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     }
   }
 
-  // STEP 5: Define flow equations.
-  // in(s) = ( out(s) minus defs(s) ) union uses(s)
+  // STEP 4: Is the merge operator union or intersection?
+  //
+  // merge  | bottom | even   | odd   | top
+  // -------+--------+--------+-------+--------
+  // bottom | bottom | even   | odd   | top
+  // -------+--------+--------+-------+--------
+  // even   | even   | even   | top   | top
+  // -------+--------+--------+-------+--------
+  // odd    | odd    | top    | odd   | top
+  // -------+--------+--------+-------+--------
+  // top    | top    | top    | top   | top
   //
 
   @Override
@@ -170,15 +150,8 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     destOut.putAll(sourceIn);
   }
 
-  // Parity Tests: 	even + even = even
-  // 			even + odd = odd
-  // 			odd + odd = even
-  //
-  // 			even * even = even
-  // 			even * odd = even
-  // 			odd * odd = odd
-  //
-  // 			constants are tested mod 2
+  // STEP 5: Define flow equations.
+  // in(s) = ( out(s) minus defs(s) ) union uses(s)
   //
 
   private Parity getParity(Map<Value, Parity> in, Value val) {
@@ -230,6 +203,17 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     }
     return p;
   }
+
+  // Parity Tests: 	even + even = even
+  // 			even + odd = odd
+  // 			odd + odd = even
+  //
+  // 			even * even = even
+  // 			even * odd = even
+  // 			odd * odd = odd
+  //
+  // 			constants are tested mod 2
+  //
 
   @Override
   protected void flowThrough(Map<Value, Parity> in, Unit s, Map<Value, Parity> out) {
@@ -358,5 +342,20 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     }
 
     return initMap;
+  }
+
+  public enum Parity {
+    TOP,
+    BOTTOM,
+    EVEN,
+    ODD;
+
+    static Parity valueOf(int v) {
+      return (v % 2) == 0 ? EVEN : ODD;
+    }
+
+    static Parity valueOf(long v) {
+      return (v % 2) == 0 ? EVEN : ODD;
+    }
   }
 }

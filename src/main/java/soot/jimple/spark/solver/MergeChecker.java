@@ -39,11 +39,19 @@ import soot.util.MultiMap;
  * @author Ondrej Lhotak
  */
 public class MergeChecker {
+  protected PAG pag;
+  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<>();
+
+  /* End of public methods. */
+  /* End of package methods. */
+
   public MergeChecker(PAG pag) {
     this.pag = pag;
   }
 
-  /** Actually does the propagation. */
+  /**
+   * Actually does the propagation.
+   */
   public void check() {
     for (Object object : pag.allocSources()) {
       handleAllocNode((AllocNode) object);
@@ -80,9 +88,6 @@ public class MergeChecker {
     }
   }
 
-  /* End of public methods. */
-  /* End of package methods. */
-
   protected void checkAll(final Node container, PointsToSetInternal nodes, final Node upstream) {
     nodes.forall(
         new P2SetVisitor() {
@@ -104,8 +109,8 @@ public class MergeChecker {
     FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
     if (!p2set.contains(n)
         && (fh == null
-            || container.getType() == null
-            || fh.canStoreType(n.getType(), container.getType()))) {
+        || container.getType() == null
+        || fh.canStoreType(n.getType(), container.getType()))) {
       G.v()
           .out
           .println(
@@ -154,7 +159,4 @@ public class MergeChecker {
       checkAll(target, set, src);
     }
   }
-
-  protected PAG pag;
-  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<>();
 }

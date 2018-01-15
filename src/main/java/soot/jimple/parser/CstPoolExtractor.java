@@ -25,9 +25,6 @@
 
 package soot.jimple.parser;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import soot.Scene;
 import soot.jimple.parser.analysis.DepthFirstAdapter;
 import soot.jimple.parser.node.AFullIdentClassName;
@@ -39,7 +36,12 @@ import soot.jimple.parser.node.AQuotedNonvoidType;
 import soot.jimple.parser.node.Start;
 import soot.util.StringTools;
 
-/** Walks a jimple AST, extracting all the contained reference type names. */
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Walks a jimple AST, extracting all the contained reference type names.
+ */
 class CstPoolExtractor {
 
   private Set<String> mRefTypes = null;
@@ -60,7 +62,8 @@ class CstPoolExtractor {
   }
 
   private class CstPoolExtractorWalker extends DepthFirstAdapter {
-    CstPoolExtractorWalker() {}
+    CstPoolExtractorWalker() {
+    }
 
     @Override
     public void inStart(Start node) {

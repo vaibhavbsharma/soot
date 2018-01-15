@@ -21,17 +21,6 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Hierarchy;
 import soot.SootMethod;
@@ -50,6 +39,17 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Oct. 7, 2003 modify buildPegChain() for building chain without inliner. June 19, 2003 add begin
@@ -76,14 +76,23 @@ import soot.util.Chain;
 public class PegGraph implements DirectedGraph
 // public class PegGraph extends SimplePegGraph
 {
-  private List heads;
-  private List tails;
+  public HashMap<JPegStmt, List> startToThread;
+  public HashMap startToAllocNodes;
   //    private long numberOfEdge = 0;
   protected HashMap<Object, List> unitToSuccs;
   protected HashMap<Object, List> unitToPreds;
+  protected Map threadNo; // add for print to graph
+  protected Map threadNameToStart;
+  protected Map<AllocNode, String> allocNodeToObj;
+  protected Map<AllocNode, PegChain> allocNodeToThread;
+  protected Map<JPegStmt, Chain> joinStmtToThread;
+  Set allocNodes;
+  List<List> inlineSites;
+  Map<SootMethod, String> synchObj;
+  Set multiRunAllocNodes;
+  private List heads;
+  private List tails;
   private HashMap unitToPegMap;
-  public HashMap<JPegStmt, List> startToThread;
-  public HashMap startToAllocNodes;
   private HashMap<String, FlowSet> waitingNodes;
   private Map startToBeginNodes;
   private HashMap<String, Set<JPegStmt>> notifyAll;
@@ -98,32 +107,22 @@ public class PegGraph implements DirectedGraph
   private Map<String, FlowSet> monitor;
   private Set canNotBeCompacted;
   private Set threadAllocSites;
+  //	protected int count=0;
   private File logFile;
   private FileWriter fileWriter;
   private Set<Object> monitorObjs;
   private Set<Unit> exceHandlers;
-  protected Map threadNo; // add for print to graph
-  protected Map threadNameToStart;
-  protected Map<AllocNode, String> allocNodeToObj;
-  protected Map<AllocNode, PegChain> allocNodeToThread;
-  protected Map<JPegStmt, Chain> joinStmtToThread;
-  //	protected int count=0;
-
-  Set allocNodes;
-  List<List> inlineSites;
-  Map<SootMethod, String> synchObj;
-  Set multiRunAllocNodes;
 
   /**
    * Constructs a graph for the units found in the provided Body instance. Each node in the graph
    * corresponds to a unit. The edges are derived from the control flow.
    *
-   * @param Body The underlying body of main thread
+   * @param Body              The underlying body of main thread
    * @param addExceptionEdges If true then the control flow edges associated with exceptions are
-   *     added.
-   * @param Hierarchy Using class hierarchy analysis to find the run method of started thread
-   * @param PointsToAnalysis Using point to analysis (SPARK package) to improve the precision of
-   *     results
+   *                          added.
+   * @param Hierarchy         Using class hierarchy analysis to find the run method of started thread
+   * @param PointsToAnalysis  Using point to analysis (SPARK package) to improve the precision of
+   *                          results
    */
   public PegGraph(
       CallGraph callGraph,
@@ -165,15 +164,15 @@ public class PegGraph implements DirectedGraph
    * Constructs a graph for the units found in the provided Body instance. Each node in the graph
    * corresponds to a unit. The edges are derived from the control flow.
    *
-   * @param body The underlying body we want to make a graph for.
-   * @param addExceptionEdges If true then the control flow edges associated with exceptions are
-   *     added.
+   * @param body                                                  The underlying body we want to make a graph for.
+   * @param addExceptionEdges                                     If true then the control flow edges associated with exceptions are
+   *                                                              added.
    * @param dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock This was added for Dava. If true,
-   *     edges are not added from statement before area of protection to catch. If false, edges ARE
-   *     added. For Dava, it should be true. For flow analyses, it should be false.
-   * @param Hierarchy Using class hierarchy analysis to find the run method of started thread
-   * @param PointsToAnalysis Using point to analysis (SPARK package) to improve the precision of
-   *     results
+   *                                                              edges are not added from statement before area of protection to catch. If false, edges ARE
+   *                                                              added. For Dava, it should be true. For flow analyses, it should be false.
+   * @param Hierarchy                                             Using class hierarchy analysis to find the run method of started thread
+   * @param PointsToAnalysis                                      Using point to analysis (SPARK package) to improve the precision of
+   *                                                              results
    */
   public PegGraph(
       CallGraph callGraph,
@@ -1154,12 +1153,12 @@ public class PegGraph implements DirectedGraph
     return exceHandlers;
   }
 
-  protected void setMonitor(Map<String, FlowSet> m) {
-    monitor = m;
-  }
-
   public Map<String, FlowSet> getMonitor() {
     return monitor;
+  }
+
+  protected void setMonitor(Map<String, FlowSet> m) {
+    monitor = m;
   }
 
   public Set<Object> getMonitorObjs() {
@@ -1213,6 +1212,7 @@ public class PegGraph implements DirectedGraph
   public Set getMethodsNeedingInlining() {
     return methodsNeedingInlining;
   }
+
   // helper function
   protected void testIterator() {
     System.out.println("********begin test iterator*******");

@@ -25,9 +25,6 @@
 
 package soot.baf.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.AbstractJasminClass;
 import soot.Local;
 import soot.Type;
@@ -36,6 +33,9 @@ import soot.ValueBox;
 import soot.baf.InstSwitch;
 import soot.baf.StoreInst;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 
@@ -95,13 +95,13 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
   }
 
   @Override
-  public void setLocal(Local l) {
-    localBox.setValue(l);
+  public Local getLocal() {
+    return (Local) localBox.getValue();
   }
 
   @Override
-  public Local getLocal() {
-    return (Local) localBox.getValue();
+  public void setLocal(Local l) {
+    localBox.setValue(l);
   }
 
   @Override

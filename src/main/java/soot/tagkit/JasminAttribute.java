@@ -25,17 +25,17 @@
 
 package soot.tagkit;
 
+import soot.Unit;
+
 import java.util.Hashtable;
 import java.util.Map;
-
-import soot.Unit;
 
 /**
  * This class must be extended by Attributes that can be emitted in Jasmin. The attributes must
  * format their data in Base64 and if Unit references they may contain must be emitted as labels
  * embedded and escaped in the attribute's Base64 data stream at the location where the value of
  * their pc is to occur. For example:
- *
+ * <p>
  * <pre>
  * aload_1
  * iload_2

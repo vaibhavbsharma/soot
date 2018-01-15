@@ -16,13 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.Set;
+package soot.jimple.spark.ondemand;
 
 import soot.jimple.spark.ondemand.genericutil.Predicate;
 import soot.jimple.spark.pag.AllocNode;
@@ -30,6 +25,12 @@ import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PagToDotDumper;
 import soot.jimple.spark.pag.VarNode;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * you can just add edges and then dump them as a dot graph

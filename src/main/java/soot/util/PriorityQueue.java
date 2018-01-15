@@ -1,4 +1,5 @@
 /** */
+
 package soot.util;
 
 import java.util.AbstractMap;
@@ -18,164 +19,14 @@ import java.util.Set;
  * Inserting of elements that are not part of the universe is also permitted (doing so will result
  * in a {@code NoSuchElementException}).
  *
- * @author Steven Lambeth
  * @param <E> the type of elements held in the universe
+ * @author Steven Lambeth
  */
 public abstract class PriorityQueue<E> extends AbstractQueue<E> {
-  abstract class Itr implements Iterator<E> {
-    long expected = getExpected();
-    int next = min;
-    int now = Integer.MAX_VALUE;
-
-    abstract long getExpected();
-
-    @Override
-    public boolean hasNext() {
-      return next < N;
-    }
-
-    @Override
-    public E next() {
-      if (expected != getExpected()) {
-        throw new ConcurrentModificationException();
-      }
-      if (next >= N) {
-        throw new NoSuchElementException();
-      }
-
-      now = next;
-      next = nextSetBit(next + 1);
-      return universe.get(now);
-    }
-
-    @Override
-    public void remove() {
-      if (now >= N) {
-        throw new IllegalStateException();
-      }
-      if (expected != getExpected()) {
-        throw new ConcurrentModificationException();
-      }
-
-      PriorityQueue.this.remove(now);
-      expected = getExpected();
-      now = Integer.MAX_VALUE;
-    }
-  }
-
   final List<? extends E> universe;
   final int N;
   int min = Integer.MAX_VALUE;
   private Map<E, Integer> ordinalMap;
-
-  int getOrdinal(Object o) {
-    if (o == null) {
-      throw new NullPointerException();
-    }
-    Integer i = ordinalMap.get(o);
-    if (i == null) {
-      throw new NoSuchElementException();
-    }
-    return i.intValue();
-  }
-
-  /** Adds all elements of the universe to this queue. */
-  abstract void addAll();
-
-  /**
-   * Returns the index of the first bit that is set to <code>true</code> that occurs on or after the
-   * specified starting index. If no such bit exists then a value bigger that {@code N} is returned.
-   *
-   * @param fromIndex the index to start checking from (inclusive).
-   * @return the index of the next set bit.
-   */
-  abstract int nextSetBit(int fromIndex);
-
-  abstract boolean remove(int ordinal);
-
-  abstract boolean add(int ordinal);
-
-  abstract boolean contains(int ordinal);
-
-  /** {@inheritDoc} */
-  @Override
-  public final E peek() {
-    return isEmpty() ? null : universe.get(min);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final E poll() {
-    if (isEmpty()) {
-      return null;
-    }
-    E e = universe.get(min);
-    remove(min);
-    return e;
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws NoSuchElementException if e not part of the universe
-   * @throws NullPointerException if e is {@code null}
-   */
-  @Override
-  public final boolean add(E e) {
-    return offer(e);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws NoSuchElementException if e not part of the universe
-   * @throws NullPointerException if e is {@code null}
-   */
-  @Override
-  public final boolean offer(E e) {
-    return add(getOrdinal(e));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean remove(Object o) {
-    if (o == null || isEmpty()) {
-      return false;
-    }
-    try {
-      if (o.equals(peek())) {
-        remove(min);
-        return true;
-      }
-      return remove(getOrdinal(o));
-    } catch (NoSuchElementException e) {
-    }
-    return false;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean contains(Object o) {
-    if (o == null) {
-      return false;
-    }
-    try {
-      if (o.equals(peek())) {
-        return true;
-      }
-
-      return contains(getOrdinal(o));
-    } catch (NoSuchElementException e) {
-    }
-    return false;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isEmpty() {
-    return min >= N;
-  }
-
   PriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
     assert ordinalMap.size() == universe.size();
     this.universe = universe;
@@ -284,5 +135,166 @@ public abstract class PriorityQueue<E> extends AbstractQueue<E> {
       return new MediumPriorityQueue<>(universe, ordinalMap);
     }
     return new LargePriorityQueue<>(universe, ordinalMap);
+  }
+
+  int getOrdinal(Object o) {
+    if (o == null) {
+      throw new NullPointerException();
+    }
+    Integer i = ordinalMap.get(o);
+    if (i == null) {
+      throw new NoSuchElementException();
+    }
+    return i.intValue();
+  }
+
+  /**
+   * Adds all elements of the universe to this queue.
+   */
+  abstract void addAll();
+
+  /**
+   * Returns the index of the first bit that is set to <code>true</code> that occurs on or after the
+   * specified starting index. If no such bit exists then a value bigger that {@code N} is returned.
+   *
+   * @param fromIndex the index to start checking from (inclusive).
+   * @return the index of the next set bit.
+   */
+  abstract int nextSetBit(int fromIndex);
+
+  abstract boolean remove(int ordinal);
+
+  abstract boolean add(int ordinal);
+
+  abstract boolean contains(int ordinal);
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final E peek() {
+    return isEmpty() ? null : universe.get(min);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final E poll() {
+    if (isEmpty()) {
+      return null;
+    }
+    E e = universe.get(min);
+    remove(min);
+    return e;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NoSuchElementException if e not part of the universe
+   * @throws NullPointerException   if e is {@code null}
+   */
+  @Override
+  public final boolean add(E e) {
+    return offer(e);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NoSuchElementException if e not part of the universe
+   * @throws NullPointerException   if e is {@code null}
+   */
+  @Override
+  public final boolean offer(E e) {
+    return add(getOrdinal(e));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean remove(Object o) {
+    if (o == null || isEmpty()) {
+      return false;
+    }
+    try {
+      if (o.equals(peek())) {
+        remove(min);
+        return true;
+      }
+      return remove(getOrdinal(o));
+    } catch (NoSuchElementException e) {
+    }
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean contains(Object o) {
+    if (o == null) {
+      return false;
+    }
+    try {
+      if (o.equals(peek())) {
+        return true;
+      }
+
+      return contains(getOrdinal(o));
+    } catch (NoSuchElementException e) {
+    }
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isEmpty() {
+    return min >= N;
+  }
+
+  abstract class Itr implements Iterator<E> {
+    long expected = getExpected();
+    int next = min;
+    int now = Integer.MAX_VALUE;
+
+    abstract long getExpected();
+
+    @Override
+    public boolean hasNext() {
+      return next < N;
+    }
+
+    @Override
+    public E next() {
+      if (expected != getExpected()) {
+        throw new ConcurrentModificationException();
+      }
+      if (next >= N) {
+        throw new NoSuchElementException();
+      }
+
+      now = next;
+      next = nextSetBit(next + 1);
+      return universe.get(now);
+    }
+
+    @Override
+    public void remove() {
+      if (now >= N) {
+        throw new IllegalStateException();
+      }
+      if (expected != getExpected()) {
+        throw new ConcurrentModificationException();
+      }
+
+      PriorityQueue.this.remove(now);
+      expected = getExpected();
+      now = Integer.MAX_VALUE;
+    }
   }
 }

@@ -25,18 +25,20 @@
 
 package soot.coffi;
 
-import java.util.List;
-
 import soot.G;
+
+import java.util.List;
 
 /**
  * Represents a single method_info object.
  *
- * @see ClassFile
  * @author Clark Verbrugge
+ * @see ClassFile
  */
 public class method_info {
-  /** Access flags for this field. */
+  /**
+   * Access flags for this field.
+   */
   public int access_flags;
   /**
    * Constant pool index of the name of this method.
@@ -52,7 +54,9 @@ public class method_info {
    * @see CONSTANT_Utf8_info
    */
   public int descriptor_index;
-  /** Count of attributes this method contains. */
+  /**
+   * Count of attributes this method contains.
+   */
   public int attributes_count;
   /**
    * Array of attribute_info objects for this method.

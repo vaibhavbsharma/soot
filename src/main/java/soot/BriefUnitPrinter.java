@@ -26,13 +26,16 @@ import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 
-/** UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf */
+/**
+ * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
+ */
 public class BriefUnitPrinter extends LabeledUnitPrinter {
+  private boolean baf;
+  private boolean eatSpace = false;
+
   public BriefUnitPrinter(Body body) {
     super(body);
   }
-
-  private boolean baf;
 
   @Override
   public void startUnit(Unit u) {
@@ -74,8 +77,6 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
       throw new RuntimeException();
     }
   }
-
-  private boolean eatSpace = false;
 
   @Override
   public void literal(String s) {

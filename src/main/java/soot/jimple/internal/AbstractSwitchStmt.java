@@ -1,25 +1,22 @@
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.SwitchStmt;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
 
-  final UnitBox defaultTargetBox;
-
-  final ValueBox keyBox;
-
-  final List<UnitBox> stmtBoxes;
-
   protected final UnitBox[] targetBoxes;
+  final UnitBox defaultTargetBox;
+  final ValueBox keyBox;
+  final List<UnitBox> stmtBoxes;
 
   protected AbstractSwitchStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox... targetBoxes) {
     this.keyBox = keyBox;
@@ -104,15 +101,15 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
     return targets;
   }
 
-  public final void setTargets(List<? extends Unit> targets) {
-    for (int i = 0; i < targets.size(); i++) {
-      targetBoxes[i].setUnit(targets.get(i));
-    }
-  }
-
   public final void setTargets(Unit[] targets) {
     for (int i = 0; i < targets.length; i++) {
       targetBoxes[i].setUnit(targets[i]);
+    }
+  }
+
+  public final void setTargets(List<? extends Unit> targets) {
+    for (int i = 0; i < targets.size(); i++) {
+      targetBoxes[i].setUnit(targets.get(i));
     }
   }
 

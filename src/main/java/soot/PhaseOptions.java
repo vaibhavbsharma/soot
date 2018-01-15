@@ -24,8 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-/** Manages the phase options of the various soot phases. */
+/**
+ * Manages the phase options of the various soot phases.
+ */
 public class PhaseOptions {
+  private final Map<HasPhaseOptions, Map<String, String>> phaseToOptionMap =
+      new HashMap<>();
   /**
    * Needed for preventing infinite recursion in constructor. Termination is assured: each
    * constructor is called exactly once. Here is a case analysis. a. PackManager used first. Then
@@ -35,6 +39,55 @@ public class PhaseOptions {
    * (which uses PackManager), and returns. OK.
    */
   private PackManager pm;
+
+  public PhaseOptions(Singletons.Global g) {
+  }
+
+  public static PhaseOptions v() {
+    return G.v().soot_PhaseOptions();
+  }
+
+  /**
+   * This method returns true iff key "name" is in options and maps to "true".
+   */
+  public static boolean getBoolean(Map<String, String> options, String name) {
+    String val = options.get(name);
+    return val != null && val.equals("true");
+  }
+
+  /**
+   * If key "name" is in options, this method returns true iff it maps to "true". If the key "name"
+   * is not in options, the given default value is returned.
+   */
+  public static boolean getBoolean(Map<String, String> options, String name, boolean defaultValue) {
+    String val = options.get(name);
+    if (val == null) {
+      return defaultValue;
+    }
+    return val.equals("true");
+  }
+
+  /**
+   * This method returns the value of "name" in options or "" if "name" is not found.
+   */
+  public static String getString(Map<String, String> options, String name) {
+    String val = options.get(name);
+    return val != null ? val : "";
+  }
+
+  /**
+   * This method returns the float value of "name" in options or 1.0 if "name" is not found.
+   */
+  public static float getFloat(Map<String, String> options, String name) {
+    return options.containsKey(name) ? new Float(options.get(name)).floatValue() : 1.0f;
+  }
+
+  /**
+   * This method returns the integer value of "name" in options or 0 if "name" is not found.
+   */
+  public static int getInt(Map<String, String> options, String name) {
+    return options.containsKey(name) ? new Integer(options.get(name)).intValue() : 0;
+  }
 
   public void setPackManager(PackManager m) {
     this.pm = m;
@@ -46,15 +99,6 @@ public class PhaseOptions {
     }
     return pm;
   }
-
-  public PhaseOptions(Singletons.Global g) {}
-
-  public static PhaseOptions v() {
-    return G.v().soot_PhaseOptions();
-  }
-
-  private final Map<HasPhaseOptions, Map<String, String>> phaseToOptionMap =
-      new HashMap<>();
 
   public Map<String, String> getPhaseOptions(String phaseName) {
     return getPhaseOptions(getPM().getPhase(phaseName));
@@ -87,40 +131,6 @@ public class PhaseOptions {
       }
     }
     return true;
-  }
-
-  /** This method returns true iff key "name" is in options and maps to "true". */
-  public static boolean getBoolean(Map<String, String> options, String name) {
-    String val = options.get(name);
-    return val != null && val.equals("true");
-  }
-
-  /**
-   * If key "name" is in options, this method returns true iff it maps to "true". If the key "name"
-   * is not in options, the given default value is returned.
-   */
-  public static boolean getBoolean(Map<String, String> options, String name, boolean defaultValue) {
-    String val = options.get(name);
-    if (val == null) {
-      return defaultValue;
-    }
-    return val.equals("true");
-  }
-
-  /** This method returns the value of "name" in options or "" if "name" is not found. */
-  public static String getString(Map<String, String> options, String name) {
-    String val = options.get(name);
-    return val != null ? val : "";
-  }
-
-  /** This method returns the float value of "name" in options or 1.0 if "name" is not found. */
-  public static float getFloat(Map<String, String> options, String name) {
-    return options.containsKey(name) ? new Float(options.get(name)).floatValue() : 1.0f;
-  }
-
-  /** This method returns the integer value of "name" in options or 0 if "name" is not found. */
-  public static int getInt(Map<String, String> options, String name) {
-    return options.containsKey(name) ? new Integer(options.get(name)).intValue() : 0;
   }
 
   private Map<String, String> mapForPhase(String phaseName) {

@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java type for a statement address. Implemented as a singleton. */
+/**
+ * Soot representation of the Java type for a statement address. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class StmtAddressType extends Type {
-  public StmtAddressType(Singletons.Global g) {}
+  public StmtAddressType(Singletons.Global g) {
+  }
 
   public static StmtAddressType v() {
     return G.v().soot_StmtAddressType();

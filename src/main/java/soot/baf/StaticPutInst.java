@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface StaticPutInst extends FieldArgInst {}
+public interface StaticPutInst extends FieldArgInst {
+}

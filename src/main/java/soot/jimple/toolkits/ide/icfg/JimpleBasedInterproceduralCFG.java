@@ -16,24 +16,18 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.toolkits.ide.icfg;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import heros.DontSynchronize;
 import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.MethodOrMethodContext;
 import soot.PatchingChain;
@@ -45,11 +39,16 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
 /**
  * Default implementation for the {@link InterproceduralCFG} interface. Includes all statements
  * reachable from {@link Scene#getEntryPoints()} through explicit call statements or through calls
  * to {@link Thread#start()}.
- *
+ * <p>
  * <p>This class is designed to be thread safe, and subclasses of this class must be designed in a
  * thread-safe way, too.
  */
@@ -57,32 +56,28 @@ import soot.jimple.toolkits.callgraph.Filter;
 public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   protected static final Logger logger = LoggerFactory.getLogger(IDESolver.class);
-
-  protected boolean includeReflectiveCalls = false;
-  protected boolean includePhantomCallees = false;
-
-  // retains only callers that are explicit call sites or Thread.start()
-  public class EdgeFilter extends Filter {
-    protected EdgeFilter() {
-      super(
-          new EdgePredicate() {
-            @Override
-            public boolean want(Edge e) {
-              return e.kind().isExplicit()
-                  || e.kind().isThread()
-                  || e.kind().isExecutor()
-                  || e.kind().isAsyncTask()
-                  || e.kind().isClinit()
-                  || e.kind().isPrivileged()
-                  || (includeReflectiveCalls && e.kind().isReflection());
-            }
-          });
-    }
-  }
-
   @DontSynchronize("readonly")
   protected final CallGraph cg;
-
+  @SynchronizedBy("by use of synchronized LoadingCache class")
+  protected final LoadingCache<SootMethod, Collection<Unit>> methodToCallers =
+      IDESolver.DEFAULT_CACHE_BUILDER.build(
+          new CacheLoader<SootMethod, Collection<Unit>>() {
+            @Override
+            public Collection<Unit> load(SootMethod m) throws Exception {
+              ArrayList<Unit> res = new ArrayList<>();
+              // only retain callers that are explicit call sites or
+              // Thread.start()
+              Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
+              while (edgeIter.hasNext()) {
+                Edge edge = edgeIter.next();
+                res.add(edge.srcUnit());
+              }
+              res.trimToSize();
+              return res;
+            }
+          });
+  protected boolean includeReflectiveCalls = false;
+  protected boolean includePhantomCallees = false;
   @SynchronizedBy("by use of synchronized LoadingCache class")
   protected final LoadingCache<Unit, Collection<SootMethod>> unitToCallees =
       IDESolver.DEFAULT_CACHE_BUILDER.build(
@@ -118,25 +113,6 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
             }
           });
 
-  @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, Collection<Unit>> methodToCallers =
-      IDESolver.DEFAULT_CACHE_BUILDER.build(
-          new CacheLoader<SootMethod, Collection<Unit>>() {
-            @Override
-            public Collection<Unit> load(SootMethod m) throws Exception {
-              ArrayList<Unit> res = new ArrayList<>();
-              // only retain callers that are explicit call sites or
-              // Thread.start()
-              Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
-              while (edgeIter.hasNext()) {
-                Edge edge = edgeIter.next();
-                res.add(edge.srcUnit());
-              }
-              res.trimToSize();
-              return res;
-            }
-          });
-
   public JimpleBasedInterproceduralCFG() {
     this(true);
   }
@@ -155,7 +131,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   protected void initializeUnitToOwner() {
     for (Iterator<MethodOrMethodContext> iter = Scene.v().getReachableMethods().listener();
-        iter.hasNext();
+         iter.hasNext();
         ) {
       SootMethod m = iter.next().method();
       initializeUnitToOwner(m);
@@ -187,9 +163,28 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
    * potential callees
    *
    * @param includePhantomCallees True if phantom methods shall be returned as potential callees,
-   *     otherwise false
+   *                              otherwise false
    */
   public void setIncludePhantomCallees(boolean includePhantomCallees) {
     this.includePhantomCallees = includePhantomCallees;
+  }
+
+  // retains only callers that are explicit call sites or Thread.start()
+  public class EdgeFilter extends Filter {
+    protected EdgeFilter() {
+      super(
+          new EdgePredicate() {
+            @Override
+            public boolean want(Edge e) {
+              return e.kind().isExplicit()
+                  || e.kind().isThread()
+                  || e.kind().isExecutor()
+                  || e.kind().isAsyncTask()
+                  || e.kind().isClinit()
+                  || e.kind().isPrivileged()
+                  || (includeReflectiveCalls && e.kind().isReflection());
+            }
+          });
+    }
   }
 }

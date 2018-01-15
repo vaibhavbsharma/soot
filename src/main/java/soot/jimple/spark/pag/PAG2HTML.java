@@ -19,6 +19,11 @@
 
 package soot.jimple.spark.pag;
 
+import soot.SootMethod;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,20 +32,35 @@ import java.util.Iterator;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import soot.SootMethod;
-import soot.jimple.spark.sets.P2SetVisitor;
-import soot.util.HashMultiMap;
-import soot.util.MultiMap;
-
 /**
  * Dumps a pointer assignment graph to a html files.
  *
  * @author Ondrej Lhotak
  */
 public class PAG2HTML {
+  protected PAG pag;
+  protected String output_dir;
+
+  /* End of public methods. */
+  /* End of package methods. */
+  protected MultiMap mergedNodes = new HashMultiMap();
+  protected MultiMap methodToNodes = new HashMultiMap();
   public PAG2HTML(PAG pag, String output_dir) {
     this.pag = pag;
     this.output_dir = output_dir;
+  }
+
+  protected static String htmlify(String s) {
+    StringBuffer b = new StringBuffer(s);
+    for (int i = 0; i < b.length(); i++) {
+      if (b.charAt(i) == '<') {
+        b.replace(i, i + 1, "&lt;");
+      }
+      if (b.charAt(i) == '>') {
+        b.replace(i, i + 1, "&gt;");
+      }
+    }
+    return b.toString();
   }
 
   public void dump() {
@@ -71,14 +91,6 @@ public class PAG2HTML {
       throw new RuntimeException("Couldn't dump html" + e);
     }
   }
-
-  /* End of public methods. */
-  /* End of package methods. */
-
-  protected PAG pag;
-  protected String output_dir;
-  protected MultiMap mergedNodes = new HashMultiMap();
-  protected MultiMap methodToNodes = new HashMultiMap();
 
   protected void dumpVarNode(VarNode v, JarOutputStream jarOut) throws IOException {
     jarOut.putNextEntry(new ZipEntry("nodes/n" + v.getNumber() + ".html"));
@@ -152,19 +164,6 @@ public class PAG2HTML {
     }
     ret.append(htmlify(vv.getType().toString()) + "\n");
     return ret.toString();
-  }
-
-  protected static String htmlify(String s) {
-    StringBuffer b = new StringBuffer(s);
-    for (int i = 0; i < b.length(); i++) {
-      if (b.charAt(i) == '<') {
-        b.replace(i, i + 1, "&lt;");
-      }
-      if (b.charAt(i) == '>') {
-        b.replace(i, i + 1, "&gt;");
-      }
-    }
-    return b.toString();
   }
 
   protected void dumpMethod(SootMethod m, JarOutputStream jarOut) throws IOException {

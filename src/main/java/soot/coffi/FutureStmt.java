@@ -35,7 +35,8 @@ class FutureStmt extends soot.jimple.internal.AbstractStmt {
     this.object = object;
   }
 
-  public FutureStmt() {}
+  public FutureStmt() {
+  }
 
   @Override
   public String toString() {

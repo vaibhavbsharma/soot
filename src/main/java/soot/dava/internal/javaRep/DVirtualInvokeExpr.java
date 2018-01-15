@@ -20,9 +20,6 @@
 
 package soot.dava.internal.javaRep;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import soot.NullType;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -31,6 +28,9 @@ import soot.grimp.Grimp;
 import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.grimp.internal.GVirtualInvokeExpr;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class DVirtualInvokeExpr extends GVirtualInvokeExpr {
   private HashSet<Object> thisLocals;

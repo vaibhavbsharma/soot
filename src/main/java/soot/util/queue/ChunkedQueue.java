@@ -30,8 +30,8 @@ package soot.util.queue;
  */
 @SuppressWarnings("unchecked")
 public final class ChunkedQueue<E> {
-  static Object NULL_CONST = new Object();
   private static final int LENGTH = 60;
+  static Object NULL_CONST = new Object();
   private Object[] q;
   private int index;
 
@@ -39,7 +39,10 @@ public final class ChunkedQueue<E> {
     q = new Object[LENGTH];
     index = 0;
   }
-  /** Add an object to the queue. */
+
+  /**
+   * Add an object to the queue.
+   */
   public void add(E o) {
     if (o == null) {
       o = (E) NULL_CONST;
@@ -52,7 +55,10 @@ public final class ChunkedQueue<E> {
     }
     q[index++] = o;
   }
-  /** Create reader which will read objects from the queue. */
+
+  /**
+   * Create reader which will read objects from the queue.
+   */
   public QueueReader<E> reader() {
     return new QueueReader<>((E[]) q, index);
   }

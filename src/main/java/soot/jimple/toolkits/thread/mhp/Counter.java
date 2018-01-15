@@ -16,7 +16,8 @@ public class Counter {
   private static int objNo = 0;
   private static int threadNo = 0;
 
-  Counter() {}
+  Counter() {
+  }
 
   protected static int getTagNo() {
     return tagNo++;

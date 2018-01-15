@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface ShrExpr extends BinopExpr {}
+public interface ShrExpr extends BinopExpr {
+}

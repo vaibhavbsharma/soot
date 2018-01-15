@@ -42,9 +42,17 @@ import soot.baf.PrimitiveCastInst;
 import soot.util.Switch;
 
 public class BPrimitiveCastInst extends AbstractInst implements PrimitiveCastInst {
+  protected Type toType;
   Type fromType;
 
-  protected Type toType;
+  public BPrimitiveCastInst(Type fromType, Type toType) {
+
+    if (fromType instanceof NullType) {
+      throw new RuntimeException("invalid fromType " + fromType);
+    }
+    this.fromType = fromType;
+    this.toType = toType;
+  }
 
   @Override
   public int getInCount() {
@@ -64,15 +72,6 @@ public class BPrimitiveCastInst extends AbstractInst implements PrimitiveCastIns
   @Override
   public int getOutMachineCount() {
     return AbstractJasminClass.sizeOfType(toType);
-  }
-
-  public BPrimitiveCastInst(Type fromType, Type toType) {
-
-    if (fromType instanceof NullType) {
-      throw new RuntimeException("invalid fromType " + fromType);
-    }
-    this.fromType = fromType;
-    this.toType = toType;
   }
 
   @Override

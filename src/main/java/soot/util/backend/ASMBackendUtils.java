@@ -2,7 +2,6 @@ package soot.util.backend;
 
 import org.objectweb.asm.ByteVector;
 import org.objectweb.asm.ClassWriter;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -175,7 +174,7 @@ public class ASMBackendUtils {
    *
    * @param field Field
    * @return <code>true</code> if the field is of type String or sub-type, <code>false</code>
-   *     otherwise.
+   * otherwise.
    */
   public static boolean acceptsStringInitialValue(SootField field) {
     if (field.getType() instanceof RefType) {

@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.Value;
@@ -51,6 +47,10 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 // future work: fieldrefs.
 
 /**
@@ -59,11 +59,10 @@ import soot.util.HashChain;
  * be computed on-the-fly for each statement.
  */
 public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
+  private final HashMap<Value, EquivalentValue> valueToEquivValue;
   Map<Unit, BoundedFlowSet<Value>> unitToGenerateSet;
   Map<Unit, BoundedFlowSet<Value>> unitToPreserveSet;
   Map<Value, Stmt> rhsToContainingStmt;
-  private final HashMap<Value, EquivalentValue> valueToEquivValue;
-
   FlowSet<Value> emptySet;
 
   public SlowAvailableExpressionsAnalysis(DirectedGraph<Unit> dg) {

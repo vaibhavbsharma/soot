@@ -1,7 +1,6 @@
 package soot.util.annotations;
 
 import org.jboss.util.Classes;
-
 import soot.tagkit.AbstractAnnotationElemTypeSwitch;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
@@ -22,31 +21,6 @@ import soot.tagkit.AnnotationStringElem;
  * @author Florian Kuebler
  */
 public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
-
-  /**
-   * A helper class to map method name and result.
-   *
-   * @author Florian Kuebler
-   * @param <V> the result type.
-   */
-  public class AnnotationElemResult<V> {
-
-    private String name;
-    private V value;
-
-    public AnnotationElemResult(String name, V value) {
-      this.name = name;
-      this.value = value;
-    }
-
-    public String getKey() {
-      return name;
-    }
-
-    public V getValue() {
-      return value;
-    }
-  }
 
   @Override
   public void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
@@ -153,5 +127,30 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   @Override
   public void defaultCase(Object object) {
     throw new RuntimeException("Unexpected AnnotationElem");
+  }
+
+  /**
+   * A helper class to map method name and result.
+   *
+   * @param <V> the result type.
+   * @author Florian Kuebler
+   */
+  public class AnnotationElemResult<V> {
+
+    private String name;
+    private V value;
+
+    public AnnotationElemResult(String name, V value) {
+      this.name = name;
+      this.value = value;
+    }
+
+    public String getKey() {
+      return name;
+    }
+
+    public V getValue() {
+      return value;
+    }
   }
 }

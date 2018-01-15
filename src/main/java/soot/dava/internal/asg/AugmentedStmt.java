@@ -20,19 +20,18 @@
 
 package soot.dava.internal.asg;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import soot.G;
 import soot.dava.internal.SET.SETNode;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class AugmentedStmt {
+  private final IterableSet<AugmentedStmt> dominators;
   public List<AugmentedStmt> bpreds, bsuccs, cpreds, csuccs;
   public SETNode myNode;
-
-  private final IterableSet<AugmentedStmt> dominators;
   private IterableSet<AugmentedStmt> reachers;
   private Stmt s;
 
@@ -43,10 +42,6 @@ public class AugmentedStmt {
     reachers = new IterableSet<>();
 
     reset_PredsSuccs();
-  }
-
-  public void set_Stmt(Stmt s) {
-    this.s = s;
   }
 
   public boolean add_BPred(AugmentedStmt bpred) {
@@ -143,6 +138,10 @@ public class AugmentedStmt {
 
   public Stmt get_Stmt() {
     return s;
+  }
+
+  public void set_Stmt(Stmt s) {
+    this.s = s;
   }
 
   public IterableSet<AugmentedStmt> get_Dominators() {

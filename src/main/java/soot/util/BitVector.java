@@ -28,11 +28,15 @@ package soot.util;
  * @author Ondrej Lhotak
  */
 public class BitVector {
+  private long[] bits;
+
   public BitVector() {
     this(64);
   }
 
-  /** Copy constructor */
+  /**
+   * Copy constructor
+   */
   // Added by Adam Richard.  More efficient than clone(), and easier to extend
   public BitVector(BitVector other) {
     bits = new long[other.bits.length];
@@ -44,7 +48,52 @@ public class BitVector {
     bits = new long[lastIndex + 1];
   }
 
-  private long[] bits;
+  public static BitVector and(BitVector set1, BitVector set2) {
+    int min = set1.size();
+    {
+      int max = set2.size();
+      if (min > max) {
+        min = max;
+      }
+      // max is not necessarily correct at this point, so let it go
+      // out of scope
+    }
+
+    BitVector ret = new BitVector(min);
+    long[] retbits = ret.bits;
+    long[] bits1 = set1.bits;
+    long[] bits2 = set2.bits;
+    min >>= 6;
+    for (int i = 0; i < min; i++) {
+      retbits[i] = bits1[i] & bits2[i];
+    }
+    return ret;
+  }
+
+  public static BitVector or(BitVector set1, BitVector set2) {
+    int min = set1.size();
+    int max = set2.size();
+    if (min > max) {
+      min = max;
+      max = set1.size();
+    }
+
+    BitVector ret = new BitVector(max);
+    long[] retbits = ret.bits;
+    long[] bits1 = set1.bits;
+    long[] bits2 = set2.bits;
+    min >>= 6;
+    max >>= 6;
+    for (int i = 0; i < min; i++) {
+      retbits[i] = bits1[i] | bits2[i];
+    }
+    if (bits1.length == min) {
+      System.arraycopy(bits2, min, retbits, min, max - min);
+    } else {
+      System.arraycopy(bits1, min, retbits, min, max - min);
+    }
+    return ret;
+  }
 
   private int indexOf(int bit) {
     return bit >> 6;
@@ -142,7 +191,10 @@ public class BitVector {
     }
     return (int) ((ret >> 32) ^ ret);
   }
-  /** Returns index of highest-numbered one bit. */
+
+  /**
+   * Returns index of highest-numbered one bit.
+   */
   public int length() {
     int i;
     for (i = bits.length - 1; i >= 0; i--) {
@@ -156,7 +208,8 @@ public class BitVector {
     long j = bits[i];
     i++;
     i <<= 6;
-    for (long k = 1L << 63; (k & j) == 0L; k >>= 1, i--) {;
+    for (long k = 1L << 63; (k & j) == 0L; k >>= 1, i--) {
+      ;
     }
     return i;
   }
@@ -203,7 +256,7 @@ public class BitVector {
    * Count the number of ones in the bitvector.
    *
    * @author Adam Richard This is Brian Kernighan's algorithm from:
-   *     http://graphics.stanford.edu/~seander/bithacks.html and is efficient for sparse bit sets.
+   * http://graphics.stanford.edu/~seander/bithacks.html and is efficient for sparse bit sets.
    */
   public int cardinality() {
     int c = 0;
@@ -273,7 +326,24 @@ public class BitVector {
     bits[indexOf(bit)] |= mask(bit);
     return ret;
   }
-  /** Returns number of bits in the underlying array. */
+  /*
+  public boolean orAndAndNotCheck(BitVector orset, BitVector andset, BitVector andnotset) {
+      BitVector orAndAnd = (BitVector) orset.clone();
+      if( andset != null ) orAndAnd.and( andset );
+      if( andnotset != null ) orAndAnd.andNot( andnotset );
+      orAndAnd.or( this );
+      boolean ret = !orAndAnd.equals(this);
+      orAndAndNotOld( orset, andset, andnotset );
+      if( !this.equals( orAndAnd ) ) {
+          throw new RuntimeException( "orset is "+orset+"\nandset is "+andset+"\nandnotset is "+andnotset+"\nthis is "+this+"\ncorrect is "+orAndAnd );
+      }
+      return ret;
+  }
+  */
+
+  /**
+   * Returns number of bits in the underlying array.
+   */
   public int size() {
     return bits.length << 6;
   }
@@ -295,20 +365,7 @@ public class BitVector {
     ret.append('}');
     return ret.toString();
   }
-  /*
-  public boolean orAndAndNotCheck(BitVector orset, BitVector andset, BitVector andnotset) {
-      BitVector orAndAnd = (BitVector) orset.clone();
-      if( andset != null ) orAndAnd.and( andset );
-      if( andnotset != null ) orAndAnd.andNot( andnotset );
-      orAndAnd.or( this );
-      boolean ret = !orAndAnd.equals(this);
-      orAndAndNotOld( orset, andset, andnotset );
-      if( !this.equals( orAndAnd ) ) {
-          throw new RuntimeException( "orset is "+orset+"\nandset is "+andset+"\nandnotset is "+andnotset+"\nthis is "+this+"\ncorrect is "+orAndAnd );
-      }
-      return ret;
-  }
-  */
+
   /**
    * Computes this = this OR ((orset AND andset ) AND (NOT andnotset)) Returns true iff this is
    * modified.
@@ -422,53 +479,6 @@ public class BitVector {
       }
     }
 
-    return ret;
-  }
-
-  public static BitVector and(BitVector set1, BitVector set2) {
-    int min = set1.size();
-    {
-      int max = set2.size();
-      if (min > max) {
-        min = max;
-      }
-      // max is not necessarily correct at this point, so let it go
-      // out of scope
-    }
-
-    BitVector ret = new BitVector(min);
-    long[] retbits = ret.bits;
-    long[] bits1 = set1.bits;
-    long[] bits2 = set2.bits;
-    min >>= 6;
-    for (int i = 0; i < min; i++) {
-      retbits[i] = bits1[i] & bits2[i];
-    }
-    return ret;
-  }
-
-  public static BitVector or(BitVector set1, BitVector set2) {
-    int min = set1.size();
-    int max = set2.size();
-    if (min > max) {
-      min = max;
-      max = set1.size();
-    }
-
-    BitVector ret = new BitVector(max);
-    long[] retbits = ret.bits;
-    long[] bits1 = set1.bits;
-    long[] bits2 = set2.bits;
-    min >>= 6;
-    max >>= 6;
-    for (int i = 0; i < min; i++) {
-      retbits[i] = bits1[i] | bits2[i];
-    }
-    if (bits1.length == min) {
-      System.arraycopy(bits2, min, retbits, min, max - min);
-    } else {
-      System.arraycopy(bits1, min, retbits, min, max - min);
-    }
     return ret;
   }
 

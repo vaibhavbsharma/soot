@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 import java.io.ByteArrayOutputStream;
@@ -32,13 +33,23 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-/** Miscellaneous utility functions. */
+/**
+ * Miscellaneous utility functions.
+ */
 public class Util {
 
-  /** The empty {@link BitSet}. */
+  /**
+   * The empty {@link BitSet}.
+   */
   public static final BitSet EMPTY_BITSET = new BitSet();
+  /**
+   * Generate strings with fully qualified names or not
+   */
+  public static final boolean FULLY_QUALIFIED_NAMES = false;
 
-  /** Factorial */
+  /**
+   * Factorial
+   */
   public static long fact(long n_) {
     long result = 1;
     for (long i = 1; i <= n_; i++) {
@@ -47,7 +58,9 @@ public class Util {
     return result;
   }
 
-  /** Factorial */
+  /**
+   * Factorial
+   */
   public static BigInteger fact(BigInteger n_) {
     BigInteger result = BigInteger.ONE;
     for (BigInteger i = BigInteger.ONE; i.compareTo(n_) <= 0; i = i.add(BigInteger.ONE)) {
@@ -60,8 +73,8 @@ public class Util {
    * Factorial on doubles; avoids overflow problems present when using integers.
    *
    * @param n_ arg on which to compute factorial
-   * @return (<code>double</code> approximation to) factorial of largest positive integer <= (n_ +
-   *     epsilon)
+   * @return (< code > double < / code > approximation to) factorial of largest positive integer <= (n_ +
+   * epsilon)
    */
   public static double fact(double n_) {
     n_ += 1e-6;
@@ -72,7 +85,9 @@ public class Util {
     return result;
   }
 
-  /** Factorial */
+  /**
+   * Factorial
+   */
   public static int fact(int n_) {
     int result = 1;
     for (int i = 1; i <= n_; i++) {
@@ -81,7 +96,9 @@ public class Util {
     return result;
   }
 
-  /** Binary log: finds the smallest power k such that 2^k>=n */
+  /**
+   * Binary log: finds the smallest power k such that 2^k>=n
+   */
   public static int binaryLogUp(int n_) {
     int k = 0;
     while ((1 << k) < n_) {
@@ -90,7 +107,9 @@ public class Util {
     return k;
   }
 
-  /** Binary log: finds the smallest power k such that 2^k>=n */
+  /**
+   * Binary log: finds the smallest power k such that 2^k>=n
+   */
   public static int binaryLogUp(long n_) {
     int k = 0;
     while ((1L << k) < n_) {
@@ -99,7 +118,9 @@ public class Util {
     return k;
   }
 
-  /** Convert an int[] to a {@link String} for printing */
+  /**
+   * Convert an int[] to a {@link String} for printing
+   */
   public static String str(int[] ints_) {
     StringBuffer s = new StringBuffer();
     s.append("[");
@@ -132,7 +153,9 @@ public class Util {
     return s.toString();
   }
 
-  /** Get a {@link String} representation of a {@link Throwable}. */
+  /**
+   * Get a {@link String} representation of a {@link Throwable}.
+   */
   public static String str(Throwable thrown_) {
     // create a memory buffer to which to dump the trace
     ByteArrayOutputStream traceDump = new ByteArrayOutputStream();
@@ -248,8 +271,8 @@ public class Util {
   /**
    * Filter a collection according to some predicate, placing the result in a List
    *
-   * @param src_ collection to be filtered
-   * @param pred_ the predicate
+   * @param src_    collection to be filtered
+   * @param pred_   the predicate
    * @param result_ the list for the result. assumed to be empty
    */
   public static <T> void filter(Collection<T> src_, Predicate<T> pred_, List<T> result_) {
@@ -288,12 +311,16 @@ public class Util {
     }
   }
 
-  /** Clear a {@link BitSet}. */
+  /**
+   * Clear a {@link BitSet}.
+   */
   public static void clear(BitSet bitSet_) {
     bitSet_.and(EMPTY_BITSET);
   }
 
-  /** Replace all occurrences of a given substring in a given {@link String}. */
+  /**
+   * Replace all occurrences of a given substring in a given {@link String}.
+   */
   public static String replaceAll(String str_, String sub_, String newSub_) {
     if (str_.indexOf(sub_) == -1) {
       return str_;
@@ -307,22 +334,24 @@ public class Util {
     return result.toString();
   }
 
-  /** Remove all occurrences of a given substring in a given {@link String} */
+  /**
+   * Remove all occurrences of a given substring in a given {@link String}
+   */
   public static String removeAll(String str_, String sub_) {
     return replaceAll(str_, sub_, "");
   }
 
-  /** Generate strings with fully qualified names or not */
-  public static final boolean FULLY_QUALIFIED_NAMES = false;
-
-  /** Write object fields to string */
+  /**
+   * Write object fields to string
+   */
   public static String objectFieldsToString(Object obj) {
     // Temporarily disable the security manager
     SecurityManager oldsecurity = System.getSecurityManager();
     System.setSecurityManager(
         new SecurityManager() {
           @Override
-          public void checkPermission(Permission perm) {}
+          public void checkPermission(Permission perm) {
+          }
         });
 
     Class c = obj.getClass();
@@ -366,7 +395,9 @@ public class Util {
     return buf.toString();
   }
 
-  /** Remove the package name from a fully qualified class name */
+  /**
+   * Remove the package name from a fully qualified class name
+   */
   public static String removePackageName(String fully_qualified_name_) {
     if (fully_qualified_name_ == null) {
       return null;
@@ -381,7 +412,9 @@ public class Util {
     }
   }
 
-  /** @return */
+  /**
+   * @return
+   */
   public static int hashArray(Object[] objs) {
     // stolen from java.util.AbstractList
     int ret = 1;

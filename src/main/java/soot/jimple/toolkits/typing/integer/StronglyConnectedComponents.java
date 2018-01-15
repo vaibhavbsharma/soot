@@ -25,26 +25,20 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import soot.G;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import soot.G;
-
 class StronglyConnectedComponents {
+  private static final boolean DEBUG = false;
   List<TypeVariable> variables;
   Set<TypeVariable> black;
   List<TypeVariable> finished;
-
   List<List<TypeVariable>> forest = new LinkedList<>();
   List<TypeVariable> current_tree;
-
-  private static final boolean DEBUG = false;
-
-  public static void merge(List<TypeVariable> typeVariableList) throws TypeException {
-    new StronglyConnectedComponents(typeVariableList);
-  }
 
   private StronglyConnectedComponents(List<TypeVariable> typeVariableList) throws TypeException {
     variables = typeVariableList;
@@ -96,6 +90,10 @@ class StronglyConnectedComponents {
         }
       }
     }
+  }
+
+  public static void merge(List<TypeVariable> typeVariableList) throws TypeException {
+    new StronglyConnectedComponents(typeVariableList);
   }
 
   private void dfsg_visit(TypeVariable var) {

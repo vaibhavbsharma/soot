@@ -19,15 +19,15 @@
 
 package soot.jimple.spark.sets;
 
-import java.util.Collections;
-import java.util.Set;
-
 import soot.G;
 import soot.PointsToSet;
 import soot.Singletons;
 import soot.Type;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.pag.Node;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Implementation of an empty, immutable points-to set.
@@ -39,45 +39,65 @@ public class EmptyPointsToSet extends PointsToSetInternal {
     super(null);
   }
 
-  public static EmptyPointsToSet v() {
-    return G.v().soot_jimple_spark_sets_EmptyPointsToSet();
-  }
-
   public EmptyPointsToSet(Singletons.Global g, Type type) {
     super(type);
   }
 
-  /** Returns true if this set contains no run-time objects. */
+  public static EmptyPointsToSet v() {
+    return G.v().soot_jimple_spark_sets_EmptyPointsToSet();
+  }
+
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
   @Override
   public boolean isEmpty() {
     return true;
   }
-  /** Returns true if this set shares some objects with other. */
+
+  /**
+   * Returns true if this set shares some objects with other.
+   */
   @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     return false;
   }
-  /** Set of all possible run-time types of objects in the set. */
+
+  /**
+   * Set of all possible run-time types of objects in the set.
+   */
   @Override
   public Set<Type> possibleTypes() {
     return Collections.emptySet();
   }
-  /** Adds contents of other into this set, returns true if this set changed. */
+
+  /**
+   * Adds contents of other into this set, returns true if this set changed.
+   */
   @Override
   public boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
     throw new RuntimeException("can't add into empty immutable set");
   }
-  /** Calls v's visit method on all nodes in this set. */
+
+  /**
+   * Calls v's visit method on all nodes in this set.
+   */
   @Override
   public boolean forall(P2SetVisitor v) {
     return false;
   }
-  /** Adds n to this set, returns true if n was not already in this set. */
+
+  /**
+   * Adds n to this set, returns true if n was not already in this set.
+   */
   @Override
   public boolean add(Node n) {
     throw new RuntimeException("can't add into empty immutable set");
   }
-  /** Returns true iff the set contains n. */
+
+  /**
+   * Returns true iff the set contains n.
+   */
   @Override
   public boolean contains(Node n) {
     return false;
@@ -93,7 +113,9 @@ public class EmptyPointsToSet extends PointsToSetInternal {
     return Collections.emptySet();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     return "{}";

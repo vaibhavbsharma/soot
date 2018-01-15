@@ -20,14 +20,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.RefType;
@@ -53,32 +45,36 @@ import soot.jimple.ThrowStmt;
 import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.util.IterableSet;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class SynchronizedBlockFinder implements FactFinder {
-  public SynchronizedBlockFinder(Singletons.Global g) {}
-
-  public static SynchronizedBlockFinder v() {
-    return G.v().soot_dava_toolkits_base_finders_SynchronizedBlockFinder();
-  }
-
+  private final Integer WHITE = new Integer(0); // never visited in DFS
+  private final Integer GRAY = new Integer(1); // visited but not finished
+  private final Integer BLACK = new Integer(2); // finished
+  private final int UNKNOWN = -100000; // Note there are at most 65536 monitor
+  // exits in a method.
+  private final Integer VARIABLE_INCR = new Integer(UNKNOWN);
+  private final String THROWABLE = "java.lang.Throwable";
   private HashMap<AugmentedStmt, Map<Value, Integer>> as2ml;
   private DavaBody davaBody;
-
   /*
    * Nomair A Naeem 08-FEB-2005 monitorLocalSet contains all the locals that
    * are used in monitors monitorEnterSet contains all enterMonitorStmts
    * Statements
    */
   private IterableSet monitorLocalSet, monitorEnterSet;
+  public SynchronizedBlockFinder(Singletons.Global g) {
+  }
 
-  private final Integer WHITE = new Integer(0); // never visited in DFS
-  private final Integer GRAY = new Integer(1); // visited but not finished
-  private final Integer BLACK = new Integer(2); // finished
-
-  private final int UNKNOWN = -100000; // Note there are at most 65536 monitor
-  // exits in a method.
-  private final Integer VARIABLE_INCR = new Integer(UNKNOWN);
-
-  private final String THROWABLE = "java.lang.Throwable";
+  public static SynchronizedBlockFinder v() {
+    return G.v().soot_dava_toolkits_base_finders_SynchronizedBlockFinder();
+  }
 
   @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET)

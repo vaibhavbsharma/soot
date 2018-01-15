@@ -24,7 +24,7 @@ import soot.SootClass;
 
 /**
  * @author Michael Batchelder
- *     <p>Created on 20-Jun-2006
+ * <p>Created on 20-Jun-2006
  */
 public class ThrowSet {
 

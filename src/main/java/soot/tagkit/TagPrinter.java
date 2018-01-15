@@ -25,7 +25,9 @@
 
 package soot.tagkit;
 
-/** Interface to allow display of tags. */
+/**
+ * Interface to allow display of tags.
+ */
 public interface TagPrinter {
   String print(String aClassName, String aFieldOrMtdSignature, Tag aTag);
 }

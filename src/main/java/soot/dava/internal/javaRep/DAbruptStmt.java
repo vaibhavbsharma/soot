@@ -25,10 +25,9 @@ import soot.dava.internal.SET.SETNodeLabel;
 import soot.jimple.internal.AbstractStmt;
 
 public class DAbruptStmt extends AbstractStmt {
+  public boolean surpressDestinationLabel;
   private String command;
   private SETNodeLabel label;
-
-  public boolean surpressDestinationLabel;
 
   public DAbruptStmt(String command, SETNodeLabel label) {
     this.command = command;
@@ -84,15 +83,15 @@ public class DAbruptStmt extends AbstractStmt {
     return command.equals("break");
   }
 
+  public SETNodeLabel getLabel() {
+    return label;
+  }
+
   /*
     Nomair A. Naeem 20-FEB-2005
     getter and setter methods for the label are needed for the aggregators of the AST conditionals
   */
   public void setLabel(SETNodeLabel label) {
     this.label = label;
-  }
-
-  public SETNodeLabel getLabel() {
-    return label;
   }
 }

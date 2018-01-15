@@ -16,17 +16,17 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.asm;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.objectweb.asm.ClassReader;
-
 import soot.ClassSource;
 import soot.FoundFile;
 import soot.SootClass;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * ASM class source implementation.
@@ -40,7 +40,7 @@ class AsmClassSource extends ClassSource {
   /**
    * Constructs a new ASM class source.
    *
-   * @param cls fully qualified name of the class.
+   * @param cls  fully qualified name of the class.
    * @param data stream containing data for class.
    */
   AsmClassSource(String cls, FoundFile foundFile) {

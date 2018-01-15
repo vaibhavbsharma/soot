@@ -25,13 +25,12 @@
 
 package soot.toolkits.graph;
 
-import java.util.HashMap;
-import java.util.List;
-
 import soot.Body;
 import soot.Timers;
 import soot.Unit;
 import soot.options.Options;
+
+import java.util.HashMap;
 
 /**
  * Represents a CFG where the nodes are Unit instances, and where no edges are included to account

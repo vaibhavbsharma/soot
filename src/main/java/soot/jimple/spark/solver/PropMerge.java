@@ -19,9 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
@@ -33,6 +30,9 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Propagates points-to sets along pointer assignment graph using a merging of field reference (Red)
  * nodes to improve scalability.
@@ -41,12 +41,18 @@ import soot.jimple.spark.sets.PointsToSetInternal;
  */
 public final class PropMerge extends Propagator {
   protected final Set<Node> varNodeWorkList = new TreeSet<>();
+  protected PAG pag;
 
   public PropMerge(PAG pag) {
     this.pag = pag;
   }
 
-  /** Actually does the propagation. */
+  /* End of public methods. */
+  /* End of package methods. */
+
+  /**
+   * Actually does the propagation.
+   */
   @Override
   public final void propagate() {
     new TopoSorter(pag, false).sort();
@@ -99,10 +105,9 @@ public final class PropMerge extends Propagator {
     } while (!varNodeWorkList.isEmpty());
   }
 
-  /* End of public methods. */
-  /* End of package methods. */
-
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
@@ -115,7 +120,9 @@ public final class PropMerge extends Propagator {
     return ret;
   }
 
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleVarNode(final VarNode src) {
     boolean ret = false;
 
@@ -152,22 +159,20 @@ public final class PropMerge extends Propagator {
       final SparkField field = fr.getField();
       ret =
           newP2Set.forall(
-                  new P2SetVisitor() {
-                    @Override
-                    public final void visit(Node n) {
-                      AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
-                      Node nDotFNode = nDotF.getReplacement();
-                      if (nDotFNode != fr) {
-                        fr.mergeWith(nDotFNode);
-                        returnValue = true;
-                      }
-                    }
-                  })
+              new P2SetVisitor() {
+                @Override
+                public final void visit(Node n) {
+                  AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
+                  Node nDotFNode = nDotF.getReplacement();
+                  if (nDotFNode != fr) {
+                    fr.mergeWith(nDotFNode);
+                    returnValue = true;
+                  }
+                }
+              })
               | ret;
     }
     // src.getP2Set().flushNew();
     return ret;
   }
-
-  protected PAG pag;
 }

@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java built-in type 'char'. Implemented as a singleton. */
+/**
+ * Soot representation of the Java built-in type 'char'. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class CharType extends PrimType implements IntegerType {
-  public CharType(Singletons.Global g) {}
+  public CharType(Singletons.Global g) {
+  }
 
   public static CharType v() {
     return G.v().soot_CharType();

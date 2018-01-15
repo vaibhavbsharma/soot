@@ -31,7 +31,8 @@ import soot.Type;
 import soot.util.Switch;
 
 public class DoubleWordType extends Type {
-  public DoubleWordType(Singletons.Global g) {}
+  public DoubleWordType(Singletons.Global g) {
+  }
 
   public static DoubleWordType v() {
     return G.v().soot_baf_DoubleWordType();

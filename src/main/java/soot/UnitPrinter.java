@@ -22,7 +22,9 @@ package soot;
 import soot.jimple.Constant;
 import soot.jimple.IdentityRef;
 
-/** Interface for different methods of printing out a Unit. */
+/**
+ * Interface for different methods of printing out a Unit.
+ */
 public interface UnitPrinter {
   void startUnit(Unit u);
 
@@ -42,9 +44,9 @@ public interface UnitPrinter {
 
   void noIndent();
 
-  void setIndent(String newIndent);
-
   String getIndent();
+
+  void setIndent(String newIndent);
 
   void literal(String s);
 
@@ -64,9 +66,9 @@ public interface UnitPrinter {
 
   void identityRef(IdentityRef r);
 
-  void setPositionTagger(AttributesUnitPrinter pt);
-
   AttributesUnitPrinter getPositionTagger();
+
+  void setPositionTagger(AttributesUnitPrinter pt);
 
   StringBuffer output();
 }

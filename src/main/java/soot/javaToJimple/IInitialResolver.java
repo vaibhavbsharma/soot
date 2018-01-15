@@ -16,14 +16,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.javaToJimple;
+
+import soot.SootClass;
+import soot.Type;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import soot.SootClass;
-import soot.Type;
 
 public interface IInitialResolver {
 

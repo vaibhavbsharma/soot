@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -103,6 +100,9 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+
+import java.util.Iterator;
+import java.util.List;
 
 class ConstraintCollector extends AbstractStmtSwitch {
   private TypeResolver resolver;
@@ -514,7 +514,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseGotoStmt(GotoStmt stmt) {}
+  public void caseGotoStmt(GotoStmt stmt) {
+  }
 
   @Override
   public void caseIfStmt(IfStmt stmt) {
@@ -590,7 +591,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseNopStmt(NopStmt stmt) {}
+  public void caseNopStmt(NopStmt stmt) {
+  }
 
   @Override
   public void caseReturnStmt(ReturnStmt stmt) {
@@ -604,7 +606,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+  }
 
   @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {

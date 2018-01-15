@@ -24,19 +24,12 @@
 
 package soot.dexpler.instructions;
 
-import static soot.dexpler.Util.dottedClassName;
-import static soot.dexpler.Util.isFloatLike;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 import org.jf.dexlib2.iface.reference.FieldReference;
-
 import soot.Local;
 import soot.Scene;
 import soot.SootClass;
@@ -49,6 +42,12 @@ import soot.dexpler.DexType;
 import soot.jimple.AssignStmt;
 import soot.jimple.ConcreteRef;
 import soot.jimple.Jimple;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static soot.dexpler.Util.dottedClassName;
+import static soot.dexpler.Util.isFloatLike;
 
 public abstract class FieldInstruction extends DexlibAbstractInstruction {
 
@@ -77,7 +76,7 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
   /**
    * Return a SootFieldRef for a dexlib FieldReference.
    *
-   * @param item the dexlib FieldReference.
+   * @param item     the dexlib FieldReference.
    * @param isStatic if the FieldRef should be static
    */
   private SootFieldRef getSootFieldRef(FieldReference fref, boolean isStatic) {
@@ -115,7 +114,9 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
     return sourceRegister() == register && isFloatLike(getTargetType(body));
   }
 
-  /** Return the source register for this instruction. */
+  /**
+   * Return the source register for this instruction.
+   */
   private int sourceRegister() {
     // I hate smali's API ..
     if (instruction instanceof Instruction23x) {
@@ -131,7 +132,7 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
 
   /**
    * Return the target type for put instructions.
-   *
+   * <p>
    * <p>Putters should override this.
    *
    * @param body the body containing this instruction

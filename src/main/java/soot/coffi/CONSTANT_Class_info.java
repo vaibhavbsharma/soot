@@ -31,11 +31,13 @@ import soot.jimple.ClassConstant;
 /**
  * A constant pool entry of type CONSTANT_Class.
  *
- * @see cp_info
  * @author Clark Verbrugge
+ * @see cp_info
  */
 public class CONSTANT_Class_info extends cp_info {
-  /** Constant pool index of name of this class. */
+  /**
+   * Constant pool index of name of this class.
+   */
   public int name_index;
 
   /**
@@ -48,6 +50,7 @@ public class CONSTANT_Class_info extends cp_info {
   public int size() {
     return 3;
   }
+
   /**
    * Returns a String representation of this entry.
    *
@@ -60,6 +63,7 @@ public class CONSTANT_Class_info extends cp_info {
     CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info) (constant_pool[name_index]);
     return ci.convert();
   }
+
   /**
    * Returns a String description of what kind of entry this is.
    *
@@ -75,8 +79,8 @@ public class CONSTANT_Class_info extends cp_info {
    * Compares this entry with another cp_info object (which may reside in a different constant
    * pool).
    *
-   * @param constant_pool constant pool of ClassFile for this.
-   * @param cp constant pool entry to compare against.
+   * @param constant_pool    constant pool of ClassFile for this.
+   * @param cp               constant pool entry to compare against.
    * @param cp_constant_pool constant pool of ClassFile for cp.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo

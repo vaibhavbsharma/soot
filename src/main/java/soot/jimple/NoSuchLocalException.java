@@ -30,5 +30,6 @@ public class NoSuchLocalException extends RuntimeException {
     super(s);
   }
 
-  public NoSuchLocalException() {}
+  public NoSuchLocalException() {
+  }
 }

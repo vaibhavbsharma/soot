@@ -19,11 +19,11 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.Iterator;
-
 import soot.Context;
 import soot.SootMethod;
 import soot.Unit;
+
+import java.util.Iterator;
 
 /**
  * Represents a context-sensitive call graph for querying by client analyses.
@@ -36,15 +36,23 @@ public interface ContextSensitiveCallGraph {
    */
   Iterator edgeSources();
 
-  /** Returns all ContextSensitiveEdge's in the call graph. */
+  /**
+   * Returns all ContextSensitiveEdge's in the call graph.
+   */
   Iterator allEdges();
 
-  /** Returns all ContextSensitiveEdge's out of unit srcUnit in method src in context srcCtxt. */
+  /**
+   * Returns all ContextSensitiveEdge's out of unit srcUnit in method src in context srcCtxt.
+   */
   Iterator edgesOutOf(Context srcCtxt, SootMethod src, Unit srcUnit);
 
-  /** Returns all ContextSensitiveEdge's out of method src in context srcCtxt. */
+  /**
+   * Returns all ContextSensitiveEdge's out of method src in context srcCtxt.
+   */
   Iterator edgesOutOf(Context srcCtxt, SootMethod src);
 
-  /** Returns all ContextSensitiveEdge's into method tgt in context tgtCtxt. */
+  /**
+   * Returns all ContextSensitiveEdge's into method tgt in context tgtCtxt.
+   */
   Iterator edgesInto(Context tgtCtxt, SootMethod tgt);
 }

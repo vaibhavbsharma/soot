@@ -16,15 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand.pautil;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.spark.ondemand.pautil;
 
 import soot.G;
 import soot.SootMethod;
@@ -38,6 +31,14 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 import soot.toolkits.scalar.Pair;
 import soot.util.HashMultiMap;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Information for a context-sensitive analysis, eg. for call sites
@@ -64,7 +65,9 @@ public class ContextSensitiveInfo {
   private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignBarEdges =
       new ArraySetMultiMap<>();
 
-  /** nodes in each method */
+  /**
+   * nodes in each method
+   */
   private final ArraySetMultiMap<SootMethod, VarNode> methodToNodes = new ArraySetMultiMap<>();
 
   private final ArraySetMultiMap<SootMethod, VarNode> methodToOutPorts = new ArraySetMultiMap<>();

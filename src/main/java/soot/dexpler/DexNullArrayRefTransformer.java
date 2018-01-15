@@ -20,11 +20,6 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -46,11 +41,16 @@ import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * If Dalvik bytecode contains statements using a base array which is always null, Soot's fast type
  * resolver will fail with the following exception: "Exception in thread " main"
  * java.lang.RuntimeException: Base of array reference is not an array!"
- *
+ * <p>
  * <p>Those statements are replaced by a throw statement (this is what will happen in practice if
  * the code is executed).
  *
@@ -109,11 +109,11 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
   /**
    * Checks whether the given local is guaranteed to be always null at the given statement
    *
-   * @param s The statement at which to check the local
+   * @param s    The statement at which to check the local
    * @param base The local to check
    * @param defs The definition analysis object to use for the check
    * @return True if the given local is guaranteed to always be null at the given statement,
-   *     otherwise false
+   * otherwise false
    */
   private boolean isAlwaysNullBefore(Stmt s, Local base, LocalDefs defs) {
     List<Unit> baseDefs = defs.getDefsOfAt(base, s);
@@ -136,9 +136,9 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
   /**
    * Creates a new statement that throws a NullPointerException
    *
-   * @param body The body in which to create the statement
+   * @param body    The body in which to create the statement
    * @param oldStmt The old faulty statement that shall be replaced with the exception
-   * @param lc The object for creating new locals
+   * @param lc      The object for creating new locals
    */
   private void createThrowStmt(Body body, Unit oldStmt, LocalCreation lc) {
     RefType tp = RefType.v("java.lang.NullPointerException");

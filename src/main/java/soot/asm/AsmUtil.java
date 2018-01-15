@@ -16,10 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.asm;
 
-import java.util.ArrayList;
-import java.util.List;
+package soot.asm;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -36,13 +34,22 @@ import soot.SootClass;
 import soot.Type;
 import soot.VoidType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Contains static utility methods.
  *
  * @author Aaloan Miftah
  */
-/** @author eric */
+
+/**
+ * @author eric
+ */
 class AsmUtil {
+
+  private AsmUtil() {
+  }
 
   /**
    * Determines if a type is a dword type.
@@ -254,7 +261,8 @@ class AsmUtil {
             break this_type;
           case 'L':
             int begin = idx;
-            while (desc.charAt(++idx) != ';') {;
+            while (desc.charAt(++idx) != ';') {
+              ;
             }
             String cls = desc.substring(begin, idx++);
             baseType = RefType.v(toQualifiedName(cls));
@@ -272,7 +280,9 @@ class AsmUtil {
     return types;
   }
 
-  /** strips suffix for indicating an array type */
+  /**
+   * strips suffix for indicating an array type
+   */
   public static String baseTypeName(String s) {
     int index = s.indexOf("[");
     if (index < 0) {
@@ -281,6 +291,4 @@ class AsmUtil {
       return s.substring(0, index);
     }
   }
-
-  private AsmUtil() {}
 }

@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java built-in type 'int'. Implemented as a singleton. */
+/**
+ * Soot representation of the Java built-in type 'int'. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class IntType extends PrimType implements IntegerType {
-  public IntType(Singletons.Global g) {}
+  public IntType(Singletons.Global g) {
+  }
 
   public static IntType v() {
     return G.v().soot_IntType();

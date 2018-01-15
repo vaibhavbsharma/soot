@@ -19,20 +19,20 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-
 import polyglot.ast.Node;
+
+import java.util.ArrayList;
 
 public class ClassLiteralChecker extends polyglot.visit.NodeVisitor {
 
   private final ArrayList<Node> list;
 
-  public ArrayList<Node> getList() {
-    return list;
-  }
-
   public ClassLiteralChecker() {
     list = new ArrayList<>();
+  }
+
+  public ArrayList<Node> getList() {
+    return list;
   }
 
   @Override

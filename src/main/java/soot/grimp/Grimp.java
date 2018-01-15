@@ -26,9 +26,6 @@
 
 package soot.grimp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -151,6 +148,9 @@ import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The Grimp class contains all the constructors for the components of the Grimp grammar for the
  * Grimp body. <br>
@@ -160,153 +160,220 @@ import soot.jimple.XorExpr;
  * Variable -> Local | ArrayRef | InstanceFieldRef | StaticFieldRef <br>
  */
 public class Grimp {
-  public Grimp(Singletons.Global g) {}
+  public Grimp(Singletons.Global g) {
+  }
 
   public static Grimp v() {
     return G.v().soot_grimp_Grimp();
   }
 
-  /** Constructs a XorExpr(Expr, Expr) grammar chunk. */
+  public static Value cloneIfNecessary(Value val) {
+    if (val instanceof Local || val instanceof Constant) {
+      return val;
+    } else {
+      return (Value) val.clone();
+    }
+  }
+
+  /**
+   * Constructs a XorExpr(Expr, Expr) grammar chunk.
+   */
   public XorExpr newXorExpr(Value op1, Value op2) {
     return new GXorExpr(op1, op2);
   }
 
-  /** Constructs a UshrExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a UshrExpr(Expr, Expr) grammar chunk.
+   */
   public UshrExpr newUshrExpr(Value op1, Value op2) {
     return new GUshrExpr(op1, op2);
   }
 
-  /** Constructs a SubExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a SubExpr(Expr, Expr) grammar chunk.
+   */
   public SubExpr newSubExpr(Value op1, Value op2) {
     return new GSubExpr(op1, op2);
   }
 
-  /** Constructs a ShrExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a ShrExpr(Expr, Expr) grammar chunk.
+   */
   public ShrExpr newShrExpr(Value op1, Value op2) {
     return new GShrExpr(op1, op2);
   }
 
-  /** Constructs a ShlExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a ShlExpr(Expr, Expr) grammar chunk.
+   */
   public ShlExpr newShlExpr(Value op1, Value op2) {
     return new GShlExpr(op1, op2);
   }
 
-  /** Constructs a RemExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a RemExpr(Expr, Expr) grammar chunk.
+   */
   public RemExpr newRemExpr(Value op1, Value op2) {
     return new GRemExpr(op1, op2);
   }
 
-  /** Constructs a OrExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a OrExpr(Expr, Expr) grammar chunk.
+   */
   public OrExpr newOrExpr(Value op1, Value op2) {
     return new GOrExpr(op1, op2);
   }
 
-  /** Constructs a NeExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a NeExpr(Expr, Expr) grammar chunk.
+   */
   public NeExpr newNeExpr(Value op1, Value op2) {
     return new GNeExpr(op1, op2);
   }
 
-  /** Constructs a MulExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a MulExpr(Expr, Expr) grammar chunk.
+   */
   public MulExpr newMulExpr(Value op1, Value op2) {
     return new GMulExpr(op1, op2);
   }
 
-  /** Constructs a LeExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a LeExpr(Expr, Expr) grammar chunk.
+   */
   public LeExpr newLeExpr(Value op1, Value op2) {
     return new GLeExpr(op1, op2);
   }
 
-  /** Constructs a GeExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a GeExpr(Expr, Expr) grammar chunk.
+   */
   public GeExpr newGeExpr(Value op1, Value op2) {
     return new GGeExpr(op1, op2);
   }
 
-  /** Constructs a EqExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a EqExpr(Expr, Expr) grammar chunk.
+   */
   public EqExpr newEqExpr(Value op1, Value op2) {
     return new GEqExpr(op1, op2);
   }
 
-  /** Constructs a DivExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a DivExpr(Expr, Expr) grammar chunk.
+   */
   public DivExpr newDivExpr(Value op1, Value op2) {
     return new GDivExpr(op1, op2);
   }
 
-  /** Constructs a CmplExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a CmplExpr(Expr, Expr) grammar chunk.
+   */
   public CmplExpr newCmplExpr(Value op1, Value op2) {
     return new GCmplExpr(op1, op2);
   }
 
-  /** Constructs a CmpgExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a CmpgExpr(Expr, Expr) grammar chunk.
+   */
   public CmpgExpr newCmpgExpr(Value op1, Value op2) {
     return new GCmpgExpr(op1, op2);
   }
 
-  /** Constructs a CmpExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a CmpExpr(Expr, Expr) grammar chunk.
+   */
   public CmpExpr newCmpExpr(Value op1, Value op2) {
     return new GCmpExpr(op1, op2);
   }
 
-  /** Constructs a GtExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a GtExpr(Expr, Expr) grammar chunk.
+   */
   public GtExpr newGtExpr(Value op1, Value op2) {
     return new GGtExpr(op1, op2);
   }
 
-  /** Constructs a LtExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a LtExpr(Expr, Expr) grammar chunk.
+   */
   public LtExpr newLtExpr(Value op1, Value op2) {
     return new GLtExpr(op1, op2);
   }
 
-  /** Constructs a AddExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a AddExpr(Expr, Expr) grammar chunk.
+   */
   public AddExpr newAddExpr(Value op1, Value op2) {
     return new GAddExpr(op1, op2);
   }
 
-  /** Constructs a AndExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a AndExpr(Expr, Expr) grammar chunk.
+   */
   public AndExpr newAndExpr(Value op1, Value op2) {
     return new GAndExpr(op1, op2);
   }
 
-  /** Constructs a NegExpr(Expr, Expr) grammar chunk. */
+  /**
+   * Constructs a NegExpr(Expr, Expr) grammar chunk.
+   */
   public NegExpr newNegExpr(Value op) {
     return new GNegExpr(op);
   }
 
-  /** Constructs a LengthExpr(Expr) grammar chunk. */
+  /**
+   * Constructs a LengthExpr(Expr) grammar chunk.
+   */
   public LengthExpr newLengthExpr(Value op) {
     return new GLengthExpr(op);
   }
 
-  /** Constructs a CastExpr(Expr, Type) grammar chunk. */
+  /**
+   * Constructs a CastExpr(Expr, Type) grammar chunk.
+   */
   public CastExpr newCastExpr(Value op1, Type t) {
     return new GCastExpr(op1, t);
   }
 
-  /** Constructs a InstanceOfExpr(Expr, Type) grammar chunk. */
+  /**
+   * Constructs a InstanceOfExpr(Expr, Type) grammar chunk.
+   */
   public InstanceOfExpr newInstanceOfExpr(Value op1, Type t) {
     return new GInstanceOfExpr(op1, t);
   }
 
-  /** Constructs a NewExpr(RefType) grammar chunk. */
+  /**
+   * Constructs a NewExpr(RefType) grammar chunk.
+   */
   NewExpr newNewExpr(RefType type) {
     return Jimple.v().newNewExpr(type);
   }
 
-  /** Constructs a NewArrayExpr(Type, Expr) grammar chunk. */
+  /**
+   * Constructs a NewArrayExpr(Type, Expr) grammar chunk.
+   */
   public NewArrayExpr newNewArrayExpr(Type type, Value size) {
     return new GNewArrayExpr(type, size);
   }
 
-  /** Constructs a NewMultiArrayExpr(ArrayType, List of Expr) grammar chunk. */
+  /**
+   * Constructs a NewMultiArrayExpr(ArrayType, List of Expr) grammar chunk.
+   */
   public NewMultiArrayExpr newNewMultiArrayExpr(ArrayType type, List sizes) {
     return new GNewMultiArrayExpr(type, sizes);
   }
 
-  /** Constructs a NewInvokeExpr(Local base, List of Expr) grammar chunk. */
+  /**
+   * Constructs a NewInvokeExpr(Local base, List of Expr) grammar chunk.
+   */
   public NewInvokeExpr newNewInvokeExpr(RefType base, SootMethodRef method, List args) {
     return new GNewInvokeExpr(base, method, args);
   }
 
-  /** Constructs a StaticInvokeExpr(ArrayType, List of Expr) grammar chunk. */
+  /**
+   * Constructs a StaticInvokeExpr(ArrayType, List of Expr) grammar chunk.
+   */
   public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, List args) {
     return new GStaticInvokeExpr(method, args);
   }
@@ -325,7 +392,9 @@ public class Grimp {
     return new GVirtualInvokeExpr(base, method, args);
   }
 
-  /** Constructs a new DynamicInvokeExpr grammar chunk. */
+  /**
+   * Constructs a new DynamicInvokeExpr grammar chunk.
+   */
   public DynamicInvokeExpr newDynamicInvokeExpr(
       SootMethodRef bootstrapMethodRef,
       List<Value> bootstrapArgs,
@@ -342,7 +411,9 @@ public class Grimp {
     return new GInterfaceInvokeExpr(base, method, args);
   }
 
-  /** Constructs a ThrowStmt(Expr) grammar chunk. */
+  /**
+   * Constructs a ThrowStmt(Expr) grammar chunk.
+   */
   public ThrowStmt newThrowStmt(Value op) {
     return new GThrowStmt(op);
   }
@@ -351,7 +422,9 @@ public class Grimp {
     return new GThrowStmt(s.getOp());
   }
 
-  /** Constructs a ExitMonitorStmt(Expr) grammar chunk */
+  /**
+   * Constructs a ExitMonitorStmt(Expr) grammar chunk
+   */
   public ExitMonitorStmt newExitMonitorStmt(Value op) {
     return new GExitMonitorStmt(op);
   }
@@ -360,7 +433,9 @@ public class Grimp {
     return new GExitMonitorStmt(s.getOp());
   }
 
-  /** Constructs a EnterMonitorStmt(Expr) grammar chunk. */
+  /**
+   * Constructs a EnterMonitorStmt(Expr) grammar chunk.
+   */
   public EnterMonitorStmt newEnterMonitorStmt(Value op) {
     return new GEnterMonitorStmt(op);
   }
@@ -369,7 +444,9 @@ public class Grimp {
     return new GEnterMonitorStmt(s.getOp());
   }
 
-  /** Constructs a BreakpointStmt() grammar chunk. */
+  /**
+   * Constructs a BreakpointStmt() grammar chunk.
+   */
   public BreakpointStmt newBreakpointStmt() {
     return Jimple.v().newBreakpointStmt();
   }
@@ -378,7 +455,9 @@ public class Grimp {
     return Jimple.v().newBreakpointStmt();
   }
 
-  /** Constructs a GotoStmt(Stmt) grammar chunk. */
+  /**
+   * Constructs a GotoStmt(Stmt) grammar chunk.
+   */
   public GotoStmt newGotoStmt(Unit target) {
     return Jimple.v().newGotoStmt(target);
   }
@@ -387,7 +466,9 @@ public class Grimp {
     return Jimple.v().newGotoStmt(s.getTarget());
   }
 
-  /** Constructs a NopStmt() grammar chunk. */
+  /**
+   * Constructs a NopStmt() grammar chunk.
+   */
   public NopStmt newNopStmt() {
     return Jimple.v().newNopStmt();
   }
@@ -396,7 +477,9 @@ public class Grimp {
     return Jimple.v().newNopStmt();
   }
 
-  /** Constructs a ReturnVoidStmt() grammar chunk. */
+  /**
+   * Constructs a ReturnVoidStmt() grammar chunk.
+   */
   public ReturnVoidStmt newReturnVoidStmt() {
     return Jimple.v().newReturnVoidStmt();
   }
@@ -405,7 +488,9 @@ public class Grimp {
     return Jimple.v().newReturnVoidStmt();
   }
 
-  /** Constructs a ReturnStmt(Expr) grammar chunk. */
+  /**
+   * Constructs a ReturnStmt(Expr) grammar chunk.
+   */
   public ReturnStmt newReturnStmt(Value op) {
     return new GReturnStmt(op);
   }
@@ -414,7 +499,9 @@ public class Grimp {
     return new GReturnStmt(s.getOp());
   }
 
-  /** Constructs a IfStmt(Condition, Stmt) grammar chunk. */
+  /**
+   * Constructs a IfStmt(Condition, Stmt) grammar chunk.
+   */
   public IfStmt newIfStmt(Value condition, Unit target) {
     return new GIfStmt(condition, target);
   }
@@ -423,7 +510,9 @@ public class Grimp {
     return new GIfStmt(s.getCondition(), s.getTarget());
   }
 
-  /** Constructs a IdentityStmt(Local, IdentityRef) grammar chunk. */
+  /**
+   * Constructs a IdentityStmt(Local, IdentityRef) grammar chunk.
+   */
   public IdentityStmt newIdentityStmt(Value local, Value identityRef) {
     return new GIdentityStmt(local, identityRef);
   }
@@ -432,7 +521,9 @@ public class Grimp {
     return new GIdentityStmt(s.getLeftOp(), s.getRightOp());
   }
 
-  /** Constructs a AssignStmt(Variable, RValue) grammar chunk. */
+  /**
+   * Constructs a AssignStmt(Variable, RValue) grammar chunk.
+   */
   public AssignStmt newAssignStmt(Value variable, Value rvalue) {
     return new GAssignStmt(variable, rvalue);
   }
@@ -441,7 +532,9 @@ public class Grimp {
     return new GAssignStmt(s.getLeftOp(), s.getRightOp());
   }
 
-  /** Constructs a InvokeStmt(InvokeExpr) grammar chunk. */
+  /**
+   * Constructs a InvokeStmt(InvokeExpr) grammar chunk.
+   */
   public InvokeStmt newInvokeStmt(Value op) {
     return new GInvokeStmt(op);
   }
@@ -450,7 +543,9 @@ public class Grimp {
     return new GInvokeStmt(s.getInvokeExpr());
   }
 
-  /** Constructs a TableSwitchStmt(Expr, int, int, List of Unit, Stmt) grammar chunk. */
+  /**
+   * Constructs a TableSwitchStmt(Expr, int, int, List of Unit, Stmt) grammar chunk.
+   */
   public TableSwitchStmt newTableSwitchStmt(
       Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget) {
     return new GTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
@@ -461,7 +556,9 @@ public class Grimp {
         s.getKey(), s.getLowIndex(), s.getHighIndex(), s.getTargets(), s.getDefaultTarget());
   }
 
-  /** Constructs a LookupSwitchStmt(Expr, List of Expr, List of Unit, Stmt) grammar chunk. */
+  /**
+   * Constructs a LookupSwitchStmt(Expr, List of Expr, List of Unit, Stmt) grammar chunk.
+   */
   public LookupSwitchStmt newLookupSwitchStmt(
       Value key, List lookupValues, List targets, Unit defaultTarget) {
     return new GLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
@@ -473,7 +570,9 @@ public class Grimp {
         s.getTargets(), s.getDefaultTarget());
   }
 
-  /** Constructs a Local with the given name and type. */
+  /**
+   * Constructs a Local with the given name and type.
+   */
   public Local newLocal(String name, Type t) {
     return Jimple.v().newLocal(name, t);
   }
@@ -492,32 +591,44 @@ public class Grimp {
         trap.getEndUnit(), trap.getHandlerUnit());
   }
 
-  /** Constructs a StaticFieldRef(SootFieldRef) grammar chunk. */
+  /**
+   * Constructs a StaticFieldRef(SootFieldRef) grammar chunk.
+   */
   public StaticFieldRef newStaticFieldRef(SootFieldRef f) {
     return Jimple.v().newStaticFieldRef(f);
   }
 
-  /** Constructs a ThisRef(RefType) grammar chunk. */
+  /**
+   * Constructs a ThisRef(RefType) grammar chunk.
+   */
   public ThisRef newThisRef(RefType t) {
     return Jimple.v().newThisRef(t);
   }
 
-  /** Constructs a ParameterRef(SootMethod, int) grammar chunk. */
+  /**
+   * Constructs a ParameterRef(SootMethod, int) grammar chunk.
+   */
   public ParameterRef newParameterRef(Type paramType, int number) {
     return Jimple.v().newParameterRef(paramType, number);
   }
 
-  /** Constructs a InstanceFieldRef(Value, SootFieldRef) grammar chunk. */
+  /**
+   * Constructs a InstanceFieldRef(Value, SootFieldRef) grammar chunk.
+   */
   public InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f) {
     return new GInstanceFieldRef(base, f);
   }
 
-  /** Constructs a CaughtExceptionRef() grammar chunk. */
+  /**
+   * Constructs a CaughtExceptionRef() grammar chunk.
+   */
   public CaughtExceptionRef newCaughtExceptionRef() {
     return Jimple.v().newCaughtExceptionRef();
   }
 
-  /** Constructs a ArrayRef(Local, Expr) grammar chunk. */
+  /**
+   * Constructs a ArrayRef(Local, Expr) grammar chunk.
+   */
   public ArrayRef newArrayRef(Value base, Value index) {
     return new GArrayRef(base, index);
   }
@@ -566,7 +677,9 @@ public class Grimp {
     return Jimple.v().newStmtBox(unit);
   }
 
-  /** Carries out the mapping from other Value's to Grimp Value's */
+  /**
+   * Carries out the mapping from other Value's to Grimp Value's
+   */
   public Value newExpr(Value value) {
     if (value instanceof Expr) {
       final ExprBox returnedExpr = new ExprBox(IntConstant.v(0));
@@ -781,21 +894,17 @@ public class Grimp {
     }
   }
 
-  /** Returns an empty GrimpBody associated with method m. */
+  /**
+   * Returns an empty GrimpBody associated with method m.
+   */
   public GrimpBody newBody(SootMethod m) {
     return new GrimpBody(m);
   }
 
-  /** Returns a GrimpBody constructed from b. */
+  /**
+   * Returns a GrimpBody constructed from b.
+   */
   public GrimpBody newBody(Body b, String phase) {
     return new GrimpBody(b);
-  }
-
-  public static Value cloneIfNecessary(Value val) {
-    if (val instanceof Local || val instanceof Constant) {
-      return val;
-    } else {
-      return (Value) val.clone();
-    }
   }
 }

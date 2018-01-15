@@ -25,9 +25,9 @@
 
 package soot.tagkit;
 
-import java.util.ArrayList;
-
 import soot.util.Switch;
+
+import java.util.ArrayList;
 
 /**
  * Represents the base class of annotation elements each annotation can have several elements for

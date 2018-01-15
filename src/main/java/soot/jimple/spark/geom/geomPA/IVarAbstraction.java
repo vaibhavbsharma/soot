@@ -16,10 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
 
-import java.io.PrintStream;
-import java.util.Set;
+package soot.jimple.spark.geom.geomPA;
 
 import soot.SootMethod;
 import soot.Type;
@@ -31,6 +29,9 @@ import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
+
+import java.io.PrintStream;
+import java.util.Set;
 
 /**
  * Pointer/object representation in geomPTA. This interface defines the operations needed for
@@ -67,7 +68,9 @@ public abstract class IVarAbstraction implements Numberable {
     parent = this;
   }
 
-  /** Used by ordering the nodes in priority worklist. */
+  /**
+   * Used by ordering the nodes in priority worklist.
+   */
   public boolean lessThan(IVarAbstraction other) {
     if (lrf_value != other.lrf_value) {
       return lrf_value < other.lrf_value;
@@ -93,13 +96,13 @@ public abstract class IVarAbstraction implements Numberable {
   }
 
   @Override
-  public void setNumber(int number) {
-    id = number;
+  public int getNumber() {
+    return id;
   }
 
   @Override
-  public int getNumber() {
-    return id;
+  public void setNumber(int number) {
+    id = number;
   }
 
   @Override
@@ -126,7 +129,9 @@ public abstract class IVarAbstraction implements Numberable {
     return num_of_diff_objs() != -1;
   }
 
-  /** Processing the wrapped SPARK node. */
+  /**
+   * Processing the wrapped SPARK node.
+   */
   public Node getWrappedNode() {
     return me;
   }
@@ -179,6 +184,7 @@ public abstract class IVarAbstraction implements Numberable {
   public abstract void injectPts();
 
   // Obtaining points-to information statistics
+
   /**
    * Return -1 if this pointer does not have points-to information. This function can be used for
    * testing if the pointer has been processed by geomPTA.
@@ -194,6 +200,7 @@ public abstract class IVarAbstraction implements Numberable {
   public abstract int count_flow_intervals(IVarAbstraction qv);
 
   // Querying procedures
+
   /**
    * Perform context sensitive alias checking with qv.
    *
@@ -201,6 +208,7 @@ public abstract class IVarAbstraction implements Numberable {
    * @return
    */
   public abstract boolean heap_sensitive_intersection(IVarAbstraction qv);
+
   /**
    * Test if the pointer in the context range [l, R) points to object obj.
    *
@@ -210,6 +218,7 @@ public abstract class IVarAbstraction implements Numberable {
    * @return
    */
   public abstract boolean pointer_interval_points_to(long l, long r, AllocNode obj);
+
   /**
    * Test if the particular object has been obsoleted. It's mainly for points-to developer use.
    *
@@ -224,6 +233,7 @@ public abstract class IVarAbstraction implements Numberable {
    * @return
    */
   public abstract Set<AllocNode> get_all_points_to_objects();
+
   /**
    * Given the pointers falling in the context range [l, r), we compute the set of context sensitive
    * objects pointed to by those pointers. This function is designed in visitor pattern.

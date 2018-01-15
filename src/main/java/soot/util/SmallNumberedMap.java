@@ -27,11 +27,17 @@ import java.util.Iterator;
  * @author Ondrej Lhotak
  */
 public final class SmallNumberedMap<T> {
+  private Numberable[] array = new Numberable[8];
+  private Object[] values = new Object[8];
+  private int size = 0;
+
   public SmallNumberedMap() {
     //
   }
 
-  /** Associates a value with a key. */
+  /**
+   * Associates a value with a key.
+   */
   public boolean put(Numberable key, T value) {
     int pos = findPosition(key);
     if (array[pos] == key) {
@@ -51,12 +57,16 @@ public final class SmallNumberedMap<T> {
     return true;
   }
 
-  /** Returns the value associated with a given key. */
+  /**
+   * Returns the value associated with a given key.
+   */
   public T get(Numberable key) {
     return (T) values[findPosition(key)];
   }
 
-  /** Returns the number of non-null values in this map. */
+  /**
+   * Returns the number of non-null values in this map.
+   */
   public int nonNullSize() {
     int ret = 0;
     for (Object element : values) {
@@ -67,14 +77,53 @@ public final class SmallNumberedMap<T> {
     return ret;
   }
 
-  /** Returns an iterator over the keys with non-null values. */
+  /**
+   * Returns an iterator over the keys with non-null values.
+   */
   public Iterator<Numberable> keyIterator() {
     return new KeyIterator(this);
   }
 
-  /** Returns an iterator over the non-null values. */
+  /**
+   * Returns an iterator over the non-null values.
+   */
   public Iterator<T> iterator() {
     return new ValueIterator(this);
+  }
+
+  /* Private stuff. */
+
+  private final int findPosition(Numberable o) {
+    int number = o.getNumber();
+    if (number == 0) {
+      throw new RuntimeException("unnumbered");
+    }
+    number = number & (array.length - 1);
+    while (true) {
+      if (array[number] == o) {
+        return number;
+      }
+      if (array[number] == null) {
+        return number;
+      }
+      number = (number + 1) & (array.length - 1);
+    }
+  }
+
+  private final void doubleSize() {
+    Numberable[] oldArray = array;
+    Object[] oldValues = values;
+    int newLength = array.length * 2;
+    values = new Object[newLength];
+    array = new Numberable[newLength];
+    for (int i = 0; i < oldArray.length; i++) {
+      Numberable element = oldArray[i];
+      if (element != null) {
+        int pos = findPosition(element);
+        array[pos] = element;
+        values[pos] = oldValues[i];
+      }
+    }
   }
 
   abstract class SmallNumberedMapIterator<C> implements Iterator<C> {
@@ -137,43 +186,4 @@ public final class SmallNumberedMap<T> {
       return (T) ret;
     }
   }
-
-  /* Private stuff. */
-
-  private final int findPosition(Numberable o) {
-    int number = o.getNumber();
-    if (number == 0) {
-      throw new RuntimeException("unnumbered");
-    }
-    number = number & (array.length - 1);
-    while (true) {
-      if (array[number] == o) {
-        return number;
-      }
-      if (array[number] == null) {
-        return number;
-      }
-      number = (number + 1) & (array.length - 1);
-    }
-  }
-
-  private final void doubleSize() {
-    Numberable[] oldArray = array;
-    Object[] oldValues = values;
-    int newLength = array.length * 2;
-    values = new Object[newLength];
-    array = new Numberable[newLength];
-    for (int i = 0; i < oldArray.length; i++) {
-      Numberable element = oldArray[i];
-      if (element != null) {
-        int pos = findPosition(element);
-        array[pos] = element;
-        values[pos] = oldValues[i];
-      }
-    }
-  }
-
-  private Numberable[] array = new Numberable[8];
-  private Object[] values = new Object[8];
-  private int size = 0;
 }

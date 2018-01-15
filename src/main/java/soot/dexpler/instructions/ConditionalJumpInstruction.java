@@ -26,7 +26,6 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
-
 import soot.Immediate;
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -42,7 +41,9 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction
     super(instruction, codeAdress);
   }
 
-  /** Return an if statement depending on the instruction. */
+  /**
+   * Return an if statement depending on the instruction.
+   */
   protected abstract IfStmt ifStatement(DexBody body);
 
   @Override
@@ -78,11 +79,11 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction
 
   /**
    * Get comparison expression depending on opcode against zero or null.
-   *
+   * <p>
    * <p>If the register is used as an object this will create a comparison with null, not zero.
    *
    * @param body the containing DexBody
-   * @param reg the register to compare against zero.
+   * @param reg  the register to compare against zero.
    */
   protected ConditionExpr getComparisonExpr(DexBody body, int reg) {
     Local one = body.getRegisterLocal(reg);
@@ -92,7 +93,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction
   /**
    * Get comparison expression depending on opcode between two immediates
    *
-   * @param one first immediate
+   * @param one   first immediate
    * @param other second immediate
    * @throws RuntimeException if this is not a IfTest or IfTestz instruction.
    */

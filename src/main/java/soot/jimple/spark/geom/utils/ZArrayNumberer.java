@@ -16,14 +16,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.utils;
+
+import soot.util.IterableNumberer;
+import soot.util.Numberable;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import soot.util.IterableNumberer;
-import soot.util.Numberable;
 
 /**
  * Similar to the ArrayNumberer class in soot. But, this class counts the objects from zero. And, we
@@ -70,7 +71,9 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     }
   }
 
-  /** Clear the reference to the objects to help the garbage collection */
+  /**
+   * Clear the reference to the objects to help the garbage collection
+   */
   public void clear() {
 
     for (int i = 0; i < lastNumber; ++i) {
@@ -82,7 +85,9 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     objContainer.clear();
   }
 
-  /** Input object o should be added to this container previously. */
+  /**
+   * Input object o should be added to this container previously.
+   */
   @Override
   public long get(E o) {
     if (o == null) {
@@ -123,7 +128,9 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     return true;
   }
 
-  /** Return how many objects are in the container but not the capacity of the container. */
+  /**
+   * Return how many objects are in the container but not the capacity of the container.
+   */
   @Override
   public int size() {
     return filledCells;
@@ -169,7 +176,9 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     int cur = 0;
     E lastElement = null;
 
-    /** We locate the next non-null item. */
+    /**
+     * We locate the next non-null item.
+     */
     @Override
     public final boolean hasNext() {
       while (cur < lastNumber) {

@@ -25,11 +25,6 @@
 
 package soot.util;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.Body;
 import soot.G;
 import soot.Printer;
@@ -43,6 +38,11 @@ import soot.toolkits.graph.ExceptionalGraph;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The <tt>PhaseDumper</tt> is a debugging aid. It maintains two lists of phases to be debugged. If
  * a phase is on the <code>bodyDumpingPhases</code> list, then the intermediate representation of
@@ -51,46 +51,23 @@ import soot.util.dot.DotGraph;
  * phase, a dot file is dumped representing the CFG constructed.
  */
 public class PhaseDumper {
+  static final String allWildcard = "ALL";
+  private final PhaseStack phaseStack = new PhaseStack();
   // As a minor optimization, we leave these lists null in the
   // case were no phases at all are to be dumped, which is the
   // most likely case.
   private List bodyDumpingPhases = null;
   private List cfgDumpingPhases = null;
-
-  private class PhaseStack extends ArrayList {
-    // We eschew java.util.Stack to avoid synchronization overhead.
-
-    private static final int initialCapacity = 4;
-    static final String EMPTY_STACK_PHASE_NAME = "NOPHASE";
-
-    PhaseStack() {
-      super(initialCapacity);
-    }
-
-    boolean empty() {
-      return (this.size() == 0);
-    }
-
-    String currentPhase() {
-      if (this.size() <= 0) {
-        return EMPTY_STACK_PHASE_NAME;
-      } else {
-        return (String) this.get(this.size() - 1);
-      }
-    }
-
-    String pop() {
-      return (String) this.remove(this.size() - 1);
-    }
-
-    String push(String phaseName) {
-      this.add(phaseName);
-      return phaseName;
-    }
-  }
-
-  private final PhaseStack phaseStack = new PhaseStack();
-  static final String allWildcard = "ALL";
+  // soot.Printer itself needs to create a BriefUnitGraph in order
+  // to format the text for a method's instructions, so this flag is
+  // a hack to avoid dumping graphs that we create in the course of
+  // dumping bodies or other graphs.
+  //
+  // Note that this hack would not work if a PhaseDumper might be
+  // accessed by multiple threads.  So long as there is a single
+  // active PhaseDumper accessed through soot.G, it seems
+  // safe to assume it will be accessed by only a single thread.
+  private boolean alreadyDumping = false;
 
   public PhaseDumper(Singletons.Global g) {
     if (!Options.v().dump_body().isEmpty()) {
@@ -108,35 +85,6 @@ public class PhaseDumper {
    */
   public static PhaseDumper v() {
     return G.v().soot_util_PhaseDumper();
-  }
-
-  private boolean isBodyDumpingPhase(String phaseName) {
-    return ((bodyDumpingPhases != null)
-        && (bodyDumpingPhases.contains(phaseName) || bodyDumpingPhases.contains(allWildcard)));
-  }
-
-  private boolean isCFGDumpingPhase(String phaseName) {
-    if (cfgDumpingPhases == null) {
-      return false;
-    }
-    if (cfgDumpingPhases.contains(allWildcard)) {
-      return true;
-    } else {
-      while (true) { // loop exited by "return" or "break".
-        if (cfgDumpingPhases.contains(phaseName)) {
-          return true;
-        }
-        // Go on to check if phaseName is a subphase of a
-        // phase in cfgDumpingPhases.
-        int lastDot = phaseName.lastIndexOf('.');
-        if (lastDot < 0) {
-          break;
-        } else {
-          phaseName = phaseName.substring(0, lastDot);
-        }
-      }
-      return false;
-    }
   }
 
   private static java.io.File makeDirectoryIfMissing(Body b) throws java.io.IOException {
@@ -165,7 +113,9 @@ public class PhaseDumper {
     return new PrintWriter(new java.io.FileOutputStream(filePath));
   }
 
-  /** Returns the next available name for a graph file. */
+  /**
+   * Returns the next available name for a graph file.
+   */
   private static String nextGraphFileName(Body b, String baseName) throws java.io.IOException {
     // We number output files to allow multiple graphs per phase.
     File dir = makeDirectoryIfMissing(b);
@@ -203,16 +153,34 @@ public class PhaseDumper {
     }
   }
 
-  // soot.Printer itself needs to create a BriefUnitGraph in order
-  // to format the text for a method's instructions, so this flag is
-  // a hack to avoid dumping graphs that we create in the course of
-  // dumping bodies or other graphs.
-  //
-  // Note that this hack would not work if a PhaseDumper might be
-  // accessed by multiple threads.  So long as there is a single
-  // active PhaseDumper accessed through soot.G, it seems
-  // safe to assume it will be accessed by only a single thread.
-  private boolean alreadyDumping = false;
+  private boolean isBodyDumpingPhase(String phaseName) {
+    return ((bodyDumpingPhases != null)
+        && (bodyDumpingPhases.contains(phaseName) || bodyDumpingPhases.contains(allWildcard)));
+  }
+
+  private boolean isCFGDumpingPhase(String phaseName) {
+    if (cfgDumpingPhases == null) {
+      return false;
+    }
+    if (cfgDumpingPhases.contains(allWildcard)) {
+      return true;
+    } else {
+      while (true) { // loop exited by "return" or "break".
+        if (cfgDumpingPhases.contains(phaseName)) {
+          return true;
+        }
+        // Go on to check if phaseName is a subphase of a
+        // phase in cfgDumpingPhases.
+        int lastDot = phaseName.lastIndexOf('.');
+        if (lastDot < 0) {
+          break;
+        } else {
+          phaseName = phaseName.substring(0, lastDot);
+        }
+      }
+      return false;
+    }
+  }
 
   public void dumpBody(Body b, String baseName) {
     try {
@@ -252,7 +220,7 @@ public class PhaseDumper {
    * it can dump the phases's &ldquo;before&rdquo; file. If the phase is to be dumped, <code>
    * dumpBefore</code> deletes any old graph files dumped during previous runs of the phase.
    *
-   * @param b the {@link Body} being transformed.
+   * @param b         the {@link Body} being transformed.
    * @param phaseName the name of the phase that has just started.
    */
   public void dumpBefore(Body b, String phaseName) {
@@ -267,10 +235,10 @@ public class PhaseDumper {
    * Tells the <code>PhaseDumper</code> that a {@link Body} transforming phase has ended, so that it
    * can dump the phases's &ldquo;after&rdquo; file.
    *
-   * @param b the {@link Body} being transformed.
+   * @param b         the {@link Body} being transformed.
    * @param phaseName the name of the phase that has just ended.
    * @throws IllegalArgumentException if <code>phaseName</code> does not match the <code>
-   *     PhaseDumper</code>'s record of the current phase.
+   *                                  PhaseDumper</code>'s record of the current phase.
    */
   public void dumpAfter(Body b, String phaseName) {
     String poppedPhaseName = phaseStack.pop();
@@ -303,7 +271,7 @@ public class PhaseDumper {
    *
    * @param phaseName the name of the phase that has just ended.
    * @throws IllegalArgumentException if <code>phaseName</code> does not match the <code>
-   *     PhaseDumper</code>'s record of the current phase.
+   *                                  PhaseDumper</code>'s record of the current phase.
    */
   public void dumpAfter(String phaseName) {
     String poppedPhaseName = phaseStack.pop();
@@ -320,7 +288,7 @@ public class PhaseDumper {
    * Asks the <code>PhaseDumper</code> to dump the passed {@link DirectedGraph} if the current phase
    * is being dumped.
    *
-   * @param g the graph to dump.
+   * @param g    the graph to dump.
    * @param body the {@link Body} represented by <code>g</code>.
    */
   public void dumpGraph(DirectedGraph g, Body b) {
@@ -404,6 +372,38 @@ public class PhaseDumper {
       throw new java.io.IOException("FAKE");
     } catch (java.io.IOException e) {
       e.printStackTrace(G.v().out);
+    }
+  }
+
+  private class PhaseStack extends ArrayList {
+    // We eschew java.util.Stack to avoid synchronization overhead.
+
+    static final String EMPTY_STACK_PHASE_NAME = "NOPHASE";
+    private static final int initialCapacity = 4;
+
+    PhaseStack() {
+      super(initialCapacity);
+    }
+
+    boolean empty() {
+      return (this.size() == 0);
+    }
+
+    String currentPhase() {
+      if (this.size() <= 0) {
+        return EMPTY_STACK_PHASE_NAME;
+      } else {
+        return (String) this.get(this.size() - 1);
+      }
+    }
+
+    String pop() {
+      return (String) this.remove(this.size() - 1);
+    }
+
+    String push(String phaseName) {
+      this.add(phaseName);
+      return phaseName;
     }
   }
 }

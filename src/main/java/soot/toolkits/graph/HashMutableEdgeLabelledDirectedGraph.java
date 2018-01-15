@@ -23,7 +23,10 @@
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
+
 package soot.toolkits.graph;
+
+import soot.G;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.G;
-
 /**
  * HashMap based implementation of a MutableEdgeLabelledDirectedGraph.
  *
@@ -47,49 +48,10 @@ import soot.G;
 public class HashMutableEdgeLabelledDirectedGraph<N, L>
     implements MutableEdgeLabelledDirectedGraph<N, L> {
 
-  private static class DGEdge<N> {
-
-    N from;
-    N to;
-
-    public DGEdge(N from, N to) {
-      this.from = from;
-      this.to = to;
-    }
-
-    public N from() {
-      return from;
-    }
-
-    public N to() {
-      return to;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o instanceof DGEdge) {
-        DGEdge<?> other = (DGEdge<?>) o;
-        return from.equals(other.from) && to.equals(other.to);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return Arrays.hashCode(new Object[] {from, to});
-    }
-  }
-
-  private static <T> List<T> getCopy(Collection<? extends T> c) {
-    return Collections.unmodifiableList(new ArrayList<T>(c));
-  }
-
   protected Map<N, List<N>> nodeToPreds;
   protected Map<N, List<N>> nodeToSuccs;
-
   protected Map<DGEdge<N>, List<L>> edgeToLabels;
   protected Map<L, List<DGEdge<N>>> labelToEdges;
-
   protected Set<N> heads;
   protected Set<N> tails;
 
@@ -102,7 +64,13 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L>
     tails = new HashSet<>();
   }
 
-  /** Removes all nodes and edges. */
+  private static <T> List<T> getCopy(Collection<? extends T> c) {
+    return Collections.unmodifiableList(new ArrayList<T>(c));
+  }
+
+  /**
+   * Removes all nodes and edges.
+   */
   public void clearAll() {
     nodeToPreds.clear();
     nodeToSuccs.clear();
@@ -395,6 +363,39 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L>
         List<L> labels = edgeToLabels.get(edge);
         G.v().out.println("     " + succ + " [" + labels + "]");
       }
+    }
+  }
+
+  private static class DGEdge<N> {
+
+    N from;
+    N to;
+
+    public DGEdge(N from, N to) {
+      this.from = from;
+      this.to = to;
+    }
+
+    public N from() {
+      return from;
+    }
+
+    public N to() {
+      return to;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o instanceof DGEdge) {
+        DGEdge<?> other = (DGEdge<?>) o;
+        return from.equals(other.from) && to.equals(other.to);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(new Object[] {from, to});
     }
   }
 }

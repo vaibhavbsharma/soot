@@ -18,9 +18,10 @@
  */
 
 package soot.jbco.util;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 30-Mar-2006
+ * <p>Created on 30-Mar-2006
  */
 public class StringTrie {
 

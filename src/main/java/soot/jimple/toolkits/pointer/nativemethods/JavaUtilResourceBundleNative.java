@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -62,7 +63,7 @@ public class JavaUtilResourceBundleNative extends NativeMethodClass {
    * Undocumented, returns an array of all possible classes. NOTE: @return = new Class[];
    *
    * @return[] = { all classes }
-   *     <p>private static native java.lang.Class getClassContext()[];
+   * <p>private static native java.lang.Class getClassContext()[];
    */
   public void java_util_ResourceBundle_getClassContext(
       SootMethod method,

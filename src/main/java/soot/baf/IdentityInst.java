@@ -33,10 +33,10 @@ public interface IdentityInst extends Inst, IdentityUnit {
   @Override
   Value getLeftOp();
 
+  void setLeftOp(Value variable);
+
   @Override
   Value getRightOp();
-
-  void setLeftOp(Value variable);
 
   void setRightOp(Value rvalue);
 

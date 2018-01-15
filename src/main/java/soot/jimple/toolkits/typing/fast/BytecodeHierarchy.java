@@ -18,13 +18,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.typing.fast;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.ListIterator;
+package soot.jimple.toolkits.typing.fast;
 
 import soot.ArrayType;
 import soot.FloatType;
@@ -37,18 +32,16 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 
-/** @author Ben Bellamy */
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.ListIterator;
+
+/**
+ * @author Ben Bellamy
+ */
 public class BytecodeHierarchy implements IHierarchy {
-  private static class AncestryTreeNode {
-    public final AncestryTreeNode next;
-    public final RefType type;
-
-    public AncestryTreeNode(AncestryTreeNode next, RefType type) {
-      this.next = next;
-      this.type = type;
-    }
-  }
-
   /* Returns a collection of nodes, each with type Object, each at the leaf
   end of a different path from root to Object. */
   private static Collection<AncestryTreeNode> buildAncestryTree(RefType root) {
@@ -90,11 +83,6 @@ public class BytecodeHierarchy implements IHierarchy {
       b = b.next;
     }
     return r;
-  }
-
-  @Override
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
   }
 
   public static Collection<Type> lcas_(Type a, Type b) {
@@ -210,11 +198,6 @@ public class BytecodeHierarchy implements IHierarchy {
     }
   }
 
-  @Override
-  public boolean ancestor(Type ancestor, Type child) {
-    return ancestor_(ancestor, child);
-  }
-
   public static boolean ancestor_(Type ancestor, Type child) {
     if (TypeResolver.typesEqual(ancestor, child)) {
       return true;
@@ -286,5 +269,25 @@ public class BytecodeHierarchy implements IHierarchy {
       pathB.removeFirst();
     }
     return r;
+  }
+
+  @Override
+  public Collection<Type> lcas(Type a, Type b) {
+    return lcas_(a, b);
+  }
+
+  @Override
+  public boolean ancestor(Type ancestor, Type child) {
+    return ancestor_(ancestor, child);
+  }
+
+  private static class AncestryTreeNode {
+    public final AncestryTreeNode next;
+    public final RefType type;
+
+    public AncestryTreeNode(AncestryTreeNode next, RefType type) {
+      this.next = next;
+      this.type = type;
+    }
   }
 }

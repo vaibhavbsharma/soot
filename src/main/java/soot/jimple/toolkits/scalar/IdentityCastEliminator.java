@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -13,18 +10,22 @@ import soot.Unit;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformer that removes unnecessary identity casts such as
- *
+ * <p>
  * <p>$i3 = (int) $i3
- *
+ * <p>
  * <p>when $i3 is already of type "int".
  *
  * @author Steven Arzt
  */
 public class IdentityCastEliminator extends BodyTransformer {
 
-  public IdentityCastEliminator(Singletons.Global g) {}
+  public IdentityCastEliminator(Singletons.Global g) {
+  }
 
   public static IdentityCastEliminator v() {
     return G.v().soot_jimple_toolkits_scalar_IdentityCastEliminator();

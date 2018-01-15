@@ -63,7 +63,9 @@ public class ObjectIntMapper<E> {
     }
   }
 
-  /** adds <code>o</code> into the map. no test are made, if it is already in the map. */
+  /**
+   * adds <code>o</code> into the map. no test are made, if it is already in the map.
+   */
   public int add(E o) {
     objectToInts.put(o, counter);
     intToObjects.add(o);
@@ -105,7 +107,9 @@ public class ObjectIntMapper<E> {
     return objectToInts.containsKey(o);
   }
 
-  /** returns the number of mapped objects. */
+  /**
+   * returns the number of mapped objects.
+   */
   public int size() {
     return counter;
   }

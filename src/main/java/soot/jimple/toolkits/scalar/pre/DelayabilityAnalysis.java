@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
@@ -36,6 +34,8 @@ import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.Map;
 
 /**
  * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the
@@ -49,7 +49,9 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
   private Map<Unit, EquivalentValue> unitToKillValue;
   private BoundedFlowSet<EquivalentValue> set;
 
-  /** this constructor should not be used, and will throw a runtime-exception! */
+  /**
+   * this constructor should not be used, and will throw a runtime-exception!
+   */
   public DelayabilityAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
@@ -61,8 +63,8 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
    * Earliest-computation <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things again...
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param earliest the earliest-computation of the <b>same</b> graph.
+   * @param dg          a ExceptionalUnitGraph
+   * @param earliest    the earliest-computation of the <b>same</b> graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    */
   public DelayabilityAnalysis(
@@ -83,10 +85,10 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
    * as set-operations are usually more efficient, if the sets come from one source, sets should be
    * shared around analyses, if the analyses are to be combined.
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param earliest the earliest-computation of the <b>same</b> graph.
+   * @param dg          a ExceptionalUnitGraph
+   * @param earliest    the earliest-computation of the <b>same</b> graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
-   * @param set the shared set.
+   * @param set         the shared set.
    */
   public DelayabilityAnalysis(
       DirectedGraph<Unit> dg,

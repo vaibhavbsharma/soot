@@ -1,12 +1,12 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import soot.toolkits.graph.DirectedGraph;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
-import soot.toolkits.graph.DirectedGraph;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

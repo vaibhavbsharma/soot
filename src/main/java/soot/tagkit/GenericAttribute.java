@@ -28,10 +28,10 @@
 
 package soot.tagkit;
 
+import soot.UnitBox;
+
 import java.util.Collections;
 import java.util.List;
-
-import soot.UnitBox;
 
 /**
  * Represents a general attribute which can be attached to implementations of Host. It can be
@@ -62,13 +62,13 @@ public class GenericAttribute implements Attribute {
   }
 
   @Override
-  public String toString() {
-    return mName + " " + Base64.encode(mValue).toString();
+  public void setValue(byte[] value) {
+    mValue = value;
   }
 
   @Override
-  public void setValue(byte[] value) {
-    mValue = value;
+  public String toString() {
+    return mName + " " + Base64.encode(mValue).toString();
   }
 
   public List<UnitBox> getUnitBoxes() {

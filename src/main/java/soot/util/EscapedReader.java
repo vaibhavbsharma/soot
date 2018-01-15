@@ -34,17 +34,19 @@ import java.io.Reader;
  * de-escapes them. Used in the Jimple Parser.
  */
 public class EscapedReader extends FilterReader {
-  /** Constructs an EscapedReader around the given Reader. */
+  boolean nextF;
+  int nextch = 0;
+  private StringBuffer mini = new StringBuffer();
+  /**
+   * Constructs an EscapedReader around the given Reader.
+   */
   public EscapedReader(Reader fos) {
     super(fos);
   }
 
-  private StringBuffer mini = new StringBuffer();
-
-  boolean nextF;
-  int nextch = 0;
-
-  /** Reads a character from the input. */
+  /**
+   * Reads a character from the input.
+   */
   @Override
   public int read() throws IOException {
     /* if you already read the char, just return it */

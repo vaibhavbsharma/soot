@@ -16,12 +16,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.graph.pdg;
+
+import soot.toolkits.graph.Block;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import soot.toolkits.graph.Block;
 
 /**
  * This class defines a Node in the Program Dependence Graph. There might be a need to store
@@ -32,18 +33,6 @@ import soot.toolkits.graph.Block;
  */
 public class PDGNode {
 
-  public enum Type {
-    REGION,
-    CFGNODE
-  }
-
-  public enum Attribute {
-    NORMAL,
-    ENTRY,
-    CONDHEADER,
-    LOOPHEADER
-  }
-
   protected Type m_type;
   protected Object m_node = null;
   protected List<PDGNode> m_dependents = new ArrayList<>();
@@ -52,8 +41,11 @@ public class PDGNode {
   // between them (if any).
   protected PDGNode m_next = null;
   protected PDGNode m_prev = null;
-
   protected Attribute m_attrib = Attribute.NORMAL;
+  // The following is used to keep track of the nodes that are visited in post-order traversal.
+  // This should
+  // probably be moved into an aspect.
+  protected boolean m_visited = false;
 
   public PDGNode(Object obj, Type t) {
     this.m_node = obj;
@@ -72,37 +64,32 @@ public class PDGNode {
     return this.m_node;
   }
 
-  public void setNext(PDGNode n) {
-    this.m_next = n;
+  public void setNode(Object obj) {
+    this.m_node = obj;
   }
 
   public PDGNode getNext() {
     return this.m_next;
   }
 
-  public void setPrev(PDGNode n) {
-    this.m_prev = n;
+  public void setNext(PDGNode n) {
+    this.m_next = n;
   }
 
   public PDGNode getPrev() {
     return this.m_prev;
   }
 
-  // The following is used to keep track of the nodes that are visited in post-order traversal.
-  // This should
-  // probably be moved into an aspect.
-  protected boolean m_visited = false;
-
-  public void setVisited(boolean v) {
-    this.m_visited = v;
+  public void setPrev(PDGNode n) {
+    this.m_prev = n;
   }
 
   public boolean getVisited() {
     return this.m_visited;
   }
 
-  public void setNode(Object obj) {
-    this.m_node = obj;
+  public void setVisited(boolean v) {
+    this.m_visited = v;
   }
 
   public Attribute getAttrib() {
@@ -153,5 +140,17 @@ public class PDGNode {
     }
 
     return s;
+  }
+
+  public enum Type {
+    REGION,
+    CFGNODE
+  }
+
+  public enum Attribute {
+    NORMAL,
+    ENTRY,
+    CONDHEADER,
+    LOOPHEADER
   }
 }

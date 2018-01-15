@@ -20,14 +20,11 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
-package soot.jimple.toolkits.annotation.purity;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+package soot.jimple.toolkits.annotation.purity;
 
 import soot.Body;
 import soot.G;
@@ -48,6 +45,10 @@ import soot.tagkit.StringTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.dot.DotGraph;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalysis<PurityGraphBox> {
 
   // Note: these method lists are adapted to JDK-1.4.2.06 and may
@@ -56,72 +57,72 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   // unanalysed methods assumed pure (& return a new obj)
   // class name prefix / method name
   private static final String[][] pureMethods = {
-    {"java.lang.", "valueOf"},
-    {"java.", "equals"},
-    {"javax.", "equals"},
-    {"sun.", "equals"},
-    {"java.", "compare"},
-    {"javax.", "compare"},
-    {"sun.", "compare"},
-    {"java.", "getClass"},
-    {"javax.", "getClass"},
-    {"sun.", "getClass"},
-    {"java.", "hashCode"},
-    {"javax.", "hashCode"},
-    {"sun.", "hashCode"},
-    {"java.", "toString"},
-    {"javax.", "toString"},
-    {"sun.", "toString"},
-    {"java.", "valueOf"},
-    {"javax.", "valueOf"},
-    {"sun.", "valueOf"},
-    {"java.", "compareTo"},
-    {"javax.", "compareTo"},
-    {"sun.", "compareTo"},
-    {"java.lang.System", "identityHashCode"},
-    // we assume that all standard class initialisers are pure!!!
-    {"java.", "<clinit>"},
-    {"javax.", "<clinit>"},
-    {"sun.", "<clinit>"},
-    // if we define these as pure, the analysis will find them impure as
-    // they call static native functions that could, in theory,
-    // change the whole program state under our feets
-    {"java.lang.Math", "abs"},
-    {"java.lang.Math", "acos"},
-    {"java.lang.Math", "asin"},
-    {"java.lang.Math", "atan"},
-    {"java.lang.Math", "atan2"},
-    {"java.lang.Math", "ceil"},
-    {"java.lang.Math", "cos"},
-    {"java.lang.Math", "exp"},
-    {"java.lang.Math", "floor"},
-    {"java.lang.Math", "IEEEremainder"},
-    {"java.lang.Math", "log"},
-    {"java.lang.Math", "max"},
-    {"java.lang.Math", "min"},
-    {"java.lang.Math", "pow"},
-    {"java.lang.Math", "rint"},
-    {"java.lang.Math", "round"},
-    {"java.lang.Math", "sin"},
-    {"java.lang.Math", "sqrt"},
-    {"java.lang.Math", "tan"},
-    // TODO: put StrictMath as well ?
-    {"java.lang.Throwable", "<init>"},
-    // to break the cycle exception -> getCharsAt -> exception
-    {"java.lang.StringIndexOutOfBoundsException", "<init>"}
+      {"java.lang.", "valueOf"},
+      {"java.", "equals"},
+      {"javax.", "equals"},
+      {"sun.", "equals"},
+      {"java.", "compare"},
+      {"javax.", "compare"},
+      {"sun.", "compare"},
+      {"java.", "getClass"},
+      {"javax.", "getClass"},
+      {"sun.", "getClass"},
+      {"java.", "hashCode"},
+      {"javax.", "hashCode"},
+      {"sun.", "hashCode"},
+      {"java.", "toString"},
+      {"javax.", "toString"},
+      {"sun.", "toString"},
+      {"java.", "valueOf"},
+      {"javax.", "valueOf"},
+      {"sun.", "valueOf"},
+      {"java.", "compareTo"},
+      {"javax.", "compareTo"},
+      {"sun.", "compareTo"},
+      {"java.lang.System", "identityHashCode"},
+      // we assume that all standard class initialisers are pure!!!
+      {"java.", "<clinit>"},
+      {"javax.", "<clinit>"},
+      {"sun.", "<clinit>"},
+      // if we define these as pure, the analysis will find them impure as
+      // they call static native functions that could, in theory,
+      // change the whole program state under our feets
+      {"java.lang.Math", "abs"},
+      {"java.lang.Math", "acos"},
+      {"java.lang.Math", "asin"},
+      {"java.lang.Math", "atan"},
+      {"java.lang.Math", "atan2"},
+      {"java.lang.Math", "ceil"},
+      {"java.lang.Math", "cos"},
+      {"java.lang.Math", "exp"},
+      {"java.lang.Math", "floor"},
+      {"java.lang.Math", "IEEEremainder"},
+      {"java.lang.Math", "log"},
+      {"java.lang.Math", "max"},
+      {"java.lang.Math", "min"},
+      {"java.lang.Math", "pow"},
+      {"java.lang.Math", "rint"},
+      {"java.lang.Math", "round"},
+      {"java.lang.Math", "sin"},
+      {"java.lang.Math", "sqrt"},
+      {"java.lang.Math", "tan"},
+      // TODO: put StrictMath as well ?
+      {"java.lang.Throwable", "<init>"},
+      // to break the cycle exception -> getCharsAt -> exception
+      {"java.lang.StringIndexOutOfBoundsException", "<init>"}
   };
 
   // unanalysed methods that modify the whole environment
   private static final String[][] impureMethods = {
-    {"java.io.", "<init>"},
-    {"java.io.", "close"},
-    {"java.io.", "read"},
-    {"java.io.", "write"},
-    {"java.io.", "flush"},
-    {"java.io.", "flushBuffer"},
-    {"java.io.", "print"},
-    {"java.io.", "println"},
-    {"java.lang.Runtime", "exit"}, /*
+      {"java.io.", "<init>"},
+      {"java.io.", "close"},
+      {"java.io.", "read"},
+      {"java.io.", "write"},
+      {"java.io.", "flush"},
+      {"java.io.", "flushBuffer"},
+      {"java.io.", "print"},
+      {"java.io.", "println"},
+      {"java.lang.Runtime", "exit"}, /*
 	// for soot...
 	{"java.io.","skip"},
 	{"java.io.","ensureOpen"},
@@ -211,42 +212,15 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
 
   // unanalysed methods that alter its arguments, but have no side effect
   private static final String[][] alterMethods = {
-    {"java.lang.System", "arraycopy"},
-    // these are really huge methods used internally by StringBuffer
-    // printing => put here to speed-up the analysis
-    {"java.lang.FloatingDecimal", "dtoa"},
-    {"java.lang.FloatingDecimal", "developLongDigits"},
-    {"java.lang.FloatingDecimal", "big5pow"},
-    {"java.lang.FloatingDecimal", "getChars"},
-    {"java.lang.FloatingDecimal", "roundup"}
+      {"java.lang.System", "arraycopy"},
+      // these are really huge methods used internally by StringBuffer
+      // printing => put here to speed-up the analysis
+      {"java.lang.FloatingDecimal", "dtoa"},
+      {"java.lang.FloatingDecimal", "developLongDigits"},
+      {"java.lang.FloatingDecimal", "big5pow"},
+      {"java.lang.FloatingDecimal", "getChars"},
+      {"java.lang.FloatingDecimal", "roundup"}
   };
-
-  /** Filter out some method. */
-  private static class Filter implements SootMethodFilter {
-
-    @Override
-    public boolean want(SootMethod method) {
-      // could be optimized with HashSet....
-      String c = method.getDeclaringClass().toString();
-      String m = method.getName();
-      for (String[] element : PurityInterproceduralAnalysis.pureMethods) {
-        if (m.equals(element[1]) && c.startsWith(element[0])) {
-          return false;
-        }
-      }
-      for (String[] element : PurityInterproceduralAnalysis.impureMethods) {
-        if (m.equals(element[1]) && c.startsWith(element[0])) {
-          return false;
-        }
-      }
-      for (String[] element : PurityInterproceduralAnalysis.alterMethods) {
-        if (m.equals(element[1]) && c.startsWith(element[0])) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
 
   /** The constructor does it all! */
   PurityInterproceduralAnalysis(CallGraph cg, Iterator<SootMethod> heads, PurityOptions opts) {
@@ -454,5 +428,32 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   @Override
   protected void fillDotGraph(String prefix, PurityGraphBox o, DotGraph out) {
     o.g.fillDotGraph(prefix, out);
+  }
+
+  /** Filter out some method. */
+  private static class Filter implements SootMethodFilter {
+
+    @Override
+    public boolean want(SootMethod method) {
+      // could be optimized with HashSet....
+      String c = method.getDeclaringClass().toString();
+      String m = method.getName();
+      for (String[] element : PurityInterproceduralAnalysis.pureMethods) {
+        if (m.equals(element[1]) && c.startsWith(element[0])) {
+          return false;
+        }
+      }
+      for (String[] element : PurityInterproceduralAnalysis.impureMethods) {
+        if (m.equals(element[1]) && c.startsWith(element[0])) {
+          return false;
+        }
+      }
+      for (String[] element : PurityInterproceduralAnalysis.alterMethods) {
+        if (m.equals(element[1]) && c.startsWith(element[0])) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 }

@@ -19,10 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.dava.internal.AST.ASTAndCondition;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -38,6 +34,10 @@ import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class StrengthenByIf {
   /*

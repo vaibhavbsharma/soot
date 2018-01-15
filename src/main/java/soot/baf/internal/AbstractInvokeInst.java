@@ -25,14 +25,14 @@
 
 package soot.baf.internal;
 
-import java.util.Iterator;
-
 import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.VoidType;
+
+import java.util.Iterator;
 
 abstract class AbstractInvokeInst extends AbstractInst {
   SootMethodRef methodRef;

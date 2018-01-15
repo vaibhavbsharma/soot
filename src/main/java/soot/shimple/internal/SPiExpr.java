@@ -19,9 +19,6 @@
 
 package soot.shimple.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Type;
 import soot.Unit;
 import soot.UnitBox;
@@ -32,7 +29,12 @@ import soot.shimple.Shimple;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
 
-/** @author Navindra Umanee */
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author Navindra Umanee
+ */
 public class SPiExpr implements PiExpr {
   protected ValueUnitPair argBox;
   protected Object targetKey;
@@ -53,23 +55,23 @@ public class SPiExpr implements PiExpr {
   }
 
   @Override
-  public Unit getCondStmt() {
-    return argBox.getUnit();
-  }
-
-  @Override
-  public Object getTargetKey() {
-    return targetKey;
-  }
-
-  @Override
   public void setValue(Value value) {
     argBox.setValue(value);
   }
 
   @Override
+  public Unit getCondStmt() {
+    return argBox.getUnit();
+  }
+
+  @Override
   public void setCondStmt(Unit pred) {
     argBox.setUnit(pred);
+  }
+
+  @Override
+  public Object getTargetKey() {
+    return targetKey;
   }
 
   @Override

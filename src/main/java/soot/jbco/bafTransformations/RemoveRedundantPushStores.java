@@ -1,8 +1,5 @@
 package soot.jbco.bafTransformations;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -15,20 +12,22 @@ import soot.jbco.IJbcoTransform;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.Chain;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 16-Jun-2006
+ * <p>Created on 16-Jun-2006
  */
 public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoTransform {
 
   public static String dependancies[] = new String[] {"bb.jbco_rrps"};
+  public static String name = "bb.jbco_rrps";
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_rrps";
 
   @Override
   public String getName() {
@@ -36,7 +35,8 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
   }
 
   @Override
-  public void outputSummary() {}
+  public void outputSummary() {
+  }
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {

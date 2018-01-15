@@ -28,7 +28,9 @@ package soot.jimple.toolkits.typing.integer;
 import soot.G;
 import soot.Type;
 
-/** Each instance of this class represents one basic type. */
+/**
+ * Each instance of this class represents one basic type.
+ */
 class TypeNode {
   public static final boolean DEBUG = false;
 
@@ -44,12 +46,16 @@ class TypeNode {
     }
   }
 
-  /** Returns the unique id of this type node. * */
+  /**
+   * Returns the unique id of this type node. *
+   */
   public int id() {
     return id;
   }
 
-  /** Returns the type represented by this type node. * */
+  /**
+   * Returns the type represented by this type node. *
+   */
   public Type type() {
     return type;
   }

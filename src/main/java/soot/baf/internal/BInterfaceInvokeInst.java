@@ -35,6 +35,14 @@ import soot.util.Switch;
 public class BInterfaceInvokeInst extends AbstractInvokeInst implements InterfaceInvokeInst {
   int argCount;
 
+  public BInterfaceInvokeInst(SootMethodRef methodRef, int argCount) {
+    if (methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
+    this.methodRef = methodRef;
+    this.argCount = argCount;
+  }
+
   @Override
   public int getInCount() {
     return methodRef.parameterTypes().size() + 1;
@@ -43,14 +51,6 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst implements Interfac
   @Override
   public int getInMachineCount() {
     return super.getInMachineCount() + 1;
-  }
-
-  public BInterfaceInvokeInst(SootMethodRef methodRef, int argCount) {
-    if (methodRef.isStatic()) {
-      throw new RuntimeException("wrong static-ness");
-    }
-    this.methodRef = methodRef;
-    this.argCount = argCount;
   }
 
   @Override

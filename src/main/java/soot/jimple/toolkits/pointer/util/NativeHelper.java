@@ -22,6 +22,7 @@
  *
  * @author Feng Qian
  */
+
 package soot.jimple.toolkits.pointer.util;
 
 import soot.SootMethod;
@@ -30,7 +31,9 @@ import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 
 public abstract class NativeHelper {
 
-  /** Regular assignment such as "a = b". */
+  /**
+   * Regular assignment such as "a = b".
+   */
   public void assign(ReferenceVariable lhs, ReferenceVariable rhs) {
     assignImpl(lhs, rhs);
   }
@@ -38,7 +41,7 @@ public abstract class NativeHelper {
   /**
    * Assignment of an abstract object to the variable, such as " a = new A()", which is considered
    * to add a target in a's points-to set.
-   *
+   * <p>
    * <p>This method is used to formulate the effect of getting an environmental constant object such
    * as 'getClass'.
    */
@@ -46,7 +49,9 @@ public abstract class NativeHelper {
     assignObjectToImpl(lhs, obj);
   }
 
-  /** Throw of an abstract object as an exception. */
+  /**
+   * Throw of an abstract object as an exception.
+   */
   public void throwException(AbstractObject obj) {
     throwExceptionImpl(obj);
   }
@@ -62,7 +67,7 @@ public abstract class NativeHelper {
   /**
    * Returns a variable which has the effect of cloning. A moderate approach would return the
    * variable itself.
-   *
+   * <p>
    * <p>e.g., a = b.clone() will be rendered to: Vr.isAssigned(Vb.cloneObject()); Va = Vr;
    */
   public ReferenceVariable cloneObject(ReferenceVariable source) {
@@ -73,7 +78,7 @@ public abstract class NativeHelper {
    * Returns a variable which carries an allocation site with the least type (an artificial type,
    * subtype of any other types, which means such type info is useless for resolving invocation
    * targets).
-   *
+   * <p>
    * <p>It is used for simulating java.lang.Class.newInstance0(); To verify, @this variable mush
    * have CLASSCLASS type.
    */
@@ -94,9 +99,9 @@ public abstract class NativeHelper {
   /**
    * Returns a variable representing a non-existing Java field, used by e.g., java.lang.Class:
    * getSingers, setSigners java.lang.Class: getProtectionDomain0, setProtectionDomain0
-   *
+   * <p>
    * <p>To simplify simulation, the temporary field variable is like a static field.
-   *
+   * <p>
    * <p>The temporary fields are uniquely indexed by signatures.
    */
   public ReferenceVariable tempField(String fieldsig) {
@@ -107,7 +112,7 @@ public abstract class NativeHelper {
    * Make a temporary variable. It is used for assignment where both sides are complex variables.
    * e.g., for java.lang.System arraycopy(src, ..., dst, ...) instead of make an expression : dst[]
    * = src[], it introduces a temporary variable t = src[] dst[] = t
-   *
+   * <p>
    * <p>The temporary variable has to be unique.
    */
   public ReferenceVariable tempVariable() {
@@ -117,7 +122,10 @@ public abstract class NativeHelper {
   public ReferenceVariable tempLocalVariable(SootMethod method) {
     return tempLocalVariableImpl(method);
   }
-  /** Sub classes should implement both. */
+
+  /**
+   * Sub classes should implement both.
+   */
   protected abstract void assignImpl(ReferenceVariable lhs, ReferenceVariable rhs);
 
   protected abstract void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj);

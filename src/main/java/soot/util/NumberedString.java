@@ -25,6 +25,9 @@ package soot.util;
  * @author Ondrej Lhotak
  */
 public final class NumberedString implements Numberable {
+  private final String s;
+  private volatile int number;
+
   public NumberedString(String s) {
     this.s = s;
   }
@@ -42,17 +45,14 @@ public final class NumberedString implements Numberable {
   }
 
   @Override
-  public final void setNumber(int number) {
-    this.number = number;
-  }
-
-  @Override
   public final int getNumber() {
     return number;
   }
 
-  private final String s;
-  private volatile int number;
+  @Override
+  public final void setNumber(int number) {
+    this.number = number;
+  }
 
   @Override
   public int hashCode() {

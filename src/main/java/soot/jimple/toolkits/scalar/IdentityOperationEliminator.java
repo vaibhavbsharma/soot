@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -25,20 +22,24 @@ import soot.jimple.MulExpr;
 import soot.jimple.OrExpr;
 import soot.jimple.SubExpr;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformer that eliminates unnecessary logic operations such as
- *
+ * <p>
  * <p>$z0 = a | 0
- *
+ * <p>
  * <p>which can more easily be repesented as
- *
+ * <p>
  * <p>$z0 = a
  *
  * @author Steven Arzt
  */
 public class IdentityOperationEliminator extends BodyTransformer {
 
-  public IdentityOperationEliminator(Singletons.Global g) {}
+  public IdentityOperationEliminator(Singletons.Global g) {
+  }
 
   public static IdentityOperationEliminator v() {
     return G.v().soot_jimple_toolkits_scalar_IdentityOperationEliminator();

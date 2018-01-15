@@ -58,8 +58,10 @@ public abstract class JPegStmt extends AbstractHost
   protected UnitGraph unitGraph = null;
   // add for build dot file
   protected SootMethod sootMethod = null;
+
   // end add for build dot file
-  protected JPegStmt() {}
+  protected JPegStmt() {
+  }
 
   protected JPegStmt(String obj, String na, String ca) {
 
@@ -92,20 +94,16 @@ public abstract class JPegStmt extends AbstractHost
     this.sootMethod = sm;
   }
 
-  protected void setUnit(Unit un) {
-    unit = un;
-  }
-
-  protected void setUnitGraph(UnitGraph ug) {
-    unitGraph = ug;
-  }
-
   public UnitGraph getUnitGraph() {
     if (!containUnitGraph()) {
       throw new RuntimeException("This statement does not contain UnitGraph!");
     }
 
     return unitGraph;
+  }
+
+  protected void setUnitGraph(UnitGraph ug) {
+    unitGraph = ug;
   }
 
   public boolean containUnitGraph() {
@@ -118,6 +116,10 @@ public abstract class JPegStmt extends AbstractHost
     }
 
     return unit;
+  }
+
+  protected void setUnit(Unit un) {
+    unit = un;
   }
 
   public boolean containUnit() {

@@ -54,8 +54,8 @@ public class DotGraphEdge implements Renderable {
   /**
    * Draws a graph edge by specifying directed or undirected.
    *
-   * @param src, the source node
-   * @param dst, the end node
+   * @param src,      the source node
+   * @param dst,      the end node
    * @param directed, the edge is directed or not
    */
   public DotGraphEdge(DotGraphNode src, DotGraphNode dst, boolean directed) {
@@ -88,7 +88,7 @@ public class DotGraphEdge implements Renderable {
   /**
    * Sets an edge attribute.
    *
-   * @param id, the attribute id to be set
+   * @param id,    the attribute id to be set
    * @param value, the attribute value
    */
   public void setAttribute(String id, String value) {

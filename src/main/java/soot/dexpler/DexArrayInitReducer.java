@@ -1,8 +1,5 @@
 package soot.dexpler;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -16,15 +13,18 @@ import soot.jimple.Constant;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformer that simplifies array initializations. It converts
- *
+ * <p>
  * <p>a = 0 b = 42 c[a] = b
- *
+ * <p>
  * <p>to
- *
+ * <p>
  * <p>c[0] 42
- *
+ * <p>
  * <p>This transformer performs copy propagation, dead assignment elimination, and unused local
  * elimination at once for this special case. The idea is to reduce the code as much as possible for
  * this special case before applying the more expensive other transformers.

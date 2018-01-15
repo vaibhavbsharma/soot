@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-/** Represents a type variable. * */
+/**
+ * Represents a type variable. *
+ */
 class TypeVariable implements Comparable<Object> {
   private static final boolean DEBUG = false;
 
@@ -56,6 +58,39 @@ class TypeVariable implements Comparable<Object> {
     this.type = type;
     approx = type;
     inv_approx = type;
+  }
+
+  static void error(String message) throws TypeException {
+    try {
+      throw new TypeException(message);
+    } catch (TypeException e) {
+      if (DEBUG) {
+        e.printStackTrace();
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Computes approximative types. The work list must be initialized with all constant type
+   * variables.
+   */
+  public static void computeApprox(TreeSet<TypeVariable> workList) throws TypeException {
+    while (workList.size() > 0) {
+      TypeVariable var = workList.first();
+      workList.remove(var);
+
+      var.fixApprox(workList);
+    }
+  }
+
+  public static void computeInvApprox(TreeSet<TypeVariable> workList) throws TypeException {
+    while (workList.size() > 0) {
+      TypeVariable var = workList.first();
+      workList.remove(var);
+
+      var.fixInvApprox(workList);
+    }
   }
 
   @Override
@@ -305,39 +340,6 @@ class TypeVariable implements Comparable<Object> {
     }
 
     return type;
-  }
-
-  static void error(String message) throws TypeException {
-    try {
-      throw new TypeException(message);
-    } catch (TypeException e) {
-      if (DEBUG) {
-        e.printStackTrace();
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * Computes approximative types. The work list must be initialized with all constant type
-   * variables.
-   */
-  public static void computeApprox(TreeSet<TypeVariable> workList) throws TypeException {
-    while (workList.size() > 0) {
-      TypeVariable var = workList.first();
-      workList.remove(var);
-
-      var.fixApprox(workList);
-    }
-  }
-
-  public static void computeInvApprox(TreeSet<TypeVariable> workList) throws TypeException {
-    while (workList.size() > 0) {
-      TypeVariable var = workList.first();
-      workList.remove(var);
-
-      var.fixInvApprox(workList);
-    }
   }
 
   private void fixApprox(TreeSet<TypeVariable> workList) throws TypeException {

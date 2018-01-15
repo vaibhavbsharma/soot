@@ -16,13 +16,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand.pautil;
 
-import java.util.Set;
+package soot.jimple.spark.ondemand.pautil;
 
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.spark.ondemand.genericutil.DisjointSets;
+
+import java.util.Set;
 
 public final class OTFMethodSCCManager {
 

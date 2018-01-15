@@ -1,14 +1,17 @@
 /** */
-package soot.util;
 
-import static java.lang.Long.numberOfTrailingZeros;
+package soot.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** @author Steven Lambeth */
+import static java.lang.Long.numberOfTrailingZeros;
+
+/**
+ * @author Steven Lambeth
+ */
 class MediumPriorityQueue<E> extends PriorityQueue<E> {
   static final int MAX_CAPACITY = Long.SIZE * Long.SIZE;
 
@@ -16,6 +19,13 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
   private long modCount = 0;
   private long[] data;
   private long lookup = 0;
+
+  MediumPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
+    super(universe, ordinalMap);
+    data = new long[(N + Long.SIZE - 1) >>> 6];
+    assert N > SmallPriorityQueue.MAX_CAPACITY;
+    assert N <= MAX_CAPACITY;
+  }
 
   @Override
   void addAll() {
@@ -25,13 +35,6 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
     lookup = -1L >>> -data.length;
     min = 0;
     modCount++;
-  }
-
-  MediumPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    super(universe, ordinalMap);
-    data = new long[(N + Long.SIZE - 1) >>> 6];
-    assert N > SmallPriorityQueue.MAX_CAPACITY;
-    assert N <= MAX_CAPACITY;
   }
 
   @Override

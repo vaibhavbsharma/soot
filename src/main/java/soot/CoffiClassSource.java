@@ -19,23 +19,25 @@
 
 package soot;
 
+import soot.javaToJimple.IInitialResolver;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import soot.javaToJimple.IInitialResolver;
-import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.options.Options;
-
-/** A class source for resolving from .class files through coffi. */
+/**
+ * A class source for resolving from .class files through coffi.
+ */
 public class CoffiClassSource extends ClassSource {
 
-  private FoundFile foundFile;
-  private InputStream classFile;
   private final String fileName;
   private final String zipFileName;
+  private FoundFile foundFile;
+  private InputStream classFile;
 
   public CoffiClassSource(String className, FoundFile foundFile) {
     super(className);

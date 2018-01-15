@@ -30,7 +30,9 @@ package soot;
  * equality. We also demand that if x.equivTo(y), then x.equivHashCode() == y.equivHashCode.
  */
 public interface EquivTo {
-  /** Returns true if this object is equivalent to o. */
+  /**
+   * Returns true if this object is equivalent to o.
+   */
   boolean equivTo(Object o);
 
   /**

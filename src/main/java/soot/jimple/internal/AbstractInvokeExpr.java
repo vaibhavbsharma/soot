@@ -26,10 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
@@ -37,10 +33,14 @@ import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractInvokeExpr implements InvokeExpr {
-  protected SootMethodRef methodRef;
   protected final ValueBox[] argBoxes;
+  protected SootMethodRef methodRef;
 
   protected AbstractInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
     this.methodRef = methodRef;
@@ -48,13 +48,13 @@ public abstract class AbstractInvokeExpr implements InvokeExpr {
   }
 
   @Override
-  public void setMethodRef(SootMethodRef methodRef) {
-    this.methodRef = methodRef;
+  public SootMethodRef getMethodRef() {
+    return methodRef;
   }
 
   @Override
-  public SootMethodRef getMethodRef() {
-    return methodRef;
+  public void setMethodRef(SootMethodRef methodRef) {
+    this.methodRef = methodRef;
   }
 
   @Override

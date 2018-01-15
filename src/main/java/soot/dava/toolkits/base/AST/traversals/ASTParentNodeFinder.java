@@ -29,9 +29,6 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.HashMap;
-import java.util.Stack;
-
 import soot.Unit;
 import soot.dava.internal.AST.ASTDoWhileNode;
 import soot.dava.internal.AST.ASTForLoopNode;
@@ -53,6 +50,9 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
+
+import java.util.HashMap;
+import java.util.Stack;
 
 /*
  * This traversal class is responsible to gather information

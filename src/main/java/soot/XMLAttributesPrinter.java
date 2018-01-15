@@ -27,22 +27,24 @@ import java.io.PrintWriter;
 
 public class XMLAttributesPrinter {
 
+  FileOutputStream streamOut = null;
+  PrintWriter writerOut = null;
   private String useFilename;
   private String outputDir;
-
-  private void setOutputDir(String dir) {
-    outputDir = dir;
-  }
-
-  private String getOutputDir() {
-    return outputDir;
-  }
 
   public XMLAttributesPrinter(String filename, String outputDir) {
     setInFilename(filename);
     setOutputDir(outputDir);
     initAttributesDir();
     createUseFilename();
+  }
+
+  private String getOutputDir() {
+    return outputDir;
+  }
+
+  private void setOutputDir(String dir) {
+    outputDir = dir;
   }
 
   private void initFile() {
@@ -82,9 +84,6 @@ public class XMLAttributesPrinter {
     tc.printKeys(writerOut);
     finishFile();
   }
-
-  FileOutputStream streamOut = null;
-  PrintWriter writerOut = null;
 
   private void initAttributesDir() {
 
@@ -128,19 +127,19 @@ public class XMLAttributesPrinter {
     setUseFilename(sb.toString());
   }
 
-  private void setInFilename(String file) {
-    useFilename = file;
-  }
-
   private String getInFilename() {
     return useFilename;
   }
 
-  private void setUseFilename(String file) {
+  private void setInFilename(String file) {
     useFilename = file;
   }
 
   private String getUseFilename() {
     return useFilename;
+  }
+
+  private void setUseFilename(String file) {
+    useFilename = file;
   }
 }

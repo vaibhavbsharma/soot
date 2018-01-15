@@ -25,17 +25,19 @@
 
 package soot.util;
 
+import soot.Body;
+import soot.Unit;
+import soot.toolkits.graph.UnitGraph;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import soot.Body;
-import soot.Unit;
-import soot.toolkits.graph.UnitGraph;
-
-/** Maps each unit to the result of <code>mapTo</code>. */
+/**
+ * Maps each unit to the result of <code>mapTo</code>.
+ */
 public abstract class UnitMap<T> implements Map<Unit, T> {
   private Map<Unit, T> unitToResult;
 
@@ -67,7 +69,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * before the mapping the method <code>init</code> is called.<br>
    * the internal hashtable is initialized to <code>initialCapacity</code>.
    *
-   * @param b a Body
+   * @param b               a Body
    * @param initialCapacity the initialCapacity of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity) {
@@ -80,7 +82,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * before the mapping the method <code>init</code> is called.<br>
    * the internal hashtable is initialized to <code>initialCapacity</code>.
    *
-   * @param g a UnitGraph
+   * @param g               a UnitGraph
    * @param initialCapacity the initialCapacity of the internal hashtable.
    */
   public UnitMap(UnitGraph g, int initialCapacity) {
@@ -93,9 +95,9 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * the internal hashtable is initialized to <code>initialCapacity</code> and <code>loadFactor
    * </code>.
    *
-   * @param b a Body
+   * @param b               a Body
    * @param initialCapacity the initialCapacity of the internal hashtable.
-   * @param loadFactor the loadFactor of the internal hashtable.
+   * @param loadFactor      the loadFactor of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity, float loadFactor) {
     unitToResult = new HashMap<>(initialCapacity);
@@ -109,15 +111,17 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * the internal hashtable is initialized to <code>initialCapacity</code> and <code>loadFactor
    * </code>.
    *
-   * @param g a UnitGraph
+   * @param g               a UnitGraph
    * @param initialCapacity the initialCapacity of the internal hashtable.
-   * @param loadFactor the loadFactor of the internal hashtable.
+   * @param loadFactor      the loadFactor of the internal hashtable.
    */
   public UnitMap(UnitGraph g, int initialCapacity, float loadFactor) {
     this(g.getBody(), initialCapacity);
   }
 
-  /** does the actual mapping. assumes, that the hashtable is already initialized. */
+  /**
+   * does the actual mapping. assumes, that the hashtable is already initialized.
+   */
   private void map(Body b) {
     Iterator<Unit> unitIt = b.getUnits().iterator();
     while (unitIt.hasNext()) {
@@ -134,7 +138,8 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * a unit (but only once in the beginning).<br>
    * If not overwritten does nothing.
    */
-  protected void init() {}
+  protected void init() {
+  }
 
   /**
    * maps a unit to an object. This method is called for every unit. If the returned object is

@@ -18,6 +18,12 @@ package soot;
  * Boston, MA 02111-1307, USA.
  */
 
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.ClassDef;
+import soot.dexpler.DexFileProvider;
+import soot.dexpler.Util;
+import soot.options.Options;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,14 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.ClassDef;
-
-import soot.dexpler.DexFileProvider;
-import soot.dexpler.Util;
-import soot.options.Options;
-
-/** Looks for a dex file which includes the definition of a class. */
+/**
+ * Looks for a dex file which includes the definition of a class.
+ */
 public class DexClassProvider implements ClassProvider {
 
   public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
@@ -88,7 +89,7 @@ public class DexClassProvider implements ClassProvider {
   /**
    * Build index of ClassName-to-File mappings.
    *
-   * @param index map to insert mappings into
+   * @param index     map to insert mappings into
    * @param classPath paths to index
    */
   private void buildDexIndex(Map<String, File> index, List<String> classPath) {

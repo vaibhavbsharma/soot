@@ -23,9 +23,8 @@
  *
  * @author Feng Qian
  */
-package soot.jimple.toolkits.pointer.util;
 
-import java.util.HashMap;
+package soot.jimple.toolkits.pointer.util;
 
 import soot.G;
 import soot.SootMethod;
@@ -73,7 +72,12 @@ import soot.jimple.toolkits.pointer.nativemethods.SunMiscSignalNative;
 import soot.jimple.toolkits.pointer.nativemethods.SunMiscUnsafeNative;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 
+import java.util.HashMap;
+
 public class NativeMethodDriver {
+  private final HashMap<String, NativeMethodClass> cnameToSim =
+      new HashMap<>(100);
+  private final boolean DEBUG = false;
   public NativeMethodDriver(NativeHelper helper) {
     cnameToSim.put("java.lang.Object", new JavaLangObjectNative(helper));
     cnameToSim.put("java.lang.System", new JavaLangSystemNative(helper));
@@ -127,17 +131,13 @@ public class NativeMethodDriver {
     cnameToSim.put("sun.misc.Unsafe", new SunMiscUnsafeNative(helper));
   }
 
-  private final HashMap<String, NativeMethodClass> cnameToSim =
-      new HashMap<>(100);
-  private final boolean DEBUG = false;
-
   /**
    * The entry point of native method simulation.
    *
-   * @param method, must be a native method
-   * @param thisVar, the variable represent @this, it can be null if the method is static
+   * @param method,    must be a native method
+   * @param thisVar,   the variable represent @this, it can be null if the method is static
    * @param returnVar, the variable represent @return it is null if the method has no return
-   * @param params, array of parameters.
+   * @param params,    array of parameters.
    */
   public boolean process(
       SootMethod method,

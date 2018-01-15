@@ -18,20 +18,24 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.toolkits.typing.fast;
 
 import soot.G;
 import soot.Singletons;
 import soot.Type;
 
-/** @author Ben Bellamy */
+/**
+ * @author Ben Bellamy
+ */
 public class BottomType extends Type {
+
+  public BottomType(Singletons.Global g) {
+  }
 
   public static BottomType v() {
     return G.v().soot_jimple_toolkits_typing_fast_BottomType();
   }
-
-  public BottomType(Singletons.Global g) {}
 
   @Override
   public String toString() {

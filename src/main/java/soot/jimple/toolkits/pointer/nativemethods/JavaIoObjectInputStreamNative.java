@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -70,7 +71,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
   /** ********************* java.io.ObjectInputStream ****************** */
   /**
    * NOTE: conservatively returns a reference pointing to the only copy of the class loader.
-   *
+   * <p>
    * <p>private static native java.lang.ClassLoader latestUserDefinedLoader() throws
    * java.lang.ClassNotFoundException;
    */
@@ -85,7 +86,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
   /**
    * Serialization has to be avoided by static analyses, since each object comes out of the same
    * place.
-   *
+   * <p>
    * <p>private static native java.lang.Object allocateNewObject(java.lang.Class, java.lang.Class)
    * throws java.lang.InstantiationException, java.lang.IllegalAccessException;
    */
@@ -97,7 +98,9 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
     throw new NativeMethodNotSupportedException(method);
   }
 
-  /** private static native java.lang.Object allocateNewArray(java.lang.Class, int); */
+  /**
+   * private static native java.lang.Object allocateNewArray(java.lang.Class, int);
+   */
   public void java_io_ObjectInputStream_allocateNewArray(
       SootMethod method,
       ReferenceVariable thisVar,

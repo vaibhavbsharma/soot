@@ -19,9 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.Map;
-import java.util.Stack;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -29,16 +26,29 @@ import soot.Type;
 import soot.Unit;
 import soot.jbco.IJbcoTransform;
 
+import java.util.Map;
+import java.util.Stack;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 15-Jun-2006
+ * <p>Created on 15-Jun-2006
  */
 public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
 
   public static String name = "bb.printout";
+  static boolean stack = false;
+
+  public BAFPrintout() {
+  }
+
+  public BAFPrintout(String newname, boolean print_stack) {
+    name = newname;
+    stack = print_stack;
+  }
 
   @Override
-  public void outputSummary() {}
+  public void outputSummary() {
+  }
 
   @Override
   public String[] getDependancies() {
@@ -48,15 +58,6 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
   @Override
   public String getName() {
     return name;
-  }
-
-  static boolean stack = false;
-
-  public BAFPrintout() {}
-
-  public BAFPrintout(String newname, boolean print_stack) {
-    name = newname;
-    stack = print_stack;
   }
 
   @Override

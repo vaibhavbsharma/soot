@@ -16,11 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+package soot.dava.toolkits.base.AST.transformations;
 
 import soot.Value;
 import soot.ValueBox;
@@ -28,6 +25,10 @@ import soot.dava.internal.javaRep.DNewInvokeExpr;
 import soot.dava.internal.javaRep.DVirtualInvokeExpr;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.grimp.internal.GAddExpr;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * Matches the output pattern
@@ -39,7 +40,8 @@ import soot.grimp.internal.GAddExpr;
 public class NewStringBufferSimplification extends DepthFirstAdapter {
   public static boolean DEBUG = false;
 
-  public NewStringBufferSimplification() {}
+  public NewStringBufferSimplification() {
+  }
 
   public NewStringBufferSimplification(boolean verbose) {
     super(verbose);

@@ -20,11 +20,6 @@
 
 package soot.dava;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -56,8 +51,14 @@ import soot.tagkit.Tag;
 import soot.util.Chain;
 import soot.util.IterableSet;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class DavaPrinter {
-  public DavaPrinter(Singletons.Global g) {}
+  public DavaPrinter(Singletons.Global g) {
+  }
 
   public static DavaPrinter v() {
     return G.v().soot_dava_DavaPrinter();
@@ -373,8 +374,8 @@ public class DavaPrinter {
               }
 
             } else if ((fieldType instanceof IntType
-                    || fieldType instanceof ByteType
-                    || fieldType instanceof ShortType)
+                || fieldType instanceof ByteType
+                || fieldType instanceof ShortType)
                 && f.hasTag("IntegerConstantValueTag")) {
 
               int val =

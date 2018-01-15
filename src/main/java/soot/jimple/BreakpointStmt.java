@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface BreakpointStmt extends Stmt {}
+public interface BreakpointStmt extends Stmt {
+}

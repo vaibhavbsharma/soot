@@ -33,23 +33,25 @@
 
 package soot.toolkits.scalar;
 
+import soot.Unit;
+import soot.toolkits.graph.DirectedGraph;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import soot.Unit;
-import soot.toolkits.graph.DirectedGraph;
-
 /**
  * Abstract class providing functionality for branched flow analysis.
- *
+ * <p>
  * <p>A branched flow analysis is one which can propagate different information to the successors of
  * a node. This is useful for propagating information past a statement like <code>if(x &gt;
  * 0)</code>: one successor has <code>x &gt; 0</code> while the other successor has <code>x &le; 0
  * </code>.
  */
 public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFlowAnalysis<N, A> {
-  /** Maps graph nodes to OUT sets. */
+  /**
+   * Maps graph nodes to OUT sets.
+   */
   protected Map<Unit, List<A>> unitToAfterFallFlow;
 
   protected Map<Unit, List<A>> unitToAfterBranchFlow;

@@ -16,10 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand.pautil;
 
-import java.util.Iterator;
-import java.util.Map;
+package soot.jimple.spark.ondemand.pautil;
 
 import soot.G;
 import soot.PackManager;
@@ -28,7 +26,20 @@ import soot.SceneTransformer;
 import soot.SootMethod;
 import soot.Transform;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class DumpNumAppReachableMethods extends SceneTransformer {
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    PackManager.v()
+        .getPack("wjtp")
+        .add(new Transform("wjtp.narm", new DumpNumAppReachableMethods()));
+    soot.Main.main(args);
+  }
 
   @Override
   protected void internalTransform(String phaseName, Map options) {
@@ -48,13 +59,5 @@ public class DumpNumAppReachableMethods extends SceneTransformer {
 
   private boolean isAppMethod(final SootMethod m) {
     return !SootUtil.inLibrary(m.getDeclaringClass().getName());
-  }
-
-  /** @param args */
-  public static void main(String[] args) {
-    PackManager.v()
-        .getPack("wjtp")
-        .add(new Transform("wjtp.narm", new DumpNumAppReachableMethods()));
-    soot.Main.main(args);
   }
 }

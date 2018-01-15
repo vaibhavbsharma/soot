@@ -28,6 +28,10 @@ public class MapNumberer<T> implements Numberer<T> {
   ArrayList<T> al = new ArrayList<>();
   int nextIndex = 1;
 
+  public MapNumberer() {
+    al.add(null);
+  }
+
   @Override
   public void add(T o) {
     if (!map.containsKey(o)) {
@@ -57,10 +61,6 @@ public class MapNumberer<T> implements Numberer<T> {
   @Override
   public int size() {
     return nextIndex - 1; /*subtract 1 for null*/
-  }
-
-  public MapNumberer() {
-    al.add(null);
   }
 
   public boolean contains(Object o) {

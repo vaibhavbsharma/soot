@@ -1,14 +1,5 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Hierarchy;
 import soot.IntType;
@@ -56,6 +47,15 @@ import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 //add for add tag
 
 // *** USE AT YOUR OWN RISK ***
@@ -75,18 +75,16 @@ import soot.util.HashChain;
 
 public class PegChain extends HashChain {
 
-  CallGraph callGraph;
   private final List heads = new ArrayList();
   private final List tails = new ArrayList();
   private final FlowSet pegNodes = new ArraySparseSet();
-
   private final Map<Unit, JPegStmt> unitToPeg = new HashMap<>();
   private final Map<String, FlowSet> waitingNodes;
   private final PegGraph pg;
   private final Set<List<Object>> joinNeedReconsidered = new HashSet<>();
   public Body body; // body from which this peg chain was created
+  CallGraph callGraph;
   // private Map startToThread;
-
   Hierarchy hierarchy;
   PAG pag;
   Set threadAllocSites;
@@ -281,10 +279,10 @@ public class PegChain extends HashChain {
 
       if (name.equals("wait")
           && (paras.size() == 0
-              || (paras.size() == 1 && paras.get(0) instanceof LongType)
-              || (paras.size() == 2
-                  && paras.get(0) instanceof LongType
-                  && paras.get(1) instanceof IntType))) {
+          || (paras.size() == 1 && paras.get(0) instanceof LongType)
+          || (paras.size() == 2
+          && paras.get(0) instanceof LongType
+          && paras.get(1) instanceof IntType))) {
 
         /*special modeling for wait() method call which
          *transforms wait() node to 3 node.
@@ -726,6 +724,7 @@ public class PegChain extends HashChain {
     //testPtsIterator(ret.iterator());
     return ret.iterator();
   }
+
   /*  public List getPredsOf(Object s)
   {
   if(!unitToPreds.containsKey(s))

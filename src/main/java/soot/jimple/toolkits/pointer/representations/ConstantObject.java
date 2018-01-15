@@ -23,6 +23,7 @@
  *
  * @author Feng Qian
  */
+
 package soot.jimple.toolkits.pointer.representations;
 
 public abstract class ConstantObject implements AbstractObject {

@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface IdentityRef extends Ref {}
+public interface IdentityRef extends Ref {
+}

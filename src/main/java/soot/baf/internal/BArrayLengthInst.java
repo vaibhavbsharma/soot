@@ -30,7 +30,8 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BArrayLengthInst extends AbstractInst implements ArrayLengthInst {
-  public BArrayLengthInst() {}
+  public BArrayLengthInst() {
+  }
 
   @Override
   public int getInCount() {

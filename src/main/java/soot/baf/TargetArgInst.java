@@ -31,7 +31,7 @@ import soot.UnitBox;
 public interface TargetArgInst extends Inst {
   Unit getTarget();
 
-  UnitBox getTargetBox();
-
   void setTarget(Unit target);
+
+  UnitBox getTargetBox();
 }

@@ -48,10 +48,10 @@ public class SparkLibraryHelper extends TypeSwitch {
   /**
    * The constructor for this {@link TypeSwitch}.
    *
-   * @param pag the pointer assignment graph in that the new edges and nodes should be added into.
-   * @param node the node of the value for which allocations should be made.
+   * @param pag    the pointer assignment graph in that the new edges and nodes should be added into.
+   * @param node   the node of the value for which allocations should be made.
    * @param method the method in which the allocations should take place. This parameter can be
-   *     null.
+   *               null.
    */
   public SparkLibraryHelper(PAG pag, Node node, SootMethod method) {
     this.pag = pag;

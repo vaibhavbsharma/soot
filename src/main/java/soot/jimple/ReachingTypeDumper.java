@@ -19,14 +19,6 @@
 
 package soot.jimple;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -36,6 +28,14 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Set;
+
 /**
  * Dumps the reaching types of each local variable to a file in a format that can be easily compared
  * with results of other analyses, such as VTA.
@@ -43,17 +43,16 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public class ReachingTypeDumper {
-  private static class StringComparator<T> implements Comparator<T> {
-    @Override
-    public int compare(T o1, T o2) {
-      return o1.toString().compareTo(o2.toString());
-    }
-  }
+  protected PointsToAnalysis pa;
+  protected String output_dir;
 
   public ReachingTypeDumper(PointsToAnalysis pa, String output_dir) {
     this.pa = pa;
     this.output_dir = output_dir;
   }
+
+  /* End of public methods. */
+  /* End of package methods. */
 
   public void dump() {
     try {
@@ -69,12 +68,6 @@ public class ReachingTypeDumper {
       throw new RuntimeException("Couldn't dump reaching types." + e);
     }
   }
-
-  /* End of public methods. */
-  /* End of package methods. */
-
-  protected PointsToAnalysis pa;
-  protected String output_dir;
 
   protected void handleClass(PrintWriter out, SootClass c) {
     for (SootMethod m : c.getMethods()) {
@@ -99,6 +92,13 @@ public class ReachingTypeDumper {
           }
         }
       }
+    }
+  }
+
+  private static class StringComparator<T> implements Comparator<T> {
+    @Override
+    public int compare(T o1, T o2) {
+      return o1.toString().compareTo(o2.toString());
     }
   }
 }

@@ -20,62 +20,50 @@
 /**
  * Environment simulates the VM environment such as objects representing classes, methods, fields,
  * and so on. There is only one:
- *
+ * <p>
  * <p>java.lang.ClassLoader object, java.lang.Class object, java.lang.Field object, java.lang.Method
  * object, java.lang.Constructor object, java.lang.Process object, java.lang.Thread object,
  * java.io.FileSystem object
- *
+ * <p>
  * <p>String objects are special, since there are other string constants. An unknown object has the
  * least type, same as array.
- *
+ * <p>
  * <p>This class defines all abstract object as constants. Temporary variables can be obtained from
  * NativeHelper.
  *
  * @author Feng Qian
  */
+
 package soot.jimple.toolkits.pointer.representations;
 
 import soot.G;
 import soot.Singletons;
 
 public class Environment {
-  public Environment(Singletons.Global g) {}
-
-  public static Environment v() {
-    return G.v().soot_jimple_toolkits_pointer_representations_Environment();
-  }
-
   private final ConstantObject clsloaders =
       new GeneralConstObject(TypeConstants.v().CLASSLOADERCLASS, "classloader");
-
   private final ConstantObject processes =
       new GeneralConstObject(TypeConstants.v().PROCESSCLASS, "process");
-
   private final ConstantObject threads =
       new GeneralConstObject(TypeConstants.v().THREADCLASS, "thread");
-
   private final ConstantObject filesystem =
       new GeneralConstObject(TypeConstants.v().FILESYSTEMCLASS, "filesystem");
-
   /* representing all possible java.lang.Class type objects,
    * mostly used by reflection.
    */
   private final ConstantObject classobject =
       new GeneralConstObject(TypeConstants.v().CLASSCLASS, "unknownclass");
-
   /* representing all possible java.lang.String objects, used by
    * any getName() or similiar methods.
    */
   private final ConstantObject stringobject =
       new GeneralConstObject(TypeConstants.v().STRINGCLASS, "unknownstring");
-
   /* to get finer resolution, it is worth to distinguish arrays and general
    * scalars.
    * WARNING: making array with java.lang.Object type may be a problem!
    */
   private final ConstantObject leastarray =
       new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastarray");
-
   /* makes a general unknown object,
    * WARNING: unknown object must have the least type, it won't be
    *          useful when resolve virtual calls.
@@ -83,27 +71,30 @@ public class Environment {
    */
   private final ConstantObject leastobject =
       new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastobject");
-
   /* provides an abstract java.lang.reflect.Field object.
    */
   private final ConstantObject fieldobject =
       new GeneralConstObject(TypeConstants.v().FIELDCLASS, "field");
-
   /* provides an abstract java.lang.reflect.Method object
    */
   private final ConstantObject methodobject =
       new GeneralConstObject(TypeConstants.v().METHODCLASS, "method");
-
   /* provides an abstract java.lang.reflect.Constructor object
    */
   private final ConstantObject constructorobject =
       new GeneralConstObject(TypeConstants.v().CONSTRUCTORCLASS, "constructor");
-
   /* represents the PrivilegedActionException thrown by
    * AccessController.doPrivileged
    */
   private final ConstantObject privilegedActionException =
       new GeneralConstObject(TypeConstants.v().PRIVILEGEDACTIONEXCEPTION, "constructor");
+
+  public Environment(Singletons.Global g) {
+  }
+
+  public static Environment v() {
+    return G.v().soot_jimple_toolkits_pointer_representations_Environment();
+  }
 
   /** ******************* INTERFACE to NATIVE METHODS ****************** */
   public ConstantObject getClassLoaderObject() {

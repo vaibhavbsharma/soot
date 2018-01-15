@@ -16,13 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.asm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+package soot.asm;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -30,7 +25,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-
 import soot.Modifier;
 import soot.RefType;
 import soot.Scene;
@@ -49,17 +43,23 @@ import soot.tagkit.SourceFileTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Constructs a Soot class from a visited class.
  *
  * @author Aaloan Miftah
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings( {"unchecked", "rawtypes"})
 class SootClassBuilder extends ClassVisitor {
 
-  private TagBuilder tb;
-  private final SootClass klass;
   final Set<soot.Type> deps;
+  private final SootClass klass;
+  private TagBuilder tb;
 
   /**
    * Constructs a new Soot class builder.

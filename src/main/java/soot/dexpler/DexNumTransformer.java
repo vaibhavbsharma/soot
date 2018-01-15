@@ -24,12 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
@@ -57,23 +51,29 @@ import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * BodyTransformer to find and change initialization type of Jimple variables. Dalvik bytecode does
  * not provide enough information regarding the type of initialized variables. For instance, using
  * the dexdump disassembler on some Dalvik bytecode can produce the following (wrong) output:
- *
+ * <p>
  * <p>006c : const -wide v6 , #double 0.000000 // #0014404410000000 0071: and-long /2 addr v6 , v4
- *
+ * <p>
  * <p>At 0x6c, the initialized register is not of type double, but of type long because it is used
  * in a long and operation at 0x71. Thus, one need to check how the register is used to deduce its
  * type. By default, and since the dexdump disassembler does not perform such analysis, it supposes
  * the register is of type double.
- *
+ * <p>
  * <p>Dalvik comes with the following instructions to initialize constants: 0x12 const/4 vx,lit4
  * 0x13 const/16 vx,lit16 0x14 const vx, lit32 0x15 const/high16 v0, lit16 0x16 const-wide/16 vx,
  * lit16 0x17 const-wide/32 vx, lit32 0x18 const-wide vx, lit64 0x19 const-wide/high16 vx,lit16 0x1A
  * const-string vx,string id 0x1B const-string-jumbo vx,string 0x1C const-class vx,type id
- *
+ * <p>
  * <p>Instructions 0x12, 0x1A, 0x1B, 0x1C can not produce wrong initialized registers. The other
  * instructions are converted to the following Jimple statement: JAssignStmt ( Local, rightValue ).
  * Since at the time of the statement creation the no analysis can be performed, a default type is
@@ -89,8 +89,8 @@ public class DexNumTransformer extends DexTransformer {
   // Note: we need an instance variable for inner class access, treat this as
   // a local variable (including initialization before use)
 
-  private boolean usedAsFloatingPoint;
   boolean doBreak = false;
+  private boolean usedAsFloatingPoint;
 
   public static DexNumTransformer v() {
     return new DexNumTransformer();

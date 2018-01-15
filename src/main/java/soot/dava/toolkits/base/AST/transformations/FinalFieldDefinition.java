@@ -19,11 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -64,7 +59,14 @@ import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 
-/** Maintained by: Nomair A. Naeem */
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Maintained by: Nomair A. Naeem
+ */
 
 /**
  * CHANGE LOG: 30th January 2006: Class was created to get rid of the field might not be initialized
@@ -169,8 +171,8 @@ public class FinalFieldDefinition { // extends DepthFirstAdapter{
       } else if (fieldType instanceof BooleanType && interest.hasTag("IntegerConstantValueTag")) {
         continue;
       } else if ((fieldType instanceof IntType
-              || fieldType instanceof ByteType
-              || fieldType instanceof ShortType)
+          || fieldType instanceof ByteType
+          || fieldType instanceof ShortType)
           && interest.hasTag("IntegerConstantValueTag")) {
         continue;
       } else if (interest.hasTag("StringConstantValueTag")) {

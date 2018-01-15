@@ -26,9 +26,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.SootField;
 import soot.SootFieldRef;
 import soot.Type;
@@ -44,10 +41,13 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.RefSwitch;
 import soot.util.Switch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf {
-  protected SootFieldRef fieldRef;
   final ValueBox baseBox;
+  protected SootFieldRef fieldRef;
 
   protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef) {
     if (fieldRef.isStatic()) {
@@ -84,13 +84,13 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
   }
 
   @Override
-  public ValueBox getBaseBox() {
-    return baseBox;
+  public void setBase(Value base) {
+    baseBox.setValue(base);
   }
 
   @Override
-  public void setBase(Value base) {
-    baseBox.setValue(base);
+  public ValueBox getBaseBox() {
+    return baseBox;
   }
 
   @Override
@@ -137,7 +137,9 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return getField().equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;

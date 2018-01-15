@@ -19,13 +19,6 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Context;
 import soot.PhaseOptions;
 import soot.RefType;
@@ -33,39 +26,22 @@ import soot.SootMethod;
 import soot.Type;
 import soot.options.CGOptions;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Represents an allocation site node (Blue) in the pointer assignment graph.
  *
  * @author Ondrej Lhotak
  */
 public class AllocNode extends Node implements Context {
-  /** Returns the new expression of this allocation site. */
-  public Object getNewExpr() {
-    return newExpr;
-  }
-
-  /** Returns all field ref nodes having this node as their base. */
-  public Collection<AllocDotField> getAllFieldRefs() {
-    if (fields == null) {
-      return Collections.emptySet();
-    }
-    return fields.values();
-  }
-
-  /**
-   * Returns the field ref node having this node as its base, and field as its field; null if
-   * nonexistent.
-   */
-  public AllocDotField dot(SparkField field) {
-    return fields == null ? null : fields.get(field);
-  }
-
-  @Override
-  public String toString() {
-    return "AllocNode " + getNumber() + " " + newExpr + " in method " + method;
-  }
-
-  /* End of public methods. */
+  protected Object newExpr;
+  protected Map<SparkField, AllocDotField> fields;
+  private SootMethod method;
 
   AllocNode(PAG pag, Object newExpr, Type t, SootMethod m) {
     super(pag, t);
@@ -87,7 +63,43 @@ public class AllocNode extends Node implements Context {
     pag.getAllocNodeNumberer().add(this);
   }
 
-  /** Registers a AllocDotField as having this node as its base. */
+  /* End of public methods. */
+
+  /**
+   * Returns the new expression of this allocation site.
+   */
+  public Object getNewExpr() {
+    return newExpr;
+  }
+
+  /**
+   * Returns all field ref nodes having this node as their base.
+   */
+  public Collection<AllocDotField> getAllFieldRefs() {
+    if (fields == null) {
+      return Collections.emptySet();
+    }
+    return fields.values();
+  }
+
+  /**
+   * Returns the field ref node having this node as its base, and field as its field; null if
+   * nonexistent.
+   */
+  public AllocDotField dot(SparkField field) {
+    return fields == null ? null : fields.get(field);
+  }
+
+  /* End of package methods. */
+
+  @Override
+  public String toString() {
+    return "AllocNode " + getNumber() + " " + newExpr + " in method " + method;
+  }
+
+  /**
+   * Registers a AllocDotField as having this node as its base.
+   */
   void addField(AllocDotField adf, SparkField field) {
     if (fields == null) {
       fields = new HashMap<>();
@@ -101,13 +113,6 @@ public class AllocNode extends Node implements Context {
     }
     return new HashSet<>(fields.values());
   }
-
-  /* End of package methods. */
-
-  protected Object newExpr;
-  protected Map<SparkField, AllocDotField> fields;
-
-  private SootMethod method;
 
   public SootMethod getMethod() {
     return method;

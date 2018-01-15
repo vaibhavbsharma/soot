@@ -23,13 +23,8 @@
  * 26-January-2006: Fixed Bug in Dava. Could not detect empty infinte loops.
  * 5-April -2006: Fixed bug in Fix_MultiEntryPoint read comment dated 5 th April 2005
  */
-package soot.dava.toolkits.base.finders;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+package soot.dava.toolkits.base.finders;
 
 import soot.G;
 import soot.Local;
@@ -61,8 +56,15 @@ import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.util.IterableSet;
 import soot.util.StationaryArrayList;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 public class CycleFinder implements FactFinder {
-  public CycleFinder(Singletons.Global g) {}
+  public CycleFinder(Singletons.Global g) {
+  }
 
   public static CycleFinder v() {
     return G.v().soot_dava_toolkits_base_finders_CycleFinder();

@@ -25,16 +25,20 @@
 
 package soot;
 
-import java.util.Map;
-
 import soot.options.Options;
 import soot.util.PhaseDumper;
 
-/** Maintains the pair (phaseName, singleton) needed for a transformation. */
+import java.util.Map;
+
+/**
+ * Maintains the pair (phaseName, singleton) needed for a transformation.
+ */
 public class Transform implements HasPhaseOptions {
-  private final boolean DEBUG;
   final String phaseName;
   final Transformer t;
+  private final boolean DEBUG;
+  private String declaredOpts;
+  private String defaultOpts;
 
   public Transform(String phaseName, Transformer t) {
     this.DEBUG = Options.v().dump_body().contains(phaseName);
@@ -51,23 +55,12 @@ public class Transform implements HasPhaseOptions {
     return t;
   }
 
-  private String declaredOpts;
-  private String defaultOpts;
-
   @Override
   public String getDeclaredOptions() {
     if (declaredOpts != null) {
       return declaredOpts;
     }
     return Options.getDeclaredOptionsForPhase(phaseName);
-  }
-
-  @Override
-  public String getDefaultOptions() {
-    if (defaultOpts != null) {
-      return defaultOpts;
-    }
-    return Options.getDefaultOptionsForPhase(phaseName);
   }
 
   /**
@@ -77,6 +70,14 @@ public class Transform implements HasPhaseOptions {
    */
   public void setDeclaredOptions(String options) {
     declaredOpts = options;
+  }
+
+  @Override
+  public String getDefaultOptions() {
+    if (defaultOpts != null) {
+      return defaultOpts;
+    }
+    return Options.getDefaultOptionsForPhase(phaseName);
   }
 
   /**

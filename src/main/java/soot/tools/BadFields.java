@@ -19,9 +19,6 @@
 
 package soot.tools;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.G;
 import soot.PackManager;
 import soot.PrimType;
@@ -40,14 +37,17 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class BadFields extends SceneTransformer {
+  private SootClass lastClass;
+  private SootClass currentClass;
+
   public static void main(String[] args) {
     PackManager.v().getPack("cg").add(new Transform("cg.badfields", new BadFields()));
     soot.Main.main(args);
   }
-
-  private SootClass lastClass;
-  private SootClass currentClass;
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {

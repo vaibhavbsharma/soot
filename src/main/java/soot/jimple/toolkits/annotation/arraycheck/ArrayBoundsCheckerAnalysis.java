@@ -25,16 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.G;
 import soot.Hierarchy;
@@ -77,37 +67,37 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.SlowPseudoTopologicalOrderer;
 
-class ArrayBoundsCheckerAnalysis {
-  protected Map<Block, WeightedDirectedSparseGraph> blockToBeforeFlow;
-  protected Map<Unit, WeightedDirectedSparseGraph> unitToBeforeFlow;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+class ArrayBoundsCheckerAnalysis {
   private final Map<FlowGraphEdge, WeightedDirectedSparseGraph> edgeMap;
   private final Set<FlowGraphEdge> edgeSet;
-
-  private HashMap<Block, Integer> stableRoundOfUnits;
-
-  private ArrayRefBlockGraph graph;
-
   private final IntContainer zero = new IntContainer(0);
-
+  private final int strictness = 2;
+  private final ArrayIndexLivenessAnalysis ailanalysis;
+  protected Map<Block, WeightedDirectedSparseGraph> blockToBeforeFlow;
+  protected Map<Unit, WeightedDirectedSparseGraph> unitToBeforeFlow;
+  private HashMap<Block, Integer> stableRoundOfUnits;
+  private ArrayRefBlockGraph graph;
   private boolean fieldin = false;
   private HashMap<Object, HashSet<Value>> localToFieldRef;
   private HashMap<Object, HashSet<Value>> fieldToFieldRef;
-  private final int strictness = 2;
-
   private boolean arrayin = false;
-
   private boolean csin = false;
   private HashMap<Value, HashSet<Value>> localToExpr;
-
   private boolean classfieldin = false;
   private ClassFieldAnalysis cfield;
-
   private boolean rectarray = false;
   private HashSet<Local> rectarrayset;
   private HashSet<Local> multiarraylocals;
-
-  private final ArrayIndexLivenessAnalysis ailanalysis;
 
   /* A little bit different from ForwardFlowAnalysis */
   public ArrayBoundsCheckerAnalysis(
@@ -193,7 +183,9 @@ class ArrayBoundsCheckerAnalysis {
     }
   }
 
-  /** buildEdgeSet creates a set of edges from directed graph. */
+  /**
+   * buildEdgeSet creates a set of edges from directed graph.
+   */
   public Set<FlowGraphEdge> buildEdgeSet(DirectedGraph<Block> dg) {
     HashSet<FlowGraphEdge> edges = new HashSet<>();
 
@@ -642,39 +634,39 @@ class ArrayBoundsCheckerAnalysis {
             }
           }
         } else
-        /* kill all instance field reference. */
-        if (strictness == 1) {
-          boolean killall = false;
-          if (expr instanceof InstanceInvokeExpr) {
-            killall = true;
-          } else {
-            for (int i = 0; i < parameters.size(); i++) {
-              Value para = (Value) parameters.get(i);
-              if (para.getType() instanceof RefType) {
-                killall = true;
-                break;
+          /* kill all instance field reference. */
+          if (strictness == 1) {
+            boolean killall = false;
+            if (expr instanceof InstanceInvokeExpr) {
+              killall = true;
+            } else {
+              for (int i = 0; i < parameters.size(); i++) {
+                Value para = (Value) parameters.get(i);
+                if (para.getType() instanceof RefType) {
+                  killall = true;
+                  break;
+                }
+              }
+            }
+
+            if (killall) {
+              Iterator<Object> keyIt = localToFieldRef.keySet().iterator();
+              while (keyIt.hasNext()) {
+                HashSet toadd = localToFieldRef.get(keyIt.next());
+                tokills.addAll(toadd);
+              }
+            }
+          } else if (strictness == 2) {
+            //                    tokills.addAll(allFieldRefs);
+            HashSet vertexes = ingraph.getVertexes();
+            Iterator nodeIt = vertexes.iterator();
+            while (nodeIt.hasNext()) {
+              Object node = nodeIt.next();
+              if (node instanceof FieldRef) {
+                ingraph.killNode(node);
               }
             }
           }
-
-          if (killall) {
-            Iterator<Object> keyIt = localToFieldRef.keySet().iterator();
-            while (keyIt.hasNext()) {
-              HashSet toadd = localToFieldRef.get(keyIt.next());
-              tokills.addAll(toadd);
-            }
-          }
-        } else if (strictness == 2) {
-          //                    tokills.addAll(allFieldRefs);
-          HashSet vertexes = ingraph.getVertexes();
-          Iterator nodeIt = vertexes.iterator();
-          while (nodeIt.hasNext()) {
-            Object node = nodeIt.next();
-            if (node instanceof FieldRef) {
-              ingraph.killNode(node);
-            }
-          }
-        }
 
         /*
         Iterator killIt = tokills.iterator();
@@ -794,8 +786,8 @@ class ArrayBoundsCheckerAnalysis {
           }
         }
       } else
-      /* kill all array references */
-      if (leftOp instanceof ArrayRef) {
+        /* kill all array references */
+        if (leftOp instanceof ArrayRef) {
         /*
         Iterator allrefsIt = allArrayRefs.iterator();
         while (allrefsIt.hasNext())
@@ -804,18 +796,18 @@ class ArrayBoundsCheckerAnalysis {
             ingraph.killNode(ref);
         }
         */
-        HashSet vertexes = ingraph.getVertexes();
-        {
-          Iterator nodeIt = vertexes.iterator();
-          while (nodeIt.hasNext()) {
-            Object node = nodeIt.next();
-            if (node instanceof ArrayRef) {
-              ingraph.killNode(node);
+          HashSet vertexes = ingraph.getVertexes();
+          {
+            Iterator nodeIt = vertexes.iterator();
+            while (nodeIt.hasNext()) {
+              Object node = nodeIt.next();
+              if (node instanceof ArrayRef) {
+                ingraph.killNode(node);
+              }
             }
           }
-        }
 
-        /* only when multiarray was given a new value to its sub dimension, we kill all second dimensions of arrays */
+          /* only when multiarray was given a new value to its sub dimension, we kill all second dimensions of arrays */
         /*
         if (rectarray)
         {
@@ -833,7 +825,7 @@ class ArrayBoundsCheckerAnalysis {
             }
         }
         */
-      }
+        }
     }
 
     if (!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) {
@@ -1127,65 +1119,65 @@ class ArrayBoundsCheckerAnalysis {
         ingraph.addMutualEdges(node1, node2, weight);
       }
     } else
-    // i > j
-    if ((cmpcond instanceof GtExpr)
-        ||
-        // i >= j
-        (cmpcond instanceof GeExpr)) {
-      Object node1 = op1, node2 = op2;
-      int weight = 0;
+      // i > j
+      if ((cmpcond instanceof GtExpr)
+          ||
+          // i >= j
+          (cmpcond instanceof GeExpr)) {
+        Object node1 = op1, node2 = op2;
+        int weight = 0;
 
-      if (node1 instanceof IntConstant) {
-        weight += ((IntConstant) node1).value;
-        node1 = zero;
-      }
+        if (node1 instanceof IntConstant) {
+          weight += ((IntConstant) node1).value;
+          node1 = zero;
+        }
 
-      if (node2 instanceof IntConstant) {
-        weight -= ((IntConstant) node2).value;
-        node2 = zero;
-      }
+        if (node2 instanceof IntConstant) {
+          weight -= ((IntConstant) node2).value;
+          node2 = zero;
+        }
 
-      if (node1 == node2) {
-        return false;
-      }
+        if (node1 == node2) {
+          return false;
+        }
 
-      if (cmpcond instanceof GtExpr) {
-        targetgraph.addEdge(node1, node2, weight - 1);
-        ingraph.addEdge(node2, node1, -weight);
-      } else {
-        targetgraph.addEdge(node1, node2, weight);
-        ingraph.addEdge(node2, node1, -weight - 1);
-      }
-    } else
-    // i < j
-    if ((cmpcond instanceof LtExpr) || (cmpcond instanceof LeExpr)) {
-      Object node1 = op1, node2 = op2;
-      int weight = 0;
+        if (cmpcond instanceof GtExpr) {
+          targetgraph.addEdge(node1, node2, weight - 1);
+          ingraph.addEdge(node2, node1, -weight);
+        } else {
+          targetgraph.addEdge(node1, node2, weight);
+          ingraph.addEdge(node2, node1, -weight - 1);
+        }
+      } else
+        // i < j
+        if ((cmpcond instanceof LtExpr) || (cmpcond instanceof LeExpr)) {
+          Object node1 = op1, node2 = op2;
+          int weight = 0;
 
-      if (node1 instanceof IntConstant) {
-        weight -= ((IntConstant) node1).value;
-        node1 = zero;
-      }
+          if (node1 instanceof IntConstant) {
+            weight -= ((IntConstant) node1).value;
+            node1 = zero;
+          }
 
-      if (node2 instanceof IntConstant) {
-        weight += ((IntConstant) node2).value;
-        node2 = zero;
-      }
+          if (node2 instanceof IntConstant) {
+            weight += ((IntConstant) node2).value;
+            node2 = zero;
+          }
 
-      if (node1 == node2) {
-        return false;
-      }
+          if (node1 == node2) {
+            return false;
+          }
 
-      if (cmpcond instanceof LtExpr) {
-        targetgraph.addEdge(node2, node1, weight - 1);
-        ingraph.addEdge(node1, node2, -weight);
-      } else {
-        targetgraph.addEdge(node2, node1, weight);
-        ingraph.addEdge(node1, node2, -weight - 1);
-      }
-    } else {
-      return false;
-    }
+          if (cmpcond instanceof LtExpr) {
+            targetgraph.addEdge(node2, node1, weight - 1);
+            ingraph.addEdge(node1, node2, -weight);
+          } else {
+            targetgraph.addEdge(node2, node1, weight);
+            ingraph.addEdge(node1, node2, -weight - 1);
+          }
+        } else {
+          return false;
+        }
 
     // update out edges and changed succs.
     // targetgraph -> targetBlock

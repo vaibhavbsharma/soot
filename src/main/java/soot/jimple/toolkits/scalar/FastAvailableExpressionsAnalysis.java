@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.SideEffectTester;
 import soot.SootMethod;
 import soot.Unit;
@@ -47,6 +42,11 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implements an available expressions analysis on local variables. The current implementation is

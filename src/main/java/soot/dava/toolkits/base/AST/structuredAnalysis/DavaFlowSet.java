@@ -33,6 +33,13 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.internal.javaRep.DAbruptStmt;
+import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
+import soot.toolkits.scalar.AbstractFlowSet;
+import soot.toolkits.scalar.FlowSet;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,21 +48,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import soot.dava.internal.AST.ASTNode;
-import soot.dava.internal.SET.SETNodeLabel;
-import soot.dava.internal.javaRep.DAbruptStmt;
-import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
-import soot.toolkits.scalar.AbstractFlowSet;
-import soot.toolkits.scalar.FlowSet;
-
 public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
   static final int DEFAULT_SIZE = 8;
-
+  protected T[] elements;
   int numElements;
   int maxElements;
-  protected T[] elements;
-
   /**
    * Whenever in a structured flow analysis a break or continue stmt is encountered the current
    * DavaFlowSet is stored in the break/continue list with the appropriate label for the target
@@ -107,7 +105,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
         (HashMap<Serializable, List<DavaFlowSet<T>>>) other.implicitContinues.clone();
   }
 
-  /** Returns true if flowSet is the same type of flow set as this. */
+  /**
+   * Returns true if flowSet is the same type of flow set as this.
+   */
   private boolean sameType(Object flowSet) {
     return (flowSet instanceof DavaFlowSet);
   }
@@ -137,7 +137,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     return numElements == 0;
   }
 
-  /** Returns a unbacked list of elements in this set. */
+  /**
+   * Returns a unbacked list of elements in this set.
+   */
   @Override
   public List<T> toList() {
     @SuppressWarnings("unchecked")
@@ -353,7 +355,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     }
   }
 
-  /** A private method used to add an element into a List if it is NOT a duplicate */
+  /**
+   * A private method used to add an element into a List if it is NOT a duplicate
+   */
   private List<DavaFlowSet<T>> addIfNotDuplicate(
       List<DavaFlowSet<T>> into, DavaFlowSet<T> addThis) {
     // if set is not already present in the labelsBreakList then add it
@@ -420,7 +424,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   /**
    * The next two methods take an abruptStmt as input along with a flowSet. It should be only
    * invoked for abrupt stmts which do not have explicit labels
-   *
+   * <p>
    * <p>The node being targeted by this implicit stmt should be found Then the flow set should be
    * added to the list within the appropriate hashmap
    */

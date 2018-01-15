@@ -19,12 +19,12 @@
 
 package soot.jimple.spark.sets;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * HashSet implementation of points-to set.
@@ -32,49 +32,12 @@ import soot.jimple.spark.pag.PAG;
  * @author Ondrej Lhotak
  */
 public final class HashPointsToSet extends PointsToSetInternal {
+  private final HashSet<Node> s = new HashSet<>(4);
+  private PAG pag = null;
+
   public HashPointsToSet(Type type, PAG pag) {
     super(type);
     this.pag = pag;
-  }
-  /** Returns true if this set contains no run-time objects. */
-  @Override
-  public final boolean isEmpty() {
-    return s.isEmpty();
-  }
-  /** Adds contents of other into this set, returns true if this set changed. */
-  @Override
-  public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
-    if (other instanceof HashPointsToSet
-        && exclude == null
-        && (pag.getTypeManager().getFastHierarchy() == null
-            || type == null
-            || type.equals(other.type))) {
-      return s.addAll(((HashPointsToSet) other).s);
-    } else {
-      return super.addAll(other, exclude);
-    }
-  }
-  /** Calls v's visit method on all nodes in this set. */
-  @Override
-  public final boolean forall(P2SetVisitor v) {
-    for (Node node : new ArrayList<>(s)) {
-      v.visit(node);
-    }
-    return v.getReturnValue();
-  }
-  /** Adds n to this set, returns true if n was not already in this set. */
-  @Override
-  public final boolean add(Node n) {
-    if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
-
-      return s.add(n);
-    }
-    return false;
-  }
-  /** Returns true iff the set contains n. */
-  @Override
-  public final boolean contains(Node n) {
-    return s.contains(n);
   }
 
   public static P2SetFactory getFactory() {
@@ -86,9 +49,61 @@ public final class HashPointsToSet extends PointsToSetInternal {
     };
   }
 
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
+  @Override
+  public final boolean isEmpty() {
+    return s.isEmpty();
+  }
+
+  /**
+   * Adds contents of other into this set, returns true if this set changed.
+   */
+  @Override
+  public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
+    if (other instanceof HashPointsToSet
+        && exclude == null
+        && (pag.getTypeManager().getFastHierarchy() == null
+        || type == null
+        || type.equals(other.type))) {
+      return s.addAll(((HashPointsToSet) other).s);
+    } else {
+      return super.addAll(other, exclude);
+    }
+  }
+
+  /**
+   * Calls v's visit method on all nodes in this set.
+   */
+  @Override
+  public final boolean forall(P2SetVisitor v) {
+    for (Node node : new ArrayList<>(s)) {
+      v.visit(node);
+    }
+    return v.getReturnValue();
+  }
+
   /* End of public methods. */
   /* End of package methods. */
 
-  private final HashSet<Node> s = new HashSet<>(4);
-  private PAG pag = null;
+  /**
+   * Adds n to this set, returns true if n was not already in this set.
+   */
+  @Override
+  public final boolean add(Node n) {
+    if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
+
+      return s.add(n);
+    }
+    return false;
+  }
+
+  /**
+   * Returns true iff the set contains n.
+   */
+  @Override
+  public final boolean contains(Node n) {
+    return s.contains(n);
+  }
 }

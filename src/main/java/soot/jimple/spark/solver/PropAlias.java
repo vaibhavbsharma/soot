@@ -19,10 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -44,6 +40,10 @@ import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.queue.QueueReader;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Propagates points-to sets along pointer assignment graph using a relevant aliases.
  *
@@ -54,13 +54,23 @@ public final class PropAlias extends Propagator {
   protected Set<VarNode> aliasWorkList;
   protected Set<FieldRefNode> fieldRefWorkList = new HashSet<>();
   protected Set<FieldRefNode> outFieldRefWorkList = new HashSet<>();
+  protected PAG pag;
+  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<>();
+
+  /* End of public methods. */
+  /* End of package methods. */
+  protected MultiMap<FieldRefNode, FieldRefNode> aliasEdges = new HashMultiMap<>();
+  protected LargeNumberedMap<FieldRefNode, PointsToSetInternal> loadSets;
+  protected OnFlyCallGraph ofcg;
 
   public PropAlias(PAG pag) {
     this.pag = pag;
     loadSets = new LargeNumberedMap<>(pag.getFieldRefNodeNumberer());
   }
 
-  /** Actually does the propagation. */
+  /**
+   * Actually does the propagation.
+   */
   @Override
   public final void propagate() {
     ofcg = pag.getOnFlyCallGraph();
@@ -141,10 +151,9 @@ public final class PropAlias extends Propagator {
     } while (!varNodeWorkList.isEmpty());
   }
 
-  /* End of public methods. */
-  /* End of package methods. */
-
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
@@ -157,7 +166,9 @@ public final class PropAlias extends Propagator {
     return ret;
   }
 
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleVarNode(final VarNode src) {
     boolean ret = false;
 
@@ -290,10 +301,4 @@ public final class PropAlias extends Propagator {
     }
     return varNodeWorkList.add(n);
   }
-
-  protected PAG pag;
-  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<>();
-  protected MultiMap<FieldRefNode, FieldRefNode> aliasEdges = new HashMultiMap<>();
-  protected LargeNumberedMap<FieldRefNode, PointsToSetInternal> loadSets;
-  protected OnFlyCallGraph ofcg;
 }

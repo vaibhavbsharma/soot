@@ -26,7 +26,8 @@ public class BiMap {
   HashMap<Object, Object> keyVal;
   HashMap<Object, Object> valKey;
 
-  public BiMap() {}
+  public BiMap() {
+  }
 
   public void put(Object key, Object val) {
     if (keyVal == null) {

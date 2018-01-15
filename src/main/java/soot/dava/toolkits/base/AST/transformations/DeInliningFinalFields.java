@@ -19,10 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -68,7 +64,13 @@ import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.util.Chain;
 
-/** Maintained by: Nomair A. Naeem */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+/**
+ * Maintained by: Nomair A. Naeem
+ */
 
 /** CHANGE LOG: 2nd February 2006: */
 
@@ -108,7 +110,8 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
 
   // ASTParentNodeFinder parentFinder;
 
-  public DeInliningFinalFields() {}
+  public DeInliningFinalFields() {
+  }
 
   public DeInliningFinalFields(boolean verbose) {
     super(verbose);
@@ -166,8 +169,8 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
             finalFields.put(new Boolean(true), f);
           }
         } else if ((fieldType instanceof IntType
-                || fieldType instanceof ByteType
-                || fieldType instanceof ShortType)
+            || fieldType instanceof ByteType
+            || fieldType instanceof ShortType)
             && f.hasTag("IntegerConstantValueTag")) {
           int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
           finalFields.put(new Integer(val), f);

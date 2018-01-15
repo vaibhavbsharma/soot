@@ -25,11 +25,6 @@
 
 package soot.baf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.DoubleType;
 import soot.G;
@@ -49,19 +44,13 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.Stmt;
 import soot.options.Options;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class BafBody extends Body {
   private JimpleToBafContext jimpleToBafContext;
-
-  public JimpleToBafContext getContext() {
-    return jimpleToBafContext;
-  }
-
-  @Override
-  public Object clone() {
-    Body b = new BafBody(getMethod());
-    b.importBodyContentsFrom(this);
-    return b;
-  }
 
   BafBody(SootMethod m) {
     super(m);
@@ -147,5 +136,16 @@ public class BafBody extends Body {
     }
 
     PackManager.v().getPack("bb").apply(this);
+  }
+
+  public JimpleToBafContext getContext() {
+    return jimpleToBafContext;
+  }
+
+  @Override
+  public Object clone() {
+    Body b = new BafBody(getMethod());
+    b.importBodyContentsFrom(this);
+    return b;
   }
 }

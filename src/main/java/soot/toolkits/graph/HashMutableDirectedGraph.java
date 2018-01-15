@@ -25,6 +25,8 @@
 
 package soot.toolkits.graph;
 
+import soot.G;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,9 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.G;
-
-/** HashMap based implementation of a MutableBlockGraph. */
+/**
+ * HashMap based implementation of a MutableBlockGraph.
+ */
 public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
 
   protected Map<N, Set<N>> nodeToPreds;
@@ -47,10 +49,6 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
   protected Set<N> heads;
   protected Set<N> tails;
 
-  private static <T> List<T> getCopy(Collection<? extends T> c) {
-    return Collections.unmodifiableList(new ArrayList<T>(c));
-  }
-
   public HashMutableDirectedGraph() {
     nodeToPreds = new HashMap<>();
     nodeToSuccs = new HashMap<>();
@@ -58,7 +56,13 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
     tails = new HashSet<>();
   }
 
-  /** Removes all nodes and edges. */
+  private static <T> List<T> getCopy(Collection<? extends T> c) {
+    return Collections.unmodifiableList(new ArrayList<T>(c));
+  }
+
+  /**
+   * Removes all nodes and edges.
+   */
   public void clearAll() {
     nodeToPreds.clear();
     nodeToSuccs.clear();

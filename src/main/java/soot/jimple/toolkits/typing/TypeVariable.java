@@ -25,19 +25,21 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import soot.ArrayType;
 import soot.G;
 import soot.RefType;
 import soot.options.Options;
 import soot.util.BitVector;
 
-/** Represents a type variable. * */
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+/**
+ * Represents a type variable. *
+ */
 class TypeVariable implements Comparable<Object> {
   private static final boolean DEBUG = false;
 
@@ -78,6 +80,30 @@ class TypeVariable implements Comparable<Object> {
     if (type.hasElement()) {
       element = resolver.typeVariable(type.element());
       element.array = this;
+    }
+  }
+
+  static void error(String message) throws TypeException {
+    try {
+      throw new TypeException(message);
+    } catch (TypeException e) {
+      if (DEBUG) {
+        e.printStackTrace();
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Computes approximative types. The work list must be initialized with all constant type
+   * variables.
+   */
+  public static void computeApprox(TreeSet<TypeVariable> workList) throws TypeException {
+    while (workList.size() > 0) {
+      TypeVariable var = workList.first();
+      workList.remove(var);
+
+      var.fixApprox(workList);
     }
   }
 
@@ -448,30 +474,6 @@ class TypeVariable implements Comparable<Object> {
     }
 
     return type;
-  }
-
-  static void error(String message) throws TypeException {
-    try {
-      throw new TypeException(message);
-    } catch (TypeException e) {
-      if (DEBUG) {
-        e.printStackTrace();
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * Computes approximative types. The work list must be initialized with all constant type
-   * variables.
-   */
-  public static void computeApprox(TreeSet<TypeVariable> workList) throws TypeException {
-    while (workList.size() > 0) {
-      TypeVariable var = workList.first();
-      workList.remove(var);
-
-      var.fixApprox(workList);
-    }
   }
 
   private void fixApprox(TreeSet<TypeVariable> workList) throws TypeException {

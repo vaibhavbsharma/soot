@@ -25,14 +25,6 @@
 
 package soot.jimple.parser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackReader;
-import java.util.HashMap;
-import java.util.Set;
-
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
@@ -45,7 +37,17 @@ import soot.jimple.parser.node.Start;
 import soot.jimple.parser.parser.Parser;
 import soot.jimple.parser.parser.ParserException;
 
-/** This class encapsulates a JimpleAST instance and provides methods to act on it. */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackReader;
+import java.util.HashMap;
+import java.util.Set;
+
+/**
+ * This class encapsulates a JimpleAST instance and provides methods to act on it.
+ */
 public class JimpleAST {
   private Start mTree = null;
   private HashMap<SootMethod, JimpleBody> methodToParsedBodyMap = null;
@@ -62,7 +64,9 @@ public class JimpleAST {
     mTree = p.parse();
   }
 
-  /** Reads an entire class from jimple, creates the Soot objects & returns it. */
+  /**
+   * Reads an entire class from jimple, creates the Soot objects & returns it.
+   */
   public SootClass createSootClass() {
     Walker w = new Walker(SootResolver.v());
     mTree.apply(w);
@@ -109,7 +113,9 @@ public class JimpleAST {
     return cpe.getCstPool();
   }
 
-  /** Returns the SootResolver currently in use. */
+  /**
+   * Returns the SootResolver currently in use.
+   */
   public SootResolver getResolver() {
     return SootResolver.v();
   }

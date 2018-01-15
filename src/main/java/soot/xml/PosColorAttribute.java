@@ -31,7 +31,8 @@ public class PosColorAttribute {
   private int jimpleStartLn;
   private int jimpleEndLn;
 
-  public PosColorAttribute() {}
+  public PosColorAttribute() {
+  }
 
   public ColorAttribute color() {
     return color;

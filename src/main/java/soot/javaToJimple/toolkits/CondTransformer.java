@@ -19,9 +19,6 @@
 
 package soot.javaToJimple.toolkits;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,16 +32,19 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class CondTransformer extends BodyTransformer {
-  public CondTransformer(Singletons.Global g) {}
+  private static final int SEQ_LENGTH = 6;
+  private Stmt[] stmtSeq = new Stmt[SEQ_LENGTH];
+  private boolean sameGoto = true;
+  public CondTransformer(Singletons.Global g) {
+  }
 
   public static CondTransformer v() {
     return G.v().soot_javaToJimple_toolkits_CondTransformer();
   }
-
-  private static final int SEQ_LENGTH = 6;
-  private Stmt[] stmtSeq = new Stmt[SEQ_LENGTH];
-  private boolean sameGoto = true;
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
@@ -118,76 +118,69 @@ public class CondTransformer extends BodyTransformer {
 
   private boolean testStmtSeq(Stmt s, int pos) {
     switch (pos) {
-      case 0:
-        {
-          if (s instanceof IfStmt) {
+      case 0: {
+        if (s instanceof IfStmt) {
+          stmtSeq[pos] = s;
+          return true;
+        }
+        break;
+      }
+      case 1: {
+        if (s instanceof IfStmt) {
+          if (sameTarget(stmtSeq[pos - 1], s)) {
             stmtSeq[pos] = s;
             return true;
           }
-          break;
         }
-      case 1:
-        {
-          if (s instanceof IfStmt) {
-            if (sameTarget(stmtSeq[pos - 1], s)) {
-              stmtSeq[pos] = s;
-              return true;
-            }
+        break;
+      }
+      case 2: {
+        if (s instanceof AssignStmt) {
+          stmtSeq[pos] = s;
+          if ((((AssignStmt) s).getRightOp() instanceof IntConstant)
+              && (((IntConstant) ((AssignStmt) s).getRightOp())).value == 0) {
+            sameGoto = false;
           }
-          break;
+          return true;
         }
-      case 2:
-        {
-          if (s instanceof AssignStmt) {
-            stmtSeq[pos] = s;
-            if ((((AssignStmt) s).getRightOp() instanceof IntConstant)
-                && (((IntConstant) ((AssignStmt) s).getRightOp())).value == 0) {
-              sameGoto = false;
-            }
-            return true;
-          }
-          break;
+        break;
+      }
+      case 3: {
+        if (s instanceof GotoStmt) {
+          stmtSeq[pos] = s;
+          return true;
         }
-      case 3:
-        {
-          if (s instanceof GotoStmt) {
+        break;
+      }
+      case 4: {
+        if (s instanceof AssignStmt) {
+          if (isTarget(((IfStmt) stmtSeq[0]).getTarget(), s) && sameLocal(stmtSeq[2], s)) {
             stmtSeq[pos] = s;
             return true;
           }
-          break;
         }
-      case 4:
-        {
-          if (s instanceof AssignStmt) {
-            if (isTarget(((IfStmt) stmtSeq[0]).getTarget(), s) && sameLocal(stmtSeq[2], s)) {
-              stmtSeq[pos] = s;
-              return true;
-            }
+        break;
+      }
+      case 5: {
+        if (s instanceof IfStmt) {
+          if (isTarget((Stmt) ((GotoStmt) stmtSeq[3]).getTarget(), s)
+              && sameCondLocal(stmtSeq[4], s)
+              && (((IfStmt) s).getCondition() instanceof EqExpr)) {
+            stmtSeq[pos] = s;
+            return true;
+          } else if (isTarget((Stmt) ((GotoStmt) stmtSeq[3]).getTarget(), s)
+              && sameCondLocal(stmtSeq[4], s)) {
+            stmtSeq[pos] = s;
+            sameGoto = false;
+            return true;
           }
-          break;
         }
-      case 5:
-        {
-          if (s instanceof IfStmt) {
-            if (isTarget((Stmt) ((GotoStmt) stmtSeq[3]).getTarget(), s)
-                && sameCondLocal(stmtSeq[4], s)
-                && (((IfStmt) s).getCondition() instanceof EqExpr)) {
-              stmtSeq[pos] = s;
-              return true;
-            } else if (isTarget((Stmt) ((GotoStmt) stmtSeq[3]).getTarget(), s)
-                && sameCondLocal(stmtSeq[4], s)) {
-              stmtSeq[pos] = s;
-              sameGoto = false;
-              return true;
-            }
-          }
-          break;
-        }
+        break;
+      }
 
-      default:
-        {
-          break;
-        }
+      default: {
+        break;
+      }
     }
     return false;
   }

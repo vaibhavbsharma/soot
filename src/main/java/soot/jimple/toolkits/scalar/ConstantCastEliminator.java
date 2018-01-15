@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -41,6 +39,8 @@ import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 
+import java.util.Map;
+
 /**
  * Transformer for removing unnecessary casts on primitive values. An assignment a = (float) 42 will
  * for instance be transformed to a = 42f;
@@ -49,7 +49,8 @@ import soot.jimple.IntConstant;
  */
 public class ConstantCastEliminator extends BodyTransformer {
 
-  public ConstantCastEliminator(Singletons.Global g) {}
+  public ConstantCastEliminator(Singletons.Global g) {
+  }
 
   public static ConstantCastEliminator v() {
     return G.v().soot_jimple_toolkits_scalar_ConstantCastEliminator();

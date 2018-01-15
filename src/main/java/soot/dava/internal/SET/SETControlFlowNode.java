@@ -19,12 +19,12 @@
 
 package soot.dava.internal.SET;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.jimple.GotoStmt;
 import soot.util.IterableSet;
+
+import java.util.HashSet;
+import java.util.Iterator;
 
 public abstract class SETControlFlowNode extends SETNode {
   private AugmentedStmt characterizingStmt;
@@ -64,8 +64,8 @@ public abstract class SETControlFlowNode extends SETNode {
 
               if ((scfn.get_CharacterizingStmt() == as)
                   || ((as.cpreds.size() == 1)
-                      && (as.get_Stmt() instanceof GotoStmt)
-                      && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
+                  && (as.get_Stmt() instanceof GotoStmt)
+                  && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
                 remove_AugmentedStmt(as);
               }
             }

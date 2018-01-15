@@ -29,33 +29,38 @@ package soot.coffi;
  * A debugging attribute, this gives the types of local variables within blocks of bytecode. - for
  * java 1.5
  *
- * @see attribute_info
  * @author Jennifer Lhotak modified from LocalVariableTable_attribute
+ * @see attribute_info
  */
 class LocalVariableTypeTable_attribute extends attribute_info {
-  /** Length of the local variable type table. */
+  /**
+   * Length of the local variable type table.
+   */
   public int local_variable_type_table_length;
-  /** Actual table of local variable types. */
+  /**
+   * Actual table of local variable types.
+   */
   public local_variable_type_table_entry local_variable_type_table[];
 
   /**
    * Locates the first type found for a given local variable.
    *
    * @param constant_pool constant pool for the associated class.
-   * @param idx local variable type index.
+   * @param idx           local variable type index.
    * @return type of the local variable, or <i>null</i> if not found.
    * @see LocalVariableTypeTable_attribute#getLocalVariableType(cp_info[], int, int)
    */
   public String getLocalVariableType(cp_info constant_pool[], int idx) {
     return getLocalVariableType(constant_pool, idx, -1);
   }
+
   /**
    * Locates the type of the given local variable for the specified code offset.
    *
    * @param constant_pool constant pool for the associated class.
-   * @param idx local variable type index.
-   * @param code code offset for variable name; use -1 to return the first name found for that local
-   *     variable.
+   * @param idx           local variable type index.
+   * @param code          code offset for variable name; use -1 to return the first name found for that local
+   *                      variable.
    * @return type of the local variable, or <i>null</i> if not found.
    * @see LocalVariableTypeTable_attribute#getLocalVariableType(cp_info[], int)
    */

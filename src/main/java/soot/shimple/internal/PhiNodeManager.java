@@ -19,16 +19,6 @@
 
 package soot.shimple.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
 import soot.IdentityUnit;
 import soot.Local;
 import soot.Trap;
@@ -52,11 +42,21 @@ import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
 /**
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  */
 public class PhiNodeManager {
   protected ShimpleBody body;
@@ -65,6 +65,8 @@ public class PhiNodeManager {
   protected DominanceFrontier<Block> df;
   protected BlockGraph cfg;
   protected GuaranteedDefs gd;
+  protected MultiMap<Local, Block> varToBlocks;
+  protected Map<Unit, Block> unitToBlock;
 
   public PhiNodeManager(ShimpleBody body, ShimpleFactory sf) {
     this.body = body;
@@ -78,11 +80,9 @@ public class PhiNodeManager {
     df = sf.getDominanceFrontier();
   }
 
-  protected MultiMap<Local, Block> varToBlocks;
-
   /**
    * Phi node Insertion Algorithm from Cytron et al 91, P24-5,
-   *
+   * <p>
    * <p>Special Java case: If a variable is not defined along all paths of entry to a node, a Phi
    * node is not needed.
    */
@@ -179,7 +179,9 @@ public class PhiNodeManager {
     return change;
   }
 
-  /** Inserts a trivial Phi node with the appropriate number of arguments. */
+  /**
+   * Inserts a trivial Phi node with the appropriate number of arguments.
+   */
   public void prependTrivialPhiNode(Local local, Block frontierBlock) {
     List<Block> preds = frontierBlock.getPreds();
     PhiExpr pe = Shimple.v().newPhiExpr(local, preds);
@@ -229,7 +231,9 @@ public class PhiNodeManager {
     }
   }
 
-  /** @see #trimExceptionalPhiNodes() */
+  /**
+   * @see #trimExceptionalPhiNodes()
+   */
   public void trimPhiNode(PhiExpr phiExpr) {
     /* A value may appear many times in an exceptional Phi. Hence,
     the same value may be associated with many UnitBoxes. We
@@ -334,8 +338,6 @@ public class PhiNodeManager {
     }
     */
   }
-
-  protected Map<Unit, Block> unitToBlock;
 
   /**
    * Returns true if champ dominates challenger. Note that false doesn't necessarily mean that
@@ -487,7 +489,9 @@ public class PhiNodeManager {
     return addedNewLocals;
   }
 
-  /** Convenience function that maps units to blocks. Should probably be in BlockGraph. */
+  /**
+   * Convenience function that maps units to blocks. Should probably be in BlockGraph.
+   */
   public Map<Unit, Block> getUnitToBlockMap(BlockGraph blocks) {
     Map<Unit, Block> unitToBlock = new HashMap<>();
 

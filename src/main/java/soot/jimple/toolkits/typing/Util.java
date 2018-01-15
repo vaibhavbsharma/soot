@@ -10,7 +10,7 @@ public class Util {
   /**
    * A new "normal" statement cannot be inserted in the middle of special "identity statements" (a
    * = @parameter or b = @this in Jimple).
-   *
+   * <p>
    * <p>This method returns the last "identity statement" of the method.
    *
    * @param b

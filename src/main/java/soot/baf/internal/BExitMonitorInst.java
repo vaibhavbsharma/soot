@@ -30,7 +30,8 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BExitMonitorInst extends AbstractInst implements ExitMonitorInst {
-  public BExitMonitorInst() {}
+  public BExitMonitorInst() {
+  }
 
   @Override
   public int getInCount() {

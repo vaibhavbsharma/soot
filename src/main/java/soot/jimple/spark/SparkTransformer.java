@@ -19,9 +19,6 @@
 
 package soot.jimple.spark;
 
-import java.util.Date;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -63,16 +60,37 @@ import soot.tagkit.Host;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
 
+import java.util.Date;
+import java.util.Map;
+
 /**
  * Main entry point for Spark.
  *
  * @author Ondrej Lhotak
  */
 public class SparkTransformer extends SceneTransformer {
-  public SparkTransformer(Singletons.Global g) {}
+  public SparkTransformer(Singletons.Global g) {
+  }
 
   public static SparkTransformer v() {
     return G.v().soot_jimple_spark_SparkTransformer();
+  }
+
+  protected static void reportTime(String desc, Date start, Date end) {
+    long time = end.getTime() - start.getTime();
+    G.v()
+        .out
+        .println("[Spark] " + desc + " in " + time / 1000 + "." + (time / 100) % 10 + " seconds.");
+  }
+
+  protected static void doGC() {
+    // Do 5 times because the garbage collector doesn't seem to always collect
+    // everything on the first try.
+    System.gc();
+    System.gc();
+    System.gc();
+    System.gc();
+    System.gc();
   }
 
   @Override
@@ -284,23 +302,6 @@ public class SparkTransformer extends SceneTransformer {
         }
       }
     }
-  }
-
-  protected static void reportTime(String desc, Date start, Date end) {
-    long time = end.getTime() - start.getTime();
-    G.v()
-        .out
-        .println("[Spark] " + desc + " in " + time / 1000 + "." + (time / 100) % 10 + " seconds.");
-  }
-
-  protected static void doGC() {
-    // Do 5 times because the garbage collector doesn't seem to always collect
-    // everything on the first try.
-    System.gc();
-    System.gc();
-    System.gc();
-    System.gc();
-    System.gc();
   }
 
   protected void addTag(Host h, Node n, Map<Node, Tag> nodeToTag, Tag unknown) {

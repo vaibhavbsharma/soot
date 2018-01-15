@@ -24,14 +24,8 @@
  */
 
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
-package soot.jimple.toolkits.thread.mhp;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.toolkits.thread.mhp;
 
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.Tag;
@@ -40,6 +34,13 @@ import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphConstants;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -60,29 +61,25 @@ public class PegToDotFile {
   public static final int UNITGRAPH = 0;
   public static final int BLOCKGRAPH = 1;
   public static final int ARRAYBLOCK = 2;
-
-  public static int graphtype = UNITGRAPH;
-
-  public static boolean isBrief = false;
   private static final Map<Object, String> listNodeName = new HashMap<>();
   private static final Map<Object, String> startNodeToName = new HashMap<>();
-
+  public static int graphtype = UNITGRAPH;
+  public static boolean isBrief = false;
   /* in one page or several pages of 8.5x11 */
   public static boolean onepage = true;
+  private static int nodecount = 0;
 
   public PegToDotFile(PegGraph graph, boolean onepage, String name) {
     PegToDotFile.onepage = onepage;
     toDotFile(name, graph, "PEG graph");
   }
 
-  private static int nodecount = 0;
-
   /**
    * Generates a dot format file for a DirectedGraph
    *
    * @param methodname, the name of generated dot file
-   * @param graph, a directed control flow graph (UnitGraph, BlockGraph ...)
-   * @param graphname, the title of the graph
+   * @param graph,      a directed control flow graph (UnitGraph, BlockGraph ...)
+   * @param graphname,  the title of the graph
    */
   public static void toDotFile(String methodname, PegGraph graph, String graphname) {
     int sequence = 0;

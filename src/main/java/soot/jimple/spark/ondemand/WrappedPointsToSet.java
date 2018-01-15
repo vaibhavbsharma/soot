@@ -16,9 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand;
 
-import java.util.Set;
+package soot.jimple.spark.ondemand;
 
 import soot.PointsToSet;
 import soot.Type;
@@ -26,17 +25,19 @@ import soot.jimple.ClassConstant;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
+import java.util.Set;
+
 public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
 
   final PointsToSetInternal wrapped;
 
-  public PointsToSetInternal getWrapped() {
-    return wrapped;
-  }
-
   public WrappedPointsToSet(final PointsToSetInternal wrapped) {
     super();
     this.wrapped = wrapped;
+  }
+
+  public PointsToSetInternal getWrapped() {
+    return wrapped;
   }
 
   @Override
@@ -75,7 +76,9 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
     return wrapped.toString();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null) {
@@ -95,13 +98,17 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
     return obj.equals(wrapped);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     return wrapped.hashCode();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean pointsToSetEquals(Object other) {
     if (!(other instanceof EqualsSupportingPointsToSet)) {
@@ -111,7 +118,9 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
     return wrapped.pointsToSetEquals(otherPts);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int pointsToSetHashCode() {
     return wrapped.pointsToSetHashCode();

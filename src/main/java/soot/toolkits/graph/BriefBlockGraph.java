@@ -36,7 +36,7 @@ import soot.Unit;
 public class BriefBlockGraph extends BlockGraph {
   /**
    * Constructs a {@link BriefBlockGraph} from a given {@link Body}.
-   *
+   * <p>
    * <p>Note that this constructor builds a {@link BriefUnitGraph} internally when splitting
    * <tt>body</tt>'s {@link Unit}s into {@link Block}s. Callers who already have a {@link
    * BriefUnitGraph} to hand can use the constructor taking a <tt>CompleteUnitGraph</tt> as a

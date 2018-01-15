@@ -19,12 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -48,9 +42,15 @@ import soot.jimple.LongConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.NumericConstant;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 6-Mar-2006
+ * <p>Created on 6-Mar-2006
  */
 
 // when shifting, add multiple of 32 or 64 to the shift value, since it will
@@ -61,20 +61,16 @@ import soot.jimple.NumericConstant;
 // not hurt the speed of the program. Empirically: 4 adds/shifts == 1 mult?
 public class ArithmeticTransformer extends BodyTransformer implements IJbcoTransform {
 
-  private static int mulPerformed = 0;
-
-  private static int divPerformed = 0;
-
-  private static int total = 0;
-
   public static String dependancies[] = new String[] {"jtp.jbco_cae2bo"};
+  public static String name = "jtp.jbco_cae2bo";
+  private static int mulPerformed = 0;
+  private static int divPerformed = 0;
+  private static int total = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "jtp.jbco_cae2bo";
 
   @Override
   public String getName() {
@@ -237,8 +233,8 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
                             + uu
                             + "\ttype : "
                             + (uu instanceof AssignStmt
-                                ? ((AssignStmt) uu).getLeftOp().getType().toString()
-                                : ""));
+                            ? ((AssignStmt) uu).getLeftOp().getType().toString()
+                            : ""));
                   }
                 }
               }
@@ -305,8 +301,8 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
                               + uu
                               + "\ttype : "
                               + (uu instanceof AssignStmt
-                                  ? ((AssignStmt) uu).getLeftOp().getType().toString()
-                                  : ""));
+                              ? ((AssignStmt) uu).getLeftOp().getType().toString()
+                              : ""));
                     }
                   }
                 }

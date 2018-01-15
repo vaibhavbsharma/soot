@@ -19,11 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.SootClass;
@@ -41,6 +36,11 @@ import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -60,14 +60,54 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
 public class LoopStrengthener extends DepthFirstAdapter {
 
-  public LoopStrengthener() {}
+  public LoopStrengthener() {
+  }
 
   public LoopStrengthener(boolean verbose) {
     super(verbose);
   }
 
+  public static List<Object> createNewSubBody(
+      List<Object> oldSubBody, int nodeNumber, ASTNode oldNode, List<ASTNode> newNode) {
+    // create a new SubBody
+    List<Object> newSubBody = new ArrayList<>();
+
+    // this is an iterator of ASTNodes
+    Iterator<Object> it = oldSubBody.iterator();
+
+    // copy to newSubBody all nodes until you get to nodeNumber
+    int index = 0;
+    while (index != nodeNumber) {
+      if (!it.hasNext()) {
+        return null;
+      }
+      newSubBody.add(it.next());
+      index++;
+    }
+
+    // at this point the iterator is pointing to the ASTNode to be removed
+    // just to make sure check this
+    ASTNode toRemove = (ASTNode) it.next();
+    if (toRemove.toString().compareTo(oldNode.toString()) != 0) {
+      System.out.println("The replace nodes dont match please report benchmark to developer");
+      return null;
+    } else {
+      // not adding the oldNode into the newSubBody but adding its replacement
+      newSubBody.addAll(newNode);
+    }
+
+    // add any remaining nodes in the oldSubBody to the new one
+    while (it.hasNext()) {
+      newSubBody.add(it.next());
+    }
+
+    // newSubBody is ready return it
+    return newSubBody;
+  }
+
   @Override
-  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
+  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
+  }
 
   /*
     Note the ASTNode in this case can be any of the following:
@@ -428,43 +468,5 @@ public class LoopStrengthener extends DepthFirstAdapter {
         return;
       }
     } // end of ASTIfElseNode
-  }
-
-  public static List<Object> createNewSubBody(
-      List<Object> oldSubBody, int nodeNumber, ASTNode oldNode, List<ASTNode> newNode) {
-    // create a new SubBody
-    List<Object> newSubBody = new ArrayList<>();
-
-    // this is an iterator of ASTNodes
-    Iterator<Object> it = oldSubBody.iterator();
-
-    // copy to newSubBody all nodes until you get to nodeNumber
-    int index = 0;
-    while (index != nodeNumber) {
-      if (!it.hasNext()) {
-        return null;
-      }
-      newSubBody.add(it.next());
-      index++;
-    }
-
-    // at this point the iterator is pointing to the ASTNode to be removed
-    // just to make sure check this
-    ASTNode toRemove = (ASTNode) it.next();
-    if (toRemove.toString().compareTo(oldNode.toString()) != 0) {
-      System.out.println("The replace nodes dont match please report benchmark to developer");
-      return null;
-    } else {
-      // not adding the oldNode into the newSubBody but adding its replacement
-      newSubBody.addAll(newNode);
-    }
-
-    // add any remaining nodes in the oldSubBody to the new one
-    while (it.hasNext()) {
-      newSubBody.add(it.next());
-    }
-
-    // newSubBody is ready return it
-    return newSubBody;
   }
 }

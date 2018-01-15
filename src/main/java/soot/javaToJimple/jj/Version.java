@@ -19,7 +19,9 @@
 
 package soot.javaToJimple.jj;
 
-/** Version information for jj extension */
+/**
+ * Version information for jj extension
+ */
 public class Version extends polyglot.main.Version {
   @Override
   public String name() {

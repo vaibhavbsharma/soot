@@ -1,9 +1,5 @@
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.G;
 import soot.Local;
 import soot.Type;
@@ -25,11 +21,16 @@ import soot.jimple.IntConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.Stmt;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class ShortcutArrayInit extends DepthFirstAdapter {
   public static boolean DEBUG = false;
   ASTMethodNode methodNode;
 
-  public ShortcutArrayInit() {}
+  public ShortcutArrayInit() {
+  }
 
   public ShortcutArrayInit(boolean verbose) {
     super(verbose);

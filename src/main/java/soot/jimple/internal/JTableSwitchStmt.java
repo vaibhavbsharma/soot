@@ -25,9 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -42,24 +39,12 @@ import soot.jimple.StmtSwitch;
 import soot.jimple.TableSwitchStmt;
 import soot.util.Switch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchStmt {
   int lowIndex;
   int highIndex;
-
-  // This method is necessary to deal with constructor-must-be-first-ism.
-  private static UnitBox[] getTargetBoxesArray(List<? extends Unit> targets) {
-    UnitBox[] targetBoxes = new UnitBox[targets.size()];
-    for (int i = 0; i < targetBoxes.length; i++) {
-      targetBoxes[i] = Jimple.v().newStmtBox(targets.get(i));
-    }
-    return targetBoxes;
-  }
-
-  @Override
-  public Object clone() {
-    return new JTableSwitchStmt(
-        Jimple.cloneIfNecessary(getKey()), lowIndex, highIndex, getTargets(), getDefaultTarget());
-  }
 
   public JTableSwitchStmt(
       Value key, int lowIndex, int highIndex, List<? extends Unit> targets, Unit defaultTarget) {
@@ -104,6 +89,21 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
 
     this.lowIndex = lowIndex;
     this.highIndex = highIndex;
+  }
+
+  // This method is necessary to deal with constructor-must-be-first-ism.
+  private static UnitBox[] getTargetBoxesArray(List<? extends Unit> targets) {
+    UnitBox[] targetBoxes = new UnitBox[targets.size()];
+    for (int i = 0; i < targetBoxes.length; i++) {
+      targetBoxes[i] = Jimple.v().newStmtBox(targets.get(i));
+    }
+    return targetBoxes;
+  }
+
+  @Override
+  public Object clone() {
+    return new JTableSwitchStmt(
+        Jimple.cloneIfNecessary(getKey()), lowIndex, highIndex, getTargets(), getDefaultTarget());
   }
 
   @Override
@@ -201,23 +201,23 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
   }
 
   @Override
-  public void setLowIndex(int lowIndex) {
-    this.lowIndex = lowIndex;
-  }
-
-  @Override
-  public void setHighIndex(int highIndex) {
-    this.highIndex = highIndex;
-  }
-
-  @Override
   public int getLowIndex() {
     return lowIndex;
   }
 
   @Override
+  public void setLowIndex(int lowIndex) {
+    this.lowIndex = lowIndex;
+  }
+
+  @Override
   public int getHighIndex() {
     return highIndex;
+  }
+
+  @Override
+  public void setHighIndex(int highIndex) {
+    this.highIndex = highIndex;
   }
 
   @Override

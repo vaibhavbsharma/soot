@@ -25,14 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -42,6 +34,14 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Analysis that implements the LocalUses interface. Uses for a Local defined at a given Unit are
@@ -55,7 +55,7 @@ public class SimpleLocalUses implements LocalUses {
   /**
    * Construct the analysis from a UnitGraph representation of a method body and a LocalDefs
    * interface. This supposes that a LocalDefs analysis must have been computed prior.
-   *
+   * <p>
    * <p>Note: If you do not already have a UnitGraph, it may be cheaper to use the constructor which
    * only requires a Body.
    */

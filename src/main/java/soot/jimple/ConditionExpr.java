@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface ConditionExpr extends BinopExpr {}
+public interface ConditionExpr extends BinopExpr {
+}

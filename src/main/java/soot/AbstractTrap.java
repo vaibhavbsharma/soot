@@ -33,23 +33,48 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/** Partial implementation of trap (exception catcher), used within Body classes. */
+/**
+ * Partial implementation of trap (exception catcher), used within Body classes.
+ */
 @SuppressWarnings("serial")
 public class AbstractTrap implements Trap, Serializable {
-  /** The exception being caught. */
+  /**
+   * The exception being caught.
+   */
   protected transient SootClass exception;
 
-  /** The first unit being trapped. */
+  /**
+   * The first unit being trapped.
+   */
   protected UnitBox beginUnitBox;
 
-  /** The unit just before the last unit being trapped. */
+  /**
+   * The unit just before the last unit being trapped.
+   */
   protected UnitBox endUnitBox;
 
-  /** The unit to which execution flows after the caught exception is triggered. */
+  /**
+   * The unit to which execution flows after the caught exception is triggered.
+   */
   protected UnitBox handlerUnitBox;
 
-  /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
+  /**
+   * The list of unitBoxes referred to in this Trap (begin, end and handler.
+   */
   protected List<UnitBox> unitBoxes;
+
+  /**
+   * Creates an AbstractTrap with the given exception, handler, begin and end units.
+   */
+  protected AbstractTrap(
+      SootClass exception, UnitBox beginUnitBox, UnitBox endUnitBox, UnitBox handlerUnitBox) {
+    this.exception = exception;
+    this.beginUnitBox = beginUnitBox;
+    this.endUnitBox = endUnitBox;
+    this.handlerUnitBox = handlerUnitBox;
+    this.unitBoxes =
+        Collections.unmodifiableList(Arrays.asList(beginUnitBox, endUnitBox, handlerUnitBox));
+  }
 
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
@@ -61,20 +86,14 @@ public class AbstractTrap implements Trap, Serializable {
     out.writeObject(exception.getName());
   }
 
-  /** Creates an AbstractTrap with the given exception, handler, begin and end units. */
-  protected AbstractTrap(
-      SootClass exception, UnitBox beginUnitBox, UnitBox endUnitBox, UnitBox handlerUnitBox) {
-    this.exception = exception;
-    this.beginUnitBox = beginUnitBox;
-    this.endUnitBox = endUnitBox;
-    this.handlerUnitBox = handlerUnitBox;
-    this.unitBoxes =
-        Collections.unmodifiableList(Arrays.asList(beginUnitBox, endUnitBox, handlerUnitBox));
-  }
-
   @Override
   public Unit getBeginUnit() {
     return beginUnitBox.getUnit();
+  }
+
+  @Override
+  public void setBeginUnit(Unit beginUnit) {
+    beginUnitBox.setUnit(beginUnit);
   }
 
   @Override
@@ -83,8 +102,18 @@ public class AbstractTrap implements Trap, Serializable {
   }
 
   @Override
+  public void setEndUnit(Unit endUnit) {
+    endUnitBox.setUnit(endUnit);
+  }
+
+  @Override
   public Unit getHandlerUnit() {
     return handlerUnitBox.getUnit();
+  }
+
+  @Override
+  public void setHandlerUnit(Unit handlerUnit) {
+    handlerUnitBox.setUnit(handlerUnit);
   }
 
   @Override
@@ -117,21 +146,6 @@ public class AbstractTrap implements Trap, Serializable {
   @Override
   public SootClass getException() {
     return exception;
-  }
-
-  @Override
-  public void setBeginUnit(Unit beginUnit) {
-    beginUnitBox.setUnit(beginUnit);
-  }
-
-  @Override
-  public void setEndUnit(Unit endUnit) {
-    endUnitBox.setUnit(endUnit);
-  }
-
-  @Override
-  public void setHandlerUnit(Unit handlerUnit) {
-    handlerUnitBox.setUnit(handlerUnit);
   }
 
   @Override

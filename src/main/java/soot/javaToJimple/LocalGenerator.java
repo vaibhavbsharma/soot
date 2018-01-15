@@ -19,21 +19,30 @@
 
 package soot.javaToJimple;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class LocalGenerator {
 
   protected final soot.Body body;
-
+  protected transient Set<String> localNames = null;
+  private int tempInt = -1;
+  private int tempVoid = -1;
+  private int tempBoolean = -1;
+  private int tempLong = -1;
+  private int tempDouble = -1;
+  private int tempFloat = -1;
+  private int tempRefLikeType = -1;
+  private int tempByte = -1;
+  private int tempShort = -1;
+  private int tempChar = -1;
+  private int tempUnknownType = -1;
   public LocalGenerator(Body b) {
     body = b;
   }
-
-  protected transient Set<String> localNames = null;
 
   protected boolean bodyContainsLocal(String name) {
     return localNames.contains(name);
@@ -46,7 +55,9 @@ public class LocalGenerator {
     }
   }
 
-  /** generates a new soot local given the type */
+  /**
+   * generates a new soot local given the type
+   */
   public soot.Local generateLocal(soot.Type type) {
 
     // store local names for enhanced performance
@@ -139,18 +150,6 @@ public class LocalGenerator {
     localNames = null;
     return createLocal(name, type);
   }
-
-  private int tempInt = -1;
-  private int tempVoid = -1;
-  private int tempBoolean = -1;
-  private int tempLong = -1;
-  private int tempDouble = -1;
-  private int tempFloat = -1;
-  private int tempRefLikeType = -1;
-  private int tempByte = -1;
-  private int tempShort = -1;
-  private int tempChar = -1;
-  private int tempUnknownType = -1;
 
   private String nextIntName() {
     tempInt++;

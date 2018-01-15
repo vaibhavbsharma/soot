@@ -25,8 +25,6 @@
 
 package soot.jimple;
 
-import java.util.Iterator;
-
 import soot.Local;
 import soot.SideEffectTester;
 import soot.SootMethod;
@@ -34,10 +32,12 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 
+import java.util.Iterator;
+
 /**
  * Provides naive side effect information. Relies on no context information; instead, does the least
  * conservative thing possible even in the possible presence of badness.
- *
+ * <p>
  * <p>Possible weakness of SideEffectTester: consider a Box. We don't have a name for
  * "what-is-inside-the-box" and so we can't ask questions about it. But perhaps we need only ask
  * questions about the box itself; the side effect tester can deal with that internally.
@@ -54,9 +54,12 @@ import soot.ValueBox;
 
 public class NaiveSideEffectTester implements SideEffectTester {
   @Override
-  public void newMethod(SootMethod m) {}
+  public void newMethod(SootMethod m) {
+  }
 
-  /** Returns true if the unit can read from v. Does not deal with expressions; deals with Refs. */
+  /**
+   * Returns true if the unit can read from v. Does not deal with expressions; deals with Refs.
+   */
   @Override
   public boolean unitCanReadFrom(Unit u, Value v) {
     Stmt s = (Stmt) u;

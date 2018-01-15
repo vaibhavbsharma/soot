@@ -1,10 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.EquivalentValue;
 import soot.Local;
@@ -30,6 +25,11 @@ import soot.toolkits.graph.MemoryEfficientGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+
 // ClassInfoFlowAnalysis written by Richard L. Halpert, 2007-02-22
 // Constructs data flow tables for each method of a class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -39,13 +39,11 @@ import soot.toolkits.graph.UnitGraph;
 // the parameter's one node in the data flow graph.
 
 public class ClassInfoFlowAnalysis {
+  public static int methodCount = 0;
   SootClass sootClass;
   InfoFlowAnalysis dfa; // used to access the data flow analyses of other classes
-
   Map<SootMethod, SmartMethodInfoFlowAnalysis> methodToInfoFlowAnalysis;
   Map<SootMethod, HashMutableDirectedGraph<EquivalentValue>> methodToInfoFlowSummary;
-
-  public static int methodCount = 0;
 
   public ClassInfoFlowAnalysis(SootClass sootClass, InfoFlowAnalysis dfa) {
     this.sootClass = sootClass;
@@ -177,7 +175,10 @@ public class ClassInfoFlowAnalysis {
   		}
   	}
   //*/
-  /** Does not require any fixed point calculation */
+
+  /**
+   * Does not require any fixed point calculation
+   */
   private HashMutableDirectedGraph<EquivalentValue> simpleConservativeInfoFlowAnalysis(
       SootMethod sm) {
     // Constructs a graph representing the data flow between fields, parameters, and the
@@ -304,12 +305,15 @@ public class ClassInfoFlowAnalysis {
       while (accessedIt2.hasNext()) {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
-        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {; // don't add this edge
+        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {
+          ; // don't add this edge
         } else if (sRef instanceof ThisRef
-            && rRef instanceof InstanceFieldRef) {; // don't add this edge
+            && rRef instanceof InstanceFieldRef) {
+          ; // don't add this edge
         } else if (sRef instanceof ParameterRef
             && dfa
-                .includesInnerFields()) {; // don't add edges to parameters if we are including inner fields
+            .includesInnerFields()) {
+          ; // don't add edges to parameters if we are including inner fields
         } else if (sRef.getType() instanceof RefLikeType) {
           dataFlowGraph.addEdge(r, s);
         }
@@ -323,7 +327,9 @@ public class ClassInfoFlowAnalysis {
     return dataFlowGraph;
   }
 
-  /** Does not require the method to have a body */
+  /**
+   * Does not require the method to have a body
+   */
   public HashMutableDirectedGraph<EquivalentValue> triviallyConservativeInfoFlowAnalysis(
       SootMethod sm) {
     HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<>();
@@ -397,9 +403,11 @@ public class ClassInfoFlowAnalysis {
       while (accessedIt2.hasNext()) {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
-        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {; // don't add this edge
+        if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {
+          ; // don't add this edge
         } else if (sRef instanceof ThisRef
-            && rRef instanceof InstanceFieldRef) {; // don't add this edge
+            && rRef instanceof InstanceFieldRef) {
+          ; // don't add this edge
         } else if (sRef.getType() instanceof RefLikeType) {
           dataFlowGraph.addEdge(r, s);
         }

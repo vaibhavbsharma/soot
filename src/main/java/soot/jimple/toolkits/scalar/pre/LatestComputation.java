@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
@@ -35,6 +32,9 @@ import soot.toolkits.scalar.ArrayPackedSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Performs a Latest-Computation on the given graph. a computation is latest, when we can't delay it
@@ -52,8 +52,8 @@ public class LatestComputation {
    * fly, but it is <b>very</b> likely that it already exists (as similar maps are used for
    * calculating Earliestness, Delayed,...
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param delayed the delayability-analysis of the same graph.
+   * @param dg          a ExceptionalUnitGraph
+   * @param delayed     the delayability-analysis of the same graph.
    * @param equivRhsMap all computations of the graph
    */
   public LatestComputation(
@@ -73,10 +73,10 @@ public class LatestComputation {
    * the shared set allows more efficient set-operations, when they the computation is merged with
    * other analyses/computations.
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param delayed the delayability-analysis of the same graph.
+   * @param dg          a ExceptionalUnitGraph
+   * @param delayed     the delayability-analysis of the same graph.
    * @param equivRhsMap all computations of the graph
-   * @param set the shared flowSet
+   * @param set         the shared flowSet
    */
   public LatestComputation(
       UnitGraph unitGraph,

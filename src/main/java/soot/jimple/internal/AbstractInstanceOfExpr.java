@@ -25,9 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.BooleanType;
 import soot.Type;
 import soot.UnitPrinter;
@@ -37,6 +34,9 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
@@ -57,7 +57,9 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode() * 101 + checkType.hashCode() * 17;

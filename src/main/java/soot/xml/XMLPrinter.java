@@ -25,15 +25,6 @@
 
 package soot.xml;
 
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
 import soot.Body;
 import soot.G;
 import soot.LabeledUnitPrinter;
@@ -54,7 +45,18 @@ import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.util.Chain;
 
-/** XML printing routines all XML output comes through here */
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+/**
+ * XML printing routines all XML output comes through here
+ */
 public class XMLPrinter {
   // xml and dtd header
   public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
@@ -63,6 +65,14 @@ public class XMLPrinter {
 
   // xml tree
   public XMLRoot root;
+  private XMLNode xmlNode = null;
+
+  public XMLPrinter(Singletons.Global g) {
+  }
+
+  public static XMLPrinter v() {
+    return G.v().soot_xml_XMLPrinter();
+  }
 
   // returns the buffer - this is the XML output
   @Override
@@ -95,19 +105,13 @@ public class XMLPrinter {
     return root.addElement(name, value, attributes, values);
   }
 
-  public XMLPrinter(Singletons.Global g) {}
-
-  public static XMLPrinter v() {
-    return G.v().soot_xml_XMLPrinter();
-  }
-
-  private XMLNode xmlNode = null;
-
   public XMLNode setXMLNode(XMLNode node) {
     return (this.xmlNode = node);
   }
 
-  /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+  /**
+   * Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>.
+   */
   private void printStatementsInBody(Body body, java.io.PrintWriter out) {
     LabeledUnitPrinter up = new NormalUnitPrinter(body);
     Map<Unit, String> stmtToName = up.labels();
@@ -172,9 +176,9 @@ public class XMLPrinter {
             "method",
             new String[] {"name", "returntype", "class"},
             new String[] {
-              cleanMethodName,
-              body.getMethod().getReturnType().toString(),
-              body.getMethod().getDeclaringClass().getName().toString()
+                cleanMethodName,
+                body.getMethod().getReturnType().toString(),
+                body.getMethod().getDeclaringClass().getName().toString()
             });
     String declarationStr = body.getMethod().getDeclaration().toString().trim();
     methodNode.addChild(
@@ -219,7 +223,7 @@ public class XMLPrinter {
         xmlLabel.stmtCount = labelID;
         xmlLabel.stmtPercentage =
             new Float(
-                    (new Float(labelID).floatValue() / new Float(units.size()).intValue()) * 100.0)
+                (new Float(labelID).floatValue() / new Float(units.size()).intValue()) * 100.0)
                 .longValue();
         if (xmlLabel.stmtPercentage > maxStmtCount) {
           maxStmtCount = xmlLabel.stmtPercentage;
@@ -248,7 +252,7 @@ public class XMLPrinter {
               "soot_statement",
               new String[] {"branches", "fallsthrough"},
               new String[] {
-                boolToString(currentStmt.branches()), boolToString(currentStmt.fallsThrough())
+                  boolToString(currentStmt.branches()), boolToString(currentStmt.fallsThrough())
               });
 
       // uses for each statement
@@ -446,10 +450,10 @@ public class XMLPrinter {
               "parameter",
               new String[] {"id", "type", "method", "name"},
               new String[] {
-                i + "",
-                body.getMethod().getParameterTypes().get(i).toString(),
-                cleanMethodName,
-                "_parameter" + i
+                  i + "",
+                  body.getMethod().getParameterTypes().get(i).toString(),
+                  cleanMethodName,
+                  "_parameter" + i
               });
       XMLNode sootparamNode = paramNode.addChild("soot_parameter");
 
@@ -600,9 +604,9 @@ public class XMLPrinter {
       XMLLabel tempLabel = xmlLabelsList.elementAt(i);
       tempLabel.stmtPercentage =
           new Float(
-                  (new Float(tempLabel.stmtPercentage).floatValue()
-                          / new Float(maxStmtCount).floatValue())
-                      * 100.0)
+              (new Float(tempLabel.stmtPercentage).floatValue()
+                  / new Float(maxStmtCount).floatValue())
+                  * 100.0)
               .longValue();
 
       if (current != null) {
@@ -626,9 +630,9 @@ public class XMLPrinter {
                 "exception",
                 new String[] {"id", "method", "type"},
                 new String[] {
-                  (statementCount++) + "",
-                  cleanMethodName,
-                  Scene.v().quotedNameOf(trap.getException().getName())
+                    (statementCount++) + "",
+                    cleanMethodName,
+                    Scene.v().quotedNameOf(trap.getException().getName())
                 });
         catchNode.addChild(
             "begin",
@@ -675,20 +679,6 @@ public class XMLPrinter {
       return "true";
     }
     return "false";
-  }
-
-  class XMLLabel {
-    public long id;
-    public String methodName;
-    public String label;
-    public long stmtCount;
-    public long stmtPercentage;
-
-    public XMLLabel(long in_id, String in_methodName, String in_label) {
-      id = in_id;
-      methodName = in_methodName;
-      label = in_label;
-    }
   }
 
   private void printXMLTo(SootClass cl, PrintWriter out) {
@@ -841,5 +831,19 @@ public class XMLPrinter {
     b.validate();
 
     printStatementsInBody(b, out);
+  }
+
+  class XMLLabel {
+    public long id;
+    public String methodName;
+    public String label;
+    public long stmtCount;
+    public long stmtPercentage;
+
+    public XMLLabel(long in_id, String in_methodName, String in_label) {
+      id = in_id;
+      methodName = in_methodName;
+      label = in_label;
+    }
   }
 }

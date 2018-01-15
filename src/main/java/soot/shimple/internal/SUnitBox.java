@@ -30,7 +30,7 @@ public interface SUnitBox extends UnitBox {
   /**
    * Indicates whether the contents of the UnitBox may have been changed. Returns true if
    * setUnit(Unit) has been called recently and was not followed by setUnitChanged(false).
-   *
+   * <p>
    * <p>Needed for Shimple internal Unit chain patching.
    */
   boolean isUnitChanged();
@@ -38,7 +38,7 @@ public interface SUnitBox extends UnitBox {
   /**
    * Updates the value of the flag used to indicate whether the contents of the UnitBox may have
    * changed.
-   *
+   * <p>
    * <p>Needed for Shimple internal Unit chain patching.
    *
    * @see #isUnitChanged()

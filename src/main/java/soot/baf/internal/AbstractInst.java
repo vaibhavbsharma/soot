@@ -93,7 +93,8 @@ public abstract class AbstractInst extends AbstractUnit implements Inst {
     return "";
   }
 
-  protected void getParameters(UnitPrinter up) {}
+  protected void getParameters(UnitPrinter up) {
+  }
 
   @Override
   public boolean containsInvokeExpr() {

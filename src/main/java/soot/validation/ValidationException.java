@@ -1,6 +1,7 @@
 package soot.validation;
 
 public class ValidationException extends RuntimeException {
+  private static final long serialVersionUID = 1L;
   private Object concerned;
   private String strMessage;
   private String strCompatibilityMessage;
@@ -9,12 +10,12 @@ public class ValidationException extends RuntimeException {
   /**
    * Creates a new ValidationException.
    *
-   * @param concerned the object which is concerned and could be highlighted in an IDE; for example
-   *     an unit, a SootMethod, a SootClass or a local.
-   * @param strMessage the message to display in an IDE supporting the concerned feature
+   * @param concerned               the object which is concerned and could be highlighted in an IDE; for example
+   *                                an unit, a SootMethod, a SootClass or a local.
+   * @param strMessage              the message to display in an IDE supporting the concerned feature
    * @param strCompatibilityMessage the compatibility message containing useful information without
-   *     supporting the concerned object
-   * @param isWarning whether the exception can be considered as a warning message
+   *                                supporting the concerned object
+   * @param isWarning               whether the exception can be considered as a warning message
    */
   public ValidationException(
       Object concerned, String strMessage, String strCompatibilityMessage, boolean isWarning) {
@@ -28,22 +29,23 @@ public class ValidationException extends RuntimeException {
   /**
    * Creates a new ValidationException, treated as an error.
    *
-   * @param concerned the object which is concerned and could be highlighted in an IDE; for example
-   *     an unit, a SootMethod, a SootClass or a local.
-   * @param strMessage the message to display in an IDE supporting the concerned feature
+   * @param concerned               the object which is concerned and could be highlighted in an IDE; for example
+   *                                an unit, a SootMethod, a SootClass or a local.
+   * @param strMessage              the message to display in an IDE supporting the concerned feature
    * @param strCompatibilityMessage the compatibility message containing useful information without
-   *     supporting the concerned object
+   *                                supporting the concerned object
    */
   public ValidationException(Object concerned, String strMessage, String strCompatibilityMessage) {
     this(concerned, strMessage, strCompatibilityMessage, false);
   }
+
   /**
    * Creates a new ValidationException, treated as an error.
    *
-   * @param concerned the object which is concerned and could be highlighted in an IDE; for example
-   *     an unit, a SootMethod, a SootClass or a local.
+   * @param concerned               the object which is concerned and could be highlighted in an IDE; for example
+   *                                an unit, a SootMethod, a SootClass or a local.
    * @param strCompatibilityMessage the compatibility message containing useful information without
-   *     supporting the concerned object
+   *                                supporting the concerned object
    */
   public ValidationException(Object concerned, String strCompatibilityMessage) {
     this(concerned, strCompatibilityMessage, strCompatibilityMessage, false);
@@ -65,6 +67,4 @@ public class ValidationException extends RuntimeException {
   public String toString() {
     return strCompatibilityMessage;
   }
-
-  private static final long serialVersionUID = 1L;
 }

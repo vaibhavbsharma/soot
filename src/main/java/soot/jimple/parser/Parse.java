@@ -25,16 +25,6 @@
 
 package soot.jimple.parser;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackReader;
-import java.util.HashMap;
-
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -47,7 +37,19 @@ import soot.jimple.parser.parser.Parser;
 import soot.jimple.parser.parser.ParserException;
 import soot.util.EscapedReader;
 
-/** Provides a test-driver for the Jimple parser. */
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackReader;
+import java.util.HashMap;
+
+/**
+ * Provides a test-driver for the Jimple parser.
+ */
 @Deprecated
 public class Parse {
   private static final String EXT = ".jimple";

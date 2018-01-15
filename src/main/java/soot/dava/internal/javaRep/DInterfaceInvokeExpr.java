@@ -20,8 +20,6 @@
 
 package soot.dava.internal.javaRep;
 
-import java.util.ArrayList;
-
 import soot.NullType;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -30,6 +28,8 @@ import soot.grimp.Grimp;
 import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.grimp.internal.GInterfaceInvokeExpr;
+
+import java.util.ArrayList;
 
 public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr {
   public DInterfaceInvokeExpr(Value base, SootMethodRef methodRef, java.util.List args) {

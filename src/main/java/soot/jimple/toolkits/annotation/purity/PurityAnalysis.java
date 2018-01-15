@@ -20,12 +20,11 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
-package soot.jimple.toolkits.annotation.purity;
 
-import java.util.Map;
+package soot.jimple.toolkits.annotation.purity;
 
 import soot.G;
 import soot.Scene;
@@ -33,6 +32,8 @@ import soot.SceneTransformer;
 import soot.Singletons;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.PurityOptions;
+
+import java.util.Map;
 
 /**
  * Purity analysis phase.

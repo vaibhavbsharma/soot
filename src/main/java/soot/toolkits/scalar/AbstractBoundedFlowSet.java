@@ -28,7 +28,7 @@ package soot.toolkits.scalar;
 /**
  * provides functional code for most of the methods. Subclasses are invited to provide a more
  * efficient version. Most often this will be done in the following way:<br>
- *
+ * <p>
  * <pre>
  * public void yyy(FlowSet dest) {
  *   if (dest instanceof xxx) {

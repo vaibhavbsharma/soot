@@ -1,12 +1,12 @@
 package soot.jimple.spark.ondemand;
 
-import java.util.Set;
-
 import soot.Local;
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
+
+import java.util.Set;
 
 /**
  * This is a <i>lazy</i> points-to set that is potentially context sensitive. It is created by the
@@ -24,14 +24,10 @@ import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
  */
 public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsToSet {
 
-  private EqualsSupportingPointsToSet delegate;
   private final DemandCSPointsTo demandCSPointsTo;
   private final Local local;
+  private EqualsSupportingPointsToSet delegate;
   private boolean isContextSensitive;
-
-  public boolean isContextSensitive() {
-    return isContextSensitive;
-  }
 
   public LazyContextSensitivePointsToSet(
       Local l,
@@ -41,6 +37,10 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     this.delegate = contextInsensitiveSet;
     this.demandCSPointsTo = demandCSPointsTo;
     this.isContextSensitive = false;
+  }
+
+  public boolean isContextSensitive() {
+    return isContextSensitive;
   }
 
   @Override

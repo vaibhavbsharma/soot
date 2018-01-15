@@ -16,11 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.pointer;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+package soot.jimple.toolkits.pointer;
 
 import soot.Body;
 import soot.Unit;
@@ -30,6 +27,10 @@ import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Conducts a method-local, equality-based may-alias analysis.
@@ -129,7 +130,9 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
     return new HashSet<>();
   }
 
-  /** Returns true if v1 and v2 may alias before u. */
+  /**
+   * Returns true if v1 and v2 may alias before u.
+   */
   public boolean mayAlias(Value v1, Value v2, Unit u) {
     Set<Set<Value>> res = getFlowBefore(u);
     for (Set<Value> set : res) {
@@ -140,7 +143,9 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
     return false;
   }
 
-  /** Returns all values that may-alias with v before u. */
+  /**
+   * Returns all values that may-alias with v before u.
+   */
   public Set<Value> mayAliases(Value v, Unit u) {
     Set<Value> res = new HashSet<>();
     Set<Set<Value>> flow = getFlowBefore(u);
@@ -152,7 +157,9 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
     return res;
   }
 
-  /** Returns all values that may-alias with v at the end of the procedure. */
+  /**
+   * Returns all values that may-alias with v at the end of the procedure.
+   */
   public Set<Value> mayAliasesAtExit(Value v) {
     Set<Value> res = new HashSet<>();
     for (Unit u : graph.getTails()) {

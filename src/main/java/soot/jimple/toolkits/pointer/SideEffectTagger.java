@@ -19,13 +19,6 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -35,13 +28,14 @@ import soot.Singletons;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 public class SideEffectTagger extends BodyTransformer {
-  public SideEffectTagger(Singletons.Global g) {}
-
-  public static SideEffectTagger v() {
-    return G.v().soot_jimple_toolkits_pointer_SideEffectTagger();
-  }
-
   public int numRWs = 0;
   public int numWRs = 0;
   public int numRRs = 0;
@@ -50,37 +44,11 @@ public class SideEffectTagger extends BodyTransformer {
   public Date startTime = null;
   boolean optionNaive = false;
   private CallGraph cg;
+  public SideEffectTagger(Singletons.Global g) {
+  }
 
-  protected class UniqueRWSets {
-    protected ArrayList<RWSet> l = new ArrayList<>();
-
-    RWSet getUnique(RWSet s) {
-      if (s == null) {
-        return s;
-      }
-      for (RWSet ret : l) {
-        if (ret.isEquivTo(s)) {
-          return ret;
-        }
-      }
-      l.add(s);
-      return s;
-    }
-
-    Iterator<RWSet> iterator() {
-      return l.iterator();
-    }
-
-    short indexOf(RWSet s) {
-      short i = 0;
-      for (RWSet ret : l) {
-        if (ret.isEquivTo(s)) {
-          return i;
-        }
-        i++;
-      }
-      return -1;
-    }
+  public static SideEffectTagger v() {
+    return G.v().soot_jimple_toolkits_pointer_SideEffectTagger();
   }
 
   protected void initializationStuff(String phaseName) {
@@ -211,6 +179,38 @@ public class SideEffectTagger extends BodyTransformer {
         }
                       */
       }
+    }
+  }
+
+  protected class UniqueRWSets {
+    protected ArrayList<RWSet> l = new ArrayList<>();
+
+    RWSet getUnique(RWSet s) {
+      if (s == null) {
+        return s;
+      }
+      for (RWSet ret : l) {
+        if (ret.isEquivTo(s)) {
+          return ret;
+        }
+      }
+      l.add(s);
+      return s;
+    }
+
+    Iterator<RWSet> iterator() {
+      return l.iterator();
+    }
+
+    short indexOf(RWSet s) {
+      short i = 0;
+      for (RWSet ret : l) {
+        if (ret.isEquivTo(s)) {
+          return i;
+        }
+        i++;
+      }
+      return -1;
     }
   }
 }

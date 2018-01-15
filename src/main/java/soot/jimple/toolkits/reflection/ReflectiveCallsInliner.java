@@ -19,14 +19,6 @@
 
 package soot.jimple.toolkits.reflection;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -85,24 +77,16 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ReflectiveCallsInliner extends SceneTransformer {
-  // caching currently does not work because it adds fields to Class, Method
-  // and Constructor,
-  // but such fields cannot currently be added using the Instrumentation API
-  private final boolean useCaching = false;
-
   private static final String ALREADY_CHECKED_FIELDNAME = "SOOT$Reflection$alreadyChecked";
-  private ReflectionTraceInfo RTI;
-  private SootMethodRef UNINTERPRETED_METHOD;
-
-  private boolean initialized = false;
-
-  private int callSiteId;
-
-  private int callNum;
-
-  private SootClass reflectiveCallsClass;
-
   private static final List<String> fieldSets =
       Arrays.asList(
           "set",
@@ -114,7 +98,6 @@ public class ReflectiveCallsInliner extends SceneTransformer {
           "setFloat",
           "setDouble",
           "setShort");
-
   private static final List<String> fieldGets =
       Arrays.asList(
           "get",
@@ -126,6 +109,16 @@ public class ReflectiveCallsInliner extends SceneTransformer {
           "getFloat",
           "getDouble",
           "getShort");
+  // caching currently does not work because it adds fields to Class, Method
+  // and Constructor,
+  // but such fields cannot currently be added using the Instrumentation API
+  private final boolean useCaching = false;
+  private ReflectionTraceInfo RTI;
+  private SootMethodRef UNINTERPRETED_METHOD;
+  private boolean initialized = false;
+  private int callSiteId;
+  private int callNum;
+  private SootClass reflectiveCallsClass;
 
   @Override
   protected void internalTransform(String phaseName, @SuppressWarnings("rawtypes") Map options) {
@@ -440,12 +433,12 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
         if (callKind == Kind.ClassForName
             && (ie.getMethodRef()
-                    .getSignature()
-                    .equals("<java.lang.Class: java.lang.Class forName(java.lang.String)>")
-                || ie.getMethodRef()
-                    .getSignature()
-                    .equals(
-                        "<java.lang.Class: java.lang.Class forName(java.lang.String,boolean,java.lang.ClassLoader)>"))) {
+            .getSignature()
+            .equals("<java.lang.Class: java.lang.Class forName(java.lang.String)>")
+            || ie.getMethodRef()
+            .getSignature()
+            .equals(
+                "<java.lang.Class: java.lang.Class forName(java.lang.String,boolean,java.lang.ClassLoader)>"))) {
           found = true;
           Value classNameValue = ie.getArg(0);
           newUnits.add(
@@ -461,8 +454,8 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                               classNameValue)));
         } else if (callKind == Kind.ClassNewInstance
             && ie.getMethodRef()
-                .getSignature()
-                .equals("<java.lang.Class: java.lang.Object newInstance()>")) {
+            .getSignature()
+            .equals("<java.lang.Class: java.lang.Object newInstance()>")) {
           found = true;
           Local classLocal = (Local) ((InstanceInvokeExpr) ie).getBase();
           newUnits.add(
@@ -478,9 +471,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                               classLocal)));
         } else if (callKind == Kind.ConstructorNewInstance
             && ie.getMethodRef()
-                .getSignature()
-                .equals(
-                    "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>")) {
+            .getSignature()
+            .equals(
+                "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>")) {
           found = true;
           Local constrLocal = (Local) ((InstanceInvokeExpr) ie).getBase();
           newUnits.add(
@@ -496,9 +489,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                               constrLocal)));
         } else if (callKind == Kind.MethodInvoke
             && ie.getMethodRef()
-                .getSignature()
-                .equals(
-                    "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>")) {
+            .getSignature()
+            .equals(
+                "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>")) {
           found = true;
           Local methodLocal = (Local) ((InstanceInvokeExpr) ie).getBase();
           Value recv = ie.getArg(0);
@@ -701,102 +694,97 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     Value replacement = null;
     Local[] paramLocals = null;
     switch (callKind) {
-      case ClassForName:
-        {
-          // replace by: <Class constant for <target>>
-          freshLocal = localGen.generateLocal(RefType.v("java.lang.Class"));
-          replacement = ClassConstant.v(target.replace('.', '/'));
-          break;
-        }
-      case ClassNewInstance:
-        {
-          // replace by: new <target>
-          RefType targetType = RefType.v(target);
-          freshLocal = localGen.generateLocal(targetType);
-          replacement = Jimple.v().newNewExpr(targetType);
-          break;
-        }
-      case ConstructorNewInstance:
-        {
-          /*
-           * replace r=constr.newInstance(args) by: Object p0 = args[0]; ...
-           * Object pn = args[n]; T0 a0 = (T0)p0; ... Tn an = (Tn)pn;
-           */
+      case ClassForName: {
+        // replace by: <Class constant for <target>>
+        freshLocal = localGen.generateLocal(RefType.v("java.lang.Class"));
+        replacement = ClassConstant.v(target.replace('.', '/'));
+        break;
+      }
+      case ClassNewInstance: {
+        // replace by: new <target>
+        RefType targetType = RefType.v(target);
+        freshLocal = localGen.generateLocal(targetType);
+        replacement = Jimple.v().newNewExpr(targetType);
+        break;
+      }
+      case ConstructorNewInstance: {
+        /*
+         * replace r=constr.newInstance(args) by: Object p0 = args[0]; ...
+         * Object pn = args[n]; T0 a0 = (T0)p0; ... Tn an = (Tn)pn;
+         */
 
-          SootMethod constructor = Scene.v().getMethod(target);
-          paramLocals = new Local[constructor.getParameterCount()];
-          if (constructor.getParameterCount() > 0) {
-            // argArrayLocal = @parameter-0
-            ArrayType arrayType = ArrayType.v(RefType.v("java.lang.Object"), 1);
-            Local argArrayLocal = localGen.generateLocal(arrayType);
-            newUnits.add(
-                Jimple.v()
-                    .newIdentityStmt(argArrayLocal, Jimple.v().newParameterRef(arrayType, 0)));
-            int i = 0;
-            for (Type paramType : constructor.getParameterTypes()) {
-              paramLocals[i] = localGen.generateLocal(paramType);
-              unboxParameter(argArrayLocal, i, paramLocals, paramType, newUnits, localGen);
-              i++;
-            }
-          }
-          RefType targetType = constructor.getDeclaringClass().getType();
-          freshLocal = localGen.generateLocal(targetType);
-          replacement = Jimple.v().newNewExpr(targetType);
-
-          break;
-        }
-      case MethodInvoke:
-        {
-          /*
-           * replace r=m.invoke(obj,args) by: T recv = (T)obj; Object p0 =
-           * args[0]; ... Object pn = args[n]; T0 a0 = (T0)p0; ... Tn an =
-           * (Tn)pn;
-           */
-          SootMethod method = Scene.v().getMethod(target);
-          // recvObject = @parameter-0
-          RefType objectType = RefType.v("java.lang.Object");
-          Local recvObject = localGen.generateLocal(objectType);
+        SootMethod constructor = Scene.v().getMethod(target);
+        paramLocals = new Local[constructor.getParameterCount()];
+        if (constructor.getParameterCount() > 0) {
+          // argArrayLocal = @parameter-0
+          ArrayType arrayType = ArrayType.v(RefType.v("java.lang.Object"), 1);
+          Local argArrayLocal = localGen.generateLocal(arrayType);
           newUnits.add(
-              Jimple.v().newIdentityStmt(recvObject, Jimple.v().newParameterRef(objectType, 0)));
-          paramLocals = new Local[method.getParameterCount()];
-          if (method.getParameterCount() > 0) {
-            // argArrayLocal = @parameter-1
-            ArrayType arrayType = ArrayType.v(RefType.v("java.lang.Object"), 1);
-            Local argArrayLocal = localGen.generateLocal(arrayType);
-            newUnits.add(
-                Jimple.v()
-                    .newIdentityStmt(argArrayLocal, Jimple.v().newParameterRef(arrayType, 1)));
-            int i = 0;
-            for (Type paramType : method.getParameterTypes()) {
-              paramLocals[i] = localGen.generateLocal(paramType);
-              unboxParameter(argArrayLocal, i, paramLocals, paramType, newUnits, localGen);
-              i++;
-            }
+              Jimple.v()
+                  .newIdentityStmt(argArrayLocal, Jimple.v().newParameterRef(arrayType, 0)));
+          int i = 0;
+          for (Type paramType : constructor.getParameterTypes()) {
+            paramLocals[i] = localGen.generateLocal(paramType);
+            unboxParameter(argArrayLocal, i, paramLocals, paramType, newUnits, localGen);
+            i++;
           }
-          RefType targetType = method.getDeclaringClass().getType();
-          freshLocal = localGen.generateLocal(targetType);
-          replacement = Jimple.v().newCastExpr(recvObject, method.getDeclaringClass().getType());
-
-          break;
         }
+        RefType targetType = constructor.getDeclaringClass().getType();
+        freshLocal = localGen.generateLocal(targetType);
+        replacement = Jimple.v().newNewExpr(targetType);
+
+        break;
+      }
+      case MethodInvoke: {
+        /*
+         * replace r=m.invoke(obj,args) by: T recv = (T)obj; Object p0 =
+         * args[0]; ... Object pn = args[n]; T0 a0 = (T0)p0; ... Tn an =
+         * (Tn)pn;
+         */
+        SootMethod method = Scene.v().getMethod(target);
+        // recvObject = @parameter-0
+        RefType objectType = RefType.v("java.lang.Object");
+        Local recvObject = localGen.generateLocal(objectType);
+        newUnits.add(
+            Jimple.v().newIdentityStmt(recvObject, Jimple.v().newParameterRef(objectType, 0)));
+        paramLocals = new Local[method.getParameterCount()];
+        if (method.getParameterCount() > 0) {
+          // argArrayLocal = @parameter-1
+          ArrayType arrayType = ArrayType.v(RefType.v("java.lang.Object"), 1);
+          Local argArrayLocal = localGen.generateLocal(arrayType);
+          newUnits.add(
+              Jimple.v()
+                  .newIdentityStmt(argArrayLocal, Jimple.v().newParameterRef(arrayType, 1)));
+          int i = 0;
+          for (Type paramType : method.getParameterTypes()) {
+            paramLocals[i] = localGen.generateLocal(paramType);
+            unboxParameter(argArrayLocal, i, paramLocals, paramType, newUnits, localGen);
+            i++;
+          }
+        }
+        RefType targetType = method.getDeclaringClass().getType();
+        freshLocal = localGen.generateLocal(targetType);
+        replacement = Jimple.v().newCastExpr(recvObject, method.getDeclaringClass().getType());
+
+        break;
+      }
       case FieldSet:
-      case FieldGet:
-        {
-          /*
-           * replace f.set(o,v) by: Object obj = @parameter-0; T freshLocal =
-           * (T)obj;
-           */
-          RefType objectType = RefType.v("java.lang.Object");
-          Local recvObject = localGen.generateLocal(objectType);
-          newUnits.add(
-              Jimple.v().newIdentityStmt(recvObject, Jimple.v().newParameterRef(objectType, 0)));
+      case FieldGet: {
+        /*
+         * replace f.set(o,v) by: Object obj = @parameter-0; T freshLocal =
+         * (T)obj;
+         */
+        RefType objectType = RefType.v("java.lang.Object");
+        Local recvObject = localGen.generateLocal(objectType);
+        newUnits.add(
+            Jimple.v().newIdentityStmt(recvObject, Jimple.v().newParameterRef(objectType, 0)));
 
-          SootField field = Scene.v().getField(target);
-          freshLocal = localGen.generateLocal(field.getDeclaringClass().getType());
-          replacement = Jimple.v().newCastExpr(recvObject, field.getDeclaringClass().getType());
+        SootField field = Scene.v().getField(target);
+        freshLocal = localGen.generateLocal(field.getDeclaringClass().getType());
+        replacement = Jimple.v().newCastExpr(recvObject, field.getDeclaringClass().getType());
 
-          break;
-        }
+        break;
+      }
       default:
         throw new InternalError("Unknown kind of reflective call " + callKind);
     }
@@ -807,117 +795,111 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     Local retLocal = localGen.generateLocal(returnType);
 
     switch (callKind) {
-      case ClassForName:
-        {
-          // add: retLocal = freshLocal;
-          newUnits.add(Jimple.v().newAssignStmt(retLocal, freshLocal));
-          break;
-        }
-      case ClassNewInstance:
-        {
-          // add: freshLocal.<init>()
-          SootClass targetClass = Scene.v().getSootClass(target);
-          SpecialInvokeExpr constrCallExpr =
+      case ClassForName: {
+        // add: retLocal = freshLocal;
+        newUnits.add(Jimple.v().newAssignStmt(retLocal, freshLocal));
+        break;
+      }
+      case ClassNewInstance: {
+        // add: freshLocal.<init>()
+        SootClass targetClass = Scene.v().getSootClass(target);
+        SpecialInvokeExpr constrCallExpr =
+            Jimple.v()
+                .newSpecialInvokeExpr(
+                    freshLocal,
+                    Scene.v()
+                        .makeMethodRef(
+                            targetClass,
+                            SootMethod.constructorName,
+                            Collections.emptyList(),
+                            VoidType.v(),
+                            false));
+        InvokeStmt constrCallStmt2 = Jimple.v().newInvokeStmt(constrCallExpr);
+        newUnits.add(constrCallStmt2);
+        // add: retLocal = freshLocal
+        newUnits.add(Jimple.v().newAssignStmt(retLocal, freshLocal));
+        break;
+      }
+      case ConstructorNewInstance: {
+        // add: freshLocal.<target>(a0,...,an);
+        SootMethod constructor = Scene.v().getMethod(target);
+        SpecialInvokeExpr constrCallExpr =
+            Jimple.v()
+                .newSpecialInvokeExpr(
+                    freshLocal, constructor.makeRef(), Arrays.asList(paramLocals));
+        InvokeStmt constrCallStmt2 = Jimple.v().newInvokeStmt(constrCallExpr);
+        newUnits.add(constrCallStmt2);
+        // add: retLocal = freshLocal
+        newUnits.add(Jimple.v().newAssignStmt(retLocal, freshLocal));
+        break;
+      }
+      case MethodInvoke: {
+        // add: freshLocal=recv.<target>(a0,...,an);
+        SootMethod method = Scene.v().getMethod(target);
+        InvokeExpr invokeExpr;
+        if (method.isStatic()) {
+          invokeExpr =
+              Jimple.v().newStaticInvokeExpr(method.makeRef(), Arrays.asList(paramLocals));
+        } else {
+          invokeExpr =
               Jimple.v()
-                  .newSpecialInvokeExpr(
-                      freshLocal,
-                      Scene.v()
-                          .makeMethodRef(
-                              targetClass,
-                              SootMethod.constructorName,
-                              Collections.emptyList(),
-                              VoidType.v(),
-                              false));
-          InvokeStmt constrCallStmt2 = Jimple.v().newInvokeStmt(constrCallExpr);
-          newUnits.add(constrCallStmt2);
-          // add: retLocal = freshLocal
-          newUnits.add(Jimple.v().newAssignStmt(retLocal, freshLocal));
-          break;
+                  .newVirtualInvokeExpr(
+                      freshLocal, method.makeRef(), Arrays.<Value>asList(paramLocals));
         }
-      case ConstructorNewInstance:
-        {
-          // add: freshLocal.<target>(a0,...,an);
-          SootMethod constructor = Scene.v().getMethod(target);
-          SpecialInvokeExpr constrCallExpr =
-              Jimple.v()
-                  .newSpecialInvokeExpr(
-                      freshLocal, constructor.makeRef(), Arrays.asList(paramLocals));
-          InvokeStmt constrCallStmt2 = Jimple.v().newInvokeStmt(constrCallExpr);
-          newUnits.add(constrCallStmt2);
-          // add: retLocal = freshLocal
-          newUnits.add(Jimple.v().newAssignStmt(retLocal, freshLocal));
-          break;
+        if (method.getReturnType().equals(VoidType.v())) {
+          // method returns null; simply invoke it and return null
+          InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(invokeExpr);
+          newUnits.add(invokeStmt);
+          AssignStmt assignStmt = Jimple.v().newAssignStmt(retLocal, NullConstant.v());
+          newUnits.add(assignStmt);
+        } else {
+          AssignStmt assignStmt = Jimple.v().newAssignStmt(retLocal, invokeExpr);
+          newUnits.add(assignStmt);
         }
-      case MethodInvoke:
-        {
-          // add: freshLocal=recv.<target>(a0,...,an);
-          SootMethod method = Scene.v().getMethod(target);
-          InvokeExpr invokeExpr;
-          if (method.isStatic()) {
-            invokeExpr =
-                Jimple.v().newStaticInvokeExpr(method.makeRef(), Arrays.asList(paramLocals));
-          } else {
-            invokeExpr =
-                Jimple.v()
-                    .newVirtualInvokeExpr(
-                        freshLocal, method.makeRef(), Arrays.<Value>asList(paramLocals));
-          }
-          if (method.getReturnType().equals(VoidType.v())) {
-            // method returns null; simply invoke it and return null
-            InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(invokeExpr);
-            newUnits.add(invokeStmt);
-            AssignStmt assignStmt = Jimple.v().newAssignStmt(retLocal, NullConstant.v());
-            newUnits.add(assignStmt);
-          } else {
-            AssignStmt assignStmt = Jimple.v().newAssignStmt(retLocal, invokeExpr);
-            newUnits.add(assignStmt);
-          }
-          break;
+        break;
+      }
+      case FieldSet: {
+        // add freshLocal.<f> = v;
+        Local value = localGen.generateLocal(fieldSetGetType);
+        newUnits.insertBeforeNoRedirect(
+            Jimple.v().newIdentityStmt(value, Jimple.v().newParameterRef(fieldSetGetType, 1)),
+            replStmt);
+
+        SootField field = Scene.v().getField(target);
+
+        Local boxedOrCasted = localGen.generateLocal(field.getType());
+
+        insertCastOrUnboxingCode(boxedOrCasted, value, newUnits);
+
+        FieldRef fieldRef;
+        if (field.isStatic()) {
+          fieldRef = Jimple.v().newStaticFieldRef(field.makeRef());
+        } else {
+          fieldRef = Jimple.v().newInstanceFieldRef(freshLocal, field.makeRef());
         }
-      case FieldSet:
-        {
-          // add freshLocal.<f> = v;
-          Local value = localGen.generateLocal(fieldSetGetType);
-          newUnits.insertBeforeNoRedirect(
-              Jimple.v().newIdentityStmt(value, Jimple.v().newParameterRef(fieldSetGetType, 1)),
-              replStmt);
+        newUnits.add(Jimple.v().newAssignStmt(fieldRef, boxedOrCasted));
+        break;
+      }
+      case FieldGet: {
+        /*
+         * add: T2 temp = recv.<f>; return temp;
+         */
+        SootField field = Scene.v().getField(target);
 
-          SootField field = Scene.v().getField(target);
+        Local value = localGen.generateLocal(field.getType());
 
-          Local boxedOrCasted = localGen.generateLocal(field.getType());
-
-          insertCastOrUnboxingCode(boxedOrCasted, value, newUnits);
-
-          FieldRef fieldRef;
-          if (field.isStatic()) {
-            fieldRef = Jimple.v().newStaticFieldRef(field.makeRef());
-          } else {
-            fieldRef = Jimple.v().newInstanceFieldRef(freshLocal, field.makeRef());
-          }
-          newUnits.add(Jimple.v().newAssignStmt(fieldRef, boxedOrCasted));
-          break;
+        FieldRef fieldRef;
+        if (field.isStatic()) {
+          fieldRef = Jimple.v().newStaticFieldRef(field.makeRef());
+        } else {
+          fieldRef = Jimple.v().newInstanceFieldRef(freshLocal, field.makeRef());
         }
-      case FieldGet:
-        {
-          /*
-           * add: T2 temp = recv.<f>; return temp;
-           */
-          SootField field = Scene.v().getField(target);
+        newUnits.add(Jimple.v().newAssignStmt(value, fieldRef));
 
-          Local value = localGen.generateLocal(field.getType());
+        insertCastOrBoxingCode(retLocal, value, newUnits);
 
-          FieldRef fieldRef;
-          if (field.isStatic()) {
-            fieldRef = Jimple.v().newStaticFieldRef(field.makeRef());
-          } else {
-            fieldRef = Jimple.v().newInstanceFieldRef(freshLocal, field.makeRef());
-          }
-          newUnits.add(Jimple.v().newAssignStmt(value, fieldRef));
-
-          insertCastOrBoxingCode(retLocal, value, newUnits);
-
-          break;
-        }
+        break;
+      }
     }
 
     if (!returnType.equals(VoidType.v())) {
@@ -981,10 +963,10 @@ public class ReflectiveCallsInliner extends SceneTransformer {
    * Auto-unboxes an argument array.
    *
    * @param argsArrayLocal a local holding the argument Object[] array
-   * @param paramIndex the index of the parameter to unbox
-   * @param paramType the (target) type of the parameter
-   * @param newUnits the Unit chain to which the unboxing code will be appended
-   * @param localGen a {@link LocalGenerator} for the body holding the units
+   * @param paramIndex     the index of the parameter to unbox
+   * @param paramType      the (target) type of the parameter
+   * @param newUnits       the Unit chain to which the unboxing code will be appended
+   * @param localGen       a {@link LocalGenerator} for the body holding the units
    */
   private void unboxParameter(
       Local argsArrayLocal,

@@ -27,12 +27,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Local;
 import soot.Value;
 import soot.dava.DavaBody;
@@ -48,10 +42,16 @@ import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * The class is aimed to target cleaning up of unused local variables. Should be invoked after
  * executing CopyPropagation
- *
+ * <p>
  * <p>Another thing that this class does which perhaps should have been implemented separately is to
  * check whether there is an assignment which never gets used later on. If there exists such an
  * assignment this assignment is removed first and then all the useless locals checks should be

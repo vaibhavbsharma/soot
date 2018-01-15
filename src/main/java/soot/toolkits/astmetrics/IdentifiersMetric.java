@@ -19,13 +19,6 @@
 
 package soot.toolkits.astmetrics;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import polyglot.ast.ClassDecl;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Formal;
@@ -36,9 +29,16 @@ import polyglot.visit.NodeVisitor;
 import soot.G;
 import soot.options.Options;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 5-Mar-2006
+ * <p>Created on 5-Mar-2006
  */
 public class IdentifiersMetric extends ASTMetric {
 
@@ -50,26 +50,26 @@ public class IdentifiersMetric extends ASTMetric {
 
   // cache of names so no recomputation
   HashMap<String, Double> names;
+
   /**
-   * @param astNode
-   *     <p>This metric will take a measure of the "complexity" of each identifier used within the
-   *     program. An identifier's complexity is computed as follows:
-   *     <p>First the alpha tokens are parsed by splitting on non-alphas and capitals:
-   *     <p>example identifier: getASTNode alpha tokens: get, AST, Node example identifier:
-   *     ___Junk$$name alpha tokens: Junk, name)
-   *     <p>The alpha tokens are then counted and a 'token complexity' is formed by the ratio of
-   *     total tokens to the number of tokens found in the dictionary:
-   *     <p>example identifier: getASTNode Total: 3, Found: 2, Complexity: 1.5
-   *     <p>Then the 'character complexity' is computed, which is a ratio of total number of
-   *     characters to the number of non-complex characters. Non-complex characters are those which
-   *     are NOT part of a multiple string of non-alphas.
-   *     <p>example identifier: ___Junk$$name complex char strings: '___', '$$' number of
-   *     non-complex (Junk + name): 8, total: 13, Complexity: 1.625
-   *     <p>Finally, the total identifier complexity is the sum of the token and character
-   *     complexities multipled by the 'importance' of an identifier:
-   *     <p>Multipliers are as follows:
-   *     <p>Class multiplier = 3; Method multiplier = 4; Field multiplier = 2; Formal multiplier =
-   *     1.5; Local multiplier = 1;
+   * @param astNode <p>This metric will take a measure of the "complexity" of each identifier used within the
+   *                program. An identifier's complexity is computed as follows:
+   *                <p>First the alpha tokens are parsed by splitting on non-alphas and capitals:
+   *                <p>example identifier: getASTNode alpha tokens: get, AST, Node example identifier:
+   *                ___Junk$$name alpha tokens: Junk, name)
+   *                <p>The alpha tokens are then counted and a 'token complexity' is formed by the ratio of
+   *                total tokens to the number of tokens found in the dictionary:
+   *                <p>example identifier: getASTNode Total: 3, Found: 2, Complexity: 1.5
+   *                <p>Then the 'character complexity' is computed, which is a ratio of total number of
+   *                characters to the number of non-complex characters. Non-complex characters are those which
+   *                are NOT part of a multiple string of non-alphas.
+   *                <p>example identifier: ___Junk$$name complex char strings: '___', '$$' number of
+   *                non-complex (Junk + name): 8, total: 13, Complexity: 1.625
+   *                <p>Finally, the total identifier complexity is the sum of the token and character
+   *                complexities multipled by the 'importance' of an identifier:
+   *                <p>Multipliers are as follows:
+   *                <p>Class multiplier = 3; Method multiplier = 4; Field multiplier = 2; Formal multiplier =
+   *                1.5; Local multiplier = 1;
    */
   public IdentifiersMetric(Node astNode) {
     super(astNode);

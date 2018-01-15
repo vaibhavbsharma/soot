@@ -1,11 +1,5 @@
 package soot.toolkits.scalar;
 
-import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.SootClass;
@@ -30,6 +24,12 @@ import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
+
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Transformer that creates a static initializer which sets constant values into final static fields

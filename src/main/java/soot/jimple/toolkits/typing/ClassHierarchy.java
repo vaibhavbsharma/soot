@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -43,13 +39,19 @@ import soot.Type;
 import soot.TypeSwitch;
 import soot.options.Options;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * This class encapsulates the typing class hierarchy, as well as non-reference types.
- *
+ * <p>
  * <p>This class is primarily used by the TypeResolver class, to optimize its computation.
  */
 public class ClassHierarchy {
-  /** Map: Scene -> ClassHierarchy * */
+  /**
+   * Map: Scene -> ClassHierarchy *
+   */
   public final TypeNode OBJECT;
 
   public final TypeNode CLONEABLE;
@@ -59,16 +61,24 @@ public class ClassHierarchy {
   // public final TypeNode UNKNOWN;
   // public final TypeNode ERROR;
 
-  /** All type node instances * */
+  /**
+   * All type node instances *
+   */
   private final List<TypeNode> typeNodeList = new ArrayList<>();
 
-  /** Map: Type -> TypeNode * */
+  /**
+   * Map: Type -> TypeNode *
+   */
   private final HashMap<Type, TypeNode> typeNodeMap = new HashMap<>();
 
-  /** Used to transform boolean, byte, short and char to int * */
+  /**
+   * Used to transform boolean, byte, short and char to int *
+   */
   private final ToInt transform = new ToInt();
 
-  /** Used to create TypeNode instances * */
+  /**
+   * Used to create TypeNode instances *
+   */
   private final ConstructorChooser make = new ConstructorChooser();
 
   private ClassHierarchy(Scene scene) {
@@ -94,7 +104,9 @@ public class ClassHierarchy {
     INT = typeNode(IntType.v());
   }
 
-  /** Get the class hierarchy for the given scene. * */
+  /**
+   * Get the class hierarchy for the given scene. *
+   */
   public static ClassHierarchy classHierarchy(Scene scene) {
     if (scene == null) {
       throw new InternalTypingException();
@@ -109,7 +121,9 @@ public class ClassHierarchy {
     return classHierarchy;
   }
 
-  /** Get the type node for the given type. * */
+  /**
+   * Get the type node for the given type. *
+   */
   public TypeNode typeNode(Type type) {
     if (type == null) {
       throw new InternalTypingException();
@@ -131,7 +145,9 @@ public class ClassHierarchy {
     return typeNode;
   }
 
-  /** Returns a string representation of this object * */
+  /**
+   * Returns a string representation of this object *
+   */
   @Override
   public String toString() {
     StringBuffer s = new StringBuffer();
@@ -152,14 +168,19 @@ public class ClassHierarchy {
     return s.toString();
   }
 
-  /** Transforms boolean, byte, short and char into int. */
+  /**
+   * Transforms boolean, byte, short and char into int.
+   */
   private static class ToInt extends TypeSwitch {
-    private Type result;
     private final Type intType = IntType.v();
+    private Type result;
 
-    private ToInt() {}
+    private ToInt() {
+    }
 
-    /** Transform boolean, byte, short and char into int. * */
+    /**
+     * Transform boolean, byte, short and char into int. *
+     */
     Type toInt(Type type) {
       type.apply(this);
       return result;
@@ -191,16 +212,21 @@ public class ClassHierarchy {
     }
   }
 
-  /** Creates new TypeNode instances usign the appropriate constructor. */
+  /**
+   * Creates new TypeNode instances usign the appropriate constructor.
+   */
   private static class ConstructorChooser extends TypeSwitch {
     private int id;
     private ClassHierarchy hierarchy;
 
     private TypeNode result;
 
-    ConstructorChooser() {}
+    ConstructorChooser() {
+    }
 
-    /** Create a new TypeNode instance for the type parameter. * */
+    /**
+     * Create a new TypeNode instance for the type parameter. *
+     */
     TypeNode typeNode(int id, Type type, ClassHierarchy hierarchy) {
       if (type == null || hierarchy == null) {
         throw new InternalTypingException();

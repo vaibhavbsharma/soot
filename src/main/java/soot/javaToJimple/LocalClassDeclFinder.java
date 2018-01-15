@@ -24,16 +24,16 @@ public class LocalClassDeclFinder extends polyglot.visit.NodeVisitor {
   private polyglot.types.ClassType typeToFind;
   private polyglot.ast.LocalClassDecl declFound;
 
+  public LocalClassDeclFinder() {
+    declFound = null;
+  }
+
   public void typeToFind(polyglot.types.ClassType type) {
     typeToFind = type;
   }
 
   public polyglot.ast.LocalClassDecl declFound() {
     return declFound;
-  }
-
-  public LocalClassDeclFinder() {
-    declFound = null;
   }
 
   @Override

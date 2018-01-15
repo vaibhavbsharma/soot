@@ -30,14 +30,16 @@ import java.util.Set;
  *
  * @author Eric Bodden
  * @deprecated can be replaced with <code>
- *     java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<E,Boolean>())</code>
+ * java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<E,Boolean>())</code>
  */
 @Deprecated
 public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 
   protected IdentityHashMap<E, E> delegate;
 
-  /** Creates a new, empty IdentityHashSet. */
+  /**
+   * Creates a new, empty IdentityHashSet.
+   */
   public IdentityHashSet() {
     delegate = new IdentityHashMap<>();
   }
@@ -52,37 +54,49 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     addAll(original);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int size() {
     return delegate.size();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean contains(Object o) {
     return delegate.containsKey(o);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<E> iterator() {
     return delegate.keySet().iterator();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean add(E o) {
     return delegate.put(o, o) == null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean remove(Object o) {
     return delegate.remove(o) != null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void clear() {
     delegate.entrySet().clear();
@@ -124,7 +138,9 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     return delegate.keySet().toString();

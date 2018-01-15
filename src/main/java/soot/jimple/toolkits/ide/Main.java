@@ -16,9 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.ide;
 
-import java.util.Map;
+package soot.jimple.toolkits.ide;
 
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
@@ -30,9 +29,13 @@ import soot.Unit;
 import soot.jimple.toolkits.ide.exampleproblems.IFDSPossibleTypes;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 
+import java.util.Map;
+
 public class Main {
 
-  /** @param args */
+  /**
+   * @param args
+   */
   public static void main(String[] args) {
 
     PackManager.v()
@@ -48,7 +51,7 @@ public class Main {
                     IFDSTabulationProblem<Unit, ?, SootMethod, InterproceduralCFG<Unit, SootMethod>>
                         problem = new IFDSPossibleTypes(new JimpleBasedInterproceduralCFG());
 
-                    @SuppressWarnings({"rawtypes", "unchecked"})
+                    @SuppressWarnings( {"rawtypes", "unchecked"})
                     JimpleIFDSSolver<?, InterproceduralCFG<Unit, SootMethod>> solver =
                         new JimpleIFDSSolver(problem);
                     solver.solve();

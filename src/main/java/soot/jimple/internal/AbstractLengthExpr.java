@@ -48,7 +48,9 @@ public abstract class AbstractLengthExpr extends AbstractUnopExpr implements Len
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode();

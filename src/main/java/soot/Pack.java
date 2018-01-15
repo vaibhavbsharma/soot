@@ -25,29 +25,28 @@
 
 package soot;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.util.Chain;
 import soot.util.HashChain;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key
  * is the phase name.
  */
 public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
+  Chain<Transform> opts = new HashChain<>();
   private String name;
-
-  @Override
-  public String getPhaseName() {
-    return name;
-  }
 
   public Pack(String name) {
     this.name = name;
   }
 
-  Chain<Transform> opts = new HashChain<>();
+  @Override
+  public String getPhaseName() {
+    return name;
+  }
 
   @Override
   public Iterator<Transform> iterator() {

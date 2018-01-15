@@ -20,16 +20,18 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
+
 package soot.jimple.toolkits.annotation.purity;
 
 /** The GBL node. */
 public class PurityGlobalNode implements PurityNode {
-  private PurityGlobalNode() {}
-
   public static PurityGlobalNode node = new PurityGlobalNode();
+
+  private PurityGlobalNode() {
+  }
 
   @Override
   public String toString() {

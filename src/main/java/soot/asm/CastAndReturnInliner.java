@@ -1,8 +1,5 @@
 package soot.asm;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Trap;
@@ -13,13 +10,16 @@ import soot.jimple.CastExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.ReturnStmt;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformers that inlines returns that cast and return an object. We take a = .. goto l0;
- *
+ * <p>
  * <p>l0: b = (B) a; return b;
- *
+ * <p>
  * <p>and transform it into a = .. return a;
- *
+ * <p>
  * <p>This makes it easier for the local splitter to split distinct uses of the same variable.
  * Imagine that "a" can come from different parts of the code and have different types. To be able
  * to find a valid typing at all, we must break apart the uses of "a".

@@ -24,11 +24,6 @@
 
 package soot.dava.internal.SET;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import soot.Value;
 import soot.dava.DavaBody;
 import soot.dava.internal.AST.ASTNode;
@@ -43,11 +38,16 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 public class SETTryNode extends SETNode {
+  private final HashMap<IterableSet, IterableSet> cb2clone;
   private ExceptionNode en;
   private DavaBody davaBody;
   private AugmentedStmtGraph asg;
-  private final HashMap<IterableSet, IterableSet> cb2clone;
 
   public SETTryNode(IterableSet body, ExceptionNode en, AugmentedStmtGraph asg, DavaBody davaBody) {
     super(body);
@@ -224,8 +224,8 @@ public class SETTryNode extends SETNode {
 
                 if ((scfn.get_CharacterizingStmt() == as)
                     || ((as.cpreds.size() == 1)
-                        && (as.get_Stmt() instanceof GotoStmt)
-                        && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
+                    && (as.get_Stmt() instanceof GotoStmt)
+                    && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
                   remove_AugmentedStmt(as);
                 }
               }

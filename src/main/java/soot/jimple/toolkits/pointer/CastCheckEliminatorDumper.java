@@ -19,17 +19,20 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Singletons;
 import soot.toolkits.graph.BriefUnitGraph;
 
-/** A body transformer that simply calls the CastCheckEliminator analysis. */
+import java.util.Map;
+
+/**
+ * A body transformer that simply calls the CastCheckEliminator analysis.
+ */
 public class CastCheckEliminatorDumper extends BodyTransformer {
-  public CastCheckEliminatorDumper(Singletons.Global g) {}
+  public CastCheckEliminatorDumper(Singletons.Global g) {
+  }
 
   public static CastCheckEliminatorDumper v() {
     return G.v().soot_jimple_toolkits_pointer_CastCheckEliminatorDumper();

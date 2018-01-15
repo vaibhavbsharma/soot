@@ -28,7 +28,8 @@ package soot.coffi;
 /**
  * Attribute that connects synthetic attribute.
  *
- * @see attribute_info
  * @author Jennifer Lhotak
+ * @see attribute_info
  */
-class Synthetic_attribute extends attribute_info {}
+class Synthetic_attribute extends attribute_info {
+}

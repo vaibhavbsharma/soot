@@ -19,16 +19,22 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-
 import polyglot.ast.Node;
 import polyglot.util.IdentityKey;
+
+import java.util.ArrayList;
 
 public class LocalUsesChecker extends polyglot.visit.NodeVisitor {
 
   private final ArrayList<IdentityKey> locals;
   private final ArrayList<IdentityKey> localDecls;
   private final ArrayList<Node> news;
+
+  public LocalUsesChecker() {
+    locals = new ArrayList<>();
+    localDecls = new ArrayList<>();
+    news = new ArrayList<>();
+  }
 
   public ArrayList<IdentityKey> getLocals() {
     return locals;
@@ -40,12 +46,6 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor {
 
   public ArrayList<IdentityKey> getLocalDecls() {
     return localDecls;
-  }
-
-  public LocalUsesChecker() {
-    locals = new ArrayList<>();
-    localDecls = new ArrayList<>();
-    news = new ArrayList<>();
   }
 
   @Override

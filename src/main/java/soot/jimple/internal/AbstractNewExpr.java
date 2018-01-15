@@ -25,9 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.RefType;
 import soot.Type;
 import soot.UnitPrinter;
@@ -36,6 +33,9 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractNewExpr implements NewExpr {
@@ -50,7 +50,9 @@ public abstract class AbstractNewExpr implements NewExpr {
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return type.hashCode();

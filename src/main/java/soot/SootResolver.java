@@ -26,14 +26,6 @@
 
 package soot;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.JastAddJavaParser;
@@ -44,24 +36,41 @@ import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 
-/** Loads symbols for SootClasses from either class files or jimple files. */
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Loads symbols for SootClasses from either class files or jimple files.
+ */
 public class SootResolver {
-  /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<>();
-
-  /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<>();
-
-  /** SootClasses waiting to be resolved. */
+  /**
+   * SootClasses waiting to be resolved.
+   */
   @SuppressWarnings("unchecked")
   private final Deque<SootClass>[] worklist = new Deque[4];
-
+  /**
+   * Maps each resolved class to a list of all references in it.
+   */
+  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<>();
+  /**
+   * Maps each resolved class to a list of all references in it.
+   */
+  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<>();
   private Program program = null;
 
   public SootResolver(Singletons.Global g) {
     worklist[SootClass.HIERARCHY] = new ArrayDeque<>();
     worklist[SootClass.SIGNATURES] = new ArrayDeque<>();
     worklist[SootClass.BODIES] = new ArrayDeque<>();
+  }
+
+  public static SootResolver v() {
+    return G.v().soot_SootResolver();
   }
 
   protected void initializeProgram() {
@@ -93,11 +102,9 @@ public class SootResolver {
     }
   }
 
-  public static SootResolver v() {
-    return G.v().soot_SootResolver();
-  }
-
-  /** Returns true if we are resolving all class refs recursively. */
+  /**
+   * Returns true if we are resolving all class refs recursively.
+   */
   protected boolean resolveEverything() {
     if (Options.v().on_the_fly()) {
       return false;
@@ -147,7 +154,9 @@ public class SootResolver {
     }
   }
 
-  /** Resolve all classes on toResolveWorklist. */
+  /**
+   * Resolve all classes on toResolveWorklist.
+   */
   protected void processResolveWorklist() {
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       while (!worklist[i].isEmpty()) {
@@ -156,8 +165,8 @@ public class SootResolver {
           boolean onlySignatures =
               sc.isPhantom()
                   || (Options.v().no_bodies_for_excluded()
-                      && Scene.v().isExcluded(sc)
-                      && !Scene.v().getBasicClasses().contains(sc.getName()));
+                  && Scene.v().isExcluded(sc)
+                  && !Scene.v().getBasicClasses().contains(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();

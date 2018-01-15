@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -75,11 +76,11 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
   /**
    * Converts an array of bytes into an instance of class Class. Before the Class can be used it
    * must be resolved.
-   *
+   * <p>
    * <p>NOTE: an object representing an class object. To be conservative, the side-effect of this
    * method will return an abstract reference points to all possible class object in current
    * analysis environment.
-   *
+   * <p>
    * <p>private native java.lang.Class defineClass0(java.lang.String, byte[], int, int,
    * java.security.ProtectionDomain);
    */
@@ -93,9 +94,9 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
 
   /**
    * NOTE: undocumented, finding the bootstrap class
-   *
+   * <p>
    * <p>Assuming all classes
-   *
+   * <p>
    * <p>private native java.lang.Class findBootstrapClass(java.lang.String) throws
    * java.lang.ClassNotFoundException;
    */
@@ -109,9 +110,9 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
 
   /**
    * Finds the class with the given name if it had been previously loaded through this class loader.
-   *
+   * <p>
    * <p>NOTE: assuming all classes.
-   *
+   * <p>
    * <p>protected final native java.lang.Class findLoadedClass(java.lang.String);
    */
   public void java_lang_ClassLoader_findLoadedClass(
@@ -124,7 +125,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
 
   /**
    * Returns a variable pointing to the only class loader
-   *
+   * <p>
    * <p>static native java.lang.ClassLoader getCallerClassLoader();
    */
   public void java_lang_ClassLoader_getCallerClassLoader(

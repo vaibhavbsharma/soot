@@ -25,11 +25,11 @@
 
 package soot.baf;
 
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.jimple.IntConstant;
+
+import java.util.List;
 
 public interface LookupSwitchInst extends Inst {
   Unit getDefaultTarget();

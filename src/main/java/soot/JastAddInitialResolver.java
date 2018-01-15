@@ -17,13 +17,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+package soot;
 
 import soot.JastAddJ.BodyDecl;
 import soot.JastAddJ.CompilationUnit;
@@ -33,6 +28,12 @@ import soot.JastAddJ.Program;
 import soot.JastAddJ.TypeDecl;
 import soot.javaToJimple.IInitialResolver;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 /**
  * An {@link IInitialResolver} for the JastAdd frontend.
  *
@@ -41,13 +42,14 @@ import soot.javaToJimple.IInitialResolver;
  */
 public class JastAddInitialResolver implements IInitialResolver {
 
-  public JastAddInitialResolver(soot.Singletons.Global g) {}
+  protected Map<String, CompilationUnit> classNameToCU = new HashMap<>();
+
+  public JastAddInitialResolver(soot.Singletons.Global g) {
+  }
 
   public static JastAddInitialResolver v() {
     return soot.G.v().soot_JastAddInitialResolver();
   }
-
-  protected Map<String, CompilationUnit> classNameToCU = new HashMap<>();
 
   @Override
   public void formAst(String fullPath, List<String> locations, String className) {

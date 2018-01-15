@@ -4,14 +4,8 @@
  * Address: Room 4208, Hong Kong University of Science and Technology
  * Contact: frogxx@gmail.com
  */
-package soot.jimple.spark.geom.heapinsE;
 
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+package soot.jimple.spark.geom.heapinsE;
 
 import soot.Hierarchy;
 import soot.RefType;
@@ -35,6 +29,13 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * This class defines a pointer variable for use in the HeapIns encoding based points-to solver.
  * HeapIns is a simpler form of geometric encoding. HeapIns is faster and uses less memory, but
@@ -43,18 +44,6 @@ import soot.jimple.spark.sets.P2SetVisitor;
  * @author xiao
  */
 public class HeapInsNode extends IVarAbstraction {
-  // The targets of directed edges on the constraint graph
-  public HashMap<HeapInsNode, HeapInsIntervalManager> flowto;
-
-  // The objects this variable points to
-  public HashMap<AllocNode, HeapInsIntervalManager> pt_objs;
-
-  // Newly added points-to tuple
-  public Map<AllocNode, HeapInsIntervalManager> new_pts;
-
-  // store/load complex constraints
-  public Vector<PlainConstraint> complex_cons = null;
-
   static {
     stubManager = new HeapInsIntervalManager();
     pres = new RectangleNode(0, 0, Constants.MAX_CONTEXTS, Constants.MAX_CONTEXTS);
@@ -62,8 +51,80 @@ public class HeapInsNode extends IVarAbstraction {
     deadManager = new HeapInsIntervalManager();
   }
 
+  // The targets of directed edges on the constraint graph
+  public HashMap<HeapInsNode, HeapInsIntervalManager> flowto;
+  // The objects this variable points to
+  public HashMap<AllocNode, HeapInsIntervalManager> pt_objs;
+  // Newly added points-to tuple
+  public Map<AllocNode, HeapInsIntervalManager> new_pts;
+  // store/load complex constraints
+  public Vector<PlainConstraint> complex_cons = null;
+
   public HeapInsNode(Node thisVar) {
     me = thisVar;
+  }
+
+  // Apply the inference rules
+  private static boolean add_new_points_to_tuple(
+      SegmentNode pts, SegmentNode pe, AllocNode obj, HeapInsNode qn) {
+    long interI, interJ;
+    int code = 0;
+
+    // Special Cases
+    if (pts.I1 == 0 || pe.I1 == 0) {
+
+      if (pe.I2 != 0) {
+        // pointer sensitive, heap insensitive
+        pres.I1 = pe.I2;
+        pres.I2 = 0;
+        pres.L = pe.L;
+        code = HeapInsIntervalManager.MANY_TO_ALL;
+      } else {
+        // pointer insensitive, heap sensitive
+        pres.I1 = 0;
+        pres.I2 = pts.I2;
+        pres.L = pts.L;
+        code =
+            (pts.I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
+      }
+    } else {
+      // The left-end is the larger one
+      interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
+      // The right-end is the smaller one
+      interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
+
+      if (interI >= interJ) {
+        return false;
+      }
+
+      // The intersection is non-empty
+      pres.I1 = (pe.I2 == 0 ? 0 : interI - pe.I1 + pe.I2);
+      pres.I2 = (pts.I2 == 0 ? 0 : interI - pts.I1 + pts.I2);
+      pres.L = interJ - interI;
+
+      if (pres.I1 == 0) {
+        code =
+            (pres.I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
+      } else {
+        code =
+            (pres.I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
+      }
+    }
+
+    return qn.addPointsTo(code, obj);
+  }
+
+  // We only test if their points-to objects intersected under context
+  // insensitive manner
+  private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
+    if (p.I2 == 0 || q.I2 == 0) {
+      return true;
+    }
+
+    if (p.I2 >= q.I2) {
+      return p.I2 < q.I2 + (q.L < 0 ? -q.L : q.L);
+    }
+    return q.I2 < p.I2 + (p.L < 0 ? -p.L : p.L);
   }
 
   @Override
@@ -124,7 +185,9 @@ public class HeapInsNode extends IVarAbstraction {
     }
   }
 
-  /** Remember to clean the is_new flag */
+  /**
+   * Remember to clean the is_new flag
+   */
   @Override
   public void do_after_propagation() {
     for (HeapInsIntervalManager im : new_pts.values()) {
@@ -223,7 +286,9 @@ public class HeapInsNode extends IVarAbstraction {
     }
   }
 
-  /** An efficient implementation of differential propagation. */
+  /**
+   * An efficient implementation of differential propagation.
+   */
   @Override
   public void propagate(GeomPointsTo ptAnalyzer, IWorklist worklist) {
     int i, j;
@@ -394,7 +459,9 @@ public class HeapInsNode extends IVarAbstraction {
     return ret;
   }
 
-  /** Query if this pointer and qv could point to the same object under any contexts */
+  /**
+   * Query if this pointer and qv could point to the same object under any contexts
+   */
   @Override
   public boolean heap_sensitive_intersection(IVarAbstraction qv) {
     int i, j;
@@ -634,7 +701,9 @@ public class HeapInsNode extends IVarAbstraction {
     return im.getFigures();
   }
 
-  /** Merge the context sensitive tuples, and make a single insensitive tuple */
+  /**
+   * Merge the context sensitive tuples, and make a single insensitive tuple
+   */
   private void do_pts_interval_merge() {
     for (HeapInsIntervalManager him : new_pts.values()) {
       him.mergeFigures(Parameters.max_pts_budget);
@@ -677,68 +746,5 @@ public class HeapInsNode extends IVarAbstraction {
 
     // pres has been filled properly before calling this method
     return im.addNewFigure(code, pres) != null;
-  }
-
-  // Apply the inference rules
-  private static boolean add_new_points_to_tuple(
-      SegmentNode pts, SegmentNode pe, AllocNode obj, HeapInsNode qn) {
-    long interI, interJ;
-    int code = 0;
-
-    // Special Cases
-    if (pts.I1 == 0 || pe.I1 == 0) {
-
-      if (pe.I2 != 0) {
-        // pointer sensitive, heap insensitive
-        pres.I1 = pe.I2;
-        pres.I2 = 0;
-        pres.L = pe.L;
-        code = HeapInsIntervalManager.MANY_TO_ALL;
-      } else {
-        // pointer insensitive, heap sensitive
-        pres.I1 = 0;
-        pres.I2 = pts.I2;
-        pres.L = pts.L;
-        code =
-            (pts.I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
-      }
-    } else {
-      // The left-end is the larger one
-      interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
-      // The right-end is the smaller one
-      interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
-
-      if (interI >= interJ) {
-        return false;
-      }
-
-      // The intersection is non-empty
-      pres.I1 = (pe.I2 == 0 ? 0 : interI - pe.I1 + pe.I2);
-      pres.I2 = (pts.I2 == 0 ? 0 : interI - pts.I1 + pts.I2);
-      pres.L = interJ - interI;
-
-      if (pres.I1 == 0) {
-        code =
-            (pres.I2 == 0 ? HeapInsIntervalManager.ALL_TO_ALL : HeapInsIntervalManager.ALL_TO_MANY);
-      } else {
-        code =
-            (pres.I2 == 0 ? HeapInsIntervalManager.MANY_TO_ALL : HeapInsIntervalManager.ONE_TO_ONE);
-      }
-    }
-
-    return qn.addPointsTo(code, obj);
-  }
-
-  // We only test if their points-to objects intersected under context
-  // insensitive manner
-  private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
-    if (p.I2 == 0 || q.I2 == 0) {
-      return true;
-    }
-
-    if (p.I2 >= q.I2) {
-      return p.I2 < q.I2 + (q.L < 0 ? -q.L : q.L);
-    }
-    return q.I2 < p.I2 + (p.L < 0 ? -p.L : p.L);
   }
 }

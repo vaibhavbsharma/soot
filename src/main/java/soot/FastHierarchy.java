@@ -19,6 +19,10 @@
 
 package soot;
 
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.ConcurrentHashMultiMap;
+import soot.util.MultiMap;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,14 +32,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import soot.jimple.SpecialInvokeExpr;
-import soot.util.ConcurrentHashMultiMap;
-import soot.util.MultiMap;
-
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the
  * Scene changes.
- *
+ * <p>
  * <p>This version supercedes the old soot.Hierarchy class.
  *
  * @author Ondrej Lhotak
@@ -85,46 +85,9 @@ public class FastHierarchy {
 
   protected Scene sc;
 
-  protected class Interval {
-    int lower;
-    int upper;
-
-    public boolean isSubrange(Interval potentialSubrange) {
-      if (potentialSubrange == null) {
-        return false;
-      }
-      if (lower > potentialSubrange.lower) {
-        return false;
-      }
-      return upper >= potentialSubrange.upper;
-    }
-  }
-
-  protected int dfsVisit(int start, SootClass c) {
-    Interval r = new Interval();
-    r.lower = start++;
-    Collection<SootClass> col = classToSubclasses.get(c);
-    if (col != null) {
-      for (SootClass sc : col) {
-        // For some awful reason, Soot thinks interface are subclasses
-        // of java.lang.Object
-        if (sc.isInterface()) {
-          continue;
-        }
-        start = dfsVisit(start, sc);
-      }
-    }
-    r.upper = start++;
-    if (c.isInterface()) {
-      throw new RuntimeException("Attempt to dfs visit interface " + c);
-    }
-    if (!classToInterval.containsKey(c)) {
-      classToInterval.put(c, r);
-    }
-    return start;
-  }
-
-  /** Constructs a hierarchy from the current scene. */
+  /**
+   * Constructs a hierarchy from the current scene.
+   */
   public FastHierarchy() {
     this.sc = Scene.v();
 
@@ -152,13 +115,37 @@ public class FastHierarchy {
      * be roots of the type hierarchy
      */
     for (final Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator();
-        phantomClassIt.hasNext();
+         phantomClassIt.hasNext();
         ) {
       SootClass phantomClass = phantomClassIt.next();
       if (!phantomClass.isInterface()) {
         dfsVisit(0, phantomClass);
       }
     }
+  }
+
+  protected int dfsVisit(int start, SootClass c) {
+    Interval r = new Interval();
+    r.lower = start++;
+    Collection<SootClass> col = classToSubclasses.get(c);
+    if (col != null) {
+      for (SootClass sc : col) {
+        // For some awful reason, Soot thinks interface are subclasses
+        // of java.lang.Object
+        if (sc.isInterface()) {
+          continue;
+        }
+        start = dfsVisit(start, sc);
+      }
+    }
+    r.upper = start++;
+    if (c.isInterface()) {
+      throw new RuntimeException("Attempt to dfs visit interface " + c);
+    }
+    if (!classToInterval.containsKey(c)) {
+      classToInterval.put(c, r);
+    }
+    return start;
   }
 
   /**
@@ -461,9 +448,9 @@ public class FastHierarchy {
     return ret;
   }
 
-  // Questions about method invocation.
-
-  /** Returns true if the method m is visible from code in the class from. */
+  /**
+   * Returns true if the method m is visible from code in the class from.
+   */
   private boolean isVisible(SootClass from, SootMethod m) {
     from.checkLevel(SootClass.HIERARCHY);
     if (m.isPublic()) {
@@ -479,6 +466,8 @@ public class FastHierarchy {
     return from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
     // || canStoreClass( from, m.getDeclaringClass() );
   }
+
+  // Questions about method invocation.
 
   /**
    * Given an object of declared type C, returns the methods which could be called on an o.f()
@@ -580,7 +569,9 @@ public class FastHierarchy {
     // dispatch!\nType: "+concreteType+"\nMethod: "+m);
   }
 
-  /** Returns the target for the given SpecialInvokeExpr. */
+  /**
+   * Returns the target for the given SpecialInvokeExpr.
+   */
   public SootMethod resolveSpecialDispatch(SpecialInvokeExpr ie, SootMethod container) {
     SootMethod target = ie.getMethod();
 
@@ -612,5 +603,20 @@ public class FastHierarchy {
       return Collections.emptyList();
     }
     return ret;
+  }
+
+  protected class Interval {
+    int lower;
+    int upper;
+
+    public boolean isSubrange(Interval potentialSubrange) {
+      if (potentialSubrange == null) {
+        return false;
+      }
+      if (lower > potentialSubrange.lower) {
+        return false;
+      }
+      return upper >= potentialSubrange.upper;
+    }
   }
 }

@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -35,8 +32,12 @@ import soot.jimple.IfStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 public class IfFinder implements FactFinder {
-  public IfFinder(Singletons.Global g) {}
+  public IfFinder(Singletons.Global g) {
+  }
 
   public static IfFinder v() {
     return G.v().soot_dava_toolkits_base_finders_IfFinder();

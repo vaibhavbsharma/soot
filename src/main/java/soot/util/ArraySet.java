@@ -30,7 +30,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/** Provides an implementation of the Set object using java.util.Array */
+/**
+ * Provides an implementation of the Set object using java.util.Array
+ */
 public class ArraySet<E> extends AbstractSet<E> {
   private static final int DEFAULT_SIZE = 8;
 
@@ -48,7 +50,9 @@ public class ArraySet<E> extends AbstractSet<E> {
     this(DEFAULT_SIZE);
   }
 
-  /** Create a set which contains the given elements. */
+  /**
+   * Create a set which contains the given elements.
+   */
   public ArraySet(E[] elements) {
     this();
 
@@ -136,39 +140,6 @@ public class ArraySet<E> extends AbstractSet<E> {
     return new ArrayIterator<>();
   }
 
-  private class ArrayIterator<V> implements Iterator<V> {
-    int nextIndex;
-
-    ArrayIterator() {
-      nextIndex = 0;
-    }
-
-    @Override
-    public final boolean hasNext() {
-      return nextIndex < numElements;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public final V next() throws NoSuchElementException {
-      if (!(nextIndex < numElements)) {
-        throw new NoSuchElementException();
-      }
-
-      return (V) elements[nextIndex++];
-    }
-
-    @Override
-    public final void remove() throws NoSuchElementException {
-      if (nextIndex == 0) {
-        throw new NoSuchElementException();
-      } else {
-        removeElementAt(nextIndex - 1);
-        nextIndex = nextIndex - 1;
-      }
-    }
-  }
-
   private final void removeElementAt(int index) {
     // Handle simple case
     if (index == numElements - 1) {
@@ -209,6 +180,39 @@ public class ArraySet<E> extends AbstractSet<E> {
     return elements;
   }
 
+  private class ArrayIterator<V> implements Iterator<V> {
+    int nextIndex;
+
+    ArrayIterator() {
+      nextIndex = 0;
+    }
+
+    @Override
+    public final boolean hasNext() {
+      return nextIndex < numElements;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final V next() throws NoSuchElementException {
+      if (!(nextIndex < numElements)) {
+        throw new NoSuchElementException();
+      }
+
+      return (V) elements[nextIndex++];
+    }
+
+    @Override
+    public final void remove() throws NoSuchElementException {
+      if (nextIndex == 0) {
+        throw new NoSuchElementException();
+      } else {
+        removeElementAt(nextIndex - 1);
+        nextIndex = nextIndex - 1;
+      }
+    }
+  }
+
   class Array {
     private final int DEFAULT_SIZE = 8;
 
@@ -216,13 +220,13 @@ public class ArraySet<E> extends AbstractSet<E> {
     private int maxElements;
     private Object[] elements;
 
-    public final void clear() {
-      numElements = 0;
-    }
-
     public Array() {
       elements = new Object[DEFAULT_SIZE];
       maxElements = DEFAULT_SIZE;
+      numElements = 0;
+    }
+
+    public final void clear() {
       numElements = 0;
     }
 

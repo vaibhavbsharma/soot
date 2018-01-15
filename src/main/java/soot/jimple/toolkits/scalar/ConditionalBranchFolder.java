@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -41,8 +39,11 @@ import soot.jimple.StmtBody;
 import soot.options.Options;
 import soot.util.Chain;
 
+import java.util.Map;
+
 public class ConditionalBranchFolder extends BodyTransformer {
-  public ConditionalBranchFolder(Singletons.Global g) {}
+  public ConditionalBranchFolder(Singletons.Global g) {
+  }
 
   public static ConditionalBranchFolder v() {
     return G.v().soot_jimple_toolkits_scalar_ConditionalBranchFolder();

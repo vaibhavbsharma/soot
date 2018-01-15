@@ -28,18 +28,18 @@ import soot.jimple.ClassConstant;
  * @author Ondrej Lhotak
  */
 public class ClassConstantNode extends AllocNode {
+  ClassConstantNode(PAG pag, ClassConstant cc) {
+    super(pag, cc, RefType.v("java.lang.Class"), null);
+  }
+
   @Override
   public String toString() {
     return "ClassConstantNode " + getNumber() + " " + newExpr;
   }
 
-  public ClassConstant getClassConstant() {
-    return (ClassConstant) newExpr;
-  }
-
   /* End of public methods. */
 
-  ClassConstantNode(PAG pag, ClassConstant cc) {
-    super(pag, cc, RefType.v("java.lang.Class"), null);
+  public ClassConstant getClassConstant() {
+    return (ClassConstant) newExpr;
   }
 }

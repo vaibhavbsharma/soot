@@ -25,16 +25,6 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.G;
@@ -47,16 +37,29 @@ import soot.Unit;
 import soot.jimple.JimpleBody;
 import soot.jimple.Stmt;
 
-/** This class resolves the type of local variables. */
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+/**
+ * This class resolves the type of local variables.
+ */
 public class TypeResolver {
-  /** All type variable instances * */
+  private static final boolean DEBUG = false;
+  /**
+   * All type variable instances *
+   */
   private final List<TypeVariable> typeVariableList = new ArrayList<>();
-
-  /** Hashtable: [TypeNode or Local] -> TypeVariable * */
+  /**
+   * Hashtable: [TypeNode or Local] -> TypeVariable *
+   */
   private final Map<Object, TypeVariable> typeVariableMap = new HashMap<>();
-
-  private final JimpleBody stmtBody;
-
   final TypeVariable BOOLEAN = typeVariable(ClassHierarchy.v().BOOLEAN);
   final TypeVariable BYTE = typeVariable(ClassHierarchy.v().BYTE);
   final TypeVariable SHORT = typeVariable(ClassHierarchy.v().SHORT);
@@ -66,67 +69,10 @@ public class TypeResolver {
   final TypeVariable R0_1 = typeVariable(ClassHierarchy.v().R0_1);
   final TypeVariable R0_127 = typeVariable(ClassHierarchy.v().R0_127);
   final TypeVariable R0_32767 = typeVariable(ClassHierarchy.v().R0_32767);
-
-  private static final boolean DEBUG = false;
-
+  private final JimpleBody stmtBody;
   // categories for type variables (solved = hard, unsolved = soft)
   private List<TypeVariable> unsolved;
   private List<TypeVariable> solved;
-
-  /** Get type variable for the given local. * */
-  TypeVariable typeVariable(Local local) {
-    TypeVariable result = typeVariableMap.get(local);
-
-    if (result == null) {
-      int id = typeVariableList.size();
-      typeVariableList.add(null);
-
-      result = new TypeVariable(id, this);
-
-      typeVariableList.set(id, result);
-      typeVariableMap.put(local, result);
-
-      if (DEBUG) {
-        G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
-      }
-    }
-
-    return result;
-  }
-
-  /** Get type variable for the given type node. * */
-  public TypeVariable typeVariable(TypeNode typeNode) {
-    TypeVariable result = typeVariableMap.get(typeNode);
-
-    if (result == null) {
-      int id = typeVariableList.size();
-      typeVariableList.add(null);
-
-      result = new TypeVariable(id, this, typeNode);
-
-      typeVariableList.set(id, result);
-      typeVariableMap.put(typeNode, result);
-    }
-
-    return result;
-  }
-
-  /** Get type variable for the given type. * */
-  public TypeVariable typeVariable(Type type) {
-    return typeVariable(ClassHierarchy.v().typeNode(type));
-  }
-
-  /** Get new type variable * */
-  public TypeVariable typeVariable() {
-    int id = typeVariableList.size();
-    typeVariableList.add(null);
-
-    TypeVariable result = new TypeVariable(id, this);
-
-    typeVariableList.set(id, result);
-
-    return result;
-  }
 
   private TypeResolver(JimpleBody stmtBody) {
     this.stmtBody = stmtBody;
@@ -156,6 +102,69 @@ public class TypeResolver {
         throw new RuntimeException(st.toString());
       }
     }
+  }
+
+  /**
+   * Get type variable for the given local. *
+   */
+  TypeVariable typeVariable(Local local) {
+    TypeVariable result = typeVariableMap.get(local);
+
+    if (result == null) {
+      int id = typeVariableList.size();
+      typeVariableList.add(null);
+
+      result = new TypeVariable(id, this);
+
+      typeVariableList.set(id, result);
+      typeVariableMap.put(local, result);
+
+      if (DEBUG) {
+        G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Get type variable for the given type node. *
+   */
+  public TypeVariable typeVariable(TypeNode typeNode) {
+    TypeVariable result = typeVariableMap.get(typeNode);
+
+    if (result == null) {
+      int id = typeVariableList.size();
+      typeVariableList.add(null);
+
+      result = new TypeVariable(id, this, typeNode);
+
+      typeVariableList.set(id, result);
+      typeVariableMap.put(typeNode, result);
+    }
+
+    return result;
+  }
+
+  /**
+   * Get type variable for the given type. *
+   */
+  public TypeVariable typeVariable(Type type) {
+    return typeVariable(ClassHierarchy.v().typeNode(type));
+  }
+
+  /**
+   * Get new type variable *
+   */
+  public TypeVariable typeVariable() {
+    int id = typeVariableList.size();
+    typeVariableList.add(null);
+
+    TypeVariable result = new TypeVariable(id, this);
+
+    typeVariableList.set(id, result);
+
+    return result;
   }
 
   private void debug_vars(String message) {

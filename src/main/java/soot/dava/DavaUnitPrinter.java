@@ -34,9 +34,12 @@ import soot.jimple.IdentityRef;
 import soot.jimple.Jimple;
 import soot.jimple.ThisRef;
 
-/** UnitPrinter implementation for Dava. */
+/**
+ * UnitPrinter implementation for Dava.
+ */
 public class DavaUnitPrinter extends AbstractUnitPrinter {
   DavaBody body;
+  private boolean eatSpace = false;
 
   /*
    * 30th March 2006, Nomair A Naeem
@@ -67,8 +70,6 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
       throw new RuntimeException();
     }
   }
-
-  private boolean eatSpace = false;
 
   @Override
   public void literal(String s) {

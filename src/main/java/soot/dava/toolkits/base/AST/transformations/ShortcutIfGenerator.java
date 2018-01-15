@@ -17,7 +17,8 @@ import soot.jimple.internal.ImmediateBox;
 
 public class ShortcutIfGenerator extends DepthFirstAdapter {
 
-  public ShortcutIfGenerator() {}
+  public ShortcutIfGenerator() {
+  }
 
   public ShortcutIfGenerator(boolean verbose) {
     super(verbose);

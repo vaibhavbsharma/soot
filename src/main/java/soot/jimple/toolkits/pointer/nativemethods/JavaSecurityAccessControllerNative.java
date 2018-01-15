@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -85,7 +86,9 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
     }
   }
 
-  /** ********************** java.security.AccessController *********** */
+  /**
+   * ********************* java.security.AccessController ***********
+   */
   /* The return value of doPrivileged depends on the implementation.
    *
    * public static native
@@ -117,7 +120,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 
   /**
    * Creates an access control context object.
-   *
+   * <p>
    * <p>private static native java.security.AccessControlContext getStackAccessControlContext();
    */
   public void java_security_AccessController_getStackAccessControlContext(
@@ -130,7 +133,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 
   /**
    * NOTE: not documented and not called by anyone
-   *
+   * <p>
    * <p>static native java.security.AccessControlContext getInheritedAccessControlContext();
    */
   public void java_security_AccessController_getInheritedAccessControlContext(

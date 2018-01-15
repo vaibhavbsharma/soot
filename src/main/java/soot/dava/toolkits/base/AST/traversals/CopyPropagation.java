@@ -38,10 +38,6 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
@@ -65,6 +61,10 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.DavaFlowSet;
 import soot.dava.toolkits.base.AST.structuredAnalysis.ReachingCopies;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
 * TODO: shouldnt this be a transformation and hence under the transformation package???

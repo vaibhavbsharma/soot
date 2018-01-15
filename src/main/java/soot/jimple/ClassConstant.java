@@ -143,7 +143,9 @@ public class ClassConstant extends Constant {
     return (c instanceof ClassConstant && ((ClassConstant) c).value.equals(this.value));
   }
 
-  /** Returns a hash code for this ClassConstant object. */
+  /**
+   * Returns a hash code for this ClassConstant object.
+   */
   @Override
   public int hashCode() {
     return value.hashCode();

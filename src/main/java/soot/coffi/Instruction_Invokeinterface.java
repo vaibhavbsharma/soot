@@ -24,23 +24,24 @@
  */
 
 package soot.coffi;
+
 /**
  * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a
  * corresponding subclass of Instruction.
- *
+ * <p>
  * <p>Each subclass is derived from one of
- *
+ * <p>
  * <ul>
- *   <li>Instruction
- *   <li>Instruction_noargs (an Instruction with no embedded arguments)
- *   <li>Instruction_byte (an Instruction with a single byte data argument)
- *   <li>Instruction_bytevar (a byte argument specifying a local variable)
- *   <li>Instruction_byteindex (a byte argument specifying a constant pool index)
- *   <li>Instruction_int (an Instruction with a single short data argument)
- *   <li>Instruction_intvar (a short argument specifying a local variable)
- *   <li>Instruction_intindex (a short argument specifying a constant pool index)
- *   <li>Instruction_intbranch (a short argument specifying a code offset)
- *   <li>Instruction_longbranch (an int argument specifying a code offset)
+ * <li>Instruction
+ * <li>Instruction_noargs (an Instruction with no embedded arguments)
+ * <li>Instruction_byte (an Instruction with a single byte data argument)
+ * <li>Instruction_bytevar (a byte argument specifying a local variable)
+ * <li>Instruction_byteindex (a byte argument specifying a constant pool index)
+ * <li>Instruction_int (an Instruction with a single short data argument)
+ * <li>Instruction_intvar (a short argument specifying a local variable)
+ * <li>Instruction_intindex (a short argument specifying a constant pool index)
+ * <li>Instruction_intbranch (a short argument specifying a code offset)
+ * <li>Instruction_longbranch (an int argument specifying a code offset)
  * </ul>
  *
  * @author Clark Verbrugge
@@ -57,15 +58,14 @@ package soot.coffi;
  * @see Instruction_Unknown
  */
 class Instruction_Invokeinterface extends Instruction_intindex {
+  public byte nargs;
+  public byte reserved;
   public Instruction_Invokeinterface() {
     super((byte) ByteCode.INVOKEINTERFACE);
     name = "invokeinterface";
     // branches = true;
     calls = true;
   }
-
-  public byte nargs;
-  public byte reserved;
 
   @Override
   public String toString(cp_info constant_pool[]) {

@@ -1,10 +1,5 @@
 package soot.baf.toolkits.base;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -15,20 +10,26 @@ import soot.baf.PushInst;
 import soot.baf.StoreInst;
 import soot.toolkits.scalar.Pair;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Due to local packing, we may have chains of assignments to the same local.
- *
+ * <p>
  * <p>push null; store.r $r2;
- *
+ * <p>
  * <p>push null; store.r $r2;
- *
+ * <p>
  * <p>This transformer eliminates the redundant push/store instructions.
  *
  * @author Steven Arzt
  */
 public class StoreChainOptimizer extends BodyTransformer {
 
-  public StoreChainOptimizer(Singletons.Global g) {}
+  public StoreChainOptimizer(Singletons.Global g) {
+  }
 
   public static StoreChainOptimizer v() {
     return G.v().soot_baf_toolkits_base_StoreChainOptimizer();

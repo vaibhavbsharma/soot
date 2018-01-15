@@ -26,6 +26,7 @@
  * Modified by Marc-Andre Laverdiere-Papineau in 2013
  *
  */
+
 package soot.tagkit;
 
 import java.util.ArrayList;
@@ -62,10 +63,14 @@ public class AnnotationTag implements Tag {
   // should probably make a bunch of subclasses for all the
   // different kinds - with second level for the constant kinds
 
-  /** The type */
+  /**
+   * The type
+   */
   private String type;
 
-  /** The annotations */
+  /**
+   * The annotations
+   */
   private List<AnnotationElem> elems;
 
   public AnnotationTag(String type) {
@@ -110,7 +115,9 @@ public class AnnotationTag implements Tag {
     }
   }
 
-  /** Returns the tag name. */
+  /**
+   * Returns the tag name.
+   */
   @Override
   public String getName() {
     return "AnnotationTag";
@@ -124,7 +131,9 @@ public class AnnotationTag implements Tag {
     return type;
   }
 
-  /** Returns the tag raw data. */
+  /**
+   * Returns the tag raw data.
+   */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("AnnotationTag has no value for bytecode");
@@ -143,16 +152,18 @@ public class AnnotationTag implements Tag {
   }
 
   /**
+   * @return an immutable collection of the elements
+   */
+  public Collection<AnnotationElem> getElems() {
+    return elems == null ? Collections.emptyList() : Collections.unmodifiableCollection(elems);
+  }
+
+  /**
    * Overwrites the elements stored previously
    *
    * @param list the new list of elements
    */
   public void setElems(List<AnnotationElem> list) {
     this.elems = list;
-  }
-
-  /** @return an immutable collection of the elements */
-  public Collection<AnnotationElem> getElems() {
-    return elems == null ? Collections.emptyList() : Collections.unmodifiableCollection(elems);
   }
 }

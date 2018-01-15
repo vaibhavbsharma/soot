@@ -42,7 +42,9 @@ public class SignatureTag implements Tag {
     return "Signature: " + signature;
   }
 
-  /** Returns the tag name. */
+  /**
+   * Returns the tag name.
+   */
   @Override
   public String getName() {
     return "SignatureTag";
@@ -56,7 +58,9 @@ public class SignatureTag implements Tag {
     return signature;
   }
 
-  /** Returns the tag raw data. */
+  /**
+   * Returns the tag raw data.
+   */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("SignatureTag has no value for bytecode");

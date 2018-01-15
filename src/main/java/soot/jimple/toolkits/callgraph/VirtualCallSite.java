@@ -31,11 +31,11 @@ import soot.util.NumberedString;
  * @author Ondrej Lhotak
  */
 public class VirtualCallSite {
+  Kind kind;
   private InstanceInvokeExpr iie;
   private Stmt stmt;
   private SootMethod container;
   private NumberedString subSig;
-  Kind kind;
 
   public VirtualCallSite(
       Stmt stmt, SootMethod container, InstanceInvokeExpr iie, NumberedString subSig, Kind kind) {

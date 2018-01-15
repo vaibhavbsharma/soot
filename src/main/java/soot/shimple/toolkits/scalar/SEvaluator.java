@@ -19,9 +19,6 @@
 
 package soot.shimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Local;
 import soot.Type;
 import soot.UnitBoxOwner;
@@ -34,6 +31,9 @@ import soot.jimple.toolkits.scalar.Evaluator;
 import soot.shimple.PhiExpr;
 import soot.util.Switch;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Extension of soot.jimple.toolkits.scalar.Evaluator to handle Phi expressions.
  *
@@ -42,7 +42,9 @@ import soot.util.Switch;
  * @see SConstantPropagatorAndFolder
  */
 public class SEvaluator {
-  /** Returns true if given value is determined to be constant valued, false otherwise */
+  /**
+   * Returns true if given value is determined to be constant valued, false otherwise
+   */
   public static boolean isValueConstantValued(Value op) {
     if (op instanceof PhiExpr) {
       Iterator<Value> argsIt = ((PhiExpr) op).getValues().iterator();
@@ -88,7 +90,7 @@ public class SEvaluator {
    * If a normal expression contains Bottom, always return Bottom. Otherwise, if a normal expression
    * contains Top, returns Top. Else determine the constant value of the expression if possible, if
    * not return Bottom.
-   *
+   * <p>
    * <p>If a Phi expression contains Bottom, always return Bottom. Otherwise, if all the constant
    * arguments are the same (ignoring Top and locals) return that constant or Top if no concrete
    * constant is present, else return Bottom.
@@ -211,14 +213,20 @@ public class SEvaluator {
     return (getFuzzyConstantValueOf(expr));
   }
 
-  /** Head of a new hierarchy of constants -- Top and Bottom. */
-  public abstract static class MetaConstant extends Constant {}
+  /**
+   * Head of a new hierarchy of constants -- Top and Bottom.
+   */
+  public abstract static class MetaConstant extends Constant {
+  }
 
-  /** Top i.e. assumed to be a constant, but of unknown value. */
+  /**
+   * Top i.e. assumed to be a constant, but of unknown value.
+   */
   public static class TopConstant extends MetaConstant {
     private static final TopConstant constant = new TopConstant();
 
-    private TopConstant() {}
+    private TopConstant() {
+    }
 
     public static Constant v() {
       return constant;
@@ -235,11 +243,14 @@ public class SEvaluator {
     }
   }
 
-  /** Bottom i.e. known not to be a constant. */
+  /**
+   * Bottom i.e. known not to be a constant.
+   */
   public static class BottomConstant extends MetaConstant {
     private static final BottomConstant constant = new BottomConstant();
 
-    private BottomConstant() {}
+    private BottomConstant() {
+    }
 
     public static Constant v() {
       return constant;

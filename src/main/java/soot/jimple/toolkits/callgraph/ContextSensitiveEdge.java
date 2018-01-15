@@ -31,7 +31,9 @@ import soot.jimple.Stmt;
  * @author Ondrej Lhotak
  */
 public interface ContextSensitiveEdge {
-  /** The context at the source of the call. */
+  /**
+   * The context at the source of the call.
+   */
   Context srcCtxt();
 
   /**
@@ -48,10 +50,14 @@ public interface ContextSensitiveEdge {
 
   Stmt srcStmt();
 
-  /** The context at the target of the call. */
+  /**
+   * The context at the target of the call.
+   */
   Context tgtCtxt();
 
-  /** The target method of the call edge. */
+  /**
+   * The target method of the call edge.
+   */
   SootMethod tgt();
 
   /**

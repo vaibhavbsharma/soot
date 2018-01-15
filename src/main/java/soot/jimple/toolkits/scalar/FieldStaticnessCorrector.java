@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.ConflictingFieldRefException;
 import soot.G;
@@ -14,6 +12,8 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
+import java.util.Map;
+
 /**
  * Transformer that checks whether a static field is used like an instance field. If this is the
  * case, all instance references are replaced by static field references.
@@ -22,7 +22,8 @@ import soot.jimple.Stmt;
  */
 public class FieldStaticnessCorrector extends AbstractStaticnessCorrector {
 
-  public FieldStaticnessCorrector(Singletons.Global g) {}
+  public FieldStaticnessCorrector(Singletons.Global g) {
+  }
 
   public static FieldStaticnessCorrector v() {
     return G.v().soot_jimple_toolkits_scalar_FieldStaticnessCorrector();

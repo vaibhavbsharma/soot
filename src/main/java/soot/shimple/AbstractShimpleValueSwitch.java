@@ -21,7 +21,9 @@ package soot.shimple;
 
 import soot.jimple.AbstractJimpleValueSwitch;
 
-/** @author Navindra Umanee */
+/**
+ * @author Navindra Umanee
+ */
 public abstract class AbstractShimpleValueSwitch extends AbstractJimpleValueSwitch
     implements ShimpleValueSwitch {
   @Override

@@ -25,8 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.List;
-
 import soot.Body;
 import soot.Local;
 import soot.Unit;
@@ -34,20 +32,47 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.SimpleLocalDefs.FlowAnalysisMode;
 
+import java.util.List;
+
 /**
  * Provides an interface for querying for the definitions of a Local at a given Unit in a method.
  */
 public interface LocalDefs {
+  /**
+   * Returns the definition sites for a Local at a certain point (Unit) in a method.
+   * <p>
+   * <p>You can assume this method never returns {@code null}.
+   *
+   * @param l the Local in question.
+   * @param s a unit that specifies the method context (location) to query for the definitions of
+   *          the Local.
+   * @return a list of Units where the local is defined in the current method context. If there are
+   * no uses an empty list will returned.
+   */
+  List<Unit> getDefsOfAt(Local l, Unit s);
+
+  /**
+   * Returns the definition sites for a Local merged over all points in a method.
+   * <p>
+   * <p>You can assume this method never returns {@code null}.
+   *
+   * @param l the Local in question.
+   * @return a list of Units where the local is defined in the current method context. If there are
+   * no uses an empty list will returned.
+   */
+  List<Unit> getDefsOf(Local l);
+
   final class Factory {
-    private Factory() {}
+    private Factory() {
+    }
 
     /**
      * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph}
      *
-     * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
-     * @see soot.validation.UsesValidator
      * @param body
      * @return a new LocalDefs instance
+     * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
+     * @see soot.validation.UsesValidator
      */
     public static LocalDefs newLocalDefs(Body body) {
       return newLocalDefs(body, false);
@@ -57,10 +82,10 @@ public interface LocalDefs {
      * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph} If you don't trust
      * the input you should set <code>expectUndefined</code> to <code>true</code>
      *
-     * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
      * @param body
      * @param expectUndefinedUses if you expect uses of locals that are undefined
      * @return a new LocalDefs instance
+     * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
      */
     public static LocalDefs newLocalDefs(Body body, boolean expectUndefined) {
       return newLocalDefs(new ExceptionalUnitGraph(body), expectUndefined);
@@ -69,9 +94,9 @@ public interface LocalDefs {
     /**
      * Creates a new LocalDefs analysis based on a given {@code UnitGraph}
      *
-     * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
      * @param graph the graph to work with
      * @return a new LocalDefs instance
+     * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
      */
     public static LocalDefs newLocalDefs(UnitGraph graph) {
       return newLocalDefs(graph, false);
@@ -81,11 +106,11 @@ public interface LocalDefs {
      * Creates a new LocalDefs analysis based on a given {@code UnitGraph}. If you don't trust the
      * input you should set <code>expectUndefined</code> to <code>true</code>
      *
-     * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
-     * @see soot.validation.UsesValidator
-     * @param graph the graph to work with
+     * @param graph           the graph to work with
      * @param expectUndefined if you expect uses of locals that are undefined
      * @return a new LocalDefs instance
+     * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
+     * @see soot.validation.UsesValidator
      */
     public static LocalDefs newLocalDefs(UnitGraph graph, boolean expectUndefined) {
       // return new SmartLocalDefs(graph, LiveLocals.Factory.newLiveLocals(graph));
@@ -98,38 +123,14 @@ public interface LocalDefs {
      * flow-insensitive, i.e., for a given local, it will always give all statements that ever write
      * to that local regardless of potential redefinitions in between.
      *
-     * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
-     * @see soot.validation.UsesValidator
      * @param graph the graph to work with
      * @return a new LocalDefs instance
+     * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
+     * @see soot.validation.UsesValidator
      */
     public static LocalDefs newLocalDefsFlowInsensitive(UnitGraph graph) {
       // return new SmartLocalDefs(graph, LiveLocals.Factory.newLiveLocals(graph));
       return new SimpleLocalDefs(graph, FlowAnalysisMode.FlowInsensitive);
     }
   }
-
-  /**
-   * Returns the definition sites for a Local at a certain point (Unit) in a method.
-   *
-   * <p>You can assume this method never returns {@code null}.
-   *
-   * @param l the Local in question.
-   * @param s a unit that specifies the method context (location) to query for the definitions of
-   *     the Local.
-   * @return a list of Units where the local is defined in the current method context. If there are
-   *     no uses an empty list will returned.
-   */
-  List<Unit> getDefsOfAt(Local l, Unit s);
-
-  /**
-   * Returns the definition sites for a Local merged over all points in a method.
-   *
-   * <p>You can assume this method never returns {@code null}.
-   *
-   * @param l the Local in question.
-   * @return a list of Units where the local is defined in the current method context. If there are
-   *     no uses an empty list will returned.
-   */
-  List<Unit> getDefsOf(Local l);
 }

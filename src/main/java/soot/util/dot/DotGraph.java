@@ -26,11 +26,12 @@
 /**
  * DotGraph provides an interface to SOOT for generating DOT language for graphviz from ATT research
  * lab.
- *
+ * <p>
  * <p>Intended usage: virtualize CFG, graphes, etc...
  *
  * @author Feng Qian
  */
+
 package soot.util.dot;
 
 import java.io.BufferedOutputStream;
@@ -44,6 +45,8 @@ import java.util.List;
 
 public class DotGraph implements Renderable {
 
+  /** The extension added to output files, exported so that clients can search for the filenames. */
+  public static final String DOT_EXTENSION = ".dot";
   /* allow a serialized drawing, following steps:
    * 1. new DotGraph
    * 2. draw(Directed)Edge / drawUndirectedEdge
@@ -52,15 +55,10 @@ public class DotGraph implements Renderable {
    */
   private String graphname;
   private boolean isSubGraph;
-
   private HashMap<String, DotGraphNode> nodes;
   /* draw elements are sub graphs, edges, commands */
   private List<Renderable> drawElements;
-
   private List<DotGraphAttribute> attributes;
-
-  /** The extension added to output files, exported so that clients can search for the filenames. */
-  public static final String DOT_EXTENSION = ".dot";
 
   /**
    * Creates a new graph for drawing.
@@ -228,7 +226,8 @@ public class DotGraph implements Renderable {
    *
    * @param label1, label2
    */
-  public void drawUndirectedEdge(String label1, String label2) {}
+  public void drawUndirectedEdge(String label1, String label2) {
+  }
 
   /**
    * creates a sub graph.

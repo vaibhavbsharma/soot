@@ -19,9 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -40,20 +37,20 @@ import soot.jbco.util.Rand;
 import soot.jbco.util.ThrowSet;
 import soot.jimple.NullConstant;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class ConstructorConfuser extends BodyTransformer implements IJbcoTransform {
 
-  static int count = 0;
-
-  static int instances[] = new int[4];
-
   public static String dependancies[] = new String[] {"bb.jbco_dcc", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_dcc";
+  static int count = 0;
+  static int instances[] = new int[4];
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_dcc";
 
   @Override
   public String getName() {

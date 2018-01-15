@@ -20,28 +20,27 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
+
 package soot.jimple.toolkits.annotation.purity;
+
+import soot.SootMethod;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import soot.SootMethod;
 
 /**
  * Kind of Stmt inside node, but global to the method. Used for synthetic summary of unalysed
  * methods returning a fresh object.
  */
 public class PurityMethodNode implements PurityNode {
-  /** Method that created the node */
-  private SootMethod id;
-
   /** gives a unique id, for pretty-printing purposes */
   private static final Map<SootMethod, Integer> nMap = new HashMap<>();
-
   private static int n = 0;
+  /** Method that created the node */
+  private SootMethod id;
 
   PurityMethodNode(SootMethod id) {
     this.id = id;

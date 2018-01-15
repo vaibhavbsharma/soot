@@ -25,7 +25,9 @@
 
 package soot.xml;
 
-/** XML helper */
+/**
+ * XML helper
+ */
 public class XMLNode extends XMLRoot {
   // constants
   public static final int TAG_STRING_BUFFER = 4096;

@@ -16,14 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.ide.exampleproblems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.toolkits.ide.exampleproblems;
 
 import heros.DefaultSeeds;
 import heros.FlowFunction;
@@ -48,16 +42,23 @@ import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 import soot.toolkits.scalar.Pair;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class IFDSReachingDefinitions
     extends DefaultJimpleIFDSTabulationProblem<
-        Pair<Value, Set<DefinitionStmt>>, InterproceduralCFG<Unit, SootMethod>> {
+    Pair<Value, Set<DefinitionStmt>>, InterproceduralCFG<Unit, SootMethod>> {
   public IFDSReachingDefinitions(InterproceduralCFG<Unit, SootMethod> icfg) {
     super(icfg);
   }
 
   @Override
   public FlowFunctions<Unit, Pair<Value, Set<DefinitionStmt>>, SootMethod>
-      createFlowFunctionsFactory() {
+  createFlowFunctionsFactory() {
     return new FlowFunctions<Unit, Pair<Value, Set<DefinitionStmt>>, SootMethod>() {
 
       @Override

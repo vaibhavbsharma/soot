@@ -31,17 +31,6 @@ import soot.options.Options;
  * ClassSource for it if it finds it.
  */
 public class JavaClassProvider implements ClassProvider {
-  public static class JarException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
-
-    public JarException(String className) {
-      super(
-          "Class "
-              + className
-              + " was found in an archive, but Soot doesn't support reading source files out of an archive");
-    }
-  }
-
   /**
    * Look for the specified class. Return a ClassSource for it if found, or null if it was not
    * found.
@@ -91,6 +80,17 @@ public class JavaClassProvider implements ClassProvider {
           file.close();
         }
       }
+    }
+  }
+
+  public static class JarException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
+    public JarException(String className) {
+      super(
+          "Class "
+              + className
+              + " was found in an archive, but Soot doesn't support reading source files out of an archive");
     }
   }
 }

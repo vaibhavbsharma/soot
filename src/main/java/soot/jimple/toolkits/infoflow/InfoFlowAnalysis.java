@@ -1,10 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.G;
 import soot.Local;
@@ -29,6 +24,11 @@ import soot.toolkits.graph.MutableDirectedGraph;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphConstants;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 // InfoFlowAnalysis written by Richard L. Halpert, 2007-02-24
 // Constructs data flow tables for each method of every application class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -39,10 +39,10 @@ import soot.util.dot.DotGraphConstants;
 // Provides a high level interface to access the data flow information.
 
 public class InfoFlowAnalysis {
+  static int nodecount = 0;
   boolean includePrimitiveInfoFlow;
   boolean includeInnerFields;
   boolean printDebug;
-
   Map<SootClass, ClassInfoFlowAnalysis> classToClassInfoFlowAnalysis;
 
   public InfoFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields) {
@@ -57,93 +57,6 @@ public class InfoFlowAnalysis {
     classToClassInfoFlowAnalysis = new HashMap<>();
   }
 
-  public boolean includesPrimitiveInfoFlow() {
-    return includePrimitiveInfoFlow;
-  }
-
-  public boolean includesInnerFields() {
-    return includeInnerFields;
-  }
-
-  public boolean printDebug() {
-    return printDebug;
-  }
-
-  /*
-  	public void doApplicationClassesAnalysis()
-  	{
-      	Iterator appClassesIt = Scene.v().getApplicationClasses().iterator();
-      	while (appClassesIt.hasNext())
-      	{
-      	    SootClass appClass = (SootClass) appClassesIt.next();
-
-  			// Create the needed flow analysis object
-  			ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(appClass, this);
-
-  			// Put the preliminary flow-insensitive results here in case they
-  			// are needed by the flow-sensitive version.  This method will be
-  			// reentrant if any method we are analyzing is reentrant, so we
-  			// must do this to prevent an infinite recursive loop.
-  			classToClassInfoFlowAnalysis.put(appClass, cdfa);
-  		}
-
-      	Iterator appClassesIt2 = Scene.v().getApplicationClasses().iterator();
-      	while (appClassesIt2.hasNext())
-      	{
-      	    SootClass appClass = (SootClass) appClassesIt2.next();
-  			// Now calculate the flow-sensitive version.  If this classes methods
-  			// are reentrant, it will call this method and receive the flow
-  			// insensitive version that is already cached.
-  			ClassInfoFlowAnalysis cdfa = (ClassInfoFlowAnalysis) classToClassInfoFlowAnalysis.get(appClass);
-  			cdfa.doFixedPointDataFlowAnalysis();
-  		}
-  	}
-  */
-
-  private ClassInfoFlowAnalysis getClassInfoFlowAnalysis(SootClass sc) {
-    if (!classToClassInfoFlowAnalysis.containsKey(sc)) {
-      ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(sc, this);
-      classToClassInfoFlowAnalysis.put(sc, cdfa);
-    }
-    return classToClassInfoFlowAnalysis.get(sc);
-  }
-
-  public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod sm) {
-    ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
-    return cdfa.getMethodInfoFlowAnalysis(sm);
-  }
-
-  /**
-   * Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue wrapped Refs. It's
-   * perfectly safe to modify this graph, just so long as new nodes are EquivalentValue wrapped
-   * Refs.
-   */
-  public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm) {
-    return getMethodInfoFlowSummary(sm, true);
-  }
-
-  public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(
-      SootMethod sm, boolean doFullAnalysis) {
-    ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
-    return cdfa.getMethodInfoFlowSummary(sm, doFullAnalysis);
-  }
-
-  /**
-   * Returns an unmodifiable list of EquivalentValue wrapped Refs that source flows to when method
-   * sm is called.
-   */
-  /*	public List getSinksOf(SootMethod sm, EquivalentValue source)
-  	{
-  		ClassInfoFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-  		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
-  		List sinks = null;
-  		if(g.containsNode(source))
-  			sinks = g.getSuccsOf(source);
-  		else
-  			sinks = new ArrayList();
-  		return sinks;
-  	}
-  */
   /**
    * Returns an unmodifiable list of EquivalentValue wrapped Refs that sink flows from when method
    * sm is called.
@@ -195,6 +108,37 @@ public class InfoFlowAnalysis {
     }
   }
 
+  /*
+  	public void doApplicationClassesAnalysis()
+  	{
+      	Iterator appClassesIt = Scene.v().getApplicationClasses().iterator();
+      	while (appClassesIt.hasNext())
+      	{
+      	    SootClass appClass = (SootClass) appClassesIt.next();
+
+  			// Create the needed flow analysis object
+  			ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(appClass, this);
+
+  			// Put the preliminary flow-insensitive results here in case they
+  			// are needed by the flow-sensitive version.  This method will be
+  			// reentrant if any method we are analyzing is reentrant, so we
+  			// must do this to prevent an infinite recursive loop.
+  			classToClassInfoFlowAnalysis.put(appClass, cdfa);
+  		}
+
+      	Iterator appClassesIt2 = Scene.v().getApplicationClasses().iterator();
+      	while (appClassesIt2.hasNext())
+      	{
+      	    SootClass appClass = (SootClass) appClassesIt2.next();
+  			// Now calculate the flow-sensitive version.  If this classes methods
+  			// are reentrant, it will call this method and receive the flow
+  			// insensitive version that is already cached.
+  			ClassInfoFlowAnalysis cdfa = (ClassInfoFlowAnalysis) classToClassInfoFlowAnalysis.get(appClass);
+  			cdfa.doFixedPointDataFlowAnalysis();
+  		}
+  	}
+  */
+
   // Returns an EquivalentValue wrapped Ref for @parameter i
   // that is suitable for comparison to the nodes of a Data Flow Graph
   public static EquivalentValue getNodeForParameterRef(SootMethod sm, int i) {
@@ -211,50 +155,6 @@ public class InfoFlowAnalysis {
   // that is suitable for comparison to the nodes of a Data Flow Graph
   public static EquivalentValue getNodeForThisRef(SootMethod sm) {
     return new CachedEquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
-  }
-
-  protected HashMutableDirectedGraph<EquivalentValue> getInvokeInfoFlowSummary(
-      InvokeExpr ie, Stmt is, SootMethod context) {
-    // get the data flow graph for each possible target of ie,
-    // then combine them conservatively and return the result.
-    HashMutableDirectedGraph<EquivalentValue> ret = null;
-
-    SootMethodRef methodRef = ie.getMethodRef();
-    String subSig = methodRef.resolve().getSubSignature();
-    CallGraph cg = Scene.v().getCallGraph();
-    for (Iterator<Edge> edges = cg.edgesOutOf(is); edges.hasNext(); ) {
-      Edge e = edges.next();
-      SootMethod target = e.getTgt().method();
-      // Verify that this target is an implementation of the method we intend to call,
-      // and not just a class initializer or other unintended control flow.
-      if (target.getSubSignature().equals(subSig)) {
-        HashMutableDirectedGraph<EquivalentValue> ifs =
-            getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
-        if (ret == null) {
-          ret = ifs;
-        } else {
-          for (EquivalentValue node : ifs.getNodes()) {
-            if (!ret.containsNode(node)) {
-              ret.addNode(node);
-            }
-            for (EquivalentValue succ : ifs.getSuccsOf(node)) {
-              ret.addEdge(node, succ);
-            }
-          }
-        }
-      }
-    }
-    return ret;
-    //		return getMethodInfoFlowSummary(methodRef.resolve(),
-    // context.getDeclaringClass().isApplicationClass());
-  }
-
-  protected MutableDirectedGraph<EquivalentValue> getInvokeAbbreviatedInfoFlowGraph(
-      InvokeExpr ie, SootMethod context) {
-    // get the data flow graph for each possible target of ie,
-    // then combine them conservatively and return the result.
-    SootMethodRef methodRef = ie.getMethodRef();
-    return getMethodInfoFlowAnalysis(methodRef.resolve()).getMethodAbbreviatedInfoFlowGraph();
   }
 
   public static void printInfoFlowSummary(DirectedGraph<EquivalentValue> g) {
@@ -306,6 +206,23 @@ public class InfoFlowAnalysis {
     }
   }
 
+  /**
+   * Returns an unmodifiable list of EquivalentValue wrapped Refs that source flows to when method
+   * sm is called.
+   */
+  /*	public List getSinksOf(SootMethod sm, EquivalentValue source)
+  	{
+  		ClassInfoFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+  		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
+  		List sinks = null;
+  		if(g.containsNode(source))
+  			sinks = g.getSuccsOf(source);
+  		else
+  			sinks = new ArrayList();
+  		return sinks;
+  	}
+  */
+
   public static void printGraphToDotFile(
       String filename, DirectedGraph<EquivalentValue> graph, String graphname, boolean onePage) {
     // this makes the node name unique
@@ -335,7 +252,6 @@ public class InfoFlowAnalysis {
     canvas.plot(filename + ".dot");
   }
 
-  static int nodecount = 0;
   //	static Map nodeToNodeName = new HashMap();
   public static String getNodeName(Object o) {
     //		if(!nodeToNodeName.containsKey(o)) // Since this uses all different kinds of objects, we
@@ -364,5 +280,89 @@ public class InfoFlowAnalysis {
       return fr.getField().getDeclaringClass().getShortName() + "." + fr.getFieldRef().name();
     }
     return node.toString();
+  }
+
+  public boolean includesPrimitiveInfoFlow() {
+    return includePrimitiveInfoFlow;
+  }
+
+  public boolean includesInnerFields() {
+    return includeInnerFields;
+  }
+
+  public boolean printDebug() {
+    return printDebug;
+  }
+
+  private ClassInfoFlowAnalysis getClassInfoFlowAnalysis(SootClass sc) {
+    if (!classToClassInfoFlowAnalysis.containsKey(sc)) {
+      ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(sc, this);
+      classToClassInfoFlowAnalysis.put(sc, cdfa);
+    }
+    return classToClassInfoFlowAnalysis.get(sc);
+  }
+
+  public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod sm) {
+    ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
+    return cdfa.getMethodInfoFlowAnalysis(sm);
+  }
+
+  /**
+   * Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue wrapped Refs. It's
+   * perfectly safe to modify this graph, just so long as new nodes are EquivalentValue wrapped
+   * Refs.
+   */
+  public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm) {
+    return getMethodInfoFlowSummary(sm, true);
+  }
+
+  public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(
+      SootMethod sm, boolean doFullAnalysis) {
+    ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
+    return cdfa.getMethodInfoFlowSummary(sm, doFullAnalysis);
+  }
+
+  protected HashMutableDirectedGraph<EquivalentValue> getInvokeInfoFlowSummary(
+      InvokeExpr ie, Stmt is, SootMethod context) {
+    // get the data flow graph for each possible target of ie,
+    // then combine them conservatively and return the result.
+    HashMutableDirectedGraph<EquivalentValue> ret = null;
+
+    SootMethodRef methodRef = ie.getMethodRef();
+    String subSig = methodRef.resolve().getSubSignature();
+    CallGraph cg = Scene.v().getCallGraph();
+    for (Iterator<Edge> edges = cg.edgesOutOf(is); edges.hasNext(); ) {
+      Edge e = edges.next();
+      SootMethod target = e.getTgt().method();
+      // Verify that this target is an implementation of the method we intend to call,
+      // and not just a class initializer or other unintended control flow.
+      if (target.getSubSignature().equals(subSig)) {
+        HashMutableDirectedGraph<EquivalentValue> ifs =
+            getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
+        if (ret == null) {
+          ret = ifs;
+        } else {
+          for (EquivalentValue node : ifs.getNodes()) {
+            if (!ret.containsNode(node)) {
+              ret.addNode(node);
+            }
+            for (EquivalentValue succ : ifs.getSuccsOf(node)) {
+              ret.addEdge(node, succ);
+            }
+          }
+        }
+      }
+    }
+    return ret;
+    //		return getMethodInfoFlowSummary(methodRef.resolve(),
+    // context.getDeclaringClass().isApplicationClass());
+  }
+
+  protected MutableDirectedGraph<EquivalentValue> getInvokeAbbreviatedInfoFlowGraph(
+      InvokeExpr ie, SootMethod context) {
+    // get the data flow graph for each possible target of ie,
+    // then combine them conservatively and return the result.
+    SootMethodRef methodRef = ie.getMethodRef();
+    return getMethodInfoFlowAnalysis(methodRef.resolve()).getMethodAbbreviatedInfoFlowGraph();
   }
 }

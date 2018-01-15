@@ -30,7 +30,8 @@ import soot.baf.ReturnVoidInst;
 import soot.util.Switch;
 
 public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst {
-  public BReturnVoidInst() {}
+  public BReturnVoidInst() {
+  }
 
   @Override
   public int getInCount() {

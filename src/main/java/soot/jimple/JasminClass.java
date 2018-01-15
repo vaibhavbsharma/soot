@@ -25,13 +25,6 @@
 
 package soot.jimple;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.AbstractJasminClass;
 import soot.ArrayType;
 import soot.Body;
@@ -74,12 +67,35 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.util.Chain;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /*
  * TODO This is the right JasminClass
  */
 
-/** Methods for producing Jasmin code from Jimple. */
+/**
+ * Methods for producing Jasmin code from Jimple.
+ */
 public class JasminClass extends AbstractJasminClass {
+  /* try to pre-duplicate a local and fix-up its dup_xn parameter. */
+  /* if we find that we're unable to proceed, we swap the dup_xn */
+  /* for a store pl, load pl combination */
+  Value plusPlusValue;
+  Local plusPlusHolder;
+  int plusPlusState;
+  int plusPlusPlace;
+  int plusPlusHeight;
+  Stmt plusPlusIncrementer;
+
+  public JasminClass(SootClass sootClass) {
+    super(sootClass);
+  }
+
   void emit(String s, int stackChange) {
     modifyStackHeight(stackChange);
     okayEmit(s);
@@ -101,10 +117,6 @@ public class JasminClass extends AbstractJasminClass {
     }
   }
 
-  public JasminClass(SootClass sootClass) {
-    super(sootClass);
-  }
-
   @Override
   protected void assignColorsToLocals(Body body) {
     super.assignColorsToLocals(body);
@@ -119,7 +131,7 @@ public class JasminClass extends AbstractJasminClass {
 
   @Override
   protected void emitMethodBody(SootMethod method) // , Map options)
-      {
+  {
     if (Options.v().time()) {
       Timers.v().buildJasminTimer.end();
     }
@@ -1477,16 +1489,6 @@ public class JasminClass extends AbstractJasminClass {
           }
         });
   }
-
-  /* try to pre-duplicate a local and fix-up its dup_xn parameter. */
-  /* if we find that we're unable to proceed, we swap the dup_xn */
-  /* for a store pl, load pl combination */
-  Value plusPlusValue;
-  Local plusPlusHolder;
-  int plusPlusState;
-  int plusPlusPlace;
-  int plusPlusHeight;
-  Stmt plusPlusIncrementer;
   /* end of plusplus stuff. */
 
   void emitLocal(Local v) {
@@ -1558,30 +1560,29 @@ public class JasminClass extends AbstractJasminClass {
               public void handleIntegerType(IntegerType t) {
                 if (vAlias.equals(plusPlusHolder)) {
                   switch (plusPlusState) {
-                    case 0:
-                      {
-                        // ok, we're called upon to emit the
-                        // ++ target, whatever it was.
+                    case 0: {
+                      // ok, we're called upon to emit the
+                      // ++ target, whatever it was.
 
-                        // now we need to emit a statement incrementing
-                        // the correct value.
-                        // actually, just remember the local to be
-                        // incremented.
+                      // now we need to emit a statement incrementing
+                      // the correct value.
+                      // actually, just remember the local to be
+                      // incremented.
 
-                        // here ppi is of the form ppv = pph + 1
+                      // here ppi is of the form ppv = pph + 1
 
-                        plusPlusState = 1;
+                      plusPlusState = 1;
 
-                        emitStmt(plusPlusIncrementer);
-                        int diff = plusPlusHeight - currentStackHeight + 1;
-                        if (diff > 0) {
-                          code.set(plusPlusPlace, "    dup_x" + diff);
-                        }
-                        plusPlusHolder = null;
-
-                        // afterwards we have the value on the stack.
-                        return;
+                      emitStmt(plusPlusIncrementer);
+                      int diff = plusPlusHeight - currentStackHeight + 1;
+                      if (diff > 0) {
+                        code.set(plusPlusPlace, "    dup_x" + diff);
                       }
+                      plusPlusHolder = null;
+
+                      // afterwards we have the value on the stack.
+                      return;
+                    }
                     case 1:
                       plusPlusHeight = currentStackHeight;
                       plusPlusHolder = null;
@@ -1592,29 +1593,28 @@ public class JasminClass extends AbstractJasminClass {
                       emit("dup", 1);
 
                       return;
-                    case 10:
-                      {
-                        // this time we have ppi of the form ppv = ppv + 1
-                        plusPlusState = 11;
+                    case 10: {
+                      // this time we have ppi of the form ppv = ppv + 1
+                      plusPlusState = 11;
 
-                        //                          G.v().out.println("ppV
-                        // "+plusPlusValue);
-                        //                          G.v().out.println("ppH
-                        // "+plusPlusHolder);
-                        //                          G.v().out.println("ppI
-                        // "+plusPlusIncrementer);
+                      //                          G.v().out.println("ppV
+                      // "+plusPlusValue);
+                      //                          G.v().out.println("ppH
+                      // "+plusPlusHolder);
+                      //                          G.v().out.println("ppI
+                      // "+plusPlusIncrementer);
 
-                        plusPlusHolder = (Local) plusPlusValue;
-                        emitStmt(plusPlusIncrementer);
-                        int diff = plusPlusHeight - currentStackHeight + 1;
-                        if (diff > 0 && plusPlusState == 11) {
-                          code.set(plusPlusPlace, "    dup_x" + diff);
-                        }
-                        plusPlusHolder = null;
-
-                        // afterwards we have the value on the stack.
-                        return;
+                      plusPlusHolder = (Local) plusPlusValue;
+                      emitStmt(plusPlusIncrementer);
+                      int diff = plusPlusHeight - currentStackHeight + 1;
+                      if (diff > 0 && plusPlusState == 11) {
+                        code.set(plusPlusPlace, "    dup_x" + diff);
                       }
+                      plusPlusHolder = null;
+
+                      // afterwards we have the value on the stack.
+                      return;
+                    }
                     case 11:
                       plusPlusHeight = currentStackHeight;
                       plusPlusHolder = null;
@@ -1930,8 +1930,10 @@ public class JasminClass extends AbstractJasminClass {
                         emit("i2l", 1);
                       } else if (toType.equals(DoubleType.v())) {
                         emit("i2d", 1);
-                      } else if (toType.equals(IntType.v())) {; // this shouldn't happen?
-                      } else if (toType.equals(BooleanType.v())) {;
+                      } else if (toType.equals(IntType.v())) {
+                        ; // this shouldn't happen?
+                      } else if (toType.equals(BooleanType.v())) {
+                        ;
                       } else {
                         throw new RuntimeException(
                             "invalid toType from int: " + toType + " " + v.toString());

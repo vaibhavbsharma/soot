@@ -16,11 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+package soot.jimple.spark.geom.geomPA;
 
 import soot.Local;
 import soot.PointsToSet;
@@ -37,6 +34,10 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.toolkits.callgraph.Edge;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * A powerful interface for querying points-to results in many ways. It is an extension for SPARK
@@ -128,7 +129,9 @@ public class GeomQueries {
     //		}
   }
 
-  /** Only needed by part of the queries. Therefore, it is called on demand. */
+  /**
+   * Only needed by part of the queries. Therefore, it is called on demand.
+   */
   private void prepareIntervalPropagations() {
     if (prop_initialized) {
       return;
@@ -324,17 +327,17 @@ public class GeomQueries {
 
   /**
    * Answer contexts-go-by query.
-   *
+   * <p>
    * <p>Usually, users specify the last K paths as the context. We call it k-CFA context. However,
    * k-CFA is too restrictive. In contexts-go-by query, user specifies arbitrary call edge in the
    * call graph. The query searches for all contexts induced by the specified call edge and collect
    * points-to results under these contexts.
    *
    * @param sootEdge: the specified context edge in soot edge format
-   * @param l: the querying pointer
-   * @param visitor: container for querying result
+   * @param l:        the querying pointer
+   * @param visitor:  container for querying result
    * @return false, l does not have points-to information under the contexts induced by the given
-   *     call edge
+   * call edge
    */
   @SuppressWarnings("rawtypes")
   public boolean contextsGoBy(Edge sootEdge, Local l, PtSensVisitor visitor) {
@@ -450,9 +453,9 @@ public class GeomQueries {
    * Standard K-CFA querying for arbitrary K.
    *
    * @param callEdgeChain: last K call edges leading to the method that contains l. callEdgeChain[0]
-   *     is the farthest call edge in the chain.
-   * @param l: the querying pointer
-   * @param visitor: the querying result container
+   *                       is the farthest call edge in the chain.
+   * @param l:             the querying pointer
+   * @param visitor:       the querying result container
    * @return false, l does not have points-to information under the given context
    */
   @SuppressWarnings("rawtypes")
@@ -572,7 +575,9 @@ public class GeomQueries {
     return kCFA(callEdgeChain, l, field, visitor);
   }
 
-  /** Are the two pointers an alias with context insensitive points-to information? */
+  /**
+   * Are the two pointers an alias with context insensitive points-to information?
+   */
   public boolean isAliasCI(Local l1, Local l2) {
     PointsToSet pts1 = geomPTA.reachingObjects(l1);
     PointsToSet pts2 = geomPTA.reachingObjects(l2);
@@ -597,7 +602,9 @@ public class GeomQueries {
     return pn1.heap_sensitive_intersection(pn2);
   }
 
-  /** Decide if under any contexts, pointers @param l1 and @param l2 can be an alias. */
+  /**
+   * Decide if under any contexts, pointers @param l1 and @param l2 can be an alias.
+   */
   public boolean isAlias(Local l1, Local l2) {
     // Obtain the internal representation for querying pointers
     LocalVarNode vn1 = geomPTA.findLocalVarNode(l1);

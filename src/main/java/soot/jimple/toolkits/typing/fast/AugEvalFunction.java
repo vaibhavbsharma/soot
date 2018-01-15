@@ -18,10 +18,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.typing.fast;
 
-import java.util.Collection;
-import java.util.Collections;
+package soot.jimple.toolkits.typing.fast;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -85,17 +83,17 @@ import soot.jimple.ThisRef;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 
-/** @author Ben Bellamy */
+import java.util.Collection;
+import java.util.Collections;
+
+/**
+ * @author Ben Bellamy
+ */
 public class AugEvalFunction implements IEvalFunction {
   private JimpleBody jb;
 
   public AugEvalFunction(JimpleBody jb) {
     this.jb = jb;
-  }
-
-  @Override
-  public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
-    return Collections.singletonList(eval_(tg, expr, stmt, this.jb));
   }
 
   public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb) {
@@ -281,5 +279,10 @@ public class AugEvalFunction implements IEvalFunction {
     } else {
       throw new RuntimeException("Unhandled expression: " + expr);
     }
+  }
+
+  @Override
+  public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
+    return Collections.singletonList(eval_(tg, expr, stmt, this.jb));
   }
 }

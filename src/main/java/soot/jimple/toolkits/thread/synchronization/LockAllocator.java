@@ -1,16 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.EquivalentValue;
 import soot.G;
@@ -51,40 +40,64 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 public class LockAllocator extends SceneTransformer {
-  public LockAllocator(Singletons.Global g) {}
-
-  public static LockAllocator v() {
-    return G.v().soot_jimple_toolkits_thread_synchronization_LockAllocator();
-  }
-
   List<CriticalSection> criticalSections = null;
   CriticalSectionInterferenceGraph interferenceGraph = null;
   DirectedGraph deadlockGraph = null;
-
   // Lock options
   boolean optionOneGlobalLock = false;
   boolean optionStaticLocks = false;
   boolean optionUseLocksets = false;
   boolean optionLeaveOriginalLocks = false;
   boolean optionIncludeEmptyPossibleEdges = false;
-
   // Semantic options
   boolean optionAvoidDeadlock = true;
   boolean optionOpenNesting = true;
-
   // Analysis options
   boolean optionDoMHP = false;
   boolean optionDoTLO = false;
   boolean optionOnFlyTLO =
       false; // not a CLI option yet // on-fly is more efficient, but harder to measure in
-  // time
-
   // Output options
   boolean optionPrintMhpSummary = true; // not a CLI option yet
   boolean optionPrintGraph = false;
+  // time
   boolean optionPrintTable = false;
   boolean optionPrintDebug = false;
+  public LockAllocator(Singletons.Global g) {
+  }
+
+  public static LockAllocator v() {
+    return G.v().soot_jimple_toolkits_thread_synchronization_LockAllocator();
+  }
+
+  public static String locksetToLockNumString(
+      List<EquivalentValue> lockset, Map<Value, Integer> lockToLockNum) {
+    if (lockset == null) {
+      return "null";
+    }
+    String ret = "[";
+    boolean first = true;
+    for (EquivalentValue lockEqVal : lockset) {
+      if (!first) {
+        ret = ret + " ";
+      }
+      first = false;
+      ret = ret + lockToLockNum.get(lockEqVal.getValue());
+    }
+    return ret + "]";
+  }
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
@@ -738,23 +751,6 @@ public class LockAllocator extends SceneTransformer {
     }
   }
 
-  public static String locksetToLockNumString(
-      List<EquivalentValue> lockset, Map<Value, Integer> lockToLockNum) {
-    if (lockset == null) {
-      return "null";
-    }
-    String ret = "[";
-    boolean first = true;
-    for (EquivalentValue lockEqVal : lockset) {
-      if (!first) {
-        ret = ret + " ";
-      }
-      first = false;
-      ret = ret + lockToLockNum.get(lockEqVal.getValue());
-    }
-    return ret + "]";
-  }
-
   public void assignNamesToTransactions(List<CriticalSection> AllTransactions) {
     // Give each method a unique, deterministic identifier
     // Sort transactions into bins... one for each method name
@@ -822,26 +818,26 @@ public class LockAllocator extends SceneTransformer {
       CriticalSectionInterferenceGraph ig,
       Map<Value, Integer> lockToLockNum) {
     final String[] colors = {
-      "black",
-      "blue",
-      "blueviolet",
-      "chartreuse",
-      "crimson",
-      "darkgoldenrod1",
-      "darkseagreen",
-      "darkslategray",
-      "deeppink",
-      "deepskyblue1",
-      "firebrick1",
-      "forestgreen",
-      "gold",
-      "gray80",
-      "navy",
-      "pink",
-      "red",
-      "sienna",
-      "turquoise1",
-      "yellow"
+        "black",
+        "blue",
+        "blueviolet",
+        "chartreuse",
+        "crimson",
+        "darkgoldenrod1",
+        "darkseagreen",
+        "darkslategray",
+        "deeppink",
+        "deepskyblue1",
+        "firebrick1",
+        "forestgreen",
+        "gold",
+        "gray80",
+        "navy",
+        "pink",
+        "red",
+        "sienna",
+        "turquoise1",
+        "yellow"
     };
     Map<Integer, String> lockColors = new HashMap<>();
     int colorNum = 0;
@@ -1121,9 +1117,9 @@ public class LockAllocator extends SceneTransformer {
                     + tn.read.size()
                     + "\n[transaction-table] "
                     + tn.read
-                        .toString()
-                        .replaceAll("\\[", "     : [")
-                        .replaceAll("\n", "\n[transaction-table] "));
+                    .toString()
+                    .replaceAll("\\[", "     : [")
+                    .replaceAll("\n", "\n[transaction-table] "));
       } else {
         G.v()
             .out
@@ -1137,9 +1133,9 @@ public class LockAllocator extends SceneTransformer {
                     + tn.write.size()
                     + "\n[transaction-table] "
                     + tn.write
-                        .toString()
-                        .replaceAll("\\[", "     : [")
-                        .replaceAll("\n", "\n[transaction-table] ")); // label
+                    .toString()
+                    .replaceAll("\\[", "     : [")
+                    .replaceAll("\n", "\n[transaction-table] ")); // label
         // provided by
         // previous
         // print
@@ -1169,13 +1165,13 @@ public class LockAllocator extends SceneTransformer {
             .println(
                 "\n[transaction-table] Lock : "
                     + (tn.setNumber == -1
-                        ? "-"
-                        : (tn.lockObject == null
-                            ? "Global"
-                            : (tn.lockObject.toString()
-                                + (tn.lockObjectArrayIndex == null
-                                    ? ""
-                                    : "[" + tn.lockObjectArrayIndex + "]")))));
+                    ? "-"
+                    : (tn.lockObject == null
+                    ? "Global"
+                    : (tn.lockObject.toString()
+                    + (tn.lockObjectArrayIndex == null
+                    ? ""
+                    : "[" + tn.lockObjectArrayIndex + "]")))));
       }
       G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
     }
@@ -1193,13 +1189,13 @@ public class LockAllocator extends SceneTransformer {
             .print(
                 "Locking: "
                     + (tnGroup.useLocksets
-                        ? "using "
-                        : (tnGroup.isDynamicLock && tnGroup.useDynamicLock
-                            ? "Dynamic on "
-                            : "Static on "))
+                    ? "using "
+                    : (tnGroup.isDynamicLock && tnGroup.useDynamicLock
+                    ? "Dynamic on "
+                    : "Static on "))
                     + (tnGroup.useLocksets
-                        ? "locksets"
-                        : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())));
+                    ? "locksets"
+                    : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())));
         G.v().out.print("\n[transaction-groups]      : ");
         Iterator<CriticalSection> tnIt = AllTransactions.iterator();
         while (tnIt.hasNext()) {
@@ -1213,10 +1209,10 @@ public class LockAllocator extends SceneTransformer {
             .print(
                 "\n[transaction-groups] "
                     + tnGroup
-                        .rwSet
-                        .toString()
-                        .replaceAll("\\[", "     : [")
-                        .replaceAll("\n", "\n[transaction-groups] "));
+                    .rwSet
+                    .toString()
+                    .replaceAll("\\[", "     : [")
+                    .replaceAll("\n", "\n[transaction-groups] "));
       }
     }
     G.v().out.print("Erasing \n[transaction-groups]      : ");

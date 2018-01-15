@@ -17,15 +17,15 @@ import soot.jimple.NumericConstant;
 import soot.jimple.SubExpr;
 
 /*
-* x = 2+3  should be simplified to x =5
-* 4l -3l should be 1l DONE
+ * x = 2+3  should be simplified to x =5
+ * 4l -3l should be 1l DONE
 
-* Unary Condition:DONT NEED TO HANDLE IT since what would simplify
-* in a boolean flag which is what unary conditions are
-*
-* Binary Codition: has a ConditionExpr stored in it not a valuebox???
-* all other expression to be handled by caseExprOrRefValueBox
-*/
+ * Unary Condition:DONT NEED TO HANDLE IT since what would simplify
+ * in a boolean flag which is what unary conditions are
+ *
+ * Binary Codition: has a ConditionExpr stored in it not a valuebox???
+ * all other expression to be handled by caseExprOrRefValueBox
+ */
 
 public class SimplifyExpressions extends DepthFirstAdapter {
   public static boolean DEBUG = false;

@@ -1,13 +1,13 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import soot.toolkits.graph.DirectedGraph;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import soot.toolkits.graph.DirectedGraph;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -22,10 +22,10 @@ import soot.toolkits.graph.DirectedGraph;
 
 public class SCC {
 
-  private Set<Object> gray;
   //	private int time;
   private final LinkedList<Object> finishedOrder;
   private final List<List<Object>> sccList;
+  private Set<Object> gray;
 
   //    public SCC(Chain chain, DirectedGraph g){
   public SCC(Iterator it, DirectedGraph g) {

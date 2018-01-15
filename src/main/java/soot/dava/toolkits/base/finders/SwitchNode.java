@@ -19,14 +19,14 @@
 
 package soot.dava.toolkits.base.finders;
 
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.util.IterableSet;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
-
-import soot.dava.internal.asg.AugmentedStmt;
-import soot.util.IterableSet;
 
 public class SwitchNode implements Comparable {
   private final LinkedList preds, succs;

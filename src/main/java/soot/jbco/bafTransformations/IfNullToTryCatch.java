@@ -19,9 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -39,23 +36,24 @@ import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.NullConstant;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 20-Jun-2006
+ * <p>Created on 20-Jun-2006
  */
 public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform {
 
+  public static String dependancies[] = new String[] {"bb.jbco_riitcb", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_riitcb";
   int count = 0;
   int totalifs = 0;
-
-  public static String dependancies[] = new String[] {"bb.jbco_riitcb", "bb.jbco_ful", "bb.lp"};
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_riitcb";
 
   @Override
   public String getName() {

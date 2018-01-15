@@ -30,7 +30,8 @@ import soot.Singletons;
 import soot.Type;
 
 public class Double2ndHalfType extends Type {
-  public Double2ndHalfType(Singletons.Global g) {}
+  public Double2ndHalfType(Singletons.Global g) {
+  }
 
   public static Double2ndHalfType v() {
     return G.v().soot_coffi_Double2ndHalfType();

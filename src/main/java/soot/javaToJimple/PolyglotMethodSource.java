@@ -19,10 +19,6 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import soot.MethodSource;
@@ -30,6 +26,10 @@ import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class PolyglotMethodSource implements MethodSource {
 
@@ -68,44 +68,44 @@ public class PolyglotMethodSource implements MethodSource {
     this.ajbb = ajbb;
   }
 
-  public void setFieldInits(ArrayList<FieldDecl> fieldInits) {
-    this.fieldInits = fieldInits;
-  }
-
-  public void setStaticFieldInits(ArrayList<FieldDecl> staticFieldInits) {
-    this.staticFieldInits = staticFieldInits;
-  }
-
   public ArrayList<FieldDecl> getFieldInits() {
     return fieldInits;
+  }
+
+  public void setFieldInits(ArrayList<FieldDecl> fieldInits) {
+    this.fieldInits = fieldInits;
   }
 
   public ArrayList<FieldDecl> getStaticFieldInits() {
     return staticFieldInits;
   }
 
-  public void setStaticInitializerBlocks(ArrayList<Block> staticInits) {
-    staticInitializerBlocks = staticInits;
-  }
-
-  public void setInitializerBlocks(ArrayList<Block> inits) {
-    initializerBlocks = inits;
+  public void setStaticFieldInits(ArrayList<FieldDecl> staticFieldInits) {
+    this.staticFieldInits = staticFieldInits;
   }
 
   public ArrayList<Block> getStaticInitializerBlocks() {
     return staticInitializerBlocks;
   }
 
+  public void setStaticInitializerBlocks(ArrayList<Block> staticInits) {
+    staticInitializerBlocks = staticInits;
+  }
+
   public ArrayList<Block> getInitializerBlocks() {
     return initializerBlocks;
   }
 
-  public void setOuterClassThisInit(soot.Local l) {
-    outerClassThisInit = l;
+  public void setInitializerBlocks(ArrayList<Block> inits) {
+    initializerBlocks = inits;
   }
 
   public soot.Local getOuterClassThisInit() {
     return outerClassThisInit;
+  }
+
+  public void setOuterClassThisInit(soot.Local l) {
+    outerClassThisInit = l;
   }
 
   public boolean hasAssert() {
@@ -267,19 +267,19 @@ public class PolyglotMethodSource implements MethodSource {
     body.getUnits().add(fAssign);
   }
 
-  public void setFinalsList(ArrayList<SootField> list) {
-    finalsList = list;
-  }
-
   public ArrayList<SootField> getFinalsList() {
     return finalsList;
   }
 
-  public void setNewToOuterMap(HashMap map) {
-    newToOuterMap = map;
+  public void setFinalsList(ArrayList<SootField> list) {
+    finalsList = list;
   }
 
   public HashMap getNewToOuterMap() {
     return newToOuterMap;
+  }
+
+  public void setNewToOuterMap(HashMap map) {
+    newToOuterMap = map;
   }
 }

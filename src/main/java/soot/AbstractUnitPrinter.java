@@ -19,23 +19,31 @@
 
 package soot;
 
-import java.util.HashSet;
-
 import soot.jimple.Constant;
 import soot.jimple.IdentityRef;
 import soot.jimple.Jimple;
 
-/** Partial default UnitPrinter implementation. */
+import java.util.HashSet;
+
+/**
+ * Partial default UnitPrinter implementation.
+ */
 public abstract class AbstractUnitPrinter implements UnitPrinter {
-  @Override
-  public void setPositionTagger(AttributesUnitPrinter pt) {
-    this.pt = pt;
-    pt.setUnitPrinter(this);
-  }
+  protected boolean startOfLine = true;
+  protected String indent = "        ";
+  protected StringBuffer output = new StringBuffer();
+  protected AttributesUnitPrinter pt;
+  protected HashSet<String> quotableLocals;
 
   @Override
   public AttributesUnitPrinter getPositionTagger() {
     return pt;
+  }
+
+  @Override
+  public void setPositionTagger(AttributesUnitPrinter pt) {
+    this.pt = pt;
+    pt.setUnitPrinter(this);
   }
 
   @Override
@@ -59,7 +67,8 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
   }
 
   @Override
-  public void endUnitBox(UnitBox ub) {}
+  public void endUnitBox(UnitBox ub) {
+  }
 
   @Override
   public void startValueBox(ValueBox vb) {
@@ -94,13 +103,13 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
   }
 
   @Override
-  public void setIndent(String indent) {
-    this.indent = indent;
+  public String getIndent() {
+    return indent;
   }
 
   @Override
-  public String getIndent() {
-    return indent;
+  public void setIndent(String indent) {
+    this.indent = indent;
   }
 
   @Override
@@ -172,10 +181,4 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
     quotableLocals = new HashSet<>();
     quotableLocals.addAll(Jimple.jimpleKeywordList());
   }
-
-  protected boolean startOfLine = true;
-  protected String indent = "        ";
-  protected StringBuffer output = new StringBuffer();
-  protected AttributesUnitPrinter pt;
-  protected HashSet<String> quotableLocals;
 }

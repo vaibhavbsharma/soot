@@ -32,7 +32,10 @@ import soot.ValueBox;
 
 public interface IfStmt extends Stmt {
   Value getCondition();
-  /** condition must be soot.jimple.ConditionExpr */
+
+  /**
+   * condition must be soot.jimple.ConditionExpr
+   */
   void setCondition(Value condition);
 
   ValueBox getConditionBox();

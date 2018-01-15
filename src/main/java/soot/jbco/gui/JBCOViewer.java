@@ -1,13 +1,5 @@
 package soot.jbco.gui;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -33,6 +25,13 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free
@@ -44,6 +43,68 @@ import javax.swing.event.ListSelectionListener;
  */
 public class JBCOViewer extends javax.swing.JFrame {
 
+  static int previousSelected = -1;
+  static ListModel models[] = new ListModel[20];
+  static String[][] optionStrings =
+      new String[][] {
+          {
+              "Rename Classes",
+              "Rename Methods",
+              "Rename Fields",
+              "Build API Buffer Methods",
+              "Build Library Buffer Classes",
+              "Goto Instruction Augmentation",
+              "Add Dead Switch Statements",
+              "Convert Arith. Expr. To Bit Ops",
+              "Convert Branches to JSR Instructions",
+              "Disobey Constructor Conventions",
+              "Reuse Duplicate Sequences",
+              "Replace If(Non)Nulls with Try-Catch",
+              "Indirect If Instructions",
+              "Pack Locals into Bitfields",
+              "Reorder Loads Above Ifs",
+              "Combine Try and Catch Blocks",
+              "Embed Constants in Fields",
+              "Partially Trap Switches"
+          },
+          {
+              "wjtp.jbco_cr",
+              "wjtp.jbco_mr",
+              "wjtp.jbco_fr",
+              "wjtp.jbco_bapibm",
+              "wjtp.jbco_blbc",
+              "jtp.jbco_gia",
+              "jtp.jbco_adss",
+              "jtp.jbco_cae2bo",
+              "bb.jbco_cb2ji",
+              "bb.jbco_dcc",
+              "bb.jbco_rds",
+              "bb.jbco_riitcb",
+              "bb.jbco_iii",
+              "bb.jbco_plvb",
+              "bb.jbco_rlaii",
+              "bb.jbco_ctbcb",
+              "bb.jbco_ecvf",
+              "bb.jbco_ptss"
+          }
+      };
+  static int[][] defaultWeights =
+      new int[][] {
+          {
+              9, 9, 9, 9, 9, 9, 6, 9, 0, 0, 3, 9, 6, 3, 9, 9, 0, 0,
+          },
+          {
+              0, 0, 0, 0, 9, 6, 0, 9, 9, 9, 0, 9, 0, 0, 9, 9, 0, 9,
+          },
+          {
+              5, 5, 5, 6, 9, 9, 5, 9, 9, 5, 7, 9, 9, 2, 9, 9, 0, 9,
+          }
+      };
+  static String[] arguments = null;
+  public JMenuItem openFileMenuItem;
+  public JMenuItem newFileMenuItem;
+  public JTextArea TextAreaOutput;
+  public JScrollPane jScrollPane1;
   private JMenuItem speedMenuItem;
   private JMenuItem sizeMenuItem;
   private JMenuItem protMenuItem;
@@ -62,8 +123,6 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JTextField ClasspathTextField;
   private JLabel LabelClassPath;
   private JTextField TextFieldMain;
-  public JMenuItem openFileMenuItem;
-  public JMenuItem newFileMenuItem;
   private JMenu jMenu3;
   private JMenuBar jMenuBar1;
   private JTextPane jTextPane1;
@@ -71,8 +130,6 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JTextField WorkingDirTextField;
   private JLabel LabelWorkingDir;
   private JTextPane DefaultClassPathPane;
-  public JTextArea TextAreaOutput;
-  public JScrollPane jScrollPane1;
   private JPanel jPanel2;
   private JTextField TextFieldMinMem;
   private JButton ButtonAddItem;
@@ -94,75 +151,18 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JFrame thisRef;
   private RunnerThread runner;
 
-  static int previousSelected = -1;
-  static ListModel models[] = new ListModel[20];
-  static String[][] optionStrings =
-      new String[][] {
-        {
-          "Rename Classes",
-          "Rename Methods",
-          "Rename Fields",
-          "Build API Buffer Methods",
-          "Build Library Buffer Classes",
-          "Goto Instruction Augmentation",
-          "Add Dead Switch Statements",
-          "Convert Arith. Expr. To Bit Ops",
-          "Convert Branches to JSR Instructions",
-          "Disobey Constructor Conventions",
-          "Reuse Duplicate Sequences",
-          "Replace If(Non)Nulls with Try-Catch",
-          "Indirect If Instructions",
-          "Pack Locals into Bitfields",
-          "Reorder Loads Above Ifs",
-          "Combine Try and Catch Blocks",
-          "Embed Constants in Fields",
-          "Partially Trap Switches"
-        },
-        {
-          "wjtp.jbco_cr",
-          "wjtp.jbco_mr",
-          "wjtp.jbco_fr",
-          "wjtp.jbco_bapibm",
-          "wjtp.jbco_blbc",
-          "jtp.jbco_gia",
-          "jtp.jbco_adss",
-          "jtp.jbco_cae2bo",
-          "bb.jbco_cb2ji",
-          "bb.jbco_dcc",
-          "bb.jbco_rds",
-          "bb.jbco_riitcb",
-          "bb.jbco_iii",
-          "bb.jbco_plvb",
-          "bb.jbco_rlaii",
-          "bb.jbco_ctbcb",
-          "bb.jbco_ecvf",
-          "bb.jbco_ptss"
-        }
-      };
+  public JBCOViewer() {
+    super();
+    initGUI();
+  }
 
-  static int[][] defaultWeights =
-      new int[][] {
-        {
-          9, 9, 9, 9, 9, 9, 6, 9, 0, 0, 3, 9, 6, 3, 9, 9, 0, 0,
-        },
-        {
-          0, 0, 0, 0, 9, 6, 0, 9, 9, 9, 0, 9, 0, 0, 9, 9, 0, 9,
-        },
-        {
-          5, 5, 5, 6, 9, 9, 5, 9, 9, 5, 7, 9, 9, 2, 9, 9, 0, 9,
-        }
-      };
-  static String[] arguments = null;
-  /** Auto-generated main method to display this JFrame */
+  /**
+   * Auto-generated main method to display this JFrame
+   */
   public static void main(String[] args) {
     arguments = args;
     JBCOViewer inst = new JBCOViewer();
     inst.setVisible(true);
-  }
-
-  public JBCOViewer() {
-    super();
-    initGUI();
   }
 
   private void initGUI() {
@@ -778,13 +778,13 @@ public class JBCOViewer extends javax.swing.JFrame {
                     String[] cmdarray =
                         new String
                             [6
-                                + (customclasspath ? 0 : 2)
-                                + vmargs.length
-                                + transforms.length
-                                + (RadioSummary.isSelected() ? 1 : 0)
-                                + (RadioVerbose.isSelected() ? 1 : 0)
-                                + (DebugRadio.isSelected() ? 1 : 0)
-                                + (outdir.length() > 0 ? 2 : 0)];
+                            + (customclasspath ? 0 : 2)
+                            + vmargs.length
+                            + transforms.length
+                            + (RadioSummary.isSelected() ? 1 : 0)
+                            + (RadioVerbose.isSelected() ? 1 : 0)
+                            + (DebugRadio.isSelected() ? 1 : 0)
+                            + (outdir.length() > 0 ? 2 : 0)];
                     cmdarray[index++] = "java";
                     if (!customclasspath) {
                       cmdarray[index++] = "-cp";

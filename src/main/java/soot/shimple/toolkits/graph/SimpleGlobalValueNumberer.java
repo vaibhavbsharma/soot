@@ -19,14 +19,6 @@
 
 package soot.shimple.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -38,6 +30,14 @@ import soot.shimple.toolkits.graph.ValueGraph.Node;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.CompleteBlockGraph;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected BlockGraph cfg;
   protected ValueGraph vg;
@@ -45,6 +45,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected Map<Node, Partition> nodeToPartition;
 
   protected int currentPartitionNumber;
+  protected List<Partition> newPartitions;
 
   public SimpleGlobalValueNumberer(BlockGraph cfg) {
     this.cfg = cfg;
@@ -104,8 +105,6 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
       nodeToPartition.put(node, partition);
     }
   }
-
-  protected List<Partition> newPartitions;
 
   protected void iterPartition() {
     newPartitions = new ArrayList<>();

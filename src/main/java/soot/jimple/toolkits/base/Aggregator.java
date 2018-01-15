@@ -27,12 +27,6 @@
 
 package soot.jimple.toolkits.base;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -59,73 +53,18 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public class Aggregator extends BodyTransformer {
-  public Aggregator(Singletons.Global g) {}
+  public Aggregator(Singletons.Global g) {
+  }
 
   public static Aggregator v() {
     return G.v().soot_jimple_toolkits_base_Aggregator();
-  }
-
-  /**
-   * Traverse the statements in the given body, looking for aggregation possibilities; that is,
-   * given a def d and a use u, d has no other uses, u has no other defs, collapse d and u.
-   *
-   * <p>option: only-stack-locals; if this is true, only aggregate variables starting with $
-   */
-  @Override
-  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    StmtBody body = (StmtBody) b;
-    boolean onlyStackVars = PhaseOptions.getBoolean(options, "only-stack-locals");
-
-    if (Options.v().time()) {
-      Timers.v().aggregationTimer.start();
-    }
-
-    int aggregateCount = 1;
-
-    boolean changed = false;
-
-    Map<ValueBox, Zone> boxToZone = new HashMap<>(body.getUnits().size() * 2 + 1, 0.7f);
-
-    // Determine the zone of every box
-    {
-      Zonation zonation = new Zonation(body);
-
-      for (Unit u : body.getUnits()) {
-        Zone zone = zonation.getZoneOf(u);
-
-        for (ValueBox box : u.getUseBoxes()) {
-          boxToZone.put(box, zone);
-        }
-
-        for (ValueBox box : u.getDefBoxes()) {
-          boxToZone.put(box, zone);
-        }
-      }
-    }
-
-    do {
-      if (Options.v().verbose()) {
-        G.v()
-            .out
-            .println(
-                "["
-                    + body.getMethod().getName()
-                    + "] Aggregating iteration "
-                    + aggregateCount
-                    + "...");
-      }
-
-      // body.printTo(new java.io.PrintWriter(G.v().out, true));
-
-      changed = internalAggregate(body, boxToZone, onlyStackVars);
-
-      aggregateCount++;
-    } while (changed);
-
-    if (Options.v().time()) {
-      Timers.v().aggregationTimer.end();
-    }
   }
 
   private static boolean internalAggregate(
@@ -359,5 +298,67 @@ public class Aggregator extends BodyTransformer {
       return false;
     }
     return defstmt.getLeftOp() instanceof Local;
+  }
+
+  /**
+   * Traverse the statements in the given body, looking for aggregation possibilities; that is,
+   * given a def d and a use u, d has no other uses, u has no other defs, collapse d and u.
+   * <p>
+   * <p>option: only-stack-locals; if this is true, only aggregate variables starting with $
+   */
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    StmtBody body = (StmtBody) b;
+    boolean onlyStackVars = PhaseOptions.getBoolean(options, "only-stack-locals");
+
+    if (Options.v().time()) {
+      Timers.v().aggregationTimer.start();
+    }
+
+    int aggregateCount = 1;
+
+    boolean changed = false;
+
+    Map<ValueBox, Zone> boxToZone = new HashMap<>(body.getUnits().size() * 2 + 1, 0.7f);
+
+    // Determine the zone of every box
+    {
+      Zonation zonation = new Zonation(body);
+
+      for (Unit u : body.getUnits()) {
+        Zone zone = zonation.getZoneOf(u);
+
+        for (ValueBox box : u.getUseBoxes()) {
+          boxToZone.put(box, zone);
+        }
+
+        for (ValueBox box : u.getDefBoxes()) {
+          boxToZone.put(box, zone);
+        }
+      }
+    }
+
+    do {
+      if (Options.v().verbose()) {
+        G.v()
+            .out
+            .println(
+                "["
+                    + body.getMethod().getName()
+                    + "] Aggregating iteration "
+                    + aggregateCount
+                    + "...");
+      }
+
+      // body.printTo(new java.io.PrintWriter(G.v().out, true));
+
+      changed = internalAggregate(body, boxToZone, onlyStackVars);
+
+      aggregateCount++;
+    } while (changed);
+
+    if (Options.v().time()) {
+      Timers.v().aggregationTimer.end();
+    }
   }
 }

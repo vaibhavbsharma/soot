@@ -25,6 +25,11 @@
 
 package soot.util;
 
+import soot.Unit;
+import soot.UnitBox;
+import soot.jimple.GotoStmt;
+import soot.jimple.internal.JGotoStmt;
+
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
@@ -36,18 +41,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import soot.Unit;
-import soot.UnitBox;
-import soot.jimple.GotoStmt;
-import soot.jimple.internal.JGotoStmt;
-
-/** Reference implementation of the Chain interface, using a HashMap as the underlying structure. */
+/**
+ * Reference implementation of the Chain interface, using a HashMap as the underlying structure.
+ */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
-  protected Map<E, Link<E>> map = new ConcurrentHashMap<>();
-  protected E firstItem;
-  protected E lastItem;
-  protected int stateCount = 0;
-
   @SuppressWarnings("rawtypes")
   protected static final Iterator<?> emptyIterator =
       new Iterator() {
@@ -67,8 +64,48 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
           // do nothing
         }
       };
+  protected Map<E, Link<E>> map = new ConcurrentHashMap<>();
+  protected E firstItem;
+  protected E lastItem;
+  protected int stateCount = 0;
 
-  /** Erases the contents of the current HashChain. */
+  /**
+   * Constructs an empty HashChain.
+   */
+  public HashChain() {
+    firstItem = lastItem = null;
+  }
+
+  /**
+   * Constructs a HashChain filled with the contents of the src Chain.
+   */
+  public HashChain(Chain<E> src) {
+    this();
+    addAll(src);
+  }
+
+  /**
+   * Returns an unbacked list containing the contents of the given Chain.
+   *
+   * @deprecated you can use <code>new ArrayList<E>(c)</code> instead
+   */
+  @Deprecated
+  public static <E> List<E> toList(Chain<E> c) {
+    return new ArrayList<>(c);
+  }
+
+  public static <T> HashChain<T> listToHashChain(List<T> list) {
+    HashChain<T> c = new HashChain<>();
+    Iterator<T> it = list.iterator();
+    while (it.hasNext()) {
+      c.addLast(it.next());
+    }
+    return c;
+  }
+
+  /**
+   * Erases the contents of the current HashChain.
+   */
   @Override
   public void clear() {
     stateCount++;
@@ -82,7 +119,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     remove(out);
   }
 
-  /** Adds the given object to this HashChain. */
+  /**
+   * Adds the given object to this HashChain.
+   */
   @Override
   public boolean add(E item) {
     addLast(item);
@@ -97,27 +136,6 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   @Override
   public Collection<E> getElementsUnsorted() {
     return map.keySet();
-  }
-
-  /**
-   * Returns an unbacked list containing the contents of the given Chain.
-   *
-   * @deprecated you can use <code>new ArrayList<E>(c)</code> instead
-   */
-  @Deprecated
-  public static <E> List<E> toList(Chain<E> c) {
-    return new ArrayList<>(c);
-  }
-
-  /** Constructs an empty HashChain. */
-  public HashChain() {
-    firstItem = lastItem = null;
-  }
-
-  /** Constructs a HashChain filled with the contents of the src Chain. */
-  public HashChain(Chain<E> src) {
-    this();
-    addAll(src);
   }
 
   @Override
@@ -238,7 +256,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert the instrumentation to be added in the Chain
+   * @param toInsert  the instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
@@ -255,7 +273,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert instrumentation to be added in the Chain
+   * @param toInsert  instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
@@ -378,7 +396,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert instrumentation to be added in the Chain
+   * @param toInsert  instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
@@ -392,22 +410,13 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert instrumentation to be added in the Chain
+   * @param toInsert  instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
   @Override
   public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt) {
     insertOnEdge((Collection<E>) toInsert, point_src, point_tgt);
-  }
-
-  public static <T> HashChain<T> listToHashChain(List<T> list) {
-    HashChain<T> c = new HashChain<>();
-    Iterator<T> it = list.iterator();
-    while (it.hasNext()) {
-      c.addLast(it.next());
-    }
-    return c;
   }
 
   @Override
@@ -579,7 +588,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   /**
    * Returns an iterator ranging from <code>head</code> to <code>tail</code>, inclusive.
-   *
+   * <p>
    * <p>If <code>tail</code> is the element immediately preceding <code>head</code> in this <code>
    * HashChain</code>, the returned iterator will iterate 0 times (a special case to allow the
    * specification of an empty range of elements). Otherwise if <code>tail</code> is not one of the
@@ -605,7 +614,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     return map.size();
   }
 
-  /** Returns a textual representation of the contents of this Chain. */
+  /**
+   * Returns a textual representation of the contents of this Chain.
+   */
   @Override
   public String toString() {
     StringBuilder strBuf = new StringBuilder();
@@ -626,6 +637,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     return strBuf.toString();
   }
 
+  /**
+   * Returns the number of times this chain has been modified.
+   */
+  @Override
+  public long getModificationCount() {
+    return stateCount;
+  }
+
   @SuppressWarnings("serial")
   protected class Link<X extends E> implements Serializable {
     private Link<X> nextLink;
@@ -641,12 +660,12 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
       return nextLink;
     }
 
-    public Link<X> getPrevious() {
-      return previousLink;
-    }
-
     public void setNext(Link<X> link) {
       this.nextLink = link;
+    }
+
+    public Link<X> getPrevious() {
+      return previousLink;
     }
 
     public void setPrevious(Link<X> link) {
@@ -702,10 +721,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   }
 
   protected class LinkIterator<X extends E> implements Iterator<E> {
-    private Link<E> currentLink;
     boolean state; // only when this is true can remove() be called
+    private Link<E> currentLink;
     // (in accordance w/ iterator semantics)
-
     private X destination;
     private int iteratorStateCount;
 
@@ -791,11 +809,5 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
         return currentLink.toString();
       }
     }
-  }
-
-  /** Returns the number of times this chain has been modified. */
-  @Override
-  public long getModificationCount() {
-    return stateCount;
   }
 }

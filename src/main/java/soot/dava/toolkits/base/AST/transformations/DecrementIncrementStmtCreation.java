@@ -37,7 +37,8 @@ import soot.jimple.SubExpr;
  */
 public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
 
-  public DecrementIncrementStmtCreation() {}
+  public DecrementIncrementStmtCreation() {
+  }
 
   public DecrementIncrementStmtCreation(boolean verbose) {
     super(verbose);

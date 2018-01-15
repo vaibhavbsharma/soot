@@ -25,18 +25,21 @@
 
 package soot.coffi;
 
-import java.io.PrintStream;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.Type;
 
+import java.io.PrintStream;
+
 class TypeArray {
   private Type[] types;
 
-  private TypeArray() {}
+  private TypeArray() {
+  }
 
-  /** Returns an empty array of types. */
+  /**
+   * Returns an empty array of types.
+   */
   public static TypeArray v(int size) {
     TypeArray newArray = new TypeArray();
 

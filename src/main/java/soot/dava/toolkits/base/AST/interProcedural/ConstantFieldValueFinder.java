@@ -19,10 +19,6 @@
 
 package soot.dava.toolkits.base.AST.interProcedural;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -54,6 +50,10 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 /*
  * Deemed important because of obfuscation techniques which add crazy
  * control flow under some condition which is never executed because
@@ -66,10 +66,8 @@ import soot.util.Chain;
  *
  */
 public class ConstantFieldValueFinder {
-  public final boolean DEBUG = false;
-
   public static String combiner = "_$p$g_";
-
+  public final boolean DEBUG = false;
   HashMap<String, SootField> classNameFieldNameToSootFieldMapping = new HashMap<>();
 
   HashMap<String, ArrayList> fieldToValues = new HashMap<>();
@@ -146,8 +144,8 @@ public class ConstantFieldValueFinder {
             value = new Boolean(true);
           }
         } else if ((fieldType instanceof IntType
-                || fieldType instanceof ByteType
-                || fieldType instanceof ShortType)
+            || fieldType instanceof ByteType
+            || fieldType instanceof ShortType)
             && f.hasTag("IntegerConstantValueTag")) {
           int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
           value = new Integer(val);
@@ -178,8 +176,8 @@ public class ConstantFieldValueFinder {
           } else if (fieldType instanceof BooleanType) {
             value = new Boolean(false);
           } else if ((fieldType instanceof IntType
-                  || fieldType instanceof ByteType
-                  || fieldType instanceof ShortType)
+              || fieldType instanceof ByteType
+              || fieldType instanceof ShortType)
               || fieldType instanceof CharType) {
             value = new Integer(0);
           } else {

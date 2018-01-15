@@ -19,10 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.SootClass;
@@ -36,6 +32,10 @@ import soot.dava.internal.AST.ASTSwitchNode;
 import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -57,14 +57,16 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
 public class ASTCleaner extends DepthFirstAdapter {
 
-  public ASTCleaner() {}
+  public ASTCleaner() {
+  }
 
   public ASTCleaner(boolean verbose) {
     super(verbose);
   }
 
   @Override
-  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
+  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
+  }
 
   /*
     Note the ASTNode in this case can be any of the following:

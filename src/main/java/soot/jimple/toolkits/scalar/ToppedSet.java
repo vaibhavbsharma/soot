@@ -25,12 +25,12 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.toolkits.scalar.AbstractFlowSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents information for flow analysis, adding a top element to a lattice. A FlowSet is an
@@ -41,16 +41,16 @@ public class ToppedSet<T> extends AbstractFlowSet<T> {
   FlowSet<T> underlyingSet;
   boolean isTop;
 
-  public void setTop(boolean top) {
-    isTop = top;
+  public ToppedSet(FlowSet<T> under) {
+    underlyingSet = under;
   }
 
   public boolean isTop() {
     return isTop;
   }
 
-  public ToppedSet(FlowSet<T> under) {
-    underlyingSet = under;
+  public void setTop(boolean top) {
+    isTop = top;
   }
 
   @Override

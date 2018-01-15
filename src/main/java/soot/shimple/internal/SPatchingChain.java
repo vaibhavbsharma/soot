@@ -19,14 +19,6 @@
 
 package soot.shimple.internal;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.G;
 import soot.PatchingChain;
@@ -41,6 +33,14 @@ import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Internal Shimple extension of PatchingChain.
  *
@@ -48,9 +48,23 @@ import soot.util.MultiMap;
  * @see soot.PatchingChain
  */
 public class SPatchingChain extends PatchingChain<Unit> {
-  /** Needed to find non-trapped Units of the body. */
+  /**
+   * Map from UnitBox to the Phi node owning it.
+   */
+  protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<>();
+  /**
+   * Set of the values of boxToPhiNode. Used to allow O(1) contains() on the values.
+   */
+  protected Set<Unit> phiNodeSet = new HashSet<>();
+  /**
+   * Flag that indicates whether control flow falls through from the box to the Phi node. null
+   * indicates we probably need a call to computeInternal().
+   */
+  protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<>();
+  /**
+   * Needed to find non-trapped Units of the body.
+   */
   Body body = null;
-
   boolean debug;
 
   public SPatchingChain(Body aBody, Chain<Unit> aChain) {
@@ -219,17 +233,6 @@ public class SPatchingChain extends PatchingChain<Unit> {
     return super.remove(obj);
   }
 
-  /** Map from UnitBox to the Phi node owning it. */
-  protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<>();
-  /** Set of the values of boxToPhiNode. Used to allow O(1) contains() on the values. */
-  protected Set<Unit> phiNodeSet = new HashSet<>();
-
-  /**
-   * Flag that indicates whether control flow falls through from the box to the Phi node. null
-   * indicates we probably need a call to computeInternal().
-   */
-  protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<>();
-
   protected void processPhiNode(Unit o) {
     Unit phiNode = o;
     PhiExpr phi = Shimple.getPhiExpr(phiNode);
@@ -354,6 +357,21 @@ public class SPatchingChain extends PatchingChain<Unit> {
     return (SUnitBox) box;
   }
 
+  @Override
+  public Iterator<Unit> iterator() {
+    return new SPatchingIterator(innerChain);
+  }
+
+  @Override
+  public Iterator<Unit> iterator(Unit u) {
+    return new SPatchingIterator(innerChain, u);
+  }
+
+  @Override
+  public Iterator<Unit> iterator(Unit head, Unit tail) {
+    return new SPatchingIterator(innerChain, head, tail);
+  }
+
   protected class SPatchingIterator extends PatchingIterator {
     SPatchingIterator(Chain<Unit> innerChain) {
       super(innerChain);
@@ -387,20 +405,5 @@ public class SPatchingChain extends PatchingChain<Unit> {
       innerIterator.remove();
       victim.redirectJumpsToThisTo(successor);
     }
-  }
-
-  @Override
-  public Iterator<Unit> iterator() {
-    return new SPatchingIterator(innerChain);
-  }
-
-  @Override
-  public Iterator<Unit> iterator(Unit u) {
-    return new SPatchingIterator(innerChain, u);
-  }
-
-  @Override
-  public Iterator<Unit> iterator(Unit head, Unit tail) {
-    return new SPatchingIterator(innerChain, head, tail);
   }
 }

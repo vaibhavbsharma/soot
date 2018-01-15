@@ -25,14 +25,14 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InstanceInvokeExpr;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
@@ -51,13 +51,13 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
   }
 
   @Override
-  public ValueBox getBaseBox() {
-    return baseBox;
+  public void setBase(Value base) {
+    baseBox.setValue(base);
   }
 
   @Override
-  public void setBase(Value base) {
-    baseBox.setValue(base);
+  public ValueBox getBaseBox() {
+    return baseBox;
   }
 
   @Override

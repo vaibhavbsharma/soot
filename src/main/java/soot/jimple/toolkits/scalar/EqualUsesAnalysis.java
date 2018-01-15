@@ -1,13 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.EquivalentValue;
 import soot.Local;
 import soot.Unit;
@@ -20,6 +12,14 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 // EqualUsesAnalysis written by Richard L. Halpert, 2006-12-04
 // Determines if a set of uses of locals all use the same value
 // whenever they occur together.  Can accept a set of boundary
@@ -29,7 +29,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
  * @deprecated This class is buggy. Please use soot.jimple.toolkits.pointer.LocalMustAliasAnalysis
- *     instead.
+ * instead.
  */
 @Deprecated
 public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {

@@ -26,9 +26,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.SideEffectTester;
 import soot.Unit;
@@ -42,6 +39,9 @@ import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Performs an UpSafe-analysis on the given graph. An expression is upsafe, if the computation
  * already has been performed on every path from START to the given program-point.
@@ -53,7 +53,9 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
 
   private BoundedFlowSet<EquivalentValue> set;
 
-  /** This constructor should not be used, and will throw a runtime-exception! */
+  /**
+   * This constructor should not be used, and will throw a runtime-exception!
+   */
   public UpSafetyAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
@@ -65,8 +67,8 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
    * the result of the analysis is as usual in FlowBefore (getFlowBefore()) and FlowAfter
    * (getFlowAfter()).<br>
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param unitToGen the EquivalentValue of each unit.
+   * @param dg         a ExceptionalUnitGraph
+   * @param unitToGen  the EquivalentValue of each unit.
    * @param sideEffect the SideEffectTester that will be used to perform kills.
    */
   public UpSafetyAnalysis(
@@ -85,10 +87,10 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
    * As usually flowset-operations are more efficient if shared, this allows to share sets over
    * several analyses.
    *
-   * @param dg a ExceptionalUnitGraph
-   * @param unitToGen the EquivalentValue of each unit.
+   * @param dg         a ExceptionalUnitGraph
+   * @param unitToGen  the EquivalentValue of each unit.
    * @param sideEffect the SideEffectTester that will be used to perform kills.
-   * @param set a bounded flow-set.
+   * @param set        a bounded flow-set.
    */
   public UpSafetyAnalysis(
       DirectedGraph<Unit> dg,

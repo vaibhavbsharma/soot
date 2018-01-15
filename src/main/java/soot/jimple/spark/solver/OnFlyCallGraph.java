@@ -55,14 +55,7 @@ public class OnFlyCallGraph {
   private final QueueReader<MethodOrMethodContext> reachablesReader;
   private final QueueReader<Edge> callEdges;
   private final CallGraph callGraph;
-
-  public ReachableMethods reachableMethods() {
-    return reachableMethods;
-  }
-
-  public CallGraph callGraph() {
-    return callGraph;
-  }
+  private PAG pag;
 
   public OnFlyCallGraph(PAG pag, boolean appOnly) {
     this.pag = pag;
@@ -73,6 +66,14 @@ public class OnFlyCallGraph {
     ofcgb = new OnFlyCallGraphBuilder(cm, reachableMethods, appOnly);
     reachablesReader = reachableMethods.listener();
     callEdges = cm.callGraph().listener();
+  }
+
+  public ReachableMethods reachableMethods() {
+    return reachableMethods;
+  }
+
+  public CallGraph callGraph() {
+    return callGraph;
   }
 
   public void build() {
@@ -179,11 +180,12 @@ public class OnFlyCallGraph {
     }
   }
 
-  /** Node uses this to notify PAG that n2 has been merged into n1. */
-  public void mergedWith(Node n1, Node n2) {}
-
   /* End of public methods. */
   /* End of package methods. */
 
-  private PAG pag;
+  /**
+   * Node uses this to notify PAG that n2 has been merged into n1.
+   */
+  public void mergedWith(Node n1, Node n2) {
+  }
 }

@@ -25,6 +25,10 @@
 
 package soot.coffi;
 
+import soot.G;
+import soot.Timers;
+import soot.options.Options;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -33,94 +37,124 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import soot.G;
-import soot.Timers;
-import soot.options.Options;
-
 /**
  * A ClassFile object represents the contents of a <tt>.class</tt> file.
- *
+ * <p>
  * <p>A ClassFile contains code for manipulation of its constituents.
  *
  * @author Clark Verbrugge
  */
 public class ClassFile {
 
-  /** Magic number. */
+  /**
+   * Magic number.
+   */
   static final long MAGIC = 0xCAFEBABEL;
 
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_PUBLIC = 0x0001;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_PRIVATE = 0x0002;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_PROTECTED = 0x0004;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_STATIC = 0x0008;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_FINAL = 0x0010;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_SUPER = 0x0020;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_VOLATILE = 0x0040;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_TRANSIENT = 0x0080;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_INTERFACE = 0x0200;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_ABSTRACT = 0x0400;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_STRICT = 0x0800;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_ANNOTATION = 0x2000;
-  /** Access bit flag. */
+  /**
+   * Access bit flag.
+   */
   static final short ACC_ENUM = 0x4000;
-  /** Remaining bits in the access bit flag. */
+  /**
+   * Remaining bits in the access bit flag.
+   */
   static final short ACC_UNKNOWN = 0x7000;
 
-  /** Descriptor code string. */
-  static final String DESC_BYTE = "B";
-  /** Descriptor code string. */
-  static final String DESC_CHAR = "C";
-  /** Descriptor code string. */
-  static final String DESC_DOUBLE = "D";
-  /** Descriptor code string. */
-  static final String DESC_FLOAT = "F";
-  /** Descriptor code string. */
-  static final String DESC_INT = "I";
-  /** Descriptor code string. */
-  static final String DESC_LONG = "J";
-  /** Descriptor code string. */
-  static final String DESC_OBJECT = "L";
-  /** Descriptor code string. */
-  static final String DESC_SHORT = "S";
-  /** Descriptor code string. */
-  static final String DESC_BOOLEAN = "Z";
-  /** Descriptor code string. */
-  static final String DESC_VOID = "V";
-  /** Descriptor code string. */
-  static final String DESC_ARRAY = "[";
-
-  /** Debugging flag. */
-  boolean debug;
-
-  /** File name of the <tt>.class</tt> this represents. */
-  String fn;
-
-  /* For chaining ClassFiles into a list.
-  ClassFile next;*/
-
   /**
-   * Magic number read in.
-   *
-   * @see ClassFile#MAGIC
+   * Descriptor code string.
    */
-  long magic;
-  /** Minor version. */
-  int minor_version;
-  /** Major version. */
-  int major_version;
-  /** Number of items in the constant pool. */
+  static final String DESC_BYTE = "B";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_CHAR = "C";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_DOUBLE = "D";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_FLOAT = "F";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_INT = "I";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_LONG = "J";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_OBJECT = "L";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_SHORT = "S";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_BOOLEAN = "Z";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_VOID = "V";
+  /**
+   * Descriptor code string.
+   */
+  static final String DESC_ARRAY = "[";
+  /**
+   * Number of items in the constant pool.
+   */
   public int constant_pool_count;
   /**
    * Array of constant pool items.
@@ -128,7 +162,12 @@ public class ClassFile {
    * @see cp_info
    */
   public cp_info constant_pool[];
-  /** Access flags for this Class. */
+
+  /* For chaining ClassFiles into a list.
+  ClassFile next;*/
+  /**
+   * Access flags for this Class.
+   */
   public int access_flags;
   /**
    * Constant pool index of the Class constant describing <i>this</i>.
@@ -142,7 +181,9 @@ public class ClassFile {
    * @see CONSTANT_Class_info
    */
   public int super_class;
-  /** Count of interfaces implemented. */
+  /**
+   * Count of interfaces implemented.
+   */
   public int interfaces_count;
   /**
    * Array of constant pool indices of Class constants describing each interace implemented by this
@@ -151,7 +192,9 @@ public class ClassFile {
    * @see CONSTANT_Class_info
    */
   public int interfaces[];
-  /** Count of fields this Class contains. */
+  /**
+   * Count of fields this Class contains.
+   */
   public int fields_count;
   /**
    * Array of field_info objects describing each field.
@@ -159,7 +202,9 @@ public class ClassFile {
    * @see field_info
    */
   public field_info fields[];
-  /** Count of methods this Class contains. */
+  /**
+   * Count of methods this Class contains.
+   */
   public int methods_count;
   /**
    * Array of method_info objects describing each field.
@@ -167,7 +212,9 @@ public class ClassFile {
    * @see method_info
    */
   public method_info methods[];
-  /** Count of attributes this class contains. */
+  /**
+   * Count of attributes this class contains.
+   */
   public int attributes_count;
   /**
    * Array of attribute_info objects for this class.
@@ -175,9 +222,32 @@ public class ClassFile {
    * @see attribute_info
    */
   public attribute_info attributes[];
-
-  /** bootstrap-methods attribute (if any) */
+  /**
+   * bootstrap-methods attribute (if any)
+   */
   public BootstrapMethods_attribute bootstrap_methods_attribute;
+  /**
+   * Debugging flag.
+   */
+  boolean debug;
+  /**
+   * File name of the <tt>.class</tt> this represents.
+   */
+  String fn;
+  /**
+   * Magic number read in.
+   *
+   * @see ClassFile#MAGIC
+   */
+  long magic;
+  /**
+   * Minor version.
+   */
+  int minor_version;
+  /**
+   * Major version.
+   */
+  int major_version;
 
   /**
    * Creates a new ClassFile object given the name of the file.
@@ -188,103 +258,11 @@ public class ClassFile {
     fn = nfn;
   }
 
-  /** Returns the name of this Class. */
-  @Override
-  public String toString() {
-    return (constant_pool[this_class].toString(constant_pool));
-  }
-
-  public boolean loadClassFile(InputStream is) {
-    InputStream f = null;
-    InputStream classFileStream;
-    DataInputStream d;
-    boolean b;
-
-    classFileStream = is;
-
-    byte[] data;
-
-    if (Options.v().time()) {
-      Timers.v().readTimer.start();
-    }
-
-    try {
-      DataInputStream classDataStream = new DataInputStream(classFileStream);
-      data = new byte[classDataStream.available()];
-      classDataStream.readFully(data);
-      f = new ByteArrayInputStream(data);
-
-    } catch (IOException e) {
-    }
-
-    if (Options.v().time()) {
-      Timers.v().readTimer.end();
-    }
-
-    d = new DataInputStream(f);
-    b = readClass(d);
-
-    try {
-      classFileStream.close();
-      d.close();
-      if (f != null) {
-        f.close();
-      }
-    } catch (IOException e) {
-      G.v().out.println("IOException with " + fn + ": " + e.getMessage());
-      return false;
-    }
-
-    if (!b) {
-      return false;
-    }
-    // parse();        // parse all methods & builds CFGs
-    // G.v().out.println("-- Read " + cf + " --");
-    return true;
-  }
-
-  /**
-   * Main entry point for writing a class file. The file name is given in the constructor; this
-   * opens the file and writes the internal representation.
-   *
-   * @return <i>true</i> on success.
-   */
-  boolean saveClassFile() {
-    FileOutputStream f;
-    DataOutputStream d;
-    boolean b;
-    try {
-      f = new FileOutputStream(fn);
-    } catch (FileNotFoundException e) {
-      if (fn.indexOf(".class") >= 0) {
-        G.v().out.println("Can't find " + fn);
-        return false;
-      }
-      fn = fn + ".class";
-      try {
-        f = new FileOutputStream(fn);
-      } catch (FileNotFoundException ee) {
-        G.v().out.println("Can't find " + fn);
-        return false;
-      }
-    }
-    d = new DataOutputStream(f);
-    b = writeClass(d);
-    try {
-      d.close();
-      f.close();
-    } catch (IOException e) {
-      G.v().out.println("IOException with " + fn + ": " + e.getMessage());
-      return false;
-    }
-    return b;
-  }
-
   /**
    * Returns a String constructed by parsing the bits in the given access code (as defined by the
    * ACC_* constants).
    *
-   * @param af access code.
+   * @param af        access code.
    * @param separator String used to separate words used for access bits.
    * @see ClassFile#access_flags
    * @see method_info#access_flags
@@ -405,6 +383,207 @@ public class ClassFile {
   }
 
   /**
+   * Static utility method to parse the given method descriptor string.
+   *
+   * @param s descriptor string.
+   * @return return type of method.
+   * @see ClassFile#parseDesc
+   * @see ClassFile#parseMethodDesc_params
+   */
+  static String parseMethodDesc_return(String s) {
+    int j;
+    j = s.lastIndexOf(')');
+    if (j >= 0) {
+      return parseDesc(s.substring(j + 1), ",");
+    }
+    return parseDesc(s, ",");
+  }
+
+  /**
+   * Static utility method to parse the given method descriptor string.
+   *
+   * @param s descriptor string.
+   * @return comma-separated ordered list of parameter types
+   * @see ClassFile#parseDesc
+   * @see ClassFile#parseMethodDesc_return
+   */
+  static String parseMethodDesc_params(String s) {
+    int i, j;
+    i = s.indexOf('(');
+    if (i >= 0) {
+      j = s.indexOf(')', i + 1);
+      if (j >= 0) {
+        return parseDesc(s.substring(i + 1, j), ",");
+      }
+    }
+    return "<parse error>";
+  }
+
+  /**
+   * Static utility method to parse the given method descriptor string.
+   *
+   * @param desc descriptor string.
+   * @param sep  String to use as a separator between types.
+   * @return String of types parsed.
+   * @see ClassFile#parseDesc
+   * @see ClassFile#parseMethodDesc_return
+   */
+  static String parseDesc(String desc, String sep) {
+    String params = "", param;
+    char c;
+    int i, len, arraylevel = 0;
+    boolean didone = false;
+
+    len = desc.length();
+    for (i = 0; i < len; i++) {
+      c = desc.charAt(i);
+      if (c == DESC_BYTE.charAt(0)) {
+        param = "byte";
+      } else if (c == DESC_CHAR.charAt(0)) {
+        param = "char";
+      } else if (c == DESC_DOUBLE.charAt(0)) {
+        param = "double";
+      } else if (c == DESC_FLOAT.charAt(0)) {
+        param = "float";
+      } else if (c == DESC_INT.charAt(0)) {
+        param = "int";
+      } else if (c == DESC_LONG.charAt(0)) {
+        param = "long";
+      } else if (c == DESC_SHORT.charAt(0)) {
+        param = "short";
+      } else if (c == DESC_BOOLEAN.charAt(0)) {
+        param = "boolean";
+      } else if (c == DESC_VOID.charAt(0)) {
+        param = "void";
+      } else if (c == DESC_ARRAY.charAt(0)) {
+        arraylevel++;
+        continue;
+      } else if (c == DESC_OBJECT.charAt(0)) {
+        int j;
+        j = desc.indexOf(';', i + 1);
+        if (j < 0) {
+          G.v().out.println("Warning: Parse error -- can't find a ; in " + desc.substring(i + 1));
+          param = "<error>";
+        } else {
+          if (j - i > 10 && desc.substring(i + 1, i + 11).compareTo("java/lang/") == 0) {
+            i = i + 10;
+          }
+          param = desc.substring(i + 1, j);
+          // replace '/'s with '.'s
+          param = param.replace('/', '.');
+          i = j;
+        }
+      } else {
+        param = "???";
+      }
+      if (didone) {
+        params = params + sep;
+      }
+      params = params + param;
+      while (arraylevel > 0) {
+        params = params + "[]";
+        arraylevel--;
+      }
+      didone = true;
+    }
+    return params;
+  }
+
+  /**
+   * Returns the name of this Class.
+   */
+  @Override
+  public String toString() {
+    return (constant_pool[this_class].toString(constant_pool));
+  }
+
+  public boolean loadClassFile(InputStream is) {
+    InputStream f = null;
+    InputStream classFileStream;
+    DataInputStream d;
+    boolean b;
+
+    classFileStream = is;
+
+    byte[] data;
+
+    if (Options.v().time()) {
+      Timers.v().readTimer.start();
+    }
+
+    try {
+      DataInputStream classDataStream = new DataInputStream(classFileStream);
+      data = new byte[classDataStream.available()];
+      classDataStream.readFully(data);
+      f = new ByteArrayInputStream(data);
+
+    } catch (IOException e) {
+    }
+
+    if (Options.v().time()) {
+      Timers.v().readTimer.end();
+    }
+
+    d = new DataInputStream(f);
+    b = readClass(d);
+
+    try {
+      classFileStream.close();
+      d.close();
+      if (f != null) {
+        f.close();
+      }
+    } catch (IOException e) {
+      G.v().out.println("IOException with " + fn + ": " + e.getMessage());
+      return false;
+    }
+
+    if (!b) {
+      return false;
+    }
+    // parse();        // parse all methods & builds CFGs
+    // G.v().out.println("-- Read " + cf + " --");
+    return true;
+  }
+
+  /**
+   * Main entry point for writing a class file. The file name is given in the constructor; this
+   * opens the file and writes the internal representation.
+   *
+   * @return <i>true</i> on success.
+   */
+  boolean saveClassFile() {
+    FileOutputStream f;
+    DataOutputStream d;
+    boolean b;
+    try {
+      f = new FileOutputStream(fn);
+    } catch (FileNotFoundException e) {
+      if (fn.indexOf(".class") >= 0) {
+        G.v().out.println("Can't find " + fn);
+        return false;
+      }
+      fn = fn + ".class";
+      try {
+        f = new FileOutputStream(fn);
+      } catch (FileNotFoundException ee) {
+        G.v().out.println("Can't find " + fn);
+        return false;
+      }
+    }
+    d = new DataOutputStream(f);
+    b = writeClass(d);
+    try {
+      d.close();
+      f.close();
+    } catch (IOException e) {
+      G.v().out.println("IOException with " + fn + ": " + e.getMessage());
+      return false;
+    }
+    return b;
+  }
+
+  /**
    * Builds the internal representation of this Class by reading in the given class file.
    *
    * @param d Stream forming the <tt>.class</tt> file.
@@ -484,7 +663,7 @@ public class ClassFile {
    *
    * @param d Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean readConstantPool(DataInputStream d) throws IOException {
     byte tag;
@@ -638,11 +817,11 @@ public class ClassFile {
   /**
    * Reads in the given number of attributes from the given stream.
    *
-   * @param d Stream forming the <tt>.class</tt> file.
+   * @param d                Stream forming the <tt>.class</tt> file.
    * @param attributes_count number of attributes to read in.
-   * @param ai pre-allocated array of attributes to be filled in.
+   * @param ai               pre-allocated array of attributes to be filled in.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean readAttributes(DataInputStream d, int attributes_count, attribute_info[] ai)
       throws IOException {
@@ -840,7 +1019,7 @@ public class ClassFile {
         }
         a = ra;
       } else if (s.compareTo(attribute_info.AnnotationDefault) == 0) {
-        AnnotationDefault_attribute da = new AnnotationDefault_attribute();
+        AnnotationDefaultAttribute da = new AnnotationDefaultAttribute();
         element_value[] result = readElementValues(1, d, false, 0);
         da.default_value = result[0];
         a = da;
@@ -877,6 +1056,20 @@ public class ClassFile {
     }
     return true;
   }
+
+  /* DEPRECATED
+  public void showByteCode(Code_attribute ca) {
+  int i=0,j;
+
+  G.v().out.println("Code bytes follow...");
+  while(i<ca.code_length) {
+  j = (int)(ca.code[i]);
+  j &= 0xff;
+  G.v().out.print(Integer.toString(j) + " ");
+  i++;
+  }
+  G.v().out.println("");
+  }*/
 
   private element_value[] readElementValues(
       int count, DataInputStream d, boolean needName, int name_index) throws IOException {
@@ -943,7 +1136,7 @@ public class ClassFile {
    *
    * @param d Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean readFields(DataInputStream d) throws IOException {
     field_info fi;
@@ -975,7 +1168,7 @@ public class ClassFile {
    *
    * @param d Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean readMethods(DataInputStream d) throws IOException {
     method_info mi;
@@ -1017,26 +1210,12 @@ public class ClassFile {
     return true;
   }
 
-  /* DEPRECATED
-  public void showByteCode(Code_attribute ca) {
-  int i=0,j;
-
-  G.v().out.println("Code bytes follow...");
-  while(i<ca.code_length) {
-  j = (int)(ca.code[i]);
-  j &= 0xff;
-  G.v().out.print(Integer.toString(j) + " ");
-  i++;
-  }
-  G.v().out.println("");
-  }*/
-
   /**
    * Writes the current constant pool to the given stream.
    *
    * @param dd output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean writeConstantPool(DataOutputStream dd) throws IOException {
     cp_info cp;
@@ -1103,11 +1282,11 @@ public class ClassFile {
   /**
    * Writes the given array of attributes to the given stream.
    *
-   * @param dd output stream.
+   * @param dd               output stream.
    * @param attributes_count number of attributes to write.
-   * @param ai array of attributes to write.
+   * @param ai               array of attributes to write.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean writeAttributes(DataOutputStream dd, int attributes_count, attribute_info[] ai)
       throws IOException {
@@ -1193,7 +1372,7 @@ public class ClassFile {
    *
    * @param dd output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean writeFields(DataOutputStream dd) throws IOException {
     field_info fi;
@@ -1217,7 +1396,7 @@ public class ClassFile {
    *
    * @param dd output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
-   * @exception java.io.IOException on error.
+   * @throws java.io.IOException on error.
    */
   protected boolean writeMethods(DataOutputStream dd) throws IOException {
     method_info mi;
@@ -1487,113 +1666,6 @@ public class ClassFile {
   }
 
   /**
-   * Static utility method to parse the given method descriptor string.
-   *
-   * @param s descriptor string.
-   * @return return type of method.
-   * @see ClassFile#parseDesc
-   * @see ClassFile#parseMethodDesc_params
-   */
-  static String parseMethodDesc_return(String s) {
-    int j;
-    j = s.lastIndexOf(')');
-    if (j >= 0) {
-      return parseDesc(s.substring(j + 1), ",");
-    }
-    return parseDesc(s, ",");
-  }
-
-  /**
-   * Static utility method to parse the given method descriptor string.
-   *
-   * @param s descriptor string.
-   * @return comma-separated ordered list of parameter types
-   * @see ClassFile#parseDesc
-   * @see ClassFile#parseMethodDesc_return
-   */
-  static String parseMethodDesc_params(String s) {
-    int i, j;
-    i = s.indexOf('(');
-    if (i >= 0) {
-      j = s.indexOf(')', i + 1);
-      if (j >= 0) {
-        return parseDesc(s.substring(i + 1, j), ",");
-      }
-    }
-    return "<parse error>";
-  }
-
-  /**
-   * Static utility method to parse the given method descriptor string.
-   *
-   * @param desc descriptor string.
-   * @param sep String to use as a separator between types.
-   * @return String of types parsed.
-   * @see ClassFile#parseDesc
-   * @see ClassFile#parseMethodDesc_return
-   */
-  static String parseDesc(String desc, String sep) {
-    String params = "", param;
-    char c;
-    int i, len, arraylevel = 0;
-    boolean didone = false;
-
-    len = desc.length();
-    for (i = 0; i < len; i++) {
-      c = desc.charAt(i);
-      if (c == DESC_BYTE.charAt(0)) {
-        param = "byte";
-      } else if (c == DESC_CHAR.charAt(0)) {
-        param = "char";
-      } else if (c == DESC_DOUBLE.charAt(0)) {
-        param = "double";
-      } else if (c == DESC_FLOAT.charAt(0)) {
-        param = "float";
-      } else if (c == DESC_INT.charAt(0)) {
-        param = "int";
-      } else if (c == DESC_LONG.charAt(0)) {
-        param = "long";
-      } else if (c == DESC_SHORT.charAt(0)) {
-        param = "short";
-      } else if (c == DESC_BOOLEAN.charAt(0)) {
-        param = "boolean";
-      } else if (c == DESC_VOID.charAt(0)) {
-        param = "void";
-      } else if (c == DESC_ARRAY.charAt(0)) {
-        arraylevel++;
-        continue;
-      } else if (c == DESC_OBJECT.charAt(0)) {
-        int j;
-        j = desc.indexOf(';', i + 1);
-        if (j < 0) {
-          G.v().out.println("Warning: Parse error -- can't find a ; in " + desc.substring(i + 1));
-          param = "<error>";
-        } else {
-          if (j - i > 10 && desc.substring(i + 1, i + 11).compareTo("java/lang/") == 0) {
-            i = i + 10;
-          }
-          param = desc.substring(i + 1, j);
-          // replace '/'s with '.'s
-          param = param.replace('/', '.');
-          i = j;
-        }
-      } else {
-        param = "???";
-      }
-      if (didone) {
-        params = params + sep;
-      }
-      params = params + param;
-      while (arraylevel > 0) {
-        params = params + "[]";
-        arraylevel--;
-      }
-      didone = true;
-    }
-    return params;
-  }
-
-  /**
    * Locates a method by name.
    *
    * @param s name of method.
@@ -1686,7 +1758,7 @@ public class ClassFile {
   /**
    * Moves a method to a different index in the methods array.
    *
-   * @param m name of method to move.
+   * @param m   name of method to move.
    * @param pos desired index.
    * @see ClassFile#methods
    */

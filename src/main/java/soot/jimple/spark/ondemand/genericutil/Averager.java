@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 public class Averager {
@@ -29,12 +30,16 @@ public class Averager {
     numSamples++;
   }
 
-  /** @return */
+  /**
+   * @return
+   */
   public double getCurAverage() {
     return curAverage;
   }
 
-  /** @return */
+  /**
+   * @return
+   */
   public long getNumSamples() {
     return numSamples;
   }

@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * This adapter provides a DirectedGraph interface to DominatorTree.
- *
+ * <p>
  * <p>This might be useful if e.g. you want to apply a DirectedGraph analysis such as the
  * PseudoTopologicalOrderer to a DominatorTree.
  *

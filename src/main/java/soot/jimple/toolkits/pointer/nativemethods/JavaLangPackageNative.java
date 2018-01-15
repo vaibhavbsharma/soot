@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -66,7 +67,7 @@ public class JavaLangPackageNative extends NativeMethodClass {
   /**
    * This is an undocumented private native method, it returns the first (without caller) method's
    * package.
-   *
+   * <p>
    * <p>It should be formulated as a string constants. private static native java.lang.String
    * getSystemPackage0(java.lang.String);
    */
@@ -78,7 +79,9 @@ public class JavaLangPackageNative extends NativeMethodClass {
     helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
-  /** private static native java.lang.String getSystemPackages0()[]; */
+  /**
+   * private static native java.lang.String getSystemPackages0()[];
+   */
   public void java_lang_Package_getSystemPackages0(
       SootMethod method,
       ReferenceVariable thisVar,

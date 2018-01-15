@@ -19,10 +19,6 @@
 
 package soot.xml;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import soot.Body;
 import soot.SootClass;
 import soot.SootField;
@@ -35,6 +31,10 @@ import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.KeyTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TagCollector {
 
@@ -50,7 +50,9 @@ public class TagCollector {
     return attributes.isEmpty() && keys.isEmpty();
   }
 
-  /** Convenience function for <code>collectTags(sc, true)</code>. */
+  /**
+   * Convenience function for <code>collectTags(sc, true)</code>.
+   */
   public void collectTags(SootClass sc) {
     collectTags(sc, true);
   }

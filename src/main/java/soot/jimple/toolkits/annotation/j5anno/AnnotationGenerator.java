@@ -16,16 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.annotation.j5anno;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+package soot.jimple.toolkits.annotation.j5anno;
 
 import soot.G;
 import soot.Singletons.Global;
@@ -38,6 +30,15 @@ import soot.tagkit.AnnotationTag;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * AnnotationGenerator is a singleton class that wraps up Soot's support for Java 5 annotations in a
@@ -58,9 +59,12 @@ import soot.tagkit.VisibilityAnnotationTag;
  */
 public class AnnotationGenerator {
 
-  public AnnotationGenerator(Global g) {}
+  public AnnotationGenerator(Global g) {
+  }
 
-  /** Returns the unique instance of AnnotationGenerator. */
+  /**
+   * Returns the unique instance of AnnotationGenerator.
+   */
   public static AnnotationGenerator v() {
     return G.v().soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator();
   }
@@ -69,10 +73,10 @@ public class AnnotationGenerator {
    * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link
    * SootClass}, {@link SootMethod} or {@link SootField}.
    *
-   * @param h a method, field, or class
+   * @param h     a method, field, or class
    * @param klass the class of the annotation to apply to <code>h</code>
    * @param elems a (possibly empty) sequence of AnnotationElem objects corresponding to the
-   *     elements that should be contained in this annotation
+   *              elements that should be contained in this annotation
    */
   public void annotate(Host h, Class<? extends Annotation> klass, AnnotationElem... elems) {
     annotate(h, klass, Arrays.asList(elems));
@@ -82,10 +86,10 @@ public class AnnotationGenerator {
    * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link
    * SootClass}, {@link SootMethod} or {@link SootField}.
    *
-   * @param h a method, field, or class
+   * @param h     a method, field, or class
    * @param klass the class of the annotation to apply to <code>h</code>
    * @param elems a (possibly empty) sequence of AnnotationElem objects corresponding to the
-   *     elements that should be contained in this annotation
+   *              elements that should be contained in this annotation
    */
   public void annotate(Host h, Class<? extends Annotation> klass, List<AnnotationElem> elems) {
     // error-checking -- is this annotation appropriate for the target Host?
@@ -137,11 +141,11 @@ public class AnnotationGenerator {
    * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link
    * SootClass}, {@link SootMethod} or {@link SootField}.
    *
-   * @param h a method, field, or class
+   * @param h              a method, field, or class
    * @param annotationName the qualified name of the annotation class
-   * @param visibility any of the constants in {@link AnnotationConstants}
-   * @param elems a (possibly empty) sequence of AnnotationElem objects corresponding to the
-   *     elements that should be contained in this annotation
+   * @param visibility     any of the constants in {@link AnnotationConstants}
+   * @param elems          a (possibly empty) sequence of AnnotationElem objects corresponding to the
+   *                       elements that should be contained in this annotation
    */
   public void annotate(Host h, String annotationName, int visibility, List<AnnotationElem> elems) {
     annotationName = annotationName.replace('.', '/');
@@ -157,7 +161,7 @@ public class AnnotationGenerator {
    * Finds a VisibilityAnnotationTag attached to a given Host with the appropriate visibility, or
    * adds one if no such tag is attached.
    *
-   * @param h an Host
+   * @param h          an Host
    * @param visibility a visibility level, taken from soot.tagkit.AnnotationConstants
    * @return
    */

@@ -25,7 +25,7 @@ import soot.jimple.ThrowStmt;
 
 /**
  * A source of information about the exceptions that {@link Unit}s might throw.
- *
+ * <p>
  * <p>The <code>Unit</code>s corresponding to <code>athrow</code> instructions may throw exceptions
  * either explicitly&mdash;because the exception is the <code>athrow</code>'s argument&mdash; or
  * implicitly&mdash;because some error arises in the course of executing the instruction (only
@@ -49,7 +49,7 @@ public interface ThrowAnalysis {
    *
    * @param t {@link ThrowInst} whose explicit exceptions are to be returned.
    * @return a representation of the possible types of <code>t</code>'s <code>Throwable</code>
-   *     operand.
+   * operand.
    */
   ThrowableSet mightThrowExplicitly(ThrowInst t);
 
@@ -59,7 +59,7 @@ public interface ThrowAnalysis {
    *
    * @param t {@link ThrowStmt} whose explicit exceptions are to be returned.
    * @return a representation of the possible types of <code>t</code>'s <code>Throwable</code>
-   *     operand.
+   * operand.
    */
   ThrowableSet mightThrowExplicitly(ThrowStmt t);
 

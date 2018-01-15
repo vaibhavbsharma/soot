@@ -1,12 +1,12 @@
 package soot.jimple.spark.sets;
 
-import java.util.List;
-
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
+
+import java.util.List;
 
 /*
  * Possible sources of inefficiency:
@@ -23,13 +23,14 @@ import soot.util.BitVector;
  * overflow list?  And how can we tell when it will have few ones?  (Modify BitVector?)
  *
  */
+
 /**
  * A shared representation of a points-to set which uses a bit vector + a list of extra elements, an
  * "overflow list", to make adding single elements fast in most cases.
- *
+ * <p>
  * <p>The bit vector may be shared by multiple points-to sets, while the overflow list is specific
  * to each points-to set.
- *
+ * <p>
  * <p>To facilitate sharing of the bitvectors, there is a "hash table" of all existing bitvectors
  * kept, called BitVectorLookupMap, where the ith element contains a list of all existing bitvectors
  * of cardinality i (i.e. has i one bits).
@@ -37,6 +38,17 @@ import soot.util.BitVector;
  * @author Adam Richard
  */
 public class SharedHybridSet extends PointsToSetInternal {
+
+  // The following 2 constants should be tweaked for efficiency
+  public static final int OVERFLOW_SIZE = 16;
+  /**
+   * The max number of elements allowed in the set before creating a new bitvector for it.
+   */
+  public static final int OVERFLOW_THRESHOLD = 5;
+  private PointsToBitVector bitVector = null; // Shared with other points-to
+  private OverflowList overflow = new OverflowList();
+  private PAG pag; // I think this is needed to get the size of the bit
+  private int numElements = 0; // # of elements in the set
 
   public SharedHybridSet(Type type, PAG pag) {
     // I'm not sure what "type" is for, but this is the way the other set
@@ -47,11 +59,16 @@ public class SharedHybridSet extends PointsToSetInternal {
     // System.out.println("Using new heintze set");
   }
 
-  // The following 2 constants should be tweaked for efficiency
-  public static final int OVERFLOW_SIZE = 16;
-
-  /** The max number of elements allowed in the set before creating a new bitvector for it. */
-  public static final int OVERFLOW_THRESHOLD = 5;
+  // Ripped from the other points-to sets - returns a factory that can be
+  // used to construct SharedHybridSets
+  public static final P2SetFactory getFactory() {
+    return new P2SetFactory() {
+      @Override
+      public final PointsToSetInternal newSet(Type type, PAG pag) {
+        return new SharedHybridSet(type, pag);
+      }
+    };
+  }
 
   /**
    * When the overflow list overflows, the maximum number of elements that may remain in the
@@ -80,7 +97,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 
   /**
    * @return an overflow list of all elements in a that aren't in b (b is assumed to be a subset of
-   *     a)
+   * a)
    */
   private OverflowList remainder(PointsToBitVector a, PointsToBitVector b) {
     // Since a contains everything b contains, doing an XOR will give
@@ -92,6 +109,20 @@ public class SharedHybridSet extends PointsToSetInternal {
     // OVERFLOW_THRESHOLD <= OVERFLOW_SIZE
     return new OverflowList(xorResult);
   }
+
+  /*
+  //A class invariant - numElements correctly holds the size
+  //Only used for testing
+  private void checkSize()
+  {
+  	int realSize = overflow.size();
+  	if (bitVector != null) realSize += bitVector.cardinality();
+  	if (numElements != realSize)
+  	{
+  		throw new RuntimeException("Assertion failed.");
+  	}
+  }
+  */
 
   // Look for an existing bitvector in the lookupMap which is a subset of the
   // newBitVector (the bitVector to set as the new points-to set), with only a
@@ -379,11 +410,11 @@ public class SharedHybridSet extends PointsToSetInternal {
     // checkSize();
     return size() > originalSize;
   }
+  // sets
 
   /**
-   * @ Adds the Nodes in arr to this bitvector.
-   *
    * @return The number of new nodes actually added.
+   * @ Adds the Nodes in arr to this bitvector.
    */
   private int add(PointsToBitVector p, OverflowList arr) {
     // assert size <= arr.length;
@@ -402,20 +433,6 @@ public class SharedHybridSet extends PointsToSetInternal {
     return retVal;
   }
 
-  /*
-  //A class invariant - numElements correctly holds the size
-  //Only used for testing
-  private void checkSize()
-  {
-  	int realSize = overflow.size();
-  	if (bitVector != null) realSize += bitVector.cardinality();
-  	if (numElements != realSize)
-  	{
-  		throw new RuntimeException("Assertion failed.");
-  	}
-  }
-  */
-
   @Override
   public boolean addAll(PointsToSetInternal other, final PointsToSetInternal exclude) {
     // Look at the sort of craziness we have to do just because of a lack of
@@ -430,6 +447,7 @@ public class SharedHybridSet extends PointsToSetInternal {
       return nativeAddAll((SharedHybridSet) other, (SharedHybridSet) exclude);
     }
   }
+  // vector and the mask for casting
 
   @Override
   public boolean forall(P2SetVisitor v) {
@@ -449,44 +467,26 @@ public class SharedHybridSet extends PointsToSetInternal {
     return v.getReturnValue();
   }
 
-  // Ripped from the other points-to sets - returns a factory that can be
-  // used to construct SharedHybridSets
-  public static final P2SetFactory getFactory() {
-    return new P2SetFactory() {
-      @Override
-      public final PointsToSetInternal newSet(Type type, PAG pag) {
-        return new SharedHybridSet(type, pag);
-      }
-    };
-  }
-
-  private PointsToBitVector bitVector = null; // Shared with other points-to
-  // sets
-
-  private OverflowList overflow = new OverflowList();
-
-  private PAG pag; // I think this is needed to get the size of the bit
-  // vector and the mask for casting
-
-  private int numElements = 0; // # of elements in the set
-
   @Override
   public int size() {
     return numElements;
   }
 
   private class OverflowList {
-    public class ListNode {
-      public Node elem;
-      public ListNode next;
-
-      public ListNode(Node elem, ListNode next) {
-        this.elem = elem;
-        this.next = next;
-      }
+    /*
+    public ListNode next() {
+    	return overflow.next;
     }
+    public Node elem() {
+    	return overflow.elem;
+    }
+    */
+    public ListNode overflow = null; // Not shared with
+    // other points-to sets - the extra elements besides the ones in bitVector
+    private int overflowElements = 0; // # of elements actually in the
 
-    public OverflowList() {}
+    public OverflowList() {
+    }
 
     public OverflowList(PointsToBitVector bv) {
       BitSetIterator it = bv.iterator(); // Iterates over only the 1 bits
@@ -529,17 +529,15 @@ public class SharedHybridSet extends PointsToSetInternal {
       overflowElements = 0;
     }
 
-    /*
-    public ListNode next() {
-    	return overflow.next;
+    public class ListNode {
+      public Node elem;
+      public ListNode next;
+
+      public ListNode(Node elem, ListNode next) {
+        this.elem = elem;
+        this.next = next;
+      }
     }
-    public Node elem() {
-    	return overflow.elem;
-    }
-    */
-    public ListNode overflow = null; // Not shared with
-    // other points-to sets - the extra elements besides the ones in bitVector
-    private int overflowElements = 0; // # of elements actually in the
     // array `overflow'
 
   }

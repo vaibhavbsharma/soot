@@ -19,20 +19,20 @@
 
 package soot.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents a CFG where the nodes are {@link Block}s and the edges are derived from control flow.
  * Control flow associated with exceptions is taken into account: when a <tt>Unit</tt> may throw an
  * exception that is caught by a {@link Trap} within the <tt>Body</tt>, the excepting <tt>Unit</tt>
  * starts a new basic block.
- *
+ * <p>
  * <p><tt>ClassicCompleteBlockGraph</tt> approximates the results that would have been produced by
  * Soot's {@link CompleteBlockGraph} in releases up to Soot 2.1.0. It is included solely for testing
  * purposes, and should not be used in actual analyses. The approximation works not by duplicating
@@ -43,7 +43,7 @@ public class ClassicCompleteBlockGraph extends BlockGraph {
   /**
    * Constructs a <tt>ClassicCompleteBlockGraph</tt> for the blocks found by partitioning the the
    * units of the provided {@link Body} instance into basic blocks.
-   *
+   * <p>
    * <p>Note that this constructor builds a {@link ClassicCompleteUnitGraph} internally when
    * splitting <tt>body</tt>'s {@link Unit}s into {@link Block}s. Callers who already have a {@link
    * ClassicCompleteUnitGraph} to hand can use the constructor taking a
@@ -60,8 +60,8 @@ public class ClassicCompleteBlockGraph extends BlockGraph {
    * ClassicCompleteUnitGraph}.
    *
    * @param unitGraph A {@link ClassicCompleteUnitGraph} built from <tt>body</tt>. The
-   *     <tt>CompleteBlockGraph</tt> constructor uses the passed <tt>graph</tt> to split the body
-   *     into blocks.
+   *                  <tt>CompleteBlockGraph</tt> constructor uses the passed <tt>graph</tt> to split the body
+   *                  into blocks.
    */
   public ClassicCompleteBlockGraph(ClassicCompleteUnitGraph unitGraph) {
     super(unitGraph);

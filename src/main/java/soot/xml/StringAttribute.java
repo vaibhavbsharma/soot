@@ -21,8 +21,8 @@ package soot.xml;
 
 public class StringAttribute {
 
-  private String info;
   private final String analysisType;
+  private String info;
 
   public StringAttribute(String info, String type) {
     this.info = info;

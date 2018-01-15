@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -60,7 +61,7 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
   /** ********************** java.io.FileSystem ********************** */
   /**
    * Returns a variable pointing to the file system constant
-   *
+   * <p>
    * <p>public static native java.io.FileSystem getFileSystem();
    */
   public void java_io_FileSystem_getFileSystem(

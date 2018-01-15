@@ -39,11 +39,6 @@ public class DominatorNode<N> {
     children = new ArrayList<>();
   }
 
-  /** Sets the parent of this node in the DominatorTree. Usually called internally. */
-  public void setParent(DominatorNode<N> parent) {
-    this.parent = parent;
-  }
-
   /**
    * Adds a child to the internal list of children of this node in tree. Usually called internally.
    */
@@ -56,27 +51,44 @@ public class DominatorNode<N> {
     }
   }
 
-  /** Returns the node (from the original DirectedGraph) encapsulated by this DominatorNode. */
+  /**
+   * Returns the node (from the original DirectedGraph) encapsulated by this DominatorNode.
+   */
   public N getGode() {
     return gode;
   }
 
-  /** Returns the parent of the node in the DominatorTree. */
+  /**
+   * Returns the parent of the node in the DominatorTree.
+   */
   public DominatorNode<N> getParent() {
     return parent;
   }
 
-  /** Returns a backed list of the children of this node in the DominatorTree. */
+  /**
+   * Sets the parent of this node in the DominatorTree. Usually called internally.
+   */
+  public void setParent(DominatorNode<N> parent) {
+    this.parent = parent;
+  }
+
+  /**
+   * Returns a backed list of the children of this node in the DominatorTree.
+   */
   public List<DominatorNode<N>> getChildren() {
     return children;
   }
 
-  /** Returns true if this node is the head of its DominatorTree. */
+  /**
+   * Returns true if this node is the head of its DominatorTree.
+   */
   public boolean isHead() {
     return parent == null;
   }
 
-  /** Returns true if this node is a tail of its DominatorTree. */
+  /**
+   * Returns true if this node is a tail of its DominatorTree.
+   */
   public boolean isTail() {
     return children.isEmpty();
   }

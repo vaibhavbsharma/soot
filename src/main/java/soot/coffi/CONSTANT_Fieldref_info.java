@@ -33,8 +33,8 @@ import soot.jimple.Jimple;
 /**
  * A constant pool entry of type CONSTANT_Fieldref.
  *
- * @see cp_info
  * @author Clark Verbrugge
+ * @see cp_info
  */
 class CONSTANT_Fieldref_info extends cp_info {
   /**
@@ -49,6 +49,7 @@ class CONSTANT_Fieldref_info extends cp_info {
    * @see CONSTANT_NameAndType_info
    */
   public int name_and_type_index;
+
   /**
    * Returns the size of this cp_info object.
    *
@@ -59,6 +60,7 @@ class CONSTANT_Fieldref_info extends cp_info {
   public int size() {
     return 5;
   }
+
   /**
    * Returns a String representation of this entry.
    *
@@ -72,6 +74,7 @@ class CONSTANT_Fieldref_info extends cp_info {
     CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
     return cc.toString(constant_pool) + "." + cn.toString(constant_pool);
   }
+
   /**
    * Returns a String description of what kind of entry this is.
    *
@@ -82,12 +85,13 @@ class CONSTANT_Fieldref_info extends cp_info {
   public String typeName() {
     return "fieldref";
   }
+
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant
    * pool).
    *
-   * @param constant_pool constant pool of ClassFile for this.
-   * @param cp constant pool entry to compare against.
+   * @param constant_pool    constant pool of ClassFile for this.
+   * @param cp               constant pool entry to compare against.
    * @param cp_constant_pool constant pool of ClassFile for cp.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo

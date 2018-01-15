@@ -19,17 +19,8 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import soot.Context;
 import soot.FastHierarchy;
 import soot.G;
@@ -85,12 +76,65 @@ import soot.util.LargeNumberedMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Pointer assignment graph.
  *
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
+  protected static final Node[] EMPTY_NODE_ARRAY = new Node[0];
+  private final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer<>();
+  private final ArrayNumberer<VarNode> varNodeNumberer = new ArrayNumberer<>();
+  private final ArrayNumberer<FieldRefNode> fieldRefNodeNumberer = new ArrayNumberer<>();
+  private final ArrayNumberer<AllocDotField> allocDotFieldNodeNumberer = new ArrayNumberer<>();
+  private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
+  private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
+  private final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
+  private final Table<Object, Type, AllocNode> valToReflAllocNode = HashBasedTable.create();
+  private final ArrayList<VarNode> dereferences = new ArrayList<>();
+  private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap =
+      new LargeNumberedMap<>(Scene.v().getLocalNumberer());
+  private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
+  private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
+  public int maxFinishNumber = 0;
+  public NativeMethodDriver nativeMethodDriver;
+  public HashMultiMap<InvokeExpr, Pair<Node, Node>> callAssigns = new HashMultiMap<>();
+  public Map<InvokeExpr, SootMethod> callToMethod = new HashMap<>();
+  public Map<InvokeExpr, Node> virtualCallsToReceivers = new HashMap<>();
+  protected P2SetFactory setFactory;
+  protected boolean somethingMerged = false;
+  protected ChunkedQueue<Node> edgeQueue = new ChunkedQueue<>();
+  protected SparkOptions opts;
+  protected CGOptions cgOpts;
+  protected ClientAccessibilityOracle accessibilityOracle =
+      Scene.v().getClientAccessibilityOracle();
+  protected Map<VarNode, Object> simple = new HashMap<>();
+  protected Map<FieldRefNode, Object> load = new HashMap<>();
+  protected Map<VarNode, Object> store = new HashMap<>();
+  protected Map<AllocNode, Object> alloc = new HashMap<>();
+  protected Map<VarNode, Object> newInstance = new HashMap<>();
+  protected Map<NewInstanceNode, Object> assignInstance = new HashMap<>();
+  protected Map<VarNode, Object> simpleInv = new HashMap<>();
+  protected Map<VarNode, Object> loadInv = new HashMap<>();
+  protected Map<FieldRefNode, Object> storeInv = new HashMap<>();
+  protected Map<VarNode, Object> allocInv = new HashMap<>();
+  protected Map<NewInstanceNode, Object> newInstanceInv = new HashMap<>();
+  protected Map<VarNode, Object> assignInstanceInv = new HashMap<>();
+  protected Map<Pair<Node, Node>, Set<Edge>> assign2edges = new HashMap<>();
+  protected TypeManager typeManager;
+  ChunkedQueue<AllocNode> newAllocNodes = new ChunkedQueue<>();
+  private boolean runGeomPTA = false;
+  private OnFlyCallGraph ofcg;
+  private Map<Node, Tag> nodeToTag;
+
   public PAG(final SparkOptions opts) {
     this.opts = opts;
     this.cgOpts = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
@@ -180,7 +224,19 @@ public class PAG implements PointsToAnalysis {
     runGeomPTA = opts.geom_pta();
   }
 
-  /** Returns the set of objects pointed to by variable l. */
+  private static int getSize(Object set) {
+    if (set instanceof Set) {
+      return ((Set<?>) set).size();
+    } else if (set == null) {
+      return 0;
+    } else {
+      return ((Object[]) set).length;
+    }
+  }
+
+  /**
+   * Returns the set of objects pointed to by variable l.
+   */
   @Override
   public PointsToSet reachingObjects(Local l) {
     VarNode n = findLocalVarNode(l);
@@ -190,7 +246,9 @@ public class PAG implements PointsToAnalysis {
     return n.getP2Set();
   }
 
-  /** Returns the set of objects pointed to by variable l in context c. */
+  /**
+   * Returns the set of objects pointed to by variable l in context c.
+   */
   @Override
   public PointsToSet reachingObjects(Context c, Local l) {
     VarNode n = findContextVarNode(l, c);
@@ -200,7 +258,9 @@ public class PAG implements PointsToAnalysis {
     return n.getP2Set();
   }
 
-  /** Returns the set of objects pointed to by static field f. */
+  /**
+   * Returns the set of objects pointed to by static field f.
+   */
   @Override
   public PointsToSet reachingObjects(SootField f) {
     if (!f.isStatic()) {
@@ -225,7 +285,9 @@ public class PAG implements PointsToAnalysis {
     return reachingObjectsInternal(s, f);
   }
 
-  /** Returns the set of objects pointed to by elements of the arrays in the PointsToSet s. */
+  /**
+   * Returns the set of objects pointed to by elements of the arrays in the PointsToSet s.
+   */
   @Override
   public PointsToSet reachingObjectsOfArrayElement(PointsToSet s) {
     return reachingObjectsInternal(s, ArrayElement.v());
@@ -312,7 +374,9 @@ public class PAG implements PointsToAnalysis {
     return addToMap(assignInstance, from, to) | addToMap(assignInstanceInv, to, from);
   }
 
-  /** Node uses this to notify PAG that n2 has been merged into n1. */
+  /**
+   * Node uses this to notify PAG that n2 has been merged into n1.
+   */
   void mergedWith(Node n1, Node n2) {
     if (n1.equals(n2)) {
       throw new RuntimeException("oops");
@@ -391,8 +455,6 @@ public class PAG implements PointsToAnalysis {
       m.remove(n2);
     }
   }
-
-  protected static final Node[] EMPTY_NODE_ARRAY = new Node[0];
 
   protected <K extends Node> Node[] lookup(Map<K, Object> m, K key) {
     Object valueList = m.get(key);
@@ -567,20 +629,9 @@ public class PAG implements PointsToAnalysis {
     return loadInv.keySet().iterator();
   }
 
-  private static int getSize(Object set) {
-    if (set instanceof Set) {
-      return ((Set<?>) set).size();
-    } else if (set == null) {
-      return 0;
-    } else {
-      return ((Object[]) set).length;
-    }
-  }
-
-  protected P2SetFactory setFactory;
-  protected boolean somethingMerged = false;
-
-  /** Returns the set of objects pointed to by instance field f of the objects pointed to by l. */
+  /**
+   * Returns the set of objects pointed to by instance field f of the objects pointed to by l.
+   */
   @Override
   public PointsToSet reachingObjects(Local l, SootField f) {
     return reachingObjects(reachingObjects(l), f);
@@ -664,13 +715,13 @@ public class PAG implements PointsToAnalysis {
     return ret;
   }
 
-  ChunkedQueue<AllocNode> newAllocNodes = new ChunkedQueue<>();
-
   public QueueReader<AllocNode> allocNodeListener() {
     return newAllocNodes.reader();
   }
 
-  /** Finds the GlobalVarNode for the variable value, or returns null. */
+  /**
+   * Finds the GlobalVarNode for the variable value, or returns null.
+   */
   public GlobalVarNode findGlobalVarNode(Object value) {
     if (opts.rta()) {
       value = null;
@@ -678,7 +729,9 @@ public class PAG implements PointsToAnalysis {
     return valToGlobalVarNode.get(value);
   }
 
-  /** Finds the LocalVarNode for the variable value, or returns null. */
+  /**
+   * Finds the LocalVarNode for the variable value, or returns null.
+   */
   public LocalVarNode findLocalVarNode(Object value) {
     if (opts.rta()) {
       value = null;
@@ -688,7 +741,9 @@ public class PAG implements PointsToAnalysis {
     return valToLocalVarNode.get(value);
   }
 
-  /** Finds or creates the GlobalVarNode for the variable value, of type type. */
+  /**
+   * Finds or creates the GlobalVarNode for the variable value, of type type.
+   */
   public GlobalVarNode makeGlobalVarNode(Object value, Type type) {
     if (opts.rta()) {
       value = null;
@@ -717,7 +772,9 @@ public class PAG implements PointsToAnalysis {
     return ret;
   }
 
-  /** Finds or creates the LocalVarNode for the variable value, of type type. */
+  /**
+   * Finds or creates the LocalVarNode for the variable value, of type type.
+   */
   public LocalVarNode makeLocalVarNode(Object value, Type type, SootMethod method) {
     if (opts.rta()) {
       value = null;
@@ -759,7 +816,9 @@ public class PAG implements PointsToAnalysis {
     return node;
   }
 
-  /** Finds the ContextVarNode for base variable value and context context, or returns null. */
+  /**
+   * Finds the ContextVarNode for base variable value and context context, or returns null.
+   */
   public ContextVarNode findContextVarNode(Object baseValue, Context context) {
     LocalVarNode base = findLocalVarNode(baseValue);
     if (base == null) {
@@ -790,7 +849,9 @@ public class PAG implements PointsToAnalysis {
     return ret;
   }
 
-  /** Finds the FieldRefNode for base variable value and field field, or returns null. */
+  /**
+   * Finds the FieldRefNode for base variable value and field field, or returns null.
+   */
   public FieldRefNode findLocalFieldRefNode(Object baseValue, SparkField field) {
     VarNode base = findLocalVarNode(baseValue);
     if (base == null) {
@@ -799,7 +860,11 @@ public class PAG implements PointsToAnalysis {
     return base.dot(field);
   }
 
-  /** Finds the FieldRefNode for base variable value and field field, or returns null. */
+  /* End of package methods. */
+
+  /**
+   * Finds the FieldRefNode for base variable value and field field, or returns null.
+   */
   public FieldRefNode findGlobalFieldRefNode(Object baseValue, SparkField field) {
     VarNode base = findGlobalVarNode(baseValue);
     if (base == null) {
@@ -839,7 +904,9 @@ public class PAG implements PointsToAnalysis {
     return makeFieldRefNode(base, field);
   }
 
-  /** Finds or creates the FieldRefNode for base variable base and field field, of type type. */
+  /**
+   * Finds or creates the FieldRefNode for base variable base and field field, of type type.
+   */
   public FieldRefNode makeFieldRefNode(VarNode base, SparkField field) {
     FieldRefNode ret = base.dot(field);
     if (ret == null) {
@@ -853,12 +920,16 @@ public class PAG implements PointsToAnalysis {
     return ret;
   }
 
-  /** Finds the AllocDotField for base AllocNode an and field field, or returns null. */
+  /**
+   * Finds the AllocDotField for base AllocNode an and field field, or returns null.
+   */
   public AllocDotField findAllocDotField(AllocNode an, SparkField field) {
     return an.dot(field);
   }
 
-  /** Finds or creates the AllocDotField for base variable baseValue and field field, of type t. */
+  /**
+   * Finds or creates the AllocDotField for base variable baseValue and field field, of type t.
+   */
   public AllocDotField makeAllocDotField(AllocNode an, SparkField field) {
     AllocDotField ret = an.dot(field);
     if (ret == null) {
@@ -940,7 +1011,9 @@ public class PAG implements PointsToAnalysis {
     return false;
   }
 
-  /** Adds an edge to the graph, returning false if it was already there. */
+  /**
+   * Adds an edge to the graph, returning false if it was already there.
+   */
   public final boolean addEdge(Node from, Node to) {
     from = from.getReplacement();
     to = to.getReplacement();
@@ -964,8 +1037,6 @@ public class PAG implements PointsToAnalysis {
     }
   }
 
-  protected ChunkedQueue<Node> edgeQueue = new ChunkedQueue<>();
-
   public QueueReader<Node> edgeReader() {
     return edgeQueue.reader();
   }
@@ -978,24 +1049,28 @@ public class PAG implements PointsToAnalysis {
     return typeManager;
   }
 
-  public void setOnFlyCallGraph(OnFlyCallGraph ofcg) {
-    this.ofcg = ofcg;
-  }
-
   public OnFlyCallGraph getOnFlyCallGraph() {
     return ofcg;
+  }
+
+  public void setOnFlyCallGraph(OnFlyCallGraph ofcg) {
+    this.ofcg = ofcg;
   }
 
   public OnFlyCallGraph ofcg() {
     return ofcg;
   }
 
-  /** Adds the base of a dereference to the list of dereferenced variables. */
+  /**
+   * Adds the base of a dereference to the list of dereferenced variables.
+   */
   public void addDereference(VarNode base) {
     dereferences.add(base);
   }
 
-  /** Returns list of dereferences variables. */
+  /**
+   * Returns list of dereferences variables.
+   */
   public List<VarNode> getDereferences() {
     return dereferences;
   }
@@ -1004,36 +1079,32 @@ public class PAG implements PointsToAnalysis {
     return nodeToTag;
   }
 
-  private final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer<>();
-
   public ArrayNumberer<AllocNode> getAllocNodeNumberer() {
     return allocNodeNumberer;
   }
-
-  private final ArrayNumberer<VarNode> varNodeNumberer = new ArrayNumberer<>();
 
   public ArrayNumberer<VarNode> getVarNodeNumberer() {
     return varNodeNumberer;
   }
 
-  private final ArrayNumberer<FieldRefNode> fieldRefNodeNumberer = new ArrayNumberer<>();
-
   public ArrayNumberer<FieldRefNode> getFieldRefNodeNumberer() {
     return fieldRefNodeNumberer;
   }
-
-  private final ArrayNumberer<AllocDotField> allocDotFieldNodeNumberer = new ArrayNumberer<>();
 
   public ArrayNumberer<AllocDotField> getAllocDotFieldNodeNumberer() {
     return allocDotFieldNodeNumberer;
   }
 
-  /** Returns SparkOptions for this graph. */
+  /**
+   * Returns SparkOptions for this graph.
+   */
   public SparkOptions getOpts() {
     return opts;
   }
 
-  /** Returns CGOptions for this graph. */
+  /**
+   * Returns CGOptions for this graph.
+   */
   public CGOptions getCGOpts() {
     return cgOpts;
   }
@@ -1410,7 +1481,9 @@ public class PAG implements PointsToAnalysis {
     }
   }
 
-  /** Delete all the assignment edges. */
+  /**
+   * Delete all the assignment edges.
+   */
   public void cleanPAG() {
     simple.clear();
     load.clear();
@@ -1421,27 +1494,6 @@ public class PAG implements PointsToAnalysis {
     storeInv.clear();
     allocInv.clear();
   }
-
-  /* End of package methods. */
-
-  protected SparkOptions opts;
-  protected CGOptions cgOpts;
-  protected ClientAccessibilityOracle accessibilityOracle =
-      Scene.v().getClientAccessibilityOracle();
-
-  protected Map<VarNode, Object> simple = new HashMap<>();
-  protected Map<FieldRefNode, Object> load = new HashMap<>();
-  protected Map<VarNode, Object> store = new HashMap<>();
-  protected Map<AllocNode, Object> alloc = new HashMap<>();
-  protected Map<VarNode, Object> newInstance = new HashMap<>();
-  protected Map<NewInstanceNode, Object> assignInstance = new HashMap<>();
-
-  protected Map<VarNode, Object> simpleInv = new HashMap<>();
-  protected Map<VarNode, Object> loadInv = new HashMap<>();
-  protected Map<FieldRefNode, Object> storeInv = new HashMap<>();
-  protected Map<VarNode, Object> allocInv = new HashMap<>();
-  protected Map<NewInstanceNode, Object> newInstanceInv = new HashMap<>();
-  protected Map<VarNode, Object> assignInstanceInv = new HashMap<>();
 
   protected <K extends Node> boolean addToMap(Map<K, Object> m, K key, Node value) {
     Object valueList = m.get(key);
@@ -1460,29 +1512,7 @@ public class PAG implements PointsToAnalysis {
     return ((Set<Node>) valueList).add(value);
   }
 
-  private boolean runGeomPTA = false;
-  protected Map<Pair<Node, Node>, Set<Edge>> assign2edges = new HashMap<>();
-  private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
-  private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
-  private final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
-  private final Table<Object, Type, AllocNode> valToReflAllocNode = HashBasedTable.create();
-  private OnFlyCallGraph ofcg;
-  private final ArrayList<VarNode> dereferences = new ArrayList<>();
-  protected TypeManager typeManager;
-  private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap =
-      new LargeNumberedMap<>(Scene.v().getLocalNumberer());
-  private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
-  public int maxFinishNumber = 0;
-  private Map<Node, Tag> nodeToTag;
-  private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
-
   public GlobalNodeFactory nodeFactory() {
     return nodeFactory;
   }
-
-  public NativeMethodDriver nativeMethodDriver;
-
-  public HashMultiMap<InvokeExpr, Pair<Node, Node>> callAssigns = new HashMultiMap<>();
-  public Map<InvokeExpr, SootMethod> callToMethod = new HashMap<>();
-  public Map<InvokeExpr, Node> virtualCallsToReceivers = new HashMap<>();
 }

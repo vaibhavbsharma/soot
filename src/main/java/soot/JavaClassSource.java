@@ -19,8 +19,6 @@
 
 package soot;
 
-import java.io.File;
-
 import polyglot.ast.Node;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -28,8 +26,14 @@ import soot.javaToJimple.InitialResolver;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ComputeASTMetrics;
 
-/** A class source for resolving from .java files using javaToJimple. */
+import java.io.File;
+
+/**
+ * A class source for resolving from .java files using javaToJimple.
+ */
 public class JavaClassSource extends ClassSource {
+  private File fullPath;
+
   public JavaClassSource(String className, File fullPath) {
     super(className);
     this.fullPath = fullPath;
@@ -80,6 +84,4 @@ public class JavaClassSource extends ClassSource {
 
     return references;
   }
-
-  private File fullPath;
 }

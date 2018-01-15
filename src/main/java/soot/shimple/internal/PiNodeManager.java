@@ -19,14 +19,6 @@
 
 package soot.shimple.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Stack;
-
 import soot.Local;
 import soot.PatchingChain;
 import soot.Unit;
@@ -53,27 +45,35 @@ import soot.toolkits.graph.ReversibleGraph;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Stack;
+
 /**
  * This class does the real high-level work. It takes a Jimple body or Jimple/Shimple hybrid body
  * and produces pure Shimple.
- *
+ * <p>
  * <p>The work is done in two main steps:
- *
+ * <p>
  * <ol>
- *   <li>Trivial Phi nodes are added.
- *   <li>A renaming algorithm is executed.
+ * <li>Trivial Phi nodes are added.
+ * <li>A renaming algorithm is executed.
  * </ol>
- *
+ * <p>
  * <p>This class can also translate out of Shimple by producing an equivalent Jimple body with all
  * Phi nodes removed.
- *
+ * <p>
  * <p>Note that this is an internal class, understanding it should not be necessary from a user
  * point-of-view and relying on it directly is not recommended.
  *
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  */
 public class PiNodeManager {
   protected ShimpleBody body;
@@ -82,12 +82,27 @@ public class PiNodeManager {
   protected DominanceFrontier<Block> df;
   protected ReversibleGraph<Block> cfg;
   protected boolean trimmed;
+  protected MultiMap<Local, Block> varToBlocks;
 
-  /** Transforms the provided body to pure SSA form. */
+  /**
+   * Transforms the provided body to pure SSA form.
+   */
   public PiNodeManager(ShimpleBody body, boolean trimmed, ShimpleFactory sf) {
     this.body = body;
     this.trimmed = trimmed;
     this.sf = sf;
+  }
+
+  public static List<ValueBox> getUseBoxesFromBlock(Block block) {
+    Iterator<Unit> unitsIt = block.iterator();
+
+    List<ValueBox> useBoxesList = new ArrayList<>();
+
+    while (unitsIt.hasNext()) {
+      useBoxesList.addAll(unitsIt.next().getUseBoxes());
+    }
+
+    return useBoxesList;
   }
 
   public void update() {
@@ -95,8 +110,6 @@ public class PiNodeManager {
     dt = sf.getReverseDominatorTree();
     df = sf.getReverseDominanceFrontier();
   }
-
-  protected MultiMap<Local, Block> varToBlocks;
 
   public boolean insertTrivialPiNodes() {
     update();
@@ -349,17 +362,5 @@ public class PiNodeManager {
         }
       }
     }
-  }
-
-  public static List<ValueBox> getUseBoxesFromBlock(Block block) {
-    Iterator<Unit> unitsIt = block.iterator();
-
-    List<ValueBox> useBoxesList = new ArrayList<>();
-
-    while (unitsIt.hasNext()) {
-      useBoxesList.addAll(unitsIt.next().getUseBoxes());
-    }
-
-    return useBoxesList;
   }
 }

@@ -20,9 +20,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.HashMap;
-import java.util.List;
-
 import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
@@ -54,6 +51,9 @@ import soot.shimple.PhiExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * An intraprocedural nullness analysis that computes for each location and each value in a method
  * if the value is (before or after that location) definitely null, definitely non-null or neither.
@@ -63,59 +63,12 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
  * @author Julian Tibble
  */
 public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalysis.AnalysisInfo> {
-  /**
-   * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM,
-   * NON_NULL, NULL or TOP. This class returns BOTTOM by default.
-   *
-   * @author Julian Tibble
-   */
-  protected class AnalysisInfo extends java.util.BitSet {
-    /** */
-    private static final long serialVersionUID = -9200043127757823764L;
-
-    public AnalysisInfo() {
-      super(used);
-    }
-
-    public AnalysisInfo(AnalysisInfo other) {
-      super(used);
-      or(other);
-    }
-
-    public int get(Value key) {
-      if (!valueToIndex.containsKey(key)) {
-        return BOTTOM;
-      }
-
-      int index = valueToIndex.get(key);
-      int result = get(index) ? 2 : 0;
-      result += get(index + 1) ? 1 : 0;
-
-      return result;
-    }
-
-    public void put(Value key, int val) {
-      int index;
-      if (!valueToIndex.containsKey(key)) {
-        index = used;
-        used += 2;
-        valueToIndex.put(key, index);
-      } else {
-        index = valueToIndex.get(key);
-      }
-      set(index, (val & 2) == 2);
-      set(index + 1, (val & 1) == 1);
-    }
-  }
-
   protected static final int BOTTOM = 0;
   protected static final int NULL = 1;
   protected static final int NON_NULL = 2;
   protected static final int TOP = 3;
-
   protected final HashMap<Value, Integer> valueToIndex = new HashMap<>();
   protected int used = 0;
-
   /**
    * Creates a new analysis for the given graph/
    *
@@ -127,7 +80,9 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     doAnalysis();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void flowThrough(
       AnalysisInfo in, Unit u, List<AnalysisInfo> fallOut, List<AnalysisInfo> branchOuts) {
@@ -343,14 +298,18 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     out.put(left, curr);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void copy(AnalysisInfo s, AnalysisInfo d) {
     d.clear();
     d.or(s);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void merge(AnalysisInfo in1, AnalysisInfo in2, AnalysisInfo out) {
     out.clear();
@@ -358,7 +317,9 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     out.or(in2);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected AnalysisInfo newInitialFlow() {
     return new AnalysisInfo();
@@ -386,5 +347,50 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
    */
   public boolean isAlwaysNonNullBefore(Unit s, Immediate i) {
     return getFlowBefore(s).get(i) == NON_NULL;
+  }
+
+  /**
+   * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM,
+   * NON_NULL, NULL or TOP. This class returns BOTTOM by default.
+   *
+   * @author Julian Tibble
+   */
+  protected class AnalysisInfo extends java.util.BitSet {
+    /** */
+    private static final long serialVersionUID = -9200043127757823764L;
+
+    public AnalysisInfo() {
+      super(used);
+    }
+
+    public AnalysisInfo(AnalysisInfo other) {
+      super(used);
+      or(other);
+    }
+
+    public int get(Value key) {
+      if (!valueToIndex.containsKey(key)) {
+        return BOTTOM;
+      }
+
+      int index = valueToIndex.get(key);
+      int result = get(index) ? 2 : 0;
+      result += get(index + 1) ? 1 : 0;
+
+      return result;
+    }
+
+    public void put(Value key, int val) {
+      int index;
+      if (!valueToIndex.containsKey(key)) {
+        index = used;
+        used += 2;
+        valueToIndex.put(key, index);
+      } else {
+        index = valueToIndex.get(key);
+      }
+      set(index, (val & 2) == 2);
+      set(index + 1, (val & 1) == 1);
+    }
   }
 }

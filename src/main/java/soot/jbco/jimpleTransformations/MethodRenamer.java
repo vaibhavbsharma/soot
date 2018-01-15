@@ -19,13 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -44,20 +37,106 @@ import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 24-Jan-2006
+ * <p>Created on 24-Jan-2006
  */
 public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
+  private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
   public static String dependancies[] = new String[] {"wjtp.jbco_mr"};
+  public static String name = "wjtp.jbco_mr";
+  public static Vector<?> namesToNotRename = new Vector<>();
+  public static HashMap<String, String> oldToNewMethodNames = new HashMap<>();
+  private static Hierarchy hierarchy;
+
+  /*
+   * @return String newly generated junk name that DOES NOT exist yet
+   */
+  public static String getNewName() {
+    int size = 5;
+    int tries = 0;
+    int index = Rand.getInt(stringChars.length);
+    int length = stringChars[index].length;
+
+    String result = null;
+    char cNewName[] = new char[size];
+    do {
+      if (tries == size) {
+        cNewName = new char[++size];
+        tries = 0;
+      }
+
+      do {
+        cNewName[0] = stringChars[index][Rand.getInt(length)];
+      } while (!Character.isJavaIdentifierStart(cNewName[0]));
+
+      // generate random string
+      for (int i = 1; i < cNewName.length; i++) {
+        int rand = Rand.getInt(length);
+        cNewName[i] = stringChars[index][rand];
+      }
+
+      result = String.copyValueOf(cNewName);
+      tries++;
+    } while (oldToNewMethodNames.containsValue(result) || BodyBuilder.nameList.contains(result));
+
+    BodyBuilder.nameList.add(result);
+
+    return result;
+  }
+
+  private static boolean allowsRename(SootClass c, SootMethod m) {
+
+    if (soot.jbco.Main.getWeight(MethodRenamer.name, m.getName()) == 0) {
+      return false;
+    }
+
+    String subSig = m.getSubSignature();
+    if (subSig.equals("void main(java.lang.String[])") && m.isPublic() && m.isStatic()) {
+      return false; // skip the main method - it needs to be named 'main'
+    } else if (subSig.indexOf("void <init>(") >= 0 || subSig.equals("void <clinit>()")) {
+      return false; // skip constructors for now
+    } else {
+      for (SootClass _c : hierarchy.getSuperclassesOfIncluding(c.getSuperclass())) {
+        if (_c.isLibraryClass()
+            && _c.declaresMethod(subSig)
+            && hierarchy.isVisible(c, _c.getMethod(subSig))) {
+          return false;
+        }
+      }
+
+      do {
+        if (checkInterfacesForMethod(c, m)) {
+          return false;
+        }
+      } while (c.hasSuperclass() && (c = c.getSuperclass()) != null);
+    }
+
+    return true;
+  }
+
+  private static boolean checkInterfacesForMethod(SootClass c, SootMethod m) {
+    for (SootClass sc : c.getInterfaces()) {
+      if (sc.isLibraryClass()
+          && sc.declaresMethod(m.getName(), m.getParameterTypes(), m.getReturnType())) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "wjtp.jbco_mr";
 
   @Override
   public String getName() {
@@ -65,13 +144,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   @Override
-  public void outputSummary() {}
-
-  private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
-
-  public static Vector<?> namesToNotRename = new Vector<>();
-  public static HashMap<String, String> oldToNewMethodNames = new HashMap<>();
-  private static Hierarchy hierarchy;
+  public void outputSummary() {
+  }
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
@@ -193,81 +267,5 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
     scene.releaseActiveHierarchy();
     scene.getActiveHierarchy();
     scene.setFastHierarchy(new FastHierarchy());
-  }
-
-  /*
-   * @return String newly generated junk name that DOES NOT exist yet
-   */
-  public static String getNewName() {
-    int size = 5;
-    int tries = 0;
-    int index = Rand.getInt(stringChars.length);
-    int length = stringChars[index].length;
-
-    String result = null;
-    char cNewName[] = new char[size];
-    do {
-      if (tries == size) {
-        cNewName = new char[++size];
-        tries = 0;
-      }
-
-      do {
-        cNewName[0] = stringChars[index][Rand.getInt(length)];
-      } while (!Character.isJavaIdentifierStart(cNewName[0]));
-
-      // generate random string
-      for (int i = 1; i < cNewName.length; i++) {
-        int rand = Rand.getInt(length);
-        cNewName[i] = stringChars[index][rand];
-      }
-
-      result = String.copyValueOf(cNewName);
-      tries++;
-    } while (oldToNewMethodNames.containsValue(result) || BodyBuilder.nameList.contains(result));
-
-    BodyBuilder.nameList.add(result);
-
-    return result;
-  }
-
-  private static boolean allowsRename(SootClass c, SootMethod m) {
-
-    if (soot.jbco.Main.getWeight(MethodRenamer.name, m.getName()) == 0) {
-      return false;
-    }
-
-    String subSig = m.getSubSignature();
-    if (subSig.equals("void main(java.lang.String[])") && m.isPublic() && m.isStatic()) {
-      return false; // skip the main method - it needs to be named 'main'
-    } else if (subSig.indexOf("void <init>(") >= 0 || subSig.equals("void <clinit>()")) {
-      return false; // skip constructors for now
-    } else {
-      for (SootClass _c : hierarchy.getSuperclassesOfIncluding(c.getSuperclass())) {
-        if (_c.isLibraryClass()
-            && _c.declaresMethod(subSig)
-            && hierarchy.isVisible(c, _c.getMethod(subSig))) {
-          return false;
-        }
-      }
-
-      do {
-        if (checkInterfacesForMethod(c, m)) {
-          return false;
-        }
-      } while (c.hasSuperclass() && (c = c.getSuperclass()) != null);
-    }
-
-    return true;
-  }
-
-  private static boolean checkInterfacesForMethod(SootClass c, SootMethod m) {
-    for (SootClass sc : c.getInterfaces()) {
-      if (sc.isLibraryClass()
-          && sc.declaresMethod(m.getName(), m.getParameterTypes(), m.getReturnType())) {
-        return true;
-      }
-    }
-    return false;
   }
 }

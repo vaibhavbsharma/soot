@@ -20,18 +20,11 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
-package soot.jimple.toolkits.annotation.purity;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.toolkits.annotation.purity;
 
 import soot.G;
 import soot.Local;
@@ -44,6 +37,14 @@ import soot.util.MultiMap;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Purity graphs are mutable structures that are updated in-place. You can safely hash graphs.
@@ -85,7 +86,22 @@ import soot.util.dot.DotGraphNode;
  */
 public class PurityGraph {
   public static final boolean doCheck = false;
-
+  /**
+   * A parameter (or this) can be: - read and write - read only - safe (read only & no externally
+   * visible alias is created)
+   */
+  static final int PARAM_RW = 0;
+  static final int PARAM_RO = 1;
+  static final int PARAM_SAFE = 2;
+  /** Caching: this semm to actually improve both speed and memory consumption! */
+  private static final Map<PurityNode, PurityNode> nodeCache = new HashMap<>();
+  private static final Map<PurityEdge, PurityEdge> edgeCache = new HashMap<>();
+  /** Simple statistics on maximal graph sizes. */
+  private static int maxInsideNodes = 0;
+  private static int maxLoadNodes = 0;
+  private static int maxInsideEdges = 0;
+  private static int maxOutsideEdges = 0;
+  private static int maxMutated = 0;
   protected Set nodes; // all nodes
   protected Set paramNodes; // only parameter & this nodes
   protected MultiMap edges; // source node -> edges
@@ -129,40 +145,9 @@ public class PurityGraph {
     }
   }
 
-  @Override
-  public int hashCode() {
-    return nodes.hashCode()
-        // +  paramNodes.hashCode()  // redundant info
-        + edges.hashCode()
-        + locals.hashCode()
-        + ret.hashCode()
-        + globEscape.hashCode()
-        // +  backEdges.hashCode()   // redundant info
-        // +  backLocals.hashCode()  // redundant info
-        + mutated.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof PurityGraph)) {
-      return false;
-    }
-    PurityGraph g = (PurityGraph) o;
-    return nodes.equals(g.nodes)
-        // && paramNodes.equals(g.paramNodes)  // redundant info
-        && edges.equals(g.edges)
-        && locals.equals(g.locals)
-        && ret.equals(g.ret)
-        && globEscape.equals(g.globEscape)
-        // && backEdges.equals(g.backEdges)    // redundant info
-        // && backLocals.equals(g.backLocals)  // redundant info
-        && mutated.equals(g.mutated);
-  }
-
-  /** Caching: this semm to actually improve both speed and memory consumption! */
-  private static final Map<PurityNode, PurityNode> nodeCache = new HashMap<>();
-
-  private static final Map<PurityEdge, PurityEdge> edgeCache = new HashMap<>();
+  ////////////////////////
+  // ESCAPE INFORMATION //
+  ////////////////////////
 
   private static PurityNode cacheNode(PurityNode p) {
     if (!nodeCache.containsKey(p)) {
@@ -236,6 +221,58 @@ public class PurityGraph {
       g.sanityCheck();
     }
     return g;
+  }
+
+  /** Debugging... */
+  private static void dumpSet(String name, Set s) {
+    G.v().out.println(name);
+    Iterator it = s.iterator();
+    while (it.hasNext()) {
+      G.v().out.println("  " + it.next().toString());
+    }
+  }
+
+  private static void dumpMultiMap(String name, MultiMap s) {
+    G.v().out.println(name);
+    Iterator it = s.keySet().iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      G.v().out.println("  " + o.toString());
+      Iterator itt = s.get(o).iterator();
+      while (itt.hasNext()) {
+        G.v().out.println("    " + itt.next().toString());
+      }
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return nodes.hashCode()
+        // +  paramNodes.hashCode()  // redundant info
+        + edges.hashCode()
+        + locals.hashCode()
+        + ret.hashCode()
+        + globEscape.hashCode()
+        // +  backEdges.hashCode()   // redundant info
+        // +  backLocals.hashCode()  // redundant info
+        + mutated.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof PurityGraph)) {
+      return false;
+    }
+    PurityGraph g = (PurityGraph) o;
+    return nodes.equals(g.nodes)
+        // && paramNodes.equals(g.paramNodes)  // redundant info
+        && edges.equals(g.edges)
+        && locals.equals(g.locals)
+        && ret.equals(g.ret)
+        && globEscape.equals(g.globEscape)
+        // && backEdges.equals(g.backEdges)    // redundant info
+        // && backLocals.equals(g.backLocals)  // redundant info
+        && mutated.equals(g.mutated);
   }
 
   /** Replace the current graph with its union with arg. arg is not modified. */
@@ -386,10 +423,6 @@ public class PurityGraph {
     }
   }
 
-  ////////////////////////
-  // ESCAPE INFORMATION //
-  ////////////////////////
-
   protected void internalPassEdges(Set toColor, Set<PurityNode> dest, boolean consider_inside) {
     Iterator it = toColor.iterator();
     while (it.hasNext()) {
@@ -410,6 +443,10 @@ public class PurityGraph {
       internalPassEdges(edges.get(node), dest, consider_inside);
     }
   }
+
+  /////////////////////////
+  // GRAPH MANUPULATIONS //
+  /////////////////////////
 
   protected void internalPassNodes(Set toColor, Set<PurityNode> dest, boolean consider_inside) {
     Iterator it = toColor.iterator();
@@ -476,15 +513,6 @@ public class PurityGraph {
     return true;
   }
 
-  /**
-   * A parameter (or this) can be: - read and write - read only - safe (read only & no externally
-   * visible alias is created)
-   */
-  static final int PARAM_RW = 0;
-
-  static final int PARAM_RO = 1;
-  static final int PARAM_SAFE = 2;
-
   protected int internalParamStatus(PurityNode p) {
     if (!paramNodes.contains(p)) {
       return PARAM_RW;
@@ -532,10 +560,6 @@ public class PurityGraph {
   public int thisStatus() {
     return internalParamStatus(PurityThisNode.node);
   }
-
-  /////////////////////////
-  // GRAPH MANUPULATIONS //
-  /////////////////////////
 
   @Override
   public Object clone() {
@@ -831,6 +855,10 @@ public class PurityGraph {
     }
   }
 
+  /////////////
+  // DRAWING //
+  /////////////
+
   /** Allocation: left = new or left = new[?]. */
   void assignNewToLocal(Stmt stmt, Local left) {
     // strong update on local
@@ -1120,10 +1148,6 @@ public class PurityGraph {
     }
   }
 
-  /////////////
-  // DRAWING //
-  /////////////
-
   /**
    * Fills a dot graph or subgraph with the graphical representation of the purity graph.
    *
@@ -1220,28 +1244,6 @@ public class PurityGraph {
     }
   }
 
-  /** Debugging... */
-  private static void dumpSet(String name, Set s) {
-    G.v().out.println(name);
-    Iterator it = s.iterator();
-    while (it.hasNext()) {
-      G.v().out.println("  " + it.next().toString());
-    }
-  }
-
-  private static void dumpMultiMap(String name, MultiMap s) {
-    G.v().out.println(name);
-    Iterator it = s.keySet().iterator();
-    while (it.hasNext()) {
-      Object o = it.next();
-      G.v().out.println("  " + o.toString());
-      Iterator itt = s.get(o).iterator();
-      while (itt.hasNext()) {
-        G.v().out.println("    " + itt.next().toString());
-      }
-    }
-  }
-
   void dump() {
     dumpSet("nodes Set:", nodes);
     dumpSet("paramNodes Set:", paramNodes);
@@ -1254,14 +1256,6 @@ public class PurityGraph {
     dumpMultiMap("mutated MultiMap:", mutated);
     G.v().out.println("");
   }
-
-  /** Simple statistics on maximal graph sizes. */
-  private static int maxInsideNodes = 0;
-
-  private static int maxLoadNodes = 0;
-  private static int maxInsideEdges = 0;
-  private static int maxOutsideEdges = 0;
-  private static int maxMutated = 0;
 
   void dumpStat() {
     G.v()

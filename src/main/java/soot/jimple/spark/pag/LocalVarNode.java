@@ -19,11 +19,11 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import soot.SootMethod;
 import soot.Type;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a simple variable node (Green) in the pointer assignment graph that is specific to a
@@ -32,6 +32,16 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public class LocalVarNode extends VarNode {
+  protected Map<Object, ContextVarNode> cvns;
+  protected SootMethod method;
+
+  LocalVarNode(PAG pag, Object variable, Type t, SootMethod m) {
+    super(pag, variable, t);
+    this.method = m;
+    // if( m == null ) throw new RuntimeException( "method shouldn't be null" );
+  }
+  /* End of public methods. */
+
   public ContextVarNode context(Object context) {
     return cvns == null ? null : cvns.get(context);
   }
@@ -40,27 +50,20 @@ public class LocalVarNode extends VarNode {
     return method;
   }
 
+  /* End of package methods. */
+
   @Override
   public String toString() {
     return "LocalVarNode " + getNumber() + " " + variable + " " + method;
   }
-  /* End of public methods. */
 
-  LocalVarNode(PAG pag, Object variable, Type t, SootMethod m) {
-    super(pag, variable, t);
-    this.method = m;
-    // if( m == null ) throw new RuntimeException( "method shouldn't be null" );
-  }
-  /** Registers a cvn as having this node as its base. */
+  /**
+   * Registers a cvn as having this node as its base.
+   */
   void addContext(ContextVarNode cvn, Object context) {
     if (cvns == null) {
       cvns = new HashMap<>();
     }
     cvns.put(context, cvn);
   }
-
-  /* End of package methods. */
-
-  protected Map<Object, ContextVarNode> cvns;
-  protected SootMethod method;
 }

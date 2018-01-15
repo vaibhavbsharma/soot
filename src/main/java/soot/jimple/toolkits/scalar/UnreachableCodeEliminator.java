@@ -25,14 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -48,17 +40,26 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.Chain;
 
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 public class UnreachableCodeEliminator extends BodyTransformer {
   protected ThrowAnalysis throwAnalysis = null;
 
-  public UnreachableCodeEliminator(Singletons.Global g) {}
-
-  public static UnreachableCodeEliminator v() {
-    return G.v().soot_jimple_toolkits_scalar_UnreachableCodeEliminator();
+  public UnreachableCodeEliminator(Singletons.Global g) {
   }
 
   public UnreachableCodeEliminator(ThrowAnalysis ta) {
     this.throwAnalysis = ta;
+  }
+
+  public static UnreachableCodeEliminator v() {
+    return G.v().soot_jimple_toolkits_scalar_UnreachableCodeEliminator();
   }
 
   @Override

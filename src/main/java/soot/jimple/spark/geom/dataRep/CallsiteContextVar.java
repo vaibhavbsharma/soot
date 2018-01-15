@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.dataRep;
 
 import soot.jimple.spark.pag.Node;
@@ -32,7 +33,8 @@ public class CallsiteContextVar extends ContextVar {
    */
   public CgEdge context = null;
 
-  public CallsiteContextVar() {}
+  public CallsiteContextVar() {
+  }
 
   public CallsiteContextVar(CgEdge c, Node v) {
     context = c;

@@ -19,12 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
-
 import soot.Body;
 import soot.BooleanType;
 import soot.G;
@@ -51,31 +45,21 @@ import soot.jimple.FieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Vector;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 26-Jan-2006
+ * <p>Created on 26-Jan-2006
  */
 public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 
-  @Override
-  public void outputSummary() {}
-
-  public static String dependancies[] = new String[] {"wjtp.jbco_fr"};
-
-  @Override
-  public String[] getDependancies() {
-    return dependancies;
-  }
-
-  public static String name = "wjtp.jbco_fr";
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
   private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
-
+  public static String dependancies[] = new String[] {"wjtp.jbco_fr"};
+  public static String name = "wjtp.jbco_fr";
   public static Vector<String> namesToNotRename = new Vector<>();
   public static Hashtable<String, String> oldToNewFieldNames = new Hashtable<>();
   public static Hashtable<SootClass, SootField> opaquePreds1ByClass = new Hashtable<>();
@@ -85,8 +69,145 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
   public static int handedOutPairs[] = null;
   public static int handedOutRunPairs[] = null;
   public static boolean rename_fields = false;
-
   RefType boolRef;
+
+  /*
+   * @return String newly generated junk name that DOES NOT exist yet
+   */
+  public static String getNewName() {
+    int size = 3;
+    int tries = 0;
+    int index = Rand.getInt(stringChars.length);
+    int length = stringChars[index].length;
+
+    String result = null;
+    char cNewName[] = new char[size];
+    do {
+      if (tries == 10) {
+        cNewName = new char[++size];
+        index = Rand.getInt(stringChars.length);
+        length = stringChars[index].length;
+        tries = 0;
+      }
+
+      if (size < 12) {
+        do {
+          int rand = Rand.getInt(length);
+          cNewName[0] = stringChars[index][rand];
+        } while (!Character.isJavaIdentifierStart(cNewName[0]));
+
+        // generate random string
+        for (int i = 1; i < cNewName.length; i++) {
+          int rand = Rand.getInt(length);
+          cNewName[i] = stringChars[index][rand];
+        }
+        result = String.copyValueOf(cNewName);
+      } else {
+        cNewName = new char[size - 6]; // size will always be at least 8
+        // here
+
+        // generate more random string
+        while (true) {
+          for (int i = 0; i < cNewName.length; i++) {
+            cNewName[i] = (char) Rand.getInt();
+          }
+          result = String.copyValueOf(cNewName);
+          if (isJavaIdentifier(result)) {
+            break;
+          }
+        }
+      }
+      tries++;
+    } while (oldToNewFieldNames.containsValue(result) || BodyBuilder.nameList.contains(result));
+
+    BodyBuilder.nameList.add(result);
+
+    return result;
+  }
+
+  public static void addOldAndNewName(String oldn, String newn) {
+    oldToNewFieldNames.put(oldn, newn);
+  }
+
+  public static boolean isJavaIdentifier(String s) {
+    if (s == null || s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
+      return false;
+    }
+    for (int i = 1; i < s.length(); i++) {
+      if (!Character.isJavaIdentifierPart(s.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static SootField[] getRandomOpaques() {
+    if (handedOutPairs == null) {
+      handedOutPairs = new int[opaquePairs.length];
+    }
+
+    int lowValue = 99999;
+    ArrayList<Integer> available = new ArrayList<>();
+    for (int element : handedOutPairs) {
+      if (lowValue > element) {
+        lowValue = element;
+      }
+    }
+    for (int i = 0; i < handedOutPairs.length; i++) {
+      if (handedOutPairs[i] == lowValue) {
+        available.add(new Integer(i));
+      }
+    }
+
+    Integer index = available.get(Rand.getInt(available.size()));
+    handedOutPairs[index.intValue()]++;
+
+    return opaquePairs[index.intValue()];
+  }
+
+  public static int getRandomOpaquesForRunnable() {
+    if (handedOutRunPairs == null) {
+      handedOutRunPairs = new int[opaquePairs.length];
+    }
+
+    int lowValue = 99999;
+    ArrayList<Integer> available = new ArrayList<>();
+    for (int element : handedOutRunPairs) {
+      if (lowValue > element) {
+        lowValue = element;
+      }
+    }
+    if (lowValue > 2) {
+      return -1;
+    }
+    for (int i = 0; i < handedOutRunPairs.length; i++) {
+      if (handedOutRunPairs[i] == lowValue) {
+        available.add(new Integer(i));
+      }
+    }
+
+    Integer index = available.get(Rand.getInt(available.size()));
+
+    return index.intValue();
+  }
+
+  public static void updateOpaqueRunnableCount(int i) {
+    handedOutRunPairs[i]++;
+  }
+
+  @Override
+  public void outputSummary() {
+  }
+
+  @Override
+  public String[] getDependancies() {
+    return dependancies;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
@@ -290,130 +411,6 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     }
     f.setName(newName);
     sootFieldsRenamed.add(f);
-  }
-
-  /*
-   * @return String newly generated junk name that DOES NOT exist yet
-   */
-  public static String getNewName() {
-    int size = 3;
-    int tries = 0;
-    int index = Rand.getInt(stringChars.length);
-    int length = stringChars[index].length;
-
-    String result = null;
-    char cNewName[] = new char[size];
-    do {
-      if (tries == 10) {
-        cNewName = new char[++size];
-        index = Rand.getInt(stringChars.length);
-        length = stringChars[index].length;
-        tries = 0;
-      }
-
-      if (size < 12) {
-        do {
-          int rand = Rand.getInt(length);
-          cNewName[0] = stringChars[index][rand];
-        } while (!Character.isJavaIdentifierStart(cNewName[0]));
-
-        // generate random string
-        for (int i = 1; i < cNewName.length; i++) {
-          int rand = Rand.getInt(length);
-          cNewName[i] = stringChars[index][rand];
-        }
-        result = String.copyValueOf(cNewName);
-      } else {
-        cNewName = new char[size - 6]; // size will always be at least 8
-        // here
-
-        // generate more random string
-        while (true) {
-          for (int i = 0; i < cNewName.length; i++) {
-            cNewName[i] = (char) Rand.getInt();
-          }
-          result = String.copyValueOf(cNewName);
-          if (isJavaIdentifier(result)) {
-            break;
-          }
-        }
-      }
-      tries++;
-    } while (oldToNewFieldNames.containsValue(result) || BodyBuilder.nameList.contains(result));
-
-    BodyBuilder.nameList.add(result);
-
-    return result;
-  }
-
-  public static void addOldAndNewName(String oldn, String newn) {
-    oldToNewFieldNames.put(oldn, newn);
-  }
-
-  public static boolean isJavaIdentifier(String s) {
-    if (s == null || s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
-      return false;
-    }
-    for (int i = 1; i < s.length(); i++) {
-      if (!Character.isJavaIdentifierPart(s.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public static SootField[] getRandomOpaques() {
-    if (handedOutPairs == null) {
-      handedOutPairs = new int[opaquePairs.length];
-    }
-
-    int lowValue = 99999;
-    ArrayList<Integer> available = new ArrayList<>();
-    for (int element : handedOutPairs) {
-      if (lowValue > element) {
-        lowValue = element;
-      }
-    }
-    for (int i = 0; i < handedOutPairs.length; i++) {
-      if (handedOutPairs[i] == lowValue) {
-        available.add(new Integer(i));
-      }
-    }
-
-    Integer index = available.get(Rand.getInt(available.size()));
-    handedOutPairs[index.intValue()]++;
-
-    return opaquePairs[index.intValue()];
-  }
-
-  public static int getRandomOpaquesForRunnable() {
-    if (handedOutRunPairs == null) {
-      handedOutRunPairs = new int[opaquePairs.length];
-    }
-
-    int lowValue = 99999;
-    ArrayList<Integer> available = new ArrayList<>();
-    for (int element : handedOutRunPairs) {
-      if (lowValue > element) {
-        lowValue = element;
-      }
-    }
-    if (lowValue > 2) {
-      return -1;
-    }
-    for (int i = 0; i < handedOutRunPairs.length; i++) {
-      if (handedOutRunPairs[i] == lowValue) {
-        available.add(new Integer(i));
-      }
-    }
-
-    Integer index = available.get(Rand.getInt(available.size()));
-
-    return index.intValue();
-  }
-
-  public static void updateOpaqueRunnableCount(int i) {
-    handedOutRunPairs[i]++;
   }
 
   private void buildOpaquePairings() {

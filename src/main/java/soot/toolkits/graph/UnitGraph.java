@@ -25,14 +25,6 @@
 
 package soot.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.SootMethod;
@@ -41,10 +33,18 @@ import soot.UnitBox;
 import soot.options.Options;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Represents a CFG where the nodes are {@link Unit} instances and edges represent unexceptional and
  * (possibly) exceptional control flow between <tt>Unit</tt>s.
- *
+ * <p>
  * <p>This is an abstract class, providing the facilities used to build CFGs for specific purposes.
  */
 public abstract class UnitGraph implements DirectedGraph<Unit> {
@@ -79,13 +79,13 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
    * unexceptional control flow.
    *
    * @param unitToSuccs A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is
-   *     an ``out parameter''; callers must pass an empty {@link Map}.
-   *     <tt>buildUnexceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> in the body to
-   *     a list of its unexceptional successors.
+   *                    an ``out parameter''; callers must pass an empty {@link Map}.
+   *                    <tt>buildUnexceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> in the body to
+   *                    a list of its unexceptional successors.
    * @param unitToPreds A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is
-   *     an ``out parameter''; callers must pass an empty {@link Map}.
-   *     <tt>buildUnexceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> in the body to
-   *     a list of its unexceptional predecessors.
+   *                    an ``out parameter''; callers must pass an empty {@link Map}.
+   *                    <tt>buildUnexceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> in the body to
+   *                    a list of its unexceptional predecessors.
    */
   protected void buildUnexceptionalEdges(
       Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
@@ -143,7 +143,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
   /**
    * Utility method used in the construction of {@link UnitGraph}s, to be called only after the
    * unitToPreds and unitToSuccs maps have been built.
-   *
+   * <p>
    * <p><code>UnitGraph</code> provides an implementation of <code>buildHeadsAndTails()</code> which
    * defines the graph's set of heads to include the first {@link Unit} in the graph's body,
    * together with any other <tt>Unit</tt> which has no predecessors. It defines the graph's set of
@@ -238,8 +238,8 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
    *
    * @param unitToSuccs The {@link Map} from {@link Unit}s to {@link List}s of their successors.
    * @param unitToPreds The {@link Map} from {@link Unit}s to {@link List}s of their successors.
-   * @param head The {@link Unit} from which the edge starts.
-   * @param tail The {@link Unit} to which the edge flows.
+   * @param head        The {@link Unit} from which the edge starts.
+   * @param tail        The {@link Unit} to which the edge flows.
    */
   protected void addEdge(
       Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds, Unit head, Unit tail) {
@@ -273,7 +273,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
    * (and this property implies uniqueness.). The path returned includes from and to.
    *
    * @param from start point for the path.
-   * @param to end point for the path.
+   * @param to   end point for the path.
    * @return null if there is no such path.
    */
   public List<Unit> getExtendedBasicBlockPathBetween(Unit from, Unit to) {

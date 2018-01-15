@@ -31,12 +31,13 @@ import soot.EquivalentValue;
 
 /**
  * @deprecated only used by deprecated type {@link BranchedRefVarsAnalysis}; flagged for future
- *     deletion
+ * deletion
  */
 @Deprecated
 public class RefIntPair {
   private EquivalentValue _ref;
   private int _val;
+
   // constructor is not public so that people go throught the ref pair constants factory on the
   // analysis
   RefIntPair(EquivalentValue r, int v, BranchedRefVarsAnalysis brva) {

@@ -28,12 +28,14 @@ package soot.coffi;
 /**
  * A debugging attribute, this associates blocks of bytecode with specific source code line numbers.
  *
- * @see attribute_info
  * @author Clark Verbrugge
+ * @see attribute_info
  */
 public class LineNumberTable_attribute extends attribute_info {
 
-  /** Length of the line_number_table array. */
+  /**
+   * Length of the line_number_table array.
+   */
   public int line_number_table_length;
 
   /**

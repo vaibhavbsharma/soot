@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface ArrayWriteInst extends OpTypeArgInst {}
+public interface ArrayWriteInst extends OpTypeArgInst {
+}

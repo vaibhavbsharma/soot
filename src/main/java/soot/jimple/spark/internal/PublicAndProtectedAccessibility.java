@@ -32,7 +32,8 @@ import soot.SootMethod;
  */
 public class PublicAndProtectedAccessibility implements ClientAccessibilityOracle {
 
-  public PublicAndProtectedAccessibility(Singletons.Global g) {}
+  public PublicAndProtectedAccessibility(Singletons.Global g) {
+  }
 
   public static PublicAndProtectedAccessibility v() {
     return G.v().soot_jimple_spark_internal_PublicAndProtectedAccessibility();

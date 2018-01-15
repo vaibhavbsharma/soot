@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.asm;
 
 import org.objectweb.asm.AnnotationVisitor;
@@ -24,7 +25,6 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.SootMethod;
@@ -42,11 +42,11 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
  */
 class MethodBuilder extends JSRInlinerAdapter {
 
+  private final SootMethod method;
+  private final SootClassBuilder scb;
   private TagBuilder tb;
   private VisibilityAnnotationTag[] visibleParamAnnotations;
   private VisibilityAnnotationTag[] invisibleParamAnnotations;
-  private final SootMethod method;
-  private final SootClassBuilder scb;
 
   MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
     super(Opcodes.ASM5, null, method.getModifiers(), method.getName(), desc, null, ex);

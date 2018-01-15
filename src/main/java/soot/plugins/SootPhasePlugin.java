@@ -32,10 +32,14 @@ import soot.plugins.model.PhasePluginDescription;
  * @author Bernhard J. Berger
  */
 public interface SootPhasePlugin {
-  /** Default option for enabling a plugin. */
+  /**
+   * Default option for enabling a plugin.
+   */
   String ENABLED_BY_DEFAULT = "enabled:true";
 
-  /** @return a list of phase options. */
+  /**
+   * @return a list of phase options.
+   */
   String[] getDeclaredOptions();
 
   /**

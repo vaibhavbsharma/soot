@@ -25,12 +25,6 @@
 
 package soot.grimp.toolkits.base;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -50,14 +44,23 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class ConstructorFolder extends BodyTransformer {
-  public ConstructorFolder(Singletons.Global g) {}
+  public ConstructorFolder(Singletons.Global g) {
+  }
 
   public static ConstructorFolder v() {
     return G.v().soot_grimp_toolkits_base_ConstructorFolder();
   }
 
-  /** This method change all new Obj/<init>(args) pairs to new Obj(args) idioms. */
+  /**
+   * This method change all new Obj/<init>(args) pairs to new Obj(args) idioms.
+   */
   @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
     GrimpBody body = (GrimpBody) b;

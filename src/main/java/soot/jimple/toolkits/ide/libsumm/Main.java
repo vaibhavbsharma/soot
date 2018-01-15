@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.ide.libsumm;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PackManager;
@@ -10,10 +8,14 @@ import soot.Unit;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 
+import java.util.Map;
+
 public class Main {
   static int yes = 0, no = 0;
 
-  /** @param args */
+  /**
+   * @param args
+   */
   public static void main(String[] args) {
     PackManager.v()
         .getPack("jtp")

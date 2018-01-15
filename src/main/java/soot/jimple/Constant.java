@@ -25,15 +25,15 @@
 
 package soot.jimple;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Immediate;
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.baf.Baf;
+
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class Constant implements Value, ConvertToBaf, Immediate {
@@ -42,7 +42,9 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate {
     return Collections.emptyList();
   }
 
-  /** Adds a Baf instruction pushing this constant to the stack onto <code>out</code>. */
+  /**
+   * Adds a Baf instruction pushing this constant to the stack onto <code>out</code>.
+   */
   @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newPushInst(this);
@@ -50,7 +52,9 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate {
     out.add(u);
   }
 
-  /** Clones the current constant. Not implemented here. */
+  /**
+   * Clones the current constant. Not implemented here.
+   */
   @Override
   public Object clone() {
     throw new RuntimeException();

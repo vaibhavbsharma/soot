@@ -25,21 +25,23 @@
 
 package soot.jimple.toolkits.scalar;
 
+import soot.Local;
+import soot.Type;
+import soot.jimple.Jimple;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import soot.Local;
-import soot.Type;
-import soot.jimple.Jimple;
 
 /**
  * provides an easy interface to handle new var-names. New names are automatically added to the
  * chain, and the provided locals are guaranteed to have a unique name.
  */
 public class LocalCreation {
-  /** if no prefix is given, this one's used */
+  /**
+   * if no prefix is given, this one's used
+   */
   public static final String DEFAULT_PREFIX = "soot";
 
   private String prefix;
@@ -60,7 +62,7 @@ public class LocalCreation {
   /**
    * whenever <code>newLocal(type)</code> will be called, the given prefix is used.
    *
-   * @param Chain the locals-chain of a Jimple-body
+   * @param Chain  the locals-chain of a Jimple-body
    * @param String prefix overrides the DEFAULT-PREFIX
    */
   public LocalCreation(Collection<Local> locals, String prefix) {
@@ -95,7 +97,7 @@ public class LocalCreation {
    * <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the localname is unique).
    *
    * @param prefix the prefix for the now local.
-   * @param type the Type of the now local.
+   * @param type   the Type of the now local.
    * @return a local with the given prefix and the given type.
    */
   public Local newLocal(String prefix, Type type) {

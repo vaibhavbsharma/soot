@@ -16,11 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.pointer;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+package soot.jimple.toolkits.pointer;
 
 import soot.Body;
 import soot.Local;
@@ -36,21 +33,25 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * LocalNotMayAliasAnalysis attempts to determine if two local variables (at two potentially
  * different program points) definitely point to different objects.
- *
+ * <p>
  * <p>The underlying abstraction is that of definition expressions. When a local variable gets
  * assigned a new object (unlike LocalMust, only NewExprs), the analysis tracks the source of the
  * value. If two variables have different sources, then they are different.
- *
+ * <p>
  * <p>See Sable TR 2007-8 for details.
  *
  * @author Patrick Lam
  */
 public class LocalMustNotAliasAnalysis
     extends ForwardFlowAnalysis<Unit, HashMap<Local, Set<NewExpr>>> {
-  @SuppressWarnings({"serial", "unchecked"})
+  @SuppressWarnings( {"serial", "unchecked"})
   protected static final NewExpr UNKNOWN =
       new AbstractNewExpr() {
         @Override
@@ -171,7 +172,9 @@ public class LocalMustNotAliasAnalysis
     }
   }
 
-  /** @return true if values of l1 (at s1) and l2 (at s2) are known to point to different objects */
+  /**
+   * @return true if values of l1 (at s1) and l2 (at s2) are known to point to different objects
+   */
   public boolean notMayAlias(Local l1, Stmt s1, Local l2, Stmt s2) {
     Set<NewExpr> l1n = getFlowBefore(s1).get(l1);
     Set<NewExpr> l2n = getFlowBefore(s2).get(l2);

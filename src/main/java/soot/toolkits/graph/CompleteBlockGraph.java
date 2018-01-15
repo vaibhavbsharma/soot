@@ -34,7 +34,7 @@ import soot.Trap;
  * Body} into basic blocks, <code>CompleteBlockGraph</code> assumes that every {@link Unit} covered
  * by a {@link Trap} has the potential to throw an exception caught by the {@link Trap}. This
  * generally has the effect of separating every covered {@link Unit} into a separate block.
- *
+ * <p>
  * <p>This implementation of <code>CompleteBlockGraph</code> is included for backwards
  * compatibility, but the graphs it produces are not necessarily identical to the graphs produced by
  * the implementation of <code>CompleteBlockGraph</code> See the documentation for {@link

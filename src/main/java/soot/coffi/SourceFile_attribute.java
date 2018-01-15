@@ -28,8 +28,8 @@ package soot.coffi;
 /**
  * A debugging attribute, this gives the name of the source file for this <tt>.class</tt> file.
  *
- * @see attribute_info
  * @author Clark Verbrugge
+ * @see attribute_info
  */
 public class SourceFile_attribute extends attribute_info {
   /**

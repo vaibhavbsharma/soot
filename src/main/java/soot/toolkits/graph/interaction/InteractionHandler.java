@@ -19,8 +19,6 @@
 
 package soot.toolkits.graph.interaction;
 
-import java.util.ArrayList;
-
 import soot.Body;
 import soot.G;
 import soot.PhaseOptions;
@@ -31,15 +29,29 @@ import soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 
+import java.util.ArrayList;
+
 public class InteractionHandler {
 
-  public InteractionHandler(Singletons.Global g) {}
+  private ArrayList<Object> stopUnitList;
+  private boolean cgReset = false;
+  private CallGraphGrapher grapher;
+  private SootMethod nextMethod;
+  private boolean interactThisAnalysis;
+  private boolean interactionCon;
+  private IInteractionListener interactionListener;
+  private String currentPhaseName;
+  private boolean currentPhaseEnabled;
+  private boolean cgDone = false;
+  private boolean doneCurrent;
+  private boolean autoCon;
+
+  public InteractionHandler(Singletons.Global g) {
+  }
 
   public static InteractionHandler v() {
     return G.v().soot_toolkits_graph_interaction_InteractionHandler();
   }
-
-  private ArrayList<Object> stopUnitList;
 
   public ArrayList<Object> getStopUnitList() {
     return stopUnitList;
@@ -136,14 +148,12 @@ public class InteractionHandler {
     }
   }
 
-  private boolean cgReset = false;
+  public boolean isCgReset() {
+    return cgReset;
+  }
 
   public void setCgReset(boolean v) {
     cgReset = v;
-  }
-
-  public boolean isCgReset() {
-    return cgReset;
   }
 
   public void handleReset() {
@@ -162,24 +172,20 @@ public class InteractionHandler {
     }
   }
 
-  private CallGraphGrapher grapher;
+  private CallGraphGrapher getGrapher() {
+    return grapher;
+  }
 
   private void setGrapher(CallGraphGrapher g) {
     grapher = g;
   }
 
-  private CallGraphGrapher getGrapher() {
-    return grapher;
+  private SootMethod getNextMethod() {
+    return nextMethod;
   }
-
-  private SootMethod nextMethod;
 
   public void setNextMethod(SootMethod m) {
     nextMethod = m;
-  }
-
-  private SootMethod getNextMethod() {
-    return nextMethod;
   }
 
   private synchronized void doInteraction(InteractionEvent event) {
@@ -194,17 +200,13 @@ public class InteractionHandler {
     }
   }
 
-  private boolean interactThisAnalysis;
-
-  public void setInteractThisAnalysis(boolean b) {
-    interactThisAnalysis = b;
-  }
-
   public boolean isInteractThisAnalysis() {
     return interactThisAnalysis;
   }
 
-  private boolean interactionCon;
+  public void setInteractThisAnalysis(boolean b) {
+    interactThisAnalysis = b;
+  }
 
   public synchronized void setInteractionCon() {
     this.notify();
@@ -214,17 +216,13 @@ public class InteractionHandler {
     return interactionCon;
   }
 
-  private IInteractionListener interactionListener;
-
-  public void setInteractionListener(IInteractionListener listener) {
-    interactionListener = listener;
-  }
-
   public IInteractionListener getInteractionListener() {
     return interactionListener;
   }
 
-  private String currentPhaseName;
+  public void setInteractionListener(IInteractionListener listener) {
+    interactionListener = listener;
+  }
 
   public void currentPhaseName(String name) {
     currentPhaseName = name;
@@ -234,8 +232,6 @@ public class InteractionHandler {
     return currentPhaseName;
   }
 
-  private boolean currentPhaseEnabled;
-
   public void currentPhaseEnabled(boolean b) {
     currentPhaseEnabled = b;
   }
@@ -243,8 +239,6 @@ public class InteractionHandler {
   public boolean currentPhaseEnabled() {
     return currentPhaseEnabled;
   }
-
-  private boolean cgDone = false;
 
   public void cgDone(boolean b) {
     cgDone = b;
@@ -254,8 +248,6 @@ public class InteractionHandler {
     return cgDone;
   }
 
-  private boolean doneCurrent;
-
   public void doneCurrent(boolean b) {
     doneCurrent = b;
   }
@@ -263,8 +255,6 @@ public class InteractionHandler {
   public boolean doneCurrent() {
     return doneCurrent;
   }
-
-  private boolean autoCon;
 
   public void autoCon(boolean b) {
     autoCon = b;

@@ -19,8 +19,6 @@
 
 package soot.javaToJimple.jj.ast;
 
-import java.util.List;
-
 import polyglot.ast.Call;
 import polyglot.ast.Expr;
 import polyglot.ast.Field;
@@ -30,6 +28,8 @@ import polyglot.ext.jl.ast.Expr_c;
 import polyglot.util.Position;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
+
+import java.util.List;
 
 public class JjAccessField_c extends Expr_c implements Expr {
 

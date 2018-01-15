@@ -27,10 +27,17 @@ package soot;
 
 import soot.tagkit.AbstractHost;
 
-/** Reference implementation for ValueBox; just add a canContainValue method. */
+/**
+ * Reference implementation for ValueBox; just add a canContainValue method.
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractValueBox extends AbstractHost implements ValueBox {
   Value value;
+
+  @Override
+  public Value getValue() {
+    return value;
+  }
 
   @Override
   public void setValue(Value value) {
@@ -43,11 +50,6 @@ public abstract class AbstractValueBox extends AbstractHost implements ValueBox 
       throw new RuntimeException(
           "Box " + this + " cannot contain value: " + value + "(" + value.getClass() + ")");
     }
-  }
-
-  @Override
-  public Value getValue() {
-    return value;
   }
 
   @Override

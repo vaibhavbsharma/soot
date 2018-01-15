@@ -25,10 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.Type;
 import soot.Unit;
@@ -43,18 +39,22 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.NewMultiArrayExpr;
 import soot.util.Switch;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf {
-  ArrayType baseType;
   protected final ValueBox[] sizeBoxes;
-
-  @Override
-  public abstract Object clone();
+  ArrayType baseType;
 
   protected AbstractNewMultiArrayExpr(ArrayType type, ValueBox[] sizeBoxes) {
     this.baseType = type;
     this.sizeBoxes = sizeBoxes;
   }
+
+  @Override
+  public abstract Object clone();
 
   @Override
   public boolean equivTo(Object o) {
@@ -65,7 +65,9 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return baseType.hashCode();

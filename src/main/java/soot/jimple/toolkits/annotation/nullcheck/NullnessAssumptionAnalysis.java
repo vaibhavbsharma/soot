@@ -19,13 +19,6 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
@@ -42,6 +35,13 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JCastExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * An intraprocedural nullness assumption analysis that computes for each location and each value in
@@ -99,11 +99,13 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     doAnalysis();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue)
-        //	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts)
-      {
+  //	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts)
+  {
     AnalysisInfo in = (AnalysisInfo) inValue;
     AnalysisInfo out = new AnalysisInfo(in);
 
@@ -239,7 +241,9 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     out.put(left, rhsInfo.get(right));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void copy(Object source, Object dest) {
     Map s = (Map) source;
@@ -248,13 +252,17 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     d.putAll(s);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected Object entryInitialFlow() {
     return new AnalysisInfo();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void merge(Object in1, Object in2, Object out) {
     AnalysisInfo left = (AnalysisInfo) in1;
@@ -301,7 +309,9 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected Object newInitialFlow() {
     return new AnalysisInfo();

@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java built-in type 'short'. Implemented as a singleton. */
+/**
+ * Soot representation of the Java built-in type 'short'. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class ShortType extends PrimType implements IntegerType {
-  public ShortType(Singletons.Global g) {}
+  public ShortType(Singletons.Global g) {
+  }
 
   public static ShortType v() {
     return G.v().soot_ShortType();

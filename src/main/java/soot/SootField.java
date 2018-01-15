@@ -31,29 +31,44 @@ import soot.jimple.spark.pag.SparkField;
 import soot.tagkit.AbstractHost;
 import soot.util.Numberable;
 
-/** Soot representation of a Java field. Can be declared to belong to a SootClass. */
+/**
+ * Soot representation of a Java field. Can be declared to belong to a SootClass.
+ */
 public class SootField extends AbstractHost
     implements ClassMember, SparkField, Numberable, PaddleField {
+  protected boolean isPhantom = false;
   String name;
   Type type;
   int modifiers;
-
   boolean isDeclared = false;
   SootClass declaringClass;
-  protected boolean isPhantom = false;
+  private int number = 0;
 
-  /** Constructs a Soot field with the given name, type and modifiers. */
+  /**
+   * Constructs a Soot field with the given name, type and modifiers.
+   */
   public SootField(String name, Type type, int modifiers) {
     this.name = name;
     this.type = type;
     this.modifiers = modifiers;
   }
 
-  /** Constructs a Soot field with the given name, type and no modifiers. */
+  /**
+   * Constructs a Soot field with the given name, type and no modifiers.
+   */
   public SootField(String name, Type type) {
     this.name = name;
     this.type = type;
     this.modifiers = 0;
+  }
+
+  public static String getSignature(SootClass cl, String name, Type type) {
+    StringBuffer buffer = new StringBuffer();
+
+    buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
+    buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
+
+    return buffer.toString().intern();
   }
 
   public int equivHashCode() {
@@ -64,17 +79,12 @@ public class SootField extends AbstractHost
     return name;
   }
 
-  public String getSignature() {
-    return getSignature(declaringClass, getName(), getType());
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public static String getSignature(SootClass cl, String name, Type type) {
-    StringBuffer buffer = new StringBuffer();
-
-    buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
-    buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
-
-    return buffer.toString().intern();
+  public String getSignature() {
+    return getSignature(declaringClass, getName(), getType());
   }
 
   public String getSubSignature() {
@@ -90,6 +100,13 @@ public class SootField extends AbstractHost
     }
 
     return declaringClass;
+  }
+
+  public void setDeclaringClass(SootClass sc) {
+    this.declaringClass = sc;
+    if (type instanceof RefLikeType) {
+      Scene.v().getFieldNumberer().add(this);
+    }
   }
 
   @Override
@@ -115,8 +132,8 @@ public class SootField extends AbstractHost
     return isDeclared;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setDeclared(boolean declared) {
+    this.isDeclared = declared;
   }
 
   @Override
@@ -128,33 +145,48 @@ public class SootField extends AbstractHost
     this.type = t;
   }
 
-  /** Convenience method returning true if this field is public. */
+  /**
+   * Convenience method returning true if this field is public.
+   */
   @Override
   public boolean isPublic() {
     return Modifier.isPublic(this.getModifiers());
   }
 
-  /** Convenience method returning true if this field is protected. */
+  /**
+   * Convenience method returning true if this field is protected.
+   */
   @Override
   public boolean isProtected() {
     return Modifier.isProtected(this.getModifiers());
   }
 
-  /** Convenience method returning true if this field is private. */
+  /**
+   * Convenience method returning true if this field is private.
+   */
   @Override
   public boolean isPrivate() {
     return Modifier.isPrivate(this.getModifiers());
   }
 
-  /** Convenience method returning true if this field is static. */
+  /**
+   * Convenience method returning true if this field is static.
+   */
   @Override
   public boolean isStatic() {
     return Modifier.isStatic(this.getModifiers());
   }
 
-  /** Convenience method returning true if this field is final. */
+  /**
+   * Convenience method returning true if this field is final.
+   */
   public boolean isFinal() {
     return Modifier.isFinal(this.getModifiers());
+  }
+
+  @Override
+  public int getModifiers() {
+    return modifiers;
   }
 
   @Override
@@ -164,11 +196,6 @@ public class SootField extends AbstractHost
     }
 
     this.modifiers = modifiers;
-  }
-
-  @Override
-  public int getModifiers() {
-    return modifiers;
   }
 
   @Override
@@ -201,20 +228,7 @@ public class SootField extends AbstractHost
     this.number = number;
   }
 
-  private int number = 0;
-
   public SootFieldRef makeRef() {
     return Scene.v().makeFieldRef(declaringClass, name, type, isStatic());
-  }
-
-  public void setDeclared(boolean declared) {
-    this.isDeclared = declared;
-  }
-
-  public void setDeclaringClass(SootClass sc) {
-    this.declaringClass = sc;
-    if (type instanceof RefLikeType) {
-      Scene.v().getFieldNumberer().add(this);
-    }
   }
 }

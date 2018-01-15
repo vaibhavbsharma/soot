@@ -14,7 +14,7 @@ public class DexInnerClassParser {
    *
    * @param icTag The InnerClassTag from which to read the name of the outer class
    * @return The nam,e of the outer class (in Soot notation) as specified in the tag. If the
-   *     specification is invalid, null is returned.
+   * specification is invalid, null is returned.
    */
   public static String getOuterClassNameFromTag(InnerClassTag icTag) {
     String outerClass;

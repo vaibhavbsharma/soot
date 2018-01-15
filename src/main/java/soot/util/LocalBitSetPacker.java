@@ -20,7 +20,9 @@ public class LocalBitSetPacker {
     this.body = body;
   }
 
-  /** Reassigns the local numbers such that a dense bit set can be created over them */
+  /**
+   * Reassigns the local numbers such that a dense bit set can be created over them
+   */
   public void pack() {
     int n = body.getLocalCount();
     locals = new Local[n];
@@ -33,7 +35,9 @@ public class LocalBitSetPacker {
     }
   }
 
-  /** Restores the original local numbering */
+  /**
+   * Restores the original local numbering
+   */
   public void unpack() {
     for (int i = 0; i < locals.length; i++) {
       locals[i].setNumber(oldNumbers[i]);

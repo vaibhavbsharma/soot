@@ -88,14 +88,16 @@ public class FixedMethods {
     return false;
   }
 
-  /** Returns true if the given method is visible to client code. */
+  /**
+   * Returns true if the given method is visible to client code.
+   */
   private static boolean visible(SootMethod mPrime) {
     SootClass cPrime = mPrime.getDeclaringClass();
     return (cPrime.isPublic()
-            || cPrime.isProtected()
-            || (!cPrime.isPrivate() && !ASSUME_PACKAGES_SEALED))
+        || cPrime.isProtected()
+        || (!cPrime.isPrivate() && !ASSUME_PACKAGES_SEALED))
         && (mPrime.isPublic()
-            || mPrime.isProtected()
-            || (!mPrime.isPrivate() && !ASSUME_PACKAGES_SEALED));
+        || mPrime.isProtected()
+        || (!mPrime.isPrivate() && !ASSUME_PACKAGES_SEALED));
   }
 }

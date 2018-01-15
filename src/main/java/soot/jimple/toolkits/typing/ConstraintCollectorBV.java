@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -103,7 +100,12 @@ import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
-/** @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead */
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
+ */
 @Deprecated
 class ConstraintCollectorBV extends AbstractStmtSwitch {
   private TypeResolverBV resolver;
@@ -558,7 +560,8 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseGotoStmt(GotoStmt stmt) {}
+  public void caseGotoStmt(GotoStmt stmt) {
+  }
 
   @Override
   public void caseIfStmt(IfStmt stmt) {
@@ -634,7 +637,8 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseNopStmt(NopStmt stmt) {}
+  public void caseNopStmt(NopStmt stmt) {
+  }
 
   @Override
   public void caseReturnStmt(ReturnStmt stmt) {
@@ -648,7 +652,8 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+  }
 
   @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {

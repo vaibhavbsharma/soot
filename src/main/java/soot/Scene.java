@@ -26,31 +26,7 @@
 
 package soot;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.apache.commons.io.IOUtils;
-
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
@@ -75,12 +51,74 @@ import soot.util.MapNumberer;
 import soot.util.Numberer;
 import soot.util.StringNumberer;
 
-/** Manages the SootClasses of the application being analyzed. */
-public class Scene // extends AbstractHost
- {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+/**
+ * Manages the SootClasses of the application being analyzed.
+ */
+public class Scene // extends AbstractHost
+{
+
+  protected final ArrayNumberer<Kind> kindNumberer;
   private final int defaultSdkVersion = 15;
   private final Map<String, Integer> maxAPIs = new HashMap<>();
+  private final Map<String, RefType> nameToClass = new HashMap<>();
+  private final Set<String>[] basicclasses = new Set[4];
+  protected ArrayNumberer<Type> typeNumberer = new ArrayNumberer<>();
+  protected ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<>();
+  protected Numberer<Unit> unitNumberer = new MapNumberer<>();
+  protected Numberer<Context> contextNumberer = null;
+  protected Numberer<SparkField> fieldNumberer = new ArrayNumberer<>();
+  protected ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<>();
+  protected StringNumberer subSigNumberer = new StringNumberer();
+  protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<>();
+  protected LinkedList<String> excludedPackages;
+  Chain<SootClass> classes = new HashChain<>();
+  Chain<SootClass> applicationClasses = new HashChain<>();
+  Chain<SootClass> libraryClasses = new HashChain<>();
+  Chain<SootClass> phantomClasses = new HashChain<>();
+  boolean allowsPhantomRefs = false;
+  SootClass mainClass;
+  String sootClassPath = null;
+  Set<String> reservedNames = new HashSet<>();
+  List<String> pkgList;
+  private Hierarchy activeHierarchy;
+  private FastHierarchy activeFastHierarchy;
+  private CallGraph activeCallGraph;
+  private ReachableMethods reachableMethods;
+  private PointsToAnalysis activePointsToAnalysis;
+  private SideEffectAnalysis activeSideEffectAnalysis;
+  private List<SootMethod> entryPoints;
+  private ClientAccessibilityOracle accessibilityOracle;
+  // Two default values for constructing ExceptionalUnitGraphs:
+  private ThrowAnalysis defaultThrowAnalysis = null;
+  private int androidAPIVersion = -1;
+  private int stateCount;
+  private ContextSensitiveCallGraph cscg = null;
+  private List<SootClass> dynamicClasses = null;
+  private boolean doneResolving = false;
+  private boolean incrementalBuild;
 
   public Scene(Singletons.Global g) {
     setReservedNames();
@@ -95,24 +133,28 @@ public class Scene // extends AbstractHost
     kindNumberer =
         new ArrayNumberer<>(
             new Kind[] {
-              Kind.INVALID,
-              Kind.STATIC,
-              Kind.VIRTUAL,
-              Kind.INTERFACE,
-              Kind.SPECIAL,
-              Kind.CLINIT,
-              Kind.THREAD,
-              Kind.EXECUTOR,
-              Kind.ASYNCTASK,
-              Kind.FINALIZE,
-              Kind.INVOKE_FINALIZE,
-              Kind.PRIVILEGED,
-              Kind.NEWINSTANCE
+                Kind.INVALID,
+                Kind.STATIC,
+                Kind.VIRTUAL,
+                Kind.INTERFACE,
+                Kind.SPECIAL,
+                Kind.CLINIT,
+                Kind.THREAD,
+                Kind.EXECUTOR,
+                Kind.ASYNCTASK,
+                Kind.FINALIZE,
+                Kind.INVOKE_FINALIZE,
+                Kind.PRIVILEGED,
+                Kind.NEWINSTANCE
             });
 
     addSootBasicClasses();
 
     determineExcludedPackages();
+  }
+
+  public static Scene v() {
+    return G.v().soot_Scene();
   }
 
   private void determineExcludedPackages() {
@@ -137,55 +179,6 @@ public class Scene // extends AbstractHost
       excludedPackages.add("com.apple.*");
     }
   }
-
-  public static Scene v() {
-    return G.v().soot_Scene();
-  }
-
-  Chain<SootClass> classes = new HashChain<>();
-  Chain<SootClass> applicationClasses = new HashChain<>();
-  Chain<SootClass> libraryClasses = new HashChain<>();
-  Chain<SootClass> phantomClasses = new HashChain<>();
-
-  private final Map<String, RefType> nameToClass = new HashMap<>();
-
-  protected final ArrayNumberer<Kind> kindNumberer;
-  protected ArrayNumberer<Type> typeNumberer = new ArrayNumberer<>();
-  protected ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<>();
-  protected Numberer<Unit> unitNumberer = new MapNumberer<>();
-  protected Numberer<Context> contextNumberer = null;
-  protected Numberer<SparkField> fieldNumberer = new ArrayNumberer<>();
-  protected ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<>();
-  protected StringNumberer subSigNumberer = new StringNumberer();
-  protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<>();
-
-  private Hierarchy activeHierarchy;
-  private FastHierarchy activeFastHierarchy;
-  private CallGraph activeCallGraph;
-  private ReachableMethods reachableMethods;
-  private PointsToAnalysis activePointsToAnalysis;
-  private SideEffectAnalysis activeSideEffectAnalysis;
-  private List<SootMethod> entryPoints;
-  private ClientAccessibilityOracle accessibilityOracle;
-
-  boolean allowsPhantomRefs = false;
-
-  SootClass mainClass;
-  String sootClassPath = null;
-
-  // Two default values for constructing ExceptionalUnitGraphs:
-  private ThrowAnalysis defaultThrowAnalysis = null;
-
-  private int androidAPIVersion = -1;
-
-  public void setMainClass(SootClass m) {
-    mainClass = m;
-    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))) {
-      throw new RuntimeException("Main-class has no main method!");
-    }
-  }
-
-  Set<String> reservedNames = new HashSet<>();
 
   /**
    * Returns a set of tokens which are reserved. Any field, class, method, or local variable with
@@ -272,6 +265,13 @@ public class Scene // extends AbstractHost
     return mainClass;
   }
 
+  public void setMainClass(SootClass m) {
+    mainClass = m;
+    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))) {
+      throw new RuntimeException("Main-class has no main method!");
+    }
+  }
+
   public SootMethod getMainMethod() {
     if (!hasMainClass()) {
       throw new RuntimeException("There is no main class set!");
@@ -286,11 +286,6 @@ public class Scene // extends AbstractHost
       throw new RuntimeException("Main class declares no main method!");
     }
     return mainMethod;
-  }
-
-  public void setSootClassPath(String p) {
-    sootClassPath = p;
-    SourceLocator.v().invalidateClassPath();
   }
 
   public void extendSootClassPath(String newPathElement) {
@@ -330,6 +325,11 @@ public class Scene // extends AbstractHost
     }
 
     return sootClassPath;
+  }
+
+  public void setSootClassPath(String p) {
+    sootClassPath = p;
+    SourceLocator.v().invalidateClassPath();
   }
 
   /**
@@ -396,8 +396,8 @@ public class Scene // extends AbstractHost
     return androidAPIVersion > 0
         ? androidAPIVersion
         : (Options.v().android_api_version() > 0
-            ? Options.v().android_api_version()
-            : defaultSdkVersion);
+        ? Options.v().android_api_version()
+        : defaultSdkVersion);
   }
 
   private int getAndroidAPIVersion(String jars, String apk) {
@@ -452,13 +452,6 @@ public class Scene // extends AbstractHost
     return androidAPIVersion;
   }
 
-  private static class AndroidVersionInfo {
-
-    public int sdkTargetVersion = -1;
-    public int minSdkVersion = -1;
-    public int platformBuildVersionCode = -1;
-  }
-
   private int getTargetSDKVersion(String apkFile, String platformJARs) {
     // get AndroidManifest
     InputStream manifestIS = null;
@@ -467,7 +460,7 @@ public class Scene // extends AbstractHost
       try {
         archive = new ZipFile(apkFile);
         for (Enumeration<? extends ZipEntry> entries = archive.entries();
-            entries.hasMoreElements();
+             entries.hasMoreElements();
             ) {
           ZipEntry entry = entries.nextElement();
           String entryName = entry.getName();
@@ -762,8 +755,6 @@ public class Scene // extends AbstractHost
     return sb.toString();
   }
 
-  private int stateCount;
-
   public int getState() {
     return this.stateCount;
   }
@@ -960,7 +951,9 @@ public class Scene // extends AbstractHost
      */
   }
 
-  /** Loads the given class and all of the required support classes. Returns the first class. */
+  /**
+   * Loads the given class and all of the required support classes. Returns the first class.
+   */
   public SootClass loadClassAndSupport(String className) {
     SootClass ret = loadClass(className, SootClass.SIGNATURES);
     if (!ret.isPhantom()) {
@@ -991,7 +984,7 @@ public class Scene // extends AbstractHost
    * Returns the RefType with the given class name or primitive type.
    *
    * @throws RuntimeException if the Type for this name cannot be found. Use {@link
-   *     #getRefTypeUnsafe(String)} to check if type is an registered RefType.
+   *                          #getRefTypeUnsafe(String)} to check if type is an registered RefType.
    */
   public Type getType(String arg) {
     String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
@@ -1033,7 +1026,7 @@ public class Scene // extends AbstractHost
    * Returns the RefType with the given className.
    *
    * @throws IllegalStateException if the RefType for this class cannot be found. Use {@link
-   *     #containsType(String)} to check if type is registered
+   *                               #containsType(String)} to check if type is registered
    */
   public RefType getRefType(String className) {
     RefType refType = getRefTypeUnsafe(className);
@@ -1048,6 +1041,8 @@ public class Scene // extends AbstractHost
     return refType;
   }
 
+  /* The four following chains are mutually disjoint. */
+
   /**
    * Returns the RefType with the given className. Returns null if no type with the given name can
    * be found.
@@ -1057,12 +1052,16 @@ public class Scene // extends AbstractHost
     return refType;
   }
 
-  /** Returns the {@link RefType} for {@link Object}. */
+  /**
+   * Returns the {@link RefType} for {@link Object}.
+   */
   public RefType getObjectType() {
     return getRefType("java.lang.Object");
   }
 
-  /** Returns the RefType with the given className. */
+  /**
+   * Returns the RefType with the given className.
+   */
   public void addRefType(RefType type) {
     nameToClass.put(type.getClassName(), type);
   }
@@ -1094,7 +1093,11 @@ public class Scene // extends AbstractHost
     return null;
   }
 
-  /** Returns the SootClass with the given className. */
+  /** ************************************************************************* */
+
+  /**
+   * Returns the SootClass with the given className.
+   */
   public SootClass getSootClass(String className) {
     SootClass sc = getSootClassUnsafe(className);
     if (sc != null) {
@@ -1105,12 +1108,12 @@ public class Scene // extends AbstractHost
         System.getProperty("line.separator") + "Aborting: can't find classfile " + className);
   }
 
-  /** Returns an backed chain of the classes in this manager. */
+  /**
+   * Returns an backed chain of the classes in this manager.
+   */
   public Chain<SootClass> getClasses() {
     return classes;
   }
-
-  /* The four following chains are mutually disjoint. */
 
   /**
    * Returns a chain of the application classes in this scene. These classes are the ones which can
@@ -1127,6 +1130,8 @@ public class Scene // extends AbstractHost
   public Chain<SootClass> getLibraryClasses() {
     return libraryClasses;
   }
+
+  /** ************************************************************************* */
 
   /**
    * Returns a chain of the phantom classes in this scene. These classes are referred to by other
@@ -1148,8 +1153,9 @@ public class Scene // extends AbstractHost
     return null;
   }
 
-  /** ************************************************************************* */
-  /** Retrieves the active side-effect analysis */
+  /**
+   * Retrieves the active side-effect analysis
+   */
   public SideEffectAnalysis getSideEffectAnalysis() {
     if (!hasSideEffectAnalysis()) {
       setSideEffectAnalysis(new SideEffectAnalysis(getPointsToAnalysis(), getCallGraph()));
@@ -1158,10 +1164,14 @@ public class Scene // extends AbstractHost
     return activeSideEffectAnalysis;
   }
 
-  /** Sets the active side-effect analysis */
+  /**
+   * Sets the active side-effect analysis
+   */
   public void setSideEffectAnalysis(SideEffectAnalysis sea) {
     activeSideEffectAnalysis = sea;
   }
+
+  /** ************************************************************************* */
 
   public boolean hasSideEffectAnalysis() {
     return activeSideEffectAnalysis != null;
@@ -1171,8 +1181,9 @@ public class Scene // extends AbstractHost
     activeSideEffectAnalysis = null;
   }
 
-  /** ************************************************************************* */
-  /** Retrieves the active pointer analysis */
+  /**
+   * Retrieves the active pointer analysis
+   */
   public PointsToAnalysis getPointsToAnalysis() {
     if (!hasPointsToAnalysis()) {
       return DumbPointerAnalysis.v();
@@ -1181,10 +1192,14 @@ public class Scene // extends AbstractHost
     return activePointsToAnalysis;
   }
 
-  /** Sets the active pointer analysis */
+  /**
+   * Sets the active pointer analysis
+   */
   public void setPointsToAnalysis(PointsToAnalysis pa) {
     activePointsToAnalysis = pa;
   }
+
+  /** ************************************************************************* */
 
   public boolean hasPointsToAnalysis() {
     return activePointsToAnalysis != null;
@@ -1194,8 +1209,9 @@ public class Scene // extends AbstractHost
     activePointsToAnalysis = null;
   }
 
-  /** ************************************************************************* */
-  /** Retrieves the active client accessibility oracle */
+  /**
+   * Retrieves the active client accessibility oracle
+   */
   public ClientAccessibilityOracle getClientAccessibilityOracle() {
     if (!hasClientAccessibilityOracle()) {
       return PublicAndProtectedAccessibility.v();
@@ -1204,20 +1220,23 @@ public class Scene // extends AbstractHost
     return accessibilityOracle;
   }
 
+  public void setClientAccessibilityOracle(ClientAccessibilityOracle oracle) {
+    accessibilityOracle = oracle;
+  }
+
   public boolean hasClientAccessibilityOracle() {
     return accessibilityOracle != null;
   }
 
-  public void setClientAccessibilityOracle(ClientAccessibilityOracle oracle) {
-    accessibilityOracle = oracle;
-  }
+  /** ************************************************************************* */
 
   public void releaseClientAccessibilityOracle() {
     accessibilityOracle = null;
   }
 
-  /** ************************************************************************* */
-  /** Makes a new fast hierarchy is none is active, and returns the active fast hierarchy. */
+  /**
+   * Makes a new fast hierarchy is none is active, and returns the active fast hierarchy.
+   */
   public FastHierarchy getOrMakeFastHierarchy() {
     if (!hasFastHierarchy()) {
       setFastHierarchy(new FastHierarchy());
@@ -1225,7 +1244,9 @@ public class Scene // extends AbstractHost
     return getFastHierarchy();
   }
 
-  /** Retrieves the active fast hierarchy */
+  /**
+   * Retrieves the active fast hierarchy
+   */
   public FastHierarchy getFastHierarchy() {
     if (!hasFastHierarchy()) {
       throw new RuntimeException("no active FastHierarchy present for scene");
@@ -1234,7 +1255,9 @@ public class Scene // extends AbstractHost
     return activeFastHierarchy;
   }
 
-  /** Sets the active hierarchy */
+  /**
+   * Sets the active hierarchy
+   */
   public void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
@@ -1247,8 +1270,9 @@ public class Scene // extends AbstractHost
     activeFastHierarchy = null;
   }
 
-  /** ************************************************************************* */
-  /** Retrieves the active hierarchy */
+  /**
+   * Retrieves the active hierarchy
+   */
   public Hierarchy getActiveHierarchy() {
     if (!hasActiveHierarchy()) {
       // throw new RuntimeException("no active Hierarchy present for
@@ -1259,7 +1283,9 @@ public class Scene // extends AbstractHost
     return activeHierarchy;
   }
 
-  /** Sets the active hierarchy */
+  /**
+   * Sets the active hierarchy
+   */
   public void setActiveHierarchy(Hierarchy hierarchy) {
     activeHierarchy = hierarchy;
   }
@@ -1276,7 +1302,9 @@ public class Scene // extends AbstractHost
     return entryPoints != null;
   }
 
-  /** Get the set of entry points that are used to build the call graph. */
+  /**
+   * Get the set of entry points that are used to build the call graph.
+   */
   public List<SootMethod> getEntryPoints() {
     if (entryPoints == null) {
       entryPoints = EntryPoints.v().all();
@@ -1284,12 +1312,12 @@ public class Scene // extends AbstractHost
     return entryPoints;
   }
 
-  /** Change the set of entry point methods used to build the call graph. */
+  /**
+   * Change the set of entry point methods used to build the call graph.
+   */
   public void setEntryPoints(List<SootMethod> entryPoints) {
     this.entryPoints = entryPoints;
   }
-
-  private ContextSensitiveCallGraph cscg = null;
 
   public ContextSensitiveCallGraph getContextSensitiveCallGraph() {
     if (cscg == null) {
@@ -1378,6 +1406,13 @@ public class Scene // extends AbstractHost
     return contextNumberer;
   }
 
+  public void setContextNumberer(Numberer<Context> n) {
+    if (contextNumberer != null) {
+      throw new RuntimeException("Attempt to set context numberer when it is already set.");
+    }
+    contextNumberer = n;
+  }
+
   public Numberer<Unit> getUnitNumberer() {
     return unitNumberer;
   }
@@ -1396,13 +1431,6 @@ public class Scene // extends AbstractHost
 
   public ArrayNumberer<Local> getLocalNumberer() {
     return localNumberer;
-  }
-
-  public void setContextNumberer(Numberer<Context> n) {
-    if (contextNumberer != null) {
-      throw new RuntimeException("Attempt to set context numberer when it is already set.");
-    }
-    contextNumberer = n;
   }
 
   /**
@@ -1505,8 +1533,6 @@ public class Scene // extends AbstractHost
     rn.add("to");
     rn.add("with");
   }
-
-  private final Set<String>[] basicclasses = new Set[4];
 
   private void addSootBasicClasses() {
     basicclasses[SootClass.HIERARCHY] = new HashSet<>();
@@ -1655,8 +1681,6 @@ public class Scene // extends AbstractHost
     }
   }
 
-  private List<SootClass> dynamicClasses = null;
-
   public Collection<SootClass> dynamicClasses() {
     if (dynamicClasses == null) {
       throw new IllegalStateException("Have to call loadDynamicClasses() first!");
@@ -1784,7 +1808,7 @@ public class Scene // extends AbstractHost
     for (String pkg : excludedPackages) {
       if (name.equals(pkg)
           || ((pkg.endsWith(".*") || pkg.endsWith("$*"))
-              && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
+          && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return !isIncluded(sc);
       }
     }
@@ -1796,24 +1820,24 @@ public class Scene // extends AbstractHost
     for (String inc : Options.v().include()) {
       if (name.equals(inc)
           || ((inc.endsWith(".*") || inc.endsWith("$*"))
-              && name.startsWith(inc.substring(0, inc.length() - 1)))) {
+          && name.startsWith(inc.substring(0, inc.length() - 1)))) {
         return true;
       }
     }
     return false;
   }
 
-  List<String> pkgList;
+  public List<String> getPkgList() {
+    return pkgList;
+  }
 
   public void setPkgList(List<String> list) {
     pkgList = list;
   }
 
-  public List<String> getPkgList() {
-    return pkgList;
-  }
-
-  /** Create an unresolved reference to a method. */
+  /**
+   * Create an unresolved reference to a method.
+   */
   public SootMethodRef makeMethodRef(
       SootClass declaringClass,
       String name,
@@ -1823,19 +1847,25 @@ public class Scene // extends AbstractHost
     return new SootMethodRefImpl(declaringClass, name, parameterTypes, returnType, isStatic);
   }
 
-  /** Create an unresolved reference to a constructor. */
+  /**
+   * Create an unresolved reference to a constructor.
+   */
   public SootMethodRef makeConstructorRef(SootClass declaringClass, List<Type> parameterTypes) {
     return makeMethodRef(
         declaringClass, SootMethod.constructorName, parameterTypes, VoidType.v(), false);
   }
 
-  /** Create an unresolved reference to a field. */
+  /**
+   * Create an unresolved reference to a field.
+   */
   public SootFieldRef makeFieldRef(
       SootClass declaringClass, String name, Type type, boolean isStatic) {
     return new AbstractSootFieldRef(declaringClass, name, type, isStatic);
   }
 
-  /** Returns the list of SootClasses that have been resolved at least to the level specified. */
+  /**
+   * Returns the list of SootClasses that have been resolved at least to the level specified.
+   */
   public List<SootClass> getClasses(int desiredLevel) {
     List<SootClass> ret = new ArrayList<>();
     for (SootClass cl : getClasses()) {
@@ -1845,10 +1875,6 @@ public class Scene // extends AbstractHost
     }
     return ret;
   }
-
-  private boolean doneResolving = false;
-  private boolean incrementalBuild;
-  protected LinkedList<String> excludedPackages;
 
   public boolean doneResolving() {
     return doneResolving;
@@ -1966,5 +1992,12 @@ public class Scene // extends AbstractHost
     }
     nameToClass.put(tp.getClassName(), tp);
     return tp;
+  }
+
+  private static class AndroidVersionInfo {
+
+    public int sdkTargetVersion = -1;
+    public int minSdkVersion = -1;
+    public int platformBuildVersionCode = -1;
   }
 }

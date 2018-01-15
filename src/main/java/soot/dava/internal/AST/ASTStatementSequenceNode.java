@@ -20,8 +20,6 @@
 
 package soot.dava.internal.AST;
 
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.dava.internal.asg.AugmentedStmt;
@@ -29,6 +27,8 @@ import soot.dava.toolkits.base.AST.ASTAnalysis;
 import soot.dava.toolkits.base.AST.ASTWalker;
 import soot.dava.toolkits.base.AST.TryContentsFinder;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
+
+import java.util.List;
 
 public class ASTStatementSequenceNode extends ASTNode {
   private List<AugmentedStmt> statementSequence;
@@ -92,15 +92,15 @@ public class ASTStatementSequenceNode extends ASTNode {
     return statementSequence;
   }
 
-  @Override
-  public void apply(Analysis a) {
-    a.caseASTStatementSequenceNode(this);
-  }
-
   /*
    * Nomair A. Naeem added 3-MAY-05
    */
   public void setStatements(List<AugmentedStmt> statementSequence) {
     this.statementSequence = statementSequence;
+  }
+
+  @Override
+  public void apply(Analysis a) {
+    a.caseASTStatementSequenceNode(this);
   }
 }

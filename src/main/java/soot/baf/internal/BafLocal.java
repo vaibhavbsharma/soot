@@ -25,14 +25,14 @@
 
 package soot.baf.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Local;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class BafLocal implements Local {
   String name;
@@ -41,6 +41,7 @@ public class BafLocal implements Local {
   int fixedHashCode;
   boolean isHashCodeChosen;
   private Local originalLocal;
+  private int number = 0;
 
   public BafLocal(String name, Type t) {
     this.name = name;
@@ -53,7 +54,9 @@ public class BafLocal implements Local {
     return this.equals(o);
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return name.hashCode() * 101 + type.hashCode() * 17;
@@ -123,6 +126,4 @@ public class BafLocal implements Local {
   public final void setNumber(int number) {
     this.number = number;
   }
-
-  private int number = 0;
 }

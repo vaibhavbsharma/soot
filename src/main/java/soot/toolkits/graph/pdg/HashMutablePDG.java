@@ -16,7 +16,17 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.graph.pdg;
+
+import soot.Body;
+import soot.SootClass;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.DominatorNode;
+import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
+import soot.toolkits.graph.UnitGraph;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -28,25 +38,16 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import soot.Body;
-import soot.SootClass;
-import soot.toolkits.graph.Block;
-import soot.toolkits.graph.BlockGraph;
-import soot.toolkits.graph.DominatorNode;
-import soot.toolkits.graph.DominatorTree;
-import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
-import soot.toolkits.graph.UnitGraph;
-
 /**
  * This class implements a Program Dependence Graph as defined in
- *
+ * <p>
  * <p>Ferrante, J., Ottenstein, K. J., and Warren, J. D. 1987. The program dependence graph and its
  * use in optimization. ACM Trans. Program. Lang. Syst. 9, 3 (Jul. 1987), 319-349. DOI=
  * http://doi.acm.org/10.1145/24039.24041
- *
+ * <p>
  * <p>Note: the implementation is not exactly as in the above paper. It first finds the regions of
  * control dependence then uses part of the algorithm given in the above paper to build the graph.
- *
+ * <p>
  * <p>The constructor accepts a UnitGraph, which can be a BriefUnitGraph, an ExceptionalUnitGraph,
  * or an EnhancedUnitGraph. At the absence of exception handling constructs in a method, all of
  * these work the same. However, at the presence of exception handling constructs, BriefUnitGraph is
@@ -55,12 +56,12 @@ import soot.toolkits.graph.UnitGraph;
  * usefulness when exception handling is present is not so clear since almost every unit can throw
  * exception hence the dependency is affected. Currently, the PDG is based on a UnitGraph
  * (BlockGraph) and does not care whether flow is exceptional or not.
- *
+ * <p>
  * <p>The nodes in a PDG are of type PDGNode and the edges can have three labels: "dependency",
  * "dependency-back", and "controlflow"; however, the "controlflow" edges are auxiliary and the
  * dependencies are represented by the labels beginning with "dependency". Other labels can be added
  * later for application or domain-specific cases.
- *
+ * <p>
  * <p>To support methods that contain exception-handling and multiple-heads or tails, use
  * EnhancedUnitGraph. It does not represent exceptional flow in the way ExceptionalUnitGraph does,
  * but it integrates them in a concise way. Also, it adds START/STOP nodes to graph if necessary to
@@ -71,6 +72,7 @@ import soot.toolkits.graph.UnitGraph;
 public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode, String>
     implements ProgramDependenceGraph {
 
+  private static Hashtable<PDGNode, PDGRegion> node2Region = new Hashtable<>();
   protected Body m_body = null;
   protected SootClass m_class = null;
   protected UnitGraph m_cfg = null;
@@ -115,6 +117,121 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     this.m_startNode.setNode(r);
   }
 
+  public static List<IRegion> getPreorderRegionList(IRegion r) {
+    List<IRegion> list = new ArrayList<>();
+
+    Queue<IRegion> toProcess = new LinkedList<>();
+    toProcess.add(r);
+    while (!toProcess.isEmpty()) {
+      IRegion reg = toProcess.poll();
+      list.add(reg);
+      for (IRegion iRegion : reg.getChildRegions()) {
+        toProcess.add(iRegion);
+      }
+    }
+
+    return list;
+  }
+
+  public static List<IRegion> getPostorderRegionList(IRegion r) {
+    List<IRegion> list = new ArrayList<>();
+    postorder(r, list);
+
+    return list;
+  }
+
+  private static List<IRegion> postorder(IRegion r, List<IRegion> list) {
+    // If there are children, push the children to the stack
+    if (!r.getChildRegions().isEmpty()) {
+      for (IRegion iRegion : r.getChildRegions()) {
+        postorder(iRegion, list);
+      }
+    }
+
+    list.add(r);
+    return list;
+  }
+
+  /**
+   * This method returns a list of regions obtained by post-order traversal of the region hierarchy.
+   * This takes advantage of the hierarchical (parent/child) information encoded within the PDGNodes
+   * at construction time; it should be noted that, we have not counted the strong regions that
+   * represent the loop header as a separate region; instead, a PDGRegion that represents both the
+   * loop header and its body are counted.
+   *
+   * @param The root from which the traversal should begin.
+   * @return The list of regions obtained thru post-order traversal of the region hierarchy.
+   */
+  public static List<PDGRegion> getPostorderPDGRegionList(PDGNode r) {
+    return computePDGRegions(r);
+  }
+
+  // compute the pdg region list with in post order
+  private static List<PDGRegion> computePDGRegions(PDGNode root) {
+    List<PDGRegion> regions = new ArrayList<>();
+
+    node2Region.clear();
+    pdgpostorder(root, regions);
+
+    return regions;
+  }
+
+  private static PDGRegion pdgpostorder(PDGNode node, List<PDGRegion> list) {
+    if (node.getVisited()) {
+      return null;
+    }
+    node.setVisited(true);
+
+    PDGRegion region = null;
+    if (!node2Region.containsKey(node)) {
+      region = new PDGRegion(node);
+      node2Region.put(node, region);
+    } else {
+      region = node2Region.get(node);
+    }
+
+    // If there are children, push the children to the stack
+    List<PDGNode> dependents = node.getDependents();
+    if (!dependents.isEmpty()) {
+      for (PDGNode curNode : dependents) {
+        if (curNode.getVisited()) {
+          continue;
+        }
+
+        region.addPDGNode(curNode);
+
+        if (curNode instanceof LoopedPDGNode) {
+          PDGNode body = ((LoopedPDGNode) curNode).getBody();
+          PDGRegion kid = pdgpostorder(body, list);
+          if (kid != null) {
+            kid.setParent(region);
+            region.addChildRegion(kid);
+
+            // This sets the node from the old Region into a PDGRegion
+            body.setNode(kid);
+          }
+        } else if (curNode instanceof ConditionalPDGNode) {
+          List<PDGNode> childs = curNode.getDependents();
+          Iterator<PDGNode> condItr = childs.iterator();
+          while (condItr.hasNext()) {
+            PDGNode child = condItr.next();
+            PDGRegion kid = pdgpostorder(child, list);
+            if (kid != null) {
+              kid.setParent(region);
+              region.addChildRegion(kid);
+              // This sets the node from the old Region into a PDGRegion
+
+              child.setNode(kid);
+            }
+          }
+        }
+      }
+    }
+
+    list.add(region);
+    return region;
+  }
+
   @Override
   public BlockGraph getBlockGraph() {
     return m_blockCFG;
@@ -123,7 +240,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   /**
    * This is the heart of the PDG contruction. It is huge and definitely needs some refactorings,
    * but since it's been evlovong to cover some boundary cases it has become hard to rafactor.
-   *
+   * <p>
    * <p>It uses the list of weak regions, along with the dominator and post-dominator trees to
    * construct the PDG nodes.
    */
@@ -524,164 +641,64 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     return strong;
   }
 
-  /** @return The Corresponding UnitGraph */
+  /**
+   * @return The Corresponding UnitGraph
+   */
   public UnitGraph getCFG() {
     return this.m_cfg;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Region> getWeakRegions() {
     return this.m_weakRegions;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Region> getStrongRegions() {
     return this.m_strongRegions;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public IRegion GetStartRegion() {
     return (IRegion) GetStartNode().getNode();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PDGNode GetStartNode() {
     return this.m_startNode;
   }
 
-  public static List<IRegion> getPreorderRegionList(IRegion r) {
-    List<IRegion> list = new ArrayList<>();
-
-    Queue<IRegion> toProcess = new LinkedList<>();
-    toProcess.add(r);
-    while (!toProcess.isEmpty()) {
-      IRegion reg = toProcess.poll();
-      list.add(reg);
-      for (IRegion iRegion : reg.getChildRegions()) {
-        toProcess.add(iRegion);
-      }
-    }
-
-    return list;
-  }
-
-  public static List<IRegion> getPostorderRegionList(IRegion r) {
-    List<IRegion> list = new ArrayList<>();
-    postorder(r, list);
-
-    return list;
-  }
-
-  private static List<IRegion> postorder(IRegion r, List<IRegion> list) {
-    // If there are children, push the children to the stack
-    if (!r.getChildRegions().isEmpty()) {
-      for (IRegion iRegion : r.getChildRegions()) {
-        postorder(iRegion, list);
-      }
-    }
-
-    list.add(r);
-    return list;
-  }
-
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<PDGRegion> getPDGRegions() {
     return this.m_pdgRegions;
   }
 
   /**
-   * This method returns a list of regions obtained by post-order traversal of the region hierarchy.
-   * This takes advantage of the hierarchical (parent/child) information encoded within the PDGNodes
-   * at construction time; it should be noted that, we have not counted the strong regions that
-   * represent the loop header as a separate region; instead, a PDGRegion that represents both the
-   * loop header and its body are counted.
-   *
-   * @param The root from which the traversal should begin.
-   * @return The list of regions obtained thru post-order traversal of the region hierarchy.
+   * {@inheritDoc}
    */
-  public static List<PDGRegion> getPostorderPDGRegionList(PDGNode r) {
-    return computePDGRegions(r);
-  }
-
-  private static Hashtable<PDGNode, PDGRegion> node2Region = new Hashtable<>();
-  // compute the pdg region list with in post order
-  private static List<PDGRegion> computePDGRegions(PDGNode root) {
-    List<PDGRegion> regions = new ArrayList<>();
-
-    node2Region.clear();
-    pdgpostorder(root, regions);
-
-    return regions;
-  }
-
-  private static PDGRegion pdgpostorder(PDGNode node, List<PDGRegion> list) {
-    if (node.getVisited()) {
-      return null;
-    }
-    node.setVisited(true);
-
-    PDGRegion region = null;
-    if (!node2Region.containsKey(node)) {
-      region = new PDGRegion(node);
-      node2Region.put(node, region);
-    } else {
-      region = node2Region.get(node);
-    }
-
-    // If there are children, push the children to the stack
-    List<PDGNode> dependents = node.getDependents();
-    if (!dependents.isEmpty()) {
-      for (PDGNode curNode : dependents) {
-        if (curNode.getVisited()) {
-          continue;
-        }
-
-        region.addPDGNode(curNode);
-
-        if (curNode instanceof LoopedPDGNode) {
-          PDGNode body = ((LoopedPDGNode) curNode).getBody();
-          PDGRegion kid = pdgpostorder(body, list);
-          if (kid != null) {
-            kid.setParent(region);
-            region.addChildRegion(kid);
-
-            // This sets the node from the old Region into a PDGRegion
-            body.setNode(kid);
-          }
-        } else if (curNode instanceof ConditionalPDGNode) {
-          List<PDGNode> childs = curNode.getDependents();
-          Iterator<PDGNode> condItr = childs.iterator();
-          while (condItr.hasNext()) {
-            PDGNode child = condItr.next();
-            PDGRegion kid = pdgpostorder(child, list);
-            if (kid != null) {
-              kid.setParent(region);
-              region.addChildRegion(kid);
-              // This sets the node from the old Region into a PDGRegion
-
-              child.setNode(kid);
-            }
-          }
-        }
-      }
-    }
-
-    list.add(region);
-    return region;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public boolean dependentOn(PDGNode node1, PDGNode node2) {
     return node2.getDependents().contains(node1);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<PDGNode> getDependents(PDGNode node) {
     List<PDGNode> toReturn = new ArrayList<>();
@@ -693,7 +710,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     return toReturn;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PDGNode getPDGNode(Object cfgNode) {
     if (cfgNode != null && cfgNode instanceof Block) {
@@ -730,6 +749,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 
     this.removeNode(oldnode);
   }
+
   /**
    * The existing removeAllEdges in the parent class seems to be throwing concurrentmodification
    * exception most of the time. Here is a version that doesn't throw that exception.
@@ -746,7 +766,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     String s =

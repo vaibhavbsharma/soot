@@ -19,13 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -53,12 +46,24 @@ import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 31-May-2006
+ * <p>Created on 31-May-2006
  */
 public class CollectConstants extends SceneTransformer implements IJbcoTransform {
 
+  public static String dependancies[] = new String[] {"wjtp.jbco_cc"};
+  public static String name = "wjtp.jbco_cc";
+  public static HashMap<Constant, SootField> constantsToFields = new HashMap<>();
+  public static HashMap<Type, List<Constant>> typesToValues = new HashMap<>();
+  public static SootField field = null;
   int updatedConstants = 0;
   int constants = 0;
 
@@ -68,24 +73,15 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     out.println(updatedConstants + " static fields created");
   }
 
-  public static String dependancies[] = new String[] {"wjtp.jbco_cc"};
-
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
 
-  public static String name = "wjtp.jbco_cc";
-
   @Override
   public String getName() {
     return name;
   }
-
-  public static HashMap<Constant, SootField> constantsToFields = new HashMap<>();
-  public static HashMap<Type, List<Constant>> typesToValues = new HashMap<>();
-
-  public static SootField field = null;
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {

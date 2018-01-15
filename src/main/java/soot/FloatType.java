@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java built-in type 'float'. Implemented as a singleton. */
+/**
+ * Soot representation of the Java built-in type 'float'. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class FloatType extends PrimType {
-  public FloatType(Singletons.Global g) {}
+  public FloatType(Singletons.Global g) {
+  }
 
   public static FloatType v() {
     return G.v().soot_FloatType();

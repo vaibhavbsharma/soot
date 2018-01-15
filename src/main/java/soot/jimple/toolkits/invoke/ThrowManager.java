@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-
 import soot.Body;
 import soot.Hierarchy;
 import soot.Local;
@@ -52,14 +48,20 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
-/** Utility methods for dealing with traps. */
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
+/**
+ * Utility methods for dealing with traps.
+ */
 public class ThrowManager {
   /**
    * Iterate through the statements in b (starting at the end), returning the last instance of the
    * following pattern:
-   *
+   * <p>
    * <p>r928 = new java.lang.NullPointerException; specialinvoke r928."<init>"(); throw r928;
-   *
+   * <p>
    * <p>Creates if necessary.
    */
   public static Stmt getNullPointerExceptionThrower(JimpleBody b) {
@@ -172,7 +174,9 @@ public class ThrowManager {
     return newStmt;
   }
 
-  /** If exception e is caught at stmt s in body b, return the handler; otherwise, return null. */
+  /**
+   * If exception e is caught at stmt s in body b, return the handler; otherwise, return null.
+   */
   static boolean isExceptionCaughtAt(SootClass e, Stmt stmt, Body b) {
     /* Look through the traps t of b, checking to see if:
      *  - caught exception is e;

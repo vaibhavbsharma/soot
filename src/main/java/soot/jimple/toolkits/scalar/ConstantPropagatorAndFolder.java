@@ -25,9 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -50,12 +47,16 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Does constant propagation and folding. Constant folding is the compile-time evaluation of
  * constant expressions (i.e. 2 * 3).
  */
 public class ConstantPropagatorAndFolder extends BodyTransformer {
-  public ConstantPropagatorAndFolder(Singletons.Global g) {}
+  public ConstantPropagatorAndFolder(Singletons.Global g) {
+  }
 
   public static ConstantPropagatorAndFolder v() {
     return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder();

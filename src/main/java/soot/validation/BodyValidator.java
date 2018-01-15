@@ -1,15 +1,17 @@
 package soot.validation;
 
-import java.util.List;
-
 import soot.Body;
 
-/** Implement this interface if you want to provide your own body Validator */
+import java.util.List;
+
+/**
+ * Implement this interface if you want to provide your own body Validator
+ */
 public interface BodyValidator {
   /**
    * Validates the given body and saves all validation errors in the given list.
    *
-   * @param body the body to check
+   * @param body       the body to check
    * @param exceptions the list of exceptions
    */
   void validate(Body body, List<ValidationException> exceptions);

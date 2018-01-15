@@ -19,14 +19,14 @@
 
 package soot.jimple.spark.sets;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import soot.G;
 import soot.PointsToSet;
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation of points-to set that holds two sets: one for new elements that have not yet been
@@ -35,23 +35,49 @@ import soot.jimple.spark.pag.PAG;
  * @author Ondrej Lhotak
  */
 public class DoublePointsToSet extends PointsToSetInternal {
+  private static P2SetFactory defaultP2SetFactory =
+      new P2SetFactory() {
+        @Override
+        public PointsToSetInternal newSet(Type type, PAG pag) {
+          return new DoublePointsToSet(type, pag);
+        }
+      };
+  protected PointsToSetInternal newSet;
+  protected PointsToSetInternal oldSet;
+  private PAG pag;
+
   public DoublePointsToSet(Type type, PAG pag) {
     super(type);
     newSet = G.v().newSetFactory.newSet(type, pag);
     oldSet = G.v().oldSetFactory.newSet(type, pag);
     this.pag = pag;
   }
-  /** Returns true if this set contains no run-time objects. */
+
+  public static P2SetFactory getFactory(P2SetFactory newFactory, P2SetFactory oldFactory) {
+    G.v().newSetFactory = newFactory;
+    G.v().oldSetFactory = oldFactory;
+    return defaultP2SetFactory;
+  }
+
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
   @Override
   public boolean isEmpty() {
     return oldSet.isEmpty() && newSet.isEmpty();
   }
-  /** Returns true if this set shares some objects with other. */
+
+  /**
+   * Returns true if this set shares some objects with other.
+   */
   @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     return oldSet.hasNonEmptyIntersection(other) || newSet.hasNonEmptyIntersection(other);
   }
-  /** Set of all possible run-time types of objects in the set. */
+
+  /**
+   * Set of all possible run-time types of objects in the set.
+   */
   @Override
   public Set<Type> possibleTypes() {
     Set<Type> ret = new HashSet<>();
@@ -59,7 +85,10 @@ public class DoublePointsToSet extends PointsToSetInternal {
     ret.addAll(newSet.possibleTypes());
     return ret;
   }
-  /** Adds contents of other into this set, returns true if this set changed. */
+
+  /**
+   * Adds contents of other into this set, returns true if this set changed.
+   */
   @Override
   public boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
     if (exclude != null) {
@@ -67,14 +96,20 @@ public class DoublePointsToSet extends PointsToSetInternal {
     }
     return newSet.addAll(other, oldSet);
   }
-  /** Calls v's visit method on all nodes in this set. */
+
+  /**
+   * Calls v's visit method on all nodes in this set.
+   */
   @Override
   public boolean forall(P2SetVisitor v) {
     oldSet.forall(v);
     newSet.forall(v);
     return v.getReturnValue();
   }
-  /** Adds n to this set, returns true if n was not already in this set. */
+
+  /**
+   * Adds n to this set, returns true if n was not already in this set.
+   */
   @Override
   public boolean add(Node n) {
     if (oldSet.contains(n)) {
@@ -82,29 +117,47 @@ public class DoublePointsToSet extends PointsToSetInternal {
     }
     return newSet.add(n);
   }
-  /** Returns set of nodes already present before last call to flushNew. */
+
+  /**
+   * Returns set of nodes already present before last call to flushNew.
+   */
   @Override
   public PointsToSetInternal getOldSet() {
     return oldSet;
   }
-  /** Returns set of newly-added nodes since last call to flushNew. */
+
+  /**
+   * Returns set of newly-added nodes since last call to flushNew.
+   */
   @Override
   public PointsToSetInternal getNewSet() {
     return newSet;
   }
-  /** Sets all newly-added nodes to old nodes. */
+
+  /**
+   * Sets all newly-added nodes to old nodes.
+   */
   @Override
   public void flushNew() {
     oldSet.addAll(newSet, null);
     newSet = G.v().newSetFactory.newSet(type, pag);
   }
-  /** Sets all nodes to newly-added nodes. */
+
+  /* End of public methods. */
+  /* End of package methods. */
+
+  /**
+   * Sets all nodes to newly-added nodes.
+   */
   @Override
   public void unFlushNew() {
     newSet.addAll(oldSet, null);
     oldSet = G.v().oldSetFactory.newSet(type, pag);
   }
-  /** Merges other into this set. */
+
+  /**
+   * Merges other into this set.
+   */
   @Override
   public void mergeWith(PointsToSetInternal other) {
     if (!(other instanceof DoublePointsToSet)) {
@@ -133,30 +186,12 @@ public class DoublePointsToSet extends PointsToSetInternal {
     newSet = newNewSet;
     oldSet = newOldSet;
   }
-  /** Returns true iff the set contains n. */
+
+  /**
+   * Returns true iff the set contains n.
+   */
   @Override
   public boolean contains(Node n) {
     return oldSet.contains(n) || newSet.contains(n);
   }
-
-  private static P2SetFactory defaultP2SetFactory =
-      new P2SetFactory() {
-        @Override
-        public PointsToSetInternal newSet(Type type, PAG pag) {
-          return new DoublePointsToSet(type, pag);
-        }
-      };
-
-  public static P2SetFactory getFactory(P2SetFactory newFactory, P2SetFactory oldFactory) {
-    G.v().newSetFactory = newFactory;
-    G.v().oldSetFactory = oldFactory;
-    return defaultP2SetFactory;
-  }
-
-  /* End of public methods. */
-  /* End of package methods. */
-
-  private PAG pag;
-  protected PointsToSetInternal newSet;
-  protected PointsToSetInternal oldSet;
 }

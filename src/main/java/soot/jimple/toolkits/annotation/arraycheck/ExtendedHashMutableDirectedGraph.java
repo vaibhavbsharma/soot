@@ -25,20 +25,23 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import soot.toolkits.graph.HashMutableDirectedGraph;
+
 import java.util.Iterator;
 import java.util.List;
 
-import soot.toolkits.graph.HashMutableDirectedGraph;
-
 /**
  * add skipNode method to direct all predecessor edges to successors.
- *
+ * <p>
  * <p>override 'addEdge' to add node if the node was not in the graph
  */
 class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
-  public ExtendedHashMutableDirectedGraph() {}
+  public ExtendedHashMutableDirectedGraph() {
+  }
 
-  /** If nodes are not in the graph, add them into graph first. */
+  /**
+   * If nodes are not in the graph, add them into graph first.
+   */
   @Override
   public void addEdge(Object from, Object to) {
     if (!super.containsNode(from)) {
@@ -52,7 +55,9 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
     super.addEdge(from, to);
   }
 
-  /** Add mutual edge to the graph. It should be optimized in the future. */
+  /**
+   * Add mutual edge to the graph. It should be optimized in the future.
+   */
   public void addMutualEdge(Object from, Object to) {
     if (!super.containsNode(from)) {
       super.addNode(from);
@@ -66,7 +71,9 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph {
     super.addEdge(to, from);
   }
 
-  /** Bypass the in edge to out edge. Not delete the node */
+  /**
+   * Bypass the in edge to out edge. Not delete the node
+   */
   public void skipNode(Object node) {
     if (!super.containsNode(node)) {
       return;

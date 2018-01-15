@@ -26,7 +26,6 @@ package soot.dexpler;
 
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -40,7 +39,9 @@ import soot.Type;
 import soot.UnknownType;
 import soot.VoidType;
 
-/** Wrapper for a dexlib TypeIdItem. */
+/**
+ * Wrapper for a dexlib TypeIdItem.
+ */
 public class DexType {
 
   protected String name;
@@ -61,27 +62,6 @@ public class DexType {
     }
     this.type = new ImmutableTypeReference(type);
     this.name = type;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public boolean overwriteEquivalent(DexType field) {
-    return name.equals(field.getName());
-  }
-
-  public TypeReference getType() {
-    return type;
-  }
-
-  /**
-   * Return the appropriate Soot Type for this DexType.
-   *
-   * @return the Soot Type
-   */
-  public Type toSoot() {
-    return toSoot(type.getType(), 0);
   }
 
   /**
@@ -113,7 +93,9 @@ public class DexType {
     return type.startsWith("J") || type.startsWith("D");
   }
 
-  /** Determine the soot type from a byte code type descriptor. */
+  /**
+   * Determine the soot type from a byte code type descriptor.
+   */
   private static Type toSoot(String typeDescriptor, int pos) {
     Type type;
     char typeDesignator = typeDescriptor.charAt(pos);
@@ -164,10 +146,10 @@ public class DexType {
    * representation. Normal type representation would be a.b.c.ClassName Java bytecode
    * representation is La/b/c/ClassName; Soot Annotation type representation (and Jasmin's) is
    * a/b/c/ClassName.
-   *
+   * <p>
    * <p>This method transforms the Java bytecode representation into the Soot annotation type
    * representation.
-   *
+   * <p>
    * <p>Ljava/lang/Class<Ljava/lang/Enum<*>;>; becomes java/lang/Class<java/lang/Enum<*>>
    *
    * @param type
@@ -211,6 +193,27 @@ public class DexType {
    */
   public static String toSootAT(String type) {
     return type;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public boolean overwriteEquivalent(DexType field) {
+    return name.equals(field.getName());
+  }
+
+  public TypeReference getType() {
+    return type;
+  }
+
+  /**
+   * Return the appropriate Soot Type for this DexType.
+   *
+   * @return the Soot Type
+   */
+  public Type toSoot() {
+    return toSoot(type.getType(), 0);
   }
 
   @Override

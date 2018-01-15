@@ -33,6 +33,7 @@ public interface SideEffectTester {
   boolean unitCanReadFrom(Unit u, Value v);
 
   boolean unitCanWriteTo(Unit u, Value v);
+
   // Call this whenever starting to analyze a new method
   void newMethod(SootMethod m);
 }

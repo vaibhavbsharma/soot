@@ -22,6 +22,7 @@
  *
  * @author Ondrej Lhotak
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;

@@ -19,8 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.TreeSet;
-
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -39,17 +37,26 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
 
+import java.util.TreeSet;
+
 /**
  * Propagates points-to sets along pointer assignment graph using iteration.
  *
  * @author Ondrej Lhotak
  */
 public final class PropIter extends Propagator {
+  protected PAG pag;
+
   public PropIter(PAG pag) {
     this.pag = pag;
   }
 
-  /** Actually does the propagation. */
+  /* End of public methods. */
+  /* End of package methods. */
+
+  /**
+   * Actually does the propagation.
+   */
   @Override
   public final void propagate() {
     final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
@@ -104,10 +111,9 @@ public final class PropIter extends Propagator {
     } while (change);
   }
 
-  /* End of public methods. */
-  /* End of package methods. */
-
-  /** Propagates new points-to information of node src to all its successors. */
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
   protected final boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
@@ -148,17 +154,17 @@ public final class PropIter extends Propagator {
       final SparkField f = fr.getField();
       ret =
           fr.getBase()
-                  .getP2Set()
-                  .forall(
-                      new P2SetVisitor() {
-                        @Override
-                        public final void visit(Node n) {
-                          AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
-                          if (nDotF.makeP2Set().addAll(srcSet, null)) {
-                            returnValue = true;
-                          }
-                        }
-                      })
+              .getP2Set()
+              .forall(
+                  new P2SetVisitor() {
+                    @Override
+                    public final void visit(Node n) {
+                      AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
+                      if (nDotF.makeP2Set().addAll(srcSet, null)) {
+                        returnValue = true;
+                      }
+                    }
+                  })
               | ret;
     }
     return ret;
@@ -170,27 +176,27 @@ public final class PropIter extends Propagator {
     final SparkField f = src.getField();
     ret =
         src.getBase()
-                .getP2Set()
-                .forall(
-                    new P2SetVisitor() {
-                      @Override
-                      public final void visit(Node n) {
-                        AllocDotField nDotF = ((AllocNode) n).dot(f);
-                        if (nDotF == null) {
-                          return;
-                        }
-                        PointsToSetInternal set = nDotF.getP2Set();
-                        if (set.isEmpty()) {
-                          return;
-                        }
-                        for (Node element : loadTargets) {
-                          VarNode target = (VarNode) element;
-                          if (target.makeP2Set().addAll(set, null)) {
-                            returnValue = true;
-                          }
-                        }
+            .getP2Set()
+            .forall(
+                new P2SetVisitor() {
+                  @Override
+                  public final void visit(Node n) {
+                    AllocDotField nDotF = ((AllocNode) n).dot(f);
+                    if (nDotF == null) {
+                      return;
+                    }
+                    PointsToSetInternal set = nDotF.getP2Set();
+                    if (set.isEmpty()) {
+                      return;
+                    }
+                    for (Node element : loadTargets) {
+                      VarNode target = (VarNode) element;
+                      if (target.makeP2Set().addAll(set, null)) {
+                        returnValue = true;
                       }
-                    })
+                    }
+                  }
+                })
             | ret;
     return ret;
   }
@@ -227,6 +233,4 @@ public final class PropIter extends Propagator {
     }
     return ret;
   }
-
-  protected PAG pag;
 }

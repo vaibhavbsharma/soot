@@ -47,7 +47,9 @@ public class StringConstant extends Constant {
     return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
   }
 
-  /** Returns a hash code for this StringConstant object. */
+  /**
+   * Returns a hash code for this StringConstant object.
+   */
   @Override
   public int hashCode() {
     return value.hashCode();

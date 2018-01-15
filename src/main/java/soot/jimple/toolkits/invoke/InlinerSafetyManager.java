@@ -25,8 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.Iterator;
-
 import soot.Body;
 import soot.Hierarchy;
 import soot.RefType;
@@ -41,7 +39,11 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 
-/** Methods for checking safety requirements for inlining. */
+import java.util.Iterator;
+
+/**
+ * Methods for checking safety requirements for inlining.
+ */
 public class InlinerSafetyManager {
   // true if safe to inline
   public static boolean checkSpecialInlineRestrictions(
@@ -60,9 +62,9 @@ public class InlinerSafetyManager {
 
         if (ie1 instanceof SpecialInvokeExpr) {
           if ((InlinerSafetyManager.specialInvokePerformsLookupIn(
-                  ie1, container.getDeclaringClass())
+              ie1, container.getDeclaringClass())
               || InlinerSafetyManager.specialInvokePerformsLookupIn(
-                  ie1, target.getDeclaringClass()))) {
+              ie1, target.getDeclaringClass()))) {
             return false;
           }
 
@@ -113,13 +115,13 @@ public class InlinerSafetyManager {
 
           if (lhs instanceof FieldRef
               && !AccessManager.ensureAccess(
-                  container, ((FieldRef) lhs).getField(), modifierOptions)) {
+              container, ((FieldRef) lhs).getField(), modifierOptions)) {
             return false;
           }
 
           if (rhs instanceof FieldRef
               && !AccessManager.ensureAccess(
-                  container, ((FieldRef) rhs).getField(), modifierOptions)) {
+              container, ((FieldRef) rhs).getField(), modifierOptions)) {
             return false;
           }
         }
@@ -133,7 +135,7 @@ public class InlinerSafetyManager {
    * Returns true if this method can be inlined at the given site. Will try as hard as it can to
    * change things to allow inlining (modifierOptions controls what it's allowed to do: safe, unsafe
    * and nochanges)
-   *
+   * <p>
    * <p>Returns false otherwise.
    */
   public static boolean ensureInlinability(
@@ -195,7 +197,7 @@ public class InlinerSafetyManager {
     if (base != null
         && base.getType() instanceof RefType
         && invokeThrowsAccessErrorIn(
-            ((RefType) base.getType()).getSootClass(), inlinee, container)) {
+        ((RefType) base.getType()).getSootClass(), inlinee, container)) {
       return false;
     }
 
@@ -214,7 +216,7 @@ public class InlinerSafetyManager {
     //         an invokespecial.
     return !(ie instanceof SpecialInvokeExpr)
         || (!specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass())
-            && !specialInvokePerformsLookupIn(ie, container.getDeclaringClass()));
+        && !specialInvokePerformsLookupIn(ie, container.getDeclaringClass()));
   }
 
   /**

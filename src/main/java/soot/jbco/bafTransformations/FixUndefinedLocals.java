@@ -19,11 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -57,22 +52,41 @@ import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.toolkits.scalar.GuaranteedDefs;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 16-Jun-2006
+ * <p>Created on 16-Jun-2006
  */
 public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransform {
 
+  public static String dependancies[] = new String[] {"bb.jbco_j2bl", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_ful";
   private int undefined = 0;
 
-  public static String dependancies[] = new String[] {"bb.jbco_j2bl", "bb.jbco_ful", "bb.lp"};
+  public static PushInst getPushInitializer(Local l, Type t) {
+    if (t instanceof IntegerType) {
+      return Baf.v().newPushInst(IntConstant.v(soot.jbco.util.Rand.getInt()));
+    } else if (t instanceof RefLikeType || t instanceof StmtAddressType) {
+      return Baf.v().newPushInst(NullConstant.v());
+    } else if (t instanceof LongType) {
+      return Baf.v().newPushInst(LongConstant.v(soot.jbco.util.Rand.getLong()));
+    } else if (t instanceof FloatType) {
+      return Baf.v().newPushInst(FloatConstant.v(soot.jbco.util.Rand.getFloat()));
+    } else if (t instanceof DoubleType) {
+      return Baf.v().newPushInst(DoubleConstant.v(soot.jbco.util.Rand.getDouble()));
+    }
+
+    return null;
+  }
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_ful";
 
   @Override
   public String getName() {
@@ -174,22 +188,6 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
       units.remove(after);
     }
     undefined += initialized.size() - icount;
-  }
-
-  public static PushInst getPushInitializer(Local l, Type t) {
-    if (t instanceof IntegerType) {
-      return Baf.v().newPushInst(IntConstant.v(soot.jbco.util.Rand.getInt()));
-    } else if (t instanceof RefLikeType || t instanceof StmtAddressType) {
-      return Baf.v().newPushInst(NullConstant.v());
-    } else if (t instanceof LongType) {
-      return Baf.v().newPushInst(LongConstant.v(soot.jbco.util.Rand.getLong()));
-    } else if (t instanceof FloatType) {
-      return Baf.v().newPushInst(FloatConstant.v(soot.jbco.util.Rand.getFloat()));
-    } else if (t instanceof DoubleType) {
-      return Baf.v().newPushInst(DoubleConstant.v(soot.jbco.util.Rand.getDouble()));
-    }
-
-    return null;
   }
 
   /*

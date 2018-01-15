@@ -19,9 +19,6 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.Collections;
-import java.util.Set;
-
 import soot.AnySubType;
 import soot.G;
 import soot.PointsToSet;
@@ -30,9 +27,19 @@ import soot.Singletons;
 import soot.Type;
 import soot.jimple.ClassConstant;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class FullObjectSet extends Union {
+  private final Set<Type> types;
+
   public FullObjectSet(Singletons.Global g) {
     this(RefType.v("java.lang.Object"));
+  }
+
+  private FullObjectSet(RefType declaredType) {
+    Type type = AnySubType.v(declaredType);
+    types = Collections.singleton(type);
   }
 
   public static FullObjectSet v() {
@@ -46,35 +53,37 @@ public class FullObjectSet extends Union {
     return new FullObjectSet(t);
   }
 
-  private final Set<Type> types;
-
-  private FullObjectSet(RefType declaredType) {
-    Type type = AnySubType.v(declaredType);
-    types = Collections.singleton(type);
-  }
-
   public Type type() {
     return types.iterator().next();
   }
 
-  /** Returns true if this set contains no run-time objects. */
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
   @Override
   public boolean isEmpty() {
     return false;
   }
-  /** Returns true if this set is a subset of other. */
+
+  /**
+   * Returns true if this set is a subset of other.
+   */
   @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     return other != null;
   }
 
-  /** Set of all possible run-time types of objects in the set. */
+  /**
+   * Set of all possible run-time types of objects in the set.
+   */
   @Override
   public Set<Type> possibleTypes() {
     return types;
   }
 
-  /** Adds all objects in s into this union of sets, returning true if this union was changed. */
+  /**
+   * Adds all objects in s into this union of sets, returning true if this union was changed.
+   */
   @Override
   public boolean addAll(PointsToSet s) {
     return false;
@@ -90,7 +99,9 @@ public class FullObjectSet extends Union {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public int depth() {
     return 0;
   }

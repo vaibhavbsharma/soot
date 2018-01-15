@@ -27,67 +27,122 @@ import soot.Value;
 public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
   Stmt statement;
 
-  /** A statement of the form l = constant; */
+  /**
+   * A statement of the form l = constant;
+   */
   protected abstract void caseAssignConstStmt(Value dest, Constant c);
 
-  /** A statement of the form l = v; */
+  /**
+   * A statement of the form l = v;
+   */
   protected abstract void caseCopyStmt(Local dest, Local src);
 
-  /** A statement of the form l = (cl) v; */
+  /**
+   * A statement of the form l = (cl) v;
+   */
   protected void caseCastStmt(Local dest, Local src, CastExpr c) {
     // default is to just ignore the cast
     caseCopyStmt(dest, src);
   }
-  /** An identity statement assigning a parameter to a local. */
+
+  /**
+   * An identity statement assigning a parameter to a local.
+   */
   protected abstract void caseIdentityStmt(Local dest, IdentityRef src);
 
-  /** A statement of the form l1 = l2.f; */
+  /**
+   * A statement of the form l1 = l2.f;
+   */
   protected abstract void caseLoadStmt(Local dest, InstanceFieldRef src);
 
-  /** A statement of the form l1.f = l2; */
+  /**
+   * A statement of the form l1.f = l2;
+   */
   protected abstract void caseStoreStmt(InstanceFieldRef dest, Local src);
 
-  /** A statement of the form l1 = l2[i]; */
+  /**
+   * A statement of the form l1 = l2[i];
+   */
   protected abstract void caseArrayLoadStmt(Local dest, ArrayRef src);
-  /** A statement of the form l1[i] = l2; */
+
+  /**
+   * A statement of the form l1[i] = l2;
+   */
   protected abstract void caseArrayStoreStmt(ArrayRef dest, Local src);
-  /** A statement of the form l = cl.f; */
+
+  /**
+   * A statement of the form l = cl.f;
+   */
   protected abstract void caseGlobalLoadStmt(Local dest, StaticFieldRef src);
-  /** A statement of the form cl.f = l; */
+
+  /**
+   * A statement of the form cl.f = l;
+   */
   protected abstract void caseGlobalStoreStmt(StaticFieldRef dest, Local src);
-  /** A return statement. e is null if a non-reference type is returned. */
+
+  /**
+   * A return statement. e is null if a non-reference type is returned.
+   */
   protected abstract void caseReturnStmt(Local val);
-  /** A return statement returning a constant. */
+
+  /**
+   * A return statement returning a constant.
+   */
   protected void caseReturnConstStmt(Constant val) {
     // default is uninteresting
     caseUninterestingStmt(statement);
   }
-  /** Any type of new statement (NewStmt, NewArrayStmt, NewMultiArrayStmt) */
+
+  /**
+   * Any type of new statement (NewStmt, NewArrayStmt, NewMultiArrayStmt)
+   */
   protected abstract void caseAnyNewStmt(Local dest, Expr e);
-  /** A new statement */
+
+  /**
+   * A new statement
+   */
   protected void caseNewStmt(Local dest, NewExpr e) {
     caseAnyNewStmt(dest, e);
   }
-  /** A newarray statement */
+
+  /**
+   * A newarray statement
+   */
   protected void caseNewArrayStmt(Local dest, NewArrayExpr e) {
     caseAnyNewStmt(dest, e);
   }
-  /** A anewarray statement */
+
+  /**
+   * A anewarray statement
+   */
   protected void caseNewMultiArrayStmt(Local dest, NewMultiArrayExpr e) {
     caseAnyNewStmt(dest, e);
   }
-  /** A method invocation. dest is null if there is no reference type return value. */
+
+  /**
+   * A method invocation. dest is null if there is no reference type return value.
+   */
   protected abstract void caseInvokeStmt(Local dest, InvokeExpr e);
-  /** A throw statement */
+
+  /**
+   * A throw statement
+   */
   protected void caseThrowStmt(Local thrownException) {
     caseUninterestingStmt(statement);
   }
-  /** A catch statement */
+
+  /**
+   * A catch statement
+   */
   protected void caseCatchStmt(Local dest, CaughtExceptionRef cer) {
     caseUninterestingStmt(statement);
   }
-  /** Any other statement */
-  protected void caseUninterestingStmt(Stmt s) {}
+
+  /**
+   * Any other statement
+   */
+  protected void caseUninterestingStmt(Stmt s) {
+  }
 
   @Override
   public final void caseAssignStmt(AssignStmt s) {

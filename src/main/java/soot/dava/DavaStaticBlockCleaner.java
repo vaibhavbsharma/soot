@@ -55,7 +55,8 @@ import soot.util.Chain;
 public class DavaStaticBlockCleaner {
   SootClass sootClass;
 
-  public DavaStaticBlockCleaner(Singletons.Global g) {}
+  public DavaStaticBlockCleaner(Singletons.Global g) {
+  }
 
   public static DavaStaticBlockCleaner v() {
     return G.v().soot_dava_DavaStaticBlockCleaner();

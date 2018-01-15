@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -68,9 +69,9 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
   /** *********************** java.lang.SecurityManager ************** */
   /**
    * Returns the current execution stack as an array of classes.
-   *
+   * <p>
    * <p>NOTE: an array of object may be created.
-   *
+   * <p>
    * <p>protected native java.lang.Class getClassContext()[];
    */
   public void java_lang_SecurityManager_getClassContext(
@@ -86,9 +87,9 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
    * non-system class loader. A non-system class loader is defined as being a class loader that is
    * not equal to the system class loader (as returned by ClassLoader.getSystemClassLoader()) or one
    * of its ancestors.
-   *
+   * <p>
    * <p>NOTE: returns a variable pointing to the only class loader object.
-   *
+   * <p>
    * <p>private native java.lang.ClassLoader currentClassLoader0();
    */
   public void java_lang_SecurityManager_currentClassLoader0(
@@ -101,7 +102,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
 
   /**
    * Returns a variable pointing to all class objects.
-   *
+   * <p>
    * <p>private native java.lang.Class currentLoadedClass0();
    */
   public void java_lang_SecurityManager_currentLoadedClass0(

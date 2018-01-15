@@ -19,14 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -75,23 +67,66 @@ import soot.jimple.StringConstant;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 12-May-2006
+ * <p>Created on 12-May-2006
  */
 public class FindDuplicateSequences extends BodyTransformer implements IJbcoTransform {
 
-  int totalcounts[] = new int[512];
-
   public static String dependancies[] =
       new String[] {"bb.jbco_j2bl", "bb.jbco_rds", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_rds";
+  int totalcounts[] = new int[512];
+
+  private static List<List<Unit>> cullOverlaps(Body b, List<Unit> ids, List<List<Unit>> matches) {
+    List<List<Unit>> newMatches = new ArrayList<>();
+    for (int i = 0; i < matches.size(); i++) {
+      List<Unit> match = matches.get(i);
+      Iterator<Unit> it = match.iterator();
+      boolean clean = true;
+      while (it.hasNext()) {
+        if (!ids.contains(it.next())) {
+          clean = false;
+          break;
+        }
+      }
+      if (clean) {
+        List<UnitBox> targs = b.getUnitBoxes(true);
+        for (int j = 0; j < targs.size() && clean; j++) {
+          Unit u = targs.get(j).getUnit();
+          it = match.iterator();
+          while (it.hasNext()) {
+            if (u == it.next()) {
+              clean = false;
+              break;
+            }
+          }
+        }
+      }
+
+      if (clean) {
+        it = match.iterator();
+        while (it.hasNext()) {
+          ids.remove(it.next());
+        }
+        newMatches.add(match);
+      }
+    }
+    return newMatches;
+  }
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_rds";
 
   @Override
   public String getName() {
@@ -525,9 +560,9 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
     if (o1 instanceof NewMultiArrayInst) {
       return equalTypes(
-              ((NewMultiArrayInst) o1).getBaseType(), ((NewMultiArrayInst) o2).getBaseType())
+          ((NewMultiArrayInst) o1).getBaseType(), ((NewMultiArrayInst) o2).getBaseType())
           && ((NewMultiArrayInst) o1).getDimensionCount()
-              == ((NewMultiArrayInst) o2).getDimensionCount();
+          == ((NewMultiArrayInst) o2).getDimensionCount();
     }
 
     if (o1 instanceof PopInst) {
@@ -648,42 +683,5 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     }
 
     return false;
-  }
-
-  private static List<List<Unit>> cullOverlaps(Body b, List<Unit> ids, List<List<Unit>> matches) {
-    List<List<Unit>> newMatches = new ArrayList<>();
-    for (int i = 0; i < matches.size(); i++) {
-      List<Unit> match = matches.get(i);
-      Iterator<Unit> it = match.iterator();
-      boolean clean = true;
-      while (it.hasNext()) {
-        if (!ids.contains(it.next())) {
-          clean = false;
-          break;
-        }
-      }
-      if (clean) {
-        List<UnitBox> targs = b.getUnitBoxes(true);
-        for (int j = 0; j < targs.size() && clean; j++) {
-          Unit u = targs.get(j).getUnit();
-          it = match.iterator();
-          while (it.hasNext()) {
-            if (u == it.next()) {
-              clean = false;
-              break;
-            }
-          }
-        }
-      }
-
-      if (clean) {
-        it = match.iterator();
-        while (it.hasNext()) {
-          ids.remove(it.next());
-        }
-        newMatches.add(match);
-      }
-    }
-    return newMatches;
   }
 }

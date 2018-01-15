@@ -19,6 +19,11 @@
 
 package soot.jimple.spark.pag;
 
+import soot.SootField;
+import soot.SootMethod;
+import soot.jimple.spark.ondemand.genericutil.Predicate;
+import soot.jimple.spark.sets.P2SetVisitor;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,11 +33,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import soot.SootField;
-import soot.SootMethod;
-import soot.jimple.spark.ondemand.genericutil.Predicate;
-import soot.jimple.spark.sets.P2SetVisitor;
-
 /**
  * Utilities for dumping dot representations of parts of a {@link PAG}.
  *
@@ -41,10 +41,15 @@ import soot.jimple.spark.sets.P2SetVisitor;
 public class PagToDotDumper {
 
   public static final int TRACE_MAX_LVL = 99;
+  private static final Predicate<Node> emptyP2SetPred =
+      new Predicate<Node>() {
+        @Override
+        public boolean test(Node n) {
+          return !(n instanceof AllocNode) && n.getP2Set().isEmpty();
+        }
+      };
   private PAG pag;
-
   private HashMap<Node, Node[]> vmatches;
-
   private HashMap<Node, Node[]> invVmatches;
 
   public PagToDotDumper(PAG pag) {
@@ -53,7 +58,93 @@ public class PagToDotDumper {
     this.invVmatches = new HashMap<>();
   }
 
-  /** Build vmatchEdges and store them in vmatches field */
+  /**
+   * @param lvNode
+   * @param node
+   * @return
+   */
+  private static String translateEdge(Node src, Node dest, String label) {
+    return makeNodeName(src) + " -> " + makeNodeName(dest) + " [label=\"" + label + "\"];";
+  }
+
+  /**
+   * Generate a node declaration for a dot file.
+   *
+   * @param node the node
+   * @param p    a predicate over nodes, which, if true, will cause the node to appear red
+   * @return the appropriate {@link String} for the dot file
+   */
+  public static String makeDotNodeLabel(Node n, Predicate<Node> p) {
+    String color = "";
+    String label;
+
+    if (p.test(n)) {
+      color = ", color=red";
+    }
+    if (n instanceof LocalVarNode) {
+      label = makeLabel((LocalVarNode) n);
+    } else if (n instanceof AllocNode) {
+      label = makeLabel((AllocNode) n);
+    } else if (n instanceof FieldRefNode) {
+      label = makeLabel((FieldRefNode) n);
+    } else {
+      label = n.toString();
+    }
+    return makeNodeName(n) + "[label=\"" + label + "\"" + color + "];";
+  }
+
+  private static String translateLabel(Node n) {
+    return makeDotNodeLabel(n, emptyP2SetPred);
+  }
+
+  public static String makeNodeName(Node n) {
+    return "node_" + n.getNumber();
+  }
+
+  public static String makeLabel(AllocNode n) {
+    return n.getNewExpr().toString();
+  }
+
+  public static String makeLabel(LocalVarNode n) {
+    SootMethod sm = n.getMethod();
+    return "LV "
+        + n.getVariable().toString()
+        + " "
+        + n.getNumber()
+        + "\\n"
+        + sm.getDeclaringClass()
+        + "\\n"
+        + sm.getName();
+  }
+
+  /**
+   * @param node
+   * @return
+   */
+  public static String makeLabel(FieldRefNode node) {
+    if (node.getField() instanceof SootField) {
+      final SootField sf = (SootField) node.getField();
+      return "FNR " + makeLabel(node.getBase()) + "." + sf.getName();
+    } else {
+      return "FNR " + makeLabel(node.getBase()) + "." + node.getField();
+    }
+  }
+
+  /**
+   * @param base
+   * @return
+   */
+  public static String makeLabel(VarNode base) {
+    if (base instanceof LocalVarNode) {
+      return makeLabel((LocalVarNode) base);
+    } else {
+      return base.toString();
+    }
+  }
+
+  /**
+   * Build vmatchEdges and store them in vmatches field
+   */
   private void buildVmatchEdges() {
     // for each store and load pair
     for (Iterator iter = pag.loadSourcesIterator(); iter.hasNext(); ) {
@@ -104,14 +195,14 @@ public class PagToDotDumper {
       LocalVarNode lvn1 = (LocalVarNode) base1;
       LocalVarNode lvn2 = (LocalVarNode) base2;
       if (lvn1.getMethod()
-              .getDeclaringClass()
-              .getName()
-              .equals("java.util.Hashtable$ValueCollection")
+          .getDeclaringClass()
+          .getName()
+          .equals("java.util.Hashtable$ValueCollection")
           && lvn1.getMethod().getName().equals("contains")
           && lvn2.getMethod()
-              .getDeclaringClass()
-              .getName()
-              .equals("java.util.Hashtable$ValueCollection")
+          .getDeclaringClass()
+          .getName()
+          .equals("java.util.Hashtable$ValueCollection")
           && lvn2.getMethod().getName().equals("<init>")) {
         System.err.println("Method: " + lvn1.getMethod().getName());
         System.err.println(makeLabel(frn1));
@@ -134,52 +225,6 @@ public class PagToDotDumper {
     }
   }
 
-  /**
-   * @param lvNode
-   * @param node
-   * @return
-   */
-  private static String translateEdge(Node src, Node dest, String label) {
-    return makeNodeName(src) + " -> " + makeNodeName(dest) + " [label=\"" + label + "\"];";
-  }
-
-  private static final Predicate<Node> emptyP2SetPred =
-      new Predicate<Node>() {
-        @Override
-        public boolean test(Node n) {
-          return !(n instanceof AllocNode) && n.getP2Set().isEmpty();
-        }
-      };
-
-  /**
-   * Generate a node declaration for a dot file.
-   *
-   * @param node the node
-   * @param p a predicate over nodes, which, if true, will cause the node to appear red
-   * @return the appropriate {@link String} for the dot file
-   */
-  public static String makeDotNodeLabel(Node n, Predicate<Node> p) {
-    String color = "";
-    String label;
-
-    if (p.test(n)) {
-      color = ", color=red";
-    }
-    if (n instanceof LocalVarNode) {
-      label = makeLabel((LocalVarNode) n);
-    } else if (n instanceof AllocNode) {
-      label = makeLabel((AllocNode) n);
-    } else if (n instanceof FieldRefNode) {
-      label = makeLabel((FieldRefNode) n);
-    } else {
-      label = n.toString();
-    }
-    return makeNodeName(n) + "[label=\"" + label + "\"" + color + "];";
-  }
-
-  private static String translateLabel(Node n) {
-    return makeDotNodeLabel(n, emptyP2SetPred);
-  }
   /**
    * @param lvNode
    * @param cName
@@ -501,51 +546,6 @@ public class PagToDotDumper {
         ps.println("\t" + translateEdge(node, succ, "vmatch"));
         trace((VarNode) succ, ps, visitedNodes, level - 1);
       }
-    }
-  }
-
-  public static String makeNodeName(Node n) {
-    return "node_" + n.getNumber();
-  }
-
-  public static String makeLabel(AllocNode n) {
-    return n.getNewExpr().toString();
-  }
-
-  public static String makeLabel(LocalVarNode n) {
-    SootMethod sm = n.getMethod();
-    return "LV "
-        + n.getVariable().toString()
-        + " "
-        + n.getNumber()
-        + "\\n"
-        + sm.getDeclaringClass()
-        + "\\n"
-        + sm.getName();
-  }
-
-  /**
-   * @param node
-   * @return
-   */
-  public static String makeLabel(FieldRefNode node) {
-    if (node.getField() instanceof SootField) {
-      final SootField sf = (SootField) node.getField();
-      return "FNR " + makeLabel(node.getBase()) + "." + sf.getName();
-    } else {
-      return "FNR " + makeLabel(node.getBase()) + "." + node.getField();
-    }
-  }
-
-  /**
-   * @param base
-   * @return
-   */
-  public static String makeLabel(VarNode base) {
-    if (base instanceof LocalVarNode) {
-      return makeLabel((LocalVarNode) base);
-    } else {
-      return base.toString();
     }
   }
 

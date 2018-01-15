@@ -25,9 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
@@ -35,6 +32,9 @@ import soot.jimple.Jimple;
 import soot.jimple.RetStmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JRetStmt extends AbstractStmt implements RetStmt {
   final ValueBox stmtAddressBox;
@@ -71,13 +71,13 @@ public class JRetStmt extends AbstractStmt implements RetStmt {
   }
 
   @Override
-  public ValueBox getStmtAddressBox() {
-    return stmtAddressBox;
+  public void setStmtAddress(Value stmtAddress) {
+    stmtAddressBox.setValue(stmtAddress);
   }
 
   @Override
-  public void setStmtAddress(Value stmtAddress) {
-    stmtAddressBox.setValue(stmtAddress);
+  public ValueBox getStmtAddressBox() {
+    return stmtAddressBox;
   }
 
   @Override

@@ -19,13 +19,13 @@
 
 package soot.toolkits.graph;
 
-import java.util.List;
-
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.List;
 
 // STEP 1: What are we computing?
 // SETS OF Units that are dominators => Use ArraySparseSet.
@@ -37,7 +37,10 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // FORWARDS
 //
 //
-/** @deprecated use {@link MHGDominatorsFinder} instead */
+
+/**
+ * @deprecated use {@link MHGDominatorsFinder} instead
+ */
 @Deprecated
 public class DominatorAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Unit>> {
 
@@ -137,7 +140,9 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Unit>> 
     return allNodes.clone();
   }
 
-  /** Returns true if s post-dominates t. */
+  /**
+   * Returns true if s post-dominates t.
+   */
   public boolean dominates(Stmt s, Stmt t) {
     return getFlowBefore(t).contains(s);
   }

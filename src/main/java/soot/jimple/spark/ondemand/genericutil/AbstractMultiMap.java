@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 import java.util.Collection;
@@ -39,6 +40,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
   protected Set<V> emptySet() {
     return Collections.emptySet();
   }
+
   /* (non-Javadoc)
    * @see AAA.util.MultiMap#get(K)
    */
@@ -89,6 +91,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
   public Set<V> removeAll(K key) {
     return map.remove(key);
   }
+
   /* (non-Javadoc)
    * @see AAA.util.MultiMap#keys()
    */

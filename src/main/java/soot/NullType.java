@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java type 'null'. Implemented as a singleton. */
+/**
+ * Soot representation of the Java type 'null'. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class NullType extends RefLikeType {
-  public NullType(Singletons.Global g) {}
+  public NullType(Singletons.Global g) {
+  }
 
   public static NullType v() {
     return G.v().soot_NullType();

@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -16,11 +13,14 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformer that checks whether an instance method is used like a static method, and can easily
  * be made static, i.e., does not reference any field or method in the "this" object. In this case,
  * we make the method static, so that it complies with the invocations.
- *
+ * <p>
  * <p>Attention: This is not really a body transformer. It checks the current body, but modifies the
  * invocation target.
  *
@@ -28,7 +28,8 @@ import soot.jimple.Stmt;
  */
 public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
 
-  public MethodStaticnessCorrector(Singletons.Global g) {}
+  public MethodStaticnessCorrector(Singletons.Global g) {
+  }
 
   public static MethodStaticnessCorrector v() {
     return G.v().soot_jimple_toolkits_scalar_MethodStaticnessCorrector();

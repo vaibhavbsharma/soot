@@ -1,10 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.ValueBox;
 import soot.jimple.DefinitionStmt;
@@ -13,6 +8,11 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 // EqualLocalsAnalysis written by Richard L. Halpert, 2006-12-04
 // Finds all values at the given statement from which all of the listed uses
@@ -31,7 +31,9 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis {
     // analysis is done on-demand, not now
   }
 
-  /** Returns a list of EquivalentLocals that must always be equal to l at s */
+  /**
+   * Returns a list of EquivalentLocals that must always be equal to l at s
+   */
   public List getCommonAncestorValuesOf(Map unitToAliasSet, Stmt s) {
     this.unitToAliasSet = unitToAliasSet;
     this.s = s;

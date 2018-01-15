@@ -22,6 +22,7 @@
  *
  * @author Feng Qian
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -85,12 +86,12 @@ public class JavaLangSystemNative extends NativeMethodClass {
   /**
    * Copies an array from the specified source array, beginning at the specified position, to the
    * specified position of the destination array.
-   *
+   * <p>
    * <p>NOTE: If the content of array is reference type, then it is necessary to build a connection
    * between elements of two arrays
-   *
+   * <p>
    * <p>dst[] = src[]
-   *
+   * <p>
    * <p>public static native void arraycopy(java.lang.Object, int, java.lang.Object, int, int);
    */
   public void java_lang_System_arraycopy(
@@ -110,7 +111,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
   /**
    * NOTE: this native method is not documented in JDK API. It should have the side effect:
    * System.in = parameter
-   *
+   * <p>
    * <p>private static native void setIn0(java.io.InputStream);
    */
   public void java_lang_System_setIn0(
@@ -124,7 +125,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 
   /**
    * NOTE: the same explanation as setIn0: G.v().out = parameter
-   *
+   * <p>
    * <p>private static native void setOut0(java.io.PrintStream);
    */
   public void java_lang_System_setOut0(
@@ -138,7 +139,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 
   /**
    * NOTE: the same explanation as setIn0: System.err = parameter
-   *
+   * <p>
    * <p>private static native void setErr0(java.io.PrintStream);
    */
   public void java_lang_System_setErr0(
@@ -154,7 +155,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
    * NOTE: this method is not documented, it should do following:
    *
    * @return = System.props; System.props = parameter;
-   *     <p>private static native java.util.Properties initProperties(java.util.Properties);
+   * <p>private static native java.util.Properties initProperties(java.util.Properties);
    */
   public void java_lang_System_initProperties(
       SootMethod method,
@@ -168,7 +169,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 
   /**
    * NOTE: it is platform-dependent, create a new string, needs to be verified.
-   *
+   * <p>
    * <p>public static native java.lang.String mapLibraryName(java.lang.String);
    */
   public void java_lang_System_mapLibraryName(
@@ -181,7 +182,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 
   /**
    * Undocumented, used by class loading.
-   *
+   * <p>
    * <p>static native java.lang.Class getCallerClass();
    */
   public void java_lang_System_getCallerClass(

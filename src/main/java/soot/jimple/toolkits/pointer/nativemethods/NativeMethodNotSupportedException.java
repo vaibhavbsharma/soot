@@ -23,6 +23,7 @@
  *
  * @author Feng Qian
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -40,7 +41,8 @@ public class NativeMethodNotSupportedException extends RuntimeException {
     this.msg = message;
   }
 
-  public NativeMethodNotSupportedException() {}
+  public NativeMethodNotSupportedException() {
+  }
 
   @Override
   public String toString() {

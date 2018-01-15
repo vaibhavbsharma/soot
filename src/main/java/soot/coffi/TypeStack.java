@@ -25,11 +25,11 @@
 
 package soot.coffi;
 
-import java.io.PrintStream;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.Type;
+
+import java.io.PrintStream;
 
 /*
  * A less resource hungry implementation of the TypeStack would just have pointers to
@@ -43,6 +43,17 @@ class TypeStack {
     // no constructor
   }
 
+  /**
+   * Returns an empty stack.
+   */
+  public static TypeStack v() {
+    TypeStack typeStack = new TypeStack();
+
+    typeStack.types = new Type[0];
+
+    return typeStack;
+  }
+
   @Override
   public Object clone() {
     TypeStack newTypeStack = new TypeStack();
@@ -50,15 +61,6 @@ class TypeStack {
     newTypeStack.types = types.clone();
 
     return newTypeStack;
-  }
-
-  /** Returns an empty stack. */
-  public static TypeStack v() {
-    TypeStack typeStack = new TypeStack();
-
-    typeStack.types = new Type[0];
-
-    return typeStack;
   }
 
   public TypeStack pop() {

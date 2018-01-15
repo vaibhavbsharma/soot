@@ -30,7 +30,8 @@ import soot.baf.ThrowInst;
 import soot.util.Switch;
 
 public class BThrowInst extends AbstractInst implements ThrowInst {
-  public BThrowInst() {}
+  public BThrowInst() {
+  }
 
   @Override
   public int getInCount() {

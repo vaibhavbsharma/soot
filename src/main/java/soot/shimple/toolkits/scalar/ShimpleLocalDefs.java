@@ -19,12 +19,6 @@
 
 package soot.shimple.toolkits.scalar;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -33,14 +27,20 @@ import soot.shimple.ShimpleBody;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in
  * conjunction with SimpleLocalUses to provide Definition/Use and Use/Definition chains in SSA.
- *
+ * <p>
  * <p>This implementation can be considered a small demo for how SSA can be put to good use since it
  * is much simpler than soot.toolkits.scalar.SimpleLocalDefs. Shimple can often be treated as Jimple
  * with the added benefits of SSA assumptions.
- *
+ * <p>
  * <p>In addition to the interface required by LocalDefs, ShimpleLocalDefs also provides a method
  * for obtaining the definition Unit given only the Local.
  *
@@ -91,7 +91,7 @@ public class ShimpleLocalDefs implements LocalDefs {
 
   /**
    * Unconditionally returns the definition site of a local (as a singleton list).
-   *
+   * <p>
    * <p>This method is currently not required by the LocalDefs interface.
    */
   @Override
@@ -111,7 +111,7 @@ public class ShimpleLocalDefs implements LocalDefs {
    *
    * @param l the Local in question.
    * @param s a unit that specifies the method context (location) to query for the definitions of
-   *     the Local.
+   *          the Local.
    * @return a singleton list containing the definition site.
    */
   @Override

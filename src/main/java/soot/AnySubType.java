@@ -29,6 +29,8 @@ import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public class AnySubType extends RefLikeType {
+  private RefType base;
+
   private AnySubType(RefType base) {
     this.base = base;
   }
@@ -66,6 +68,4 @@ public class AnySubType extends RefLikeType {
   public void setBase(RefType base) {
     this.base = base;
   }
-
-  private RefType base;
 }

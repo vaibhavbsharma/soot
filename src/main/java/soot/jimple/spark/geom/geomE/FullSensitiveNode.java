@@ -16,14 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomE;
 
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+package soot.jimple.spark.geom.geomE;
 
 import soot.Hierarchy;
 import soot.RefType;
@@ -46,6 +40,13 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * This class defines an abstract pointer in the geometric points-to solver. All the
  * points-to/flows-to information and the load/store constraints related to this pointer are stored
@@ -55,18 +56,6 @@ import soot.jimple.spark.sets.P2SetVisitor;
  * @author xiao
  */
 public class FullSensitiveNode extends IVarAbstraction {
-  // The targets of directed edges on the constraint graph
-  public Map<FullSensitiveNode, GeometricManager> flowto;
-
-  // The objects this variable points to
-  public Map<AllocNode, GeometricManager> pt_objs;
-
-  // Newly added points-to tuple
-  public Map<AllocNode, GeometricManager> new_pts;
-
-  // store/load complex constraints
-  public Vector<PlainConstraint> complex_cons;
-
   // Symbolicize the 1-to-1 and many-to-many mappings
   public static String symbols[] = {"/", "[]"};
 
@@ -77,8 +66,214 @@ public class FullSensitiveNode extends IVarAbstraction {
     deadManager = new GeometricManager();
   }
 
+  // The targets of directed edges on the constraint graph
+  public Map<FullSensitiveNode, GeometricManager> flowto;
+  // The objects this variable points to
+  public Map<AllocNode, GeometricManager> pt_objs;
+  // Newly added points-to tuple
+  public Map<AllocNode, GeometricManager> new_pts;
+  // store/load complex constraints
+  public Vector<PlainConstraint> complex_cons;
+
   public FullSensitiveNode(Node thisVar) {
     me = thisVar;
+  }
+
+  /**
+   * Implement the inference rules when the input points-to figure is a one-to-one mapping.
+   */
+  private static int infer_pts_is_one_to_one(SegmentNode pts, SegmentNode pe, int code) {
+    long interI, interJ;
+
+    // The left-end is the larger one
+    interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
+    // The right-end is the smaller one
+    interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
+
+    if (interI < interJ) {
+      switch (code) {
+        case GeometricManager.ONE_TO_ONE:
+          // assignment is a 1-1 mapping
+          pres.I1 = interI - pe.I1 + pe.I2;
+          pres.I2 = interI - pts.I1 + pts.I2;
+          pres.L = interJ - interI;
+          return GeometricManager.ONE_TO_ONE;
+
+        case GeometricManager.MANY_TO_MANY:
+          // assignment is a many-many mapping
+          pres.I1 = pe.I2;
+          pres.I2 = interI - pts.I1 + pts.I2;
+          pres.L = ((RectangleNode) pe).L_prime;
+          pres.L_prime = interJ - interI;
+          return GeometricManager.MANY_TO_MANY;
+      }
+    }
+
+    return GeometricManager.Undefined_Mapping;
+  }
+
+  /**
+   * Implement the inference rules when the input points-to figure is a many-to-many mapping.
+   */
+  private static int infer_pts_is_many_to_many(RectangleNode pts, SegmentNode pe, int code) {
+    long interI, interJ;
+
+    // The left-end is the larger one
+    interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
+    // The right-end is the smaller one
+    interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
+
+    if (interI < interJ) {
+      switch (code) {
+        case GeometricManager.ONE_TO_ONE:
+          // assignment is a 1-1 mapping
+          pres.I1 = interI - pe.I1 + pe.I2;
+          pres.I2 = pts.I2;
+          pres.L = interJ - interI;
+          pres.L_prime = pts.L_prime;
+          break;
+
+        case GeometricManager.MANY_TO_MANY:
+          // assignment is a many-many mapping
+          pres.I1 = pe.I2;
+          pres.I2 = pts.I2;
+          pres.L = ((RectangleNode) pe).L_prime;
+          pres.L_prime = pts.L_prime;
+          break;
+      }
+
+      return GeometricManager.MANY_TO_MANY;
+    }
+
+    return GeometricManager.Undefined_Mapping;
+  }
+
+  /**
+   * Implements the pointer assignment inference rules. The pts and pe are the points-to tuple and
+   * flow edge pres is the computed result code indicates the types of the pts and pe
+   * <p>
+   * <p>Return value is used to indicate the type of the result
+   */
+  private static boolean reasonAndPropagate(
+      FullSensitiveNode qn, AllocNode obj, SegmentNode pts, SegmentNode pe, int code) {
+    int ret_type = GeometricManager.Undefined_Mapping;
+
+    switch (code >> 8) {
+      case GeometricManager.ONE_TO_ONE:
+        // points-to is a 1-1 mapping
+        ret_type = infer_pts_is_one_to_one(pts, pe, code & 255);
+        break;
+
+      case GeometricManager.MANY_TO_MANY:
+        // points-to is a mangy-many mapping
+        ret_type = infer_pts_is_many_to_many((RectangleNode) pts, pe, code & 255);
+        break;
+    }
+
+    if (ret_type != GeometricManager.Undefined_Mapping) {
+      return qn.addPointsTo(ret_type, obj);
+    }
+
+    return false;
+  }
+
+  /**
+   * The last parameter code can only be 1-1 and many-1
+   */
+  private static boolean instantiateLoadConstraint(
+      FullSensitiveNode objn, FullSensitiveNode qn, SegmentNode pts, int code) {
+    int ret_type = GeometricManager.Undefined_Mapping;
+
+    if ((code >> 8) == GeometricManager.ONE_TO_ONE) {
+      // assignment is a 1-1 mapping
+
+      pres.I1 = pts.I2;
+      pres.I2 = pts.I1;
+
+      switch (code & 255) {
+        case GeometricManager.ONE_TO_ONE:
+          // points-to is a 1-1 mapping
+          pres.L = pts.L;
+          ret_type = GeometricManager.ONE_TO_ONE;
+          break;
+
+        case GeometricManager.MANY_TO_MANY:
+          // points-to is a many-many mapping
+          pres.L = ((RectangleNode) pts).L_prime;
+          pres.L_prime = pts.L;
+          ret_type = GeometricManager.MANY_TO_MANY;
+          break;
+      }
+    } else {
+      // The target pointer must be a global, in JIMPLE's case
+      pres.I1 = pts.I2;
+      pres.I2 = 1;
+      pres.L_prime = 1;
+
+      switch (code & 255) {
+        case GeometricManager.ONE_TO_ONE:
+          // points-to is a 1-1 mapping or 1-many mapping
+          pres.L = pts.L;
+          ret_type = GeometricManager.MANY_TO_MANY;
+          break;
+
+        case GeometricManager.MANY_TO_MANY:
+          // points-to is a many-many mapping
+          pres.L = ((RectangleNode) pts).L_prime;
+          ret_type = GeometricManager.MANY_TO_MANY;
+          break;
+      }
+    }
+
+    return objn.addFlowsTo(ret_type, qn);
+  }
+
+  // code can only be 1-1 and 1-many
+  private static boolean instantiateStoreConstraint(
+      FullSensitiveNode qn, FullSensitiveNode objn, SegmentNode pts, int code) {
+    int ret_type = GeometricManager.Undefined_Mapping;
+
+    if ((code >> 8) == GeometricManager.ONE_TO_ONE) {
+      // assignment is a 1-1 mapping
+
+      pres.I1 = pts.I1;
+      pres.I2 = pts.I2;
+      pres.L = pts.L;
+
+      switch (code & 255) {
+        case GeometricManager.ONE_TO_ONE:
+          // points-to is a 1-1 mapping
+          ret_type = GeometricManager.ONE_TO_ONE;
+          break;
+
+        case GeometricManager.MANY_TO_MANY:
+          // points-to is a many-many mapping
+          pres.L_prime = ((RectangleNode) pts).L_prime;
+          ret_type = GeometricManager.MANY_TO_MANY;
+          break;
+      }
+    } else {
+      // The source pointer must be a global, in JIMPLE's case
+      pres.I1 = 1;
+      pres.I2 = pts.I2;
+      pres.L = 1;
+
+      switch (code & 255) {
+        case GeometricManager.ONE_TO_ONE:
+          // points-to is a 1-1 mapping
+          pres.L_prime = pts.L;
+          ret_type = GeometricManager.MANY_TO_MANY;
+          break;
+
+        case GeometricManager.MANY_TO_MANY:
+          // points-to is a many-many mapping
+          pres.L_prime = ((RectangleNode) pts).L_prime;
+          ret_type = GeometricManager.MANY_TO_MANY;
+          break;
+      }
+    }
+
+    return qn.addFlowsTo(ret_type, objn);
   }
 
   @Override
@@ -245,7 +440,9 @@ public class FullSensitiveNode extends IVarAbstraction {
     }
   }
 
-  /** The place where you implement the pointer assignment reasoning. */
+  /**
+   * The place where you implement the pointer assignment reasoning.
+   */
   @Override
   public void propagate(GeomPointsTo ptAnalyzer, IWorklist worklist) {
     int i, j;
@@ -547,6 +744,8 @@ public class FullSensitiveNode extends IVarAbstraction {
     }
   }
 
+  // -----------------------------------Private Functions---------------------------------------
+
   /**
    * We transfer the SPARK results to current pointer if this pointer is not involved in the
    * geometric analysis. Note that, the unreachable objects will not be inserted.
@@ -684,8 +883,9 @@ public class FullSensitiveNode extends IVarAbstraction {
     return ans;
   }
 
-  // -----------------------------------Private Functions---------------------------------------
-  /** A non-interface public function. It adds the points-to tuple to the geometric manager. */
+  /**
+   * A non-interface public function. It adds the points-to tuple to the geometric manager.
+   */
   private boolean addPointsTo(int code, AllocNode obj) {
     GeometricManager gm = pt_objs.get(obj);
 
@@ -706,7 +906,9 @@ public class FullSensitiveNode extends IVarAbstraction {
     return false;
   }
 
-  /** A non-interface public function. It adds the flows-to tuple to the geometric manager. */
+  /**
+   * A non-interface public function. It adds the flows-to tuple to the geometric manager.
+   */
   private boolean addFlowsTo(int code, IVarAbstraction qv) {
     GeometricManager gm = flowto.get(qv);
 
@@ -738,196 +940,5 @@ public class FullSensitiveNode extends IVarAbstraction {
   private SegmentNode[] find_points_to(AllocNode obj) {
     GeometricManager im = pt_objs.get(obj);
     return im == null ? null : im.getFigures();
-  }
-
-  /** Implement the inference rules when the input points-to figure is a one-to-one mapping. */
-  private static int infer_pts_is_one_to_one(SegmentNode pts, SegmentNode pe, int code) {
-    long interI, interJ;
-
-    // The left-end is the larger one
-    interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
-    // The right-end is the smaller one
-    interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
-
-    if (interI < interJ) {
-      switch (code) {
-        case GeometricManager.ONE_TO_ONE:
-          // assignment is a 1-1 mapping
-          pres.I1 = interI - pe.I1 + pe.I2;
-          pres.I2 = interI - pts.I1 + pts.I2;
-          pres.L = interJ - interI;
-          return GeometricManager.ONE_TO_ONE;
-
-        case GeometricManager.MANY_TO_MANY:
-          // assignment is a many-many mapping
-          pres.I1 = pe.I2;
-          pres.I2 = interI - pts.I1 + pts.I2;
-          pres.L = ((RectangleNode) pe).L_prime;
-          pres.L_prime = interJ - interI;
-          return GeometricManager.MANY_TO_MANY;
-      }
-    }
-
-    return GeometricManager.Undefined_Mapping;
-  }
-
-  /** Implement the inference rules when the input points-to figure is a many-to-many mapping. */
-  private static int infer_pts_is_many_to_many(RectangleNode pts, SegmentNode pe, int code) {
-    long interI, interJ;
-
-    // The left-end is the larger one
-    interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
-    // The right-end is the smaller one
-    interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
-
-    if (interI < interJ) {
-      switch (code) {
-        case GeometricManager.ONE_TO_ONE:
-          // assignment is a 1-1 mapping
-          pres.I1 = interI - pe.I1 + pe.I2;
-          pres.I2 = pts.I2;
-          pres.L = interJ - interI;
-          pres.L_prime = pts.L_prime;
-          break;
-
-        case GeometricManager.MANY_TO_MANY:
-          // assignment is a many-many mapping
-          pres.I1 = pe.I2;
-          pres.I2 = pts.I2;
-          pres.L = ((RectangleNode) pe).L_prime;
-          pres.L_prime = pts.L_prime;
-          break;
-      }
-
-      return GeometricManager.MANY_TO_MANY;
-    }
-
-    return GeometricManager.Undefined_Mapping;
-  }
-
-  /**
-   * Implements the pointer assignment inference rules. The pts and pe are the points-to tuple and
-   * flow edge pres is the computed result code indicates the types of the pts and pe
-   *
-   * <p>Return value is used to indicate the type of the result
-   */
-  private static boolean reasonAndPropagate(
-      FullSensitiveNode qn, AllocNode obj, SegmentNode pts, SegmentNode pe, int code) {
-    int ret_type = GeometricManager.Undefined_Mapping;
-
-    switch (code >> 8) {
-      case GeometricManager.ONE_TO_ONE:
-        // points-to is a 1-1 mapping
-        ret_type = infer_pts_is_one_to_one(pts, pe, code & 255);
-        break;
-
-      case GeometricManager.MANY_TO_MANY:
-        // points-to is a mangy-many mapping
-        ret_type = infer_pts_is_many_to_many((RectangleNode) pts, pe, code & 255);
-        break;
-    }
-
-    if (ret_type != GeometricManager.Undefined_Mapping) {
-      return qn.addPointsTo(ret_type, obj);
-    }
-
-    return false;
-  }
-
-  /** The last parameter code can only be 1-1 and many-1 */
-  private static boolean instantiateLoadConstraint(
-      FullSensitiveNode objn, FullSensitiveNode qn, SegmentNode pts, int code) {
-    int ret_type = GeometricManager.Undefined_Mapping;
-
-    if ((code >> 8) == GeometricManager.ONE_TO_ONE) {
-      // assignment is a 1-1 mapping
-
-      pres.I1 = pts.I2;
-      pres.I2 = pts.I1;
-
-      switch (code & 255) {
-        case GeometricManager.ONE_TO_ONE:
-          // points-to is a 1-1 mapping
-          pres.L = pts.L;
-          ret_type = GeometricManager.ONE_TO_ONE;
-          break;
-
-        case GeometricManager.MANY_TO_MANY:
-          // points-to is a many-many mapping
-          pres.L = ((RectangleNode) pts).L_prime;
-          pres.L_prime = pts.L;
-          ret_type = GeometricManager.MANY_TO_MANY;
-          break;
-      }
-    } else {
-      // The target pointer must be a global, in JIMPLE's case
-      pres.I1 = pts.I2;
-      pres.I2 = 1;
-      pres.L_prime = 1;
-
-      switch (code & 255) {
-        case GeometricManager.ONE_TO_ONE:
-          // points-to is a 1-1 mapping or 1-many mapping
-          pres.L = pts.L;
-          ret_type = GeometricManager.MANY_TO_MANY;
-          break;
-
-        case GeometricManager.MANY_TO_MANY:
-          // points-to is a many-many mapping
-          pres.L = ((RectangleNode) pts).L_prime;
-          ret_type = GeometricManager.MANY_TO_MANY;
-          break;
-      }
-    }
-
-    return objn.addFlowsTo(ret_type, qn);
-  }
-
-  // code can only be 1-1 and 1-many
-  private static boolean instantiateStoreConstraint(
-      FullSensitiveNode qn, FullSensitiveNode objn, SegmentNode pts, int code) {
-    int ret_type = GeometricManager.Undefined_Mapping;
-
-    if ((code >> 8) == GeometricManager.ONE_TO_ONE) {
-      // assignment is a 1-1 mapping
-
-      pres.I1 = pts.I1;
-      pres.I2 = pts.I2;
-      pres.L = pts.L;
-
-      switch (code & 255) {
-        case GeometricManager.ONE_TO_ONE:
-          // points-to is a 1-1 mapping
-          ret_type = GeometricManager.ONE_TO_ONE;
-          break;
-
-        case GeometricManager.MANY_TO_MANY:
-          // points-to is a many-many mapping
-          pres.L_prime = ((RectangleNode) pts).L_prime;
-          ret_type = GeometricManager.MANY_TO_MANY;
-          break;
-      }
-    } else {
-      // The source pointer must be a global, in JIMPLE's case
-      pres.I1 = 1;
-      pres.I2 = pts.I2;
-      pres.L = 1;
-
-      switch (code & 255) {
-        case GeometricManager.ONE_TO_ONE:
-          // points-to is a 1-1 mapping
-          pres.L_prime = pts.L;
-          ret_type = GeometricManager.MANY_TO_MANY;
-          break;
-
-        case GeometricManager.MANY_TO_MANY:
-          // points-to is a many-many mapping
-          pres.L_prime = ((RectangleNode) pts).L_prime;
-          ret_type = GeometricManager.MANY_TO_MANY;
-          break;
-      }
-    }
-
-    return qn.addFlowsTo(ret_type, objn);
   }
 }

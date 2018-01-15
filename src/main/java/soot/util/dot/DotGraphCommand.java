@@ -30,11 +30,15 @@ package soot.util.dot;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/** Encodes general Dot commands. */
+/**
+ * Encodes general Dot commands.
+ */
 public class DotGraphCommand implements Renderable {
   String command;
 
-  /** @param cmd a dot dommand string */
+  /**
+   * @param cmd a dot dommand string
+   */
   public DotGraphCommand(String cmd) {
     this.command = cmd;
   }
@@ -42,7 +46,7 @@ public class DotGraphCommand implements Renderable {
   /**
    * Implements Renderable interface.
    *
-   * @param out the output stream
+   * @param out    the output stream
    * @param indent the number of indent space
    * @see Renderable
    */

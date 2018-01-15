@@ -20,13 +20,6 @@
 
 package soot.dexpler.typing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -90,6 +83,13 @@ import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class DalvikTyper implements IDalvikTyper {
 
   private static DalvikTyper dt = null;
@@ -101,7 +101,8 @@ public class DalvikTyper implements IDalvikTyper {
   private List<LocalObj> localObjList = new ArrayList<>();
   private Map<Local, List<LocalObj>> local2Obj = new HashMap<>();
 
-  private DalvikTyper() {}
+  private DalvikTyper() {
+  }
 
   public static DalvikTyper v() {
     if (dt == null) {
@@ -1088,39 +1089,6 @@ public class DalvikTyper implements IDalvikTyper {
     localTyped.put(l, t);
   }
 
-  class LocalObj {
-    ValueBox vb;
-    Type t;
-    // private Local l;
-    boolean isUse;
-
-    public LocalObj(ValueBox vb, Type t, boolean isUse) {
-      this.vb = vb;
-      // this.l = (Local)vb.getValue();
-      this.t = t;
-      this.isUse = isUse;
-    }
-
-    public Local getLocal() {
-      return (Local) vb.getValue();
-    }
-  }
-
-  class Constraint {
-    ValueBox l;
-    ValueBox r;
-
-    public Constraint(ValueBox l, ValueBox r) {
-      this.l = l;
-      this.r = r;
-    }
-
-    @Override
-    public String toString() {
-      return l + " < " + r;
-    }
-  }
-
   // this is needed because UnuesedStatementTransformer checks types in the div expressions
   public void typeUntypedConstrantInDiv(final Body b) {
     for (Unit u : b.getUnits()) {
@@ -1291,6 +1259,39 @@ public class DalvikTyper implements IDalvikTyper {
             }
           };
       u.apply(sw);
+    }
+  }
+
+  class LocalObj {
+    ValueBox vb;
+    Type t;
+    // private Local l;
+    boolean isUse;
+
+    public LocalObj(ValueBox vb, Type t, boolean isUse) {
+      this.vb = vb;
+      // this.l = (Local)vb.getValue();
+      this.t = t;
+      this.isUse = isUse;
+    }
+
+    public Local getLocal() {
+      return (Local) vb.getValue();
+    }
+  }
+
+  class Constraint {
+    ValueBox l;
+    ValueBox r;
+
+    public Constraint(ValueBox l, ValueBox r) {
+      this.l = l;
+      this.r = r;
+    }
+
+    @Override
+    public String toString() {
+      return l + " < " + r;
     }
   }
 }

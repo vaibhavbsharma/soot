@@ -19,11 +19,6 @@
 
 package soot.dava.toolkits.base.misc;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Body;
 import soot.G;
 import soot.PatchingChain;
@@ -43,6 +38,11 @@ import soot.jimple.toolkits.callgraph.CallGraphBuilder;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.util.Chain;
 import soot.util.IterableSet;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * Nomair A. Naeem 7th April 2006
@@ -76,16 +76,15 @@ import soot.util.IterableSet;
  *
  */
 public class ThrowFinder {
-  public ThrowFinder(Singletons.Global g) {}
+  public static boolean DEBUG = false;
+  private HashSet<SootMethod> registeredMethods;
+  private HashMap<Stmt, HashSet<SootClass>> protectionSet;
+  public ThrowFinder(Singletons.Global g) {
+  }
 
   public static ThrowFinder v() {
     return G.v().soot_dava_toolkits_base_misc_ThrowFinder();
   }
-
-  private HashSet<SootMethod> registeredMethods;
-  private HashMap<Stmt, HashSet<SootClass>> protectionSet;
-
-  public static boolean DEBUG = false;
 
   public void find() {
     G.v().out.print("Verifying exception handling.. ");

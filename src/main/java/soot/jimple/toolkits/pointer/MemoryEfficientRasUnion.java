@@ -19,11 +19,11 @@
 
 package soot.jimple.toolkits.pointer;
 
+import soot.PointsToSet;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import soot.PointsToSet;
 
 public class MemoryEfficientRasUnion extends Union {
   HashSet<PointsToSet> subsets;
@@ -99,7 +99,9 @@ public class MemoryEfficientRasUnion extends Union {
     return ret;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     final int PRIME = 31;
@@ -108,7 +110,9 @@ public class MemoryEfficientRasUnion extends Union {
     return result;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -131,7 +135,9 @@ public class MemoryEfficientRasUnion extends Union {
     return true;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     if (subsets == null) {

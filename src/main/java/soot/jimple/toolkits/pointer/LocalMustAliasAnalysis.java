@@ -17,15 +17,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.pointer;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.toolkits.pointer;
 
 import soot.EquivalentValue;
 import soot.Local;
@@ -48,24 +41,32 @@ import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * LocalMustAliasAnalysis attempts to determine if two local variables (at two potentially different
  * program points) must point to the same object.
- *
+ * <p>
  * <p>The underlying abstraction is based on global value numbering.
- *
+ * <p>
  * <p>See also {@link StrongLocalMustAliasAnalysis} for an analysis that soundly treats
  * redefinitions within loops.
- *
+ * <p>
  * <p>See Sable TR 2007-8 for details.
- *
+ * <p>
  * <p>P.S. The idea behind this analysis and the way it assigns numbers is very similar to what is
  * described in the paper: Lapkowski, C. and Hendren, L. J. 1996. Extended SSA numbering:
  * introducing SSA properties to languages with multi-level pointers. In Proceedings of the 1996
  * Conference of the Centre For Advanced Studies on Collaborative Research (Toronto, Ontario,
  * Canada, November 12 - 14, 1996). M. Bauer, K. Bennet, M. Gentleman, H. Johnson, K. Lyons, and J.
  * Slonim, Eds. IBM Centre for Advanced Studies Conference. IBM Press, 23.
- *
+ * <p>
  * <p>Only major differences: Here we only use primary numbers, no secondary numbers. Further, we
  * use the call graph to determine fields that are not written to in the transitive closure of this
  * method's execution. A third difference is that we assign fixed values to {@link IdentityRef}s,
@@ -85,7 +86,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    */
   protected Set<Value> localsAndFieldRefs;
 
-  /** maps from right-hand side expressions (non-locals) to value numbers */
+  /**
+   * maps from right-hand side expressions (non-locals) to value numbers
+   */
   protected transient Map<Value, Integer> rhsToNumber;
 
   /**
@@ -94,13 +97,19 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    */
   protected transient Map<Unit, Map<Value, Integer>> mergePointToValueToNumber;
 
-  /** the next value number */
+  /**
+   * the next value number
+   */
   protected int nextNumber = 1;
 
-  /** the containing method */
+  /**
+   * the containing method
+   */
   protected SootMethod container;
 
-  /** Creates a new {@link LocalMustAliasAnalysis} tracking local variables. */
+  /**
+   * Creates a new {@link LocalMustAliasAnalysis} tracking local variables.
+   */
   public LocalMustAliasAnalysis(UnitGraph g) {
     this(g, false);
   }
@@ -137,6 +146,16 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     this.mergePointToValueToNumber = null;
   }
 
+  public static int thisRefNumber() {
+    // unique number for ThisRef (must be <1)
+    return 0;
+  }
+
+  public static int parameterRefNumber(ParameterRef r) {
+    // unique number for ParameterRef[i] (must be <0)
+    return -1 - r.getIndex();
+  }
+
   /**
    * Computes the set of {@link EquivalentValue}s of all field references that are used in this
    * method but not set by the method or any method transitively called by this method.
@@ -170,7 +189,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
           new ReachableMethods(cg, Collections.<MethodOrMethodContext>singletonList(container));
       reachableMethods.update();
       for (Iterator<MethodOrMethodContext> iterator = reachableMethods.listener();
-          iterator.hasNext();
+           iterator.hasNext();
           ) {
         SootMethod m = (SootMethod) iterator.next();
         if (m.hasActiveBody()
@@ -266,8 +285,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
       }
 
       if ((lhs instanceof Local
-              || (lhs instanceof FieldRef
-                  && this.localsAndFieldRefs.contains(new EquivalentValue(lhs))))
+          || (lhs instanceof FieldRef
+          && this.localsAndFieldRefs.contains(new EquivalentValue(lhs))))
           && lhs.getType() instanceof RefLikeType) {
         if (rhs instanceof Local) {
           // local-assignment - must be aliased...
@@ -305,29 +324,23 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     return num;
   }
 
-  public static int thisRefNumber() {
-    // unique number for ThisRef (must be <1)
-    return 0;
-  }
-
-  public static int parameterRefNumber(ParameterRef r) {
-    // unique number for ParameterRef[i] (must be <0)
-    return -1 - r.getIndex();
-  }
-
   @Override
   protected void copy(HashMap<Value, Integer> sourceMap, HashMap<Value, Integer> destMap) {
     destMap.clear();
     destMap.putAll(sourceMap);
   }
 
-  /** Initial most conservative value: We leave it away to save memory, implicitly UNKNOWN. */
+  /**
+   * Initial most conservative value: We leave it away to save memory, implicitly UNKNOWN.
+   */
   @Override
   protected HashMap<Value, Integer> entryInitialFlow() {
     return new HashMap<>();
   }
 
-  /** Initial bottom value: objects have no definitions. */
+  /**
+   * Initial bottom value: objects have no definitions.
+   */
   @Override
   protected HashMap<Value, Integer> newInitialFlow() {
     return new HashMap<>();
@@ -361,7 +374,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
 
   /**
    * @return true if values of l1 (at s1) and l2 (at s2) have the exact same object IDs, i.e. at
-   *     statement s1 the variable l1 must point to the same object as l2 at s2.
+   * statement s1 the variable l1 must point to the same object as l2 at s2.
    */
   public boolean mustAlias(Local l1, Stmt s1, Local l2, Stmt s2) {
     Object l1n = getFlowBefore(s1).get(l1);

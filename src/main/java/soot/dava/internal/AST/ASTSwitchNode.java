@@ -20,11 +20,6 @@
 
 package soot.dava.internal.AST;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
@@ -34,6 +29,11 @@ import soot.dava.toolkits.base.AST.ASTWalker;
 import soot.dava.toolkits.base.AST.TryContentsFinder;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
 import soot.jimple.Jimple;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ASTSwitchNode extends ASTLabeledNode {
   private ValueBox keyBox;

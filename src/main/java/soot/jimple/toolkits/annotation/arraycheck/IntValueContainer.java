@@ -62,13 +62,13 @@ class IntValueContainer {
     return this.value;
   }
 
-  public void setTop() {
-    this.type = TOP;
-  }
-
   public void setValue(int v) {
     this.type = INT;
     this.value = v;
+  }
+
+  public void setTop() {
+    this.type = TOP;
   }
 
   public void setBottom() {

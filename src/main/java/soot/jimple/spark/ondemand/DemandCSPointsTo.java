@@ -16,17 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.spark.ondemand;
 
 import soot.AnySubType;
 import soot.ArrayType;
@@ -70,6 +61,16 @@ import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.toolkits.scalar.Pair;
 import soot.util.NumberedString;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Tries to find imprecision in points-to sets from a previously run analysis. Requires that all
  * sub-results of previous analysis were cached.
@@ -78,205 +79,51 @@ import soot.util.NumberedString;
  */
 public final class DemandCSPointsTo implements PointsToAnalysis {
 
-  @SuppressWarnings("serial")
-  protected static final class AllocAndContextCache
-      extends HashMap<AllocAndContext, Map<VarNode, CallingContextSet>> {}
-
-  protected static final class CallingContextSet extends ArraySet<ImmutableStack<Integer>> {}
-
-  protected static final class CallSiteAndContext extends Pair<Integer, ImmutableStack<Integer>> {
-
-    public CallSiteAndContext(Integer callSite, ImmutableStack<Integer> callingContext) {
-      super(callSite, callingContext);
-    }
-  }
-
-  protected static final class CallSiteToTargetsMap
-      extends HashSetMultiMap<CallSiteAndContext, SootMethod> {}
-
-  protected abstract static class IncomingEdgeHandler {
-
-    public abstract void handleAlloc(AllocNode allocNode, VarAndContext origVarAndContext);
-
-    public abstract void handleMatchSrc(
-        VarNode matchSrc,
-        PointsToSetInternal intersection,
-        VarNode loadBase,
-        VarNode storeBase,
-        VarAndContext origVarAndContext,
-        SparkField field,
-        boolean refine);
-
-    abstract Object getResult();
-
-    abstract void handleAssignSrc(
-        VarAndContext newVarAndContext, VarAndContext origVarAndContext, AssignEdge assignEdge);
-
-    abstract boolean shouldHandleSrc(VarNode src);
-
-    boolean terminate() {
-      return false;
-    }
-  }
-
-  protected static class VarAndContext {
-
-    final ImmutableStack<Integer> context;
-
-    final VarNode var;
-
-    public VarAndContext(VarNode var, ImmutableStack<Integer> context) {
-      assert var != null;
-      assert context != null;
-      this.var = var;
-      this.context = context;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o != null && o.getClass() == VarAndContext.class) {
-        VarAndContext other = (VarAndContext) o;
-        return var.equals(other.var) && context.equals(other.context);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return var.hashCode() + context.hashCode();
-    }
-
-    @Override
-    public String toString() {
-      return var + " " + context;
-    }
-  }
-
-  protected static final class VarContextAndUp extends VarAndContext {
-
-    final ImmutableStack<Integer> upContext;
-
-    public VarContextAndUp(
-        VarNode var, ImmutableStack<Integer> context, ImmutableStack<Integer> upContext) {
-      super(var, context);
-      this.upContext = upContext;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o != null && o.getClass() == VarContextAndUp.class) {
-        VarContextAndUp other = (VarContextAndUp) o;
-        return var.equals(other.var)
-            && context.equals(other.context)
-            && upContext.equals(other.upContext);
-      }
-
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return var.hashCode() + context.hashCode() + upContext.hashCode();
-    }
-
-    @Override
-    public String toString() {
-      return var + " " + context + " up " + upContext;
-    }
-  }
-
-  public static boolean DEBUG = false;
-
   protected static final int DEBUG_NESTING = 15;
-
   protected static final int DEBUG_PASS = -1;
-
-  protected static final boolean DEBUG_VIRT = DEBUG && true;
-
   protected static final int DEFAULT_MAX_PASSES = 10;
-
   protected static final int DEFAULT_MAX_TRAVERSAL = 75000;
-
   protected static final boolean DEFAULT_LAZY = true;
-
-  /** if <code>true</code>, refine the pre-computed call graph */
-  private boolean refineCallGraph = true;
-
   protected static final ImmutableStack<Integer> EMPTY_CALLSTACK = ImmutableStack.emptyStack();
-
-  /**
-   * Make a default analysis. Assumes Spark has already run.
-   *
-   * @return
-   */
-  public static DemandCSPointsTo makeDefault() {
-    return makeWithBudget(DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES, DEFAULT_LAZY);
-  }
-
-  public static DemandCSPointsTo makeWithBudget(int maxTraversal, int maxPasses, boolean lazy) {
-    PAG pag = (PAG) Scene.v().getPointsToAnalysis();
-    ContextSensitiveInfo csInfo = new ContextSensitiveInfo(pag);
-    return new DemandCSPointsTo(csInfo, pag, maxTraversal, maxPasses, lazy);
-  }
-
+  public static boolean DEBUG = false;
+  protected static final boolean DEBUG_VIRT = DEBUG && true;
   protected final AllocAndContextCache allocAndContextCache = new AllocAndContextCache();
-
-  protected Stack<Pair<Integer, ImmutableStack<Integer>>> callGraphStack = new Stack<>();
-
   protected final CallSiteToTargetsMap callSiteToResolvedTargets = new CallSiteToTargetsMap();
-
-  protected HashMap<List<Object>, Set<SootMethod>> callTargetsArgCache = new HashMap<>();
-
   protected final Stack<VarAndContext> contextForAllocsStack = new Stack<>();
-
+  protected final ContextSensitiveInfo csInfo;
+  protected final int maxNodesPerPass;
+  protected final int maxPasses;
+  protected final PAG pag;
+  protected final Set<CallSiteAndContext> queriedCallSites = new HashSet<>();
+  private final boolean lazy;
+  protected Stack<Pair<Integer, ImmutableStack<Integer>>> callGraphStack = new Stack<>();
+  protected HashMap<List<Object>, Set<SootMethod>> callTargetsArgCache = new HashMap<>();
   protected Map<VarAndContext, Pair<PointsToSetInternal, AllocAndContextSet>>
       contextsForAllocsCache = new HashMap<>();
-
-  protected final ContextSensitiveInfo csInfo;
-
-  /** if <code>true</code>, compute full points-to set for queried variable */
+  /**
+   * if <code>true</code>, compute full points-to set for queried variable
+   */
   protected boolean doPointsTo;
-
   protected FieldCheckHeuristic fieldCheckHeuristic;
-
   protected HeuristicType heuristicType;
-
   protected FieldToEdgesMap fieldToLoads;
-
   protected FieldToEdgesMap fieldToStores;
-
-  protected final int maxNodesPerPass;
-
-  protected final int maxPasses;
-
   protected int nesting = 0;
-
   protected int numNodesTraversed;
-
   protected int numPasses = 0;
-
-  protected final PAG pag;
-
   protected AllocAndContextSet pointsTo = null;
-
-  protected final Set<CallSiteAndContext> queriedCallSites = new HashSet<>();
-
   protected int recursionDepth = -1;
-
   protected boolean refiningCallSite = false;
-
   protected OTFMethodSCCManager sccManager;
-
   protected Map<VarContextAndUp, Map<AllocAndContext, CallingContextSet>> upContextCache =
       new HashMap<>();
-
   protected ValidMatches vMatches;
-
   protected Map<Local, PointsToSet> reachingObjectsCache, reachingObjectsCacheNoCGRefinement;
-
   protected boolean useCache;
-
-  private final boolean lazy;
+  /**
+   * if <code>true</code>, refine the pre-computed call graph
+   */
+  private boolean refineCallGraph = true;
 
   public DemandCSPointsTo(ContextSensitiveInfo csInfo, PAG pag) {
     this(csInfo, pag, DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES, DEFAULT_LAZY);
@@ -293,6 +140,21 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     this.reachingObjectsCache = new HashMap<>();
     this.reachingObjectsCacheNoCGRefinement = new HashMap<>();
     this.useCache = true;
+  }
+
+  /**
+   * Make a default analysis. Assumes Spark has already run.
+   *
+   * @return
+   */
+  public static DemandCSPointsTo makeDefault() {
+    return makeWithBudget(DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES, DEFAULT_LAZY);
+  }
+
+  public static DemandCSPointsTo makeWithBudget(int maxTraversal, int maxPasses, boolean lazy) {
+    PAG pag = (PAG) Scene.v().getPointsToAnalysis();
+    ContextSensitiveInfo csInfo = new ContextSensitiveInfo(pag);
+    return new DemandCSPointsTo(csInfo, pag, maxTraversal, maxPasses, lazy);
   }
 
   private void init() {
@@ -355,7 +217,9 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     return new PointsToSetEqualsWrapper(eq1).equals(new PointsToSetEqualsWrapper(eq2));
   }
 
-  /** Computes the possibly refined set of reaching objects for l. */
+  /**
+   * Computes the possibly refined set of reaching objects for l.
+   */
   protected PointsToSet computeReachingObjects(Local l) {
     VarNode v = pag.findLocalVarNode(l);
     if (v == null) {
@@ -473,11 +337,11 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   /**
    * check the computed points-to set of a variable against some predicate
    *
-   * @param v the variable
+   * @param v         the variable
    * @param heuristic how to refine match edges
    * @param p2setPred the predicate on the points-to set
    * @return true if the p2setPred holds for the computed points-to set, or if a points-to set
-   *     cannot be computed in the budget; false otherwise
+   * cannot be computed in the budget; false otherwise
    */
   protected boolean checkP2Set(
       VarNode v, HeuristicType heuristic, Predicate<Set<AllocAndContext>> p2setPred) {
@@ -517,37 +381,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       }
     }
   }
-
-  // protected boolean upContextsSane(CallingContextSet ret, AllocAndContext
-  // allocAndContext, VarContextAndUp varContextAndUp) {
-  // for (ImmutableStack<Integer> context : ret) {
-  // ImmutableStack<Integer> fixedContext = fixUpContext(context,
-  // allocAndContext, varContextAndUp);
-  // if (!context.equals(fixedContext)) {
-  // return false;
-  // }
-  // }
-  // return true;
-  // }
-  //
-  // protected CallingContextSet fixAllUpContexts(CallingContextSet contexts,
-  // AllocAndContext allocAndContext, VarContextAndUp varContextAndUp) {
-  // if (DEBUG) {
-  // debugPrint("fixing up contexts");
-  // }
-  // CallingContextSet ret = new CallingContextSet();
-  // for (ImmutableStack<Integer> context : contexts) {
-  // ret.add(fixUpContext(context, allocAndContext, varContextAndUp));
-  // }
-  // return ret;
-  // }
-  //
-  // protected ImmutableStack<Integer> fixUpContext(ImmutableStack<Integer>
-  // context, AllocAndContext allocAndContext, VarContextAndUp
-  // varContextAndUp) {
-  //
-  // return null;
-  // }
 
   protected CallingContextSet checkUpContextCache(
       VarContextAndUp varContextAndUp, AllocAndContext allocAndContext) {
@@ -706,8 +539,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
         Integer assignEdgeCallSite = assignEdge.getCallSite();
         assert csInfo
-                .getCallSiteTargets(assignEdgeCallSite)
-                .contains(((LocalVarNode) v).getMethod())
+            .getCallSiteTargets(assignEdgeCallSite)
+            .contains(((LocalVarNode) v).getMethod())
             : assignEdge;
         if (topCallSite.equals(assignEdgeCallSite) || callEdgeInSCC(assignEdge)) {
           realAssigns.add(assignEdge);
@@ -899,6 +732,37 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       contextForAllocsStack.pop();
     }
   }
+
+  // protected boolean upContextsSane(CallingContextSet ret, AllocAndContext
+  // allocAndContext, VarContextAndUp varContextAndUp) {
+  // for (ImmutableStack<Integer> context : ret) {
+  // ImmutableStack<Integer> fixedContext = fixUpContext(context,
+  // allocAndContext, varContextAndUp);
+  // if (!context.equals(fixedContext)) {
+  // return false;
+  // }
+  // }
+  // return true;
+  // }
+  //
+  // protected CallingContextSet fixAllUpContexts(CallingContextSet contexts,
+  // AllocAndContext allocAndContext, VarContextAndUp varContextAndUp) {
+  // if (DEBUG) {
+  // debugPrint("fixing up contexts");
+  // }
+  // CallingContextSet ret = new CallingContextSet();
+  // for (ImmutableStack<Integer> context : contexts) {
+  // ret.add(fixUpContext(context, allocAndContext, varContextAndUp));
+  // }
+  // return ret;
+  // }
+  //
+  // protected ImmutableStack<Integer> fixUpContext(ImmutableStack<Integer>
+  // context, AllocAndContext allocAndContext, VarContextAndUp
+  // varContextAndUp) {
+  //
+  // return null;
+  // }
 
   protected CallingContextSet findUpContextsForVar(
       AllocAndContext allocAndContext, VarContextAndUp varContextAndUp) {
@@ -1371,8 +1235,9 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       Set<SootMethod> toBeCollapsed = new ArraySet<>();
       int callSiteInd = 0;
       for (;
-          callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite);
-          callSiteInd++) {;
+           callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite);
+           callSiteInd++) {
+        ;
       }
       for (; callSiteInd < context.size(); callSiteInd++) {
         toBeCollapsed.add(csInfo.getInvokingMethod(context.get(callSiteInd)));
@@ -1551,8 +1416,9 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         Set<SootMethod> toBeCollapsed = new ArraySet<>();
         int callSiteInd = 0;
         for (;
-            callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite);
-            callSiteInd++) {;
+             callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite);
+             callSiteInd++) {
+          ;
         }
         // int numToPop = 0;
         for (; callSiteInd < context.size(); callSiteInd++) {
@@ -2018,27 +1884,37 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     throw new UnsupportedOperationException();
   }
 
-  /** @return returns the (SPARK) pointer assignment graph */
+  /**
+   * @return returns the (SPARK) pointer assignment graph
+   */
   public PAG getPAG() {
     return pag;
   }
 
-  /** @return <code>true</code> is caching is enabled */
+  /**
+   * @return <code>true</code> is caching is enabled
+   */
   public boolean usesCache() {
     return useCache;
   }
 
-  /** enables caching */
+  /**
+   * enables caching
+   */
   public void enableCache() {
     useCache = true;
   }
 
-  /** disables caching */
+  /**
+   * disables caching
+   */
   public void disableCache() {
     useCache = false;
   }
 
-  /** clears the cache */
+  /**
+   * clears the cache
+   */
   public void clearCache() {
     reachingObjectsCache.clear();
     reachingObjectsCacheNoCGRefinement.clear();
@@ -2059,5 +1935,115 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   public void setHeuristicType(HeuristicType heuristicType) {
     this.heuristicType = heuristicType;
     clearCache();
+  }
+
+  @SuppressWarnings("serial")
+  protected static final class AllocAndContextCache
+      extends HashMap<AllocAndContext, Map<VarNode, CallingContextSet>> {
+  }
+
+  protected static final class CallingContextSet extends ArraySet<ImmutableStack<Integer>> {
+  }
+
+  protected static final class CallSiteAndContext extends Pair<Integer, ImmutableStack<Integer>> {
+
+    public CallSiteAndContext(Integer callSite, ImmutableStack<Integer> callingContext) {
+      super(callSite, callingContext);
+    }
+  }
+
+  protected static final class CallSiteToTargetsMap
+      extends HashSetMultiMap<CallSiteAndContext, SootMethod> {
+  }
+
+  protected abstract static class IncomingEdgeHandler {
+
+    public abstract void handleAlloc(AllocNode allocNode, VarAndContext origVarAndContext);
+
+    public abstract void handleMatchSrc(
+        VarNode matchSrc,
+        PointsToSetInternal intersection,
+        VarNode loadBase,
+        VarNode storeBase,
+        VarAndContext origVarAndContext,
+        SparkField field,
+        boolean refine);
+
+    abstract Object getResult();
+
+    abstract void handleAssignSrc(
+        VarAndContext newVarAndContext, VarAndContext origVarAndContext, AssignEdge assignEdge);
+
+    abstract boolean shouldHandleSrc(VarNode src);
+
+    boolean terminate() {
+      return false;
+    }
+  }
+
+  protected static class VarAndContext {
+
+    final ImmutableStack<Integer> context;
+
+    final VarNode var;
+
+    public VarAndContext(VarNode var, ImmutableStack<Integer> context) {
+      assert var != null;
+      assert context != null;
+      this.var = var;
+      this.context = context;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o != null && o.getClass() == VarAndContext.class) {
+        VarAndContext other = (VarAndContext) o;
+        return var.equals(other.var) && context.equals(other.context);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return var.hashCode() + context.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return var + " " + context;
+    }
+  }
+
+  protected static final class VarContextAndUp extends VarAndContext {
+
+    final ImmutableStack<Integer> upContext;
+
+    public VarContextAndUp(
+        VarNode var, ImmutableStack<Integer> context, ImmutableStack<Integer> upContext) {
+      super(var, context);
+      this.upContext = upContext;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o != null && o.getClass() == VarContextAndUp.class) {
+        VarContextAndUp other = (VarContextAndUp) o;
+        return var.equals(other.var)
+            && context.equals(other.context)
+            && upContext.equals(other.upContext);
+      }
+
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return var.hashCode() + context.hashCode() + upContext.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return var + " " + context + " up " + upContext;
+    }
   }
 }

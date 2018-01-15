@@ -19,9 +19,6 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -36,15 +33,19 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.tagkit.Host;
 import soot.tagkit.LinkTag;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class CallGraphTagger extends BodyTransformer {
 
-  public CallGraphTagger(Singletons.Global g) {}
+  private MethodToContexts methodToContexts;
+
+  public CallGraphTagger(Singletons.Global g) {
+  }
 
   public static CallGraphTagger v() {
     return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphTagger();
   }
-
-  private MethodToContexts methodToContexts;
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map options) {

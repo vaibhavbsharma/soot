@@ -19,9 +19,6 @@
 
 package soot.shimple;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.MethodSource;
@@ -32,6 +29,9 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.options.Options;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Traverses all methods, in all classes from the Scene, and transforms them to Shimple. Typically
  * used for whole-program analysis on Shimple.
@@ -39,7 +39,8 @@ import soot.options.Options;
  * @author Navindra Umanee
  */
 public class ShimpleTransformer extends SceneTransformer {
-  public ShimpleTransformer(Singletons.Global g) {}
+  public ShimpleTransformer(Singletons.Global g) {
+  }
 
   public static ShimpleTransformer v() {
     return G.v().soot_shimple_ShimpleTransformer();

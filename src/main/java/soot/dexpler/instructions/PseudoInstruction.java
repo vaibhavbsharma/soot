@@ -21,20 +21,18 @@
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
-
 import soot.dexpler.DexBody;
 
 public abstract class PseudoInstruction extends DexlibAbstractInstruction {
-
-  public PseudoInstruction(Instruction instruction, int codeAddress) {
-    super(instruction, codeAddress);
-  }
 
   int dataFirstByte = -1;
   int dataLastByte = -1;
   int dataSize = -1;
   byte[] data = null;
   boolean loaded = false;
+  public PseudoInstruction(Instruction instruction, int codeAddress) {
+    super(instruction, codeAddress);
+  }
 
   public boolean isLoaded() {
     return loaded;

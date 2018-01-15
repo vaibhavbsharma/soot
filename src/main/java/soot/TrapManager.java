@@ -25,17 +25,21 @@
 
 package soot;
 
+import soot.util.Chain;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import soot.util.Chain;
-
-/** Utility methods for dealing with traps. */
+/**
+ * Utility methods for dealing with traps.
+ */
 public class TrapManager {
-  /** If exception e is caught at unit u in body b, return true; otherwise, return false. */
+  /**
+   * If exception e is caught at unit u in body b, return true; otherwise, return false.
+   */
   public static boolean isExceptionCaughtAt(SootClass e, Unit u, Body b) {
     /* Look through the traps t of b, checking to see if:
      *  - caught exception is e;
@@ -59,7 +63,9 @@ public class TrapManager {
     return false;
   }
 
-  /** Returns the list of traps caught at Unit u in Body b. */
+  /**
+   * Returns the list of traps caught at Unit u in Body b.
+   */
   public static List<Trap> getTrapsAt(Unit unit, Body b) {
     List<Trap> trapsList = new ArrayList<>();
     Chain<Unit> units = b.getUnits();
@@ -76,7 +82,9 @@ public class TrapManager {
     return trapsList;
   }
 
-  /** Returns a set of units which lie inside the range of any trap. */
+  /**
+   * Returns a set of units which lie inside the range of any trap.
+   */
   public static Set<Unit> getTrappedUnitsOf(Body b) {
     Set<Unit> trapsSet = new HashSet<>();
     Chain<Unit> units = b.getUnits();

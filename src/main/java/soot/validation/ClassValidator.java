@@ -1,15 +1,17 @@
 package soot.validation;
 
-import java.util.List;
-
 import soot.SootClass;
 
-/** Implement this interface if you want to provide your own class validator */
+import java.util.List;
+
+/**
+ * Implement this interface if you want to provide your own class validator
+ */
 public interface ClassValidator {
   /**
    * Validates the given class and saves all validation errors in the given list.
    *
-   * @param body the class to check
+   * @param body       the class to check
    * @param exceptions the list of exceptions
    */
   void validate(SootClass sc, List<ValidationException> exceptions);

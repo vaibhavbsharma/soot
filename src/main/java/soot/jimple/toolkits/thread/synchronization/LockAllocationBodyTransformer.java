@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -37,18 +30,138 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public class LockAllocationBodyTransformer extends BodyTransformer {
   private static final LockAllocationBodyTransformer instance = new LockAllocationBodyTransformer();
+  static int baseLocalNum = 0;
+  static int lockNumber = 0;
+  static Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<>();
+  private static boolean addedGlobalLockDefs = false;
+  // to 0
+  private static int throwableNum = 0; // doesn't matter if not reinitialized
 
-  private LockAllocationBodyTransformer() {}
+  private LockAllocationBodyTransformer() {
+  }
 
   public static LockAllocationBodyTransformer v() {
     return instance;
   }
 
-  private static boolean addedGlobalLockDefs = false;
-  private static int throwableNum = 0; // doesn't matter if not reinitialized
-  // to 0
+  public static Value getLockFor(EquivalentValue lockEqVal) {
+    Value lock = lockEqVal.getValue();
+
+    if (lock instanceof InstanceFieldRef) {
+      return lock;
+    }
+
+    if (lock instanceof ArrayRef) {
+      // ref for each value of the index!
+      return ((ArrayRef) lock).getBase();
+    }
+
+    if (lock instanceof Local) {
+      return lock;
+    }
+
+    if (lock instanceof StaticFieldRef || lock instanceof NewStaticLock) {
+      if (lockEqValToLock.containsKey(lockEqVal)) {
+        return lockEqValToLock.get(lockEqVal);
+      }
+
+      SootClass lockClass = null;
+      if (lock instanceof StaticFieldRef) {
+        StaticFieldRef sfrLock = (StaticFieldRef) lock;
+        lockClass = sfrLock.getField().getDeclaringClass();
+      } else if (lock instanceof NewStaticLock) {
+        DeadlockAvoidanceEdge dae = (DeadlockAvoidanceEdge) lock;
+        lockClass = dae.getLockClass();
+      }
+      SootMethod clinitMethod = null;
+      JimpleBody clinitBody = null;
+      Stmt firstStmt = null;
+      boolean addingNewClinit = !lockClass.declaresMethod("void <clinit>()");
+      if (addingNewClinit) {
+        clinitMethod =
+            Scene.v()
+                .makeSootMethod(
+                    "<clinit>", new ArrayList(), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+        clinitBody = Jimple.v().newBody(clinitMethod);
+        clinitMethod.setActiveBody(clinitBody);
+        lockClass.addMethod(clinitMethod);
+      } else {
+        clinitMethod = lockClass.getMethod("void <clinit>()");
+        clinitBody = (JimpleBody) clinitMethod.getActiveBody();
+        firstStmt = clinitBody.getFirstNonIdentityStmt();
+      }
+      PatchingChain<Unit> clinitUnits = clinitBody.getUnits();
+
+      Local lockLocal =
+          Jimple.v().newLocal("objectLockLocal" + lockNumber, RefType.v("java.lang.Object"));
+      // lockNumber is increased below
+      clinitBody.getLocals().add(lockLocal); // TODO: add name conflict
+      // avoidance code
+
+      // assign new object to lock obj
+      Stmt newStmt =
+          Jimple.v().newAssignStmt(lockLocal, Jimple.v().newNewExpr(RefType.v("java.lang.Object")));
+      if (addingNewClinit) {
+        clinitUnits.add(newStmt);
+      } else {
+        clinitUnits.insertBeforeNoRedirect(newStmt, firstStmt);
+      }
+
+      // initialize new object
+      SootClass objectClass = Scene.v().loadClassAndSupport("java.lang.Object");
+      RefType type = RefType.v(objectClass);
+      SootMethod initMethod = objectClass.getMethod("void <init>()");
+      Stmt initStmt =
+          Jimple.v()
+              .newInvokeStmt(
+                  Jimple.v()
+                      .newSpecialInvokeExpr(
+                          lockLocal, initMethod.makeRef(), Collections.EMPTY_LIST));
+      if (addingNewClinit) {
+        clinitUnits.add(initStmt);
+      } else {
+        clinitUnits.insertBeforeNoRedirect(initStmt, firstStmt);
+      }
+
+      // copy new object to global static lock object (for use by other
+      // fns)
+      SootField actualLockObject =
+          Scene.v()
+              .makeSootField(
+                  "objectLockGlobal" + lockNumber,
+                  RefType.v("java.lang.Object"),
+                  Modifier.STATIC | Modifier.PUBLIC);
+      lockNumber++;
+      lockClass.addField(actualLockObject);
+
+      StaticFieldRef actualLockSfr = Jimple.v().newStaticFieldRef(actualLockObject.makeRef());
+      Stmt assignStmt = Jimple.v().newAssignStmt(actualLockSfr, lockLocal);
+      if (addingNewClinit) {
+        clinitUnits.add(assignStmt);
+      } else {
+        clinitUnits.insertBeforeNoRedirect(assignStmt, firstStmt);
+      }
+
+      if (addingNewClinit) {
+        clinitUnits.add(Jimple.v().newReturnVoidStmt());
+      }
+
+      lockEqValToLock.put(lockEqVal, actualLockSfr);
+      return actualLockSfr;
+    }
+
+    throw new RuntimeException(
+        "Unknown type of lock (" + lock + "): expected FieldRef, ArrayRef, or Local");
+  }
 
   @Override
   protected void internalTransform(Body b, String phase, Map opts) {
@@ -475,8 +588,8 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                 Stmt end = (Stmt) earlyEnd.getO1();
                 if (lastEnd == null
                     || (units.contains(lastEnd)
-                        && units.contains(end)
-                        && units.follows(end, lastEnd))) {
+                    && units.contains(end)
+                    && units.follows(end, lastEnd))) {
                   lastEnd = end;
                 }
               }
@@ -574,8 +687,6 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
     }
   }
 
-  static int baseLocalNum = 0;
-
   public InstanceFieldRef reconstruct(
       Body b,
       PatchingChain<Unit> units,
@@ -628,119 +739,6 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
     InstanceFieldRef newLock = Jimple.v().newInstanceFieldRef(baseLocal, lock.getField().makeRef());
     G.v().out.println("  as " + newLock);
     return newLock;
-  }
-
-  static int lockNumber = 0;
-  static Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<>();
-
-  public static Value getLockFor(EquivalentValue lockEqVal) {
-    Value lock = lockEqVal.getValue();
-
-    if (lock instanceof InstanceFieldRef) {
-      return lock;
-    }
-
-    if (lock instanceof ArrayRef) {
-      // ref for each value of the index!
-      return ((ArrayRef) lock).getBase();
-    }
-
-    if (lock instanceof Local) {
-      return lock;
-    }
-
-    if (lock instanceof StaticFieldRef || lock instanceof NewStaticLock) {
-      if (lockEqValToLock.containsKey(lockEqVal)) {
-        return lockEqValToLock.get(lockEqVal);
-      }
-
-      SootClass lockClass = null;
-      if (lock instanceof StaticFieldRef) {
-        StaticFieldRef sfrLock = (StaticFieldRef) lock;
-        lockClass = sfrLock.getField().getDeclaringClass();
-      } else if (lock instanceof NewStaticLock) {
-        DeadlockAvoidanceEdge dae = (DeadlockAvoidanceEdge) lock;
-        lockClass = dae.getLockClass();
-      }
-      SootMethod clinitMethod = null;
-      JimpleBody clinitBody = null;
-      Stmt firstStmt = null;
-      boolean addingNewClinit = !lockClass.declaresMethod("void <clinit>()");
-      if (addingNewClinit) {
-        clinitMethod =
-            Scene.v()
-                .makeSootMethod(
-                    "<clinit>", new ArrayList(), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
-        clinitBody = Jimple.v().newBody(clinitMethod);
-        clinitMethod.setActiveBody(clinitBody);
-        lockClass.addMethod(clinitMethod);
-      } else {
-        clinitMethod = lockClass.getMethod("void <clinit>()");
-        clinitBody = (JimpleBody) clinitMethod.getActiveBody();
-        firstStmt = clinitBody.getFirstNonIdentityStmt();
-      }
-      PatchingChain<Unit> clinitUnits = clinitBody.getUnits();
-
-      Local lockLocal =
-          Jimple.v().newLocal("objectLockLocal" + lockNumber, RefType.v("java.lang.Object"));
-      // lockNumber is increased below
-      clinitBody.getLocals().add(lockLocal); // TODO: add name conflict
-      // avoidance code
-
-      // assign new object to lock obj
-      Stmt newStmt =
-          Jimple.v().newAssignStmt(lockLocal, Jimple.v().newNewExpr(RefType.v("java.lang.Object")));
-      if (addingNewClinit) {
-        clinitUnits.add(newStmt);
-      } else {
-        clinitUnits.insertBeforeNoRedirect(newStmt, firstStmt);
-      }
-
-      // initialize new object
-      SootClass objectClass = Scene.v().loadClassAndSupport("java.lang.Object");
-      RefType type = RefType.v(objectClass);
-      SootMethod initMethod = objectClass.getMethod("void <init>()");
-      Stmt initStmt =
-          Jimple.v()
-              .newInvokeStmt(
-                  Jimple.v()
-                      .newSpecialInvokeExpr(
-                          lockLocal, initMethod.makeRef(), Collections.EMPTY_LIST));
-      if (addingNewClinit) {
-        clinitUnits.add(initStmt);
-      } else {
-        clinitUnits.insertBeforeNoRedirect(initStmt, firstStmt);
-      }
-
-      // copy new object to global static lock object (for use by other
-      // fns)
-      SootField actualLockObject =
-          Scene.v()
-              .makeSootField(
-                  "objectLockGlobal" + lockNumber,
-                  RefType.v("java.lang.Object"),
-                  Modifier.STATIC | Modifier.PUBLIC);
-      lockNumber++;
-      lockClass.addField(actualLockObject);
-
-      StaticFieldRef actualLockSfr = Jimple.v().newStaticFieldRef(actualLockObject.makeRef());
-      Stmt assignStmt = Jimple.v().newAssignStmt(actualLockSfr, lockLocal);
-      if (addingNewClinit) {
-        clinitUnits.add(assignStmt);
-      } else {
-        clinitUnits.insertBeforeNoRedirect(assignStmt, firstStmt);
-      }
-
-      if (addingNewClinit) {
-        clinitUnits.add(Jimple.v().newReturnVoidStmt());
-      }
-
-      lockEqValToLock.put(lockEqVal, actualLockSfr);
-      return actualLockSfr;
-    }
-
-    throw new RuntimeException(
-        "Unknown type of lock (" + lock + "): expected FieldRef, ArrayRef, or Local");
   }
 
   public void redirectTraps(Body b, Unit oldUnit, Unit newUnit) {

@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -65,12 +66,12 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
   /** ********************** java.net.InetAddressImpl **************** */
   /**
    * Returns a variable pointing to a string constant
-   *
+   * <p>
    * <p>I am not sure if repeated calls of methods in this class will return the same object or not.
    * A conservative approach would say YES, for definitely points-to, but NO for may points-to.
-   *
+   * <p>
    * <p>We should avoid analyzing these unsafe native methods.
-   *
+   * <p>
    * <p>native java.lang.String getLocalHostName() throws java.net.UnknownHostException;
    */
   public void java_net_InetAddressImpl_getLocalHostName(
@@ -83,7 +84,7 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
 
   /**
    * Create a string object
-   *
+   * <p>
    * <p>native java.lang.String getHostByAddr(int) throws java.net.UnknownHostException;
    */
   public void java_net_InetAddressImpl_getHostByAddr(

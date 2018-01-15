@@ -19,10 +19,6 @@
 
 package soot.dava.toolkits.base.misc;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import soot.G;
 import soot.Modifier;
 import soot.RefType;
@@ -39,7 +35,13 @@ import soot.grimp.internal.GInvokeStmt;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.MonitorStmt;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+
 public class MonitorConverter {
+  private final SootMethod v, enter, exit;
+
   public MonitorConverter(Singletons.Global g) {
     SootClass davaMonitor =
         new SootClass("soot.dava.toolkits.base.DavaMonitor.DavaMonitor", Modifier.PUBLIC);
@@ -72,8 +74,6 @@ public class MonitorConverter {
   public static MonitorConverter v() {
     return G.v().soot_dava_toolkits_base_misc_MonitorConverter();
   }
-
-  private final SootMethod v, enter, exit;
 
   public void convert(DavaBody body) {
     for (AugmentedStmt mas : body.get_MonitorFacts()) {

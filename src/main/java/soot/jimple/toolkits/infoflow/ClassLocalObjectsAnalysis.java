@@ -1,13 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.EquivalentValue;
 import soot.G;
@@ -35,6 +27,14 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.Pair;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 // ClassLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the given scope.
@@ -140,56 +140,6 @@ public class ClassLocalObjectsAnalysis {
     }
   }
 
-  private void prepare() {
-    // Get list of all methods
-    allMethods = getAllReachableMethods(sootClass);
-
-    // Get list of external methods
-    externalMethods = uf.getExtMethods(sootClass);
-    SootClass superclass = sootClass;
-    if (superclass.hasSuperclass()) {
-      superclass = superclass.getSuperclass();
-    }
-    while (superclass.hasSuperclass()) {
-      if (superclass.isApplicationClass()) {
-        externalMethods.addAll(uf.getExtMethods(superclass));
-      }
-      superclass = superclass.getSuperclass();
-    }
-
-    // Get list of internal methods
-    internalMethods = new ArrayList<>();
-    for (SootMethod method : allMethods) {
-      if (!externalMethods.contains(method)) {
-        internalMethods.add(method);
-      }
-    }
-
-    // Get list of all fields
-    allFields = getAllFields(sootClass);
-
-    // Get list of external fields
-    externalFields = uf.getExtFields(sootClass);
-    superclass = sootClass;
-    if (superclass.hasSuperclass()) {
-      superclass = superclass.getSuperclass();
-    }
-    while (superclass.hasSuperclass()) {
-      if (superclass.isApplicationClass()) {
-        externalFields.addAll(uf.getExtFields(superclass));
-      }
-      superclass = superclass.getSuperclass();
-    }
-
-    // Get list of internal fields
-    internalFields = new ArrayList<>();
-    for (SootField field : allFields) {
-      if (!externalFields.contains(field)) {
-        internalFields.add(field);
-      }
-    }
-  }
-
   // Returns a list of reachable methods in class sc and its superclasses
   public static List<SootMethod> getAllReachableMethods(SootClass sc) {
     ReachableMethods rm = Scene.v().getReachableMethods();
@@ -245,6 +195,56 @@ public class ClassLocalObjectsAnalysis {
       superclass = superclass.getSuperclass();
     }
     return allFields;
+  }
+
+  private void prepare() {
+    // Get list of all methods
+    allMethods = getAllReachableMethods(sootClass);
+
+    // Get list of external methods
+    externalMethods = uf.getExtMethods(sootClass);
+    SootClass superclass = sootClass;
+    if (superclass.hasSuperclass()) {
+      superclass = superclass.getSuperclass();
+    }
+    while (superclass.hasSuperclass()) {
+      if (superclass.isApplicationClass()) {
+        externalMethods.addAll(uf.getExtMethods(superclass));
+      }
+      superclass = superclass.getSuperclass();
+    }
+
+    // Get list of internal methods
+    internalMethods = new ArrayList<>();
+    for (SootMethod method : allMethods) {
+      if (!externalMethods.contains(method)) {
+        internalMethods.add(method);
+      }
+    }
+
+    // Get list of all fields
+    allFields = getAllFields(sootClass);
+
+    // Get list of external fields
+    externalFields = uf.getExtFields(sootClass);
+    superclass = sootClass;
+    if (superclass.hasSuperclass()) {
+      superclass = superclass.getSuperclass();
+    }
+    while (superclass.hasSuperclass()) {
+      if (superclass.isApplicationClass()) {
+        externalFields.addAll(uf.getExtFields(superclass));
+      }
+      superclass = superclass.getSuperclass();
+    }
+
+    // Get list of internal fields
+    internalFields = new ArrayList<>();
+    for (SootField field : allFields) {
+      if (!externalFields.contains(field)) {
+        internalFields.add(field);
+      }
+    }
   }
 
   private void doAnalysis() {
@@ -558,7 +558,7 @@ public class ClassLocalObjectsAnalysis {
         // Calculate the context for each invoke stmt in the containingMethod
         Map<Stmt, CallLocalityContext> invokeToContext = new HashMap<>();
         for (Iterator edgesIt = Scene.v().getCallGraph().edgesOutOf(containingMethod);
-            edgesIt.hasNext();
+             edgesIt.hasNext();
             ) {
           Edge e = (Edge) edgesIt.next();
           if (!e.src().getDeclaringClass().isApplicationClass() || e.srcStmt() == null) {

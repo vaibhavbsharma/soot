@@ -25,10 +25,6 @@
 
 package soot.jimple;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -48,9 +44,28 @@ import soot.options.Options;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
-/** Implementation of the Body class for the Jimple IR. */
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Implementation of the Body class for the Jimple IR.
+ */
 public class JimpleBody extends StmtBody {
   private static BodyValidator[] validators;
+
+  /**
+   * Construct an empty JimpleBody
+   */
+  public JimpleBody(SootMethod m) {
+    super(m);
+  }
+
+  /**
+   * Construct an extremely empty JimpleBody, for parsing into.
+   */
+  public JimpleBody() {
+  }
 
   /**
    * Returns an array containing some validators in order to validate the JimpleBody
@@ -61,30 +76,24 @@ public class JimpleBody extends StmtBody {
     if (validators == null) {
       validators =
           new BodyValidator[] {
-            IdentityStatementsValidator.v(),
-            TypesValidator.v(),
-            ReturnStatementsValidator.v(),
-            InvokeArgumentValidator.v(),
-            FieldRefValidator.v(),
-            NewValidator.v(),
-            JimpleTrapValidator.v(),
-            IdentityValidator.v(),
-            MethodValidator.v()
-            // InvokeValidator.v()
+              IdentityStatementsValidator.v(),
+              TypesValidator.v(),
+              ReturnStatementsValidator.v(),
+              InvokeArgumentValidator.v(),
+              FieldRefValidator.v(),
+              NewValidator.v(),
+              JimpleTrapValidator.v(),
+              IdentityValidator.v(),
+              MethodValidator.v()
+              // InvokeValidator.v()
           };
     }
     return validators;
   }
 
-  /** Construct an empty JimpleBody */
-  public JimpleBody(SootMethod m) {
-    super(m);
-  }
-
-  /** Construct an extremely empty JimpleBody, for parsing into. */
-  public JimpleBody() {}
-
-  /** Clones the current body, making deep copies of the contents. */
+  /**
+   * Clones the current body, making deep copies of the contents.
+   */
   @Override
   public Object clone() {
     Body b = new JimpleBody(getMethod());
@@ -126,7 +135,9 @@ public class JimpleBody extends StmtBody {
     runValidation(IdentityStatementsValidator.v());
   }
 
-  /** Inserts usual statements for handling this & parameters into body. */
+  /**
+   * Inserts usual statements for handling this & parameters into body.
+   */
   public void insertIdentityStmts() {
     Unit lastUnit = null;
 
@@ -157,7 +168,9 @@ public class JimpleBody extends StmtBody {
     }
   }
 
-  /** Returns the first non-identity stmt in this body. */
+  /**
+   * Returns the first non-identity stmt in this body.
+   */
   public Stmt getFirstNonIdentityStmt() {
     Iterator<Unit> it = getUnits().iterator();
     Object o = null;

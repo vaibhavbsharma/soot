@@ -17,7 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/** NativeMethodClass defines side-effect simulation of native methods in a class. */
+/**
+ * NativeMethodClass defines side-effect simulation of native methods in a class.
+ */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.G;

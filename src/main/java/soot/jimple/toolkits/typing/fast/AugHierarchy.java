@@ -18,10 +18,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.typing.fast;
 
-import java.util.Collection;
-import java.util.Collections;
+package soot.jimple.toolkits.typing.fast;
 
 import soot.BooleanType;
 import soot.ByteType;
@@ -31,13 +29,13 @@ import soot.IntegerType;
 import soot.ShortType;
 import soot.Type;
 
-/** @author Ben Bellamy */
-public class AugHierarchy implements IHierarchy {
-  @Override
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
-  }
+import java.util.Collection;
+import java.util.Collections;
 
+/**
+ * @author Ben Bellamy
+ */
+public class AugHierarchy implements IHierarchy {
   public static Collection<Type> lcas_(Type a, Type b) {
     if (TypeResolver.typesEqual(a, b)) {
       return Collections.singletonList(a);
@@ -68,11 +66,6 @@ public class AugHierarchy implements IHierarchy {
     } else {
       return BytecodeHierarchy.lcas_(a, b);
     }
-  }
-
-  @Override
-  public boolean ancestor(Type ancestor, Type child) {
-    return ancestor_(ancestor, child);
   }
 
   public static boolean ancestor_(Type ancestor, Type child) {
@@ -112,5 +105,15 @@ public class AugHierarchy implements IHierarchy {
     } else {
       return BytecodeHierarchy.ancestor_(ancestor, child);
     }
+  }
+
+  @Override
+  public Collection<Type> lcas(Type a, Type b) {
+    return lcas_(a, b);
+  }
+
+  @Override
+  public boolean ancestor(Type ancestor, Type child) {
+    return ancestor_(ancestor, child);
   }
 }

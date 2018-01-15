@@ -47,7 +47,7 @@ public class InstructionFactory {
   /**
    * Resolve an Instruction from an dex opcode.
    *
-   * @param op the opcode of the instruction
+   * @param op          the opcode of the instruction
    * @param instruction the corresponding dexlib instruction
    * @param codeAddress the byte code address of the instruction
    */

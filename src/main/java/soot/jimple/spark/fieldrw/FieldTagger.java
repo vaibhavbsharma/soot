@@ -19,10 +19,6 @@
 
 package soot.jimple.spark.fieldrw;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -39,16 +35,20 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.TransitiveTargets;
 import soot.util.HashMultiMap;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+
 public class FieldTagger extends BodyTransformer {
-  public FieldTagger(Singletons.Global g) {}
+  private final HashSet<SootMethod> processedMethods = new HashSet<>();
+  private final HashMultiMap methodToWrite = new HashMultiMap();
+  private final HashMultiMap methodToRead = new HashMultiMap();
+  public FieldTagger(Singletons.Global g) {
+  }
 
   public static FieldTagger v() {
     return G.v().soot_jimple_spark_fieldrw_FieldTagger();
   }
-
-  private final HashSet<SootMethod> processedMethods = new HashSet<>();
-  private final HashMultiMap methodToWrite = new HashMultiMap();
-  private final HashMultiMap methodToRead = new HashMultiMap();
 
   protected void ensureProcessed(SootMethod m) {
     if (processedMethods.contains(m)) {

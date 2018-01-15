@@ -35,7 +35,6 @@ import org.jf.dexlib2.iface.value.IntEncodedValue;
 import org.jf.dexlib2.iface.value.LongEncodedValue;
 import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
-
 import soot.Modifier;
 import soot.Scene;
 import soot.SootField;
@@ -52,7 +51,8 @@ import soot.tagkit.Tag;
  * modifier, and the type
  */
 public class DexField {
-  private DexField() {}
+  private DexField() {
+  }
 
   /**
    * Add constant tag. Should only be called if field is final.
@@ -90,7 +90,9 @@ public class DexField {
     }
   }
 
-  /** @return the Soot equivalent of a field */
+  /**
+   * @return the Soot equivalent of a field
+   */
   public static SootField makeSootField(Field f) {
     String name = f.getName();
     Type type = DexType.toSoot(f.getType());

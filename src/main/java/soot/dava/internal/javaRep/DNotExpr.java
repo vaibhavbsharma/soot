@@ -87,9 +87,12 @@ public class DNotExpr extends AbstractUnopExpr {
     NOTE THIS IS AN EMPTY IMPLEMENTATION OF APPLY METHOD
   */
   @Override
-  public void apply(Switch sw) {}
+  public void apply(Switch sw) {
+  }
 
-  /** Compares the specified object with this one for structural equality. */
+  /**
+   * Compares the specified object with this one for structural equality.
+   */
   @Override
   public boolean equivTo(Object o) {
     if (o instanceof DNotExpr) {
@@ -98,7 +101,9 @@ public class DNotExpr extends AbstractUnopExpr {
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return getOpBox().getValue().equivHashCode();

@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.geomPA;
 
 import soot.jimple.spark.pag.Node;
@@ -34,7 +35,9 @@ public abstract class IEncodingBroker {
    */
   public abstract IVarAbstraction generateNode(Node v);
 
-  /** Build the initial encoding of the pointer assignments and points-to facts. */
+  /**
+   * Build the initial encoding of the pointer assignments and points-to facts.
+   */
   public abstract void initFlowGraph(GeomPointsTo ptAnalyzer);
 
   /**

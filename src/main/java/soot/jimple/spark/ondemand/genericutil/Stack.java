@@ -16,11 +16,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 import java.util.Collection;
 
-/** @author manu_s */
+/**
+ * @author manu_s
+ */
 public final class Stack<T> implements Cloneable {
 
   private T[] elems;

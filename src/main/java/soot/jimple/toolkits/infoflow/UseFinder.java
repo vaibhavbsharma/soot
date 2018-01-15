@@ -1,11 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
@@ -21,6 +15,12 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 // UseFinder written by Richard L. Halpert, 2007-03-13
 // Compiles a list of all uses of fields of each application class within the

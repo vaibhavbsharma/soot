@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import soot.EntryPoints;
 import soot.G;
 import soot.Local;
@@ -41,28 +37,20 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Models the call graph.
  *
  * @author Ondrej Lhotak
  */
 public final class CallGraphBuilder {
-  private PointsToAnalysis pa;
   private final ReachableMethods reachables;
   private final OnFlyCallGraphBuilder ofcgb;
   private final CallGraph cg;
-
-  public CallGraph getCallGraph() {
-    return cg;
-  }
-
-  public ReachableMethods reachables() {
-    return reachables;
-  }
-
-  public static ContextManager makeContextManager(CallGraph cg) {
-    return new ContextInsensitiveContextManager(cg);
-  }
+  private PointsToAnalysis pa;
 
   /**
    * This constructor builds a complete call graph using the given PointsToAnalysis to resolve
@@ -95,6 +83,18 @@ public final class CallGraphBuilder {
     reachables = new ReachableMethods(cg, entryPoints);
     ContextManager cm = new ContextInsensitiveContextManager(cg);
     ofcgb = new OnFlyCallGraphBuilder(cm, reachables, true);
+  }
+
+  public static ContextManager makeContextManager(CallGraph cg) {
+    return new ContextInsensitiveContextManager(cg);
+  }
+
+  public CallGraph getCallGraph() {
+    return cg;
+  }
+
+  public ReachableMethods reachables() {
+    return reachables;
   }
 
   public void build() {

@@ -149,7 +149,7 @@ class attribute_info {
   /**
    * String by which an annotation default attribute is recognized.
    *
-   * @see AnnotationDefault_attribute
+   * @see AnnotationDefaultAttribute
    */
   public static final String AnnotationDefault = "AnnotationDefault";
 
@@ -167,6 +167,8 @@ class attribute_info {
    * @see CONSTANT_Utf8_info
    */
   public int attribute_name;
-  /** Length of attribute in bytes. */
+  /**
+   * Length of attribute in bytes.
+   */
   public long attribute_length;
 }

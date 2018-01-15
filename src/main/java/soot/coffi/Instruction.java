@@ -24,23 +24,24 @@
  */
 
 package soot.coffi;
+
 /**
  * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a
  * corresponding subclass of Instruction.
- *
+ * <p>
  * <p>Each subclass is derived from one of
- *
+ * <p>
  * <ul>
- *   <li>Instruction
- *   <li>Instruction_noargs (an Instruction with no embedded arguments)
- *   <li>Instruction_byte (an Instruction with a single byte data argument)
- *   <li>Instruction_bytevar (a byte argument specifying a local variable)
- *   <li>Instruction_byteindex (a byte argument specifying a constant pool index)
- *   <li>Instruction_int (an Instruction with a single short data argument)
- *   <li>Instruction_intvar (a short argument specifying a local variable)
- *   <li>Instruction_intindex (a short argument specifying a constant pool index)
- *   <li>Instruction_intbranch (a short argument specifying a code offset)
- *   <li>Instruction_longbranch (an int argument specifying a code offset)
+ * <li>Instruction
+ * <li>Instruction_noargs (an Instruction with no embedded arguments)
+ * <li>Instruction_byte (an Instruction with a single byte data argument)
+ * <li>Instruction_bytevar (a byte argument specifying a local variable)
+ * <li>Instruction_byteindex (a byte argument specifying a constant pool index)
+ * <li>Instruction_int (an Instruction with a single short data argument)
+ * <li>Instruction_intvar (a short argument specifying a local variable)
+ * <li>Instruction_intindex (a short argument specifying a constant pool index)
+ * <li>Instruction_intbranch (a short argument specifying a code offset)
+ * <li>Instruction_longbranch (an int argument specifying a code offset)
  * </ul>
  *
  * @author Clark Verbrugge
@@ -58,13 +59,19 @@ package soot.coffi;
  */
 abstract class Instruction implements Cloneable {
 
-  /** String used to separate arguments in printing. */
+  /**
+   * String used to separate arguments in printing.
+   */
   public static final String argsep = " ";
-  /** String used to construct names for local variables. */
+  /**
+   * String used to construct names for local variables.
+   */
   public static final String LOCALPREFIX = "local_";
   // public static int w; // set by the wide instr. and used by other instrs
 
-  /** Actual byte code of this instruction. */
+  /**
+   * Actual byte code of this instruction.
+   */
   public byte code;
   /**
    * Offset of this instruction from the start of code.
@@ -79,20 +86,34 @@ abstract class Instruction implements Cloneable {
    */
   public String name;
 
-  /** Reference for chaining. */
+  /**
+   * Reference for chaining.
+   */
   public Instruction next;
-  /** More convenient for chaining. */
+  /**
+   * More convenient for chaining.
+   */
   public Instruction prev;
-  /** Whether this instruction is the target of a branch. */
+  /**
+   * Whether this instruction is the target of a branch.
+   */
   public boolean labelled;
-  /** Whether this instruction branches. */
+  /**
+   * Whether this instruction branches.
+   */
   public boolean branches;
-  /** Whether this instruction is a method invocation. */
+  /**
+   * Whether this instruction is a method invocation.
+   */
   public boolean calls;
-  /** Whether this instruction is a return. */
+  /**
+   * Whether this instruction is a return.
+   */
   public boolean returns;
 
-  /** Successor array. It is different from the field 'next'. */
+  /**
+   * Successor array. It is different from the field 'next'.
+   */
   public Instruction[] succs;
 
   int originalIndex;
@@ -108,6 +129,79 @@ abstract class Instruction implements Cloneable {
     branches = false;
     calls = false;
     returns = false;
+  }
+
+  /**
+   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this
+   * method converts two bytes into a short.
+   *
+   * @param bc    complete array of bytecode.
+   * @param index offset of data in bc.
+   * @return the short constructed from the two bytes.
+   * @see Instruction#parse
+   * @see Instruction#shortToBytes
+   */
+  public static short getShort(byte bc[], int index) {
+    short s, bh, bl;
+    bh = (bc[index]);
+    bl = (bc[index + 1]);
+    s = (short) (((bh << 8) & 0xff00) | (bl & 0xff));
+    // s = (short)((int)(bc[index])<<8 + bc[index+1]);
+    return s;
+  }
+
+  /**
+   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this
+   * method converts four bytes into an int.
+   *
+   * @param bc    complete array of bytecode.
+   * @param index offset of data in bc.
+   * @return the int constructed from the four bytes.
+   * @see Instruction#parse
+   * @see Instruction#intToBytes
+   */
+  public static int getInt(byte bc[], int index) {
+    int i, bhh, bhl, blh, bll;
+    bhh = (((bc[index])) << 24) & 0xff000000;
+    bhl = (((bc[index + 1])) << 16) & 0xff0000;
+    blh = (((bc[index + 2])) << 8) & 0xff00;
+    bll = ((bc[index + 3])) & 0xff;
+    i = bhh | bhl | blh | bll;
+    return i;
+  }
+
+  /**
+   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this
+   * method converts a short into two bytes.
+   *
+   * @param bc    complete array of bytecode in which to store the short.
+   * @param index next available offset in bc.
+   * @return the next available offset in bc
+   * @see Instruction#compile
+   * @see Instruction#getShort
+   */
+  public static int shortToBytes(short s, byte bc[], int index) {
+    bc[index++] = (byte) ((s >> 8) & 0xff);
+    bc[index++] = (byte) (s & 0xff);
+    return index;
+  }
+
+  /**
+   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this
+   * method converts an int into four bytes.
+   *
+   * @param bc    complete array of bytecode in which to store the int.
+   * @param index next available offset in bc.
+   * @return the next available offset in bc
+   * @see Instruction#compile
+   * @see Instruction#getInt
+   */
+  public static int intToBytes(int s, byte bc[], int index) {
+    bc[index++] = (byte) ((s >> 24) & 0xff);
+    bc[index++] = (byte) ((s >> 16) & 0xff);
+    bc[index++] = (byte) ((s >> 8) & 0xff);
+    bc[index++] = (byte) (s & 0xff);
+    return index;
   }
 
   @Override
@@ -126,7 +220,7 @@ abstract class Instruction implements Cloneable {
    * offset of the next byte, this method parses whatever arguments the instruction requires and
    * return the offset of the next available byte.
    *
-   * @param bc complete array of bytecode.
+   * @param bc    complete array of bytecode.
    * @param index offset of remaining bytecode after this instruction's bytecode was parsed.
    * @return offset of the next available bytecode.
    * @see ByteCode#disassemble_bytecode
@@ -137,7 +231,7 @@ abstract class Instruction implements Cloneable {
   /**
    * Writes out the sequence of bytecodes represented by this instruction, including any arguments.
    *
-   * @param bc complete array of bytecode.
+   * @param bc    complete array of bytecode.
    * @param index offset of remaining bytecode at which to start writing.
    * @return offset of the next available bytecode.
    * @see ClassFile#unparseMethod
@@ -152,7 +246,8 @@ abstract class Instruction implements Cloneable {
    * @param bc complete array of bytecode.
    * @see ByteCode#build
    */
-  public void offsetToPointer(ByteCode bc) {}
+  public void offsetToPointer(ByteCode bc) {
+  }
 
   /**
    * Returns the next available offset assuming this instruction begins on the indicated offset;
@@ -191,7 +286,8 @@ abstract class Instruction implements Cloneable {
    * @param refs array of booleans the same size as the constant pool array.
    * @see ClassFile#constant_pool
    */
-  public void markCPRefs(boolean[] refs) {}
+  public void markCPRefs(boolean[] refs) {
+  }
 
   /**
    * Updates all constant pool references within this instruction to use new indices, based on the
@@ -200,7 +296,8 @@ abstract class Instruction implements Cloneable {
    * @param redirect array of new indices of constant pool entries.
    * @see ClassFile#constant_pool
    */
-  public void redirectCPRefs(short redirect[]) {}
+  public void redirectCPRefs(short redirect[]) {
+  }
 
   /**
    * For storing in a Hashtable.
@@ -224,78 +321,6 @@ abstract class Instruction implements Cloneable {
     if (label == i.label) return true;
     return false;
      */
-  }
-
-  /**
-   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this
-   * method converts two bytes into a short.
-   *
-   * @param bc complete array of bytecode.
-   * @param index offset of data in bc.
-   * @return the short constructed from the two bytes.
-   * @see Instruction#parse
-   * @see Instruction#shortToBytes
-   */
-  public static short getShort(byte bc[], int index) {
-    short s, bh, bl;
-    bh = (bc[index]);
-    bl = (bc[index + 1]);
-    s = (short) (((bh << 8) & 0xff00) | (bl & 0xff));
-    // s = (short)((int)(bc[index])<<8 + bc[index+1]);
-    return s;
-  }
-  /**
-   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this
-   * method converts four bytes into an int.
-   *
-   * @param bc complete array of bytecode.
-   * @param index offset of data in bc.
-   * @return the int constructed from the four bytes.
-   * @see Instruction#parse
-   * @see Instruction#intToBytes
-   */
-  public static int getInt(byte bc[], int index) {
-    int i, bhh, bhl, blh, bll;
-    bhh = (((bc[index])) << 24) & 0xff000000;
-    bhl = (((bc[index + 1])) << 16) & 0xff0000;
-    blh = (((bc[index + 2])) << 8) & 0xff00;
-    bll = ((bc[index + 3])) & 0xff;
-    i = bhh | bhl | blh | bll;
-    return i;
-  }
-
-  /**
-   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this
-   * method converts a short into two bytes.
-   *
-   * @param bc complete array of bytecode in which to store the short.
-   * @param index next available offset in bc.
-   * @return the next available offset in bc
-   * @see Instruction#compile
-   * @see Instruction#getShort
-   */
-  public static int shortToBytes(short s, byte bc[], int index) {
-    bc[index++] = (byte) ((s >> 8) & 0xff);
-    bc[index++] = (byte) (s & 0xff);
-    return index;
-  }
-
-  /**
-   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this
-   * method converts an int into four bytes.
-   *
-   * @param bc complete array of bytecode in which to store the int.
-   * @param index next available offset in bc.
-   * @return the next available offset in bc
-   * @see Instruction#compile
-   * @see Instruction#getInt
-   */
-  public static int intToBytes(int s, byte bc[], int index) {
-    bc[index++] = (byte) ((s >> 24) & 0xff);
-    bc[index++] = (byte) ((s >> 16) & 0xff);
-    bc[index++] = (byte) ((s >> 8) & 0xff);
-    bc[index++] = (byte) (s & 0xff);
-    return index;
   }
 
   /**

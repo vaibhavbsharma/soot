@@ -17,7 +17,9 @@ public class FakeJimpleLocal extends JimpleLocal {
   Local realLocal;
   Object info; // whatever you want to attach to it...
 
-  /** Constructs a FakeJimpleLocal of the given name and type. */
+  /**
+   * Constructs a FakeJimpleLocal of the given name and type.
+   */
   public FakeJimpleLocal(String name, Type t, Local realLocal) {
     this(name, t, realLocal, null);
   }
@@ -28,7 +30,9 @@ public class FakeJimpleLocal extends JimpleLocal {
     this.info = info;
   }
 
-  /** Returns true if the given object is structurally equal to this one. */
+  /**
+   * Returns true if the given object is structurally equal to this one.
+   */
   @Override
   public boolean equivTo(Object o) {
     if (o == null) {
@@ -53,7 +57,9 @@ public class FakeJimpleLocal extends JimpleLocal {
     return equivTo(o);
   }
 
-  /** Returns a clone of the current JimpleLocal. */
+  /**
+   * Returns a clone of the current JimpleLocal.
+   */
   @Override
   public Object clone() {
     return new FakeJimpleLocal(getName(), getType(), realLocal, info);

@@ -16,9 +16,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
-/** Interface for defining an arbitrary predicate on {@link Object}s. */
+/**
+ * Interface for defining an arbitrary predicate on {@link Object}s.
+ */
 public abstract class Predicate<T> {
   public static final Predicate FALSE =
       new Predicate() {
@@ -41,10 +44,14 @@ public abstract class Predicate<T> {
     return FALSE;
   }
 
-  /** Test whether an {@link Object} satisfies this {@link Predicate} */
+  /**
+   * Test whether an {@link Object} satisfies this {@link Predicate}
+   */
   public abstract boolean test(T obj_);
 
-  /** Return a predicate that is a negation of this predicate */
+  /**
+   * Return a predicate that is a negation of this predicate
+   */
   public Predicate<T> not() {
     final Predicate<T> originalPredicate = this;
     return new Predicate<T>() {
@@ -55,7 +62,9 @@ public abstract class Predicate<T> {
     };
   }
 
-  /** Return a predicate that is a conjunction of this predicate and another predicate */
+  /**
+   * Return a predicate that is a conjunction of this predicate and another predicate
+   */
   public Predicate<T> and(final Predicate<T> conjunct_) {
     final Predicate<T> originalPredicate = this;
     return new Predicate<T>() {
@@ -66,7 +75,9 @@ public abstract class Predicate<T> {
     };
   }
 
-  /** Return a predicate that is a conjunction of this predicate and another predicate */
+  /**
+   * Return a predicate that is a conjunction of this predicate and another predicate
+   */
   public Predicate<T> or(final Predicate<T> disjunct_) {
     final Predicate<T> originalPredicate = this;
     return new Predicate<T>() {

@@ -32,7 +32,7 @@ import soot.toolkits.scalar.FlowSet;
 
 /**
  * @author Michael Batchelder
- *     <p>Created on 10-Jul-2006
+ * <p>Created on 10-Jul-2006
  */
 public class New2InitFlowAnalysis extends BackwardFlowAnalysis<Unit, FlowSet> {
 

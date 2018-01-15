@@ -19,18 +19,18 @@
 
 package soot.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.toolkits.scalar.ArrayPackedSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.FlowUniverse;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Wrapper class for a simple dominators analysis based on a simple flow analysis algorithm. Works
@@ -42,7 +42,9 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
   protected DirectedGraph<N> graph;
   protected Map<N, FlowSet<N>> nodeToDominators;
 
-  /** Compute dominators for provided singled-headed directed graph. */
+  /**
+   * Compute dominators for provided singled-headed directed graph.
+   */
   public SimpleDominatorsFinder(DirectedGraph<N> graph) {
     // if(Options.v().verbose())
     // G.v().out.println("[" + graph.getBody().getMethod().getName() +
@@ -113,9 +115,9 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
 
 /**
  * Calculate dominators for basic blocks.
- *
+ * <p>
  * <p>Uses the algorithm contained in Dragon book, pg. 670-1.
- *
+ * <p>
  * <pre>
  *       D(n0) := { n0 }
  *       for n in N - { n0 } do D(n) := N;
@@ -156,7 +158,9 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
     return fullSet.clone();
   }
 
-  /** OUT(Start) contains all head nodes at initialization time. */
+  /**
+   * OUT(Start) contains all head nodes at initialization time.
+   */
   @Override
   protected FlowSet<N> entryInitialFlow() {
     FlowSet<N> initSet = emptySet.clone();
@@ -166,7 +170,9 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
     return initSet;
   }
 
-  /** We compute out straightforwardly. */
+  /**
+   * We compute out straightforwardly.
+   */
   @Override
   protected void flowThrough(FlowSet<N> in, N block, FlowSet<N> out) {
     // Perform generation
@@ -174,7 +180,9 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
     out.add(block);
   }
 
-  /** All paths == Intersection. */
+  /**
+   * All paths == Intersection.
+   */
   @Override
   protected void merge(FlowSet<N> in1, FlowSet<N> in2, FlowSet<N> out) {
     in1.intersection(in2, out);

@@ -1,9 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.EquivalentValue;
 import soot.G;
 import soot.Local;
@@ -42,6 +38,10 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.toolkits.scalar.Pair;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 // SimpleMethodInfoFlowAnalysis written by Richard L. Halpert, 2007-02-25
 // Constructs a data flow table for the given method.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -52,20 +52,16 @@ import soot.toolkits.scalar.Pair;
 
 public class SimpleMethodInfoFlowAnalysis
     extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue, EquivalentValue>>> {
+  public static int counter = 0;
   SootMethod sm;
   Value thisLocal;
   InfoFlowAnalysis dfa;
   boolean refOnly;
-
   MutableDirectedGraph<EquivalentValue> infoFlowGraph;
   Ref returnRef;
-
   FlowSet<Pair<EquivalentValue, EquivalentValue>> entrySet;
   FlowSet<Pair<EquivalentValue, EquivalentValue>> emptySet;
-
   boolean printMessages;
-
-  public static int counter = 0;
 
   public SimpleMethodInfoFlowAnalysis(
       UnitGraph g, InfoFlowAnalysis dfa, boolean ignoreNonRefTypeFlow) {
@@ -128,7 +124,9 @@ public class SimpleMethodInfoFlowAnalysis
     }
   }
 
-  /** A constructor that doesn't run the analysis */
+  /**
+   * A constructor that doesn't run the analysis
+   */
   protected SimpleMethodInfoFlowAnalysis(
       UnitGraph g,
       InfoFlowAnalysis dfa,

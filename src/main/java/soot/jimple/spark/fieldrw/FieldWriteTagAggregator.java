@@ -25,13 +25,16 @@ import soot.tagkit.ImportantTagAggregator;
 import soot.tagkit.Tag;
 
 public class FieldWriteTagAggregator extends ImportantTagAggregator {
-  public FieldWriteTagAggregator(Singletons.Global g) {}
+  public FieldWriteTagAggregator(Singletons.Global g) {
+  }
 
   public static FieldWriteTagAggregator v() {
     return G.v().soot_jimple_spark_fieldrw_FieldWriteTagAggregator();
   }
 
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   @Override
   public boolean wantTag(Tag t) {
     return (t instanceof FieldWriteTag);

@@ -1,11 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.EquivalentValue;
 import soot.G;
@@ -30,6 +24,12 @@ import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.scalar.Pair;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 // LocalObjectsAnalysis written by Richard L. Halpert, 2007-02-24
 // Constructs data flow tables for each method of every application class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
@@ -47,6 +47,67 @@ public class LocalObjectsAnalysis {
   Map<SootClass, ClassLocalObjectsAnalysis> classToClassLocalObjectsAnalysis;
 
   Map<SootMethod, SmartMethodLocalObjectsAnalysis> mloaCache;
+  /*	BROKEN
+  	public boolean isFieldLocalToContext(SootField sf, SootMethod sm, SootClass context)
+  	{
+  		G.v().out.println("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
+
+  		if(sm.getDeclaringClass() == context) // special case
+  		{
+  			boolean isLocal = isFieldLocalToParent(sf);
+  			G.v().out.println("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED"));
+  			return isLocal;
+  		}
+
+  		// The rest of the time, we must find all call chains from context to sm
+  		// if it's local on all of them, then return true.
+
+  		// Find Call Chains (separate chains for separate possible virtual call targets)
+  		// TODO right now we discard reentrant call chains... but this is UNSAFE
+  		// TODO right now we are stupid about virtual calls... but this is UNSAFE
+
+  		// for each method in the context class (OR JUST FROM THE RUN METHOD IF IT'S A THREAD?)
+  		List classMethods = getAllMethodsForClass(context); // gets methods in context class and superclasses
+  		List callChains = new ArrayList();
+  		List startingMethods = new ArrayList();
+  		Iterator classMethodsIt = classMethods.iterator();
+  		while(classMethodsIt.hasNext())
+  		{
+  			SootMethod classMethod = (SootMethod) classMethodsIt.next();
+  			List methodCallChains = getCallChainsBetween(classMethod, sm);
+  			Iterator methodCallChainsIt = methodCallChains.iterator();
+  			while(methodCallChainsIt.hasNext())
+  			{
+  				callChains.add(methodCallChainsIt.next());
+  				startingMethods.add(classMethod); // need to add this once for each method call chain being added
+  			}
+  		}
+
+  		if(callChains.size() == 0)
+  		{
+  			G.v().out.println("      Unreachable: treat as local.");
+  			return true; // it's not non-local...
+  		}
+  		G.v().out.println("      Found " + callChains.size() + " Call Chains...");
+  //		for(int i = 0; i < callChains.size(); i++)
+  //			G.v().out.println("      " + callChains.get(i));
+
+  		// Check Call Chains
+  		for(int i = 0; i < callChains.size(); i++)
+  		{
+  			List callChain = (List) callChains.get(i);
+  			if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain))
+  			{
+  				G.v().out.println("      SHARED");
+  				return false;
+  			}
+  		}
+  		G.v().out.println("      LOCAL");
+  		return true;
+  	}
+  */
+  Map<SootMethod, ReachableMethods> rmCache = new HashMap<>();
+  Map callChainsCache = new HashMap();
 
   public LocalObjectsAnalysis(InfoFlowAnalysis dfa) {
     this.dfa = dfa;
@@ -82,7 +143,7 @@ public class LocalObjectsAnalysis {
   }
 
   public boolean isFieldLocalToParent(SootField sf) // To parent class!
-      {
+  {
     // Handle obvious case
     if (sf.isStatic()) {
       return false;
@@ -103,16 +164,16 @@ public class LocalObjectsAnalysis {
             .println(
                 "    "
                     + (isLocal
-                        ? "LOCAL  (Directly Reachable from "
-                            + context.getDeclaringClass().getShortName()
-                            + "."
-                            + context.getName()
-                            + ")"
-                        : "SHARED (Directly Reachable from "
-                            + context.getDeclaringClass().getShortName()
-                            + "."
-                            + context.getName()
-                            + ")"));
+                    ? "LOCAL  (Directly Reachable from "
+                    + context.getDeclaringClass().getShortName()
+                    + "."
+                    + context.getName()
+                    + ")"
+                    : "SHARED (Directly Reachable from "
+                    + context.getDeclaringClass().getShortName()
+                    + "."
+                    + context.getName()
+                    + ")"));
       }
       return isLocal;
     }
@@ -283,67 +344,6 @@ public class LocalObjectsAnalysis {
     return isLocal;
   }
 
-  /*	BROKEN
-  	public boolean isFieldLocalToContext(SootField sf, SootMethod sm, SootClass context)
-  	{
-  		G.v().out.println("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
-
-  		if(sm.getDeclaringClass() == context) // special case
-  		{
-  			boolean isLocal = isFieldLocalToParent(sf);
-  			G.v().out.println("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED"));
-  			return isLocal;
-  		}
-
-  		// The rest of the time, we must find all call chains from context to sm
-  		// if it's local on all of them, then return true.
-
-  		// Find Call Chains (separate chains for separate possible virtual call targets)
-  		// TODO right now we discard reentrant call chains... but this is UNSAFE
-  		// TODO right now we are stupid about virtual calls... but this is UNSAFE
-
-  		// for each method in the context class (OR JUST FROM THE RUN METHOD IF IT'S A THREAD?)
-  		List classMethods = getAllMethodsForClass(context); // gets methods in context class and superclasses
-  		List callChains = new ArrayList();
-  		List startingMethods = new ArrayList();
-  		Iterator classMethodsIt = classMethods.iterator();
-  		while(classMethodsIt.hasNext())
-  		{
-  			SootMethod classMethod = (SootMethod) classMethodsIt.next();
-  			List methodCallChains = getCallChainsBetween(classMethod, sm);
-  			Iterator methodCallChainsIt = methodCallChains.iterator();
-  			while(methodCallChainsIt.hasNext())
-  			{
-  				callChains.add(methodCallChainsIt.next());
-  				startingMethods.add(classMethod); // need to add this once for each method call chain being added
-  			}
-  		}
-
-  		if(callChains.size() == 0)
-  		{
-  			G.v().out.println("      Unreachable: treat as local.");
-  			return true; // it's not non-local...
-  		}
-  		G.v().out.println("      Found " + callChains.size() + " Call Chains...");
-  //		for(int i = 0; i < callChains.size(); i++)
-  //			G.v().out.println("      " + callChains.get(i));
-
-  		// Check Call Chains
-  		for(int i = 0; i < callChains.size(); i++)
-  		{
-  			List callChain = (List) callChains.get(i);
-  			if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain))
-  			{
-  				G.v().out.println("      SHARED");
-  				return false;
-  			}
-  		}
-  		G.v().out.println("      LOCAL");
-  		return true;
-  	}
-  */
-  Map<SootMethod, ReachableMethods> rmCache = new HashMap<>();
-
   public CallChain getNextCallChainBetween(
       SootMethod start, SootMethod goal, List previouslyFound) {
     //		callChains.add(new LinkedList()); // Represents the one way to get from goal to goal
@@ -371,8 +371,6 @@ public class LocalObjectsAnalysis {
 
     return null; // new ArrayList();
   }
-
-  Map callChainsCache = new HashMap();
 
   public CallChain getNextCallChainBetween(
       ReachableMethods rm,

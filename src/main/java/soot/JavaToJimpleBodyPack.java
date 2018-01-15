@@ -25,11 +25,11 @@
 
 package soot;
 
-import java.util.Map;
-
 import soot.jimple.JimpleBody;
 import soot.options.JJOptions;
 import soot.options.Options;
+
+import java.util.Map;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key
@@ -40,7 +40,9 @@ public class JavaToJimpleBodyPack extends BodyPack {
     super("jj");
   }
 
-  /** Applies the transformations corresponding to the given options. */
+  /**
+   * Applies the transformations corresponding to the given options.
+   */
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
     JJOptions options = new JJOptions(opts);
 

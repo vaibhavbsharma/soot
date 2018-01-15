@@ -16,12 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.dataMgr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package soot.jimple.spark.geom.dataMgr;
 
 import soot.PointsToSet;
 import soot.Scene;
@@ -31,10 +27,15 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A container for storing context sensitive querying result of geomPTA. Similar to the class
  * PointsToSetInternal for SPARK.
- *
+ * <p>
  * <p>This class maintains two views for the results: 1. Table view: every object has a separate
  * list of its context sensitive versions; 2. List view: all context sensitive objects are put in a
  * single list.
@@ -42,24 +43,25 @@ import soot.jimple.spark.sets.PointsToSetInternal;
  * @author xiao
  */
 public abstract class PtSensVisitor<VarType extends ContextVar> {
-  // Indicates if this visitor is prepared
-  protected boolean readyToUse = false;
-
-  protected GeomPointsTo ptsProvider = (GeomPointsTo) Scene.v().getPointsToAnalysis();
-
   // The list view
   public List<VarType> outList = new ArrayList<>();
-
+  // Indicates if this visitor is prepared
+  protected boolean readyToUse = false;
+  protected GeomPointsTo ptsProvider = (GeomPointsTo) Scene.v().getPointsToAnalysis();
   // The table view (cannot be accessed directly outside)
   protected Map<Node, List<VarType>> tableView = new HashMap<>();
 
-  /** Called before each round of collection. */
+  /**
+   * Called before each round of collection.
+   */
   public void prepare() {
     tableView.clear();
     readyToUse = false;
   }
 
-  /** Called after each round of collection. */
+  /**
+   * Called after each round of collection.
+   */
   public void finish() {
     if (readyToUse == false) {
       // We flatten the list
@@ -86,12 +88,16 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
     return readyToUse;
   }
 
-  /** Return the number of different points-to targets. */
+  /**
+   * Return the number of different points-to targets.
+   */
   public int numOfDiffObjects() {
     return readyToUse ? outList.size() : tableView.size();
   }
 
-  /** Tests if two containers have contain same things. Can be used to answer the alias query. */
+  /**
+   * Tests if two containers have contain same things. Can be used to answer the alias query.
+   */
   public boolean hasNonEmptyIntersection(PtSensVisitor<VarType> other) {
     // Using table view for comparison, that's faster
     for (Map.Entry<Node, List<VarType>> entry : tableView.entrySet()) {
@@ -145,7 +151,9 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
     return ptset;
   }
 
-  /** Print the objects. */
+  /**
+   * Print the objects.
+   */
   public void debugPrint() {
     if (!readyToUse) {
       finish();

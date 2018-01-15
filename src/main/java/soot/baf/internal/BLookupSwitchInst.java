@@ -25,10 +25,6 @@
 
 package soot.baf.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
@@ -37,6 +33,10 @@ import soot.baf.InstSwitch;
 import soot.baf.LookupSwitchInst;
 import soot.jimple.Constant;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst {
   UnitBox defaultTargetBox;
@@ -116,12 +116,6 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst 
   }
 
   @Override
-  public void setLookupValues(List lookupValues) {
-    this.lookupValues = new ArrayList();
-    this.lookupValues.addAll(lookupValues);
-  }
-
-  @Override
   public void setLookupValue(int index, int value) {
     this.lookupValues.set(index, new Integer(value));
   }
@@ -134,6 +128,12 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst 
   @Override
   public List getLookupValues() {
     return Collections.unmodifiableList(lookupValues);
+  }
+
+  @Override
+  public void setLookupValues(List lookupValues) {
+    this.lookupValues = new ArrayList();
+    this.lookupValues.addAll(lookupValues);
   }
 
   @Override
@@ -152,13 +152,6 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst 
   }
 
   @Override
-  public void setTargets(List<Unit> targets) {
-    for (int i = 0; i < targets.size(); i++) {
-      targetBoxes[i].setUnit(targets.get(i));
-    }
-  }
-
-  @Override
   public UnitBox getTargetBox(int index) {
     return targetBoxes[index];
   }
@@ -172,6 +165,13 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst 
     }
 
     return targets;
+  }
+
+  @Override
+  public void setTargets(List<Unit> targets) {
+    for (int i = 0; i < targets.size(); i++) {
+      targetBoxes[i].setUnit(targets.get(i));
+    }
   }
 
   @Override

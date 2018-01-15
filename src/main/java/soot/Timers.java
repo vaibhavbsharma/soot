@@ -25,122 +25,71 @@
 
 package soot;
 
-import java.text.DecimalFormat;
-
 import soot.options.Options;
 
+import java.text.DecimalFormat;
+
 public class Timers {
-  public Timers(Singletons.Global g) {}
+  public int totalFlowNodes;
+  public int totalFlowComputations;
+  public Timer copiesTimer = new Timer("copies");
+  public Timer defsTimer = new Timer("defs");
+  public Timer usesTimer = new Timer("uses");
+  public Timer liveTimer = new Timer("live");
+  public Timer splitTimer = new Timer("split");
+  public Timer packTimer = new Timer("pack");
+  public Timer cleanup1Timer = new Timer("cleanup1");
+  public Timer cleanup2Timer = new Timer("cleanup2");
+  public Timer conversionTimer = new Timer("conversion");
+  public Timer cleanupAlgorithmTimer = new Timer("cleanupAlgorithm");
+  public Timer graphTimer = new Timer("graphTimer");
+  public Timer assignTimer = new Timer("assignTimer");
+  public Timer resolveTimer = new Timer("resolveTimer");
+  public Timer totalTimer = new Timer("totalTimer");
+  public Timer splitPhase1Timer = new Timer("splitPhase1");
+  public Timer splitPhase2Timer = new Timer("splitPhase2");
+  public Timer usePhase1Timer = new Timer("usePhase1");
+  public Timer usePhase2Timer = new Timer("usePhase2");
+  public Timer usePhase3Timer = new Timer("usePhase3");
+  public Timer defsSetupTimer = new Timer("defsSetup");
+  public Timer defsAnalysisTimer = new Timer("defsAnalysis");
+  public Timer defsPostTimer = new Timer("defsPost");
+  public Timer liveSetupTimer = new Timer("liveSetup");
+  public Timer liveAnalysisTimer = new Timer("liveAnalysis");
+  public Timer livePostTimer = new Timer("livePost");
+  public Timer aggregationTimer = new Timer("aggregation");
+  public Timer grimpAggregationTimer = new Timer("grimpAggregation");
+  public Timer deadCodeTimer = new Timer("deadCode");
+  public Timer propagatorTimer = new Timer("propagator");
+  public Timer buildJasminTimer = new Timer("buildjasmin");
+  public Timer assembleJasminTimer = new Timer("assembling jasmin");
+  public Timer resolverTimer = new Timer("resolver");
+  public int conversionLocalCount;
+  public int cleanup1LocalCount;
+  public int splitLocalCount;
+  public int assignLocalCount;
+  public int packLocalCount;
+  public int cleanup2LocalCount;
+  public int conversionStmtCount;
+  public int cleanup1StmtCount;
+  public int splitStmtCount;
+  public int assignStmtCount;
+  public int packStmtCount;
+  public int cleanup2StmtCount;
+  public long stmtCount;
+  public Timer fieldTimer = new soot.Timer();
+  public Timer methodTimer = new soot.Timer();
+  public Timer attributeTimer = new soot.Timer();
+  public Timer locatorTimer = new soot.Timer();
+  public Timer readTimer = new soot.Timer();
+  public Timer orderComputation = new soot.Timer("orderComputation");
+
+  public Timers(Singletons.Global g) {
+  }
 
   public static Timers v() {
     return G.v().soot_Timers();
   }
-
-  public int totalFlowNodes;
-
-  public int totalFlowComputations;
-
-  public Timer copiesTimer = new Timer("copies");
-
-  public Timer defsTimer = new Timer("defs");
-
-  public Timer usesTimer = new Timer("uses");
-
-  public Timer liveTimer = new Timer("live");
-
-  public Timer splitTimer = new Timer("split");
-
-  public Timer packTimer = new Timer("pack");
-
-  public Timer cleanup1Timer = new Timer("cleanup1");
-
-  public Timer cleanup2Timer = new Timer("cleanup2");
-
-  public Timer conversionTimer = new Timer("conversion");
-
-  public Timer cleanupAlgorithmTimer = new Timer("cleanupAlgorithm");
-
-  public Timer graphTimer = new Timer("graphTimer");
-
-  public Timer assignTimer = new Timer("assignTimer");
-
-  public Timer resolveTimer = new Timer("resolveTimer");
-
-  public Timer totalTimer = new Timer("totalTimer");
-
-  public Timer splitPhase1Timer = new Timer("splitPhase1");
-
-  public Timer splitPhase2Timer = new Timer("splitPhase2");
-
-  public Timer usePhase1Timer = new Timer("usePhase1");
-
-  public Timer usePhase2Timer = new Timer("usePhase2");
-
-  public Timer usePhase3Timer = new Timer("usePhase3");
-
-  public Timer defsSetupTimer = new Timer("defsSetup");
-
-  public Timer defsAnalysisTimer = new Timer("defsAnalysis");
-
-  public Timer defsPostTimer = new Timer("defsPost");
-
-  public Timer liveSetupTimer = new Timer("liveSetup");
-
-  public Timer liveAnalysisTimer = new Timer("liveAnalysis");
-
-  public Timer livePostTimer = new Timer("livePost");
-
-  public Timer aggregationTimer = new Timer("aggregation");
-
-  public Timer grimpAggregationTimer = new Timer("grimpAggregation");
-
-  public Timer deadCodeTimer = new Timer("deadCode");
-
-  public Timer propagatorTimer = new Timer("propagator");
-
-  public Timer buildJasminTimer = new Timer("buildjasmin");
-
-  public Timer assembleJasminTimer = new Timer("assembling jasmin");
-
-  public Timer resolverTimer = new Timer("resolver");
-
-  public int conversionLocalCount;
-
-  public int cleanup1LocalCount;
-
-  public int splitLocalCount;
-
-  public int assignLocalCount;
-
-  public int packLocalCount;
-
-  public int cleanup2LocalCount;
-
-  public int conversionStmtCount;
-
-  public int cleanup1StmtCount;
-
-  public int splitStmtCount;
-
-  public int assignStmtCount;
-
-  public int packStmtCount;
-
-  public int cleanup2StmtCount;
-
-  public long stmtCount;
-
-  public Timer fieldTimer = new soot.Timer();
-
-  public Timer methodTimer = new soot.Timer();
-
-  public Timer attributeTimer = new soot.Timer();
-
-  public Timer locatorTimer = new soot.Timer();
-
-  public Timer readTimer = new soot.Timer();
-
-  public Timer orderComputation = new soot.Timer("orderComputation");
 
   public void printProfilingInformation() {
     long totalTime = totalTimer.getTime();

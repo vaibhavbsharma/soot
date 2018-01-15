@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -63,20 +64,20 @@ public class JavaLangReflectMethodNative extends NativeMethodClass {
    * formal parameters, and both primitive and reference parameters are subject to widening
    * conversions as necessary. The value returned by the underlying method is automatically wrapped
    * in an object if it has a primitive type.
-   *
+   * <p>
    * <p>Method invocation proceeds with the following steps, in order:
-   *
+   * <p>
    * <p>If the underlying method is static, then the specified obj argument is ignored. It may be
    * null.
-   *
+   * <p>
    * <p>NOTE: @this is an variable pointing to method objects,
    *
    * @param0 points to receivers
-   *     <p>The possible target of this call is made by [thisVar] X [param0]
-   *     <p>Also the parameters are not distinguishable.
-   *     <p>public native java.lang.Object invoke(java.lang.Object, java.lang.Object[]) throws
-   *     java.lang.IllegalAccessException, java.lang.IllegalArgumentException,
-   *     java.lang.reflect.InvocationTargetException
+   * <p>The possible target of this call is made by [thisVar] X [param0]
+   * <p>Also the parameters are not distinguishable.
+   * <p>public native java.lang.Object invoke(java.lang.Object, java.lang.Object[]) throws
+   * java.lang.IllegalAccessException, java.lang.IllegalArgumentException,
+   * java.lang.reflect.InvocationTargetException
    */
   public void java_lang_reflect_Method_invoke(
       SootMethod method,

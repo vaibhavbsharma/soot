@@ -25,6 +25,12 @@
 
 package soot.tagkit;
 
+import soot.G;
+import soot.Unit;
+import soot.UnitBox;
+import soot.baf.Baf;
+import soot.options.Options;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -32,12 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import soot.G;
-import soot.Unit;
-import soot.UnitBox;
-import soot.baf.Baf;
-import soot.options.Options;
 
 /**
  * A CodeAttribute object holds PC -> Tag pairs. It represents abstracted attributes of
@@ -51,39 +51,44 @@ public class CodeAttribute extends JasminAttribute {
 
   private String name = "CodeAtribute";
 
-  public CodeAttribute() {}
+  public CodeAttribute() {
+  }
 
-  /** Creates an attribute object with the given name. */
+  /**
+   * Creates an attribute object with the given name.
+   */
   public CodeAttribute(String name) {
     this.name = name;
   }
 
-  /** Create an attribute object with the name and lists of unit-tag pairs. */
+  /**
+   * Create an attribute object with the name and lists of unit-tag pairs.
+   */
   public CodeAttribute(String name, List<Unit> units, List<Tag> tags) {
     this.name = name;
     this.mUnits = units;
     this.mTags = tags;
   }
 
-  /** Returns the name. */
+  /**
+   * Returns the name.
+   */
   @Override
   public String toString() {
     return name;
   }
 
-  /** Returns the attribute name. */
+  /**
+   * Returns the attribute name.
+   */
   @Override
   public String getName() {
     return name;
   }
 
-  /** Only used by SOOT to read in an existing attribute without interpret it. */
-  @Override
-  public void setValue(byte[] v) {
-    this.value = v;
-  }
-
-  /** Also only used as setValue(). */
+  /**
+   * Also only used as setValue().
+   */
   @Override
   public byte[] getValue() throws AttributeValueException {
     if (value == null) {
@@ -93,7 +98,17 @@ public class CodeAttribute extends JasminAttribute {
     }
   }
 
-  /** Generates Jasmin Value String */
+  /**
+   * Only used by SOOT to read in an existing attribute without interpret it.
+   */
+  @Override
+  public void setValue(byte[] v) {
+    this.value = v;
+  }
+
+  /**
+   * Generates Jasmin Value String
+   */
   @Override
   public String getJasminValue(Map<Unit, String> instToLabel) {
     // some benchmarks fail because of the returned string larger than
@@ -117,7 +132,9 @@ public class CodeAttribute extends JasminAttribute {
     return buf.toString();
   }
 
-  /** Returns a list of unit boxes that have tags attached. */
+  /**
+   * Returns a list of unit boxes that have tags attached.
+   */
   public List<UnitBox> getUnitBoxes() {
     List<UnitBox> unitBoxes = new ArrayList<>(mUnits.size());
 

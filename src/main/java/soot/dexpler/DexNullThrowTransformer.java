@@ -1,9 +1,5 @@
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -20,11 +16,15 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.toolkits.scalar.LocalCreation;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Some Android applications throw null references, e.g.,
- *
+ * <p>
  * <p>a = null; throw a;
- *
+ * <p>
  * <p>This will make unit graph construction fail as no targets of the throw statement can be found.
  * We therefore replace such statements with direct NullPointerExceptions which would happen at
  * runtime anyway.
@@ -59,9 +59,9 @@ public class DexNullThrowTransformer extends BodyTransformer {
   /**
    * Creates a new statement that throws a NullPointerException
    *
-   * @param body The body in which to create the statement
+   * @param body    The body in which to create the statement
    * @param oldStmt The old faulty statement that shall be replaced with the exception
-   * @param lc The object for creating new locals
+   * @param lc      The object for creating new locals
    */
   private void createThrowStmt(Body body, Unit oldStmt, LocalCreation lc) {
     RefType tp = RefType.v("java.lang.NullPointerException");

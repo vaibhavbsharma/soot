@@ -25,7 +25,9 @@
 
 package soot;
 
-/** A unit that assigns to a variable from one of {parameters, this, caughtexception}. */
+/**
+ * A unit that assigns to a variable from one of {parameters, this, caughtexception}.
+ */
 public interface IdentityUnit extends Unit {
   Value getLeftOp();
 

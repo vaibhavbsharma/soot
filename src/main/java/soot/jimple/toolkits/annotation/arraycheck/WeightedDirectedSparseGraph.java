@@ -33,12 +33,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 class WeightedDirectedSparseGraph {
+  private final HashSet<Object> reachableNodes = new HashSet<>();
+  private final HashSet<WeightedDirectedEdge> reachableEdges = new HashSet<>();
+  private final Hashtable<Object, IntContainer> distance = new Hashtable<>();
+  private final Hashtable<Object, Object> pei = new Hashtable<>();
   private boolean isUnknown;
-
   /* The graph is in linked list structure. */
   private Hashtable<Object, Hashtable<Object, IntContainer>> sources =
       new Hashtable<>();
-
   /* vertex set, may contain superious nodes. */
   private HashSet vertexes = new HashSet();
 
@@ -64,7 +66,10 @@ class WeightedDirectedSparseGraph {
     this.vertexes = newset;
     this.sources.clear();
   }
-  /** Add an edge with weight to the graph */
+
+  /**
+   * Add an edge with weight to the graph
+   */
   public void addEdge(Object from, Object to, int w) {
     if (this.isUnknown) {
       throw new RuntimeException("Unknown graph can not have edges");
@@ -113,6 +118,12 @@ class WeightedDirectedSparseGraph {
       sources.remove(from);
     }
   }
+
+  /* It is necessary to prune the graph to the shortest path. */
+
+  /* it could be replaced by a ShortestPathGraph */
+
+  /* kill a node. */
 
   public boolean hasEdge(Object from, Object to) {
     Hashtable targets = sources.get(from);
@@ -250,12 +261,6 @@ class WeightedDirectedSparseGraph {
       }
     }
   }
-
-  /* It is necessary to prune the graph to the shortest path. */
-
-  /* it could be replaced by a ShortestPathGraph */
-
-  /* kill a node. */
 
   public void killNode(Object tokill) {
     if (!this.vertexes.contains(tokill)) {
@@ -505,11 +510,6 @@ class WeightedDirectedSparseGraph {
 
     return nonegcycle;
   }
-
-  private final HashSet<Object> reachableNodes = new HashSet<>();
-  private final HashSet<WeightedDirectedEdge> reachableEdges = new HashSet<>();
-  private final Hashtable<Object, IntContainer> distance = new Hashtable<>();
-  private final Hashtable<Object, Object> pei = new Hashtable<>();
 
   private boolean SSSPFinder(Object src) {
     Hashtable<Object, IntContainer> outedges = sources.get(src);

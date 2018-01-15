@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation used for not-yet-typed objects. Implemented as a singleton. */
+/**
+ * Soot representation used for not-yet-typed objects. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class UnknownType extends Type {
-  public UnknownType(Singletons.Global g) {}
+  public UnknownType(Singletons.Global g) {
+  }
 
   public static UnknownType v() {
     return G.v().soot_UnknownType();
@@ -56,7 +59,9 @@ public class UnknownType extends Type {
     ((TypeSwitch) sw).caseUnknownType(this);
   }
 
-  /** Returns the least common superclass of this type and other. */
+  /**
+   * Returns the least common superclass of this type and other.
+   */
   @Override
   public Type merge(Type other, Scene cm) {
     if (other instanceof RefType) {

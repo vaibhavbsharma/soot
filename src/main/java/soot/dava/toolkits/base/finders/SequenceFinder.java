@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import soot.G;
 import soot.Singletons;
 import soot.dava.Dava;
@@ -33,8 +30,12 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.asg.AugmentedStmtGraph;
 import soot.util.IterableSet;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 public class SequenceFinder implements FactFinder {
-  public SequenceFinder(Singletons.Global g) {}
+  public SequenceFinder(Singletons.Global g) {
+  }
 
   public static SequenceFinder v() {
     return G.v().soot_dava_toolkits_base_finders_SequenceFinder();

@@ -29,12 +29,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.ByteType;
@@ -64,6 +58,12 @@ import soot.options.JBTROptions;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This transformer assigns types to local variables.
  *
@@ -73,13 +73,50 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  */
 public class TypeAssigner extends BodyTransformer {
 
-  public TypeAssigner(Singletons.Global g) {}
+  public TypeAssigner(Singletons.Global g) {
+  }
 
   public static TypeAssigner v() {
     return G.v().soot_jimple_toolkits_typing_TypeAssigner();
   }
 
-  /** Assign types to local variables. * */
+  /* Returns -1 if a < b, +1 if b < a, 0 if a = b and 3 otherwise. */
+  private static int compareTypings(JimpleBody a, JimpleBody b) {
+    int r = 0;
+
+    Iterator<Local> ib = b.getLocals().iterator();
+    for (Local v : a.getLocals()) {
+      Type ta = v.getType(), tb = ib.next().getType();
+
+      if (soot.jimple.toolkits.typing.fast.TypeResolver.typesEqual(ta, tb)) {
+        continue;
+      } else if (true
+          && ((ta instanceof CharType && (tb instanceof ByteType || tb instanceof ShortType))
+          || (tb instanceof CharType && (ta instanceof ByteType || ta instanceof ShortType)))) {
+        continue;
+      } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(ta, tb)) {
+        if (r == -1) {
+          return 3;
+        } else {
+          r = 1;
+        }
+      } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(tb, ta)) {
+        if (r == 1) {
+          return 3;
+        } else {
+          r = -1;
+        }
+      } else {
+        return 3;
+      }
+    }
+
+    return r;
+  }
+
+  /**
+   * Assign types to local variables. *
+   */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if (b == null) {
@@ -153,7 +190,7 @@ public class TypeAssigner extends BodyTransformer {
   /**
    * Replace statements using locals with null_type type and that would throw a NullPointerException
    * at runtime by a set of instructions throwing a NullPointerException.
-   *
+   * <p>
    * <p>This is done to remove locals with null_type type.
    *
    * @param b
@@ -296,39 +333,5 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     return false;
-  }
-
-  /* Returns -1 if a < b, +1 if b < a, 0 if a = b and 3 otherwise. */
-  private static int compareTypings(JimpleBody a, JimpleBody b) {
-    int r = 0;
-
-    Iterator<Local> ib = b.getLocals().iterator();
-    for (Local v : a.getLocals()) {
-      Type ta = v.getType(), tb = ib.next().getType();
-
-      if (soot.jimple.toolkits.typing.fast.TypeResolver.typesEqual(ta, tb)) {
-        continue;
-      } else if (true
-          && ((ta instanceof CharType && (tb instanceof ByteType || tb instanceof ShortType))
-              || (tb instanceof CharType && (ta instanceof ByteType || ta instanceof ShortType)))) {
-        continue;
-      } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(ta, tb)) {
-        if (r == -1) {
-          return 3;
-        } else {
-          r = 1;
-        }
-      } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(tb, ta)) {
-        if (r == 1) {
-          return 3;
-        } else {
-          r = -1;
-        }
-      } else {
-        return 3;
-      }
-    }
-
-    return r;
   }
 }

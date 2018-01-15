@@ -37,19 +37,32 @@ import java.util.List;
  * @param <E> element type
  */
 public interface Chain<E> extends Collection<E>, Serializable {
-  /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  /**
+   * Inserts <code>toInsert</code> in the Chain before <code>point</code>.
+   */
   void insertBefore(List<E> toInsert, E point);
-  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+
+  /**
+   * Inserts <code>toInsert</code> in the Chain after <code>point</code>.
+   */
   void insertAfter(List<E> toInsert, E point);
-  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+
+  /**
+   * Inserts <code>toInsert</code> in the Chain after <code>point</code>.
+   */
   void insertAfter(E toInsert, E point);
-  /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+
+  /**
+   * Inserts <code>toInsert</code> in the Chain before <code>point</code>.
+   */
   void insertBefore(E toInsert, E point);
+
   /**
    * Inserts <code>toInsert</code> in the Chain before <code>point</code>. (It would probably be
    * better to make Chain implement List)
    */
   void insertBefore(Chain<E> toInsert, E point);
+
   /**
    * Inserts <code>toInsert</code> in the Chain after <code>point</code>. (It would probably be
    * better to make Chain implement List)
@@ -61,7 +74,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert the instrumentation to be added in the Chain
+   * @param toInsert  the instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
@@ -72,7 +85,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert instrumentation to be added in the Chain
+   * @param toInsert  instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
@@ -83,13 +96,15 @@ public interface Chain<E> extends Collection<E>, Serializable {
    * program will contain <code>toInsert</code> on an edge that is defined by <code>point_source
    * </code> and <code>point_target</code>.
    *
-   * @param toInsert instrumentation to be added in the Chain
+   * @param toInsert  instrumentation to be added in the Chain
    * @param point_src the source point of an edge in CFG
    * @param point_tgt the target point of an edge
    */
   void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt);
 
-  /** Replaces <code>out</code> in the Chain by <code>in</code>. */
+  /**
+   * Replaces <code>out</code> in the Chain by <code>in</code>.
+   */
   void swapWith(E out, E in);
 
   /**
@@ -99,15 +114,24 @@ public interface Chain<E> extends Collection<E>, Serializable {
   @Override
   boolean remove(Object u);
 
-  /** Adds the given object at the beginning of the Chain. */
+  /**
+   * Adds the given object at the beginning of the Chain.
+   */
   void addFirst(E u);
 
-  /** Adds the given object at the end of the Chain. */
+  /**
+   * Adds the given object at the end of the Chain.
+   */
   void addLast(E u);
 
-  /** Removes the first object contained in this Chain. */
+  /**
+   * Removes the first object contained in this Chain.
+   */
   void removeFirst();
-  /** Removes the last object contained in this Chain. */
+
+  /**
+   * Removes the last object contained in this Chain.
+   */
   void removeLast();
 
   /**
@@ -116,16 +140,24 @@ public interface Chain<E> extends Collection<E>, Serializable {
    */
   boolean follows(E someObject, E someReferenceObject);
 
-  /** Returns the first object in this Chain. */
+  /**
+   * Returns the first object in this Chain.
+   */
   E getFirst();
 
-  /** Returns the last object in this Chain. */
+  /**
+   * Returns the last object in this Chain.
+   */
   E getLast();
 
-  /** Returns the object immediately following <code>point</code>. */
+  /**
+   * Returns the object immediately following <code>point</code>.
+   */
   E getSuccOf(E point);
 
-  /** Returns the object immediately preceding <code>point</code>. */
+  /**
+   * Returns the object immediately preceding <code>point</code>.
+   */
   E getPredOf(E point);
 
   /**
@@ -135,21 +167,31 @@ public interface Chain<E> extends Collection<E>, Serializable {
    */
   Iterator<E> snapshotIterator();
 
-  /** Returns an iterator over this Chain. */
+  /**
+   * Returns an iterator over this Chain.
+   */
   @Override
   Iterator<E> iterator();
 
-  /** Returns an iterator over this Chain, starting at the given object. */
+  /**
+   * Returns an iterator over this Chain, starting at the given object.
+   */
   Iterator<E> iterator(E u);
 
-  /** Returns an iterator over this Chain, starting at head and reaching tail (inclusive). */
+  /**
+   * Returns an iterator over this Chain, starting at head and reaching tail (inclusive).
+   */
   Iterator<E> iterator(E head, E tail);
 
-  /** Returns the size of this Chain. */
+  /**
+   * Returns the size of this Chain.
+   */
   @Override
   int size();
 
-  /** Returns the number of times this chain has been modified. */
+  /**
+   * Returns the number of times this chain has been modified.
+   */
   long getModificationCount();
 
   /**

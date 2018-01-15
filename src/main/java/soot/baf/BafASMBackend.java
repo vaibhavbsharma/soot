@@ -1,20 +1,9 @@
 package soot.baf;
 
-import static soot.util.backend.ASMBackendUtils.sizeOfType;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-
 import soot.AbstractASMBackend;
 import soot.ArrayType;
 import soot.BooleanType;
@@ -58,6 +47,16 @@ import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.util.Chain;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static soot.util.backend.ASMBackendUtils.sizeOfType;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
+
 /**
  * Concrete ASM based bytecode generation backend for the BAF intermediate representation
  *
@@ -67,6 +66,20 @@ public class BafASMBackend extends AbstractASMBackend {
 
   // Contains one Label for every Unit that is the target of a branch or jump
   protected final Map<Unit, Label> branchTargetLabels = new HashMap<>();
+  // Contains a mapping of local variables to indices in the local variable
+  // stack
+  protected final Map<Local, Integer> localToSlot = new HashMap<>();
+
+  /**
+   * Creates a new BafASMBackend with a given enforced java version
+   *
+   * @param sc          The SootClass the bytecode is to be generated for
+   * @param javaVersion A particular Java version enforced by the user, may be 0 for automatic
+   *                    detection, must not be lower than necessary for all features used
+   */
+  public BafASMBackend(SootClass sc, int javaVersion) {
+    super(sc, javaVersion);
+  }
 
   /**
    * Returns the ASM Label for a given Unit that is the target of a branch or jump
@@ -76,21 +89,6 @@ public class BafASMBackend extends AbstractASMBackend {
    */
   protected Label getBranchTargetLabel(Unit target) {
     return branchTargetLabels.get(target);
-  }
-
-  // Contains a mapping of local variables to indices in the local variable
-  // stack
-  protected final Map<Local, Integer> localToSlot = new HashMap<>();
-
-  /**
-   * Creates a new BafASMBackend with a given enforced java version
-   *
-   * @param sc The SootClass the bytecode is to be generated for
-   * @param javaVersion A particular Java version enforced by the user, may be 0 for automatic
-   *     detection, must not be lower than necessary for all features used
-   */
-  public BafASMBackend(SootClass sc, int javaVersion) {
-    super(sc, javaVersion);
   }
 
   /*
@@ -262,7 +260,7 @@ public class BafASMBackend extends AbstractASMBackend {
   /**
    * Emits the bytecode for a single Baf instruction
    *
-   * @param mv The ASM MethodVisitor the bytecode is to be emitted to
+   * @param mv   The ASM MethodVisitor the bytecode is to be emitted to
    * @param inst The Baf instruction to be converted into bytecode
    */
   protected void generateInstruction(final MethodVisitor mv, Inst inst) {

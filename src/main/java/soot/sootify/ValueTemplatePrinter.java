@@ -1,8 +1,5 @@
 package soot.sootify;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import soot.Local;
 import soot.SootField;
 import soot.SootMethod;
@@ -60,6 +57,9 @@ import soot.jimple.ThisRef;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ValueTemplatePrinter implements JimpleValueSwitch {
 

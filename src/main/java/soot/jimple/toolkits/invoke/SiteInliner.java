@@ -25,12 +25,6 @@
 
 package soot.jimple.toolkits.invoke;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.Hierarchy;
 import soot.Local;
@@ -64,12 +58,16 @@ import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
 
-/** Provides methods to inline a given invoke site. */
-public class SiteInliner {
-  public String getDefaultOptions() {
-    return "insert-null-checks insert-redundant-casts";
-  }
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * Provides methods to inline a given invoke site.
+ */
+public class SiteInliner {
   public static void inlineSites(List sites) {
     inlineSites(sites, new HashMap());
   }
@@ -362,9 +360,9 @@ public class SiteInliner {
 
     List<Unit> newStmts = new ArrayList<>();
     for (Iterator<Unit> i =
-            containerUnits.iterator(
-                containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint));
-        i.hasNext();
+         containerUnits.iterator(
+             containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint));
+         i.hasNext();
         ) {
       newStmts.add(i.next());
     }
@@ -376,5 +374,9 @@ public class SiteInliner {
     LocalNameStandardizer.v().transform(containerB, "ji.lns");
 
     return newStmts;
+  }
+
+  public String getDefaultOptions() {
+    return "insert-null-checks insert-redundant-casts";
   }
 }

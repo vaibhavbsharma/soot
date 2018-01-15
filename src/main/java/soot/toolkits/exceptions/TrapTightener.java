@@ -19,10 +19,6 @@
 
 package soot.toolkits.exceptions;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -36,6 +32,10 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A {@link BodyTransformer} that shrinks the protected area covered by each {@link Trap} in the
  * {@link Body} so that it begins at the first of the {@link Body}'s {@link Unit}s which might throw
@@ -44,7 +44,7 @@ import soot.util.Chain;
  * protected by a {@link Trap} can throw the exception it catches, the {@link Trap}'s protected area
  * is left completely empty, which will likely cause the {@link UnreachableCodeEliminator} to remove
  * the {@link Trap} completely.
- *
+ * <p>
  * <p>The {@link TrapTightener} is used to reduce the risk of unverifiable code which can result
  * from the use of {@link ExceptionalUnitGraph}s from which unrealizable exceptional control flow
  * edges have been removed.
@@ -53,14 +53,15 @@ public final class TrapTightener extends TrapTransformer {
 
   protected ThrowAnalysis throwAnalysis = null;
 
-  public TrapTightener(Singletons.Global g) {}
-
-  public static TrapTightener v() {
-    return soot.G.v().soot_toolkits_exceptions_TrapTightener();
+  public TrapTightener(Singletons.Global g) {
   }
 
   public TrapTightener(ThrowAnalysis ta) {
     this.throwAnalysis = ta;
+  }
+
+  public static TrapTightener v() {
+    return soot.G.v().soot_toolkits_exceptions_TrapTightener();
   }
 
   @Override
@@ -88,8 +89,8 @@ public final class TrapTightener extends TrapTransformer {
         Unit lastTrappedUnit = unitChain.getPredOf(firstUntrappedUnit);
         Unit lastTrappedThrower = null;
         for (Unit u = firstTrappedUnit;
-            u != null && u != firstUntrappedUnit;
-            u = unitChain.getSuccOf(u)) {
+             u != null && u != firstUntrappedUnit;
+             u = unitChain.getSuccOf(u)) {
           if (mightThrowTo(graph, u, trap)) {
             firstTrappedThrower = u;
             break;
@@ -148,7 +149,7 @@ public final class TrapTightener extends TrapTransformer {
    * @param u The unit being inquired about.
    * @param t The trap being inquired about.
    * @return <tt>true</tt> if <tt>u</tt> might throw an exception caught by <tt>t</tt>, according to
-   *     <tt>g</tt.
+   * <tt>g</tt.
    */
   protected boolean mightThrowTo(ExceptionalUnitGraph g, Unit u, Trap t) {
     for (ExceptionDest dest : g.getExceptionDests(u)) {

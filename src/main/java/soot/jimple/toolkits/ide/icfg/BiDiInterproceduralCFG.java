@@ -1,14 +1,16 @@
 package soot.jimple.toolkits.ide.icfg;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import heros.InterproceduralCFG;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 
-/** An {@link InterproceduralCFG} which supports the computation of predecessors. */
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * An {@link InterproceduralCFG} which supports the computation of predecessors.
+ */
 public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 
   @Override
@@ -38,7 +40,7 @@ public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
    *
    * @param u The statement to check
    * @return True if there is a control flow path from the entry point of the program to the given
-   *     statement, otherwise false
+   * statement, otherwise false
    */
   boolean isReachable(N u);
 }

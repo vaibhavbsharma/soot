@@ -27,11 +27,8 @@
  *                       to go into the DVariableDeclarationStmt and invoke applies on the defs or local
  *                       being declared in there.
  */
-package soot.dava.toolkits.base.AST.analysis;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+package soot.dava.toolkits.base.AST.analysis;
 
 import soot.Immediate;
 import soot.Local;
@@ -83,6 +80,10 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /*
  * CHANGE LOG: 18th MArch 2006: Need a reference to the ValueBox holding a BinOp for SimplifyExpressions
  *              Need to create a level of indirection i.e. instead of retrieving Values e.g. from stmts retrieve the valueBox
@@ -94,7 +95,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 
   boolean verbose = false;
 
-  public DepthFirstAdapter() {}
+  public DepthFirstAdapter() {
+  }
 
   public DepthFirstAdapter(boolean verbose) {
     this.verbose = verbose;

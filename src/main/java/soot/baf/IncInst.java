@@ -34,7 +34,7 @@ public interface IncInst extends Inst {
 
   void setConstant(Constant aConstant);
 
-  void setLocal(Local l);
-
   Local getLocal();
+
+  void setLocal(Local l);
 }

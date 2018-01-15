@@ -25,13 +25,13 @@
 
 package soot.toolkits.graph;
 
-import java.util.Set;
-
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
 import soot.baf.Inst;
 import soot.jimple.Stmt;
+
+import java.util.Set;
 
 /**
  * A CFG where the nodes are {@link Block} instances, and where {@link Unit}s which include array
@@ -41,7 +41,7 @@ import soot.jimple.Stmt;
 public class ArrayRefBlockGraph extends BlockGraph {
   /**
    * Constructs an {@link ArrayRefBlockGraph} from the given {@link Body}.
-   *
+   * <p>
    * <p>Note that this constructor builds a {@link BriefUnitGraph} internally when splitting
    * <tt>body</tt>'s {@link Unit}s into {@link Block}s. Callers who need both a {@link
    * BriefUnitGraph} and an {@link ArrayRefBlockGraph} should use the constructor taking the
@@ -68,15 +68,15 @@ public class ArrayRefBlockGraph extends BlockGraph {
   /**
    * Utility method for computing the basic block leaders for a {@link Body}, given its {@link
    * UnitGraph} (i.e., the instructions which begin new basic blocks).
-   *
+   * <p>
    * <p>This implementation chooses as block leaders all the <tt>Unit</tt>s that {@link
    * BlockGraph.computerLeaders()}, and adds:
-   *
+   * <p>
    * <ul>
-   *   <li>All <tt>Unit</tt>s which contain an array reference, as defined by {@link
-   *       Stmt.containsArrayRef()} and {@link Inst.containsArrayRef()}.
-   *   <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e., the <tt>Unit</tt>
-   *       returned by {@link Trap.getLastUnit()}.
+   * <li>All <tt>Unit</tt>s which contain an array reference, as defined by {@link
+   * Stmt.containsArrayRef()} and {@link Inst.containsArrayRef()}.
+   * <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e., the <tt>Unit</tt>
+   * returned by {@link Trap.getLastUnit()}.
    * </ul>
    *
    * @param unitGraph is the <tt>Unit</tt>-level CFG which is to be split into basic blocks.

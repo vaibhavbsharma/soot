@@ -25,25 +25,17 @@
 
 package soot.toolkits.scalar;
 
-import java.util.List;
-
 import soot.Local;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.List;
 
 /**
  * Provides an interface for querying for the list of Locals that are live before an after a given
  * unit in a method.
  */
 public interface LiveLocals {
-  final class Factory {
-    private Factory() {}
-
-    public static LiveLocals newLiveLocals(UnitGraph graph) {
-      return new SimpleLiveLocals(graph);
-    }
-  }
-
   /**
    * Returns the list of Locals that are live before the specified Unit.
    *
@@ -59,4 +51,13 @@ public interface LiveLocals {
    * @return a list of Locals that are live after the specified unit in the method.
    */
   List<Local> getLiveLocalsAfter(Unit s);
+
+  final class Factory {
+    private Factory() {
+    }
+
+    public static LiveLocals newLiveLocals(UnitGraph graph) {
+      return new SimpleLiveLocals(graph);
+    }
+  }
 }

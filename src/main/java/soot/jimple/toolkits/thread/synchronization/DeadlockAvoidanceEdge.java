@@ -7,7 +7,9 @@ public class DeadlockAvoidanceEdge extends NewStaticLock {
     super(sc);
   }
 
-  /** Clones the object. */
+  /**
+   * Clones the object.
+   */
   @Override
   public Object clone() {
     return new DeadlockAvoidanceEdge(sc);

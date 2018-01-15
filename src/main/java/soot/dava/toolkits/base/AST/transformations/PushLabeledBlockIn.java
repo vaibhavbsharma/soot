@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.G;
 import soot.dava.internal.AST.ASTLabeledBlockNode;
 import soot.dava.internal.AST.ASTLabeledNode;
@@ -33,6 +30,9 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
+
+import java.util.Iterator;
+import java.util.List;
 
 /*
 Nomair A. Naeem 18-FEB-2005
@@ -90,14 +90,16 @@ this is done by overriding the caseASTStatementSequenceNode
 
 public class PushLabeledBlockIn extends DepthFirstAdapter {
 
-  public PushLabeledBlockIn() {}
+  public PushLabeledBlockIn() {
+  }
 
   public PushLabeledBlockIn(boolean verbose) {
     super(verbose);
   }
 
   @Override
-  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
+  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
+  }
 
   @Override
   public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {

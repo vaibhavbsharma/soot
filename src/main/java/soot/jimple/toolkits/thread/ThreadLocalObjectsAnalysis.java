@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.thread;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.G;
 import soot.SootClass;
@@ -26,23 +19,29 @@ import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
 import soot.jimple.toolkits.infoflow.UseFinder;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 // ThreadLocalObjectsAnalysis written by Richard L. Halpert, 2007-03-05
 // Runs LocalObjectsAnalysis for the special case where we want to know
 // if a reference is local to all threads from which it is reached.
 
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
     implements IThreadLocalObjectsAnalysis {
+  static boolean printDebug = false;
   MhpTester mhp;
   List<AbstractRuntimeThread> threads;
   InfoFlowAnalysis primitiveDfa;
-  static boolean printDebug = false;
-
   Map valueCache;
   Map fieldCache;
   Map invokeCache;
 
   public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
-      {
+  {
     super(new InfoFlowAnalysis(false, true, printDebug)); // ref-only, with inner fields
     this.mhp = mhp;
     this.threads = mhp.getThreads();

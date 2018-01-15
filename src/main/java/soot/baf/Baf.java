@@ -26,10 +26,6 @@
 
 package soot.baf;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -136,8 +132,13 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.jimple.internal.IdentityRefBox;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 public class Baf {
-  public Baf(Singletons.Global g) {}
+  public Baf(Singletons.Global g) {
+  }
 
   public static Baf v() {
     return G.v().soot_baf_Baf();
@@ -151,7 +152,69 @@ public class Baf {
     return opType;
   }
 
-  /** Constructs a Local with the given name and type. */
+  public static String bafDescriptorOf(Type type) {
+    TypeSwitch sw;
+
+    type.apply(
+        sw =
+            new TypeSwitch() {
+              @Override
+              public void caseBooleanType(BooleanType t) {
+                setResult("b");
+              }
+
+              @Override
+              public void caseByteType(ByteType t) {
+                setResult("b");
+              }
+
+              @Override
+              public void caseCharType(CharType t) {
+                setResult("c");
+              }
+
+              @Override
+              public void caseDoubleType(DoubleType t) {
+                setResult("d");
+              }
+
+              @Override
+              public void caseFloatType(FloatType t) {
+                setResult("f");
+              }
+
+              @Override
+              public void caseIntType(IntType t) {
+                setResult("i");
+              }
+
+              @Override
+              public void caseLongType(LongType t) {
+                setResult("l");
+              }
+
+              @Override
+              public void caseShortType(ShortType t) {
+                setResult("s");
+              }
+
+              @Override
+              public void defaultCase(Type t) {
+                throw new RuntimeException("Invalid type: " + t);
+              }
+
+              @Override
+              public void caseRefType(RefType t) {
+                setResult("r");
+              }
+            });
+
+    return (String) sw.getResult();
+  }
+
+  /**
+   * Constructs a Local with the given name and type.
+   */
   public Local newLocal(String name, Type t) {
     return new BafLocal(name, t);
   }
@@ -164,12 +227,16 @@ public class Baf {
     return new BTrap(exception, beginUnit, endUnit, handlerUnit);
   }
 
-  /** Constructs a ExitMonitorInst() grammar chunk */
+  /**
+   * Constructs a ExitMonitorInst() grammar chunk
+   */
   public ExitMonitorInst newExitMonitorInst() {
     return new BExitMonitorInst();
   }
 
-  /** Constructs a EnterMonitorInst() grammar chunk. */
+  /**
+   * Constructs a EnterMonitorInst() grammar chunk.
+   */
   public EnterMonitorInst newEnterMonitorInst() {
     return new BEnterMonitorInst();
   }
@@ -214,12 +281,16 @@ public class Baf {
     return new IdentityRefBox(value);
   }
 
-  /** Constructs a ThisRef(RefType) grammar chunk. */
+  /**
+   * Constructs a ThisRef(RefType) grammar chunk.
+   */
   public ThisRef newThisRef(RefType t) {
     return new ThisRef(t);
   }
 
-  /** Constructs a ParameterRef(SootMethod, int) grammar chunk. */
+  /**
+   * Constructs a ParameterRef(SootMethod, int) grammar chunk.
+   */
   public ParameterRef newParameterRef(Type paramType, int number) {
     return new ParameterRef(paramType, number);
   }
@@ -433,15 +504,15 @@ public class Baf {
     return new BThrowInst();
   }
 
-  public SwapInst newSwapInst(Type fromType, Type toType) {
-    return new BSwapInst(fromType, toType);
-  }
-
   /*
   public DupInst newDupInst(Type type)
   {
       return new BDupInst(new ArrayList(), Arrays.asList(new Type[] {type}));
       }*/
+
+  public SwapInst newSwapInst(Type fromType, Type toType) {
+    return new BSwapInst(fromType, toType);
+  }
 
   public Dup1Inst newDup1Inst(Type type) {
     return new BDup1Inst(type);
@@ -482,77 +553,23 @@ public class Baf {
     return new BTableSwitchInst(defaultTarget, lowIndex, highIndex, targets);
   }
 
-  public static String bafDescriptorOf(Type type) {
-    TypeSwitch sw;
-
-    type.apply(
-        sw =
-            new TypeSwitch() {
-              @Override
-              public void caseBooleanType(BooleanType t) {
-                setResult("b");
-              }
-
-              @Override
-              public void caseByteType(ByteType t) {
-                setResult("b");
-              }
-
-              @Override
-              public void caseCharType(CharType t) {
-                setResult("c");
-              }
-
-              @Override
-              public void caseDoubleType(DoubleType t) {
-                setResult("d");
-              }
-
-              @Override
-              public void caseFloatType(FloatType t) {
-                setResult("f");
-              }
-
-              @Override
-              public void caseIntType(IntType t) {
-                setResult("i");
-              }
-
-              @Override
-              public void caseLongType(LongType t) {
-                setResult("l");
-              }
-
-              @Override
-              public void caseShortType(ShortType t) {
-                setResult("s");
-              }
-
-              @Override
-              public void defaultCase(Type t) {
-                throw new RuntimeException("Invalid type: " + t);
-              }
-
-              @Override
-              public void caseRefType(RefType t) {
-                setResult("r");
-              }
-            });
-
-    return (String) sw.getResult();
-  }
-
-  /** Returns an empty BafBody associated with method m. */
+  /**
+   * Returns an empty BafBody associated with method m.
+   */
   public BafBody newBody(SootMethod m) {
     return new BafBody(m);
   }
 
-  /** Returns a BafBody constructed from b. */
+  /**
+   * Returns a BafBody constructed from b.
+   */
   public BafBody newBody(Body b) {
     return new BafBody(b, Collections.emptyMap());
   }
 
-  /** Returns a BafBody constructed from b. */
+  /**
+   * Returns a BafBody constructed from b.
+   */
   public BafBody newBody(Body b, String phase) {
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(phase);
     return new BafBody(b, options);

@@ -19,16 +19,18 @@
 
 package soot;
 
-import java.util.Iterator;
-import java.util.Stack;
-
 import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.PositionTag;
 import soot.tagkit.Tag;
 
-/** Adds PositionTags to ValueBoxes to identify their position in the output. */
+import java.util.Iterator;
+import java.util.Stack;
+
+/**
+ * Adds PositionTags to ValueBoxes to identify their position in the output.
+ */
 public class AttributesUnitPrinter {
 
   private Stack<Integer> startOffsets;
@@ -95,12 +97,12 @@ public class AttributesUnitPrinter {
     return false;
   }
 
-  public void setEndLn(int ln) {
-    currentLn = ln;
-  }
-
   public int getEndLn() {
     return currentLn;
+  }
+
+  public void setEndLn(int ln) {
+    currentLn = ln;
   }
 
   public void newline() {

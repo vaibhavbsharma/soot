@@ -25,21 +25,21 @@
 
 package soot.toolkits.scalar;
 
+import soot.Timers;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.Orderer;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
+
 import java.util.BitSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import soot.Timers;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.Orderer;
-import soot.toolkits.graph.PseudoTopologicalOrderer;
-
 /**
  * Abstract class that provides a fixed-point iteration for forward flow analyses that need to
  * distinguish between the different successors of a unit in an exceptional unit graph.
- *
+ * <p>
  * <p>Note that this class does not extend FlowAnalysis as it has a different definition of a flow
  * function (namely one that does not only include the current unit, but also the successor). For
  * the same reason, it does not integrate into the interactive analysis infrastructure of Soot
@@ -48,16 +48,24 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
  * @author Steven Arzt
  */
 public abstract class ForwardFlowAnalysisExtended<N, A> {
-  /** Maps graph nodes to IN sets. */
+  /**
+   * Maps graph nodes to IN sets.
+   */
   protected Map<N, Map<N, A>> unitToBeforeFlow;
 
-  /** Maps graph nodes to OUT sets. */
+  /**
+   * Maps graph nodes to OUT sets.
+   */
   protected Map<N, Map<N, A>> unitToAfterFlow;
 
-  /** The graph being analysed. */
+  /**
+   * The graph being analysed.
+   */
   protected DirectedGraph<N> graph;
 
-  /** Construct the analysis from a DirectedGraph representation of a Body. */
+  /**
+   * Construct the analysis from a DirectedGraph representation of a Body.
+   */
   public ForwardFlowAnalysisExtended(DirectedGraph<N> graph) {
     this.graph = graph;
     this.unitToBeforeFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
@@ -73,13 +81,19 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
     return new PseudoTopologicalOrderer<>();
   }
 
-  /** Returns the flow object corresponding to the initial values for each graph node. */
+  /**
+   * Returns the flow object corresponding to the initial values for each graph node.
+   */
   protected abstract A newInitialFlow();
 
-  /** Returns the initial flow value for entry/exit graph nodes. */
+  /**
+   * Returns the initial flow value for entry/exit graph nodes.
+   */
   protected abstract A entryInitialFlow();
 
-  /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
+  /**
+   * Creates a copy of the <code>source</code> flow object in <code>dest</code>.
+   */
   protected abstract void copy(A source, A dest);
 
   /**
@@ -98,7 +112,9 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
     merge(in1, in2, out);
   }
 
-  /** Merges in into inout, just before node succNode. */
+  /**
+   * Merges in into inout, just before node succNode.
+   */
   protected void mergeInto(N succNode, A inout, A in) {
     A tmp = newInitialFlow();
     merge(succNode, inout, in, tmp);
@@ -212,7 +228,9 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 
   protected abstract void flowThrough(A in, N cur, N next, A out);
 
-  /** Accessor function returning value of IN set for s. */
+  /**
+   * Accessor function returning value of IN set for s.
+   */
   public A getFlowBefore(N s) {
     final Iterator<N> it = graph.getPredsOf(s).iterator();
     A beforeFlow = null;

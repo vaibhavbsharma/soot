@@ -24,31 +24,47 @@
 
 package soot.dexpler;
 
-import java.io.File;
-import java.util.Map;
-import java.util.TreeMap;
-
 import soot.G;
 import soot.Singletons;
 import soot.SootClass;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
+import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
+
 public class DexResolver {
 
   protected Map<File, DexlibWrapper> cache = new TreeMap<>();
 
-  public DexResolver(Singletons.Global g) {}
+  public DexResolver(Singletons.Global g) {
+  }
 
   public static DexResolver v() {
     return G.v().soot_dexpler_DexResolver();
   }
 
   /**
+   * adds source file tag to each sootclass
+   */
+  protected static void addSourceFileTag(SootClass sc, String fileName) {
+    soot.tagkit.SourceFileTag tag = null;
+    if (sc.hasTag("SourceFileTag")) {
+      return; // do not add tag if original class already has debug
+      // information
+    } else {
+      tag = new soot.tagkit.SourceFileTag();
+      sc.addTag(tag);
+    }
+    tag.setSourceFile(fileName);
+  }
+
+  /**
    * Resolve the class contained in file into the passed soot class.
    *
-   * @param file the path to the dex/apk file to resolve
+   * @param file      the path to the dex/apk file to resolve
    * @param className the name of the class to resolve
-   * @param sc the soot class that will represent the class
+   * @param sc        the soot class that will represent the class
    * @return the dependencies of this class.
    */
   public Dependencies resolveFromFile(File file, String className, SootClass sc) {
@@ -73,18 +89,5 @@ public class DexResolver {
       wrapper.initialize();
     }
     return wrapper;
-  }
-
-  /** adds source file tag to each sootclass */
-  protected static void addSourceFileTag(SootClass sc, String fileName) {
-    soot.tagkit.SourceFileTag tag = null;
-    if (sc.hasTag("SourceFileTag")) {
-      return; // do not add tag if original class already has debug
-      // information
-    } else {
-      tag = new soot.tagkit.SourceFileTag();
-      sc.addTag(tag);
-    }
-    tag.setSourceFile(fileName);
   }
 }

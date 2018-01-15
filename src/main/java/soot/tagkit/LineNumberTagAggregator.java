@@ -25,22 +25,27 @@
 
 package soot.tagkit;
 
-import java.util.LinkedList;
-
 import soot.G;
 import soot.IdentityUnit;
 import soot.Singletons;
 import soot.Unit;
 
-/** The aggregator for LineNumberTable attribute. */
+import java.util.LinkedList;
+
+/**
+ * The aggregator for LineNumberTable attribute.
+ */
 public class LineNumberTagAggregator extends FirstTagAggregator {
-  public LineNumberTagAggregator(Singletons.Global g) {}
+  public LineNumberTagAggregator(Singletons.Global g) {
+  }
 
   public static LineNumberTagAggregator v() {
     return G.v().soot_tagkit_LineNumberTagAggregator();
   }
 
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   @Override
   public boolean wantTag(Tag t) {
     return (t instanceof LineNumberTag) || (t instanceof SourceLnPosTag);

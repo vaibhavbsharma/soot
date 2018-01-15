@@ -39,6 +39,8 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public class GlobalNodeFactory {
+  protected PAG pag;
+
   public GlobalNodeFactory(PAG pag) {
     this.pag = pag;
   }
@@ -146,6 +148,8 @@ public class GlobalNodeFactory {
     }
     return local;
   }
+  /* End of public methods. */
+  /* End of package methods. */
 
   public Node caseThrow() {
     VarNode ret =
@@ -154,8 +158,4 @@ public class GlobalNodeFactory {
     ret.setInterProcSource();
     return ret;
   }
-  /* End of public methods. */
-  /* End of package methods. */
-
-  protected PAG pag;
 }

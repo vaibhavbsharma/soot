@@ -26,11 +26,7 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.objectweb.asm.Opcodes;
-
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -45,6 +41,9 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class JDynamicInvokeExpr extends AbstractInvokeExpr
@@ -135,7 +134,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr
       }
       if (!(getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+          == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -159,7 +158,9 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr
     return bsmRef.resolve();
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return getBootstrapMethod().equivHashCode() * getMethod().equivHashCode() * 17;
@@ -213,7 +214,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr
             + methodRef.name()
             + "\" <"
             + SootMethod.getSubSignature(
-                "" /* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
+            "" /* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
             + ">(");
 
     if (argBoxes != null) {

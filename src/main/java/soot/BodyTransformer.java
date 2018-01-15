@@ -42,7 +42,7 @@ public abstract class BodyTransformer extends Transformer {
    * Calls internalTransform with the optionsString properly set up. That is, the options in
    * optionsString override those in the Scene.
    *
-   * @param b the body on which to apply the transformation
+   * @param b         the body on which to apply the transformation
    * @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
    */
   public final void transform(Body b, String phaseName, Map<String, String> options) {
@@ -65,10 +65,10 @@ public abstract class BodyTransformer extends Transformer {
    * This method is called to perform the transformation itself. It is declared abstract; subclasses
    * must implement this method by making it the entry point to their actual Body transformation.
    *
-   * @param b the body on which to apply the transformation
+   * @param b         the body on which to apply the transformation
    * @param phaseName the phasename for this transform; not typically used by implementations.
-   * @param options the actual computed options; a combination of default options and Scene
-   *     specified options.
+   * @param options   the actual computed options; a combination of default options and Scene
+   *                  specified options.
    */
   protected abstract void internalTransform(Body b, String phaseName, Map<String, String> options);
 }

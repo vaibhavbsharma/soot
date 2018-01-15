@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.toolkits.ide;
 
 import heros.InterproceduralCFG;
@@ -28,7 +29,7 @@ import soot.Unit;
  * methods.
  */
 public abstract class DefaultJimpleIDETabulationProblem<
-        D, V, I extends InterproceduralCFG<Unit, SootMethod>>
+    D, V, I extends InterproceduralCFG<Unit, SootMethod>>
     extends DefaultIDETabulationProblem<Unit, D, SootMethod, V, I> {
 
   public DefaultJimpleIDETabulationProblem(I icfg) {

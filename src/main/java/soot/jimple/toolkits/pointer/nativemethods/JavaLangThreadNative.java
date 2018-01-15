@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -60,9 +61,9 @@ public class JavaLangThreadNative extends NativeMethodClass {
   /** ************************* java.lang.Thread ********************* */
   /**
    * Returns the single variable pointing to all thread objects.
-   *
+   * <p>
    * <p>This makes our analysis conservative on thread objects.
-   *
+   * <p>
    * <p>public static native java.lang.Thread currentThread();
    */
   public void java_lang_Thread_currentThread(

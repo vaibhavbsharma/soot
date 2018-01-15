@@ -19,12 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -52,20 +46,24 @@ import soot.jimple.LongConstant;
 import soot.jimple.ParameterRef;
 import soot.util.Chain;
 
-public class LocalsToBitField extends BodyTransformer implements IJbcoTransform {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-  int replaced = 0;
-  int locals = 0;
+public class LocalsToBitField extends BodyTransformer implements IJbcoTransform {
 
   public static String dependancies[] =
       new String[] {"jtp.jbco_jl", "bb.jbco_plvb", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_plvb";
+  int replaced = 0;
+  int locals = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_plvb";
 
   @Override
   public String getName() {

@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -64,9 +65,9 @@ public class JavaLangReflectConstructorNative extends NativeMethodClass {
    * Individual parameters are automatically unwrapped to match primitive formal parameters, and
    * both primitive and reference parameters are subject to method invocation conversions as
    * necessary. Returns the newly created and initialized object.
-   *
+   * <p>
    * <p>NOTE: @return = new Object; but we lose type information.
-   *
+   * <p>
    * <p>public native java.lang.Object newInstance(java.lang.Object[]) throws
    * java.lang.InstantiationException, java.lang.IllegalAccessException,
    * java.lang.IllegalArgumentException, java.lang.reflect.InvocationTargetException;

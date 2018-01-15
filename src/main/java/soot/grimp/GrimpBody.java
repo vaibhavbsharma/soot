@@ -25,11 +25,6 @@
 
 package soot.grimp;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -59,21 +54,25 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.StmtBox;
 import soot.options.Options;
 
-/** Implementation of the Body class for the Grimp IR. */
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Implementation of the Body class for the Grimp IR.
+ */
 public class GrimpBody extends StmtBody {
-  /** Construct an empty GrimpBody */
+  /**
+   * Construct an empty GrimpBody
+   */
   GrimpBody(SootMethod m) {
     super(m);
   }
 
-  @Override
-  public Object clone() {
-    Body b = Grimp.v().newBody(getMethod());
-    b.importBodyContentsFrom(this);
-    return b;
-  }
-
-  /** Constructs a GrimpBody from the given Body. */
+  /**
+   * Constructs a GrimpBody from the given Body.
+   */
   GrimpBody(Body body) {
     super(body.getMethod());
 
@@ -270,5 +269,12 @@ public class GrimpBody extends StmtBody {
     }
 
     PackManager.v().getPack("gb").apply(this);
+  }
+
+  @Override
+  public Object clone() {
+    Body b = Grimp.v().newBody(getMethod());
+    b.importBodyContentsFrom(this);
+    return b;
   }
 }

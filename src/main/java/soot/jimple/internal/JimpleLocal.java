@@ -25,9 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Local;
 import soot.Scene;
 import soot.Type;
@@ -41,11 +38,17 @@ import soot.jimple.JimpleValueSwitch;
 import soot.util.ArrayNumberer;
 import soot.util.Switch;
 
+import java.util.Collections;
+import java.util.List;
+
 public class JimpleLocal implements Local, ConvertToBaf {
   protected String name;
   Type type;
+  private int number = 0;
 
-  /** Constructs a JimpleLocal of the given name and type. */
+  /**
+   * Constructs a JimpleLocal of the given name and type.
+   */
   public JimpleLocal(String name, Type type) {
     setName(name);
     setType(type);
@@ -55,13 +58,17 @@ public class JimpleLocal implements Local, ConvertToBaf {
     }
   }
 
-  /** Returns true if the given object is structurally equal to this one. */
+  /**
+   * Returns true if the given object is structurally equal to this one.
+   */
   @Override
   public boolean equivTo(Object o) {
     return this.equals(o);
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     final int prime = 31;
@@ -71,7 +78,9 @@ public class JimpleLocal implements Local, ConvertToBaf {
     return result;
   }
 
-  /** Returns a clone of the current JimpleLocal. */
+  /**
+   * Returns a clone of the current JimpleLocal.
+   */
   @Override
   public Object clone() {
     // do not intern the name again
@@ -80,25 +89,33 @@ public class JimpleLocal implements Local, ConvertToBaf {
     return local;
   }
 
-  /** Returns the name of this object. */
+  /**
+   * Returns the name of this object.
+   */
   @Override
   public String getName() {
     return name;
   }
 
-  /** Sets the name of this object as given. */
+  /**
+   * Sets the name of this object as given.
+   */
   @Override
   public void setName(String name) {
     this.name = (name == null) ? null : name.intern();
   }
 
-  /** Returns the type of this local. */
+  /**
+   * Returns the type of this local.
+   */
   @Override
   public Type getType() {
     return type;
   }
 
-  /** Sets the type of this local. */
+  /**
+   * Sets the type of this local.
+   */
   @Override
   public void setType(Type t) {
     this.type = t;
@@ -140,6 +157,4 @@ public class JimpleLocal implements Local, ConvertToBaf {
   public final void setNumber(int number) {
     this.number = number;
   }
-
-  private int number = 0;
 }

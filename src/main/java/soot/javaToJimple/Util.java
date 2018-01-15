@@ -19,11 +19,11 @@
 
 package soot.javaToJimple;
 
+import soot.Scene;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import soot.Scene;
 
 public class Util {
 
@@ -158,7 +158,9 @@ public class Util {
     }
   }
 
-  /** Position Tag Adder */
+  /**
+   * Position Tag Adder
+   */
   public static void addPosTag(soot.tagkit.Host host, polyglot.util.Position pos) {
     if (pos != null) {
       addPosTag(host, pos.column(), pos.endColumn());
@@ -170,7 +172,9 @@ public class Util {
     meth.addTag(new soot.tagkit.SourcePositionTag(start, end));
   }
 
-  /** Position Tag Adder */
+  /**
+   * Position Tag Adder
+   */
   public static void addPosTag(soot.tagkit.Host host, int sc, int ec) {
 
     host.addTag(new soot.tagkit.SourcePositionTag(sc, ec));
@@ -182,7 +186,9 @@ public class Util {
     }
   }
 
-  /** Line Tag Adder */
+  /**
+   * Line Tag Adder
+   */
   public static void addLineTag(soot.tagkit.Host host, polyglot.ast.Node node) {
 
     if (soot.options.Options.v().keep_line_number()) {
@@ -193,7 +199,9 @@ public class Util {
     }
   }
 
-  /** Line Tag Adder */
+  /**
+   * Line Tag Adder
+   */
   public static void addLineTag(soot.tagkit.Host host, int sLine, int eLine) {
 
     host.addTag(new soot.tagkit.SourceLineNumberTag(sLine, eLine));
@@ -273,7 +281,7 @@ public class Util {
           soot.ValueBox vb = (soot.ValueBox) it.next();
           if ((vb.getValue() instanceof soot.Local)
               && (fh.canStoreType(
-                  type, vb.getValue().getType()))) { // (vb.getValue().getType().equals(type))){
+              type, vb.getValue().getType()))) { // (vb.getValue().getType().equals(type))){
             correctLocal = (soot.Local) vb.getValue();
           }
         }
@@ -294,7 +302,7 @@ public class Util {
           soot.ValueBox vb = (soot.ValueBox) it.next();
           if ((vb.getValue() instanceof soot.Local)
               && (fh.canStoreType(
-                  type, vb.getValue().getType()))) { // (vb.getValue().getType().equals(type))){
+              type, vb.getValue().getType()))) { // (vb.getValue().getType().equals(type))){
             return true;
           }
         }
@@ -390,7 +398,9 @@ public class Util {
     return isSubType((polyglot.types.ClassType) type.superType(), superType);
   }
 
-  /** Type handling */
+  /**
+   * Type handling
+   */
   public static soot.Type getSootType(polyglot.types.Type type) {
 
     if (type == null) {
@@ -436,10 +446,10 @@ public class Util {
         if (classType.isAnonymous()
             && (soot.javaToJimple.InitialResolver.v().getAnonTypeMap() != null)
             && soot.javaToJimple
-                .InitialResolver
-                .v()
-                .getAnonTypeMap()
-                .containsKey(new polyglot.util.IdentityKey(classType))) {
+            .InitialResolver
+            .v()
+            .getAnonTypeMap()
+            .containsKey(new polyglot.util.IdentityKey(classType))) {
           className =
               soot.javaToJimple
                   .InitialResolver
@@ -449,10 +459,10 @@ public class Util {
         } else if (classType.isLocal()
             && (soot.javaToJimple.InitialResolver.v().getLocalTypeMap() != null)
             && soot.javaToJimple
-                .InitialResolver
-                .v()
-                .getLocalTypeMap()
-                .containsKey(new polyglot.util.IdentityKey(classType))) {
+            .InitialResolver
+            .v()
+            .getLocalTypeMap()
+            .containsKey(new polyglot.util.IdentityKey(classType))) {
           className =
               soot.javaToJimple
                   .InitialResolver
@@ -490,7 +500,9 @@ public class Util {
     return sootType;
   }
 
-  /** Modifier Creation */
+  /**
+   * Modifier Creation
+   */
   public static int getModifier(polyglot.types.Flags flags) {
 
     int modifier = 0;

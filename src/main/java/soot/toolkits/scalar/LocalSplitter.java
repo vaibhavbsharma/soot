@@ -25,13 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayDeque;
-import java.util.BitSet;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -47,15 +40,22 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LocalBitSetPacker;
 
+import java.util.ArrayDeque;
+import java.util.BitSet;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A BodyTransformer that attemps to indentify and separate uses of a local variable that are
  * independent of each other. Conceptually the inverse transform with respect to the LocalPacker
  * transform.
- *
+ * <p>
  * <p>For example the code:
- *
+ * <p>
  * <p>for(int i; i < k; i++); for(int i; i < k; i++);
- *
+ * <p>
  * <p>would be transformed into: for(int i; i < k; i++); for(int j; j < k; j++);
  *
  * @see BodyTransformer
@@ -67,7 +67,8 @@ public class LocalSplitter extends BodyTransformer {
   protected ThrowAnalysis throwAnalysis;
   protected boolean omitExceptingUnitEdges;
 
-  public LocalSplitter(Singletons.Global g) {}
+  public LocalSplitter(Singletons.Global g) {
+  }
 
   public LocalSplitter(ThrowAnalysis ta) {
     this(ta, false);

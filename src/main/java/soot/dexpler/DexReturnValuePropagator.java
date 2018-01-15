@@ -1,11 +1,5 @@
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -21,6 +15,12 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DexReturnValuePropagator extends BodyTransformer {
 
@@ -84,12 +84,12 @@ public class DexReturnValuePropagator extends BodyTransformer {
    * Checks whether the given local has been redefined between the original definition unitDef and
    * the use unitUse.
    *
-   * @param l The local for which to check for redefinitions
+   * @param l       The local for which to check for redefinitions
    * @param unitUse The unit that uses the local
    * @param unitDef The unit that defines the local
-   * @param graph The unit graph to use for the check
+   * @param graph   The unit graph to use for the check
    * @return True if there is at least one path between unitDef and unitUse on which local l gets
-   *     redefined, otherwise false
+   * redefined, otherwise false
    */
   private boolean isRedefined(Local l, Unit unitUse, AssignStmt unitDef, UnitGraph graph) {
     List<Unit> workList = new ArrayList<>();

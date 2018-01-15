@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -72,9 +73,9 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
   /**
    * Returns the value of the indexed component in the specified array object. The value is
    * automatically wrapped in an object if it has a primitive type.
-   *
+   * <p>
    * <p>NOTE: @return = @param0[]
-   *
+   * <p>
    * <p>public static native java.lang.Object get(java.lang.Object, int) throws
    * java.lang.IllegalArgumentException, java.lang.ArrayIndexOutOfBoundsException;
    */
@@ -88,8 +89,8 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
 
   /**
    * @param0[] = @param1
-   *     <p>public static native void set(java.lang.Object, int, java.lang.Object) throws
-   *     java.lang.IllegalArgumentException, java.lang.ArrayIndexOutOfBoundsException;
+   * <p>public static native void set(java.lang.Object, int, java.lang.Object) throws
+   * java.lang.IllegalArgumentException, java.lang.ArrayIndexOutOfBoundsException;
    */
   public void java_lang_reflect_Array_set(
       SootMethod method,
@@ -103,8 +104,8 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
    * Treat this method as
    *
    * @return = new A[];
-   *     <p>private static native java.lang.Object newArray(java.lang.Class, int) throws
-   *     java.lang.NegativeArraySizeException;
+   * <p>private static native java.lang.Object newArray(java.lang.Class, int) throws
+   * java.lang.NegativeArraySizeException;
    */
   public void java_lang_reflect_Array_newArray(
       SootMethod method,
@@ -118,8 +119,8 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
    * Treat this method as
    *
    * @return = new A[][];
-   *     <p>private static native java.lang.Object multiNewArray(java.lang.Class, int[]) throws
-   *     java.lang.IllegalArgumentException, java.lang.NegativeArraySizeException;
+   * <p>private static native java.lang.Object multiNewArray(java.lang.Class, int[]) throws
+   * java.lang.IllegalArgumentException, java.lang.NegativeArraySizeException;
    */
   public void java_lang_reflect_Array_multiNewArray(
       SootMethod method,

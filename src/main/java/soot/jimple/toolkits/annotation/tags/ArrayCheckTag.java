@@ -25,7 +25,9 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
-/** Implementation of the Tag interface for array bounds checks. */
+/**
+ * Implementation of the Tag interface for array bounds checks.
+ */
 public class ArrayCheckTag implements OneByteCodeTag {
   private static final String NAME = "ArrayCheckTag";
 
@@ -61,12 +63,16 @@ public class ArrayCheckTag implements OneByteCodeTag {
     return value;
   }
 
-  /** Needs upper bound check? */
+  /**
+   * Needs upper bound check?
+   */
   public boolean isCheckUpper() {
     return upperCheck;
   }
 
-  /** Needs lower bound check? */
+  /**
+   * Needs lower bound check?
+   */
   public boolean isCheckLower() {
     return lowerCheck;
   }

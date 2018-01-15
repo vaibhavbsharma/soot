@@ -25,7 +25,9 @@
 
 package soot.tagkit;
 
-/** Represents a tag that just has a string to be printed with the code. */
+/**
+ * Represents a tag that just has a string to be printed with the code.
+ */
 public class LinkTag extends StringTag {
   Host link;
   String className;
@@ -55,13 +57,17 @@ public class LinkTag extends StringTag {
     return link;
   }
 
-  /** Returns the tag name. */
+  /**
+   * Returns the tag name.
+   */
   @Override
   public String getName() {
     return "StringTag";
   }
 
-  /** Returns the tag raw data. */
+  /**
+   * Returns the tag raw data.
+   */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("StringTag has no value for bytecode");

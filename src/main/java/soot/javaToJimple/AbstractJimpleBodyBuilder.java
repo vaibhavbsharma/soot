@@ -24,6 +24,8 @@ import java.util.List;
 public abstract class AbstractJimpleBodyBuilder {
 
   protected soot.jimple.JimpleBody body;
+  private AbstractJimpleBodyBuilder ext = null;
+  private AbstractJimpleBodyBuilder base = this;
 
   public void ext(AbstractJimpleBodyBuilder ext) {
     this.ext = ext;
@@ -40,8 +42,6 @@ public abstract class AbstractJimpleBodyBuilder {
     return ext;
   }
 
-  private AbstractJimpleBodyBuilder ext = null;
-
   public void base(AbstractJimpleBodyBuilder base) {
     this.base = base;
   }
@@ -49,8 +49,6 @@ public abstract class AbstractJimpleBodyBuilder {
   public AbstractJimpleBodyBuilder base() {
     return base;
   }
-
-  private AbstractJimpleBodyBuilder base = this;
 
   protected soot.jimple.JimpleBody createJimpleBody(
       polyglot.ast.Block block, List formals, soot.SootMethod sootMethod) {

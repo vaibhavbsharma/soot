@@ -25,12 +25,6 @@
 
 package soot.jimple.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -40,6 +34,12 @@ import soot.UnitBox;
 import soot.jimple.Jimple;
 import soot.options.Options;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * removes all critical edges.<br>
@@ -53,22 +53,11 @@ import soot.util.Chain;
  * Exceptions will be ignored.
  */
 public class CriticalEdgeRemover extends BodyTransformer {
-  public CriticalEdgeRemover(Singletons.Global g) {}
+  public CriticalEdgeRemover(Singletons.Global g) {
+  }
 
   public static CriticalEdgeRemover v() {
     return G.v().soot_jimple_toolkits_graph_CriticalEdgeRemover();
-  }
-
-  /** performs critical edge-removing. */
-  @Override
-  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
-      G.v().out.println("[" + b.getMethod().getName() + "]     Removing Critical Edges...");
-    }
-    removeCriticalEdges(b);
-    if (Options.v().verbose()) {
-      G.v().out.println("[" + b.getMethod().getName() + "]     Removing Critical Edges done.");
-    }
   }
 
   /**
@@ -77,8 +66,8 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * As we use <code>JGoto</code> the chain must contain Jimple-stmts.
    *
    * @param unitChain the Chain where we will insert the <code>Goto</code>.
-   * @param node the <code>Goto</code> will be inserted just after this node.
-   * @param target is the Unit the <code>goto</code> will jump to.
+   * @param node      the <code>Goto</code> will be inserted just after this node.
+   * @param target    is the Unit the <code>goto</code> will jump to.
    * @return the newly inserted <code>Goto</code>
    */
   private static Unit insertGotoAfter(Chain<Unit> unitChain, Unit node, Unit target) {
@@ -93,8 +82,8 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * As we use <code>JGoto</code> the chain must contain Jimple-stmts.
    *
    * @param unitChain the Chain where we will insert the <code>Goto</code>.
-   * @param node the <code>Goto</code> will be inserted just before this node.
-   * @param target is the Unit the <code>goto</code> will jump to.
+   * @param node      the <code>Goto</code> will be inserted just before this node.
+   * @param target    is the Unit the <code>goto</code> will jump to.
    * @return the newly inserted <code>Goto</code>
    */
   /*note, that this method has slightly more overhead than the insertGotoAfter*/
@@ -109,7 +98,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * takes <code>node</code> and redirects all branches to <code>oldTarget</code> to <code>
    * newTarget</code>.
    *
-   * @param node the Unit where we redirect
+   * @param node      the Unit where we redirect
    * @param oldTarget
    * @param newTarget
    */
@@ -123,6 +112,20 @@ public class CriticalEdgeRemover extends BodyTransformer {
   }
 
   /**
+   * performs critical edge-removing.
+   */
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    if (Options.v().verbose()) {
+      G.v().out.println("[" + b.getMethod().getName() + "]     Removing Critical Edges...");
+    }
+    removeCriticalEdges(b);
+    if (Options.v().verbose()) {
+      G.v().out.println("[" + b.getMethod().getName() + "]     Removing Critical Edges done.");
+    }
+  }
+
+  /**
    * splits critical edges by introducing synthetic nodes.<br>
    * This method <b>will modify</b> the <code>UnitGraph</code> of the body. Synthetic nodes are
    * always <code>JGoto</code>s. Therefore the body must be in <tt>Jimple</tt>.<br>
@@ -131,7 +134,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * nice to work with afterwards.
    *
    * @param b the Jimple-body that will be physicly modified so that there are no critical edges
-   *     anymore.
+   *          anymore.
    */
   /* note, that critical edges can only appear on edges between blocks!.
   Our algorithm will *not* take into account exceptions. (this is nearly

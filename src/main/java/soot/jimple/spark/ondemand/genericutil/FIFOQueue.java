@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 /**
@@ -26,10 +27,14 @@ package soot.jimple.spark.ondemand.genericutil;
  */
 public final class FIFOQueue {
 
-  /** the buffer. */
+  /**
+   * the buffer.
+   */
   private Object[] _buf;
 
-  /** pointer to current top of buffer */
+  /**
+   * pointer to current top of buffer
+   */
   private int _top;
 
   /**
@@ -38,7 +43,9 @@ public final class FIFOQueue {
    */
   private int _bottom;
 
-  /** @param initialSize_ the initial size of the queue */
+  /**
+   * @param initialSize_ the initial size of the queue
+   */
   public FIFOQueue(int initialSize_) {
     _buf = new Object[initialSize_];
   }
@@ -50,7 +57,10 @@ public final class FIFOQueue {
   public boolean push(Object obj_) {
     return add(obj_);
   }
-  /** add an element to the bottom of the queue */
+
+  /**
+   * add an element to the bottom of the queue
+   */
   public boolean add(Object obj_) {
     //        Assert.chk(obj_ != null);
     // add the element
@@ -81,7 +91,9 @@ public final class FIFOQueue {
     return remove();
   }
 
-  /** remove the top element from the buffer */
+  /**
+   * remove the top element from the buffer
+   */
   public Object remove() {
     // check if buffer is empty
     if (_bottom == _top) {

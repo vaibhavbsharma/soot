@@ -27,7 +27,6 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
-
 import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
@@ -74,7 +73,7 @@ public class CastInstruction extends TaggedInstruction {
 
   /**
    * Return the appropriate target type for the covered opcodes.
-   *
+   * <p>
    * <p>Note: the tag represents the original type before the cast. The cast type is not lost in
    * Jimple and can be retrieved by calling the getCastType() method.
    */

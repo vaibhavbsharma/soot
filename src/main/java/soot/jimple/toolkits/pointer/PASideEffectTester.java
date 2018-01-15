@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.G;
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -39,6 +35,10 @@ import soot.jimple.Expr;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 //  ArrayRef,
 //  CaughtExceptionRef,
@@ -69,7 +69,9 @@ public class PASideEffectTester implements SideEffectTester {
     }
   }
 
-  /** Call this when starting to analyze a new method to setup the cache. */
+  /**
+   * Call this when starting to analyze a new method to setup the cache.
+   */
   @Override
   public void newMethod(SootMethod m) {
     unitToRead = new HashMap<>();
@@ -103,13 +105,17 @@ public class PASideEffectTester implements SideEffectTester {
     return ret;
   }
 
-  /** Returns true if the unit can read from v. Does not deal with expressions; deals with Refs. */
+  /**
+   * Returns true if the unit can read from v. Does not deal with expressions; deals with Refs.
+   */
   @Override
   public boolean unitCanReadFrom(Unit u, Value v) {
     return valueTouchesRWSet(readSet(u), v, u.getUseBoxes());
   }
 
-  /** Returns true if the unit can read from v. Does not deal with expressions; deals with Refs. */
+  /**
+   * Returns true if the unit can read from v. Does not deal with expressions; deals with Refs.
+   */
   @Override
   public boolean unitCanWriteTo(Unit u, Value v) {
     return valueTouchesRWSet(writeSet(u), v, u.getDefBoxes());

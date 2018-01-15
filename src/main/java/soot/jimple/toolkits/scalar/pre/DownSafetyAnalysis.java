@@ -26,9 +26,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.EquivalentValue;
 import soot.SideEffectTester;
 import soot.Unit;
@@ -42,6 +39,9 @@ import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Performs an DownSafe-analysis on the given graph. An expression is downsafe, if the computation
  * will occur on every path from the current point down to the END.
@@ -53,7 +53,9 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
 
   private BoundedFlowSet<EquivalentValue> set;
 
-  /** This constructor should not be used, and will throw a runtime-exception! */
+  /**
+   * This constructor should not be used, and will throw a runtime-exception!
+   */
   public DownSafetyAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
@@ -65,8 +67,8 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
    * the result of the analysis is as usual in FlowBefore (getFlowBefore()) and FlowAfter
    * (getFlowAfter()).<br>
    *
-   * @param dg a ExceptionalUnitGraph.
-   * @param unitToGen the equivalentValue of each unit.
+   * @param dg         a ExceptionalUnitGraph.
+   * @param unitToGen  the equivalentValue of each unit.
    * @param sideEffect the SideEffectTester that performs kills.
    */
   public DownSafetyAnalysis(
@@ -85,9 +87,9 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
    * as sets-operations are usually more efficient, if the original set comes from the same source,
    * this allows to share sets.
    *
-   * @param dg a ExceptionalUnitGraph.
-   * @param unitToGen the equivalentValue of each unit.
-   * @param sideEffect the SideEffectTester that performs kills.
+   * @param dg             a ExceptionalUnitGraph.
+   * @param unitToGen      the equivalentValue of each unit.
+   * @param sideEffect     the SideEffectTester that performs kills.
    * @param BoundedFlowSet the shared set.
    */
   public DownSafetyAnalysis(

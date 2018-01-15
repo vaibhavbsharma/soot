@@ -19,5 +19,8 @@
 
 package soot.toolkits.scalar;
 
-/** Analysis that computes live locals, local defs, and local uses all at once. */
-public interface CombinedAnalysis extends LocalDefs, LocalUses, LiveLocals {}
+/**
+ * Analysis that computes live locals, local defs, and local uses all at once.
+ */
+public interface CombinedAnalysis extends LocalDefs, LocalUses, LiveLocals {
+}

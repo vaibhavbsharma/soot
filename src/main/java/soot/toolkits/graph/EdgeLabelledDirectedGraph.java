@@ -14,7 +14,7 @@ public interface EdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
    * Returns a list of labels for which an edge exists between from and to
    *
    * @param from out node of the edges to get labels for
-   * @param to in node of the edges to get labels for
+   * @param to   in node of the edges to get labels for
    * @return
    */
   List<L> getLabelsForEdges(N from, N to);
@@ -33,13 +33,13 @@ public interface EdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
    * @param to
    * @param label
    * @return true if the graph contains an edge between the 2 nodes with the given label, false
-   *     otherwise
+   * otherwise
    */
   boolean containsEdge(N from, N to, L label);
 
   /**
    * @param from out node for the edges
-   * @param to in node for the edges
+   * @param to   in node for the edges
    * @return true if the graph contains any edges between the 2 nodes, false, otherwise
    */
   boolean containsAnyEdge(N from, N to);

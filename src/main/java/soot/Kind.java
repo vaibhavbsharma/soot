@@ -28,48 +28,76 @@ import soot.util.Numberable;
  */
 public final class Kind implements Numberable {
   public static final Kind INVALID = new Kind("INVALID");
-  /** Due to explicit invokestatic instruction. */
+  /**
+   * Due to explicit invokestatic instruction.
+   */
   public static final Kind STATIC = new Kind("STATIC");
-  /** Due to explicit invokevirtual instruction. */
+  /**
+   * Due to explicit invokevirtual instruction.
+   */
   public static final Kind VIRTUAL = new Kind("VIRTUAL");
-  /** Due to explicit invokeinterface instruction. */
+  /**
+   * Due to explicit invokeinterface instruction.
+   */
   public static final Kind INTERFACE = new Kind("INTERFACE");
-  /** Due to explicit invokespecial instruction. */
+  /**
+   * Due to explicit invokespecial instruction.
+   */
   public static final Kind SPECIAL = new Kind("SPECIAL");
-  /** Implicit call to static initializer. */
+  /**
+   * Implicit call to static initializer.
+   */
   public static final Kind CLINIT = new Kind("CLINIT");
-  /** Implicit call to Thread.run() due to Thread.start() call. */
+  /**
+   * Implicit call to Thread.run() due to Thread.start() call.
+   */
   public static final Kind THREAD = new Kind("THREAD");
-  /** Implicit call to java.lang.Runnable.run() due to Executor.execute() call. */
+  /**
+   * Implicit call to java.lang.Runnable.run() due to Executor.execute() call.
+   */
   public static final Kind EXECUTOR = new Kind("EXECUTOR");
-  /** Implicit call to AsyncTask.doInBackground() due to AsyncTask.execute() call. */
+  /**
+   * Implicit call to AsyncTask.doInBackground() due to AsyncTask.execute() call.
+   */
   public static final Kind ASYNCTASK = new Kind("ASYNCTASK");
-  /** Implicit call to java.lang.ref.Finalizer.register from new bytecode. */
+  /**
+   * Implicit call to java.lang.ref.Finalizer.register from new bytecode.
+   */
   public static final Kind FINALIZE = new Kind("FINALIZE");
   /**
    * Implicit call to Handler.handleMessage(android.os.Message) due to Handler.sendxxxxMessagexxxx()
    * call.
    */
   public static final Kind HANDLER = new Kind("HANDLER");
-  /** Implicit call to finalize() from java.lang.ref.Finalizer.invokeFinalizeMethod(). */
+  /**
+   * Implicit call to finalize() from java.lang.ref.Finalizer.invokeFinalizeMethod().
+   */
   public static final Kind INVOKE_FINALIZE = new Kind("INVOKE_FINALIZE");
-  /** Implicit call to run() through AccessController.doPrivileged(). */
+  /**
+   * Implicit call to run() through AccessController.doPrivileged().
+   */
   public static final Kind PRIVILEGED = new Kind("PRIVILEGED");
-  /** Implicit call to constructor from java.lang.Class.newInstance(). */
+  /**
+   * Implicit call to constructor from java.lang.Class.newInstance().
+   */
   public static final Kind NEWINSTANCE = new Kind("NEWINSTANCE");
-  /** Due to call to Method.invoke(..). */
+  /**
+   * Due to call to Method.invoke(..).
+   */
   public static final Kind REFL_INVOKE = new Kind("REFL_METHOD_INVOKE");
-  /** Due to call to Constructor.newInstance(..). */
+  /**
+   * Due to call to Constructor.newInstance(..).
+   */
   public static final Kind REFL_CONSTR_NEWINSTANCE = new Kind("REFL_CONSTRUCTOR_NEWINSTANCE");
-  /** Due to call to Class.newInstance(..) when reflection log is enabled. */
+  /**
+   * Due to call to Class.newInstance(..) when reflection log is enabled.
+   */
   public static final Kind REFL_CLASS_NEWINSTANCE = new Kind("REFL_CLASS_NEWINSTANCE");
-
+  private final String name;
+  private int num;
   private Kind(String name) {
     this.name = name;
   }
-
-  private final String name;
-  private int num;
 
   public String name() {
     return name;
@@ -112,17 +140,23 @@ public final class Kind implements Numberable {
         || this == HANDLER;
   }
 
-  /** Returns true if the call is due to an explicit invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit invoke statement.
+   */
   public boolean isExplicit() {
     return isInstance() || isStatic();
   }
 
-  /** Returns true if the call is due to an explicit instance invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit instance invoke statement.
+   */
   public boolean isInstance() {
     return this == VIRTUAL || this == INTERFACE || this == SPECIAL;
   }
 
-  /** Returns true if the call is due to an explicit virtual invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit virtual invoke statement.
+   */
   public boolean isVirtual() {
     return this == VIRTUAL;
   }
@@ -131,12 +165,16 @@ public final class Kind implements Numberable {
     return this == SPECIAL;
   }
 
-  /** Returns true if the call is to static initializer. */
+  /**
+   * Returns true if the call is to static initializer.
+   */
   public boolean isClinit() {
     return this == CLINIT;
   }
 
-  /** Returns true if the call is due to an explicit static invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit static invoke statement.
+   */
   public boolean isStatic() {
     return this == STATIC;
   }

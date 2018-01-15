@@ -19,14 +19,18 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-
 import polyglot.util.IdentityKey;
+
+import java.util.ArrayList;
 
 public class PrivateAccessUses extends polyglot.visit.NodeVisitor {
 
   private final ArrayList<IdentityKey> list;
   private ArrayList avail;
+
+  public PrivateAccessUses() {
+    list = new ArrayList<>();
+  }
 
   public ArrayList<IdentityKey> getList() {
     return list;
@@ -34,10 +38,6 @@ public class PrivateAccessUses extends polyglot.visit.NodeVisitor {
 
   public void avail(ArrayList list) {
     avail = list;
-  }
-
-  public PrivateAccessUses() {
-    list = new ArrayList<>();
   }
 
   @Override

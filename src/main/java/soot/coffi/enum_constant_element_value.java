@@ -28,8 +28,8 @@ package soot.coffi;
 /**
  * There can be many element_value pairs in each annotation
  *
- * @see attribute_info
  * @author Jennifer Lhotak
+ * @see attribute_info
  */
 public class enum_constant_element_value extends element_value {
   int type_name_index;

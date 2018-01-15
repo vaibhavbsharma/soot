@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -53,19 +49,23 @@ import soot.tagkit.KeyTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
 public class ArrayBoundsChecker extends BodyTransformer {
-  public ArrayBoundsChecker(Singletons.Global g) {}
-
-  public static ArrayBoundsChecker v() {
-    return G.v().soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker();
-  }
-
   protected boolean takeClassField = false;
   protected boolean takeFieldRef = false;
   protected boolean takeArrayRef = false;
   protected boolean takeCSE = false;
   protected boolean takeRectArray = false;
   protected boolean addColorTags = false;
+  public ArrayBoundsChecker(Singletons.Global g) {
+  }
+
+  public static ArrayBoundsChecker v() {
+    return G.v().soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker();
+  }
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map opts) {

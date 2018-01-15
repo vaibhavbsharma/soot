@@ -1,7 +1,5 @@
 package soot.validation;
 
-import java.util.List;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.DoubleType;
@@ -21,6 +19,8 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
+
+import java.util.List;
 
 public enum CheckTypesValidator implements BodyValidator {
   INSTANCE;

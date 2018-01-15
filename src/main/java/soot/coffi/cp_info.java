@@ -25,16 +25,16 @@
 
 package soot.coffi;
 
-import java.util.StringTokenizer;
-
 import soot.G;
 import soot.Value;
+
+import java.util.StringTokenizer;
 
 /**
  * Base abstract class for constant pool entries; includes some utility methods.
  *
- * @see ClassFile#constant_pool
  * @author Clark Verbrugge
+ * @see ClassFile#constant_pool
  */
 abstract class cp_info {
 
@@ -66,59 +66,28 @@ abstract class cp_info {
 
   // mapping from the above to the kinds of members they refer to
   public static final byte[] REF_TO_CONSTANT = {
-    -1,
-    CONSTANT_Fieldref, // getField...
-    CONSTANT_Fieldref, //
-    CONSTANT_Fieldref, //
-    CONSTANT_Fieldref, //
-    CONSTANT_Methodref, // invokeVirtual...
-    CONSTANT_Methodref,
-    CONSTANT_Methodref,
-    CONSTANT_Methodref,
-    CONSTANT_InterfaceMethodref, // invokeInterface
+      -1,
+      CONSTANT_Fieldref, // getField...
+      CONSTANT_Fieldref, //
+      CONSTANT_Fieldref, //
+      CONSTANT_Fieldref, //
+      CONSTANT_Methodref, // invokeVirtual...
+      CONSTANT_Methodref,
+      CONSTANT_Methodref,
+      CONSTANT_Methodref,
+      CONSTANT_InterfaceMethodref, // invokeInterface
   };
 
-  /** One of the CONSTANT_* constants. */
+  /**
+   * One of the CONSTANT_* constants.
+   */
   public byte tag;
-
-  /**
-   * Returns the size of this entry.
-   *
-   * @return size (in bytes) of this entry.
-   */
-  public abstract int size();
-
-  /**
-   * Returns a String representation of this entry.
-   *
-   * @param constant_pool constant pool of ClassFile.
-   * @return String representation of this entry.
-   */
-  public abstract String toString(cp_info constant_pool[]);
-
-  /**
-   * Returns a String description of what kind of entry this is.
-   *
-   * @return String representation of this kind of entry.
-   */
-  public abstract String typeName();
-
-  /**
-   * Compares this entry with another cp_info object (which may reside in a different constant
-   * pool).
-   *
-   * @param constant_pool constant pool of ClassFile for this.
-   * @param cp constant pool entry to compare against.
-   * @param cp_constant_pool constant pool of ClassFile for cp.
-   * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
-   */
-  public abstract int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]);
 
   /**
    * Utility method, converts two integers into a single long.
    *
    * @param high upper 32 bits of the long.
-   * @param low lower 32 bits of the long.
+   * @param low  lower 32 bits of the long.
    * @return a long value composed from the two ints.
    */
   public static long ints2long(long high, long low) {
@@ -177,7 +146,7 @@ abstract class cp_info {
    * CONSTANT_Class, _Fieldref, Methodref or InterfaceMethodref.
    *
    * @param constant_pool constant pool of ClassFile.
-   * @param i index of cp_info entry in question.
+   * @param i             index of cp_info entry in question.
    * @return name of the associated class.
    */
   public static String getClassname(cp_info constant_pool[], int i) {
@@ -201,7 +170,7 @@ abstract class cp_info {
    * CONSTANT_NameAndType, _FieldRef, _Methodref or _InterfaceMethodref.
    *
    * @param constant_pool constant pool of ClassFile.
-   * @param i index of cp_info entry in question.
+   * @param i             index of cp_info entry in question.
    * @return name of the associated object.
    * @see CONSTANT_Utf8_info
    */
@@ -227,7 +196,7 @@ abstract class cp_info {
    * Counts the number of parameters of the given method.
    *
    * @param constant_pool constant pool of ClassFile.
-   * @param m a constant pool index as accepted by getTypeDescr.
+   * @param m             a constant pool index as accepted by getTypeDescr.
    * @return the number of parameters.
    * @see cp_info#getTypeDescr
    */
@@ -244,8 +213,8 @@ abstract class cp_info {
    * CONSTANT_NameAndType, CONSTANT_Fieldref, CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
    *
    * @param constant_pool constant pool of ClassFile.
-   * @param i a constant pool index for an entry of type CONSTANT_Utf8, CONSTANT_NameAndType,
-   *     CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
+   * @param i             a constant pool index for an entry of type CONSTANT_Utf8, CONSTANT_NameAndType,
+   *                      CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
    * @return the type descriptor.
    * @see CONSTANT_Utf8_info
    */
@@ -275,8 +244,8 @@ abstract class cp_info {
    * Returns the name of the field type of the given constant pool object.
    *
    * @param constant_pool constant pool of ClassFile.
-   * @param i a constant pool index for an entry of type CONSTANT_Utf8, CONSTANT_NameAndType, or
-   *     CONSTANT_FieldRef.
+   * @param i             a constant pool index for an entry of type CONSTANT_Utf8, CONSTANT_NameAndType, or
+   *                      CONSTANT_FieldRef.
    * @return the type of the field.
    * @see CONSTANT_Utf8_info
    * @see cp_info#getTypeDescr
@@ -284,6 +253,39 @@ abstract class cp_info {
   public static String fieldType(cp_info constant_pool[], int i) {
     return ClassFile.parseDesc(getTypeDescr(constant_pool, i), "");
   }
+
+  /**
+   * Returns the size of this entry.
+   *
+   * @return size (in bytes) of this entry.
+   */
+  public abstract int size();
+
+  /**
+   * Returns a String representation of this entry.
+   *
+   * @param constant_pool constant pool of ClassFile.
+   * @return String representation of this entry.
+   */
+  public abstract String toString(cp_info constant_pool[]);
+
+  /**
+   * Returns a String description of what kind of entry this is.
+   *
+   * @return String representation of this kind of entry.
+   */
+  public abstract String typeName();
+
+  /**
+   * Compares this entry with another cp_info object (which may reside in a different constant
+   * pool).
+   *
+   * @param constant_pool    constant pool of ClassFile for this.
+   * @param cp               constant pool entry to compare against.
+   * @param cp_constant_pool constant pool of ClassFile for cp.
+   * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
+   */
+  public abstract int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]);
 
   /**
    * Creates an appropriate jimple representation of this constant. Field and method constants are

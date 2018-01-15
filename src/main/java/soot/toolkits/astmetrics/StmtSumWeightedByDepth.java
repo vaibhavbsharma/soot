@@ -1,9 +1,5 @@
 package soot.toolkits.astmetrics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
-
 import polyglot.ast.Block;
 import polyglot.ast.Branch;
 import polyglot.ast.CodeDecl;
@@ -23,19 +19,21 @@ import polyglot.ast.Try;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
+
 public class StmtSumWeightedByDepth extends ASTMetric {
 
+  public static boolean tmpAbruptChecker = false;
   int currentDepth;
   int sum;
   int maxDepth;
   int numNodes;
-
   Stack<ArrayList> labelNodesSoFar = new Stack<>();
   ArrayList<Node> blocksWithAbruptFlow = new ArrayList<>();
   HashMap<Node, Integer> stmtToMetric = new HashMap<>();
   HashMap<Node, Integer> stmtToMetricDepth = new HashMap<>();
-
-  public static boolean tmpAbruptChecker = false;
 
   public StmtSumWeightedByDepth(Node node) {
     super(node);
@@ -132,6 +130,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
               }
               return enter(node);
             }
+
             // this method simply stops further node visiting if we found our info
             @Override
             public Node override(Node parent, Node node) {

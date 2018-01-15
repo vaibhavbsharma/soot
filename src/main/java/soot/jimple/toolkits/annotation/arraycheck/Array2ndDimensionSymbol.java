@@ -30,6 +30,10 @@ import soot.G;
 public class Array2ndDimensionSymbol {
   private Object var;
 
+  private Array2ndDimensionSymbol(Object which) {
+    this.var = which;
+  }
+
   public static Array2ndDimensionSymbol v(Object which) {
     Array2ndDimensionSymbol tdal = G.v().Array2ndDimensionSymbol_pool.get(which);
     if (tdal == null) {
@@ -38,10 +42,6 @@ public class Array2ndDimensionSymbol {
     }
 
     return tdal;
-  }
-
-  private Array2ndDimensionSymbol(Object which) {
-    this.var = which;
   }
 
   public Object getVar() {

@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.reflection;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Local;
@@ -16,6 +13,9 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class creates a local for each string constant that is used as a base object to a reflective
@@ -31,7 +31,8 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
   private static final String INVOKE_SIG =
       "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
 
-  public ConstantInvokeMethodBaseTransformer(Singletons.Global g) {}
+  public ConstantInvokeMethodBaseTransformer(Singletons.Global g) {
+  }
 
   public static ConstantInvokeMethodBaseTransformer v() {
     return G.v().soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer();

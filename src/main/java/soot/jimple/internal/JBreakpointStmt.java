@@ -32,7 +32,8 @@ import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
 public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt {
-  public JBreakpointStmt() {}
+  public JBreakpointStmt() {
+  }
 
   @Override
   public String toString() {

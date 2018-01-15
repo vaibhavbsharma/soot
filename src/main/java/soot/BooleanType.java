@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation of the Java built-in type 'boolean'. Implemented as a singleton. */
+/**
+ * Soot representation of the Java built-in type 'boolean'. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class BooleanType extends PrimType implements IntegerType {
-  public BooleanType(Singletons.Global g) {}
+  public BooleanType(Singletons.Global g) {
+  }
 
   public static BooleanType v() {
     return G.v().soot_BooleanType();

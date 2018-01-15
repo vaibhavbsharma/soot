@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface RemExpr extends BinopExpr {}
+public interface RemExpr extends BinopExpr {
+}

@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -40,7 +36,13 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Filter;
 import soot.jimple.toolkits.callgraph.TransitiveTargets;
 
-/** Generates side-effect information from a PointsToAnalysis. */
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * Generates side-effect information from a PointsToAnalysis.
+ */
 public class SideEffectAnalysis {
   PointsToAnalysis pa;
   CallGraph cg;
@@ -48,6 +50,37 @@ public class SideEffectAnalysis {
   Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<>();
   int rwsetcount = 0;
   TransitiveTargets tt;
+
+  private SideEffectAnalysis() {
+    if (G.v().Union_factory == null) {
+      G.v().Union_factory =
+          new UnionFactory() {
+            @Override
+            public Union newUnion() {
+              return FullObjectSet.v();
+            }
+          };
+    }
+  }
+
+  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg) {
+    this();
+    this.pa = pa;
+    this.cg = cg;
+    this.tt = new TransitiveTargets(cg);
+  }
+
+  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg, Filter filter) {
+    // This constructor allows customization of call graph edges to
+    // consider via the use of a transitive targets filter.
+    // For example, using the NonClinitEdgesPred, you can create a
+    // SideEffectAnalysis that will ignore static initializers
+    // - R. Halpert 2006-12-02
+    this();
+    this.pa = pa;
+    this.cg = cg;
+    this.tt = new TransitiveTargets(cg, filter);
+  }
 
   public void findNTRWSets(SootMethod method) {
     if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
@@ -85,37 +118,6 @@ public class SideEffectAnalysis {
   public RWSet nonTransitiveWriteSet(SootMethod method) {
     findNTRWSets(method);
     return methodToNTWriteSet.get(method);
-  }
-
-  private SideEffectAnalysis() {
-    if (G.v().Union_factory == null) {
-      G.v().Union_factory =
-          new UnionFactory() {
-            @Override
-            public Union newUnion() {
-              return FullObjectSet.v();
-            }
-          };
-    }
-  }
-
-  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg) {
-    this();
-    this.pa = pa;
-    this.cg = cg;
-    this.tt = new TransitiveTargets(cg);
-  }
-
-  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg, Filter filter) {
-    // This constructor allows customization of call graph edges to
-    // consider via the use of a transitive targets filter.
-    // For example, using the NonClinitEdgesPred, you can create a
-    // SideEffectAnalysis that will ignore static initializers
-    // - R. Halpert 2006-12-02
-    this();
-    this.pa = pa;
-    this.cg = cg;
-    this.tt = new TransitiveTargets(cg, filter);
   }
 
   private RWSet ntReadSet(SootMethod method, Stmt stmt) {

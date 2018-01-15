@@ -1,10 +1,10 @@
 package soot.jimple.toolkits.thread;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.SootMethod;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AbstractRuntimeThread written by Richard L. Halpert 2007-03-04 Acts as a container for the thread
@@ -66,12 +66,12 @@ public class AbstractRuntimeThread {
     this.joinStmt = joinStmt;
   }
 
-  public void setStartStmtMethod(SootMethod startStmtMethod) {
-    this.startStmtMethod = startStmtMethod;
-  }
-
   public SootMethod getStartStmtMethod() {
     return startStmtMethod;
+  }
+
+  public void setStartStmtMethod(SootMethod startStmtMethod) {
+    this.startStmtMethod = startStmtMethod;
   }
 
   public boolean containsMethod(Object method) {
@@ -144,8 +144,8 @@ public class AbstractRuntimeThread {
         (isMainThread ? "Main Thread" : "User Thread")
             + " ("
             + (runsMany
-                ? "Multi,  "
-                : (runsOnce ? "Single, " : (runsOneAtATime ? "At-Once," : "ERROR")));
+            ? "Multi,  "
+            : (runsOnce ? "Single, " : (runsOneAtATime ? "At-Once," : "ERROR")));
     if (startStmtHasMultipleReachingObjects) {
       ret = ret + "MRO,"; // Multiple Reaching Objects
       if (startMethodIsReentrant) {

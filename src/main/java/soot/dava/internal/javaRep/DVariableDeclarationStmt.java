@@ -32,11 +32,8 @@
  *            e.g. int i,j,k; is allowed
  *                  int i=2,j; is not allowed
  */
-package soot.dava.internal.javaRep;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+package soot.dava.internal.javaRep;
 
 import soot.AbstractUnit;
 import soot.Local;
@@ -53,6 +50,10 @@ import soot.jimple.FieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 

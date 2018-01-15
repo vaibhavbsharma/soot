@@ -25,13 +25,6 @@
 
 package soot;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import soot.options.Options;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.Tag;
@@ -39,17 +32,28 @@ import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 import soot.util.DeterministicHashMap;
 
-/** Prints out a class and all its methods. */
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+/**
+ * Prints out a class and all its methods.
+ */
 public class Printer {
-  public Printer(Singletons.Global g) {}
+  public static final int USE_ABBREVIATIONS = 0x0001, ADD_JIMPLE_LN = 0x0010;
+  private static final char fileSeparator = System.getProperty("file.separator").charAt(0);
+  int options = 0;
+  int jimpleLnNum = 0; // actual line number
+
+  public Printer(Singletons.Global g) {
+  }
 
   public static Printer v() {
     return G.v().soot_Printer();
   }
-
-  private static final char fileSeparator = System.getProperty("file.separator").charAt(0);
-
-  public static final int USE_ABBREVIATIONS = 0x0001, ADD_JIMPLE_LN = 0x0010;
 
   public boolean useAbbreviations() {
     return (options & USE_ABBREVIATIONS) != 0;
@@ -59,8 +63,6 @@ public class Printer {
     return (options & ADD_JIMPLE_LN) != 0;
   }
 
-  int options = 0;
-
   public void setOption(int opt) {
     options |= opt;
   }
@@ -68,8 +70,6 @@ public class Printer {
   public void clearOption(int opt) {
     options &= ~opt;
   }
-
-  int jimpleLnNum = 0; // actual line number
 
   public int getJimpleLnNum() {
     return jimpleLnNum;
@@ -306,7 +306,9 @@ public class Printer {
     incJimpleLnNum();
   }
 
-  /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+  /**
+   * Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>.
+   */
   private void printStatementsInBody(
       Body body, java.io.PrintWriter out, LabeledUnitPrinter up, UnitGraph unitGraph) {
     Chain<Unit> units = body.getUnits();
@@ -428,7 +430,9 @@ public class Printer {
     return lnNum;
   }
 
-  /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+  /**
+   * Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>.
+   */
   private void printLocalsInBody(Body body, UnitPrinter up) {
     // Print out local variables
     {

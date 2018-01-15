@@ -25,6 +25,15 @@
 
 package soot.toolkits.scalar;
 
+import soot.baf.GotoInst;
+import soot.jimple.GotoStmt;
+import soot.options.Options;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.interaction.FlowInfo;
+import soot.toolkits.graph.interaction.InteractionHandler;
+import soot.util.Numberable;
+import soot.util.PriorityQueue;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,21 +48,211 @@ import java.util.Queue;
 import java.util.RandomAccess;
 import java.util.Set;
 
-import soot.baf.GotoInst;
-import soot.jimple.GotoStmt;
-import soot.options.Options;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.interaction.FlowInfo;
-import soot.toolkits.graph.interaction.InteractionHandler;
-import soot.util.Numberable;
-import soot.util.PriorityQueue;
-
 /**
  * An abstract class providing a framework for carrying out dataflow analysis. Subclassing either
  * BackwardFlowAnalysis or ForwardFlowAnalysis and providing implementations for the abstract
  * methods will allow Soot to compute the corresponding flow analysis.
  */
 public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
+  /**
+   * Maps graph nodes to OUT sets.
+   */
+  protected Map<N, A> unitToAfterFlow;
+  /**
+   * Filtered: Maps graph nodes to OUT sets.
+   */
+  protected Map<N, A> filterUnitToAfterFlow = Collections.emptyMap();
+
+  /**
+   * Constructs a flow analysis on the given <code>DirectedGraph</code>.
+   */
+  public FlowAnalysis(DirectedGraph<N> graph) {
+    super(graph);
+
+    unitToAfterFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
+  }
+
+  /**
+   * Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s
+   * </code> (or in to out, depending on direction).
+   * <p>
+   * <p>This function often causes confusion, because the same interface is used for both forward
+   * and backward flow analyses. The first parameter is always the argument to the flow function
+   * (i.e. it is the "in" set in a forward analysis and the "out" set in a backward analysis), and
+   * the third parameter is always the result of the flow function (i.e. it is the "out" set in a
+   * forward analysis and the "in" set in a backward analysis).
+   *
+   * @param in  the input flow
+   * @param d   the current node
+   * @param out the returned flow
+   */
+  protected abstract void flowThrough(A in, N d, A out);
+
+  /**
+   * Accessor function returning value of OUT set for s.
+   */
+  public A getFlowAfter(N s) {
+    A a = unitToAfterFlow.get(s);
+    return a == null ? newInitialFlow() : a;
+  }
+
+  @Override
+  public A getFlowBefore(N s) {
+    A a = unitToBeforeFlow.get(s);
+    return a == null ? newInitialFlow() : a;
+  }
+
+  private void initFlow(Iterable<Entry<N, A>> universe, Map<N, A> in, Map<N, A> out) {
+    assert universe != null;
+    assert in != null;
+    assert out != null;
+
+    // If a node has only a single in-flow, the in-flow is always equal
+    // to the out-flow if its predecessor, so we use the same object.
+    // this saves memory and requires less object creation and copy calls.
+
+    // Furthermore a node can be marked as omissible, this allows us to use
+    // the same "flow-set" for out-flow and in-flow. A merge node with within
+    // a real scc cannot be omitted, as it could cause endless loops within
+    // the fixpoint-iteration!
+
+    for (Entry<N, A> n : universe) {
+      boolean omit = true;
+      if (n.in.length > 1) {
+        n.inFlow = newInitialFlow();
+
+        // no merge points in loops
+        omit = !n.isRealStronglyConnected;
+      } else {
+        assert n.in.length == 1 : "missing superhead";
+        n.inFlow = getFlow(n.in[0], n);
+        assert n.inFlow != null : "topological order is broken";
+      }
+
+      if (omit && omissible(n.data)) {
+        // We could recalculate the graph itself but thats more expensive than
+        // just falling through such nodes.
+        n.outFlow = n.inFlow;
+      } else {
+        n.outFlow = newInitialFlow();
+      }
+
+      // for legacy api
+      in.put(n.data, n.inFlow);
+      out.put(n.data, n.outFlow);
+    }
+  }
+
+  /**
+   * If a flow node can be omitted return <code>true</code>, otherwise <code>false</code>. There is
+   * no guarantee a node will be omitted. A omissible node does not influence the result of an
+   * analysis.
+   * <p>
+   * <p>If you are unsure, don't overwrite this method
+   *
+   * @param n the node to check
+   * @return <code>false</code>
+   */
+  protected boolean omissible(N n) {
+    return false;
+  }
+
+  /**
+   * You can specify which flow set you would like to use of node {@code from}
+   *
+   * @param from
+   * @param mergeNode
+   * @return Flow.OUT
+   */
+  protected Flow getFlow(N from, N mergeNode) {
+    return Flow.OUT;
+  }
+
+  private A getFlow(Entry<N, A> o, Entry<N, A> e) {
+    return (o.inFlow == o.outFlow) ? o.outFlow : getFlow(o.data, e.data).getFlow(o);
+  }
+
+  private void meetFlows(Entry<N, A> e) {
+    assert e.in.length >= 1;
+
+    if (e.in.length > 1) {
+      boolean copy = true;
+      for (Entry<N, A> o : e.in) {
+        A flow = getFlow(o, e);
+        if (copy) {
+          copy = false;
+          copy(flow, e.inFlow);
+        } else {
+          mergeInto(e.data, e.inFlow, flow);
+        }
+      }
+    }
+  }
+
+  final int doAnalysis(
+      GraphView gv, InteractionFlowHandler ifh, Map<N, A> inFlow, Map<N, A> outFlow) {
+    assert gv != null;
+    assert ifh != null;
+
+    ifh = Options.v().interactive_mode() ? ifh : InteractionFlowHandler.NONE;
+
+    final List<Entry<N, A>> universe =
+        Orderer.INSTANCE.newUniverse(graph, gv, entryInitialFlow(), isForward());
+    initFlow(universe, inFlow, outFlow);
+
+    Queue<Entry<N, A>> q = PriorityQueue.of(universe, true);
+
+    // Perform fixed point flow analysis
+    for (int numComputations = 0; ; numComputations++) {
+      Entry<N, A> e = q.poll();
+      if (e == null) {
+        return numComputations;
+      }
+
+      meetFlows(e);
+
+      // Compute beforeFlow and store it.
+      ifh.handleFlowIn(this, e.data);
+      boolean hasChanged = flowThrough(e);
+      ifh.handleFlowOut(this, e.data);
+
+      // Update queue appropriately
+      if (hasChanged) {
+        q.addAll(Arrays.asList(e.out));
+      }
+    }
+  }
+
+  private boolean flowThrough(Entry<N, A> d) {
+    // omitted, just fall through
+    if (d.inFlow == d.outFlow) {
+      assert !d.isRealStronglyConnected || d.in.length == 1;
+      return true;
+    }
+
+    if (d.isRealStronglyConnected) {
+      // A flow node that is influenced by at least one back-reference.
+      // It's essential to check if "flowThrough" changes the result.
+      // This requires the calculation of "equals", which itself
+      // can be really expensive - depending on the used flow-model.
+      // Depending on the "merge"+"flowThrough" costs, it can be cheaper
+      // to fall through. Only nodes with real back-references always
+      // need to be checked for changes
+      A out = newInitialFlow();
+      flowThrough(d.inFlow, d.data, out);
+      if (out.equals(d.outFlow)) {
+        return false;
+      }
+      // copy back the result, as it has changed
+      copy(out, d.outFlow);
+      return true;
+    }
+
+    // no back-references, just calculate "flowThrough"
+    flowThrough(d.inFlow, d.data, d.outFlow);
+    return true;
+  }
+
   public enum Flow {
     IN {
       @Override
@@ -69,42 +268,6 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     };
 
     abstract <F> F getFlow(Entry<?, F> e);
-  }
-
-  static class Entry<D, F> implements Numberable {
-    final D data;
-    int number;
-
-    /** This Entry is part of a real scc. */
-    boolean isRealStronglyConnected;
-
-    Entry<D, F>[] in;
-    Entry<D, F>[] out;
-    F inFlow;
-    F outFlow;
-
-    @SuppressWarnings("unchecked")
-    Entry(D u, Entry<D, F> pred) {
-      in = new Entry[] {pred};
-      data = u;
-      number = Integer.MIN_VALUE;
-      isRealStronglyConnected = false;
-    }
-
-    @Override
-    public String toString() {
-      return data == null ? "" : data.toString();
-    }
-
-    @Override
-    public void setNumber(int n) {
-      number = n;
-    }
-
-    @Override
-    public int getNumber() {
-      return number;
-    }
   }
 
   enum Orderer {
@@ -366,9 +529,11 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
       return h;
     }
 
-    public <A, N> void handleFlowIn(FlowAnalysis<N, A> a, N s) {}
+    public <A, N> void handleFlowIn(FlowAnalysis<N, A> a, N s) {
+    }
 
-    public <A, N> void handleFlowOut(FlowAnalysis<N, A> a, N s) {}
+    public <A, N> void handleFlowOut(FlowAnalysis<N, A> a, N s) {
+    }
   }
 
   enum GraphView {
@@ -400,195 +565,41 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     abstract <N> List<N> getOut(DirectedGraph<N> g, N s);
   }
 
-  /** Maps graph nodes to OUT sets. */
-  protected Map<N, A> unitToAfterFlow;
+  static class Entry<D, F> implements Numberable {
+    final D data;
+    int number;
 
-  /** Filtered: Maps graph nodes to OUT sets. */
-  protected Map<N, A> filterUnitToAfterFlow = Collections.emptyMap();
+    /**
+     * This Entry is part of a real scc.
+     */
+    boolean isRealStronglyConnected;
 
-  /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
-  public FlowAnalysis(DirectedGraph<N> graph) {
-    super(graph);
+    Entry<D, F>[] in;
+    Entry<D, F>[] out;
+    F inFlow;
+    F outFlow;
 
-    unitToAfterFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
-  }
-
-  /**
-   * Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s
-   * </code> (or in to out, depending on direction).
-   *
-   * <p>This function often causes confusion, because the same interface is used for both forward
-   * and backward flow analyses. The first parameter is always the argument to the flow function
-   * (i.e. it is the "in" set in a forward analysis and the "out" set in a backward analysis), and
-   * the third parameter is always the result of the flow function (i.e. it is the "out" set in a
-   * forward analysis and the "in" set in a backward analysis).
-   *
-   * @param in the input flow
-   * @param d the current node
-   * @param out the returned flow
-   */
-  protected abstract void flowThrough(A in, N d, A out);
-
-  /** Accessor function returning value of OUT set for s. */
-  public A getFlowAfter(N s) {
-    A a = unitToAfterFlow.get(s);
-    return a == null ? newInitialFlow() : a;
-  }
-
-  @Override
-  public A getFlowBefore(N s) {
-    A a = unitToBeforeFlow.get(s);
-    return a == null ? newInitialFlow() : a;
-  }
-
-  private void initFlow(Iterable<Entry<N, A>> universe, Map<N, A> in, Map<N, A> out) {
-    assert universe != null;
-    assert in != null;
-    assert out != null;
-
-    // If a node has only a single in-flow, the in-flow is always equal
-    // to the out-flow if its predecessor, so we use the same object.
-    // this saves memory and requires less object creation and copy calls.
-
-    // Furthermore a node can be marked as omissible, this allows us to use
-    // the same "flow-set" for out-flow and in-flow. A merge node with within
-    // a real scc cannot be omitted, as it could cause endless loops within
-    // the fixpoint-iteration!
-
-    for (Entry<N, A> n : universe) {
-      boolean omit = true;
-      if (n.in.length > 1) {
-        n.inFlow = newInitialFlow();
-
-        // no merge points in loops
-        omit = !n.isRealStronglyConnected;
-      } else {
-        assert n.in.length == 1 : "missing superhead";
-        n.inFlow = getFlow(n.in[0], n);
-        assert n.inFlow != null : "topological order is broken";
-      }
-
-      if (omit && omissible(n.data)) {
-        // We could recalculate the graph itself but thats more expensive than
-        // just falling through such nodes.
-        n.outFlow = n.inFlow;
-      } else {
-        n.outFlow = newInitialFlow();
-      }
-
-      // for legacy api
-      in.put(n.data, n.inFlow);
-      out.put(n.data, n.outFlow);
-    }
-  }
-
-  /**
-   * If a flow node can be omitted return <code>true</code>, otherwise <code>false</code>. There is
-   * no guarantee a node will be omitted. A omissible node does not influence the result of an
-   * analysis.
-   *
-   * <p>If you are unsure, don't overwrite this method
-   *
-   * @param n the node to check
-   * @return <code>false</code>
-   */
-  protected boolean omissible(N n) {
-    return false;
-  }
-
-  /**
-   * You can specify which flow set you would like to use of node {@code from}
-   *
-   * @param from
-   * @param mergeNode
-   * @return Flow.OUT
-   */
-  protected Flow getFlow(N from, N mergeNode) {
-    return Flow.OUT;
-  }
-
-  private A getFlow(Entry<N, A> o, Entry<N, A> e) {
-    return (o.inFlow == o.outFlow) ? o.outFlow : getFlow(o.data, e.data).getFlow(o);
-  }
-
-  private void meetFlows(Entry<N, A> e) {
-    assert e.in.length >= 1;
-
-    if (e.in.length > 1) {
-      boolean copy = true;
-      for (Entry<N, A> o : e.in) {
-        A flow = getFlow(o, e);
-        if (copy) {
-          copy = false;
-          copy(flow, e.inFlow);
-        } else {
-          mergeInto(e.data, e.inFlow, flow);
-        }
-      }
-    }
-  }
-
-  final int doAnalysis(
-      GraphView gv, InteractionFlowHandler ifh, Map<N, A> inFlow, Map<N, A> outFlow) {
-    assert gv != null;
-    assert ifh != null;
-
-    ifh = Options.v().interactive_mode() ? ifh : InteractionFlowHandler.NONE;
-
-    final List<Entry<N, A>> universe =
-        Orderer.INSTANCE.newUniverse(graph, gv, entryInitialFlow(), isForward());
-    initFlow(universe, inFlow, outFlow);
-
-    Queue<Entry<N, A>> q = PriorityQueue.of(universe, true);
-
-    // Perform fixed point flow analysis
-    for (int numComputations = 0; ; numComputations++) {
-      Entry<N, A> e = q.poll();
-      if (e == null) {
-        return numComputations;
-      }
-
-      meetFlows(e);
-
-      // Compute beforeFlow and store it.
-      ifh.handleFlowIn(this, e.data);
-      boolean hasChanged = flowThrough(e);
-      ifh.handleFlowOut(this, e.data);
-
-      // Update queue appropriately
-      if (hasChanged) {
-        q.addAll(Arrays.asList(e.out));
-      }
-    }
-  }
-
-  private boolean flowThrough(Entry<N, A> d) {
-    // omitted, just fall through
-    if (d.inFlow == d.outFlow) {
-      assert !d.isRealStronglyConnected || d.in.length == 1;
-      return true;
+    @SuppressWarnings("unchecked")
+    Entry(D u, Entry<D, F> pred) {
+      in = new Entry[] {pred};
+      data = u;
+      number = Integer.MIN_VALUE;
+      isRealStronglyConnected = false;
     }
 
-    if (d.isRealStronglyConnected) {
-      // A flow node that is influenced by at least one back-reference.
-      // It's essential to check if "flowThrough" changes the result.
-      // This requires the calculation of "equals", which itself
-      // can be really expensive - depending on the used flow-model.
-      // Depending on the "merge"+"flowThrough" costs, it can be cheaper
-      // to fall through. Only nodes with real back-references always
-      // need to be checked for changes
-      A out = newInitialFlow();
-      flowThrough(d.inFlow, d.data, out);
-      if (out.equals(d.outFlow)) {
-        return false;
-      }
-      // copy back the result, as it has changed
-      copy(out, d.outFlow);
-      return true;
+    @Override
+    public String toString() {
+      return data == null ? "" : data.toString();
     }
 
-    // no back-references, just calculate "flowThrough"
-    flowThrough(d.inFlow, d.data, d.outFlow);
-    return true;
+    @Override
+    public int getNumber() {
+      return number;
+    }
+
+    @Override
+    public void setNumber(int n) {
+      number = n;
+    }
   }
 }

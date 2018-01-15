@@ -45,7 +45,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
    * Constructs a ValueUnitPair from a Unit object and a Value object.
    *
    * @param value some Value
-   * @param unit some Unit.
+   * @param unit  some Unit.
    */
   public ValueUnitPair(Value value, Unit unit) {
     setValue(value);
@@ -57,7 +57,17 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
     return true;
   }
 
-  /** @see soot.UnitBox#setUnit(Unit) */
+  /**
+   * @see soot.UnitBox#getUnit()
+   */
+  @Override
+  public Unit getUnit() {
+    return unit;
+  }
+
+  /**
+   * @see soot.UnitBox#setUnit(Unit)
+   */
   @Override
   public void setUnit(Unit unit) {
     /* Code copied from AbstractUnitBox */
@@ -80,19 +90,17 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
     }
   }
 
-  /** @see soot.UnitBox#getUnit() */
-  @Override
-  public Unit getUnit() {
-    return unit;
-  }
-
-  /** @see soot.UnitBox#canContainUnit(Unit) */
+  /**
+   * @see soot.UnitBox#canContainUnit(Unit)
+   */
   @Override
   public boolean canContainUnit(Unit u) {
     return true;
   }
 
-  /** @see soot.UnitBox#isBranchTarget() */
+  /**
+   * @see soot.UnitBox#isBranchTarget()
+   */
   @Override
   public boolean isBranchTarget() {
     return true;
@@ -150,7 +158,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
 
   /**
    * Non-deterministic hashcode consistent with equivTo() implementation.
-   *
+   * <p>
    * <p><b>Note:</b> If you are concerned about non-determinism, remember that current
    * implementations of equivHashCode() in other parts of Soot are non-deterministic as well (see
    * Constant.java for example).

@@ -25,9 +25,9 @@
 
 package soot.jimple;
 
-import java.util.List;
-
 import soot.Local;
+
+import java.util.List;
 
 public interface EqualLocals {
   boolean isLocalEqualToAt(Local l1, Local l2, Stmt s);

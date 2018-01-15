@@ -19,11 +19,6 @@
 
 package soot.jimple.toolkits.annotation.logic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -46,17 +41,25 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.SmartLocalDefsPool;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 public class LoopInvariantFinder extends BodyTransformer {
 
   private ArrayList constants;
 
-  public LoopInvariantFinder(Singletons.Global g) {}
+  public LoopInvariantFinder(Singletons.Global g) {
+  }
 
   public static LoopInvariantFinder v() {
     return G.v().soot_jimple_toolkits_annotation_logic_LoopInvariantFinder();
   }
 
-  /** this one uses the side effect tester */
+  /**
+   * this one uses the side effect tester
+   */
   @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 

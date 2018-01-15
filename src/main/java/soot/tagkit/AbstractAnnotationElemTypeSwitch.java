@@ -55,7 +55,8 @@ public abstract class AbstractAnnotationElemTypeSwitch implements IAnnotationEle
   }
 
   @Override
-  public void defaultCase(Object object) {}
+  public void defaultCase(Object object) {
+  }
 
   public Object getResult() {
     return result;

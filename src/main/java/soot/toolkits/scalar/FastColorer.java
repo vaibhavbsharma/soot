@@ -25,6 +25,16 @@
 
 package soot.toolkits.scalar;
 
+import soot.Body;
+import soot.Local;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.options.Options;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.ArraySet;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -35,16 +45,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import soot.Body;
-import soot.Local;
-import soot.Unit;
-import soot.Value;
-import soot.ValueBox;
-import soot.options.Options;
-import soot.toolkits.exceptions.PedanticThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.util.ArraySet;
 
 /**
  * Provides methods for register coloring. Jimple uses these methods to assign the local slots
@@ -172,7 +172,9 @@ public class FastColorer {
     }
   }
 
-  /** Provides an economical coloring for the locals of <code>unitBody</code>. */
+  /**
+   * Provides an economical coloring for the locals of <code>unitBody</code>.
+   */
   public static void assignColorsToLocals(
       Body unitBody,
       Map<Local, Object> localToGroup,
@@ -256,15 +258,13 @@ public class FastColorer {
     }
   }
 
-  /** Implementation of a unit interference graph. */
+  /**
+   * Implementation of a unit interference graph.
+   */
   private static class UnitInterferenceGraph {
     Map<Local, Set<Local>> localToLocals; // Maps a local to its interfering
     // locals.
     List<Local> locals;
-
-    public List<Local> getLocals() {
-      return locals;
-    }
 
     public UnitInterferenceGraph(
         Body body,
@@ -322,6 +322,10 @@ public class FastColorer {
       }
     }
 
+    public List<Local> getLocals() {
+      return locals;
+    }
+
     public void setInterference(Local l1, Local l2) {
       // We need the mapping in both directions
       // l1 -> l2
@@ -357,7 +361,9 @@ public class FastColorer {
   }
 }
 
-/** Binds together a String and a Group. */
+/**
+ * Binds together a String and a Group.
+ */
 class StringGroupPair {
   String string;
   Object group;

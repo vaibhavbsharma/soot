@@ -49,7 +49,9 @@ public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExp
     super(opBox);
   }
 
-  /** Compares the specified object with this one for structural equality. */
+  /**
+   * Compares the specified object with this one for structural equality.
+   */
   @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractNegExpr) {
@@ -58,7 +60,9 @@ public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExp
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode();

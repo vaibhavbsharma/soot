@@ -24,4 +24,5 @@ package soot.jimple;
  *
  * @author Ondrej Lhotak
  */
-public interface AnyNewExpr extends Expr {}
+public interface AnyNewExpr extends Expr {
+}

@@ -19,10 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-
 import soot.G;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
@@ -33,6 +29,10 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.util.LargeNumberedMap;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * Propagates points-to sets using an on-line cycle detection algorithm based on Heintze and
  * Tardieu, PLDI 2000.
@@ -40,12 +40,21 @@ import soot.util.LargeNumberedMap;
  * @author Ondrej Lhotak
  */
 public final class PropCycle extends Propagator {
+  private final LargeNumberedMap<VarNode, Integer> varNodeToIteration;
+  private PAG pag;
+
+  /* End of public methods. */
+  /* End of package methods. */
+  private OnFlyCallGraph ofcg;
+  private Integer currentIteration;
   public PropCycle(PAG pag) {
     this.pag = pag;
     varNodeToIteration = new LargeNumberedMap<>(pag.getVarNodeNumberer());
   }
 
-  /** Actually does the propagation. */
+  /**
+   * Actually does the propagation.
+   */
   @Override
   public final void propagate() {
     ofcg = pag.getOnFlyCallGraph();
@@ -81,17 +90,17 @@ public final class PropCycle extends Propagator {
           final FieldRefNode target = (FieldRefNode) element0;
           changed =
               target
-                      .getBase()
-                      .makeP2Set()
-                      .forall(
-                          new P2SetVisitor() {
-                            @Override
-                            public final void visit(Node n) {
-                              AllocDotField nDotF =
-                                  pag.makeAllocDotField((AllocNode) n, target.getField());
-                              nDotF.makeP2Set().addAll(src.getP2Set(), null);
-                            }
-                          })
+                  .getBase()
+                  .makeP2Set()
+                  .forall(
+                      new P2SetVisitor() {
+                        @Override
+                        public final void visit(Node n) {
+                          AllocDotField nDotF =
+                              pag.makeAllocDotField((AllocNode) n, target.getField());
+                          nDotF.makeP2Set().addAll(src.getP2Set(), null);
+                        }
+                      })
                   | changed;
         }
       }
@@ -108,9 +117,6 @@ public final class PropCycle extends Propagator {
       }
     } while (changed);
   }
-
-  /* End of public methods. */
-  /* End of package methods. */
 
   private boolean computeP2Set(final VarNode v, ArrayList<VarNode> path) {
     boolean ret = false;
@@ -153,25 +159,20 @@ public final class PropCycle extends Propagator {
         final FieldRefNode src = (FieldRefNode) element;
         ret =
             src.getBase()
-                    .getP2Set()
-                    .forall(
-                        new P2SetVisitor() {
-                          @Override
-                          public final void visit(Node n) {
-                            AllocNode an = (AllocNode) n;
-                            AllocDotField adf = pag.makeAllocDotField(an, src.getField());
-                            returnValue = v.makeP2Set().addAll(adf.getP2Set(), null) | returnValue;
-                          }
-                        })
+                .getP2Set()
+                .forall(
+                    new P2SetVisitor() {
+                      @Override
+                      public final void visit(Node n) {
+                        AllocNode an = (AllocNode) n;
+                        AllocDotField adf = pag.makeAllocDotField(an, src.getField());
+                        returnValue = v.makeP2Set().addAll(adf.getP2Set(), null) | returnValue;
+                      }
+                    })
                 | ret;
       }
     }
     path.remove(path.size() - 1);
     return ret;
   }
-
-  private PAG pag;
-  private OnFlyCallGraph ofcg;
-  private Integer currentIteration;
-  private final LargeNumberedMap<VarNode, Integer> varNodeToIteration;
 }

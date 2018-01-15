@@ -1,13 +1,5 @@
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
@@ -33,7 +25,6 @@ import org.jf.dexlib2.iface.value.MethodEncodedValue;
 import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.SootClass;
@@ -66,6 +57,14 @@ import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.toDex.SootToDexUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Converts annotations from Dexlib to Jimple.
@@ -368,24 +367,6 @@ public class DexAnnotation {
     }
   }
 
-  class MyAnnotations {
-    List<AnnotationTag> annotationList = new ArrayList<>();
-    List<Integer> visibilityList = new ArrayList<>();
-
-    public void add(AnnotationTag a, int visibility) {
-      annotationList.add(a);
-      visibilityList.add(new Integer(visibility));
-    }
-
-    public List<AnnotationTag> getAnnotations() {
-      return annotationList;
-    }
-
-    public List<Integer> getVisibilityList() {
-      return visibilityList;
-    }
-  }
-
   /**
    * @param annotations
    * @return
@@ -677,136 +658,135 @@ public class DexAnnotation {
       AnnotationElem elem = null;
       switch (type) {
         case 0x00: // BYTE
-          {
-            ByteEncodedValue v = (ByteEncodedValue) ev;
-            elem = new AnnotationIntElem(v.getValue(), 'B', ae.getName());
-            break;
-          }
+        {
+          ByteEncodedValue v = (ByteEncodedValue) ev;
+          elem = new AnnotationIntElem(v.getValue(), 'B', ae.getName());
+          break;
+        }
         case 0x02: // SHORT
-          {
-            ShortEncodedValue v = (ShortEncodedValue) ev;
-            elem = new AnnotationIntElem(v.getValue(), 'S', ae.getName());
-            break;
-          }
+        {
+          ShortEncodedValue v = (ShortEncodedValue) ev;
+          elem = new AnnotationIntElem(v.getValue(), 'S', ae.getName());
+          break;
+        }
         case 0x03: // CHAR
-          {
-            CharEncodedValue v = (CharEncodedValue) ev;
-            elem = new AnnotationIntElem(v.getValue(), 'C', ae.getName());
-            break;
-          }
+        {
+          CharEncodedValue v = (CharEncodedValue) ev;
+          elem = new AnnotationIntElem(v.getValue(), 'C', ae.getName());
+          break;
+        }
         case 0x04: // INT
-          {
-            IntEncodedValue v = (IntEncodedValue) ev;
-            elem = new AnnotationIntElem(v.getValue(), 'I', ae.getName());
-            break;
-          }
+        {
+          IntEncodedValue v = (IntEncodedValue) ev;
+          elem = new AnnotationIntElem(v.getValue(), 'I', ae.getName());
+          break;
+        }
         case 0x06: // LONG
-          {
-            LongEncodedValue v = (LongEncodedValue) ev;
-            elem = new AnnotationLongElem(v.getValue(), 'J', ae.getName());
-            break;
-          }
+        {
+          LongEncodedValue v = (LongEncodedValue) ev;
+          elem = new AnnotationLongElem(v.getValue(), 'J', ae.getName());
+          break;
+        }
         case 0x10: // FLOAT
-          {
-            FloatEncodedValue v = (FloatEncodedValue) ev;
-            elem = new AnnotationFloatElem(v.getValue(), 'F', ae.getName());
-            break;
-          }
+        {
+          FloatEncodedValue v = (FloatEncodedValue) ev;
+          elem = new AnnotationFloatElem(v.getValue(), 'F', ae.getName());
+          break;
+        }
         case 0x11: // DOUBLE
-          {
-            DoubleEncodedValue v = (DoubleEncodedValue) ev;
-            elem = new AnnotationDoubleElem(v.getValue(), 'D', ae.getName());
-            break;
-          }
+        {
+          DoubleEncodedValue v = (DoubleEncodedValue) ev;
+          elem = new AnnotationDoubleElem(v.getValue(), 'D', ae.getName());
+          break;
+        }
         case 0x17: // STRING
-          {
-            StringEncodedValue v = (StringEncodedValue) ev;
-            elem = new AnnotationStringElem(v.getValue(), 's', ae.getName());
-            break;
-          }
+        {
+          StringEncodedValue v = (StringEncodedValue) ev;
+          elem = new AnnotationStringElem(v.getValue(), 's', ae.getName());
+          break;
+        }
         case 0x18: // TYPE
-          {
-            TypeEncodedValue v = (TypeEncodedValue) ev;
-            elem = new AnnotationClassElem(v.getValue(), 'c', ae.getName());
-            break;
-          }
+        {
+          TypeEncodedValue v = (TypeEncodedValue) ev;
+          elem = new AnnotationClassElem(v.getValue(), 'c', ae.getName());
+          break;
+        }
         case 0x19: // FIELD (Dalvik specific?)
-          {
-            FieldEncodedValue v = (FieldEncodedValue) ev;
-            FieldReference fr = v.getValue();
-            String fieldSig = "";
-            fieldSig += DexType.toSootAT(fr.getDefiningClass()) + ": ";
-            fieldSig += DexType.toSootAT(fr.getType()) + " ";
-            fieldSig += fr.getName();
-            elem = new AnnotationStringElem(fieldSig, 'f', ae.getName());
-            break;
-          }
+        {
+          FieldEncodedValue v = (FieldEncodedValue) ev;
+          FieldReference fr = v.getValue();
+          String fieldSig = "";
+          fieldSig += DexType.toSootAT(fr.getDefiningClass()) + ": ";
+          fieldSig += DexType.toSootAT(fr.getType()) + " ";
+          fieldSig += fr.getName();
+          elem = new AnnotationStringElem(fieldSig, 'f', ae.getName());
+          break;
+        }
         case 0x1a: // METHOD (Dalvik specific?)
-          {
-            MethodEncodedValue v = (MethodEncodedValue) ev;
-            MethodReference mr = v.getValue();
+        {
+          MethodEncodedValue v = (MethodEncodedValue) ev;
+          MethodReference mr = v.getValue();
 
-            String className = DexType.toSootICAT(mr.getDefiningClass());
-            String returnType = DexType.toSootAT(mr.getReturnType());
-            String methodName = mr.getName();
-            String parameters = "";
-            for (CharSequence p : mr.getParameterTypes()) {
-              parameters += DexType.toSootAT(p.toString());
-            }
-            String mSig = className + " |" + methodName + " |" + parameters + " |" + returnType;
-            elem = new AnnotationStringElem(mSig, 'M', ae.getName());
-            break;
+          String className = DexType.toSootICAT(mr.getDefiningClass());
+          String returnType = DexType.toSootAT(mr.getReturnType());
+          String methodName = mr.getName();
+          String parameters = "";
+          for (CharSequence p : mr.getParameterTypes()) {
+            parameters += DexType.toSootAT(p.toString());
           }
+          String mSig = className + " |" + methodName + " |" + parameters + " |" + returnType;
+          elem = new AnnotationStringElem(mSig, 'M', ae.getName());
+          break;
+        }
         case 0x1b: // ENUM : Warning -> encoding Dalvik specific!
-          {
-            EnumEncodedValue v = (EnumEncodedValue) ev;
-            FieldReference fr = v.getValue();
-            elem =
-                new AnnotationEnumElem(
-                    DexType.toSootAT(fr.getType()).toString(), fr.getName(), 'e', ae.getName());
-            break;
-          }
+        {
+          EnumEncodedValue v = (EnumEncodedValue) ev;
+          FieldReference fr = v.getValue();
+          elem =
+              new AnnotationEnumElem(
+                  DexType.toSootAT(fr.getType()).toString(), fr.getName(), 'e', ae.getName());
+          break;
+        }
         case 0x1c: // ARRAY
-          {
-            ArrayEncodedValue v = (ArrayEncodedValue) ev;
-            ArrayList<AnnotationElem> l = handleAnnotationElement(ae, v.getValue());
-            if (l != null) {
-              elem = new AnnotationArrayElem(l, '[', ae.getName());
-            }
-            break;
+        {
+          ArrayEncodedValue v = (ArrayEncodedValue) ev;
+          ArrayList<AnnotationElem> l = handleAnnotationElement(ae, v.getValue());
+          if (l != null) {
+            elem = new AnnotationArrayElem(l, '[', ae.getName());
           }
+          break;
+        }
         case 0x1d: // ANNOTATION
-          {
-            AnnotationEncodedValue v = (AnnotationEncodedValue) ev;
-            AnnotationTag t = new AnnotationTag(DexType.toSootAT(v.getType()).toString());
-            for (AnnotationElement newElem : v.getElements()) {
-              List<EncodedValue> l = new ArrayList<>();
-              l.add(newElem.getValue());
-              List<AnnotationElem> aList = handleAnnotationElement(newElem, l);
-              if (aList != null) {
-                for (AnnotationElem e : aList) {
-                  t.addElem(e);
-                }
+        {
+          AnnotationEncodedValue v = (AnnotationEncodedValue) ev;
+          AnnotationTag t = new AnnotationTag(DexType.toSootAT(v.getType()).toString());
+          for (AnnotationElement newElem : v.getElements()) {
+            List<EncodedValue> l = new ArrayList<>();
+            l.add(newElem.getValue());
+            List<AnnotationElem> aList = handleAnnotationElement(newElem, l);
+            if (aList != null) {
+              for (AnnotationElem e : aList) {
+                t.addElem(e);
               }
             }
-            elem = new AnnotationAnnotationElem(t, '@', ae.getName());
-            break;
           }
+          elem = new AnnotationAnnotationElem(t, '@', ae.getName());
+          break;
+        }
         case 0x1e: // NULL (Dalvik specific?)
-          {
-            elem = new AnnotationStringElem(null, 'N', ae.getName());
-            break;
-          }
+        {
+          elem = new AnnotationStringElem(null, 'N', ae.getName());
+          break;
+        }
         case 0x1f: // BOOLEAN
-          {
-            BooleanEncodedValue v = (BooleanEncodedValue) ev;
-            elem = new AnnotationBooleanElem(v.getValue(), 'Z', ae.getName());
-            break;
-          }
-        default:
-          {
-            throw new RuntimeException("Unknown annotation element 0x" + Integer.toHexString(type));
-          }
+        {
+          BooleanEncodedValue v = (BooleanEncodedValue) ev;
+          elem = new AnnotationBooleanElem(v.getValue(), 'Z', ae.getName());
+          break;
+        }
+        default: {
+          throw new RuntimeException("Unknown annotation element 0x" + Integer.toHexString(type));
+        }
       } // switch (type)
 
       if (elem != null) {
@@ -819,7 +799,7 @@ public class DexAnnotation {
 
   /**
    * Converts Dexlib visibility to Jimple visibility.
-   *
+   * <p>
    * <p>In Dalvik: VISIBILITY_BUILD 0x00 intended only to be visible at build time (e.g., during
    * compilation of other code) VISIBILITY_RUNTIME 0x01 intended to visible at runtime
    * VISIBILITY_SYSTEM 0x02 intended to visible at runtime, but only to the underlying system (and
@@ -839,5 +819,23 @@ public class DexAnnotation {
       return AnnotationConstants.SOURCE_VISIBLE;
     }
     throw new RuntimeException("error: unknown annotation visibility: '" + visibility + "'");
+  }
+
+  class MyAnnotations {
+    List<AnnotationTag> annotationList = new ArrayList<>();
+    List<Integer> visibilityList = new ArrayList<>();
+
+    public void add(AnnotationTag a, int visibility) {
+      annotationList.add(a);
+      visibilityList.add(new Integer(visibility));
+    }
+
+    public List<AnnotationTag> getAnnotations() {
+      return annotationList;
+    }
+
+    public List<Integer> getVisibilityList() {
+      return visibilityList;
+    }
   }
 }

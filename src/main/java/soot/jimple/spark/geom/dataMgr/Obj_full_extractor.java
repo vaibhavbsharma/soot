@@ -16,13 +16,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.dataMgr;
 
-import java.util.ArrayList;
-import java.util.List;
+package soot.jimple.spark.geom.dataMgr;
 
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Extracts the full context sensitive points-to result.

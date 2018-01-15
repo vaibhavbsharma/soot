@@ -25,19 +25,24 @@ import soot.tagkit.ImportantTagAggregator;
 import soot.tagkit.Tag;
 
 public class DependenceTagAggregator extends ImportantTagAggregator {
-  public DependenceTagAggregator(Singletons.Global g) {}
+  public DependenceTagAggregator(Singletons.Global g) {
+  }
 
   public static DependenceTagAggregator v() {
     return G.v().soot_jimple_toolkits_pointer_DependenceTagAggregator();
   }
 
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   @Override
   public boolean wantTag(Tag t) {
     return (t instanceof DependenceTag);
   }
 
-  /** Return name of the resulting aggregated tag. */
+  /**
+   * Return name of the resulting aggregated tag.
+   */
   @Override
   public String aggregatedName() {
     return "SideEffectAttribute";

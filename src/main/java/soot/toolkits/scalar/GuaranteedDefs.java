@@ -19,12 +19,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.Unit;
@@ -33,6 +27,12 @@ import soot.options.Options;
 import soot.toolkits.graph.DominatorsFinder;
 import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Find all locals guaranteed to be defined at (just before) a given program point.
@@ -73,7 +73,9 @@ public class GuaranteedDefs {
   }
 }
 
-/** Flow analysis to determine all locals guaranteed to be defined at a given program point. */
+/**
+ * Flow analysis to determine all locals guaranteed to be defined at a given program point.
+ */
 class GuaranteedDefsAnalysis extends ForwardFlowAnalysis {
   FlowSet emptySet = new ArraySparseSet();
   Map<Unit, FlowSet> unitToGenerateSet;
@@ -104,19 +106,25 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis {
     doAnalysis();
   }
 
-  /** All INs are initialized to the empty set. */
+  /**
+   * All INs are initialized to the empty set.
+   */
   @Override
   protected Object newInitialFlow() {
     return emptySet.clone();
   }
 
-  /** IN(Start) is the empty set */
+  /**
+   * IN(Start) is the empty set
+   */
   @Override
   protected Object entryInitialFlow() {
     return emptySet.clone();
   }
 
-  /** OUT is the same as IN plus the genSet. */
+  /**
+   * OUT is the same as IN plus the genSet.
+   */
   @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
@@ -125,7 +133,9 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis {
     in.union(unitToGenerateSet.get(unit), out);
   }
 
-  /** All paths == Intersection. */
+  /**
+   * All paths == Intersection.
+   */
   @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = (FlowSet) in1, inSet2 = (FlowSet) in2, outSet = (FlowSet) out;

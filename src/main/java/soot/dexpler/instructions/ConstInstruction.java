@@ -29,7 +29,6 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.WideLiteralInstruction;
-
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -71,7 +70,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
    * Return the literal constant for this instruction.
    *
    * @param register the register number to fill
-   * @param body the body containing the instruction
+   * @param body     the body containing the instruction
    */
   private Constant getConstant(int dest, DexBody body) {
 

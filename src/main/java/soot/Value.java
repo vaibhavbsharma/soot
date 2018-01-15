@@ -25,15 +25,15 @@
 
 package soot;
 
+import soot.util.Switchable;
+
 import java.io.Serializable;
 import java.util.List;
-
-import soot.util.Switchable;
 
 /**
  * Data used as, for instance, arguments to instructions; typical implementations are constants or
  * expressions.
- *
+ * <p>
  * <p>Values are typed, clonable and must declare which other Values they use (contain).
  */
 public interface Value extends Switchable, EquivTo, Serializable {
@@ -43,10 +43,14 @@ public interface Value extends Switchable, EquivTo, Serializable {
    */
   List<ValueBox> getUseBoxes();
 
-  /** Returns the Soot type of this Value. */
+  /**
+   * Returns the Soot type of this Value.
+   */
   Type getType();
 
-  /** Returns a clone of this Value. */
+  /**
+   * Returns a clone of this Value.
+   */
   Object clone();
 
   void toString(UnitPrinter up);

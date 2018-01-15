@@ -32,12 +32,18 @@ import soot.util.Numberable;
  * implementation of Local for their local variables.
  */
 public interface Local extends Value, Numberable, Immediate {
-  /** Returns the name of the current Local variable. */
+  /**
+   * Returns the name of the current Local variable.
+   */
   String getName();
 
-  /** Sets the name of the current variable. */
+  /**
+   * Sets the name of the current variable.
+   */
   void setName(String name);
 
-  /** Sets the type of the current variable. */
+  /**
+   * Sets the type of the current variable.
+   */
   void setType(Type t);
 }

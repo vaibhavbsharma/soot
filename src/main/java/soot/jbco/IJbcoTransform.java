@@ -19,13 +19,13 @@
 
 package soot.jbco;
 
-import java.io.PrintStream;
-
 import soot.G;
+
+import java.io.PrintStream;
 
 /**
  * @author Michael Batchelder
- *     <p>Created on 19-Jun-2006
+ * <p>Created on 19-Jun-2006
  */
 public interface IJbcoTransform {
 

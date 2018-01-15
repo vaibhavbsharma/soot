@@ -28,8 +28,8 @@ package soot.coffi;
 /**
  * An entry in some code's exception table; describes an exception handler and the code it protects.
  *
- * @see Code_attribute
  * @author Clark Verbrugge
+ * @see Code_attribute
  */
 class exception_table_entry {
   /**

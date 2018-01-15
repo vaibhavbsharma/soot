@@ -16,14 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.ptinsE;
 
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+package soot.jimple.spark.geom.ptinsE;
 
 import soot.Hierarchy;
 import soot.RefType;
@@ -47,6 +41,13 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * This class defines a pointer variable in the PtIns encoding based points-to solver. Also, it is
  * NOT recommended to use.
@@ -55,18 +56,6 @@ import soot.jimple.spark.sets.P2SetVisitor;
  */
 @Deprecated
 public class PtInsNode extends IVarAbstraction {
-  // The targets of directed edges on the constraint graph
-  public Map<PtInsNode, PtInsIntervalManager> flowto;
-
-  // The objects this variable points to
-  public Map<AllocNode, PtInsIntervalManager> pt_objs;
-
-  // Newly added points-to tuple
-  public Map<AllocNode, PtInsIntervalManager> new_pts;
-
-  // store/load complex constraints
-  public Vector<PlainConstraint> complex_cons = null;
-
   static {
     stubManager = new PtInsIntervalManager();
     pres = new RectangleNode(0, 0, Constants.MAX_CONTEXTS, Constants.MAX_CONTEXTS);
@@ -74,8 +63,59 @@ public class PtInsNode extends IVarAbstraction {
     deadManager = new PtInsIntervalManager();
   }
 
+  // The targets of directed edges on the constraint graph
+  public Map<PtInsNode, PtInsIntervalManager> flowto;
+  // The objects this variable points to
+  public Map<AllocNode, PtInsIntervalManager> pt_objs;
+  // Newly added points-to tuple
+  public Map<AllocNode, PtInsIntervalManager> new_pts;
+  // store/load complex constraints
+  public Vector<PlainConstraint> complex_cons = null;
+
   public PtInsNode(Node thisVar) {
     me = thisVar;
+  }
+
+  // Implement the pointer assignment inference rules
+  private static boolean add_new_points_to_tuple(
+      SegmentNode pts, SegmentNode pe, AllocNode obj, PtInsNode qn) {
+    long interI, interJ;
+    int code = 0;
+
+    // Special Cases
+    if (pts.I1 == 0 || pe.I1 == 0) {
+      // Make it pointer insensitive but heap sensitive
+      pres.I1 = 0;
+      pres.I2 = pts.I2;
+      pres.L = pts.L;
+      code = (pts.I2 == 0 ? PtInsIntervalManager.ALL_TO_ALL : PtInsIntervalManager.ALL_TO_MANY);
+    } else {
+      // The left-end is the larger one
+      interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
+      // The right-end is the smaller one
+      interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
+
+      if (interI >= interJ) {
+        return false;
+      }
+
+      // The intersection is non-empty
+      pres.I1 = (pe.I2 == 0 ? 0 : interI - pe.I1 + pe.I2);
+      pres.I2 = (pts.I2 == 0 ? 0 : interI - pts.I1 + pts.I2);
+      pres.L = interJ - interI;
+      code = (pres.I2 == 0 ? PtInsIntervalManager.MANY_TO_ALL : PtInsIntervalManager.ONE_TO_ONE);
+    }
+
+    return qn.addPointsTo(code, obj);
+  }
+
+  // We only test if their points-to objects intersected under context
+  // insensitive manner
+  private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
+    if (p.I2 >= q.I2) {
+      return p.I2 < q.I2 + q.L;
+    }
+    return q.I2 < p.I2 + p.L;
   }
 
   @Override
@@ -136,7 +176,9 @@ public class PtInsNode extends IVarAbstraction {
     }
   }
 
-  /** Remember to clean the is_new flag */
+  /**
+   * Remember to clean the is_new flag
+   */
   @Override
   public void do_after_propagation() {
     for (PtInsIntervalManager pim : pt_objs.values()) {
@@ -225,7 +267,9 @@ public class PtInsNode extends IVarAbstraction {
     complex_cons.add(cons);
   }
 
-  /** Discard all context sensitive tuples which are covered by insensitive ones */
+  /**
+   * Discard all context sensitive tuples which are covered by insensitive ones
+   */
   @Override
   public void drop_duplicates() {
     for (AllocNode allocNode : pt_objs.keySet()) {
@@ -234,7 +278,9 @@ public class PtInsNode extends IVarAbstraction {
     }
   }
 
-  /** An efficient implementation of differential propagation. */
+  /**
+   * An efficient implementation of differential propagation.
+   */
   @Override
   public void propagate(GeomPointsTo ptAnalyzer, IWorklist worklist) {
     int i, j;
@@ -399,7 +445,9 @@ public class PtInsNode extends IVarAbstraction {
     return ret;
   }
 
-  /** Query if this pointer and qv could point to the same object under any contexts */
+  /**
+   * Query if this pointer and qv could point to the same object under any contexts
+   */
   @Override
   public boolean heap_sensitive_intersection(IVarAbstraction qv) {
     int i, j;
@@ -635,7 +683,9 @@ public class PtInsNode extends IVarAbstraction {
     return im.getFigures();
   }
 
-  /** Merge the context sensitive tuples, and make a single insensitive tuple */
+  /**
+   * Merge the context sensitive tuples, and make a single insensitive tuple
+   */
   private void do_pts_interval_merge() {
     for (PtInsIntervalManager im : pt_objs.values()) {
       im.mergeFigures(Parameters.max_pts_budget);
@@ -678,47 +728,5 @@ public class PtInsNode extends IVarAbstraction {
 
     // pres has been filled properly before calling this method
     return im.addNewFigure(code, pres) != null;
-  }
-
-  // Implement the pointer assignment inference rules
-  private static boolean add_new_points_to_tuple(
-      SegmentNode pts, SegmentNode pe, AllocNode obj, PtInsNode qn) {
-    long interI, interJ;
-    int code = 0;
-
-    // Special Cases
-    if (pts.I1 == 0 || pe.I1 == 0) {
-      // Make it pointer insensitive but heap sensitive
-      pres.I1 = 0;
-      pres.I2 = pts.I2;
-      pres.L = pts.L;
-      code = (pts.I2 == 0 ? PtInsIntervalManager.ALL_TO_ALL : PtInsIntervalManager.ALL_TO_MANY);
-    } else {
-      // The left-end is the larger one
-      interI = pe.I1 < pts.I1 ? pts.I1 : pe.I1;
-      // The right-end is the smaller one
-      interJ = (pe.I1 + pe.L < pts.I1 + pts.L ? pe.I1 + pe.L : pts.I1 + pts.L);
-
-      if (interI >= interJ) {
-        return false;
-      }
-
-      // The intersection is non-empty
-      pres.I1 = (pe.I2 == 0 ? 0 : interI - pe.I1 + pe.I2);
-      pres.I2 = (pts.I2 == 0 ? 0 : interI - pts.I1 + pts.I2);
-      pres.L = interJ - interI;
-      code = (pres.I2 == 0 ? PtInsIntervalManager.MANY_TO_ALL : PtInsIntervalManager.ONE_TO_ONE);
-    }
-
-    return qn.addPointsTo(code, obj);
-  }
-
-  // We only test if their points-to objects intersected under context
-  // insensitive manner
-  private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
-    if (p.I2 >= q.I2) {
-      return p.I2 < q.I2 + q.L;
-    }
-    return q.I2 < p.I2 + p.L;
   }
 }

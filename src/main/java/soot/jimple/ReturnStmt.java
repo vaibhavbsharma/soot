@@ -31,7 +31,7 @@ import soot.ValueBox;
 public interface ReturnStmt extends Stmt {
   ValueBox getOpBox();
 
-  void setOp(Value returnValue);
-
   Value getOp();
+
+  void setOp(Value returnValue);
 }

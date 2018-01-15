@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.ptinsE;
 
 import soot.jimple.spark.geom.dataRep.RectangleNode;
@@ -206,7 +207,9 @@ public class PtInsIntervalManager extends IFigureManager {
     header[ONE_TO_ONE] = q;
   }
 
-  /** Merge all the context sensitive intervals. The result is in the form (p, q, 0, I, L). */
+  /**
+   * Merge all the context sensitive intervals. The result is in the form (p, q, 0, I, L).
+   */
   private SegmentNode generate_all_to_many(SegmentNode mp) {
     long left, right, t;
     SegmentNode p;
@@ -234,7 +237,9 @@ public class PtInsIntervalManager extends IFigureManager {
     return mp;
   }
 
-  /** The result is in the form: (p, q, I, 0, L) */
+  /**
+   * The result is in the form: (p, q, I, 0, L)
+   */
   private SegmentNode generate_many_to_all(SegmentNode mp) {
     long left, right, t;
     SegmentNode p;
@@ -386,7 +391,7 @@ public class PtInsIntervalManager extends IFigureManager {
       if ((predator.I2 - predator.I1 == list.I2 - list.I1)
           && predator.I1 <= list.I1
           && (predator.I1 + predator.L
-              >= list.I2 + L)) { // The checked figure is completely contained in the predator
+          >= list.I2 + L)) { // The checked figure is completely contained in the predator
         // So we ignore it
         ;
       } else {

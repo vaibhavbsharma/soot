@@ -25,14 +25,6 @@
 
 package soot.baf.toolkits.base;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -75,16 +67,15 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class LoadStoreOptimizer extends BodyTransformer {
-  public LoadStoreOptimizer(Singletons.Global g) {}
-
-  public static LoadStoreOptimizer v() {
-    return G.v().soot_baf_toolkits_base_LoadStoreOptimizer();
-  }
-
-  // Constants
-  boolean debug = false;
-
   // constants returned by the stackIndependent function.
   private static final int FAILURE = 0;
   private static final int SUCCESS = 1;
@@ -93,15 +84,22 @@ public class LoadStoreOptimizer extends BodyTransformer {
   private static final int SPECIAL_SUCCESS = 4;
   private static final int HAS_CHANGED = 5;
   private static final int SPECIAL_SUCCESS2 = 6;
-
   private static final int STORE_LOAD_ELIMINATION = 0;
   private static final int STORE_LOAD_LOAD_ELIMINATION = -1;
-
+  // Constants
+  boolean debug = false;
   private Map<String, String> gOptions;
+  public LoadStoreOptimizer(Singletons.Global g) {
+  }
 
-  /** The method that drives the optimizations. */
+  public static LoadStoreOptimizer v() {
+    return G.v().soot_baf_toolkits_base_LoadStoreOptimizer();
+  }
+
+  /**
+   * The method that drives the optimizations.
+   */
   /* This is the public interface to LoadStoreOptimizer */
-
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
 
@@ -167,6 +165,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
         }
       }
     }
+
     /*
      *  Computes a map binding each unit in a method to the unique basic block
      *  that contains it.
@@ -520,14 +519,8 @@ public class LoadStoreOptimizer extends BodyTransformer {
     }
 
     /**
-     * @return FAILURE when store load elimination is not possible in any form.
-     * @return SUCCESS when a load in a store load pair can be moved IMMEDIATELY after it's defining
-     *     store
-     * @return MAKE_DUP when a store/load/load trio can be replaced by a dup unit.
-     * @return MAKE_DUP_X1 when store/load/load trio can be replaced by a dup1_x1 unit
-     * @return SPECIAL_SUCCESS when a store/load pair can AND must be immediately annihilated.
      * @return HAS_CHANGED when store load elimination is not possible in any form, but some unit
-     *     reordering has occured
+     * reordering has occured
      */
     private int stackIndependent(Unit from, Unit to, Block block, int aContext) {
       if (debug) {
@@ -539,8 +532,8 @@ public class LoadStoreOptimizer extends BodyTransformer {
             .println(
                 "context:"
                     + (aContext == STORE_LOAD_ELIMINATION
-                        ? "STORE_LOAD_ELIMINATION"
-                        : "STORE_LOAD_LOAD_ELIMINATION"));
+                    ? "STORE_LOAD_ELIMINATION"
+                    : "STORE_LOAD_LOAD_ELIMINATION"));
       }
 
       int minStackHeightAttained = 0; // records the min stack height attained between [from, to]
@@ -722,7 +715,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
       return res;
     }
 
-    /** @return true if aUnit perform a non-local read or write. false otherwise. */
+    /**
+     * @return true if aUnit perform a non-local read or write. false otherwise.
+     */
     private boolean isNonLocalReadOrWrite(Unit aUnit) {
       return (aUnit instanceof FieldArgInst)
           || (aUnit instanceof ArrayReadInst)
@@ -735,7 +730,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
      * @return true if aUnitToMove can be moved past aUnitToGoOver.
      */
     private boolean canMoveUnitOver(Unit aUnitToMove, Unit aUnitToGoOver) // xxx missing cases
-        {
+    {
 
       // can't change method call order or change fieldargInst and method call order
       if ((aUnitToGoOver instanceof MethodArgInst && aUnitToMove instanceof MethodArgInst)
@@ -745,29 +740,29 @@ public class LoadStoreOptimizer extends BodyTransformer {
           || (aUnitToGoOver instanceof ArrayWriteInst && aUnitToMove instanceof ArrayReadInst)
           || (aUnitToGoOver instanceof ArrayWriteInst && aUnitToMove instanceof ArrayWriteInst)
           || (aUnitToGoOver instanceof FieldPutInst
-              && aUnitToMove instanceof FieldGetInst
-              && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())
+          && aUnitToMove instanceof FieldGetInst
+          && ((FieldArgInst) aUnitToGoOver).getField()
+          == ((FieldArgInst) aUnitToMove).getField())
           || (aUnitToGoOver instanceof FieldGetInst
-              && aUnitToMove instanceof FieldPutInst
-              && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())
+          && aUnitToMove instanceof FieldPutInst
+          && ((FieldArgInst) aUnitToGoOver).getField()
+          == ((FieldArgInst) aUnitToMove).getField())
           || (aUnitToGoOver instanceof FieldPutInst
-              && aUnitToMove instanceof FieldPutInst
-              && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())
+          && aUnitToMove instanceof FieldPutInst
+          && ((FieldArgInst) aUnitToGoOver).getField()
+          == ((FieldArgInst) aUnitToMove).getField())
           || (aUnitToGoOver instanceof StaticPutInst
-              && aUnitToMove instanceof StaticGetInst
-              && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())
+          && aUnitToMove instanceof StaticGetInst
+          && ((FieldArgInst) aUnitToGoOver).getField()
+          == ((FieldArgInst) aUnitToMove).getField())
           || (aUnitToGoOver instanceof StaticGetInst
-              && aUnitToMove instanceof StaticPutInst
-              && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())
+          && aUnitToMove instanceof StaticPutInst
+          && ((FieldArgInst) aUnitToGoOver).getField()
+          == ((FieldArgInst) aUnitToMove).getField())
           || (aUnitToGoOver instanceof StaticPutInst
-              && aUnitToMove instanceof StaticPutInst
-              && ((FieldArgInst) aUnitToGoOver).getField()
-                  == ((FieldArgInst) aUnitToMove).getField())) {
+          && aUnitToMove instanceof StaticPutInst
+          && ((FieldArgInst) aUnitToGoOver).getField()
+          == ((FieldArgInst) aUnitToMove).getField())) {
         return false;
       }
 
@@ -910,8 +905,8 @@ public class LoadStoreOptimizer extends BodyTransformer {
      * block. The map 'mUnitToBlockMap' is updated. The replacement unit is inserted in the
      * position, of the aToReplace2 if not null, otherwise in aToReplace1's slot.
      *
-     * @param aToReplace1 Unit to replace. (shouldn't be null)
-     * @param aToReplace2 Second Unit to replace (can be null)
+     * @param aToReplace1  Unit to replace. (shouldn't be null)
+     * @param aToReplace2  Second Unit to replace (can be null)
      * @param aReplacement Unit that replaces the 2 previous units (shouldn't be null)
      */
     private void replaceUnit(Unit aToReplace1, Unit aToReplace2, Unit aReplacement) {
@@ -993,7 +988,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                   if (uses.size() == 1) {
                     if (allSuccesorsOfAreThePredecessorsOf(defBlock, loadBlock)) {
                       if (getDeltaStackHeightFromTo(
-                              defBlock.getSuccOf(storeUnit), defBlock.getTail())
+                          defBlock.getSuccOf(storeUnit), defBlock.getTail())
                           == 0) {
                         Iterator<Block> it2 = defBlock.getSuccs().iterator();
                         boolean res = true;
@@ -1050,13 +1045,13 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     if (def0Succs.get(0) == loadBlock && def1Succs.get(0) == loadBlock) {
                       if (loadBlock.getPreds().size() == 2) {
                         if ((def0 == defBlock0.getTail()
-                                || getDeltaStackHeightFromTo(
-                                        defBlock0.getSuccOf(def0), defBlock0.getTail())
-                                    == 0)
+                            || getDeltaStackHeightFromTo(
+                            defBlock0.getSuccOf(def0), defBlock0.getTail())
+                            == 0)
                             && (def1 == defBlock1.getTail()
-                                || getDeltaStackHeightFromTo(
-                                        defBlock1.getSuccOf(def1), defBlock1.getTail())
-                                    == 0)) {
+                            || getDeltaStackHeightFromTo(
+                            defBlock1.getSuccOf(def1), defBlock1.getTail())
+                            == 0)) {
                           defBlock0.remove(def0);
                           defBlock1.remove(def1);
                           loadBlock.insertBefore(def0, loadBlock.getHead());
@@ -1119,7 +1114,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
       return size == preds.size();
     }
 
-    /** @return true if aUnit is a commutative binary operator */
+    /**
+     * @return true if aUnit is a commutative binary operator
+     */
     private boolean isCommutativeBinOp(Unit aUnit) {
       if (aUnit == null) {
         return false;

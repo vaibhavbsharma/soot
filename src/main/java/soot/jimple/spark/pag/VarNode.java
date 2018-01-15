@@ -19,11 +19,6 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import soot.AnySubType;
 import soot.Context;
 import soot.G;
@@ -31,22 +26,48 @@ import soot.RefLikeType;
 import soot.Type;
 import soot.toolkits.scalar.Pair;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a simple variable node (Green) in the pointer assignment graph.
  *
  * @author Ondrej Lhotak
  */
 public abstract class VarNode extends ValNode implements Comparable {
+  protected Object variable;
+  protected Map<SparkField, FieldRefNode> fields;
+  protected int finishingNumber = 0;
+  protected boolean interProcTarget = false;
+  protected boolean interProcSource = false;
+  protected int numDerefs = 0;
+
+  VarNode(PAG pag, Object variable, Type t) {
+    super(pag, t);
+    if (!(t instanceof RefLikeType) || t instanceof AnySubType) {
+      throw new RuntimeException("Attempt to create VarNode of type " + t);
+    }
+    this.variable = variable;
+    pag.getVarNodeNumberer().add(this);
+    setFinishingNumber(++pag.maxFinishNumber);
+  }
+
   public Context context() {
     return null;
   }
-  /** Returns all field ref nodes having this node as their base. */
+
+  /**
+   * Returns all field ref nodes having this node as their base.
+   */
   public Collection<FieldRefNode> getAllFieldRefs() {
     if (fields == null) {
       return Collections.emptyList();
     }
     return fields.values();
   }
+
   /**
    * Returns the field ref node having this node as its base, and field as its field; null if
    * nonexistent.
@@ -77,16 +98,23 @@ public abstract class VarNode extends ValNode implements Comparable {
     return other.finishingNumber - finishingNumber;
   }
 
+  /* End of public methods. */
+
   public void setFinishingNumber(int i) {
     finishingNumber = i;
     if (i > pag.maxFinishNumber) {
       pag.maxFinishNumber = i;
     }
   }
-  /** Returns the underlying variable that this node represents. */
+
+  /**
+   * Returns the underlying variable that this node represents.
+   */
   public Object getVariable() {
     return variable;
   }
+
+  /* End of package methods. */
 
   /**
    * Designates this node as the potential target of a interprocedural assignment edge which may be
@@ -95,6 +123,7 @@ public abstract class VarNode extends ValNode implements Comparable {
   public void setInterProcTarget() {
     interProcTarget = true;
   }
+
   /**
    * Returns true if this node is the potential target of a interprocedural assignment edge which
    * may be added during on-the-fly call graph updating.
@@ -110,6 +139,7 @@ public abstract class VarNode extends ValNode implements Comparable {
   public void setInterProcSource() {
     interProcSource = true;
   }
+
   /**
    * Returns true if this node is the potential source of a interprocedural assignment edge which
    * may be added during on-the-fly call graph updating.
@@ -117,7 +147,10 @@ public abstract class VarNode extends ValNode implements Comparable {
   public boolean isInterProcSource() {
     return interProcSource;
   }
-  /** Returns true if this VarNode represents the THIS pointer */
+
+  /**
+   * Returns true if this VarNode represents the THIS pointer
+   */
   public boolean isThisPtr() {
     if (variable instanceof Pair) {
       Pair o = (Pair) variable;
@@ -127,31 +160,13 @@ public abstract class VarNode extends ValNode implements Comparable {
     return false;
   }
 
-  /* End of public methods. */
-
-  VarNode(PAG pag, Object variable, Type t) {
-    super(pag, t);
-    if (!(t instanceof RefLikeType) || t instanceof AnySubType) {
-      throw new RuntimeException("Attempt to create VarNode of type " + t);
-    }
-    this.variable = variable;
-    pag.getVarNodeNumberer().add(this);
-    setFinishingNumber(++pag.maxFinishNumber);
-  }
-  /** Registers a frn as having this node as its base. */
+  /**
+   * Registers a frn as having this node as its base.
+   */
   void addField(FieldRefNode frn, SparkField field) {
     if (fields == null) {
       fields = new HashMap<>();
     }
     fields.put(field, frn);
   }
-
-  /* End of package methods. */
-
-  protected Object variable;
-  protected Map<SparkField, FieldRefNode> fields;
-  protected int finishingNumber = 0;
-  protected boolean interProcTarget = false;
-  protected boolean interProcSource = false;
-  protected int numDerefs = 0;
 }

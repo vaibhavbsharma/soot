@@ -24,15 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import org.jf.dexlib2.iface.instruction.FiveRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.RegisterRangeInstruction;
-
 import soot.Type;
 import soot.Unit;
 import soot.dexpler.DexBody;
@@ -42,7 +36,14 @@ import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
 
-/** This class represents a wrapper around dexlib instruction. */
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * This class represents a wrapper around dexlib instruction.
+ */
 public abstract class DexlibAbstractInstruction {
 
   protected int lineNumber = -1;
@@ -52,6 +53,15 @@ public abstract class DexlibAbstractInstruction {
   //    protected Unit beginUnit;
   //    protected Unit endUnit;
   protected Unit unit;
+
+  /**
+   * @param instruction the underlying dexlib instruction
+   * @param codeAddress the bytecode address of this instruction
+   */
+  public DexlibAbstractInstruction(Instruction instruction, int codeAddress) {
+    this.instruction = instruction;
+    this.codeAddress = codeAddress;
+  }
 
   public Instruction getInstruction() {
     return instruction;
@@ -67,7 +77,7 @@ public abstract class DexlibAbstractInstruction {
   /**
    * Return the target register that is a copy of the given register. For instruction such as v0 =
    * v3 (v0 gets the content of v3), movesRegister(3) returns 0 movesRegister(0) returns -1
-   *
+   * <p>
    * <p>Instructions should override this if they copy register content.
    *
    * @param register the number of the register
@@ -80,7 +90,7 @@ public abstract class DexlibAbstractInstruction {
   /**
    * Return the source register that is moved to the given register. For instruction such as v0 = v3
    * (v0 gets the content of v3), movesToRegister(3) returns -1 movesToRegister(0) returns 3
-   *
+   * <p>
    * <p>Instructions should override this if they copy register content.
    *
    * @param register the number of the register
@@ -92,7 +102,7 @@ public abstract class DexlibAbstractInstruction {
 
   /**
    * Return if the instruction overrides the value in the register.
-   *
+   * <p>
    * <p>Instructions should override this if they modify the registers.
    *
    * @param register the number of the register
@@ -103,12 +113,12 @@ public abstract class DexlibAbstractInstruction {
 
   /**
    * Return if the value in the register is used as a floating point.
-   *
+   * <p>
    * <p>Instructions that have this context information and may deal with integers or floating
    * points should override this.
    *
    * @param register the number of the register
-   * @param body the body containing the instruction
+   * @param body     the body containing the instruction
    */
   boolean isUsedAsFloatingPoint(DexBody body, int register) {
     return false;
@@ -116,20 +126,11 @@ public abstract class DexlibAbstractInstruction {
 
   /**
    * Return the types that are be introduced by this instruction.
-   *
+   * <p>
    * <p>Instructions that may introduce types should override this.
    */
   public Set<Type> introducedTypes() {
     return Collections.emptySet();
-  }
-
-  /**
-   * @param instruction the underlying dexlib instruction
-   * @param codeAddress the bytecode address of this instruction
-   */
-  public DexlibAbstractInstruction(Instruction instruction, int codeAddress) {
-    this.instruction = instruction;
-    this.codeAddress = codeAddress;
   }
 
   public int getLineNumber() {
@@ -178,7 +179,7 @@ public abstract class DexlibAbstractInstruction {
 
   /**
    * Set the Jimple Unit, that comprises this instruction.
-   *
+   * <p>
    * <p>Does not override already set units.
    */
   protected void setUnit(Unit u) {
@@ -381,11 +382,11 @@ public abstract class DexlibAbstractInstruction {
    */
   protected List<Integer> getUsedRegistersNums(FiveRegisterInstruction instruction) {
     int[] regs = {
-      instruction.getRegisterC(),
-      instruction.getRegisterD(),
-      instruction.getRegisterE(),
-      instruction.getRegisterF(),
-      instruction.getRegisterG(),
+        instruction.getRegisterC(),
+        instruction.getRegisterD(),
+        instruction.getRegisterE(),
+        instruction.getRegisterF(),
+        instruction.getRegisterG(),
     };
     List<Integer> l = new ArrayList<>();
     for (int i = 0; i < instruction.getRegisterCount(); i++) {

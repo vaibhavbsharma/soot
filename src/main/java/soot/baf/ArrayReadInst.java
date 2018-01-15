@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface ArrayReadInst extends OpTypeArgInst {}
+public interface ArrayReadInst extends OpTypeArgInst {
+}

@@ -16,11 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.graph.pdg;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+package soot.toolkits.graph.pdg;
 
 import soot.Body;
 import soot.G;
@@ -41,10 +38,14 @@ import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.MHGPostDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * This class computes the set of weak regions for a given method. It is based on the algorithm
  * given in the following paper:
- *
+ * <p>
  * <p>Ball, T. 1993. What's in a region?: or computing control dependence regions in near-linear
  * time for reducible control flow. ACM Lett. Program. Lang. Syst. 2, 1-4 (Mar. 1993), 1-16. DOI=
  * http://doi.acm.org/10.1145/176454.176456
@@ -62,12 +63,12 @@ public class RegionAnalysis {
   protected BlockGraph m_reverseBlockCFG;
   protected Hashtable<Integer, Region> m_regions = new Hashtable<>();
   protected List<Region> m_regionsList = null;
+  protected Region m_topLevelRegion = null;
+  protected Hashtable<Block, Region> m_block2region = null;
   private int m_regCount = 0;
   private MHGDominatorTree<Block> m_dom;
   // this would actually be the postdominator tree in the original CFG
   private MHGDominatorTree<Block> m_pdom;
-  protected Region m_topLevelRegion = null;
-  protected Hashtable<Block, Region> m_block2region = null;
 
   public RegionAnalysis(UnitGraph cfg, SootMethod m, SootClass c) {
     this.m_methodBody = cfg.getBody();
@@ -89,6 +90,33 @@ public class RegionAnalysis {
           .out
           .println("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
     }
+  }
+
+  public static String CFGtoString(DirectedGraph<Block> cfg, boolean blockDetail) {
+    String s = "";
+    s += "Headers: " + cfg.getHeads().size() + " " + cfg.getHeads();
+    for (Block node : cfg) {
+      s += "Node = " + node.toShortString() + "\n";
+      s += "Preds:\n";
+      for (Block block : cfg.getPredsOf(node)) {
+        s += "     ";
+        s += block.toShortString() + "\n";
+      }
+      s += "Succs:\n";
+      for (Block block : cfg.getSuccsOf(node)) {
+        s += "     ";
+        s += block.toShortString() + "\n";
+      }
+    }
+
+    if (blockDetail) {
+      s += "Blocks Detail:";
+      for (Block node : cfg) {
+        s += node + "\n";
+      }
+    }
+
+    return s;
   }
 
   private void findWeakRegions() {
@@ -205,6 +233,7 @@ public class RegionAnalysis {
       G.v().out.flush();
     }
   }
+
   /**
    * This algorithm starts from a head node in the CFG and is exactly the same as the above with the
    * difference that post dominator and dominator trees switch positions.
@@ -296,7 +325,9 @@ public class RegionAnalysis {
     m_regCount = 0;
   }
 
-  /** Create a region */
+  /**
+   * Create a region
+   */
   protected Region createRegion(int id) {
     Region region = new Region(id, this.m_method, this.m_class, this.m_cfg);
     if (id == 0) {
@@ -308,32 +339,5 @@ public class RegionAnalysis {
 
   public Region getTopLevelRegion() {
     return this.m_topLevelRegion;
-  }
-
-  public static String CFGtoString(DirectedGraph<Block> cfg, boolean blockDetail) {
-    String s = "";
-    s += "Headers: " + cfg.getHeads().size() + " " + cfg.getHeads();
-    for (Block node : cfg) {
-      s += "Node = " + node.toShortString() + "\n";
-      s += "Preds:\n";
-      for (Block block : cfg.getPredsOf(node)) {
-        s += "     ";
-        s += block.toShortString() + "\n";
-      }
-      s += "Succs:\n";
-      for (Block block : cfg.getSuccsOf(node)) {
-        s += "     ";
-        s += block.toShortString() + "\n";
-      }
-    }
-
-    if (blockDetail) {
-      s += "Blocks Detail:";
-      for (Block node : cfg) {
-        s += node + "\n";
-      }
-    }
-
-    return s;
   }
 }

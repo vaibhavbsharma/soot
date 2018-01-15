@@ -22,6 +22,7 @@
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
+
 package soot.toolkits.graph;
 
 /**
@@ -36,8 +37,8 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends EdgeLabelledDire
   /**
    * Adds an edge to the graph between 2 nodes. If the edge is already present no change is made.
    *
-   * @param from out node for the edge.
-   * @param to in node for the edge.
+   * @param from  out node for the edge.
+   * @param to    in node for the edge.
    * @param label label for the edge.
    */
   void addEdge(N from, N to, L label);
@@ -45,8 +46,8 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends EdgeLabelledDire
   /**
    * Removes an edge between 2 nodes in the graph. If the edge is not present no change is made.
    *
-   * @param from out node for the edges to remove.
-   * @param to in node for the edges to remove.
+   * @param from  out node for the edges to remove.
+   * @param to    in node for the edges to remove.
    * @param label label for the edge to remove.
    */
   void removeEdge(N from, N to, L label);
@@ -55,7 +56,7 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends EdgeLabelledDire
    * Removes all edges between 2 nodes in the graph. If no edges are present, no change is made.
    *
    * @param from out node for the edges to remove.
-   * @param to in node for the edges to remove.
+   * @param to   in node for the edges to remove.
    */
   void removeAllEdges(N from, N to);
 

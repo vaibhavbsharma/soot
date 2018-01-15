@@ -24,18 +24,19 @@
  */
 
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
+
 package soot.jimple.toolkits.thread.mhp;
+
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.dot.DotGraph;
+import soot.util.dot.DotGraphConstants;
+import soot.util.dot.DotGraphNode;
 
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import soot.toolkits.graph.DirectedGraph;
-import soot.util.dot.DotGraph;
-import soot.util.dot.DotGraphConstants;
-import soot.util.dot.DotGraphNode;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -53,17 +54,11 @@ public class PegCallGraphToDot {
   /* make all control fields public, allow other soot class dump
    * the graph in the middle */
 
-  public static boolean isBrief = false;
   private static final Map<Object, String> listNodeName = new HashMap<>();
-
+  public static boolean isBrief = false;
   /* in one page or several pages of 8.5x11 */
   public static boolean onepage = true;
-
-  public PegCallGraphToDot(DirectedGraph graph, boolean onepage, String name) {
-
-    PegCallGraphToDot.onepage = onepage;
-    toDotFile(name, graph, "PegCallGraph");
-  }
+  private static int nodecount = 0;
 
   /*public PegToDotFile(PegGraph graph, boolean onepage, String name) {
   this.onepage = onepage;
@@ -71,14 +66,18 @@ public class PegCallGraphToDot {
   }
   */
 
-  private static int nodecount = 0;
+  public PegCallGraphToDot(DirectedGraph graph, boolean onepage, String name) {
+
+    PegCallGraphToDot.onepage = onepage;
+    toDotFile(name, graph, "PegCallGraph");
+  }
 
   /**
    * Generates a dot format file for a DirectedGraph
    *
    * @param methodname, the name of generated dot file
-   * @param graph, a directed control flow graph (UnitGraph, BlockGraph ...)
-   * @param graphname, the title of the graph
+   * @param graph,      a directed control flow graph (UnitGraph, BlockGraph ...)
+   * @param graphname,  the title of the graph
    */
   public static void toDotFile(String methodname, DirectedGraph graph, String graphname) {
     int sequence = 0;

@@ -19,6 +19,14 @@
 
 package soot;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import soot.JavaClassProvider.JarException;
+import soot.asm.AsmClassProvider;
+import soot.dexpler.DexFileProvider;
+import soot.options.Options;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,15 +41,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
-import soot.JavaClassProvider.JarException;
-import soot.asm.AsmClassProvider;
-import soot.dexpler.DexFileProvider;
-import soot.options.Options;
 
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or
@@ -124,7 +123,8 @@ public class SourceLocator {
    */
   private Map<String, File> dexClassIndex;
 
-  public SourceLocator(Singletons.Global g) {}
+  public SourceLocator(Singletons.Global g) {
+  }
 
   public static SourceLocator v() {
     return G.v().soot_SourceLocator();
@@ -146,7 +146,9 @@ public class SourceLocator {
     }
   }
 
-  /** Explodes a class path into a list of individual class path entries. */
+  /**
+   * Explodes a class path into a list of individual class path entries.
+   */
   public static List<String> explodeClassPath(String classPath) {
     List<String> ret = new ArrayList<>();
     // the classpath is split at every path separator which is not escaped
@@ -163,7 +165,9 @@ public class SourceLocator {
     return ret;
   }
 
-  /** Given a class name, uses the soot-class-path to return a ClassSource for the given class. */
+  /**
+   * Given a class name, uses the soot-class-path to return a ClassSource for the given class.
+   */
   public ClassSource getClassSource(String className) {
     if (classPath == null) {
       classPath = explodeClassPath(Scene.v().getSootClassPath());
@@ -328,7 +332,7 @@ public class SourceLocator {
       try {
         archive = new ZipFile(aPath);
         for (Enumeration<? extends ZipEntry> entries = archive.entries();
-            entries.hasMoreElements();
+             entries.hasMoreElements();
             ) {
           ZipEntry entry = entries.nextElement();
           String entryName = entry.getName();
@@ -586,7 +590,9 @@ public class SourceLocator {
     return dir.getPath();
   }
 
-  /** Searches for a file with the given name in the exploded classPath. */
+  /**
+   * Searches for a file with the given name in the exploded classPath.
+   */
   public FoundFile lookupInClassPath(String fileName) {
     for (String dir : classPath) {
       FoundFile ret = null;
@@ -628,7 +634,9 @@ public class SourceLocator {
     return null;
   }
 
-  /** Returns the name of the class in which the (possibly inner) class className appears. */
+  /**
+   * Returns the name of the class in which the (possibly inner) class className appears.
+   */
   public String getSourceForClass(String className) {
     String javaClassName = className;
     int i = className.indexOf("$");
@@ -678,7 +686,9 @@ public class SourceLocator {
     return this.dexClassPathExtensions;
   }
 
-  /** Clears the set of dex or apk files that still need to be indexed */
+  /**
+   * Clears the set of dex or apk files that still need to be indexed
+   */
   public void clearDexClassPathExtensions() {
     this.dexClassPathExtensions = null;
   }

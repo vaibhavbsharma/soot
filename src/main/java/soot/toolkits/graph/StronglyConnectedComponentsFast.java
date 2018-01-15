@@ -28,13 +28,13 @@ import java.util.Stack;
 /**
  * Identifies and provides an interface to query the strongly-connected components of DirectedGraph
  * instances.
- *
+ * <p>
  * <p>Uses Tarjan's algorithm.
  *
- * @see DirectedGraph
  * @author Eric Bodden
- *     <p>Changes: 2015/08/23 Steven Arzt, added an iterative version of Tarjan's algorithm for
- *     large graphs
+ * <p>Changes: 2015/08/23 Steven Arzt, added an iterative version of Tarjan's algorithm for
+ * large graphs
+ * @see DirectedGraph
  */
 public class StronglyConnectedComponentsFast<N> {
   protected final List<List<N>> componentList = new ArrayList<>();
@@ -178,15 +178,17 @@ public class StronglyConnectedComponentsFast<N> {
     }
   }
 
-  /** @return the list of the strongly-connected components */
+  /**
+   * @return the list of the strongly-connected components
+   */
   public List<List<N>> getComponents() {
     return componentList;
   }
 
   /**
    * @return the list of the strongly-connected components, but only those that are true components,
-   *     i.e. components which have more than one element or consists of one node that has itself as
-   *     a successor
+   * i.e. components which have more than one element or consists of one node that has itself as
+   * a successor
    */
   public List<List<N>> getTrueComponents() {
     return trueComponentList;

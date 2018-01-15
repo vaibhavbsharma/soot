@@ -16,17 +16,17 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.scalar;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
-
 import soot.Body;
 import soot.G;
 import soot.Singletons;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
+
+import java.util.Map;
 
 /**
  * This class implements a pool for {@link SmartLocalDefs} instances. This is useful, as these
@@ -40,6 +40,13 @@ import soot.toolkits.graph.UnitGraph;
 public class SmartLocalDefsPool {
 
   protected Map<Body, Pair<Long, SmartLocalDefs>> pool = Maps.newHashMap();
+
+  public SmartLocalDefsPool(Singletons.Global g) {
+  }
+
+  public static SmartLocalDefsPool v() {
+    return G.v().soot_toolkits_scalar_SmartLocalDefsPool();
+  }
 
   /**
    * This method returns a fresh instance of a {@link SmartLocalDefs} analysis, based on a freshly
@@ -64,12 +71,6 @@ public class SmartLocalDefsPool {
   public void clear() {
     pool.clear();
   }
-
-  public static SmartLocalDefsPool v() {
-    return G.v().soot_toolkits_scalar_SmartLocalDefsPool();
-  }
-
-  public SmartLocalDefsPool(Singletons.Global g) {}
 
   public void invalidate(Body b) {
     pool.remove(b);

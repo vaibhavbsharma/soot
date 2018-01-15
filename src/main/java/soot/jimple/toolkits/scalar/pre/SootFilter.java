@@ -63,7 +63,7 @@ public class SootFilter {
    *
    * @param unit a Unit from which to extract the RHS.
    * @return the RHS-Value of <code>unit</code> or <code>null</code> if <code>unit</code> wasn't an
-   *     assignment-stmt.
+   * assignment-stmt.
    */
   public static Value rhs(Unit unit) {
     if (unit instanceof AssignStmt) {
@@ -94,7 +94,7 @@ public class SootFilter {
    *
    * @param unit the Unit to test for.
    * @return the rhs of the current unit, if <code>unit</code> is an AssigStmt and its RHS is a
-   *     binary expression. otherwise <code>null</code>.
+   * binary expression. otherwise <code>null</code>.
    */
   public static Value binopRhs(Unit unit) {
     return binop(rhs(unit));
@@ -212,7 +212,9 @@ public class SootFilter {
     }
   }
 
-  /** returns true, if <code>val</code> is a Local. */
+  /**
+   * returns true, if <code>val</code> is a Local.
+   */
   public static boolean isLocal(Value val) {
     return (getEquivalentValueRoot(val) instanceof Local);
   }
@@ -237,7 +239,9 @@ public class SootFilter {
     return val;
   }
 
-  /** a (probably) conservative way of telling, if a Value throws an exception or not. */
+  /**
+   * a (probably) conservative way of telling, if a Value throws an exception or not.
+   */
   public static boolean throwsException(Value val) {
     val = getEquivalentValueRoot(val);
 

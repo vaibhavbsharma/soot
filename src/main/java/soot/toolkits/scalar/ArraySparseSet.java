@@ -30,7 +30,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-/** Reference implementation for a FlowSet. Items are stored in an Array. */
+/**
+ * Reference implementation for a FlowSet. Items are stored in an Array.
+ */
 public class ArraySparseSet<T> extends AbstractFlowSet<T> {
   protected static final int DEFAULT_SIZE = 8;
 
@@ -51,7 +53,9 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
     elements = other.elements.clone();
   }
 
-  /** Returns true if flowSet is the same type of flow set as this. */
+  /**
+   * Returns true if flowSet is the same type of flow set as this.
+   */
   private boolean sameType(Object flowSet) {
     return (flowSet instanceof ArraySparseSet);
   }
@@ -82,7 +86,9 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
     return numElements == 0;
   }
 
-  /** Returns a unbacked list of elements in this set. */
+  /**
+   * Returns a unbacked list of elements in this set.
+   */
   @Override
   public List<T> toList() {
     return Arrays.asList(Arrays.copyOf(elements, numElements));
@@ -223,7 +229,7 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 
   /**
    * @deprecated This method uses linear-time lookup. For better performance, consider using a
-   *     {@link HashSet} instead, if you require this operation.
+   * {@link HashSet} instead, if you require this operation.
    */
   @Override
   @Deprecated

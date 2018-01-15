@@ -16,9 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.asm;
 
-import java.util.ArrayList;
+package soot.asm;
 
 import soot.Local;
 import soot.Unit;
@@ -27,6 +26,8 @@ import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
 
+import java.util.ArrayList;
+
 /**
  * Frame of stack for an instruction.
  *
@@ -34,11 +35,11 @@ import soot.jimple.Jimple;
  */
 final class StackFrame {
 
+  private final AsmMethodSource src;
   private Operand[] out;
   private Local[] inStackLocals;
   private ValueBox[] boxes;
   private ArrayList<Operand[]> in;
-  private final AsmMethodSource src;
 
   /**
    * Constructs a new stack frame.
@@ -49,7 +50,9 @@ final class StackFrame {
     this.src = src;
   }
 
-  /** @return operands produced by this frame. */
+  /**
+   * @return operands produced by this frame.
+   */
   Operand[] out() {
     return out;
   }
@@ -93,7 +96,7 @@ final class StackFrame {
    *
    * @param oprs the new operands.
    * @throws IllegalArgumentException if the number of new operands is not equal to the number of
-   *     old operands.
+   *                                  old operands.
    */
   void mergeIn(Operand... oprs) {
     ArrayList<Operand[]> in = this.in;

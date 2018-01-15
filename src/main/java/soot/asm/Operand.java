@@ -16,16 +16,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.objectweb.asm.tree.AbstractInsnNode;
-
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stack operand.
@@ -42,7 +42,7 @@ final class Operand {
   /**
    * Constructs a new stack operand.
    *
-   * @param insn the instruction that produced this operand.
+   * @param insn  the instruction that produced this operand.
    * @param value the generated value.
    */
   Operand(AbstractInsnNode insn, Value value) {
@@ -89,7 +89,9 @@ final class Operand {
     }
   }
 
-  /** Updates all value boxes registered to this operand. */
+  /**
+   * Updates all value boxes registered to this operand.
+   */
   @SuppressWarnings("unchecked")
   void updateBoxes() {
     Value val = stackOrValue();
@@ -111,7 +113,9 @@ final class Operand {
     return (A) value;
   }
 
-  /** @return either the stack local allocated for this operand, or its value. */
+  /**
+   * @return either the stack local allocated for this operand, or its value.
+   */
   Value stackOrValue() {
     Local s = stack;
     return s == null ? value : s;

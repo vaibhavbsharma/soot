@@ -20,14 +20,6 @@
 
 package soot.dava.internal.AST;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Local;
 import soot.SootClass;
 import soot.UnitPrinter;
@@ -36,22 +28,18 @@ import soot.dava.toolkits.base.AST.ASTAnalysis;
 import soot.dava.toolkits.base.AST.TryContentsFinder;
 import soot.dava.toolkits.base.AST.analysis.Analysis;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ASTTryNode extends ASTLabeledNode {
   private List<Object> tryBody, catchList;
   private Map<Object, Object> exceptionMap, paramMap;
   private container tryBodyContainer;
-
-  public class container {
-    public Object o;
-
-    public container(Object o) {
-      this.o = o;
-    }
-
-    public void replaceBody(Object newBody) {
-      this.o = newBody;
-    }
-  }
 
   public ASTTryNode(
       SETNodeLabel label,
@@ -276,5 +264,17 @@ public class ASTTryNode extends ASTLabeledNode {
   @Override
   public void apply(Analysis a) {
     a.caseASTTryNode(this);
+  }
+
+  public class container {
+    public Object o;
+
+    public container(Object o) {
+      this.o = o;
+    }
+
+    public void replaceBody(Object newBody) {
+      this.o = newBody;
+    }
   }
 }

@@ -23,7 +23,9 @@ import polyglot.ast.Expr;
 import polyglot.ast.NodeFactory;
 import polyglot.util.Position;
 
-/** NodeFactory for jj extension. */
+/**
+ * NodeFactory for jj extension.
+ */
 public interface JjNodeFactory extends NodeFactory {
   // TODO: Declare any factory methods for new AST nodes.
   JjComma_c JjComma(Position pos, Expr first, Expr second);

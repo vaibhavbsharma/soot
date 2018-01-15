@@ -25,15 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -65,22 +56,30 @@ import soot.jimple.toolkits.callgraph.Targets;
 import soot.options.Options;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Interprocedural analysis to identify rectangular multi-dimension array locals. It is based on the
  * call graph.
  */
 public class RectangularArrayFinder extends SceneTransformer {
-  public RectangularArrayFinder(Singletons.Global g) {}
+  private final ExtendedHashMutableDirectedGraph agraph = new ExtendedHashMutableDirectedGraph();
+  private final Set falseSet = new HashSet();
+  private final Set<Object> trueSet = new HashSet<>();
+  private CallGraph cg;
+  public RectangularArrayFinder(Singletons.Global g) {
+  }
 
   public static RectangularArrayFinder v() {
     return G.v().soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder();
   }
-
-  private final ExtendedHashMutableDirectedGraph agraph = new ExtendedHashMutableDirectedGraph();
-
-  private final Set falseSet = new HashSet();
-  private final Set<Object> trueSet = new HashSet<>();
-  private CallGraph cg;
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> opts) {
@@ -461,68 +460,67 @@ public class RectangularArrayFinder extends SceneTransformer {
             }
           }
         } else
-        /* For field reference, we can make conservative assumption that all instance fieldRef use the same node.*/
-        if ((leftOp instanceof FieldRef) && (rightOp instanceof Local)) {
-          if (arrayLocal.contains(rightOp)) {
-            Type ftype = leftOp.getType();
-            Type ltype = rightOp.getType();
+          /* For field reference, we can make conservative assumption that all instance fieldRef use the same node.*/
+          if ((leftOp instanceof FieldRef) && (rightOp instanceof Local)) {
+            if (arrayLocal.contains(rightOp)) {
+              Type ftype = leftOp.getType();
+              Type ltype = rightOp.getType();
 
-            to = ((FieldRef) leftOp).getField();
-            from = new MethodLocal(method, (Local) rightOp);
+              to = ((FieldRef) leftOp).getField();
+              from = new MethodLocal(method, (Local) rightOp);
 
-            ehmdg.addMutualEdge(from, to);
+              ehmdg.addMutualEdge(from, to);
 
-            if (!ftype.equals(ltype)) {
-              ehmdg.addEdge(BoolValue.v(false), to);
+              if (!ftype.equals(ltype)) {
+                ehmdg.addEdge(BoolValue.v(false), to);
+              }
+
+              needTransfer = true;
             }
+          } else if ((leftOp instanceof Local) && (rightOp instanceof FieldRef)) {
+            if (arrayLocal.contains(leftOp)) {
+              Type ftype = rightOp.getType();
+              Type ltype = leftOp.getType();
 
-            needTransfer = true;
-          }
-        } else if ((leftOp instanceof Local) && (rightOp instanceof FieldRef)) {
-          if (arrayLocal.contains(leftOp)) {
-            Type ftype = rightOp.getType();
-            Type ltype = leftOp.getType();
+              to = new MethodLocal(method, (Local) leftOp);
+              from = ((FieldRef) rightOp).getField();
+
+              ehmdg.addMutualEdge(from, to);
+
+              if (!ftype.equals(ltype)) {
+                ehmdg.addEdge(BoolValue.v(false), to);
+              }
+
+              needTransfer = true;
+            }
+          } else if ((leftOp instanceof Local)
+              && ((rightOp instanceof NewArrayExpr) || (rightOp instanceof NewMultiArrayExpr))) {
+            if (arrayLocal.contains(leftOp)) {
+              ehmdg.addEdge(BoolValue.v(true), new MethodLocal(method, (Local) leftOp));
+            }
+          } else if ((leftOp instanceof Local) && (rightOp instanceof CastExpr))
+            /* Cast express, we will use conservative solution. */ {
+            Local rOp = (Local) ((CastExpr) rightOp).getOp();
 
             to = new MethodLocal(method, (Local) leftOp);
-            from = ((FieldRef) rightOp).getField();
+            from = new MethodLocal(method, rOp);
 
-            ehmdg.addMutualEdge(from, to);
+            if (arrayLocal.contains(leftOp) && arrayLocal.contains(rOp)) {
+              ArrayType lat = (ArrayType) leftOp.getType();
+              ArrayType rat = (ArrayType) rOp.getType();
 
-            if (!ftype.equals(ltype)) {
+              if (lat.numDimensions == rat.numDimensions) {
+                ehmdg.addMutualEdge(from, to);
+              } else {
+                ehmdg.addEdge(BoolValue.v(false), from);
+                ehmdg.addEdge(BoolValue.v(false), to);
+              }
+            } else if (arrayLocal.contains(leftOp)) {
               ehmdg.addEdge(BoolValue.v(false), to);
-            }
-
-            needTransfer = true;
-          }
-        } else if ((leftOp instanceof Local)
-            && ((rightOp instanceof NewArrayExpr) || (rightOp instanceof NewMultiArrayExpr))) {
-          if (arrayLocal.contains(leftOp)) {
-            ehmdg.addEdge(BoolValue.v(true), new MethodLocal(method, (Local) leftOp));
-          }
-        } else if ((leftOp instanceof Local) && (rightOp instanceof CastExpr))
-        /* Cast express, we will use conservative solution. */
-        {
-          Local rOp = (Local) ((CastExpr) rightOp).getOp();
-
-          to = new MethodLocal(method, (Local) leftOp);
-          from = new MethodLocal(method, rOp);
-
-          if (arrayLocal.contains(leftOp) && arrayLocal.contains(rOp)) {
-            ArrayType lat = (ArrayType) leftOp.getType();
-            ArrayType rat = (ArrayType) rOp.getType();
-
-            if (lat.numDimensions == rat.numDimensions) {
-              ehmdg.addMutualEdge(from, to);
-            } else {
+            } else if (arrayLocal.contains(rOp)) {
               ehmdg.addEdge(BoolValue.v(false), from);
-              ehmdg.addEdge(BoolValue.v(false), to);
             }
-          } else if (arrayLocal.contains(leftOp)) {
-            ehmdg.addEdge(BoolValue.v(false), to);
-          } else if (arrayLocal.contains(rOp)) {
-            ehmdg.addEdge(BoolValue.v(false), from);
           }
-        }
       }
     }
 
@@ -658,60 +656,59 @@ public class RectangularArrayFinder extends SceneTransformer {
       Value rightOp = ((AssignStmt) curstmt).getRightOp();
 
       switch (state) {
-          /* we already did state 0 outside */
+        /* we already did state 0 outside */
         case 0:
           break;
 
         case 1:
           /* make sure it is a new array expr */
-          {
-            state = fault;
+        {
+          state = fault;
 
-            if (!(rightOp instanceof NewArrayExpr)) {
-              break;
-            }
-
-            NewArrayExpr naexpr = (NewArrayExpr) rightOp;
-            Type type = naexpr.getBaseType();
-            Value size = naexpr.getSize();
-
-            if (!type.equals(basetype)) {
-              break;
-            }
-
-            if (!(size instanceof IntConstant)) {
-              break;
-            }
-
-            if (curdim == 0) {
-              seconddim = ((IntConstant) size).value;
-            } else {
-              if (((IntConstant) size).value != seconddim) {
-                break;
-              }
-            }
-
-            curtmp = leftOp;
-
-            state = 2;
+          if (!(rightOp instanceof NewArrayExpr)) {
+            break;
           }
-          break;
 
-        case 2:
-          {
-            state = fault;
+          NewArrayExpr naexpr = (NewArrayExpr) rightOp;
+          Type type = naexpr.getBaseType();
+          Value size = naexpr.getSize();
 
-            if (!(leftOp instanceof ArrayRef)) {
+          if (!type.equals(basetype)) {
+            break;
+          }
+
+          if (!(size instanceof IntConstant)) {
+            break;
+          }
+
+          if (curdim == 0) {
+            seconddim = ((IntConstant) size).value;
+          } else {
+            if (((IntConstant) size).value != seconddim) {
               break;
             }
+          }
 
-            Value base = ((ArrayRef) leftOp).getBase();
-            Value idx = ((ArrayRef) leftOp).getIndex();
+          curtmp = leftOp;
 
-            /* curtmp[?] = ? */
-            if (base.equals(curtmp)) {
-              state = 2;
-            } else
+          state = 2;
+        }
+        break;
+
+        case 2: {
+          state = fault;
+
+          if (!(leftOp instanceof ArrayRef)) {
+            break;
+          }
+
+          Value base = ((ArrayRef) leftOp).getBase();
+          Value idx = ((ArrayRef) leftOp).getIndex();
+
+          /* curtmp[?] = ? */
+          if (base.equals(curtmp)) {
+            state = 2;
+          } else
             /* local[?] = curtmp? */
             if (base.equals(local)) {
               if (!(idx instanceof IntConstant)) {
@@ -736,8 +733,8 @@ public class RectangularArrayFinder extends SceneTransformer {
                 state = 1;
               }
             }
-          }
-          break;
+        }
+        break;
 
         case 3:
           return seconddim;

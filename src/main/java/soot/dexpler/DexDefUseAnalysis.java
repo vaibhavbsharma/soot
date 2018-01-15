@@ -1,12 +1,5 @@
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
 import soot.Unit;
@@ -14,6 +7,13 @@ import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
 import soot.toolkits.scalar.LocalDefs;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Simplistic caching, flow-insensitive def/use analysis
@@ -50,7 +50,7 @@ public class DexDefUseAnalysis implements LocalDefs {
   /**
    * Collect definitions of l in body including the definitions of aliases of l. This analysis
    * exploits that the problem is flow-insensitive anyway.
-   *
+   * <p>
    * <p>In this context an alias is a local that propagates its value to l.
    *
    * @param l the local whose definitions are to collect

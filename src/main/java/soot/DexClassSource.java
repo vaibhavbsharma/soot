@@ -18,18 +18,21 @@ package soot;
  * Boston, MA 02111-1307, USA.
  */
 
-import java.io.File;
-
 import soot.dexpler.DexResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 
-/** Responsible for resolving a single class from a dex source format. */
+import java.io.File;
+
+/**
+ * Responsible for resolving a single class from a dex source format.
+ */
 public class DexClassSource extends ClassSource {
   protected File path;
+
   /**
    * @param className the class which dependencies are to be resolved.
-   * @param path to the file that defines the class.
+   * @param path      to the file that defines the class.
    */
   public DexClassSource(String className, File path) {
     super(className);

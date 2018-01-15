@@ -20,14 +20,11 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
-package soot.jimple.toolkits.annotation.purity;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+package soot.jimple.toolkits.annotation.purity;
 
 import soot.Local;
 import soot.RefLikeType;
@@ -65,6 +62,10 @@ import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphEdge;
 import soot.util.dot.DotGraphNode;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Intra-procedural purity-graph analysis.
  *
@@ -74,6 +75,18 @@ import soot.util.dot.DotGraphNode;
 public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, PurityGraphBox> {
 
   AbstractInterproceduralAnalysis<PurityGraphBox> inter;
+
+  /**
+   * Perform purity analysis on the Jimple unit graph g, as part of a larger interprocedural
+   * analysis. Once constructed, you may call copyResult and drawAsOneDot to query the analysis
+   * result.
+   */
+  PurityIntraproceduralAnalysis(
+      UnitGraph g, AbstractInterproceduralAnalysis<PurityGraphBox> inter) {
+    super(g);
+    this.inter = inter;
+    doAnalysis();
+  }
 
   @Override
   protected PurityGraphBox newInitialFlow() {
@@ -393,17 +406,5 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
     // r.simplifyInside();
     // r.updateStat();
     dst.g = r;
-  }
-
-  /**
-   * Perform purity analysis on the Jimple unit graph g, as part of a larger interprocedural
-   * analysis. Once constructed, you may call copyResult and drawAsOneDot to query the analysis
-   * result.
-   */
-  PurityIntraproceduralAnalysis(
-      UnitGraph g, AbstractInterproceduralAnalysis<PurityGraphBox> inter) {
-    super(g);
-    this.inter = inter;
-    doAnalysis();
   }
 }

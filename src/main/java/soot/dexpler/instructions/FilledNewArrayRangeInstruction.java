@@ -24,12 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import static soot.dexpler.Util.isFloatLike;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.TypeReference;
-
 import soot.ArrayType;
 import soot.Local;
 import soot.Type;
@@ -42,6 +39,8 @@ import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
+
+import static soot.dexpler.Util.isFloatLike;
 
 public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 

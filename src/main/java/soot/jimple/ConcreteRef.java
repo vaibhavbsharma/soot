@@ -25,4 +25,5 @@
 
 package soot.jimple;
 
-public interface ConcreteRef extends Ref {}
+public interface ConcreteRef extends Ref {
+}

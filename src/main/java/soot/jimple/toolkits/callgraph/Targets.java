@@ -19,9 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.Iterator;
-
 import soot.MethodOrMethodContext;
+
+import java.util.Iterator;
 
 /**
  * Adapts an iterator over a collection of Edge's to be an iterator over the target methods of the

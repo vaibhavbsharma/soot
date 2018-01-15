@@ -19,20 +19,20 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-
 import polyglot.util.IdentityKey;
+
+import java.util.ArrayList;
 
 public class PrivateInstancesAvailable extends polyglot.visit.NodeVisitor {
 
   private final ArrayList<IdentityKey> list;
 
-  public ArrayList<IdentityKey> getList() {
-    return list;
-  }
-
   public PrivateInstancesAvailable() {
     list = new ArrayList<>();
+  }
+
+  public ArrayList<IdentityKey> getList() {
+    return list;
   }
 
   @Override

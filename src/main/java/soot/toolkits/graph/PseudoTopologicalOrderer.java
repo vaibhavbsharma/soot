@@ -52,7 +52,16 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 
   private DirectedGraph<N> graph;
 
-  public PseudoTopologicalOrderer() {}
+  public PseudoTopologicalOrderer() {
+  }
+
+  /**
+   * @deprecated use {@link #PseudoTopologicalOrderer()} instead
+   */
+  @Deprecated
+  public PseudoTopologicalOrderer(boolean isReversed) {
+    mIsReversed = isReversed;
+  }
 
   /**
    * Reverses the order of the elements in the specified array.
@@ -68,12 +77,20 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<N> newList(DirectedGraph<N> g, boolean reverse) {
     this.mIsReversed = reverse;
     return computeOrder(g, !mIsReversed);
   }
+
+  // Unfortunately, the nice recursive solution fails
+  // because of stack overflows
+
+  // Fill in the 'order' list with a pseudo topological order
+  // list of statements starting at s. Simulates recursion with a stack.
 
   /**
    * Orders in pseudo-topological order.
@@ -118,11 +135,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
     return o;
   }
 
-  // Unfortunately, the nice recursive solution fails
-  // because of stack overflows
-
-  // Fill in the 'order' list with a pseudo topological order
-  // list of statements starting at s. Simulates recursion with a stack.
+  // deprecated methods and constructors follow
 
   protected final void visitNode(N startStmt) {
     int last = 0;
@@ -150,14 +163,6 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
     }
   }
 
-  // deprecated methods and constructors follow
-
-  /** @deprecated use {@link #PseudoTopologicalOrderer()} instead */
-  @Deprecated
-  public PseudoTopologicalOrderer(boolean isReversed) {
-    mIsReversed = isReversed;
-  }
-
   /**
    * @param g a DirectedGraph instance whose nodes we wish to order.
    * @return a pseudo-topologically ordered list of the graph's nodes.
@@ -169,17 +174,6 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
   }
 
   /**
-   * Set the ordering for the orderer.
-   *
-   * @param isReverse specify if we want reverse pseudo-topological ordering, or not.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public void setReverseOrder(boolean isReversed) {
-    mIsReversed = isReversed;
-  }
-
-  /**
    * Check the ordering for the orderer.
    *
    * @return true if we have reverse pseudo-topological ordering, false otherwise.
@@ -188,5 +182,16 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
   @Deprecated
   public boolean isReverseOrder() {
     return mIsReversed;
+  }
+
+  /**
+   * Set the ordering for the orderer.
+   *
+   * @param isReverse specify if we want reverse pseudo-topological ordering, or not.
+   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
+   */
+  @Deprecated
+  public void setReverseOrder(boolean isReversed) {
+    mIsReversed = isReversed;
   }
 }

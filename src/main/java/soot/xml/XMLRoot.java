@@ -25,7 +25,9 @@
 
 package soot.xml;
 
-/** XML helper */
+/**
+ * XML helper
+ */
 public class XMLRoot {
   public String name = ""; // <NAME attr1="val1" attr2="val2"...>val</NAME>
   public String value = ""; // <name attr1="val1" attr2="val2"...>VAL</name>
@@ -34,7 +36,8 @@ public class XMLRoot {
 
   protected XMLNode child = null; // -> to child node
 
-  XMLRoot() {}
+  XMLRoot() {
+  }
 
   @Override
   public String toString() {

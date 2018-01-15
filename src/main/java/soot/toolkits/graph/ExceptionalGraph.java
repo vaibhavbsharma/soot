@@ -25,12 +25,12 @@
 
 package soot.toolkits.graph;
 
-import java.util.Collection;
-import java.util.List;
-
 import soot.Body;
 import soot.Trap;
 import soot.toolkits.exceptions.ThrowableSet;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Defines the interface for navigating a control flow graph which distinguishes exceptional control
@@ -40,9 +40,66 @@ import soot.toolkits.exceptions.ThrowableSet;
  */
 public interface ExceptionalGraph<N> extends DirectedGraph<N> {
   /**
+   * Returns the {@link Body} from which this graph was built.
+   *
+   * @return the <code>Body</code> from which this graph was built.
+   */
+  Body getBody();
+
+  /**
+   * Returns a list of nodes which are predecessors of a given node when only unexceptional control
+   * flow is considered.
+   *
+   * @param n The node whose predecessors are to be returned.
+   * @return a {@link List} of the nodes in this graph from which there is an unexceptional edge to
+   * <code>n</code>.
+   */
+  List<N> getUnexceptionalPredsOf(N n);
+
+  /**
+   * Returns a list of nodes which are successors of a given node when only unexceptional control
+   * flow is considered.
+   *
+   * @param n The node whose successors are to be returned.
+   * @return a {@link List} of nodes in this graph to which there is an unexceptional edge from
+   * <code>n</code>.
+   */
+  List<N> getUnexceptionalSuccsOf(N n);
+
+  /**
+   * Returns a list of nodes which are predecessors of a given node when only exceptional control
+   * flow is considered.
+   *
+   * @param n The node whose predecessors are to be returned.
+   * @return a {@link List} of nodes in this graph from which there is an exceptional edge to <code>
+   * n</code>.
+   */
+  List<N> getExceptionalPredsOf(N n);
+
+  /**
+   * Returns a list of nodes which are successors of a given node when only exceptional control flow
+   * is considered.
+   *
+   * @param n The node whose successors are to be returned.
+   * @return a {@link List} of nodes in this graph to which there is an exceptional edge from <code>
+   * n</code>.
+   */
+  List<N> getExceptionalSuccsOf(N n);
+
+  /**
+   * Returns a collection of {@link ExceptionalGraph.ExceptionDest ExceptionDest} objects which
+   * represent how exceptions thrown by a specified node will be handled.
+   *
+   * @param n The node for which to provide exception information.
+   * @return a collection of <code>ExceptionDest</code> objects describing the traps and handlers,
+   * if any, which catch the exceptions which may be thrown by <code>n</code>.
+   */
+  Collection<? extends ExceptionDest<N>> getExceptionDests(N n);
+
+  /**
    * Data structure to represent the fact that a given {@link Trap} will catch some subset of the
    * exceptions which may be thrown by a given graph node.
-   *
+   * <p>
    * <p>Note that these ``destinations'' are different from the edges in the CFG proper which are
    * returned by <code>getSuccsOf()</code> and <code>getPredsOf()</code>. An edge from <code>a
    * </code> to <code>b</code> in the CFG represents the fact that after node <code>a</code>
@@ -57,8 +114,8 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
      * Returns the trap corresponding to this destination.
      *
      * @return either a {@link Trap} representing the handler that catches the exceptions, if there
-     *     is such a handler within the method, or <code>null</code> if there is no such handler and
-     *     the exceptions cause the method to terminate abruptly.
+     * is such a handler within the method, or <code>null</code> if there is no such handler and
+     * the exceptions cause the method to terminate abruptly.
      */
     Trap getTrap();
 
@@ -66,7 +123,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
      * Returns the exceptions thrown to this destination.
      *
      * @return a {@link ThrowableSet} representing the exceptions which may be caught by this <code>
-     *     ExceptionDest</code>'s trap.
+     * ExceptionDest</code>'s trap.
      */
     ThrowableSet getThrowables();
 
@@ -75,8 +132,8 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
      * exceptions (that is, the node that includes {@link trap().getBeginUnit()}).
      *
      * @return the node in this graph which represents the beginning of the handler which catches
-     *     these exceptions, or <code>null</code> if there is no such handler and the exceptions
-     *     cause the method to terminate abruptly.
+     * these exceptions, or <code>null</code> if there is no such handler and the exceptions
+     * cause the method to terminate abruptly.
      */
     // Maybe we should define an interface for Unit and Block to
     // implement, and return an instance of that, rather than
@@ -84,61 +141,4 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
     // deals in.
     N getHandlerNode();
   }
-
-  /**
-   * Returns the {@link Body} from which this graph was built.
-   *
-   * @return the <code>Body</code> from which this graph was built.
-   */
-  Body getBody();
-
-  /**
-   * Returns a list of nodes which are predecessors of a given node when only unexceptional control
-   * flow is considered.
-   *
-   * @param n The node whose predecessors are to be returned.
-   * @return a {@link List} of the nodes in this graph from which there is an unexceptional edge to
-   *     <code>n</code>.
-   */
-  List<N> getUnexceptionalPredsOf(N n);
-
-  /**
-   * Returns a list of nodes which are successors of a given node when only unexceptional control
-   * flow is considered.
-   *
-   * @param n The node whose successors are to be returned.
-   * @return a {@link List} of nodes in this graph to which there is an unexceptional edge from
-   *     <code>n</code>.
-   */
-  List<N> getUnexceptionalSuccsOf(N n);
-
-  /**
-   * Returns a list of nodes which are predecessors of a given node when only exceptional control
-   * flow is considered.
-   *
-   * @param n The node whose predecessors are to be returned.
-   * @return a {@link List} of nodes in this graph from which there is an exceptional edge to <code>
-   *     n</code>.
-   */
-  List<N> getExceptionalPredsOf(N n);
-
-  /**
-   * Returns a list of nodes which are successors of a given node when only exceptional control flow
-   * is considered.
-   *
-   * @param n The node whose successors are to be returned.
-   * @return a {@link List} of nodes in this graph to which there is an exceptional edge from <code>
-   *     n</code>.
-   */
-  List<N> getExceptionalSuccsOf(N n);
-
-  /**
-   * Returns a collection of {@link ExceptionalGraph.ExceptionDest ExceptionDest} objects which
-   * represent how exceptions thrown by a specified node will be handled.
-   *
-   * @param n The node for which to provide exception information.
-   * @return a collection of <code>ExceptionDest</code> objects describing the traps and handlers,
-   *     if any, which catch the exceptions which may be thrown by <code>n</code>.
-   */
-  Collection<? extends ExceptionDest<N>> getExceptionDests(N n);
 }

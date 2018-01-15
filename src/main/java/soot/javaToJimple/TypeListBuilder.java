@@ -19,20 +19,20 @@
 
 package soot.javaToJimple;
 
-import java.util.HashSet;
-
 import polyglot.types.Type;
+
+import java.util.HashSet;
 
 public class TypeListBuilder extends polyglot.visit.NodeVisitor {
 
   private final HashSet<Type> list;
 
-  public HashSet<Type> getList() {
-    return list;
-  }
-
   public TypeListBuilder() {
     list = new HashSet<>();
+  }
+
+  public HashSet<Type> getList() {
+    return list;
   }
 
   @Override

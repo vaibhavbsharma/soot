@@ -19,10 +19,6 @@
 
 package soot.javaToJimple.jj;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
 import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
 import polyglot.frontend.Source;
@@ -31,21 +27,24 @@ import polyglot.types.TypeSystem;
 import soot.javaToJimple.jj.ast.JjNodeFactory_c;
 import soot.javaToJimple.jj.types.JjTypeSystem_c;
 
-/** Extension information for jj extension. */
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Extension information for jj extension.
+ */
 public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
   static {
     // force Topics to load
     new Topics();
   }
 
+  private HashMap<Source, Job> sourceJobMap;
+
   @Override
   public String defaultFileExtension() {
     return "jj";
-  }
-
-  @Override
-  public String compilerName() {
-    return "jjc";
   }
 
   /*public Parser parser(Reader reader, FileSource source, ErrorQueue eq) {
@@ -53,6 +52,11 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
       Grm grm = new Grm(lexer, ts, nf, eq);
       return new CupParser(grm, source, eq);
   }*/
+
+  @Override
+  public String compilerName() {
+    return "jjc";
+  }
 
   @Override
   protected NodeFactory createNodeFactory() {
@@ -71,8 +75,6 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
     return passes;
   }
 
-  private HashMap<Source, Job> sourceJobMap;
-
   public HashMap<Source, Job> sourceJobMap() {
     return sourceJobMap;
   }
@@ -81,7 +83,9 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
     sourceJobMap = map;
   }
 
-  /** Appends the soot classpath to the default system classpath. */
+  /**
+   * Appends the soot classpath to the default system classpath.
+   */
   @Override
   protected Options createOptions() {
     return new Options(this) {

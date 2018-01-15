@@ -19,17 +19,17 @@
 
 package soot.dava.toolkits.base.finders;
 
+import soot.toolkits.graph.DirectedGraph;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import soot.toolkits.graph.DirectedGraph;
-
 class SwitchNodeGraph implements DirectedGraph {
-  private LinkedList body;
   private final LinkedList heads, tails;
   private final HashMap binding;
+  private LinkedList body;
 
   public SwitchNodeGraph(List body) {
     this.body = new LinkedList();

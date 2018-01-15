@@ -19,9 +19,9 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-
 import polyglot.util.IdentityKey;
+
+import java.util.ArrayList;
 
 public class AnonLocalClassInfo {
 

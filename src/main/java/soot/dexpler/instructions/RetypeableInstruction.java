@@ -39,13 +39,13 @@ public interface RetypeableInstruction {
    * Swap generic exception type with the given one.
    *
    * @param body the body that contains the instruction
-   * @param t the real type.
+   * @param t    the real type.
    */
   void setRealType(DexBody body, Type t);
 
   /**
    * Do actual retype.
-   *
+   * <p>
    * <p>Retyping is separated from setting the type, to make it possible to retype after local
    * splitting.
    *

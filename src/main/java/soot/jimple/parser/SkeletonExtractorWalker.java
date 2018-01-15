@@ -27,10 +27,6 @@
 
 package soot.jimple.parser;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Modifier;
 import soot.Scene;
 import soot.SootClass;
@@ -41,6 +37,10 @@ import soot.jimple.parser.node.AFile;
 import soot.jimple.parser.node.AMethodMember;
 import soot.jimple.parser.node.AThrowsClause;
 import soot.jimple.parser.node.PModifier;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
    Walks a jimple AST and extracts the fields, and method signatures and produces

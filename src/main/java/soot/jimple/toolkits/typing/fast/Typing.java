@@ -18,17 +18,20 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.toolkits.typing.fast;
+
+import soot.Local;
+import soot.Type;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
-import soot.Local;
-import soot.Type;
-
-/** @author Ben Bellamy */
+/**
+ * @author Ben Bellamy
+ */
 public class Typing {
   private HashMap<Local, Type> map;
 
@@ -42,28 +45,6 @@ public class Typing {
 
   public Typing(Typing tg) {
     this.map = new HashMap<>(tg.map);
-  }
-
-  public Type get(Local v) {
-    return this.map.get(v);
-  }
-
-  public Type set(Local v, Type t) {
-    return this.map.put(v, t);
-  }
-
-  @Override
-  public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append('{');
-    for (Local v : this.map.keySet()) {
-      sb.append(v);
-      sb.append(':');
-      sb.append(this.get(v));
-      sb.append(',');
-    }
-    sb.append('}');
-    return sb.toString();
   }
 
   public static void minimize(List<Typing> tgs, IHierarchy h) {
@@ -108,5 +89,27 @@ public class Typing {
       }
     }
     return r;
+  }
+
+  public Type get(Local v) {
+    return this.map.get(v);
+  }
+
+  public Type set(Local v, Type t) {
+    return this.map.put(v, t);
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append('{');
+    for (Local v : this.map.keySet()) {
+      sb.append(v);
+      sb.append(':');
+      sb.append(this.get(v));
+      sb.append(',');
+    }
+    sb.append('}');
+    return sb.toString();
   }
 }

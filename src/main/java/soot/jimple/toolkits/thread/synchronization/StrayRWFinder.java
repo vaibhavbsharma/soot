@@ -1,9 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -19,9 +15,13 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that
- *     appear outside synchronization
+ * appear outside synchronization
  */
 public class StrayRWFinder extends BackwardFlowAnalysis {
   FlowSet emptySet = new ArraySparseSet();
@@ -48,19 +48,25 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     doAnalysis();
   }
 
-  /** All INs are initialized to the empty set. */
+  /**
+   * All INs are initialized to the empty set.
+   */
   @Override
   protected Object newInitialFlow() {
     return emptySet.clone();
   }
 
-  /** IN(Start) is the empty set */
+  /**
+   * IN(Start) is the empty set
+   */
   @Override
   protected Object entryInitialFlow() {
     return emptySet.clone();
   }
 
-  /** OUT is the same as (IN minus killSet) plus the genSet. */
+  /**
+   * OUT is the same as (IN minus killSet) plus the genSet.
+   */
   @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
@@ -91,7 +97,9 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     }
   }
 
-  /** union, except for transactions in progress. They get joined */
+  /**
+   * union, except for transactions in progress. They get joined
+   */
   @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = ((FlowSet) in1).clone(),

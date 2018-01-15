@@ -28,14 +28,20 @@ package soot.coffi;
 /**
  * There can be many annotations in each Visibility attribute
  *
- * @see attribute_info
  * @author Jennifer Lhotak
+ * @see attribute_info
  */
 public class annotation extends attribute_info {
-  /** type_index - CONSTANT_Utf8_info structure constant pool entry. */
+  /**
+   * type_index - CONSTANT_Utf8_info structure constant pool entry.
+   */
   public int type_index;
-  /** num_element_value_pairs */
+  /**
+   * num_element_value_pairs
+   */
   public int num_element_value_pairs;
-  /** Each entry represents a single runtime visible annotation. */
+  /**
+   * Each entry represents a single runtime visible annotation.
+   */
   public element_value element_value_pairs[];
 }

@@ -28,7 +28,9 @@ import soot.toolkits.graph.DominatorsFinder;
 import soot.toolkits.graph.ReversibleGraph;
 import soot.toolkits.graph.UnitGraph;
 
-/** @author Navindra Umanee */
+/**
+ * @author Navindra Umanee
+ */
 public interface ShimpleFactory {
 
   /**

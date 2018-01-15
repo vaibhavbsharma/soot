@@ -19,6 +19,14 @@
 
 package soot.jimple.toolkits.annotation.logic;
 
+import soot.Body;
+import soot.BodyTransformer;
+import soot.Unit;
+import soot.jimple.Stmt;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.MHGDominatorsFinder;
+import soot.toolkits.graph.UnitGraph;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,14 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import soot.Body;
-import soot.BodyTransformer;
-import soot.Unit;
-import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.MHGDominatorsFinder;
-import soot.toolkits.graph.UnitGraph;
 
 public class LoopFinder extends BodyTransformer {
 

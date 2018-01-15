@@ -1,10 +1,10 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SynchronizedRegion {
   public Stmt prepStmt;

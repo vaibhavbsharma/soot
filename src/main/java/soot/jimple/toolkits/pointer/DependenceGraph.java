@@ -19,34 +19,13 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.HashSet;
-
 import soot.tagkit.Attribute;
+
+import java.util.HashSet;
 
 public class DependenceGraph implements Attribute {
   private static final String NAME = "DependenceGraph";
   HashSet<Edge> edges = new HashSet<>();
-
-  protected class Edge {
-    short from;
-    short to;
-
-    Edge(short from, short to) {
-      this.from = from;
-      this.to = to;
-    }
-
-    @Override
-    public int hashCode() {
-      return (((from) << 16) + to);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-      Edge o = (Edge) other;
-      return from == o.from && to == o.to;
-    }
-  }
 
   public boolean areAdjacent(short from, short to) {
     if (from > to) {
@@ -81,11 +60,6 @@ public class DependenceGraph implements Attribute {
   }
 
   @Override
-  public void setValue(byte[] v) {
-    throw new RuntimeException("Not Supported");
-  }
-
-  @Override
   public byte[] getValue() {
     byte[] ret = new byte[4 * edges.size()];
     int i = 0;
@@ -100,11 +74,37 @@ public class DependenceGraph implements Attribute {
   }
 
   @Override
+  public void setValue(byte[] v) {
+    throw new RuntimeException("Not Supported");
+  }
+
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer("Dependences");
     for (Edge e : edges) {
       buf.append("( " + e.from + ", " + e.to + " ) ");
     }
     return buf.toString();
+  }
+
+  protected class Edge {
+    short from;
+    short to;
+
+    Edge(short from, short to) {
+      this.from = from;
+      this.to = to;
+    }
+
+    @Override
+    public int hashCode() {
+      return (((from) << 16) + to);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+      Edge o = (Edge) other;
+      return from == o.from && to == o.to;
+    }
   }
 }

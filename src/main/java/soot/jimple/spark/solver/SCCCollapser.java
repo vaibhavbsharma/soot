@@ -19,9 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.HashSet;
-import java.util.TreeSet;
-
 import soot.G;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.Node;
@@ -29,13 +26,32 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
+import java.util.HashSet;
+import java.util.TreeSet;
+
 /**
  * Collapses VarNodes (green) forming strongly-connected components in the pointer assignment graph.
  *
  * @author Ondrej Lhotak
  */
 public class SCCCollapser {
-  /** Actually collapse the SCCs in the PAG. */
+  protected int numCollapsed = 0;
+  protected PAG pag;
+
+  /* End of public methods. */
+  /* End of package methods. */
+  protected HashSet<VarNode> visited = new HashSet<>();
+  protected boolean ignoreTypes;
+  protected TypeManager typeManager;
+  public SCCCollapser(PAG pag, boolean ignoreTypes) {
+    this.pag = pag;
+    this.ignoreTypes = ignoreTypes;
+    this.typeManager = pag.getTypeManager();
+  }
+
+  /**
+   * Actually collapse the SCCs in the PAG.
+   */
   public void collapse() {
     boolean verbose = pag.getOpts().verbose();
     if (verbose) {
@@ -58,21 +74,6 @@ public class SCCCollapser {
     }
     visited = null;
   }
-
-  public SCCCollapser(PAG pag, boolean ignoreTypes) {
-    this.pag = pag;
-    this.ignoreTypes = ignoreTypes;
-    this.typeManager = pag.getTypeManager();
-  }
-
-  /* End of public methods. */
-  /* End of package methods. */
-
-  protected int numCollapsed = 0;
-  protected PAG pag;
-  protected HashSet<VarNode> visited = new HashSet<>();
-  protected boolean ignoreTypes;
-  protected TypeManager typeManager;
 
   protected final void dfsVisit(VarNode v, VarNode rootOfSCC) {
     if (visited.contains(v)) {

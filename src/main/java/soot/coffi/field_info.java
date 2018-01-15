@@ -28,11 +28,13 @@ package soot.coffi;
 /**
  * Represents a single field_info object.
  *
- * @see ClassFile
  * @author Clark Verbrugge
+ * @see ClassFile
  */
 public class field_info {
-  /** Access flags for this field. */
+  /**
+   * Access flags for this field.
+   */
   public int access_flags;
   /**
    * Constant pool index of the name of this field.
@@ -48,7 +50,9 @@ public class field_info {
    * @see CONSTANT_Utf8_info
    */
   public int descriptor_index;
-  /** Count of attributes this field contains. */
+  /**
+   * Count of attributes this field contains.
+   */
   public int attributes_count;
   /**
    * Array of attribute_info objects for this field.

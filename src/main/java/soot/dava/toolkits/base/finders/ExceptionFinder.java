@@ -19,12 +19,6 @@
 
 package soot.dava.toolkits.base.finders;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import soot.G;
 import soot.Singletons;
 import soot.Trap;
@@ -40,8 +34,15 @@ import soot.jimple.GotoStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 public class ExceptionFinder implements FactFinder {
-  public ExceptionFinder(Singletons.Global g) {}
+  public ExceptionFinder(Singletons.Global g) {
+  }
 
   public static ExceptionFinder v() {
     return G.v().soot_dava_toolkits_base_finders_ExceptionFinder();

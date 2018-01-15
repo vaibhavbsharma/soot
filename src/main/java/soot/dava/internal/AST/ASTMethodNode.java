@@ -1,25 +1,27 @@
 /* Soot - a J*va Optimization Framework
-* Copyright (C) 2003 Jerome Miecznikowski
-* Copyright (C) 2004-2005 Nomair A. Naeem
+ * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
 
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the
-* Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-* Boston, MA 02111-1307, USA.
-*/
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 
-/** Maintained by Nomair A. Naeem */
+/**
+ * Maintained by Nomair A. Naeem
+ */
 
 /*
  * CHANGE LOG:  23rd november 2005, Adding method getDeclaredLocals to return all locals
@@ -27,12 +29,6 @@
  */
 
 package soot.dava.internal.AST;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import soot.Body;
 import soot.Local;
@@ -51,6 +47,12 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.util.DeterministicHashMap;
 import soot.util.IterableSet;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
  * ALWAYS REMEMBER THAT THE FIRST NODE IN THE BODY OF A METHODNODE HAS TO BE A STATEMENT
@@ -72,6 +74,12 @@ public class ASTMethodNode extends ASTNode {
    */
   private List<Local> dontPrintLocals = new ArrayList<>();
 
+  public ASTMethodNode(List<Object> body) {
+    super();
+    this.body = body;
+    subBodies.add(body);
+  }
+
   public ASTStatementSequenceNode getDeclarations() {
     return declarations;
   }
@@ -80,12 +88,12 @@ public class ASTMethodNode extends ASTNode {
     declarations = decl;
   }
 
-  public void setDavaBody(DavaBody bod) {
-    this.davaBody = bod;
-  }
-
   public DavaBody getDavaBody() {
     return davaBody;
+  }
+
+  public void setDavaBody(DavaBody bod) {
+    this.davaBody = bod;
   }
 
   public void storeLocals(Body OrigBody) {
@@ -153,12 +161,6 @@ public class ASTMethodNode extends ASTNode {
 
     body.add(0, declarations);
     subBodies = new ArrayList<>();
-    subBodies.add(body);
-  }
-
-  public ASTMethodNode(List<Object> body) {
-    super();
-    this.body = body;
     subBodies.add(body);
   }
 

@@ -25,13 +25,6 @@
 
 package soot.coffi;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -87,18 +80,29 @@ import soot.tagkit.SyntheticTag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Util {
-  public Util(Singletons.Global g) {}
-
-  public static Util v() {
-    return G.v().soot_coffi_Util();
-  }
-
+  private final ArrayList<Type> conversionTypes = new ArrayList<>();
+  private final Map<String, Type[]> cache = new HashMap<>();
+  int nextEasyNameIndex;
   private cp_info[] activeConstantPool = null;
   private LocalVariableTable_attribute activeVariableTable;
   /* maps from variable names to local variable slot indexes to soot Locals */
   private Map<String, Map<Integer, Local>> nameToIndexToLocal;
   private boolean useFaithfulNaming = false;
+
+  public Util(Singletons.Global g) {
+  }
+
+  public static Util v() {
+    return G.v().soot_coffi_Util();
+  }
 
   /**
    * Set the informations relative to the current method body. This method must be called before
@@ -119,6 +123,60 @@ public class Util {
   public boolean isUsingFaithfulNaming() {
     return useFaithfulNaming;
   }
+
+  /*
+   * private Map cache = new HashMap(); public Type[]
+   * jimpleTypesOfFieldOrMethodDescriptor(String descriptor) { Type[] ret =
+   * (Type[]) cache.get(descriptor); if( ret != null ) return ret;
+   * conversionTypes.clear();
+   *
+   * while(descriptor.length() != 0) { boolean isArray = false; int
+   * numDimensions = 0; Type baseType;
+   *
+   * // Skip parenthesis if(descriptor.startsWith("(") ||
+   * descriptor.startsWith(")")) { descriptor = descriptor.substring(1);
+   * continue; }
+   *
+   * // Handle array case while(descriptor.startsWith("[")) { isArray = true;
+   * numDimensions++; descriptor = descriptor.substring(1); }
+   *
+   * // Determine base type if(descriptor.startsWith("B")) { baseType =
+   * ByteType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("C")) { baseType = CharType.v(); descriptor =
+   * descriptor.substring(1); } else if(descriptor.startsWith("D")) { baseType
+   * = DoubleType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("F")) { baseType = FloatType.v(); descriptor =
+   * descriptor.substring(1); } else if(descriptor.startsWith("I")) { baseType
+   * = IntType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("J")) { baseType = LongType.v(); descriptor =
+   * descriptor.substring(1); } else if(descriptor.startsWith("L")) { int
+   * index = descriptor.indexOf(';');
+   *
+   * if(index == -1) throw new
+   * RuntimeException("Class reference has no ending ;");
+   *
+   * String className = descriptor.substring(1, index);
+   *
+   * baseType = RefType.v(className.replace('/', '.'));
+   *
+   * descriptor = descriptor.substring(index + 1); } else
+   * if(descriptor.startsWith("S")) { baseType = ShortType.v(); descriptor =
+   * descriptor.substring(1); } else if(descriptor.startsWith("Z")) { baseType
+   * = BooleanType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("V")) { baseType = VoidType.v(); descriptor =
+   * descriptor.substring(1); } else throw new
+   * RuntimeException("Unknown field type!");
+   *
+   * Type t;
+   *
+   * // Determine type if(isArray) t = ArrayType.v(baseType, numDimensions);
+   * else t = baseType;
+   *
+   * conversionTypes.add(t); }
+   *
+   * ret = (Type[]) conversionTypes.toArray(new Type[0]);
+   * cache.put(descriptor, ret); return ret; }
+   */
 
   public void resolveFromClassFile(
       SootClass aClass, InputStream is, String filePath, Collection<Type> references) {
@@ -232,28 +290,25 @@ public class Util {
               // FloatConstantValueTag((int)((CONSTANT_Float_info)cval).bytes);
               tag = new FloatConstantValueTag(((CONSTANT_Float_info) cval).convert());
               break;
-            case cp_info.CONSTANT_Long:
-              {
-                CONSTANT_Long_info lcval = (CONSTANT_Long_info) cval;
-                tag = new LongConstantValueTag((lcval.high << 32) + lcval.low);
-                break;
-              }
-            case cp_info.CONSTANT_Double:
-              {
-                CONSTANT_Double_info dcval = (CONSTANT_Double_info) cval;
-                // tag = new DoubleConstantValueTag((dcval.high << 32) +
-                // dcval.low);
-                tag = new DoubleConstantValueTag(dcval.convert());
-                break;
-              }
-            case cp_info.CONSTANT_String:
-              {
-                CONSTANT_String_info scval = (CONSTANT_String_info) cval;
-                CONSTANT_Utf8_info ucval =
-                    (CONSTANT_Utf8_info) coffiClass.constant_pool[scval.string_index];
-                tag = new StringConstantValueTag(ucval.convert());
-                break;
-              }
+            case cp_info.CONSTANT_Long: {
+              CONSTANT_Long_info lcval = (CONSTANT_Long_info) cval;
+              tag = new LongConstantValueTag((lcval.high << 32) + lcval.low);
+              break;
+            }
+            case cp_info.CONSTANT_Double: {
+              CONSTANT_Double_info dcval = (CONSTANT_Double_info) cval;
+              // tag = new DoubleConstantValueTag((dcval.high << 32) +
+              // dcval.low);
+              tag = new DoubleConstantValueTag(dcval.convert());
+              break;
+            }
+            case cp_info.CONSTANT_String: {
+              CONSTANT_String_info scval = (CONSTANT_String_info) cval;
+              CONSTANT_Utf8_info ucval =
+                  (CONSTANT_Utf8_info) coffiClass.constant_pool[scval.string_index];
+              tag = new StringConstantValueTag(ucval.convert());
+              break;
+            }
             default:
               throw new RuntimeException("unexpected ConstantValue: " + cval);
           }
@@ -271,9 +326,9 @@ public class Util {
         else if (fieldInfo.attributes[j] instanceof Signature_attribute) {
           String generic_sig =
               ((CONSTANT_Utf8_info)
-                      (coffiClass
-                          .constant_pool[
-                          ((Signature_attribute) fieldInfo.attributes[j]).signature_index]))
+                  (coffiClass
+                      .constant_pool[
+                      ((Signature_attribute) fieldInfo.attributes[j]).signature_index]))
                   .convert();
           field.addTag(new SignatureTag(generic_sig));
         } else if (fieldInfo.attributes[j] instanceof RuntimeVisibleAnnotations_attribute
@@ -355,9 +410,9 @@ public class Util {
           } else if (methodInfo.attributes[j] instanceof Signature_attribute) {
             String generic_sig =
                 ((CONSTANT_Utf8_info)
-                        (coffiClass
-                            .constant_pool[
-                            ((Signature_attribute) methodInfo.attributes[j]).signature_index]))
+                    (coffiClass
+                        .constant_pool[
+                        ((Signature_attribute) methodInfo.attributes[j]).signature_index]))
                     .convert();
             method.addTag(new SignatureTag(generic_sig));
           } else if (methodInfo.attributes[j] instanceof RuntimeVisibleAnnotations_attribute
@@ -365,14 +420,14 @@ public class Util {
             addAnnotationVisibilityAttribute(
                 method, methodInfo.attributes[j], coffiClass, references);
           } else if (methodInfo.attributes[j]
-                  instanceof RuntimeVisibleParameterAnnotations_attribute
+              instanceof RuntimeVisibleParameterAnnotations_attribute
               || methodInfo.attributes[j]
-                  instanceof RuntimeInvisibleParameterAnnotations_attribute) {
+              instanceof RuntimeInvisibleParameterAnnotations_attribute) {
             addAnnotationVisibilityParameterAttribute(
                 method, methodInfo.attributes[j], coffiClass, references);
-          } else if (methodInfo.attributes[j] instanceof AnnotationDefault_attribute) {
-            AnnotationDefault_attribute attr =
-                (AnnotationDefault_attribute) methodInfo.attributes[j];
+          } else if (methodInfo.attributes[j] instanceof AnnotationDefaultAttribute) {
+            AnnotationDefaultAttribute attr =
+                (AnnotationDefaultAttribute) methodInfo.attributes[j];
             element_value[] input = new element_value[1];
             input[0] = attr.default_value;
             ArrayList<AnnotationElem> list = createElementTags(1, coffiClass, input);
@@ -455,19 +510,19 @@ public class Util {
           if (e.inner_class_index != 0) {
             inner =
                 ((CONSTANT_Utf8_info)
-                        coffiClass
-                            .constant_pool[
-                            ((CONSTANT_Class_info) coffiClass.constant_pool[e.inner_class_index])
-                                .name_index])
+                    coffiClass
+                        .constant_pool[
+                        ((CONSTANT_Class_info) coffiClass.constant_pool[e.inner_class_index])
+                            .name_index])
                     .convert();
           }
           if (e.outer_class_index != 0) {
             outer =
                 ((CONSTANT_Utf8_info)
-                        coffiClass
-                            .constant_pool[
-                            ((CONSTANT_Class_info) coffiClass.constant_pool[e.outer_class_index])
-                                .name_index])
+                    coffiClass
+                        .constant_pool[
+                        ((CONSTANT_Class_info) coffiClass.constant_pool[e.outer_class_index])
+                            .name_index])
                     .convert();
           }
           if (e.name_index != 0) {
@@ -487,19 +542,19 @@ public class Util {
       } else if (coffiClass.attributes[i] instanceof Signature_attribute) {
         String generic_sig =
             ((CONSTANT_Utf8_info)
-                    (coffiClass
-                        .constant_pool[
-                        ((Signature_attribute) coffiClass.attributes[i]).signature_index]))
+                (coffiClass
+                    .constant_pool[
+                    ((Signature_attribute) coffiClass.attributes[i]).signature_index]))
                 .convert();
         bclass.addTag(new SignatureTag(generic_sig));
       } else if (coffiClass.attributes[i] instanceof EnclosingMethod_attribute) {
         EnclosingMethod_attribute attr = (EnclosingMethod_attribute) coffiClass.attributes[i];
         String class_name =
             ((CONSTANT_Utf8_info)
-                    coffiClass
-                        .constant_pool[
-                        ((CONSTANT_Class_info) coffiClass.constant_pool[attr.class_index])
-                            .name_index])
+                coffiClass
+                    .constant_pool[
+                    ((CONSTANT_Class_info) coffiClass.constant_pool[attr.class_index])
+                        .name_index])
                 .convert();
         CONSTANT_NameAndType_info info =
             (CONSTANT_NameAndType_info) coffiClass.constant_pool[attr.method_index];
@@ -531,64 +586,6 @@ public class Util {
     return types[types.length - 1];
   }
 
-  private final ArrayList<Type> conversionTypes = new ArrayList<>();
-
-  /*
-   * private Map cache = new HashMap(); public Type[]
-   * jimpleTypesOfFieldOrMethodDescriptor(String descriptor) { Type[] ret =
-   * (Type[]) cache.get(descriptor); if( ret != null ) return ret;
-   * conversionTypes.clear();
-   *
-   * while(descriptor.length() != 0) { boolean isArray = false; int
-   * numDimensions = 0; Type baseType;
-   *
-   * // Skip parenthesis if(descriptor.startsWith("(") ||
-   * descriptor.startsWith(")")) { descriptor = descriptor.substring(1);
-   * continue; }
-   *
-   * // Handle array case while(descriptor.startsWith("[")) { isArray = true;
-   * numDimensions++; descriptor = descriptor.substring(1); }
-   *
-   * // Determine base type if(descriptor.startsWith("B")) { baseType =
-   * ByteType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("C")) { baseType = CharType.v(); descriptor =
-   * descriptor.substring(1); } else if(descriptor.startsWith("D")) { baseType
-   * = DoubleType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("F")) { baseType = FloatType.v(); descriptor =
-   * descriptor.substring(1); } else if(descriptor.startsWith("I")) { baseType
-   * = IntType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("J")) { baseType = LongType.v(); descriptor =
-   * descriptor.substring(1); } else if(descriptor.startsWith("L")) { int
-   * index = descriptor.indexOf(';');
-   *
-   * if(index == -1) throw new
-   * RuntimeException("Class reference has no ending ;");
-   *
-   * String className = descriptor.substring(1, index);
-   *
-   * baseType = RefType.v(className.replace('/', '.'));
-   *
-   * descriptor = descriptor.substring(index + 1); } else
-   * if(descriptor.startsWith("S")) { baseType = ShortType.v(); descriptor =
-   * descriptor.substring(1); } else if(descriptor.startsWith("Z")) { baseType
-   * = BooleanType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("V")) { baseType = VoidType.v(); descriptor =
-   * descriptor.substring(1); } else throw new
-   * RuntimeException("Unknown field type!");
-   *
-   * Type t;
-   *
-   * // Determine type if(isArray) t = ArrayType.v(baseType, numDimensions);
-   * else t = baseType;
-   *
-   * conversionTypes.add(t); }
-   *
-   * ret = (Type[]) conversionTypes.toArray(new Type[0]);
-   * cache.put(descriptor, ret); return ret; }
-   */
-
-  private final Map<String, Type[]> cache = new HashMap<>();
-
   public Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor) {
     Type[] ret = null;
     synchronized (cache) {
@@ -610,7 +607,7 @@ public class Util {
       swtch:
       while (p < d.length) {
         switch (d[p]) {
-            // Skip parenthesis
+          // Skip parenthesis
           case '(':
           case ')':
             p++;
@@ -749,16 +746,14 @@ public class Util {
     }
   }
 
-  int nextEasyNameIndex;
-
   void resetEasyNames() {
     nextEasyNameIndex = 0;
   }
 
   String getNextEasyName() {
     final String[] easyNames = {
-      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
-      "t", "u", "v", "w", "x", "y", "z"
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+        "t", "u", "v", "w", "x", "y", "z"
     };
 
     int justifiedIndex = nextEasyNameIndex++;
@@ -851,9 +846,9 @@ public class Util {
   /**
    * Get a Local for the parameter at the given local variable index.
    *
+   * @return the Local for the given local variable index.
    * @listBody the method body.
    * @index the parameter's local variable index.
-   * @return the Local for the given local variable index.
    */
   Local getLocalForParameter(JimpleBody listBody, int index) {
     return getLocalForIndex(listBody, index, 0, 0, false);
@@ -862,10 +857,10 @@ public class Util {
   /**
    * Get a Local for the local variable at the given index in the context of the given instruction.
    *
+   * @return the Local for the given local variable index.
    * @listBody the method body.
    * @index the local variable index.
    * @context the instruction context.
-   * @return the Local for the given local variable index.
    */
   Local getLocalForIndex(JimpleBody listBody, int index, Instruction context) {
     return getLocalForIndex(
@@ -1025,10 +1020,10 @@ public class Util {
   /**
    * Verifies the prospective name for validity as a Jimple name. In particular, first-char is alpha
    * | _ | $, subsequent-chars are alphanum | _ | $.
-   *
+   * <p>
    * <p>We could use isJavaIdentifier, except that Jimple's grammar doesn't support all of those,
    * just ASCII.
-   *
+   * <p>
    * <p>I'd put this in soot.Local, but that's an interface.
    *
    * @author Patrick Lam

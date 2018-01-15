@@ -1,27 +1,24 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Value;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.pointer.RWSet;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 class CriticalSectionGroup implements Iterable<CriticalSection> {
-  int groupNum;
-
-  // Information about the group members
-  List<CriticalSection> criticalSections;
-
-  // Group read/write set
-  RWSet rwSet;
-
   // Information about the selected lock(s)
   public boolean isDynamicLock; // is lockObject actually dynamic? or is it a static ref?
   public boolean useDynamicLock; // use one dynamic lock per tn
   public Value lockObject;
   public boolean useLocksets;
+  int groupNum;
+  // Information about the group members
+  List<CriticalSection> criticalSections;
+  // Group read/write set
+  RWSet rwSet;
 
   public CriticalSectionGroup(int groupNum) {
     this.groupNum = groupNum;

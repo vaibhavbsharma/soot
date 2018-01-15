@@ -18,9 +18,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.toolkits.typing.fast;
 
-import java.util.Iterator;
+package soot.jimple.toolkits.typing.fast;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -89,6 +88,8 @@ import soot.jimple.XorExpr;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
+
+import java.util.Iterator;
 
 /**
  * This checks all uses against the rules in Jimple, except some uses are not checked where the
@@ -182,7 +183,8 @@ public class UseChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseBreakpointStmt(BreakpointStmt stmt) {}
+  public void caseBreakpointStmt(BreakpointStmt stmt) {
+  }
 
   @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
@@ -396,7 +398,8 @@ public class UseChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseIdentityStmt(IdentityStmt stmt) {}
+  public void caseIdentityStmt(IdentityStmt stmt) {
+  }
 
   @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
@@ -409,7 +412,8 @@ public class UseChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseGotoStmt(GotoStmt stmt) {}
+  public void caseGotoStmt(GotoStmt stmt) {
+  }
 
   @Override
   public void caseIfStmt(IfStmt stmt) {
@@ -422,7 +426,8 @@ public class UseChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseNopStmt(NopStmt stmt) {}
+  public void caseNopStmt(NopStmt stmt) {
+  }
 
   @Override
   public void caseReturnStmt(ReturnStmt stmt) {
@@ -430,7 +435,8 @@ public class UseChecker extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+  }
 
   @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {

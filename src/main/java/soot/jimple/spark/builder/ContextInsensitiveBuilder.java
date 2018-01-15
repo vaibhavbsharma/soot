@@ -19,8 +19,6 @@
 
 package soot.jimple.spark.builder;
 
-import java.util.ArrayList;
-
 import soot.G;
 import soot.Scene;
 import soot.SootClass;
@@ -38,12 +36,23 @@ import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.options.SparkOptions;
 import soot.util.queue.QueueReader;
 
+import java.util.ArrayList;
+
 /**
  * A context insensitive pointer assignment graph builder.
  *
  * @author Ondrej Lhotak
  */
 public class ContextInsensitiveBuilder {
+  int classes = 0;
+  int totalMethods = 0;
+  int analyzedMethods = 0;
+  int stmts = 0;
+  private PAG pag;
+  private CallGraphBuilder cgb;
+  private OnFlyCallGraph ofcg;
+  private ReachableMethods reachables;
+
   public void preJimplify() {
     boolean change = true;
     while (change) {
@@ -68,7 +77,9 @@ public class ContextInsensitiveBuilder {
     }
   }
 
-  /** Creates an empty pointer assignment graph. */
+  /**
+   * Creates an empty pointer assignment graph.
+   */
   public PAG setup(SparkOptions opts) {
     pag = opts.geom_pta() ? new GeomPointsTo(opts) : new PAG(opts);
     if (opts.simulate_natives()) {
@@ -83,7 +94,9 @@ public class ContextInsensitiveBuilder {
     return pag;
   }
 
-  /** Fills in the pointer assignment graph returned by setup. */
+  /**
+   * Fills in the pointer assignment graph returned by setup.
+   */
   public void build() {
     QueueReader<Edge> callEdges;
     if (ofcg != null) {
@@ -139,13 +152,4 @@ public class ContextInsensitiveBuilder {
       }
     }
   }
-
-  private PAG pag;
-  private CallGraphBuilder cgb;
-  private OnFlyCallGraph ofcg;
-  private ReachableMethods reachables;
-  int classes = 0;
-  int totalMethods = 0;
-  int analyzedMethods = 0;
-  int stmts = 0;
 }

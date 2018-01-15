@@ -18,15 +18,6 @@ package soot.jimple.toolkits.thread.synchronization;
  * Boston, MA 02111-1307, USA.
  */
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
 import soot.Local;
 import soot.MethodOrMethodContext;
 import soot.PointsToAnalysis;
@@ -59,6 +50,15 @@ import soot.jimple.toolkits.pointer.SideEffectAnalysis;
 import soot.jimple.toolkits.pointer.StmtRWSet;
 import soot.jimple.toolkits.thread.EncapsulatedObjectAnalysis;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Generates side-effect information from a PointsToAnalysis. Uses various heuristic rules to filter
@@ -113,6 +113,10 @@ class WholeObject {
 }
 
 public class CriticalSectionAwareSideEffectAnalysis {
+  public Vector sigBlacklist;
+  public Vector sigReadGraylist;
+  public Vector sigWriteGraylist;
+  public Vector subSigBlacklist;
   PointsToAnalysis pa;
   CallGraph cg;
   Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<>();
@@ -125,11 +129,65 @@ public class CriticalSectionAwareSideEffectAnalysis {
   Collection<CriticalSection> criticalSections;
   EncapsulatedObjectAnalysis eoa;
   ThreadLocalObjectsAnalysis tlo;
+  private HashMap<Stmt, RWSet> RCache = new HashMap<>();
+  private HashMap<Stmt, RWSet> WCache = new HashMap<>();
 
-  public Vector sigBlacklist;
-  public Vector sigReadGraylist;
-  public Vector sigWriteGraylist;
-  public Vector subSigBlacklist;
+  public CriticalSectionAwareSideEffectAnalysis(
+      PointsToAnalysis pa,
+      CallGraph cg,
+      Collection<CriticalSection> criticalSections,
+      ThreadLocalObjectsAnalysis tlo) {
+    this.pa = pa;
+    this.cg = cg;
+    this.tve = new CriticalSectionVisibleEdgesPred(criticalSections);
+    this.tt = new TransitiveTargets(cg, new Filter(tve));
+    this.normaltt = new TransitiveTargets(cg, null);
+    this.normalsea = new SideEffectAnalysis(pa, cg);
+    this.criticalSections = criticalSections;
+    this.eoa = new EncapsulatedObjectAnalysis();
+    this.tlo = tlo; // can be null
+
+    sigBlacklist = new Vector(); // Signatures of methods known to have effective read/write sets of
+    // size 0
+    // Math does not have any synchronization risks, we think :-)
+    /*		sigBlacklist.add("<java.lang.Math: double abs(double)>");
+    		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
+    		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
+    		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
+    //*/
+    //		sigBlacklist.add("");
+
+    sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
+    sigWriteGraylist = new Vector();
+
+    /*		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+    		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+
+    		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
+    		sigWriteGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
+
+    		sigReadGraylist.add("<java.util.Vector: java.lang.Object clone()>");
+    //		sigWriteGraylist.add("<java.util.Vector: java.lang.Object clone()>");
+
+    		sigReadGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
+    //		sigWriteGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
+
+    		sigReadGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
+    //		sigWriteGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
+
+    		sigReadGraylist.add("<java.util.List: void clear()>");
+    		sigWriteGraylist.add("<java.util.List: void clear()>");
+    //*/
+    subSigBlacklist =
+        new Vector(); // Subsignatures of methods on all objects known to have read/write
+    // sets of size 0
+    /*		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
+    		subSigBlacklist.add("void notify()");
+    		subSigBlacklist.add("void notifyAll()");
+    		subSigBlacklist.add("void wait()");
+    		subSigBlacklist.add("void <clinit>()");
+    //*/
+  }
 
   public void findNTRWSets(SootMethod method) {
     if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
@@ -241,63 +299,6 @@ public class CriticalSectionAwareSideEffectAnalysis {
     return methodToNTWriteSet.get(method);
   }
 
-  public CriticalSectionAwareSideEffectAnalysis(
-      PointsToAnalysis pa,
-      CallGraph cg,
-      Collection<CriticalSection> criticalSections,
-      ThreadLocalObjectsAnalysis tlo) {
-    this.pa = pa;
-    this.cg = cg;
-    this.tve = new CriticalSectionVisibleEdgesPred(criticalSections);
-    this.tt = new TransitiveTargets(cg, new Filter(tve));
-    this.normaltt = new TransitiveTargets(cg, null);
-    this.normalsea = new SideEffectAnalysis(pa, cg);
-    this.criticalSections = criticalSections;
-    this.eoa = new EncapsulatedObjectAnalysis();
-    this.tlo = tlo; // can be null
-
-    sigBlacklist = new Vector(); // Signatures of methods known to have effective read/write sets of
-    // size 0
-    // Math does not have any synchronization risks, we think :-)
-    /*		sigBlacklist.add("<java.lang.Math: double abs(double)>");
-    		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
-    		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
-    		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
-    //*/
-    //		sigBlacklist.add("");
-
-    sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
-    sigWriteGraylist = new Vector();
-
-    /*		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
-    		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
-
-    		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
-    		sigWriteGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
-
-    		sigReadGraylist.add("<java.util.Vector: java.lang.Object clone()>");
-    //		sigWriteGraylist.add("<java.util.Vector: java.lang.Object clone()>");
-
-    		sigReadGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
-    //		sigWriteGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
-
-    		sigReadGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
-    //		sigWriteGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
-
-    		sigReadGraylist.add("<java.util.List: void clear()>");
-    		sigWriteGraylist.add("<java.util.List: void clear()>");
-    //*/
-    subSigBlacklist =
-        new Vector(); // Subsignatures of methods on all objects known to have read/write
-    // sets of size 0
-    /*		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
-    		subSigBlacklist.add("void notify()");
-    		subSigBlacklist.add("void notifyAll()");
-    		subSigBlacklist.add("void wait()");
-    		subSigBlacklist.add("void <clinit>()");
-    //*/
-  }
-
   private RWSet ntReadSet(SootMethod method, Stmt stmt) {
     if (stmt instanceof AssignStmt) {
       AssignStmt a = (AssignStmt) stmt;
@@ -309,8 +310,6 @@ public class CriticalSectionAwareSideEffectAnalysis {
     }
     return null;
   }
-
-  private HashMap<Stmt, RWSet> RCache = new HashMap<>();
 
   public RWSet approximatedReadSet(
       SootMethod method,
@@ -464,7 +463,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
           						ntr = approximatedReadSet(method, stmt, null, target, false);
           					}
           					ret.union(ntr);
-          */ } else { // note that all library functions have already
+          */
+        } else { // note that all library functions have already
           // been filtered out (by name) via the filter
           // passed to the TransitiveTargets constructor.
           RWSet ntr = nonTransitiveReadSet(target);
@@ -540,8 +540,6 @@ public class CriticalSectionAwareSideEffectAnalysis {
     }
     return null;
   }
-
-  private HashMap<Stmt, RWSet> WCache = new HashMap<>();
 
   public RWSet approximatedWriteSet(
       SootMethod method,

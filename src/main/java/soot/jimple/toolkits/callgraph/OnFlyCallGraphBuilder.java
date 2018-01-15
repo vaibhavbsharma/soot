@@ -19,17 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -96,6 +85,17 @@ import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Models the call graph.
  *
@@ -108,30 +108,30 @@ public final class OnFlyCallGraphBuilder {
   private static final PrimType[] SHORT_NARROWINGS = new PrimType[] {ShortType.v(), ByteType.v()};
   private static final PrimType[] LONG_NARROWINGS =
       new PrimType[] {
-        LongType.v(), IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v()
+          LongType.v(), IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v()
       };
   private static final ByteType[] BYTE_NARROWINGS = new ByteType[] {ByteType.v()};
   private static final PrimType[] FLOAT_NARROWINGS =
       new PrimType[] {
-        FloatType.v(),
-        LongType.v(),
-        IntType.v(),
-        CharType.v(),
-        ShortType.v(),
-        ByteType.v(),
-        ShortType.v(),
+          FloatType.v(),
+          LongType.v(),
+          IntType.v(),
+          CharType.v(),
+          ShortType.v(),
+          ByteType.v(),
+          ShortType.v(),
       };
   private static final PrimType[] BOOLEAN_NARROWINGS = new PrimType[] {BooleanType.v()};
   private static final PrimType[] DOUBLE_NARROWINGS =
       new PrimType[] {
-        DoubleType.v(),
-        FloatType.v(),
-        LongType.v(),
-        IntType.v(),
-        CharType.v(),
-        ShortType.v(),
-        ByteType.v(),
-        ShortType.v(),
+          DoubleType.v(),
+          FloatType.v(),
+          LongType.v(),
+          IntType.v(),
+          CharType.v(),
+          ShortType.v(),
+          ByteType.v(),
+          ShortType.v(),
       };
   protected final NumberedString sigFinalize =
       Scene.v().getSubSigNumberer().findOrAdd("void finalize()");
@@ -187,7 +187,9 @@ public final class OnFlyCallGraphBuilder {
   protected final RefType clRunnable = RefType.v("java.lang.Runnable");
   protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
   protected final RefType clHandler = RefType.v("android.os.Handler");
-  /** context-insensitive stuff */
+  /**
+   * context-insensitive stuff
+   */
   private final CallGraph cicg = new CallGraph();
 
   private final HashSet<SootMethod> analyzedMethods = new HashSet<>();
@@ -218,7 +220,9 @@ public final class OnFlyCallGraphBuilder {
   ReflectionModel reflectionModel;
   private CGOptions options;
   private boolean appOnly;
-  /** context-sensitive stuff */
+  /**
+   * context-sensitive stuff
+   */
   private ReachableMethods rm;
 
   private QueueReader<MethodOrMethodContext> worklist;
@@ -371,8 +375,8 @@ public final class OnFlyCallGraphBuilder {
       // yet, then generate nullary methods
       if (mustBeNull
           || (ics.nullnessCode() == InvokeCallSite.MAY_BE_NULL
-              && (!invokeArgsToSize.containsKey(ics.argArray())
-                  || !reachingArgTypes.containsKey(ics.argArray())))) {
+          && (!invokeArgsToSize.containsKey(ics.argArray())
+          || !reachingArgTypes.containsKey(ics.argArray())))) {
         for (Type bType : s) {
           assert bType instanceof RefType;
           SootClass baseClass = ((RefType) bType).getSootClass();
@@ -841,13 +845,13 @@ public final class OnFlyCallGraphBuilder {
             addEdge(m, s, tgt);
             String signature = tgt.getSignature();
             if (signature.equals(
-                    "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>")
+                "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>")
                 || signature.equals(
-                    "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>")
+                "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>")
                 || signature.equals(
-                    "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>")
+                "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>")
                 || signature.equals(
-                    "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>")) {
+                "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>")) {
 
               Local receiver = (Local) ie.getArg(0);
               addVirtualCallSite(s, m, receiver, null, sigObjRun, Kind.PRIVILEGED);

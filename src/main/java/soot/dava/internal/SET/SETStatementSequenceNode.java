@@ -19,10 +19,6 @@
 
 package soot.dava.internal.SET;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import soot.SootMethod;
 import soot.Value;
 import soot.dava.DavaBody;
@@ -38,6 +34,10 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.util.IterableSet;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SETStatementSequenceNode extends SETNode {
   private DavaBody davaBody;

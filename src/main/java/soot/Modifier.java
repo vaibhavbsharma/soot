@@ -54,7 +54,8 @@ public class Modifier {
   public static final int DECLARED_SYNCHRONIZED = 0x20000;
   // add
 
-  private Modifier() {}
+  private Modifier() {
+  }
 
   public static boolean isAbstract(int m) {
     return (m & ABSTRACT) != 0;

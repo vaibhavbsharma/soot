@@ -19,6 +19,16 @@
 
 package soot.toolkits.astmetrics.DataHandlingApplication;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import soot.CompilationDeathException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,18 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import soot.CompilationDeathException;
-
 public class ProcessData {
 
   // when printing class names what is the max size of each class name
@@ -55,21 +53,18 @@ public class ProcessData {
 
   private static final int CLASS = 0;
   private static final int BENCHMARK = 1;
-
-  private static String metricListFileName = null;
-
   private static final ArrayList<String> xmlFileList = new ArrayList<>();
-
-  private static int aggregationMechanism = -1;
-
-  private static OutputStream streamOut;
-  private static PrintWriter bench;
-
   // set to true to getcsv instead of tex
   private static final boolean CSV = true;
   private static final boolean decompiler = false; // else it is obfuscated
+  private static String metricListFileName = null;
+  private static int aggregationMechanism = -1;
+  private static OutputStream streamOut;
+  private static PrintWriter bench;
 
-  /** @param args */
+  /**
+   * @param args
+   */
   public static void main(String[] args) {
     int argLength = args.length;
     if (argLength == 0) {

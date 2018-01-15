@@ -25,9 +25,13 @@ package soot.toolkits.graph;
  * @author Navindra Umanee
  */
 public interface ReversibleGraph<N> extends MutableDirectedGraph<N> {
-  /** Returns true if the graph is now reversed from its original state at creation. */
+  /**
+   * Returns true if the graph is now reversed from its original state at creation.
+   */
   boolean isReversed();
 
-  /** Reverse the edges of the current graph and swap head and tail nodes. Returns self. */
+  /**
+   * Reverse the edges of the current graph and swap head and tail nodes. Returns self.
+   */
   ReversibleGraph<N> reverse();
 }

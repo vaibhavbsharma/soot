@@ -25,23 +25,29 @@
 
 package soot.tagkit;
 
-import java.util.LinkedList;
-
 import soot.Unit;
+
+import java.util.LinkedList;
 
 /**
  * A tag aggregator that associates a tag with the <b>first</b> instruction that is tagged with it.
  */
 public abstract class FirstTagAggregator extends TagAggregator {
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   @Override
   public abstract boolean wantTag(Tag t);
 
-  /** Return name of the resulting aggregated tag. */
+  /**
+   * Return name of the resulting aggregated tag.
+   */
   @Override
   public abstract String aggregatedName();
 
-  /** Decide whether this tag should be aggregated by this aggregator. */
+  /**
+   * Decide whether this tag should be aggregated by this aggregator.
+   */
   @Override
   public void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units) {
     if (units.size() > 0 && units.getLast() == u) {

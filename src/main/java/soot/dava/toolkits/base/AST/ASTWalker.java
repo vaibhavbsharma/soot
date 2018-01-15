@@ -47,7 +47,8 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
 
 public class ASTWalker {
-  public ASTWalker(Singletons.Global g) {}
+  public ASTWalker(Singletons.Global g) {
+  }
 
   public static ASTWalker v() {
     return G.v().soot_dava_toolkits_base_AST_ASTWalker();

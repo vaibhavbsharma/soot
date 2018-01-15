@@ -36,7 +36,7 @@ import soot.jimple.spark.sets.PointsToSetEqualsWrapper;
  * soot.jimple.toolkits.pointer.LocalMustAliasAnalysis}, it represents the value of a variable at a
  * single location, which itself can represent multiple runtime objects, if the location is
  * contained in a loop.
- *
+ * <p>
  * <p>See Sable TR 2007-8 for details.
  *
  * @author Eric Bodden
@@ -57,10 +57,10 @@ public class InstanceKey {
    * lmna.
    *
    * @param local the local variable whose value this key represents
-   * @param stmt the statement at which this key represents the value
+   * @param stmt  the statement at which this key represents the value
    * @param owner the method containing local
-   * @param lmaa a {@link soot.jimple.toolkits.pointer.LocalMustAliasAnalysis}
-   * @param lmna a {@link soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis}
+   * @param lmaa  a {@link soot.jimple.toolkits.pointer.LocalMustAliasAnalysis}
+   * @param lmna  a {@link soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis}
    */
   public InstanceKey(
       Local local,
@@ -79,7 +79,9 @@ public class InstanceKey {
     this.hashCode = computeHashCode();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public boolean mustAlias(InstanceKey otherKey) {
     if (stmtAfterAssignStmt == null || otherKey.stmtAfterAssignStmt == null) {
       // don't know
@@ -89,7 +91,9 @@ public class InstanceKey {
         assignedLocal, stmtAfterAssignStmt, otherKey.assignedLocal, otherKey.stmtAfterAssignStmt);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   public boolean mayNotAlias(InstanceKey otherKey) {
     if (owner.equals(otherKey.owner)
         && stmtAfterAssignStmt != null
@@ -132,13 +136,17 @@ public class InstanceKey {
     return instanceKeyString + "(" + assignedLocal.getName() + ")";
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     return hashCode;
   }
 
-  /** (Pre)computes the hash code. */
+  /**
+   * (Pre)computes the hash code.
+   */
   protected int computeHashCode() {
     final int prime = 31;
     int result = 1;
@@ -153,7 +161,9 @@ public class InstanceKey {
     return result;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

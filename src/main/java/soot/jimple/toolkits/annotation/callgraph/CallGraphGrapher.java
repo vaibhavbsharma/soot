@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.MethodOrMethodContext;
@@ -39,17 +35,24 @@ import soot.options.CGGOptions;
 import soot.options.Options;
 import soot.toolkits.graph.interaction.InteractionHandler;
 
-/** A scene transformer that creates a graphical callgraph. */
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * A scene transformer that creates a graphical callgraph.
+ */
 public class CallGraphGrapher extends SceneTransformer {
-  public CallGraphGrapher(Singletons.Global g) {}
+  private MethodToContexts methodToContexts;
+  private CallGraph cg;
+  private boolean showLibMeths;
+  private SootMethod nextMethod;
+  public CallGraphGrapher(Singletons.Global g) {
+  }
 
   public static CallGraphGrapher v() {
     return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher();
   }
-
-  private MethodToContexts methodToContexts;
-  private CallGraph cg;
-  private boolean showLibMeths;
 
   private ArrayList<MethInfo> getTgtMethods(SootMethod method, boolean recurse) {
     // G.v().out.println("meth for tgts: "+method);
@@ -192,21 +195,19 @@ public class CallGraphGrapher extends SceneTransformer {
     // handleNextMethod();
   }
 
-  private SootMethod nextMethod;
+  public SootMethod getNextMethod() {
+    return nextMethod;
+  }
 
   public void setNextMethod(SootMethod m) {
     nextMethod = m;
   }
 
-  public SootMethod getNextMethod() {
-    return nextMethod;
+  public boolean isShowLibMeths() {
+    return showLibMeths;
   }
 
   public void setShowLibMeths(boolean b) {
     showLibMeths = b;
-  }
-
-  public boolean isShowLibMeths() {
-    return showLibMeths;
   }
 }

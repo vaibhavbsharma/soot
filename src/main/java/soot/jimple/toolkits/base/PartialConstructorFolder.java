@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.base;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -50,18 +45,23 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public class PartialConstructorFolder extends BodyTransformer {
   // public JimpleConstructorFolder( Singletons.Global g ) {}
   // public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
 
   private List<Type> types;
 
-  public void setTypes(List<Type> t) {
-    types = t;
-  }
-
   public List<Type> getTypes() {
     return types;
+  }
+
+  public void setTypes(List<Type> t) {
+    types = t;
   }
 
   /**

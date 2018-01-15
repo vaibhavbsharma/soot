@@ -25,7 +25,7 @@ import polyglot.visit.NodeVisitor;
 
 /**
  * @author Michael Batchelder
- *     <p>Created on 7-Mar-2006
+ * <p>Created on 7-Mar-2006
  */
 public class ExpressionComplexityMetric extends ASTMetric {
 

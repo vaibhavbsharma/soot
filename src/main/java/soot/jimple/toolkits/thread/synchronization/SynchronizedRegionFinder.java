@@ -1,11 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -36,30 +30,31 @@ import soot.toolkits.scalar.Pair;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Richard L. Halpert Finds Synchronized Regions and creates a set of CriticalSection
- *     objects from them.
+ * objects from them.
  */
 public class SynchronizedRegionFinder
     extends ForwardFlowAnalysis<Unit, FlowSet<SynchronizedRegionFlowPair>> {
+  public boolean optionPrintDebug = false;
+  public boolean optionOpenNesting = true;
   FlowSet<SynchronizedRegionFlowPair> emptySet = new ArraySparseSet<>();
-
   Map unitToGenerateSet;
-
   Body body;
   Chain<Unit> units;
   SootMethod method;
   ExceptionalUnitGraph egraph;
+  //	SideEffectAnalysis sea;
   LocalUses slu;
   CriticalSectionAwareSideEffectAnalysis tasea;
-  //	SideEffectAnalysis sea;
-
   List<Object> prepUnits;
-
   CriticalSection methodTn;
-
-  public boolean optionPrintDebug = false;
-  public boolean optionOpenNesting = true;
 
   SynchronizedRegionFinder(
       UnitGraph graph,
@@ -115,7 +110,9 @@ public class SynchronizedRegionFinder
     }
   }
 
-  /** All INs are initialized to the empty set. */
+  /**
+   * All INs are initialized to the empty set.
+   */
   @Override
   protected FlowSet<SynchronizedRegionFlowPair> newInitialFlow() {
     FlowSet<SynchronizedRegionFlowPair> ret = emptySet.clone();
@@ -125,7 +122,9 @@ public class SynchronizedRegionFinder
     return ret;
   }
 
-  /** OUT is the same as (IN minus killSet) plus the genSet. */
+  /**
+   * OUT is the same as (IN minus killSet) plus the genSet.
+   */
   @Override
   protected void flowThrough(
       FlowSet<SynchronizedRegionFlowPair> in, Unit unit, FlowSet<SynchronizedRegionFlowPair> out) {
@@ -218,8 +217,8 @@ public class SynchronizedRegionFinder
               G.v().out.print("{x,x} ");
             }
           } else if ((InvokeSig.equals("void wait()")
-                  || InvokeSig.equals("void wait(long)")
-                  || InvokeSig.equals("void wait(long,int)"))
+              || InvokeSig.equals("void wait(long)")
+              || InvokeSig.equals("void wait(long,int)"))
               && tn.nestLevel == nestLevel) // only applies to outermost txn
           {
             if (!tn.waits.contains(unit)) {
@@ -393,7 +392,9 @@ public class SynchronizedRegionFinder
     }
   }
 
-  /** union */
+  /**
+   * union
+   */
   @Override
   protected void merge(
       FlowSet<SynchronizedRegionFlowPair> inSet1,

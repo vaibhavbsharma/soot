@@ -26,8 +26,6 @@
 
 package soot.baf.internal;
 
-import java.util.List;
-
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
@@ -38,7 +36,9 @@ import soot.baf.InstSwitch;
 import soot.jimple.Jimple;
 import soot.util.Switch;
 
-@SuppressWarnings({"serial", "unchecked"})
+import java.util.List;
+
+@SuppressWarnings( {"serial", "unchecked"})
 public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst {
   protected final SootMethodRef bsmRef;
   private final List<Value> bsmArgs;
@@ -125,7 +125,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
             + methodRef.name()
             + "\" <"
             + SootMethod.getSubSignature(
-                "" /* no method name here*/, methodRef.parameterTypes(), methodRef.returnType())
+            "" /* no method name here*/, methodRef.parameterTypes(), methodRef.returnType())
             + "> ");
     up.methodRef(bsmRef);
     up.literal("(");

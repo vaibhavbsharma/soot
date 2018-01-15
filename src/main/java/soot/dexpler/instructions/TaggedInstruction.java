@@ -21,7 +21,6 @@
 package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
-
 import soot.tagkit.Tag;
 
 public abstract class TaggedInstruction extends DexlibAbstractInstruction {
@@ -30,10 +29,6 @@ public abstract class TaggedInstruction extends DexlibAbstractInstruction {
 
   public TaggedInstruction(Instruction instruction, int codeAddress) {
     super(instruction, codeAddress);
-  }
-
-  public void setTag(Tag t) {
-    instructionTag = t;
   }
 
   public Tag getTag() {
@@ -46,5 +41,9 @@ public abstract class TaggedInstruction extends DexlibAbstractInstruction {
               + ")");
     }
     return instructionTag;
+  }
+
+  public void setTag(Tag t) {
+    instructionTag = t;
   }
 }

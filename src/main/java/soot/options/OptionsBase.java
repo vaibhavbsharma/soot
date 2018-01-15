@@ -19,9 +19,6 @@
 
 package soot.options;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
-
 import soot.HasPhaseOptions;
 import soot.Pack;
 import soot.PackManager;
@@ -29,12 +26,18 @@ import soot.PhaseOptions;
 import soot.Transform;
 import soot.plugins.internal.PluginLoader;
 
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
 /**
  * Soot command-line options parser base class.
  *
  * @author Ondrej Lhotak
  */
 abstract class OptionsBase {
+  private final LinkedList<String> options = new LinkedList<>();
+  protected LinkedList<String> classes = new LinkedList<>();
+
   private String pad(int initial, String opts, int tab, String desc) {
     StringBuffer b = new StringBuffer();
     for (int i = 0; i < initial; i++) {
@@ -89,8 +92,6 @@ abstract class OptionsBase {
     return b.toString();
   }
 
-  private final LinkedList<String> options = new LinkedList<>();
-
   protected void pushOptions(String s) {
     options.addFirst(s);
   }
@@ -102,8 +103,6 @@ abstract class OptionsBase {
   protected String nextOption() {
     return options.removeFirst();
   }
-
-  protected LinkedList<String> classes = new LinkedList<>();
 
   public LinkedList<String> classes() {
     return classes;

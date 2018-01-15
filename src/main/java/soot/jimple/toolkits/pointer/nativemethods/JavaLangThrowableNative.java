@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -59,7 +60,7 @@ public class JavaLangThrowableNative extends NativeMethodClass {
   /** ************************ java.lang.Throwable ****************** */
   /**
    * NOTE: this method just fills in the stack state in this throwable object content.
-   *
+   * <p>
    * <p>public native java.lang.Throwable fillInStackTrace();
    */
   public void java_lang_Throwable_fillInStackTrace(

@@ -25,4 +25,5 @@
 
 package soot.baf;
 
-public interface IfNeInst extends TargetArgInst {}
+public interface IfNeInst extends TargetArgInst {
+}

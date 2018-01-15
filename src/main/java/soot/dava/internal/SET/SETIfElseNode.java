@@ -19,8 +19,6 @@
 
 package soot.dava.internal.SET;
 
-import java.util.List;
-
 import soot.dava.internal.AST.ASTIfElseNode;
 import soot.dava.internal.AST.ASTIfNode;
 import soot.dava.internal.AST.ASTNode;
@@ -29,6 +27,8 @@ import soot.dava.toolkits.base.misc.ConditionFlipper;
 import soot.jimple.ConditionExpr;
 import soot.jimple.IfStmt;
 import soot.util.IterableSet;
+
+import java.util.List;
 
 public class SETIfElseNode extends SETDagNode {
   private IterableSet ifBody, elseBody;

@@ -34,6 +34,13 @@ public final class MethodToContexts {
   private final Map<SootMethod, List<MethodOrMethodContext>> map =
       new HashMap<>();
 
+  public MethodToContexts() {
+  }
+
+  public MethodToContexts(Iterator<MethodOrMethodContext> it) {
+    add(it);
+  }
+
   public void add(MethodOrMethodContext momc) {
     SootMethod m = momc.method();
     List<MethodOrMethodContext> l = map.get(m);
@@ -41,12 +48,6 @@ public final class MethodToContexts {
       map.put(m, l = new ArrayList<>());
     }
     l.add(momc);
-  }
-
-  public MethodToContexts() {}
-
-  public MethodToContexts(Iterator<MethodOrMethodContext> it) {
-    add(it);
   }
 
   public void add(Iterator<MethodOrMethodContext> it) {

@@ -26,6 +26,12 @@
 package soot.tagkit;
 
 public class ColorTag implements Tag {
+  public static final int RED = 0;
+  public static final int GREEN = 1;
+  public static final int YELLOW = 2;
+  public static final int BLUE = 3;
+  public static final int ORANGE = 4;
+  public static final int PURPLE = 5;
   /* it is a value representing red. */
   private int red;
   /* it is a value representing green. */
@@ -36,13 +42,6 @@ public class ColorTag implements Tag {
    * higlight background */
   private boolean foreground = false;
   private String analysisType = "Unknown";
-
-  public static final int RED = 0;
-  public static final int GREEN = 1;
-  public static final int YELLOW = 2;
-  public static final int BLUE = 3;
-  public static final int ORANGE = 4;
-  public static final int PURPLE = 5;
 
   public ColorTag(int r, int g, int b, boolean fg) {
     red = r;
@@ -80,55 +79,48 @@ public class ColorTag implements Tag {
   public ColorTag(int color, boolean fg) {
     // G.v().out.println("color: "+color);
     switch (color) {
-      case RED:
-        {
-          red = 255;
-          green = 0;
-          blue = 0;
-          break;
-        }
-      case GREEN:
-        {
-          red = 45;
-          green = 255;
-          blue = 84;
-          break;
-        }
-      case YELLOW:
-        {
-          red = 255;
-          green = 248;
-          blue = 35;
-          break;
-        }
-      case BLUE:
-        {
-          red = 174;
-          green = 210;
-          blue = 255;
-          break;
-        }
-      case ORANGE:
-        {
-          red = 255;
-          green = 163;
-          blue = 0;
-          break;
-        }
-      case PURPLE:
-        {
-          red = 159;
-          green = 34;
-          blue = 193;
-          break;
-        }
-      default:
-        {
-          red = 220;
-          green = 220;
-          blue = 220;
-          break;
-        }
+      case RED: {
+        red = 255;
+        green = 0;
+        blue = 0;
+        break;
+      }
+      case GREEN: {
+        red = 45;
+        green = 255;
+        blue = 84;
+        break;
+      }
+      case YELLOW: {
+        red = 255;
+        green = 248;
+        blue = 35;
+        break;
+      }
+      case BLUE: {
+        red = 174;
+        green = 210;
+        blue = 255;
+        break;
+      }
+      case ORANGE: {
+        red = 255;
+        green = 163;
+        blue = 0;
+        break;
+      }
+      case PURPLE: {
+        red = 159;
+        green = 34;
+        blue = 193;
+        break;
+      }
+      default: {
+        red = 220;
+        green = 220;
+        blue = 220;
+        break;
+      }
     }
     foreground = fg;
   }

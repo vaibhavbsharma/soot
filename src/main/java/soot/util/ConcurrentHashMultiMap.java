@@ -37,7 +37,8 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<>(0);
 
-  public ConcurrentHashMultiMap() {}
+  public ConcurrentHashMultiMap() {
+  }
 
   public ConcurrentHashMultiMap(MultiMap<K, V> m) {
     putAll(m);

@@ -28,15 +28,6 @@
 
 package soot;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.baf.DoubleWordType;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -74,366 +65,34 @@ import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.toolkits.graph.Block;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public abstract class AbstractJasminClass {
+  private static Map<Integer, VisibilityAnnotationTag> safeVats = new HashMap<>();
   protected Map<Unit, String> unitToLabel;
   protected Map<Local, Integer> localToSlot;
   protected Map<Unit, Integer> subroutineToReturnAddressSlot;
-
   protected List<String> code;
-
   protected boolean isEmittingMethodCode;
   protected int labelCount;
-
   protected boolean isNextGotoAJsr;
   protected int returnAddressSlot;
   protected int currentStackHeight = 0;
   protected int maxStackHeight = 0;
-
   protected Map<Local, Object> localToGroup;
   protected Map<Object, Integer> groupToColorCount;
   protected Map<Local, Integer> localToColor;
-
   protected Map<Block, Integer> blockToStackHeight =
       new HashMap<>(); // maps a block to the stack height upon entering it
   protected Map<Block, Integer> blockToLogicalStackHeight =
       new HashMap<>(); // maps a block to the logical stack height upon entering it
-
-  public static String slashify(String s) {
-    return s.replace('.', '/');
-  }
-
-  public static int sizeOfType(Type t) {
-    if (t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType) {
-      return 2;
-    } else if (t instanceof VoidType) {
-      return 0;
-    } else {
-      return 1;
-    }
-  }
-
-  public static int argCountOf(SootMethodRef m) {
-    int argCount = 0;
-    Iterator<Type> typeIt = m.parameterTypes().iterator();
-
-    while (typeIt.hasNext()) {
-      Type t = typeIt.next();
-
-      argCount += sizeOfType(t);
-    }
-
-    return argCount;
-  }
-
-  public static String jasminDescriptorOf(Type type) {
-    TypeSwitch sw;
-
-    type.apply(
-        sw =
-            new TypeSwitch() {
-              @Override
-              public void caseBooleanType(BooleanType t) {
-                setResult("Z");
-              }
-
-              @Override
-              public void caseByteType(ByteType t) {
-                setResult("B");
-              }
-
-              @Override
-              public void caseCharType(CharType t) {
-                setResult("C");
-              }
-
-              @Override
-              public void caseDoubleType(DoubleType t) {
-                setResult("D");
-              }
-
-              @Override
-              public void caseFloatType(FloatType t) {
-                setResult("F");
-              }
-
-              @Override
-              public void caseIntType(IntType t) {
-                setResult("I");
-              }
-
-              @Override
-              public void caseLongType(LongType t) {
-                setResult("J");
-              }
-
-              @Override
-              public void caseShortType(ShortType t) {
-                setResult("S");
-              }
-
-              @Override
-              public void defaultCase(Type t) {
-                throw new RuntimeException("Invalid type: " + t);
-              }
-
-              @Override
-              public void caseArrayType(ArrayType t) {
-                StringBuffer buffer = new StringBuffer();
-
-                for (int i = 0; i < t.numDimensions; i++) {
-                  buffer.append("[");
-                }
-
-                setResult(buffer.toString() + jasminDescriptorOf(t.baseType));
-              }
-
-              @Override
-              public void caseRefType(RefType t) {
-                setResult("L" + t.getClassName().replace('.', '/') + ";");
-              }
-
-              @Override
-              public void caseVoidType(VoidType t) {
-                setResult("V");
-              }
-            });
-
-    return (String) sw.getResult();
-  }
-
-  public static String jasminDescriptorOf(SootMethodRef m) {
-    StringBuffer buffer = new StringBuffer();
-
-    buffer.append("(");
-
-    // Add methods parameters
-    {
-      Iterator<Type> typeIt = m.parameterTypes().iterator();
-
-      while (typeIt.hasNext()) {
-        Type t = typeIt.next();
-
-        buffer.append(jasminDescriptorOf(t));
-      }
-    }
-
-    buffer.append(")");
-
-    buffer.append(jasminDescriptorOf(m.returnType()));
-
-    return buffer.toString();
-  }
-
-  protected void emit(String s) {
-    okayEmit(s);
-  }
-
-  protected void okayEmit(String s) {
-    if (isEmittingMethodCode && !s.endsWith(":")) {
-      code.add("    " + s);
-    } else {
-      code.add(s);
-    }
-  }
-
-  private String getVisibilityAnnotationAttr(VisibilityAnnotationTag tag) {
-    StringBuffer sb = new StringBuffer();
-    if (tag == null) {
-      return "";
-    } else if (tag.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE) {
-      sb.append(".runtime_visible_annotation\n");
-    } else if (tag.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE) {
-      sb.append(".runtime_invisible_annotation\n");
-    } else {
-      // source level annotation
-      return "";
-    }
-    if (tag.hasAnnotations()) {
-      Iterator<AnnotationTag> it = tag.getAnnotations().iterator();
-      while (it.hasNext()) {
-        AnnotationTag annot = it.next();
-        sb.append(".annotation ");
-        sb.append(soot.util.StringTools.getQuotedStringOf(annot.getType()) + "\n");
-        for (AnnotationElem ae : annot.getElems()) {
-          sb.append(getElemAttr(ae));
-        }
-        sb.append(".end .annotation\n");
-      }
-    }
-    sb.append(".end .annotation_attr\n");
-    return sb.toString();
-  }
-
-  private String getVisibilityParameterAnnotationAttr(VisibilityParameterAnnotationTag tag) {
-    StringBuffer sb = new StringBuffer();
-    sb.append(".param ");
-    if (tag.getKind() == AnnotationConstants.RUNTIME_VISIBLE) {
-      sb.append(".runtime_visible_annotation\n");
-    } else {
-      sb.append(".runtime_invisible_annotation\n");
-    }
-    ArrayList<VisibilityAnnotationTag> vis_list = tag.getVisibilityAnnotations();
-    if (vis_list != null) {
-      for (VisibilityAnnotationTag vat : vis_list) {
-        VisibilityAnnotationTag safeVat =
-            vat == null ? getSafeVisibilityAnnotationTag(tag.getKind()) : vat;
-        sb.append(getVisibilityAnnotationAttr(safeVat));
-      }
-    }
-    sb.append(".end .param\n");
-    return sb.toString();
-  }
-
-  private static Map<Integer, VisibilityAnnotationTag> safeVats = new HashMap<>();
-
-  private VisibilityAnnotationTag getSafeVisibilityAnnotationTag(int kind) {
-    VisibilityAnnotationTag safeVat = safeVats.get(kind);
-    if (safeVat == null) {
-      safeVats.put(kind, safeVat = new VisibilityAnnotationTag(kind));
-    }
-    return safeVat;
-  }
-
-  private String getElemAttr(AnnotationElem elem) {
-    StringBuffer result = new StringBuffer(".elem ");
-    switch (elem.getKind()) {
-      case 'Z':
-        {
-          result.append(".bool_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          if (elem instanceof AnnotationIntElem) {
-            result.append(((AnnotationIntElem) elem).getValue());
-          } else {
-            if (((AnnotationBooleanElem) elem).getValue()) {
-              result.append(1);
-            } else {
-              result.append(0);
-            }
-          }
-          result.append("\n");
-          break;
-        }
-      case 'S':
-        {
-          result.append(".short_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationIntElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 'B':
-        {
-          result.append(".byte_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationIntElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 'C':
-        {
-          result.append(".char_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationIntElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 'I':
-        {
-          result.append(".int_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationIntElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 'J':
-        {
-          result.append(".long_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationLongElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 'F':
-        {
-          result.append(".float_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationFloatElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 'D':
-        {
-          result.append(".doub_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(((AnnotationDoubleElem) elem).getValue());
-          result.append("\n");
-          break;
-        }
-      case 's':
-        {
-          result.append(".str_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(
-              soot.util.StringTools.getQuotedStringOf(((AnnotationStringElem) elem).getValue()));
-          result.append("\n");
-          break;
-        }
-      case 'e':
-        {
-          result.append(".enum_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(
-              soot.util.StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getTypeName()));
-          result.append(" ");
-          result.append(
-              soot.util.StringTools.getQuotedStringOf(
-                  ((AnnotationEnumElem) elem).getConstantName()));
-          result.append("\n");
-          break;
-        }
-      case 'c':
-        {
-          result.append(".cls_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          result.append(
-              soot.util.StringTools.getQuotedStringOf(((AnnotationClassElem) elem).getDesc()));
-          result.append("\n");
-          break;
-        }
-      case '[':
-        {
-          result.append(".arr_kind ");
-          result.append("\"" + elem.getName() + "\" ");
-          AnnotationArrayElem arrayElem = (AnnotationArrayElem) elem;
-          result.append("\n");
-          for (int i = 0; i < arrayElem.getNumValues(); i++) {
-            // result.append("\n");
-            result.append(getElemAttr(arrayElem.getValueAt(i)));
-          }
-          result.append(".end .arr_elem\n");
-          break;
-        }
-      case '@':
-        {
-          result.append(".ann_kind ");
-          result.append("\"" + elem.getName() + "\"\n");
-          AnnotationTag annot = ((AnnotationAnnotationElem) elem).getValue();
-          result.append(".annotation ");
-          result.append(soot.util.StringTools.getQuotedStringOf(annot.getType()) + "\n");
-          for (AnnotationElem ae : annot.getElems()) {
-            result.append(getElemAttr(ae));
-          }
-          result.append(".end .annotation\n");
-          result.append(".end .annot_elem\n");
-          break;
-        }
-      default:
-        {
-          throw new RuntimeException("Unknown Elem Attr Kind: " + elem.getKind());
-        }
-    }
-    return result.toString();
-  }
 
   public AbstractJasminClass(SootClass sootClass) {
     if (Options.v().time()) {
@@ -680,6 +339,327 @@ public abstract class AbstractJasminClass {
     if (Options.v().time()) {
       Timers.v().buildJasminTimer.end();
     }
+  }
+
+  public static String slashify(String s) {
+    return s.replace('.', '/');
+  }
+
+  public static int sizeOfType(Type t) {
+    if (t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType) {
+      return 2;
+    } else if (t instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  public static int argCountOf(SootMethodRef m) {
+    int argCount = 0;
+    Iterator<Type> typeIt = m.parameterTypes().iterator();
+
+    while (typeIt.hasNext()) {
+      Type t = typeIt.next();
+
+      argCount += sizeOfType(t);
+    }
+
+    return argCount;
+  }
+
+  public static String jasminDescriptorOf(Type type) {
+    TypeSwitch sw;
+
+    type.apply(
+        sw =
+            new TypeSwitch() {
+              @Override
+              public void caseBooleanType(BooleanType t) {
+                setResult("Z");
+              }
+
+              @Override
+              public void caseByteType(ByteType t) {
+                setResult("B");
+              }
+
+              @Override
+              public void caseCharType(CharType t) {
+                setResult("C");
+              }
+
+              @Override
+              public void caseDoubleType(DoubleType t) {
+                setResult("D");
+              }
+
+              @Override
+              public void caseFloatType(FloatType t) {
+                setResult("F");
+              }
+
+              @Override
+              public void caseIntType(IntType t) {
+                setResult("I");
+              }
+
+              @Override
+              public void caseLongType(LongType t) {
+                setResult("J");
+              }
+
+              @Override
+              public void caseShortType(ShortType t) {
+                setResult("S");
+              }
+
+              @Override
+              public void defaultCase(Type t) {
+                throw new RuntimeException("Invalid type: " + t);
+              }
+
+              @Override
+              public void caseArrayType(ArrayType t) {
+                StringBuffer buffer = new StringBuffer();
+
+                for (int i = 0; i < t.numDimensions; i++) {
+                  buffer.append("[");
+                }
+
+                setResult(buffer.toString() + jasminDescriptorOf(t.baseType));
+              }
+
+              @Override
+              public void caseRefType(RefType t) {
+                setResult("L" + t.getClassName().replace('.', '/') + ";");
+              }
+
+              @Override
+              public void caseVoidType(VoidType t) {
+                setResult("V");
+              }
+            });
+
+    return (String) sw.getResult();
+  }
+
+  public static String jasminDescriptorOf(SootMethodRef m) {
+    StringBuffer buffer = new StringBuffer();
+
+    buffer.append("(");
+
+    // Add methods parameters
+    {
+      Iterator<Type> typeIt = m.parameterTypes().iterator();
+
+      while (typeIt.hasNext()) {
+        Type t = typeIt.next();
+
+        buffer.append(jasminDescriptorOf(t));
+      }
+    }
+
+    buffer.append(")");
+
+    buffer.append(jasminDescriptorOf(m.returnType()));
+
+    return buffer.toString();
+  }
+
+  protected void emit(String s) {
+    okayEmit(s);
+  }
+
+  protected void okayEmit(String s) {
+    if (isEmittingMethodCode && !s.endsWith(":")) {
+      code.add("    " + s);
+    } else {
+      code.add(s);
+    }
+  }
+
+  private String getVisibilityAnnotationAttr(VisibilityAnnotationTag tag) {
+    StringBuffer sb = new StringBuffer();
+    if (tag == null) {
+      return "";
+    } else if (tag.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE) {
+      sb.append(".runtime_visible_annotation\n");
+    } else if (tag.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE) {
+      sb.append(".runtime_invisible_annotation\n");
+    } else {
+      // source level annotation
+      return "";
+    }
+    if (tag.hasAnnotations()) {
+      Iterator<AnnotationTag> it = tag.getAnnotations().iterator();
+      while (it.hasNext()) {
+        AnnotationTag annot = it.next();
+        sb.append(".annotation ");
+        sb.append(soot.util.StringTools.getQuotedStringOf(annot.getType()) + "\n");
+        for (AnnotationElem ae : annot.getElems()) {
+          sb.append(getElemAttr(ae));
+        }
+        sb.append(".end .annotation\n");
+      }
+    }
+    sb.append(".end .annotation_attr\n");
+    return sb.toString();
+  }
+
+  private String getVisibilityParameterAnnotationAttr(VisibilityParameterAnnotationTag tag) {
+    StringBuffer sb = new StringBuffer();
+    sb.append(".param ");
+    if (tag.getKind() == AnnotationConstants.RUNTIME_VISIBLE) {
+      sb.append(".runtime_visible_annotation\n");
+    } else {
+      sb.append(".runtime_invisible_annotation\n");
+    }
+    ArrayList<VisibilityAnnotationTag> vis_list = tag.getVisibilityAnnotations();
+    if (vis_list != null) {
+      for (VisibilityAnnotationTag vat : vis_list) {
+        VisibilityAnnotationTag safeVat =
+            vat == null ? getSafeVisibilityAnnotationTag(tag.getKind()) : vat;
+        sb.append(getVisibilityAnnotationAttr(safeVat));
+      }
+    }
+    sb.append(".end .param\n");
+    return sb.toString();
+  }
+
+  private VisibilityAnnotationTag getSafeVisibilityAnnotationTag(int kind) {
+    VisibilityAnnotationTag safeVat = safeVats.get(kind);
+    if (safeVat == null) {
+      safeVats.put(kind, safeVat = new VisibilityAnnotationTag(kind));
+    }
+    return safeVat;
+  }
+
+  private String getElemAttr(AnnotationElem elem) {
+    StringBuffer result = new StringBuffer(".elem ");
+    switch (elem.getKind()) {
+      case 'Z': {
+        result.append(".bool_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        if (elem instanceof AnnotationIntElem) {
+          result.append(((AnnotationIntElem) elem).getValue());
+        } else {
+          if (((AnnotationBooleanElem) elem).getValue()) {
+            result.append(1);
+          } else {
+            result.append(0);
+          }
+        }
+        result.append("\n");
+        break;
+      }
+      case 'S': {
+        result.append(".short_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationIntElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 'B': {
+        result.append(".byte_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationIntElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 'C': {
+        result.append(".char_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationIntElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 'I': {
+        result.append(".int_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationIntElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 'J': {
+        result.append(".long_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationLongElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 'F': {
+        result.append(".float_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationFloatElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 'D': {
+        result.append(".doub_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(((AnnotationDoubleElem) elem).getValue());
+        result.append("\n");
+        break;
+      }
+      case 's': {
+        result.append(".str_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(
+            soot.util.StringTools.getQuotedStringOf(((AnnotationStringElem) elem).getValue()));
+        result.append("\n");
+        break;
+      }
+      case 'e': {
+        result.append(".enum_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(
+            soot.util.StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getTypeName()));
+        result.append(" ");
+        result.append(
+            soot.util.StringTools.getQuotedStringOf(
+                ((AnnotationEnumElem) elem).getConstantName()));
+        result.append("\n");
+        break;
+      }
+      case 'c': {
+        result.append(".cls_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        result.append(
+            soot.util.StringTools.getQuotedStringOf(((AnnotationClassElem) elem).getDesc()));
+        result.append("\n");
+        break;
+      }
+      case '[': {
+        result.append(".arr_kind ");
+        result.append("\"" + elem.getName() + "\" ");
+        AnnotationArrayElem arrayElem = (AnnotationArrayElem) elem;
+        result.append("\n");
+        for (int i = 0; i < arrayElem.getNumValues(); i++) {
+          // result.append("\n");
+          result.append(getElemAttr(arrayElem.getValueAt(i)));
+        }
+        result.append(".end .arr_elem\n");
+        break;
+      }
+      case '@': {
+        result.append(".ann_kind ");
+        result.append("\"" + elem.getName() + "\"\n");
+        AnnotationTag annot = ((AnnotationAnnotationElem) elem).getValue();
+        result.append(".annotation ");
+        result.append(soot.util.StringTools.getQuotedStringOf(annot.getType()) + "\n");
+        for (AnnotationElem ae : annot.getElems()) {
+          result.append(getElemAttr(ae));
+        }
+        result.append(".end .annotation\n");
+        result.append(".end .annot_elem\n");
+        break;
+      }
+      default: {
+        throw new RuntimeException("Unknown Elem Attr Kind: " + elem.getKind());
+      }
+    }
+    return result.toString();
   }
 
   protected void assignColorsToLocals(Body body) {

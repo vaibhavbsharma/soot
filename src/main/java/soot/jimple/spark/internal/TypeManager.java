@@ -19,14 +19,6 @@
 
 package soot.jimple.spark.internal;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -46,20 +38,32 @@ import soot.util.BitVector;
 import soot.util.LargeNumberedMap;
 import soot.util.queue.QueueReader;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A map of bit-vectors representing subtype relationships.
  *
  * @author Ondrej Lhotak
  * @author Hamid A. Toussi (hamid2c@gmail.com): Making TypeManager faster by making type masks
- *     during a depth-first-traversal on the class hierarchy. First, type-masks of the leaves of
- *     Class Hierarchy are created and then the type mask of each type T is obtained by ORing type
- *     maks of Types sub-types and setting the bit-numbers associated with Allocation Nodes of type
- *     T. The type-mask of each interface is achieved by ORing the type-masks of its top-level
- *     concrete implementers. In fact, Reference types are visited in reversed-topological-order.
+ * during a depth-first-traversal on the class hierarchy. First, type-masks of the leaves of
+ * Class Hierarchy are created and then the type mask of each type T is obtained by ORing type
+ * maks of Types sub-types and setting the bit-numbers associated with Allocation Nodes of type
+ * T. The type-mask of each interface is achieved by ORing the type-masks of its top-level
+ * concrete implementers. In fact, Reference types are visited in reversed-topological-order.
  */
 public final class TypeManager {
+  protected FastHierarchy fh = null;
+  protected PAG pag;
+  protected QueueReader<AllocNode> allocNodeListener = null;
   private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<>(1024);
   private List<AllocNode> anySubtypeAllocs = new LinkedList<>();
+  private LargeNumberedMap<Type, BitVector> typeMask = null;
 
   public TypeManager(PAG pag) {
     this.pag = pag;
@@ -200,8 +204,6 @@ public final class TypeManager {
     allocNodeListener = pag.allocNodeListener();
   }
 
-  private LargeNumberedMap<Type, BitVector> typeMask = null;
-
   public final boolean castNeverFails(Type src, Type dst) {
     if (fh == null) {
       return true;
@@ -233,17 +235,14 @@ public final class TypeManager {
     return fh.canStoreType(src, dst);
   }
 
-  public void setFastHierarchy(FastHierarchy fh) {
-    this.fh = fh;
-  }
-
   public FastHierarchy getFastHierarchy() {
     return fh;
   }
 
-  protected FastHierarchy fh = null;
-  protected PAG pag;
-  protected QueueReader<AllocNode> allocNodeListener = null;
+  public void setFastHierarchy(FastHierarchy fh) {
+    this.fh = fh;
+  }
+
   // ** new methods
   private void initClass2allocs() {
     for (AllocNode an : pag.getAllocNodeNumberer()) {

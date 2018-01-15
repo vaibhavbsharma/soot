@@ -20,15 +20,16 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
+
 package soot.jimple.toolkits.annotation.purity;
+
+import soot.jimple.Stmt;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import soot.jimple.Stmt;
 
 /**
  * A node created dynamically and attached to a statement Stmt. Can be either an inside or a load
@@ -36,16 +37,13 @@ import soot.jimple.Stmt;
  * attached to the same statement (we use Stmt.equal here).
  */
 public class PurityStmtNode implements PurityNode {
-  /** Statement that created the node */
-  private Stmt id;
-
-  /** true if an inside node, false if an load node */
-  private boolean inside;
-
   /** gives a unique id, for pretty-printing purposes */
   private static final Map<Stmt, Integer> nMap = new HashMap<>();
-
   private static int n = 0;
+  /** Statement that created the node */
+  private Stmt id;
+  /** true if an inside node, false if an load node */
+  private boolean inside;
 
   PurityStmtNode(Stmt id, boolean inside) {
     this.id = id;

@@ -19,6 +19,10 @@
 
 package soot.jimple.toolkits.pointer;
 
+import soot.G;
+import soot.PointsToSet;
+import soot.SootField;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,17 +30,28 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import soot.G;
-import soot.PointsToSet;
-import soot.SootField;
-
-/** Represents the read or write set of a statement. */
+/**
+ * Represents the read or write set of a statement.
+ */
 public class MethodRWSet extends RWSet {
+  public static final int MAX_SIZE = Integer.MAX_VALUE;
   public Set globals;
   public Map<Object, PointsToSet> fields;
   protected boolean callsNative = false;
   protected boolean isFull = false;
-  public static final int MAX_SIZE = Integer.MAX_VALUE;
+
+  // static int count = 0;
+  public MethodRWSet() {
+    /*
+    count++;
+    if( 0 == (count % 1000) ) {
+        G.v().out.println( "Created "+count+"th MethodRWSet" );
+    }
+           */
+  }
+
+  static void addedField(int size) {
+  }
 
   @Override
   public String toString() {
@@ -79,16 +94,6 @@ public class MethodRWSet extends RWSet {
     }
   }
 
-  // static int count = 0;
-  public MethodRWSet() {
-    /*
-    count++;
-    if( 0 == (count % 1000) ) {
-        G.v().out.println( "Created "+count+"th MethodRWSet" );
-    }
-           */
-  }
-
   @Override
   public boolean getCallsNative() {
     return callsNative;
@@ -101,7 +106,9 @@ public class MethodRWSet extends RWSet {
     return ret;
   }
 
-  /** Returns an iterator over any globals read/written. */
+  /**
+   * Returns an iterator over any globals read/written.
+   */
   @Override
   public Set getGlobals() {
     if (isFull) {
@@ -113,7 +120,9 @@ public class MethodRWSet extends RWSet {
     return globals;
   }
 
-  /** Returns an iterator over any fields read/written. */
+  /**
+   * Returns an iterator over any fields read/written.
+   */
   @Override
   public Set getFields() {
     if (isFull) {
@@ -125,7 +134,9 @@ public class MethodRWSet extends RWSet {
     return fields.keySet();
   }
 
-  /** Returns a set of base objects whose field f is read/written. */
+  /**
+   * Returns a set of base objects whose field f is read/written.
+   */
   @Override
   public PointsToSet getBaseForField(Object f) {
     if (isFull) {
@@ -169,7 +180,9 @@ public class MethodRWSet extends RWSet {
     return false;
   }
 
-  /** Adds the RWSet other into this set. */
+  /**
+   * Adds the RWSet other into this set.
+   */
   @Override
   public boolean union(RWSet other) {
     if (other == null) {
@@ -285,8 +298,6 @@ public class MethodRWSet extends RWSet {
     ret = u.addAll(otherBase) | ret;
     return ret;
   }
-
-  static void addedField(int size) {}
 
   @Override
   public boolean isEquivTo(RWSet other) {

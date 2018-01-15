@@ -25,12 +25,14 @@
 
 package soot;
 
+import soot.options.Options;
+
 import static java.lang.System.gc;
 import static java.lang.System.nanoTime;
 
-import soot.options.Options;
-
-/** Utility class providing a timer. Used for profiling various phases of Sootification. */
+/**
+ * Utility class providing a timer. Used for profiling various phases of Sootification.
+ */
 public class Timer {
   private long duration;
   private long startTime;
@@ -38,13 +40,17 @@ public class Timer {
 
   private String name;
 
-  /** Creates a new timer with the given name. */
+  /**
+   * Creates a new timer with the given name.
+   */
   public Timer(String name) {
     this.name = name;
     duration = 0;
   }
 
-  /** Creates a new timer. */
+  /**
+   * Creates a new timer.
+   */
   public Timer() {
     this("unnamed");
   }
@@ -84,7 +90,9 @@ public class Timer {
     g.Timer_isGarbageCollecting = false;
   }
 
-  /** Starts the given timer. */
+  /**
+   * Starts the given timer.
+   */
   public void start() {
     doGarbageCollecting();
 
@@ -103,13 +111,17 @@ public class Timer {
     }
   }
 
-  /** Returns the name of the current timer. */
+  /**
+   * Returns the name of the current timer.
+   */
   @Override
   public String toString() {
     return name;
   }
 
-  /** Stops the current timer. */
+  /**
+   * Stops the current timer.
+   */
   public void end() {
     if (!hasStarted) {
       throw new RuntimeException("timer " + name + " has not been started!");
@@ -126,7 +138,9 @@ public class Timer {
     }
   }
 
-  /** Returns the sum of the intervals start()-end() of the current timer. */
+  /**
+   * Returns the sum of the intervals start()-end() of the current timer.
+   */
   public long getTime() {
     return duration / 1000000L;
   }

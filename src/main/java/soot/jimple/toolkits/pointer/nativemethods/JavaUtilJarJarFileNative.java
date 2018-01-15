@@ -23,6 +23,7 @@
  * @author Feng Qian
  * @author <XXX>
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -63,7 +64,7 @@ public class JavaUtilJarJarFileNative extends NativeMethodClass {
    * The methods returns an array of strings.
    *
    * @return = new String[]
-   *     <p>private native java.lang.String getMetaInfEntryNames()[];
+   * <p>private native java.lang.String getMetaInfEntryNames()[];
    */
   public void java_util_jar_JarFile_getMetaInfoEntryNames(
       SootMethod method,

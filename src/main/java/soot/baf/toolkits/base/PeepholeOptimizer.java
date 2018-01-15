@@ -25,6 +25,11 @@
 
 package soot.baf.toolkits.base;
 
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Singletons;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,11 +38,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import soot.Body;
-import soot.BodyTransformer;
-import soot.G;
-import soot.Singletons;
 
 /**
  * Driver class to run peepholes on the Baf IR. The peepholes applied must implement the Peephole
@@ -48,21 +48,21 @@ import soot.Singletons;
  * @see ExamplePeephole
  */
 public class PeepholeOptimizer extends BodyTransformer {
-  public PeepholeOptimizer(Singletons.Global g) {}
+  private static final Object loaderLock = new Object();
+  private static boolean peepholesLoaded = false;
+  private final String packageName = "soot.baf.toolkits.base";
+  private final Map<String, Class<?>> peepholeMap = new HashMap<>();
+  public PeepholeOptimizer(Singletons.Global g) {
+  }
 
   public static PeepholeOptimizer v() {
     return G.v().soot_baf_toolkits_base_PeepholeOptimizer();
   }
 
-  private final String packageName = "soot.baf.toolkits.base";
-  private static boolean peepholesLoaded = false;
-  private static final Object loaderLock = new Object();
-
-  private final Map<String, Class<?>> peepholeMap = new HashMap<>();
-
-  /** The method that drives the optimizations. */
+  /**
+   * The method that drives the optimizations.
+   */
   /* This is the public interface to PeepholeOptimizer */
-
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     if (!peepholesLoaded) {

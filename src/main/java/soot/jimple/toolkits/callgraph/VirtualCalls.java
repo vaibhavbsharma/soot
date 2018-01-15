@@ -19,12 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -48,22 +42,35 @@ import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Resolves virtual calls.
  *
  * @author Ondrej Lhotak
  */
 public class VirtualCalls {
+  public final NumberedString sigClinit =
+      Scene.v().getSubSigNumberer().findOrAdd("void <clinit>()");
+  public final NumberedString sigStart = Scene.v().getSubSigNumberer().findOrAdd("void start()");
+  public final NumberedString sigRun = Scene.v().getSubSigNumberer().findOrAdd("void run()");
+  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
+      new LargeNumberedMap<>(Scene.v().getTypeNumberer());
+  protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<>();
+  protected MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>
+      baseToPossibleSubTypes = new HashMultiMap<>();
   private CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
-  public VirtualCalls(Singletons.Global g) {}
+  public VirtualCalls(Singletons.Global g) {
+  }
 
   public static VirtualCalls v() {
     return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
   }
-
-  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
-      new LargeNumberedMap<>(Scene.v().getTypeNumberer());
 
   public SootMethod resolveSpecial(
       SpecialInvokeExpr iie, NumberedString subSig, SootMethod container) {
@@ -75,9 +82,9 @@ public class VirtualCalls {
     SootMethod target = iie.getMethod();
     /* cf. JVM spec, invokespecial instruction */
     if (Scene.v()
-            .getOrMakeFastHierarchy()
-            .canStoreType(
-                container.getDeclaringClass().getType(), target.getDeclaringClass().getType())
+        .getOrMakeFastHierarchy()
+        .canStoreType(
+            container.getDeclaringClass().getType(), target.getDeclaringClass().getType())
         && container.getDeclaringClass().getType() != target.getDeclaringClass().getType()
         && !target.getName().equals("<init>")
         && subSig != sigClinit) {
@@ -120,10 +127,6 @@ public class VirtualCalls {
     vtbl.put(subSig, ret);
     return ret;
   }
-
-  protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<>();
-  protected MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>
-      baseToPossibleSubTypes = new HashMultiMap<>();
 
   public void resolve(
       Type t,
@@ -365,9 +368,4 @@ public class VirtualCalls {
     }
     baseToPossibleSubTypes.putAll(pair, types);
   }
-
-  public final NumberedString sigClinit =
-      Scene.v().getSubSigNumberer().findOrAdd("void <clinit>()");
-  public final NumberedString sigStart = Scene.v().getSubSigNumberer().findOrAdd("void start()");
-  public final NumberedString sigRun = Scene.v().getSubSigNumberer().findOrAdd("void run()");
 }

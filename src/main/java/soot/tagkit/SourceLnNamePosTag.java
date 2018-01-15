@@ -16,9 +16,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.tagkit;
 
-/** @author Eric Bodden */
+/**
+ * @author Eric Bodden
+ */
 public class SourceLnNamePosTag extends SourceLnPosTag {
 
   protected final String fileName;
@@ -28,12 +31,16 @@ public class SourceLnNamePosTag extends SourceLnPosTag {
     this.fileName = fileName;
   }
 
-  /** @return the fileName */
+  /**
+   * @return the fileName
+   */
   public String getFileName() {
     return fileName;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();

@@ -40,7 +40,8 @@ public class PedanticThrowAnalysis extends AbstractThrowAnalysis {
    *
    * @param g guarantees that the constructor may only be called from {@link Singletons}.
    */
-  public PedanticThrowAnalysis(Singletons.Global g) {}
+  public PedanticThrowAnalysis(Singletons.Global g) {
+  }
 
   /**
    * Returns the single instance of <code>PedanticThrowAnalysis</code>.

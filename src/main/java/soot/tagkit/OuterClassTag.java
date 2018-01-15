@@ -25,9 +25,9 @@
 
 package soot.tagkit;
 
-import java.io.UnsupportedEncodingException;
-
 import soot.SootClass;
+
+import java.io.UnsupportedEncodingException;
 
 public class OuterClassTag implements Tag {
   SootClass outerClass;

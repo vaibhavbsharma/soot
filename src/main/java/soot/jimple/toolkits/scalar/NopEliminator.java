@@ -22,10 +22,8 @@
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
-package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.Map;
+package soot.jimple.toolkits.scalar;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -37,9 +35,13 @@ import soot.jimple.NopStmt;
 import soot.options.Options;
 import soot.util.Chain;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class NopEliminator extends BodyTransformer {
 
-  public NopEliminator(Singletons.Global g) {}
+  public NopEliminator(Singletons.Global g) {
+  }
 
   public static NopEliminator v() {
     return G.v().soot_jimple_toolkits_scalar_NopEliminator();

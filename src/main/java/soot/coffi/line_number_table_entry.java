@@ -28,14 +28,20 @@ package soot.coffi;
 /**
  * An entry in the line number table.
  *
- * @see LineNumberTable_attribute
  * @author Clark Verbrugge
+ * @see LineNumberTable_attribute
  */
 class line_number_table_entry {
-  /** Offset within bytecode of the start of the code for this line number. */
+  /**
+   * Offset within bytecode of the start of the code for this line number.
+   */
   public int start_pc;
-  /** Line number within the source code. */
+  /**
+   * Line number within the source code.
+   */
   public int line_number;
-  /** Start instruction corresponding to start_pc */
+  /**
+   * Start instruction corresponding to start_pc
+   */
   public Instruction start_inst;
 }

@@ -19,9 +19,6 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import soot.G;
 import soot.Type;
 import soot.jimple.spark.internal.TypeManager;
@@ -31,13 +28,28 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Collapses nodes that are members of simple trees (EBBs) in the pointer assignment graph.
  *
  * @author Ondrej Lhotak
  */
 public class EBBCollapser {
-  /** Actually collapse the EBBs in the PAG. */
+  protected int numCollapsed = 0;
+  protected PAG pag;
+
+  /* End of public methods. */
+  /* End of package methods. */
+
+  public EBBCollapser(PAG pag) {
+    this.pag = pag;
+  }
+
+  /**
+   * Actually collapse the EBBs in the PAG.
+   */
   public void collapse() {
     boolean verbose = pag.getOpts().verbose();
     if (verbose) {
@@ -52,16 +64,6 @@ public class EBBCollapser {
       G.v().out.println("" + numCollapsed + " nodes were collapsed.");
     }
   }
-
-  public EBBCollapser(PAG pag) {
-    this.pag = pag;
-  }
-
-  /* End of public methods. */
-  /* End of package methods. */
-
-  protected int numCollapsed = 0;
-  protected PAG pag;
 
   protected void collapseAlloc() {
     final boolean ofcg = (pag.getOnFlyCallGraph() != null);

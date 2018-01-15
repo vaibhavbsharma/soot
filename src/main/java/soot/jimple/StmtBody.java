@@ -28,14 +28,21 @@ package soot.jimple;
 import soot.Body;
 import soot.SootMethod;
 
-/** Abstract base class for Body's on Stmts (Jimple and Grimp). */
+/**
+ * Abstract base class for Body's on Stmts (Jimple and Grimp).
+ */
 @SuppressWarnings("serial")
 public abstract class StmtBody extends Body {
-  /** Creates a StmtBody associated with the given method. */
+  /**
+   * Creates a StmtBody associated with the given method.
+   */
   protected StmtBody(SootMethod m) {
     super(m);
   }
 
-  /** Creates an empty StmtBody. */
-  protected StmtBody() {}
+  /**
+   * Creates an empty StmtBody.
+   */
+  protected StmtBody() {
+  }
 }

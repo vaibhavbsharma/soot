@@ -22,10 +22,9 @@ package soot.dava.toolkits.base.DavaMonitor;
 import java.util.LinkedList;
 
 class Lock {
+  private final LinkedList<Thread> q;
   public Thread owner;
   public int level;
-
-  private final LinkedList<Thread> q;
 
   Lock() {
     level = 0;

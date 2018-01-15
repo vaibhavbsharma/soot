@@ -25,18 +25,29 @@
 
 package soot.toolkits.scalar;
 
-import static soot.toolkits.scalar.LocalDefs.Factory.newLocalDefs;
-
-import java.util.List;
-
 import soot.Body;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
 
-/** Provides an interface to find the Units that use a Local defined at a given Unit. */
+import java.util.List;
+
+import static soot.toolkits.scalar.LocalDefs.Factory.newLocalDefs;
+
+/**
+ * Provides an interface to find the Units that use a Local defined at a given Unit.
+ */
 public interface LocalUses {
+  /**
+   * Returns a list of the Units that use the Local that is defined by a given Unit.
+   *
+   * @param s the unit we wish to query for the use of the Local it defines.
+   * @return a list of the Local's uses.
+   */
+  List<UnitValueBoxPair> getUsesOf(Unit s);
+
   final class Factory {
-    private Factory() {}
+    private Factory() {
+    }
 
     public static LocalUses newLocalUses(Body body) {
       return newLocalUses(body, newLocalDefs(body));
@@ -54,12 +65,4 @@ public interface LocalUses {
       return newLocalUses(graph.getBody(), localDefs);
     }
   }
-
-  /**
-   * Returns a list of the Units that use the Local that is defined by a given Unit.
-   *
-   * @param s the unit we wish to query for the use of the Local it defines.
-   * @return a list of the Local's uses.
-   */
-  List<UnitValueBoxPair> getUsesOf(Unit s);
 }

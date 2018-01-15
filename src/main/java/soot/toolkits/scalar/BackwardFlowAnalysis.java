@@ -32,7 +32,9 @@ import soot.toolkits.graph.DirectedGraph;
  * BackwardFlowAnalyses.
  */
 public abstract class BackwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
-  /** Construct the analysis from a DirectedGraph representation of a Body. */
+  /**
+   * Construct the analysis from a DirectedGraph representation of a Body.
+   */
   public BackwardFlowAnalysis(DirectedGraph<N> graph) {
     super(graph);
   }

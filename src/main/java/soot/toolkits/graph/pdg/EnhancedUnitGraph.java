@@ -16,12 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.graph.pdg;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+package soot.toolkits.graph.pdg;
 
 import soot.Body;
 import soot.Trap;
@@ -33,6 +29,11 @@ import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.MHGPostDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * This class represents a control flow graph which behaves like an ExceptionalUnitGraph and
@@ -84,7 +85,9 @@ public class EnhancedUnitGraph extends UnitGraph {
     buildHeadsAndTails();
   }
 
-  /** This method adds a STOP node to the graph, if necessary, to make the CFG single-tailed. */
+  /**
+   * This method adds a STOP node to the graph, if necessary, to make the CFG single-tailed.
+   */
   protected void handleMultipleReturns() {
     if (this.getTails().size() > 1) {
       Unit stop = new ExitStmt();
@@ -520,12 +523,13 @@ class GuardedBlock {
 
 /**
  * @author Hossein Sadat-Mohtasham Feb 2010
- *     <p>This class represents a special nop statement that marks the beginning of a try block at
- *     the Jimple level. This is going to be used in the CFG enhancement.
+ * <p>This class represents a special nop statement that marks the beginning of a try block at
+ * the Jimple level. This is going to be used in the CFG enhancement.
  */
 @SuppressWarnings("serial")
 class EHNopStmt extends JNopStmt {
-  public EHNopStmt() {}
+  public EHNopStmt() {
+  }
 
   @Override
   public Object clone() {
@@ -545,12 +549,13 @@ class EHNopStmt extends JNopStmt {
 
 /**
  * @author Hossein Sadat-Mohtasham Feb 2010
- *     <p>This class represents a special nop statement that marks the beginning of method body at
- *     the Jimple level. This is going to be used in the CFG enhancement.
+ * <p>This class represents a special nop statement that marks the beginning of method body at
+ * the Jimple level. This is going to be used in the CFG enhancement.
  */
 @SuppressWarnings("serial")
 class EntryStmt extends JNopStmt {
-  public EntryStmt() {}
+  public EntryStmt() {
+  }
 
   @Override
   public Object clone() {
@@ -570,12 +575,13 @@ class EntryStmt extends JNopStmt {
 
 /**
  * @author Hossein Sadat-Mohtasham Feb 2010
- *     <p>This class represents a special nop statement that marks the exit of method body at the
- *     Jimple level. This is going to be used in the CFG enhancement.
+ * <p>This class represents a special nop statement that marks the exit of method body at the
+ * Jimple level. This is going to be used in the CFG enhancement.
  */
 @SuppressWarnings("serial")
 class ExitStmt extends JNopStmt {
-  public ExitStmt() {}
+  public ExitStmt() {
+  }
 
   @Override
   public Object clone() {

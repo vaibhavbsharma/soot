@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.annotation.fields;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -37,9 +33,16 @@ import soot.jimple.FieldRef;
 import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
-/** A scene transformer that adds tags to unused fields. */
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * A scene transformer that adds tags to unused fields.
+ */
 public class UnreachableFieldsTagger extends SceneTransformer {
-  public UnreachableFieldsTagger(Singletons.Global g) {}
+  public UnreachableFieldsTagger(Singletons.Global g) {
+  }
 
   public static UnreachableFieldsTagger v() {
     return G.v().soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger();

@@ -1,13 +1,12 @@
 package soot.util.backend;
 
-import static soot.util.backend.ASMBackendUtils.slashify;
-
 import org.objectweb.asm.ClassWriter;
-
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
+
+import static soot.util.backend.ASMBackendUtils.slashify;
 
 /**
  * ASM class writer with soot-specific resolution of common superclasses
@@ -20,7 +19,7 @@ public class SootASMClassWriter extends ClassWriter {
    * Constructs a new {@link ClassWriter} object.
    *
    * @param flags option flags that can be used to modify the default behavior of this class. See
-   *     {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
+   *              {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
    */
   public SootASMClassWriter(int flags) {
     super(flags);

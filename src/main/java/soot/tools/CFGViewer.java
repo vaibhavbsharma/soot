@@ -25,11 +25,6 @@
 
 package soot.tools;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -46,6 +41,11 @@ import soot.util.cfgcmd.CFGGraphType;
 import soot.util.cfgcmd.CFGIntermediateRep;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class for generating dot graph file for a control flow graph
@@ -74,18 +74,6 @@ public class CFGViewer extends BodyTransformer {
   // methods to print, this is a map
   // from method name to the class
   // name declaring the method.
-
-  @Override
-  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    initialize(options);
-    SootMethod meth = b.getMethod();
-
-    if ((methodsToPrint == null)
-        || (meth.getDeclaringClass().getName() == methodsToPrint.get(meth.getName()))) {
-      Body body = ir.getBody((JimpleBody) b);
-      print_cfg(body);
-    }
-  }
 
   public static void main(String[] args) {
     CFGViewer viewer = new CFGViewer();
@@ -171,6 +159,18 @@ public class CFGViewer extends BodyTransformer {
                 + "       --throw-analysis {pedantic|unit}\n"
                 + "       --omit-excepting-unit-edges\n"
                 + "       --trim-cfgs\n");
+  }
+
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    initialize(options);
+    SootMethod meth = b.getMethod();
+
+    if ((methodsToPrint == null)
+        || (meth.getDeclaringClass().getName() == methodsToPrint.get(meth.getName()))) {
+      Body body = ir.getBody((JimpleBody) b);
+      print_cfg(body);
+    }
   }
 
   /**
@@ -263,17 +263,17 @@ public class CFGViewer extends BodyTransformer {
       AltClassLoader.v()
           .setAltClasses(
               new String[] {
-                "soot.toolkits.graph.ArrayRefBlockGraph",
-                "soot.toolkits.graph.Block",
-                "soot.toolkits.graph.Block$AllMapTo",
-                "soot.toolkits.graph.BlockGraph",
-                "soot.toolkits.graph.BriefBlockGraph",
-                "soot.toolkits.graph.BriefUnitGraph",
-                "soot.toolkits.graph.CompleteBlockGraph",
-                "soot.toolkits.graph.CompleteUnitGraph",
-                "soot.toolkits.graph.TrapUnitGraph",
-                "soot.toolkits.graph.UnitGraph",
-                "soot.toolkits.graph.ZonedBlockGraph",
+                  "soot.toolkits.graph.ArrayRefBlockGraph",
+                  "soot.toolkits.graph.Block",
+                  "soot.toolkits.graph.Block$AllMapTo",
+                  "soot.toolkits.graph.BlockGraph",
+                  "soot.toolkits.graph.BriefBlockGraph",
+                  "soot.toolkits.graph.BriefUnitGraph",
+                  "soot.toolkits.graph.CompleteBlockGraph",
+                  "soot.toolkits.graph.CompleteUnitGraph",
+                  "soot.toolkits.graph.TrapUnitGraph",
+                  "soot.toolkits.graph.UnitGraph",
+                  "soot.toolkits.graph.ZonedBlockGraph",
               });
     }
   }

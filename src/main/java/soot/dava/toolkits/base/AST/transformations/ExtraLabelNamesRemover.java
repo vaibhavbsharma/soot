@@ -47,7 +47,8 @@ public class ExtraLabelNamesRemover extends DepthFirstAdapter {
        THE JAVA LANGUAGE SAYS IT SHOULD BE TRUE
 
     */
-  public ExtraLabelNamesRemover() {}
+  public ExtraLabelNamesRemover() {
+  }
 
   public ExtraLabelNamesRemover(boolean verbose) {
     super(verbose);

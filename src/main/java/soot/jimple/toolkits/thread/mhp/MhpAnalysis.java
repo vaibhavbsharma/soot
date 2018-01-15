@@ -2,15 +2,8 @@
  *0801 add the special treatment for waitng->notified-entry,--- and localSucc(n)
  *0730 add MSym set for each node to store the nodes added to the m set during symmetry step.
  */
-package soot.jimple.toolkits.thread.mhp;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package soot.jimple.toolkits.thread.mhp;
 
 import soot.jimple.toolkits.thread.mhp.stmt.BeginStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
@@ -26,6 +19,14 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.util.Chain;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
 // This code should be treated as beta-quality code.
@@ -39,12 +40,11 @@ import soot.util.Chain;
 
 /**
  * @author Lin Li This is a synchronization-aware May Happen in Parallel (MHP) analysis. It works by
- *     analyzing a PegGraph (simplified whole-program control flow graph that includes thread
- *     executions and synchronization).
+ * analyzing a PegGraph (simplified whole-program control flow graph that includes thread
+ * executions and synchronization).
  */
 class MhpAnalysis {
 
-  private PegGraph g;
   private final Map<Object, FlowSet> unitToGen;
   private final Map<Object, FlowSet> unitToKill;
   private final Map<Object, FlowSet> unitToM;
@@ -55,6 +55,7 @@ class MhpAnalysis {
   private final Map<JPegStmt, Set<JPegStmt>> notifyPred;
   FlowSet fullSet = new ArraySparseSet();
   LinkedList<Object> workList = new LinkedList<>();
+  private PegGraph g;
 
   MhpAnalysis(PegGraph g) {
     // System.out.println("******entering MhpAnalysis");
@@ -439,7 +440,8 @@ class MhpAnalysis {
                 System.out.println(tag1+" "+ss);
                 }
                 System.out.println("--------------------");
-                */ }
+                */
+              }
             }
           }
         }

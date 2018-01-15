@@ -16,14 +16,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.utils;
 
-import java.util.Iterator;
+package soot.jimple.spark.geom.utils;
 
 import soot.Scene;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+
+import java.util.Iterator;
 
 /**
  * It implements missing features in Soot components. All functions should be static.

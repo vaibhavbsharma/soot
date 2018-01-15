@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.G;
 import soot.NullType;
@@ -39,21 +35,25 @@ import soot.Type;
 import soot.options.Options;
 import soot.util.BitVector;
 
-/** Each instance of this class represents one type in the class hierarchy (or basic types). */
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Each instance of this class represents one type in the class hierarchy (or basic types).
+ */
 class TypeNode {
   private static final boolean DEBUG = false;
 
   private final int id;
   private final Type type;
   private final ClassHierarchy hierarchy;
-
+  private final BitVector ancestors = new BitVector(0);
+  private final BitVector descendants = new BitVector(0);
   private TypeNode parentClass;
   private TypeNode element;
   private TypeNode array;
-
   private List<TypeNode> parents = Collections.emptyList();
-  private final BitVector ancestors = new BitVector(0);
-  private final BitVector descendants = new BitVector(0);
 
   public TypeNode(int id, Type type, ClassHierarchy hierarchy) {
     if (type == null || hierarchy == null) {
@@ -220,7 +220,9 @@ class TypeNode {
     }
   }
 
-  /** Adds the given node to the list of descendants of this node and its ancestors. * */
+  /**
+   * Adds the given node to the list of descendants of this node and its ancestors. *
+   */
   private void fixDescendants(int id) {
     if (descendants.get(id)) {
       return;
@@ -234,12 +236,16 @@ class TypeNode {
     descendants.set(id);
   }
 
-  /** Returns the unique id of this type node. * */
+  /**
+   * Returns the unique id of this type node. *
+   */
   public int id() {
     return id;
   }
 
-  /** Returns the type represented by this type node. * */
+  /**
+   * Returns the type represented by this type node. *
+   */
   public Type type() {
     return type;
   }

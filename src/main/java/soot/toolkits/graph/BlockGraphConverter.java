@@ -19,22 +19,22 @@
 
 package soot.toolkits.graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Body;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * This utility class can convert any BlockGraph to a single-headed and single-tailed graph by
  * inserting appropriate Start or Stop nodes. It can also fully reverse the graph, something that
  * might be useful e.g. when computing control dependences with a dominators algorithm.
- *
+ * <p>
  * <p>Note: This class may be retracted in a future release when a suitable replacement becomes
  * available.
  *

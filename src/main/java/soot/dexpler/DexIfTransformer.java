@@ -24,12 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Local;
 import soot.SootMethodRef;
@@ -65,10 +59,16 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * BodyTransformer to find and change definition of locals used within an if which contains a
  * condition involving two locals ( and not only one local as in DexNullTransformer).
- *
+ * <p>
  * <p>It this case, if any of the two locals leads to an object being def or used, all the
  * appropriate defs of the two locals are updated to reflect the use of objects (i.e: 0s are
  * replaced by nulls).
@@ -77,14 +77,13 @@ public class DexIfTransformer extends AbstractNullTransformer {
   // Note: we need an instance variable for inner class access, treat this as
   // a local variable (including initialization before use)
 
+  Local l = null;
   private boolean usedAsObject;
   private boolean doBreak = false;
 
   public static DexIfTransformer v() {
     return new DexIfTransformer();
   }
-
-  Local l = null;
 
   @Override
   protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
@@ -420,7 +419,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
           // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
           if (!s.containsArrayRef()
               || (!defsOp1.contains(s.getArrayRef().getBase())
-                  && !defsOp2.contains(s.getArrayRef().getBase()))) {
+              && !defsOp2.contains(s.getArrayRef().getBase()))) {
             replaceWithNull(u);
           }
 
@@ -430,7 +429,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
             // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
             if (!use.containsArrayRef()
                 || (twoIfLocals[0] != use.getArrayRef().getBase())
-                    && twoIfLocals[1] != use.getArrayRef().getBase()) {
+                && twoIfLocals[1] != use.getArrayRef().getBase()) {
               replaceWithNull(use);
             }
           }

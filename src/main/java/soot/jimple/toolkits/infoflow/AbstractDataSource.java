@@ -1,14 +1,14 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.NullType;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 // Wraps any object as a Value
 
@@ -24,7 +24,9 @@ public class AbstractDataSource implements Value {
     return Collections.emptyList();
   }
 
-  /** Clones the object. Not implemented here. */
+  /**
+   * Clones the object. Not implemented here.
+   */
   @Override
   public Object clone() {
     return new AbstractDataSource(sourcename);
@@ -50,7 +52,9 @@ public class AbstractDataSource implements Value {
         && ((AbstractDataSource) c).sourcename.equals(sourcename));
   }
 
-  /** Returns a hash code consistent with structural equality for this object. */
+  /**
+   * Returns a hash code consistent with structural equality for this object.
+   */
   @Override
   public int equivHashCode() {
     if (sourcename instanceof Value) {
@@ -60,7 +64,8 @@ public class AbstractDataSource implements Value {
   }
 
   @Override
-  public void toString(UnitPrinter up) {}
+  public void toString(UnitPrinter up) {
+  }
 
   @Override
   public Type getType() {

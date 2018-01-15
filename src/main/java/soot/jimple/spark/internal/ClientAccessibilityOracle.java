@@ -25,16 +25,20 @@ import soot.SootMethod;
 /**
  * The decision whether a libraries field or method is accessible for a client can be different for
  * different analyses.
- *
+ * <p>
  * <p>This interface provides methods to define how this decision will be made.
  *
  * @author Florian Kuebler
  */
 public interface ClientAccessibilityOracle {
 
-  /** Determines whether the method is accessible for a potential library user. */
+  /**
+   * Determines whether the method is accessible for a potential library user.
+   */
   boolean isAccessible(SootMethod method);
 
-  /** Determines whether the field is accessible for a potential library user. */
+  /**
+   * Determines whether the field is accessible for a potential library user.
+   */
   boolean isAccessible(SootField field);
 }

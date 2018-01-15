@@ -26,9 +26,6 @@
 
 package soot.grimp.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.RefType;
 import soot.SootMethodRef;
 import soot.Type;
@@ -41,6 +38,9 @@ import soot.grimp.NewInvokeExpr;
 import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr, Precedence {
   RefType type;
@@ -151,7 +151,7 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
       GNewInvokeExpr ie = (GNewInvokeExpr) o;
       if (!(getMethod().equals(ie.getMethod())
           && (argBoxes == null ? 0 : argBoxes.length)
-              == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+          == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -166,7 +166,9 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return getMethod().equivHashCode();

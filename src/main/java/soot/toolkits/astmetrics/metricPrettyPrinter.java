@@ -25,11 +25,12 @@ import polyglot.visit.PrettyPrinter;
 
 /**
  * @author Michael Batchelder
- *     <p>Created on 12-Apr-2006
+ * <p>Created on 12-Apr-2006
  */
 public class metricPrettyPrinter extends PrettyPrinter {
 
   ASTMetric astMetric;
+
   /** */
   public metricPrettyPrinter(ASTMetric astMetric) {
     this.astMetric = astMetric;

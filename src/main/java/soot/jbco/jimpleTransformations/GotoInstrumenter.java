@@ -19,9 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -40,23 +37,25 @@ import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.util.Chain;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 15-Feb-2006
+ * <p>Created on 15-Feb-2006
  */
 public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform {
 
+  public static String dependancies[] = new String[] {"jtp.jbco_gia"};
+  public static String name = "jtp.jbco_gia";
+  static boolean verbose = G.v().soot_options_Options().verbose();
   private int trapsAdded = 0;
   private int gotosInstrumented = 0;
-
-  public static String dependancies[] = new String[] {"jtp.jbco_gia"};
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "jtp.jbco_gia";
 
   @Override
   public String getName() {
@@ -68,8 +67,6 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     out.println("Gotos Instrumented " + gotosInstrumented);
     out.println("Traps Added " + trapsAdded);
   }
-
-  static boolean verbose = G.v().soot_options_Options().verbose();
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {

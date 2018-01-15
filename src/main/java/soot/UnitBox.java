@@ -33,19 +33,25 @@ import java.io.Serializable;
  * @see Unit
  */
 public interface UnitBox extends Serializable {
-  /** Sets this box to contain the given unit. Subject to canContainValue() checks. */
-  void setUnit(Unit u);
-
-  /** Returns the unit contained within this box. */
+  /**
+   * Returns the unit contained within this box.
+   */
   Unit getUnit();
 
-  /** Returns true if this box can contain the given Unit. */
+  /**
+   * Sets this box to contain the given unit. Subject to canContainValue() checks.
+   */
+  void setUnit(Unit u);
+
+  /**
+   * Returns true if this box can contain the given Unit.
+   */
   boolean canContainUnit(Unit u);
 
   /**
    * Returns true if the UnitBox is holding a Unit that is the target of a branch (ie a Unit at the
    * beginning of a CFG block). This is the default case.
-   *
+   * <p>
    * <p>Returns false if the UnitBox is holding a Unit that indicates the end of a CFG block and may
    * require specialised processing for SSA.
    */

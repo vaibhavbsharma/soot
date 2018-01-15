@@ -20,9 +20,10 @@
 /**
  * Implementation of the paper "A Combined Pointer and Purity Analysis for Java Programs" by
  * Alexandru Salcianu and Martin Rinard, within the Soot Optimization Framework.
- *
+ * <p>
  * <p>by Antoine Mine, 2005/01/24
  */
+
 package soot.jimple.toolkits.annotation.purity;
 
 /** A node representing a method parameter. Each method parameter has a number, starting from 0. */

@@ -19,10 +19,6 @@
 
 package soot.jimple.toolkits.annotation;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.Scene;
@@ -34,9 +30,14 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
 import soot.tagkit.LineNumberTag;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 public class LineNumberAdder extends SceneTransformer {
 
-  public LineNumberAdder(Singletons.Global g) {}
+  public LineNumberAdder(Singletons.Global g) {
+  }
 
   public static LineNumberAdder v() {
     return G.v().soot_jimple_toolkits_annotation_LineNumberAdder();

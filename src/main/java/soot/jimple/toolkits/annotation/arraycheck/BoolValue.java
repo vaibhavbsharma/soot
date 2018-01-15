@@ -26,10 +26,9 @@
 package soot.jimple.toolkits.annotation.arraycheck;
 
 class BoolValue {
-  private boolean isRectangular;
-
   private static final BoolValue trueValue = new BoolValue(true);
   private static final BoolValue falseValue = new BoolValue(false);
+  private boolean isRectangular;
 
   public BoolValue(boolean v) {
     isRectangular = v;

@@ -32,7 +32,8 @@ import soot.Type;
 import soot.util.Switch;
 
 public class NullConstant extends Constant {
-  public NullConstant(Singletons.Global g) {}
+  public NullConstant(Singletons.Global g) {
+  }
 
   public static NullConstant v() {
     return G.v().soot_jimple_NullConstant();

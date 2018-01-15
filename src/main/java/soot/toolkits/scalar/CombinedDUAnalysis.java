@@ -19,14 +19,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.Local;
 import soot.Unit;
@@ -38,9 +30,17 @@ import soot.util.Cons;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Analysis that computes live locals, local defs, and local uses all at once.
- *
+ * <p>
  * <p>SA, 09.09.2014: Inefficient as hell (memory). Use the distinct analyses or fix this class
  * before using it.
  */
@@ -48,83 +48,11 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     implements CombinedAnalysis, LocalDefs, LocalUses, LiveLocals {
   // Implementations of our interfaces...
   private final Map<Cons<Local, Unit>, List<Unit>> defsOfAt = new HashMap<>();
-
-  @Override
-  public List<Unit> getDefsOfAt(Local l, Unit s) {
-    Cons<Local, Unit> cons = new Cons<>(l, s);
-    List<Unit> ret = defsOfAt.get(cons);
-    if (ret == null) {
-      defsOfAt.put(cons, ret = new ArrayList<>());
-    }
-    return ret;
-  }
-
-  @Override
-  public List<Unit> getDefsOf(Local l) {
-    throw new RuntimeException("Not implemented");
-  }
-
   private final Map<Unit, List<UnitValueBoxPair>> usesOf = new HashMap<>();
-
-  @Override
-  public List<UnitValueBoxPair> getUsesOf(Unit u) {
-    List<UnitValueBoxPair> ret = usesOf.get(u);
-    if (ret == null) {
-      Local def = localDefed(u);
-      if (def == null) {
-        usesOf.put(u, ret = Collections.emptyList());
-      } else {
-        usesOf.put(u, ret = new ArrayList<>());
-        for (ValueBox vb : getFlowAfter(u)) {
-          if (vb.getValue() != def) {
-            continue;
-          }
-          ret.add(new UnitValueBoxPair(useBoxToUnit.get(vb), vb));
-        }
-      }
-    }
-    return ret;
-  }
-
   private final Map<Unit, List<Local>> liveLocalsBefore = new HashMap<>();
-
-  @Override
-  public List<Local> getLiveLocalsBefore(Unit u) {
-    List<Local> ret = liveLocalsBefore.get(u);
-    if (ret == null) {
-      HashSet<Local> hs = new HashSet<>();
-      for (ValueBox vb : getFlowBefore(u)) {
-        hs.add((Local) vb.getValue());
-      }
-      liveLocalsBefore.put(u, ret = new ArrayList<>(hs));
-    }
-    return ret;
-  }
-
   private final Map<Unit, List<Local>> liveLocalsAfter = new HashMap<>();
-
-  @Override
-  public List<Local> getLiveLocalsAfter(Unit u) {
-    List<Local> ret = liveLocalsAfter.get(u);
-    if (ret == null) {
-      HashSet<Local> hs = new HashSet<>();
-      for (ValueBox vb : getFlowAfter(u)) {
-        hs.add((Local) vb.getValue());
-      }
-      liveLocalsAfter.put(u, ret = new ArrayList<>(hs));
-    }
-    return ret;
-  }
-
-  // The actual analysis is below.
-
   private final Map<ValueBox, Unit> useBoxToUnit = new HashMap<>();
   private final Map<Unit, Value> unitToLocalDefed = new HashMap<>();
-
-  private Local localDefed(Unit u) {
-    return (Local) unitToLocalDefed.get(u);
-  }
-
   private final Map<Unit, ArraySparseSet<ValueBox>> unitToLocalUseBoxes = new HashMap<>();
   private final MultiMap<Value, ValueBox> localToUseBoxes = new HashMultiMap<>();
 
@@ -183,6 +111,73 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
           .println(
               "[" + graph.getBody().getMethod().getName() + "]     Finished CombinedDUAnalysis...");
     }
+  }
+
+  // The actual analysis is below.
+
+  @Override
+  public List<Unit> getDefsOfAt(Local l, Unit s) {
+    Cons<Local, Unit> cons = new Cons<>(l, s);
+    List<Unit> ret = defsOfAt.get(cons);
+    if (ret == null) {
+      defsOfAt.put(cons, ret = new ArrayList<>());
+    }
+    return ret;
+  }
+
+  @Override
+  public List<Unit> getDefsOf(Local l) {
+    throw new RuntimeException("Not implemented");
+  }
+
+  @Override
+  public List<UnitValueBoxPair> getUsesOf(Unit u) {
+    List<UnitValueBoxPair> ret = usesOf.get(u);
+    if (ret == null) {
+      Local def = localDefed(u);
+      if (def == null) {
+        usesOf.put(u, ret = Collections.emptyList());
+      } else {
+        usesOf.put(u, ret = new ArrayList<>());
+        for (ValueBox vb : getFlowAfter(u)) {
+          if (vb.getValue() != def) {
+            continue;
+          }
+          ret.add(new UnitValueBoxPair(useBoxToUnit.get(vb), vb));
+        }
+      }
+    }
+    return ret;
+  }
+
+  @Override
+  public List<Local> getLiveLocalsBefore(Unit u) {
+    List<Local> ret = liveLocalsBefore.get(u);
+    if (ret == null) {
+      HashSet<Local> hs = new HashSet<>();
+      for (ValueBox vb : getFlowBefore(u)) {
+        hs.add((Local) vb.getValue());
+      }
+      liveLocalsBefore.put(u, ret = new ArrayList<>(hs));
+    }
+    return ret;
+  }
+
+  @Override
+  public List<Local> getLiveLocalsAfter(Unit u) {
+    List<Local> ret = liveLocalsAfter.get(u);
+    if (ret == null) {
+      HashSet<Local> hs = new HashSet<>();
+      for (ValueBox vb : getFlowAfter(u)) {
+        hs.add((Local) vb.getValue());
+      }
+      liveLocalsAfter.put(u, ret = new ArrayList<>(hs));
+    }
+    return ret;
+  }
+
+  private Local localDefed(Unit u) {
+    return (Local) unitToLocalDefed.get(u);
   }
 
   private List<Value> localsInBoxes(List<ValueBox> boxes) {

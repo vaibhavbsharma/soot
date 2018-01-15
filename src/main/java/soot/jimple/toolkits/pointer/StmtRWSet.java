@@ -19,14 +19,16 @@
 
 package soot.jimple.toolkits.pointer;
 
+import soot.PointsToSet;
+import soot.SootField;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import soot.PointsToSet;
-import soot.SootField;
-
-/** Represents the read or write set of a statement. */
+/**
+ * Represents the read or write set of a statement.
+ */
 public class StmtRWSet extends RWSet {
   protected Object field;
   protected PointsToSet base;
@@ -68,7 +70,9 @@ public class StmtRWSet extends RWSet {
     return ret;
   }
 
-  /** Returns an iterator over any globals read/written. */
+  /**
+   * Returns an iterator over any globals read/written.
+   */
   @Override
   public Set getGlobals() {
     if (base == null) {
@@ -79,7 +83,9 @@ public class StmtRWSet extends RWSet {
     return Collections.EMPTY_SET;
   }
 
-  /** Returns an iterator over any fields read/written. */
+  /**
+   * Returns an iterator over any fields read/written.
+   */
   @Override
   public Set getFields() {
     if (base != null) {
@@ -90,7 +96,9 @@ public class StmtRWSet extends RWSet {
     return Collections.EMPTY_SET;
   }
 
-  /** Returns a set of base objects whose field f is read/written. */
+  /**
+   * Returns a set of base objects whose field f is read/written.
+   */
   @Override
   public PointsToSet getBaseForField(Object f) {
     if (field.equals(f)) {
@@ -123,7 +131,9 @@ public class StmtRWSet extends RWSet {
     }
   }
 
-  /** Adds the RWSet other into this set. */
+  /**
+   * Adds the RWSet other into this set.
+   */
   @Override
   public boolean union(RWSet other) {
     throw new RuntimeException("Can't do that");

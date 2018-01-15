@@ -1,5 +1,12 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import soot.Timers;
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.tagkit.Tag;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,13 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
-import soot.Timers;
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.Tag;
-import soot.toolkits.scalar.ArraySparseSet;
-import soot.toolkits.scalar.FlowSet;
-import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -38,11 +38,11 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 //
 public class MonitorAnalysis extends ForwardFlowAnalysis {
 
-  private PegGraph g;
   private final HashMap<String, FlowSet> monitor = new HashMap<>();
   private final Vector<Object> nodes = new Vector<>();
   private final Vector<Object> valueBefore = new Vector<>();
   private final Vector<Object> valueAfter = new Vector<>();
+  private PegGraph g;
 
   public MonitorAnalysis(PegGraph g) {
     super(g);
@@ -273,6 +273,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
     // out.test();
     // testForDebug();
   }
+
   /*
   private void testForDebug(){
   System.out.println("--------test for debug-------");

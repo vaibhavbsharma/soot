@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.AbstractUnit;
 import soot.Unit;
 import soot.ValueBox;
@@ -37,6 +35,8 @@ import soot.jimple.FieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.Stmt;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class AbstractStmt extends AbstractUnit implements Stmt, ConvertToBaf {

@@ -19,9 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PatchingChain;
@@ -36,22 +33,23 @@ import soot.jbco.util.Rand;
 import soot.jbco.util.ThrowSet;
 import soot.util.Chain;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 24-May-2006
+ * <p>Created on 24-May-2006
  */
 public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransform {
 
-  int totaltraps = 0;
-
   public static String dependancies[] = new String[] {"bb.jbco_ptss", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_ptss";
+  int totaltraps = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_ptss";
 
   @Override
   public String getName() {

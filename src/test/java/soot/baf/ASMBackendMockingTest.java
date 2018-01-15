@@ -1,5 +1,6 @@
 package soot.baf;
 
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,7 @@ import static org.objectweb.asm.Opcodes.SWAP;
 import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
+
 
 @PrepareForTest(ASMBackendUtils.class)
 @RunWith(PowerMockRunner.class)

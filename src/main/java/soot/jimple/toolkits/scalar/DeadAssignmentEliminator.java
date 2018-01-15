@@ -25,15 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -76,8 +67,18 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class DeadAssignmentEliminator extends BodyTransformer {
-  public DeadAssignmentEliminator(Singletons.Global g) {}
+  public DeadAssignmentEliminator(Singletons.Global g) {
+  }
 
   public static DeadAssignmentEliminator v() {
     return G.v().soot_jimple_toolkits_scalar_DeadAssignmentEliminator();
@@ -85,7 +86,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
 
   /**
    * Eliminates dead code in a linear fashion. Complexity is linear with respect to the statements.
-   *
+   * <p>
    * <p>Does not work on grimp code because of the check on the right hand side for side effects.
    */
   @Override
@@ -150,8 +151,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
 
         if (lhs instanceof Local
             && (!eliminateOnlyStackLocals
-                || ((Local) lhs).getName().startsWith("$")
-                || lhs.getType() instanceof NullType)) {
+            || ((Local) lhs).getName().startsWith("$")
+            || lhs.getType() instanceof NullType)) {
 
           isEssential = false;
 

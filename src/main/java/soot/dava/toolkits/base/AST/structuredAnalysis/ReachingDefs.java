@@ -17,12 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/** Maintained by: Nomair A. Naeem */
-package soot.dava.toolkits.base.AST.structuredAnalysis;
+/**
+ * Maintained by: Nomair A. Naeem
+ */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.Local;
 import soot.Value;
@@ -35,6 +34,10 @@ import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for

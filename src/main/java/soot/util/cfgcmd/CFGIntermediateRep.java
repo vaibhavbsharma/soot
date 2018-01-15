@@ -31,20 +31,6 @@ import soot.shimple.Shimple;
  */
 public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
 
-  private CFGIntermediateRep(String name) {
-    super(name);
-  }
-
-  /**
-   * Converts a <code>JimpleBody</code> into the corresponding <code>Body</code> in this
-   * intermediate representation.
-   *
-   * @param b The Jimple body to be represented.
-   * @return a {@link Body} in this intermediate representation which represents the same method as
-   *     <code>b</code>.
-   */
-  public abstract Body getBody(JimpleBody b);
-
   public static final CFGIntermediateRep JIMPLE_IR =
       new CFGIntermediateRep("jimple") {
         @Override
@@ -52,7 +38,6 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
           return b;
         }
       };
-
   public static final CFGIntermediateRep BAF_IR =
       new CFGIntermediateRep("baf") {
         @Override
@@ -60,7 +45,6 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
           return Baf.v().newBody(b);
         }
       };
-
   public static final CFGIntermediateRep GRIMP_IR =
       new CFGIntermediateRep("grimp") {
         @Override
@@ -68,7 +52,6 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
           return Grimp.v().newBody(b, "gb");
         }
       };
-
   public static final CFGIntermediateRep SHIMPLE_IR =
       new CFGIntermediateRep("shimple") {
         @Override
@@ -76,7 +59,6 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
           return Shimple.v().newBody(b);
         }
       };
-
   public static final CFGIntermediateRep VIA_SHIMPLE_JIMPLE_IR =
       new CFGIntermediateRep("viaShimpleJimple") {
         @Override
@@ -84,19 +66,22 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
           return Shimple.v().newJimpleBody(Shimple.v().newBody(b));
         }
       };
-
   private static final CFGOptionMatcher irOptions =
       new CFGOptionMatcher(
           new CFGIntermediateRep[] {
-            JIMPLE_IR, BAF_IR, GRIMP_IR, SHIMPLE_IR, VIA_SHIMPLE_JIMPLE_IR,
+              JIMPLE_IR, BAF_IR, GRIMP_IR, SHIMPLE_IR, VIA_SHIMPLE_JIMPLE_IR,
           });
+
+  private CFGIntermediateRep(String name) {
+    super(name);
+  }
 
   /**
    * Returns the <code>CFGIntermediateRep</code> identified by the passed name.
    *
    * @param name A {@link String} identifying the intermediate representation.
    * @return A <code>CFGIntermediateRep</code> object whose {@link #getBody(JimpleBody)} method will
-   *     create the desired intermediate representation.
+   * create the desired intermediate representation.
    */
   public static CFGIntermediateRep getIR(String name) {
     return (CFGIntermediateRep) irOptions.match(name);
@@ -107,13 +92,23 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
    * separated by '|' characters.
    *
    * @param initialIndent The number of blank spaces to insert at the beginning of the returned
-   *     string. Ignored if negative.
-   * @param rightMargin If positive, newlines will be inserted to try to keep the length of each
-   *     line in the returned string less than or equal to *<code>rightMargin</code>.
+   *                      string. Ignored if negative.
+   * @param rightMargin   If positive, newlines will be inserted to try to keep the length of each
+   *                      line in the returned string less than or equal to *<code>rightMargin</code>.
    * @param hangingIndent If positive, this number of spaces will be inserted immediately after each
-   *     newline inserted to respect the <code>rightMargin</code>.
+   *                      newline inserted to respect the <code>rightMargin</code>.
    */
   public static String help(int initialIndent, int rightMargin, int hangingIndent) {
     return irOptions.help(initialIndent, rightMargin, hangingIndent);
   }
+
+  /**
+   * Converts a <code>JimpleBody</code> into the corresponding <code>Body</code> in this
+   * intermediate representation.
+   *
+   * @param b The Jimple body to be represented.
+   * @return a {@link Body} in this intermediate representation which represents the same method as
+   * <code>b</code>.
+   */
+  public abstract Body getBody(JimpleBody b);
 }

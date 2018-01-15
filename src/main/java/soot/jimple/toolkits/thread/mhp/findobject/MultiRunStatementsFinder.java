@@ -1,14 +1,5 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InstanceInvokeExpr;
@@ -22,6 +13,15 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
 // This code should be treated as beta-quality code.
@@ -34,10 +34,9 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // -Richard L. Halpert, 2006-11-30
 
 public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> {
-  Set<Unit> multiRunStatements = new HashSet<>();
-
   protected Map<Object, Integer> nodeToIndex;
   protected int lastIndex = 0;
+  Set<Unit> multiRunStatements = new HashSet<>();
 
   // add soot method here just for debug
   public MultiRunStatementsFinder(

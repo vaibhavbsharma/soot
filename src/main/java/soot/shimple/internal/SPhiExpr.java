@@ -19,15 +19,6 @@
 
 package soot.shimple.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.G;
 import soot.Local;
 import soot.Type;
@@ -43,6 +34,15 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Internal implementation of Phi nodes.
  *
@@ -53,6 +53,7 @@ public class SPhiExpr implements PhiExpr {
   protected List<ValueUnitPair> argPairs = new ArrayList<>();
   protected Map<Unit, ValueUnitPair> predToPair = new HashMap<>(); // cache
   protected Type type;
+  int blockId = -1;
 
   /**
    * Create a trivial Phi expression for leftLocal. preds is an ordered list of the control flow
@@ -66,7 +67,11 @@ public class SPhiExpr implements PhiExpr {
     }
   }
 
-  /** Create a Phi expression from the given list of Values and Blocks. */
+  /* get-accessor implementations */
+
+  /**
+   * Create a Phi expression from the given list of Values and Blocks.
+   */
   public SPhiExpr(List<Value> args, List<Unit> preds) {
     if (args.size() == 0) {
       throw new RuntimeException("Arg list may not be empty");
@@ -93,8 +98,6 @@ public class SPhiExpr implements PhiExpr {
       }
     }
   }
-
-  /* get-accessor implementations */
 
   @Override
   public List<ValueUnitPair> getArgs() {
@@ -212,6 +215,8 @@ public class SPhiExpr implements PhiExpr {
     return box;
   }
 
+  /* set-accessor implementations */
+
   @Override
   public Value getValue(Block pred) {
     ValueBox vb = getArgBox(pred);
@@ -220,8 +225,6 @@ public class SPhiExpr implements PhiExpr {
     }
     return vb.getValue();
   }
-
-  /* set-accessor implementations */
 
   @Override
   public boolean setArg(int index, Value arg, Unit predTailUnit) {
@@ -288,12 +291,12 @@ public class SPhiExpr implements PhiExpr {
     return true;
   }
 
+  /* add/remove implementations */
+
   @Override
   public boolean setPred(int index, Block pred) {
     return setPred(index, pred.getTail());
   }
-
-  /* add/remove implementations */
 
   @Override
   public boolean removeArg(int index) {
@@ -351,19 +354,17 @@ public class SPhiExpr implements PhiExpr {
     return true;
   }
 
-  int blockId = -1;
-
-  @Override
-  public void setBlockId(int blockId) {
-    this.blockId = blockId;
-  }
-
   @Override
   public int getBlockId() {
     if (blockId == -1) {
       throw new RuntimeException("Assertion failed:  Block Id unknown.");
     }
     return blockId;
+  }
+
+  @Override
+  public void setBlockId(int blockId) {
+    this.blockId = blockId;
   }
 
   /* misc */

@@ -40,7 +40,8 @@ public class SourceFileTag implements Tag {
     this.absolutePath = path;
   }
 
-  public SourceFileTag() {}
+  public SourceFileTag() {
+  }
 
   @Override
   public String getName() {
@@ -56,20 +57,20 @@ public class SourceFileTag implements Tag {
     }
   }
 
-  public void setSourceFile(String srcFile) {
-    sourceFile = srcFile.intern();
-  }
-
   public String getSourceFile() {
     return sourceFile;
   }
 
-  public void setAbsolutePath(String path) {
-    absolutePath = path;
+  public void setSourceFile(String srcFile) {
+    sourceFile = srcFile.intern();
   }
 
   public String getAbsolutePath() {
     return absolutePath;
+  }
+
+  public void setAbsolutePath(String path) {
+    absolutePath = path;
   }
 
   @Override

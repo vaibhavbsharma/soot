@@ -21,6 +21,7 @@ package soot.baf;
 
 /**
  * @author Michael Batchelder
- *     <p>Created on 22-Mar-2006
+ * <p>Created on 22-Mar-2006
  */
-public interface JSRInst extends TargetArgInst {}
+public interface JSRInst extends TargetArgInst {
+}

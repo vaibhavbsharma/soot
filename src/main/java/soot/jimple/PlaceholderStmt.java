@@ -32,6 +32,10 @@ import soot.jimple.internal.AbstractStmt;
 public class PlaceholderStmt extends AbstractStmt {
   private Unit source;
 
+  PlaceholderStmt(Unit source) {
+    this.source = source;
+  }
+
   @Override
   public String toString() {
     return "<placeholder: " + source.toString() + ">";
@@ -42,10 +46,6 @@ public class PlaceholderStmt extends AbstractStmt {
     up.literal("<placeholder: ");
     source.toString(up);
     up.literal(">");
-  }
-
-  PlaceholderStmt(Unit source) {
-    this.source = source;
   }
 
   public Unit getSource() {

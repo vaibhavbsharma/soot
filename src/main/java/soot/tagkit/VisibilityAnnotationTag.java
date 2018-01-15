@@ -66,7 +66,9 @@ public class VisibilityAnnotationTag implements Tag {
     return sb.toString();
   }
 
-  /** Returns the tag name. */
+  /**
+   * Returns the tag name.
+   */
   @Override
   public String getName() {
     return "VisibilityAnnotationTag";
@@ -80,7 +82,9 @@ public class VisibilityAnnotationTag implements Tag {
     return visibility;
   }
 
-  /** Returns the tag raw data. */
+  /**
+   * Returns the tag raw data.
+   */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("VisibilityAnnotationTag has no value for bytecode");

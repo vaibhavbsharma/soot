@@ -19,10 +19,10 @@
 
 package soot.util;
 
+import heros.solver.Pair;
+
 import java.util.Map;
 import java.util.Set;
-
-import heros.solver.Pair;
 
 /**
  * A map with sets as values.

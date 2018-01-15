@@ -25,7 +25,9 @@
 
 package soot.tagkit;
 
-/** Represents the annotation constants for Java 1.5. */
+/**
+ * Represents the annotation constants for Java 1.5.
+ */
 public class AnnotationConstants {
   public static final int RUNTIME_VISIBLE = 0;
   public static final int RUNTIME_INVISIBLE = 1;

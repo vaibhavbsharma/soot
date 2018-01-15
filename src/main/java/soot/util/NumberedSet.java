@@ -27,6 +27,13 @@ import java.util.Iterator;
  * @author Ondrej Lhotak
  */
 public final class NumberedSet<N extends Numberable> {
+  private Numberable[] array = new Numberable[8];
+  private BitVector bits;
+  private int size = 0;
+
+  /* Private stuff. */
+  private ArrayNumberer<N> universe;
+
   public NumberedSet(ArrayNumberer<N> universe) {
     this.universe = universe;
   }
@@ -78,8 +85,6 @@ public final class NumberedSet<N extends Numberable> {
     }
   }
 
-  /* Private stuff. */
-
   private final int findPosition(Numberable o) {
     int number = o.getNumber();
     if (number == 0) {
@@ -125,6 +130,10 @@ public final class NumberedSet<N extends Numberable> {
     } else {
       return new NumberedSetIterator(this);
     }
+  }
+
+  public final int size() {
+    return size;
   }
 
   class BitSetIterator implements Iterator<N> {
@@ -188,13 +197,4 @@ public final class NumberedSet<N extends Numberable> {
       return ret;
     }
   }
-
-  public final int size() {
-    return size;
-  }
-
-  private Numberable[] array = new Numberable[8];
-  private BitVector bits;
-  private int size = 0;
-  private ArrayNumberer<N> universe;
 }

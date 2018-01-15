@@ -1,13 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.EquivalentValue;
 import soot.G;
 import soot.Local;
@@ -38,6 +30,14 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Finds the set of local variables and/or references that represent all of the relevant objects
  * used in a synchronized region, as accessible at the start of that region. Basically this is value
@@ -48,6 +48,8 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
  * @since 2007-04-19
  */
 public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, LocksetFlowInfo> {
+  static Set<SootMethod> analyzing = new HashSet<>();
+  static int groupNum = 1;
   UnitGraph graph;
   SootMethod method;
   CriticalSectionAwareSideEffectAnalysis tasea;
@@ -55,12 +57,9 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
   CriticalSection tn;
   Stmt begin;
   boolean lostObjects;
-
   // These two maps hold the final ref->base or ref->index relationship
   Map<Ref, EquivalentValue> refToBase;
   Map<Ref, EquivalentValue> refToIndex;
-
-  static Set<SootMethod> analyzing = new HashSet<>();
 
   public LockableReferenceAnalysis(UnitGraph g) {
     super(g);
@@ -456,8 +455,6 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     }
     return 0; // failure code... the only number that is never a valid group
   }
-
-  static int groupNum = 1;
 
   @Override
   protected void flowThrough(LocksetFlowInfo inInfo, Unit u, LocksetFlowInfo outInfo) {

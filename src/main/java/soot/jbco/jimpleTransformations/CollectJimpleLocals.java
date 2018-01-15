@@ -19,31 +19,30 @@
 
 package soot.jbco.jimpleTransformations;
 
+import soot.Body;
+import soot.BodyTransformer;
+import soot.jbco.IJbcoTransform;
+
 import java.util.ArrayList;
 import java.util.Map;
 
-import soot.Body;
-import soot.BodyTransformer;
-import soot.Local;
-import soot.jbco.IJbcoTransform;
-
 /**
  * @author Michael Batchelder
- *     <p>Created on 7-Feb-2006
+ * <p>Created on 7-Feb-2006
  */
 public class CollectJimpleLocals extends BodyTransformer implements IJbcoTransform {
 
-  @Override
-  public void outputSummary() {}
-
   public static String dependancies[] = new String[] {"jtp.jbco_jl"};
+  public static String name = "jtp.jbco_jl";
+
+  @Override
+  public void outputSummary() {
+  }
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "jtp.jbco_jl";
 
   @Override
   public String getName() {

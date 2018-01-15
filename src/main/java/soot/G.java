@@ -25,16 +25,6 @@
 
 package soot;
 
-import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.coffi.Utf8_Enumeration;
 import soot.dava.internal.SET.SETBasicBlock;
 import soot.dava.internal.SET.SETNode;
@@ -49,22 +39,20 @@ import soot.jimple.toolkits.typing.ClassHierarchy;
 import soot.toolkits.astmetrics.ClassData;
 import soot.toolkits.scalar.Pair;
 
-/** A class to group together all the global variables in Soot. */
+import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * A class to group together all the global variables in Soot.
+ */
 public class G extends Singletons {
-
-  public interface GlobalObjectGetter {
-    G getG();
-
-    void reset();
-  }
-
-  public static G v() {
-    return objectGetter.getG();
-  }
-
-  public static void reset() {
-    objectGetter.reset();
-  }
 
   private static GlobalObjectGetter objectGetter =
       new GlobalObjectGetter() {
@@ -81,15 +69,9 @@ public class G extends Singletons {
           instance = new G();
         }
       };
-
-  public static void setGlobalObjectGetter(GlobalObjectGetter newGetter) {
-    objectGetter = newGetter;
-  }
-
+  public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<>();
+  public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<>();
   public PrintStream out = System.out;
-
-  public class Global {}
-
   public long coffi_BasicBlock_ids = 0;
   public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e1 = new Utf8_Enumeration();
   public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e2 = new Utf8_Enumeration();
@@ -113,20 +95,8 @@ public class G extends Singletons {
   public boolean Timer_isGarbageCollecting;
   public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
   public int Timer_count;
-  public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<>();
-  public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<>();
-
   public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis = null;
-
-  public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis() {
-    if (this.interproceduralDalvikThrowAnalysis == null) {
-      this.interproceduralDalvikThrowAnalysis = new DalvikThrowAnalysis(g, true);
-    }
-    return this.interproceduralDalvikThrowAnalysis;
-  }
-
   public boolean ASTTransformations_modified;
-
   /*
    * 16th Feb 2006 Nomair
    * The AST transformations are unfortunately non-monotonic.
@@ -135,7 +105,6 @@ public class G extends Singletons {
    * a separate flag...clumsy but works
    */
   public boolean ASTIfElseFlipped;
-
   /*
    * Nomair A. Naeem January 15th 2006
    * Added For Dava.toolkits.AST.transformations.SuperFirstStmtHandler
@@ -158,9 +127,27 @@ public class G extends Singletons {
   public boolean SootMethodAddedByDava;
   public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<>();
   public ArrayList<SootMethod> SootMethodsAdded = new ArrayList<>();
-
   // ASTMetrics Data
   public ArrayList<ClassData> ASTMetricsData = new ArrayList<>();
+
+  public static G v() {
+    return objectGetter.getG();
+  }
+
+  public static void reset() {
+    objectGetter.reset();
+  }
+
+  public static void setGlobalObjectGetter(GlobalObjectGetter newGetter) {
+    objectGetter = newGetter;
+  }
+
+  public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis() {
+    if (this.interproceduralDalvikThrowAnalysis == null) {
+      this.interproceduralDalvikThrowAnalysis = new DalvikThrowAnalysis(g, true);
+    }
+    return this.interproceduralDalvikThrowAnalysis;
+  }
 
   public void resetSpark() {
     // We reset SPARK the hard way.
@@ -188,5 +175,14 @@ public class G extends Singletons {
 
     // We need to reset the virtual call resolution table
     release_soot_jimple_toolkits_callgraph_VirtualCalls();
+  }
+
+  public interface GlobalObjectGetter {
+    G getG();
+
+    void reset();
+  }
+
+  public class Global {
   }
 }

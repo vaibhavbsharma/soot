@@ -16,10 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.ondemand;
 
-import java.util.HashSet;
-import java.util.Set;
+package soot.jimple.spark.ondemand;
 
 import soot.PointsToSet;
 import soot.Type;
@@ -33,6 +31,9 @@ import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public final class AllocAndContextSet extends ArraySet<AllocAndContext>
     implements EqualsSupportingPointsToSet {

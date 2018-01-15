@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.SootClass;
 import soot.SootMethod;
 import soot.VoidType;
@@ -32,6 +29,9 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.util.Chain;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class VoidReturnRemover {
 

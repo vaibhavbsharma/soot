@@ -19,11 +19,11 @@
 
 package soot.jimple.spark.solver;
 
-import java.util.HashSet;
-
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
+
+import java.util.HashSet;
 
 /**
  * Performs a pseudo-topological sort on the VarNodes in a PAG.
@@ -31,14 +31,13 @@ import soot.jimple.spark.pag.VarNode;
  * @author Ondrej Lhotak
  */
 public class TopoSorter {
-  /** Actually perform the topological sort on the PAG. */
-  public void sort() {
-    for (VarNode v : pag.getVarNodeNumberer()) {
-      dfsVisit(v);
-    }
-    visited = null;
-  }
+  protected boolean ignoreTypes;
+  protected PAG pag;
 
+  /* End of public methods. */
+  /* End of package methods. */
+  protected int nextFinishNumber = 1;
+  protected HashSet<VarNode> visited;
   public TopoSorter(PAG pag, boolean ignoreTypes) {
     this.pag = pag;
     this.ignoreTypes = ignoreTypes;
@@ -46,13 +45,15 @@ public class TopoSorter {
     this.visited = new HashSet<>();
   }
 
-  /* End of public methods. */
-  /* End of package methods. */
-
-  protected boolean ignoreTypes;
-  protected PAG pag;
-  protected int nextFinishNumber = 1;
-  protected HashSet<VarNode> visited;
+  /**
+   * Actually perform the topological sort on the PAG.
+   */
+  public void sort() {
+    for (VarNode v : pag.getVarNodeNumberer()) {
+      dfsVisit(v);
+    }
+    visited = null;
+  }
 
   protected void dfsVisit(VarNode n) {
     if (visited.contains(n)) {

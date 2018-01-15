@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.geomE;
 
 import soot.jimple.spark.geom.dataRep.RectangleNode;
@@ -24,7 +25,7 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
  * This class implements the figure manager.
- *
+ * <p>
  * <p>Currently, we apply a naive management strategy: For each type of object, we maintain a linked
  * list. If we insert a new object, we don't test if all the geometric objects on the plane together
  * can cover the new object. Instead, we test if there is one object already covers the new object.
@@ -59,7 +60,9 @@ public class GeometricManager extends IFigureManager {
     return hasNewFigure;
   }
 
-  /** Remove the new labels for all the figures. */
+  /**
+   * Remove the new labels for all the figures.
+   */
   @Override
   public void flush() {
     hasNewFigure = false;
@@ -73,7 +76,9 @@ public class GeometricManager extends IFigureManager {
     }
   }
 
-  /** Insert a new figure into this manager if it is not covered by any exisiting figure. */
+  /**
+   * Insert a new figure into this manager if it is not covered by any exisiting figure.
+   */
   @Override
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
@@ -103,7 +108,9 @@ public class GeometricManager extends IFigureManager {
     return p;
   }
 
-  /** Merge the set of objects in the same category into one. */
+  /**
+   * Merge the set of objects in the same category into one.
+   */
   @Override
   public void mergeFigures(int buget_size) {
     RectangleNode p;
@@ -145,7 +152,9 @@ public class GeometricManager extends IFigureManager {
     }
   }
 
-  /** The lines that are included in some rectangles can be deleted. */
+  /**
+   * The lines that are included in some rectangles can be deleted.
+   */
   @Override
   public void removeUselessSegments() {
     SegmentNode p = header[GeometricManager.ONE_TO_ONE];
@@ -280,7 +289,7 @@ public class GeometricManager extends IFigureManager {
             if (pold.I1 >= p.I1 && pold.I2 >= p.I2) {
               if ((pold.I1 + pold.L) <= (p.I1 + p.L)
                   && (pold.I2 + ((RectangleNode) pold).L_prime)
-                      <= (p.I2 + ((RectangleNode) p).L_prime)) {
+                  <= (p.I2 + ((RectangleNode) p).L_prime)) {
                 flag = true;
               }
             }

@@ -25,8 +25,6 @@
 
 package soot.coffi;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.MethodSource;
@@ -38,6 +36,8 @@ import soot.Timers;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
+
+import java.util.Map;
 
 public class CoffiMethodSource implements MethodSource {
   public ClassFile coffiClass;

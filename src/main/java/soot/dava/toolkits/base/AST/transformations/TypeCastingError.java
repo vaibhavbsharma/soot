@@ -20,7 +20,8 @@ import soot.jimple.Stmt;
 public class TypeCastingError extends DepthFirstAdapter {
   public boolean myDebug = false;
 
-  public TypeCastingError() {}
+  public TypeCastingError() {
+  }
 
   public TypeCastingError(boolean verbose) {
     super(verbose);
@@ -84,10 +85,10 @@ public class TypeCastingError extends DepthFirstAdapter {
          */
         if (leftType instanceof ByteType
             && (rightType instanceof DoubleType
-                || rightType instanceof FloatType
-                || rightType instanceof IntType
-                || rightType instanceof LongType
-                || rightType instanceof ShortType)) {
+            || rightType instanceof FloatType
+            || rightType instanceof IntType
+            || rightType instanceof LongType
+            || rightType instanceof ShortType)) {
           // loss of precision do explicit casting
 
           if (DEBUG) {
@@ -102,9 +103,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 
         if (leftType instanceof ShortType
             && (rightType instanceof DoubleType
-                || rightType instanceof FloatType
-                || rightType instanceof IntType
-                || rightType instanceof LongType)) {
+            || rightType instanceof FloatType
+            || rightType instanceof IntType
+            || rightType instanceof LongType)) {
           // loss of precision do explicit casting
 
           if (DEBUG) {
@@ -119,8 +120,8 @@ public class TypeCastingError extends DepthFirstAdapter {
 
         if (leftType instanceof IntType
             && (rightType instanceof DoubleType
-                || rightType instanceof FloatType
-                || rightType instanceof LongType)) {
+            || rightType instanceof FloatType
+            || rightType instanceof LongType)) {
           // loss of precision do explicit casting
 
           if (myDebug) {

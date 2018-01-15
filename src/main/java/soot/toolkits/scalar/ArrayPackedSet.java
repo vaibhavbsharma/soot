@@ -26,16 +26,18 @@
 
 package soot.toolkits.scalar;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/** Reference implementation for a BoundedFlowSet. Items are stored in an Array. */
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
+/**
+ * Reference implementation for a BoundedFlowSet. Items are stored in an Array.
+ */
 public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   ObjectIntMapper<T> map;
   BitSet bits;
@@ -87,7 +89,9 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
     return dest.bits;
   }
 
-  /** Returns true if flowSet is the same type of flow set as this. */
+  /**
+   * Returns true if flowSet is the same type of flow set as this.
+   */
   private boolean sameType(Object flowSet) {
     if (flowSet instanceof ArrayPackedSet) {
       return ((ArrayPackedSet<?>) flowSet).map == map;
@@ -211,7 +215,9 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
     }
   }
 
-  /** Returns true, if the object is in the set. */
+  /**
+   * Returns true, if the object is in the set.
+   */
   @Override
   public boolean contains(T obj) {
     /*

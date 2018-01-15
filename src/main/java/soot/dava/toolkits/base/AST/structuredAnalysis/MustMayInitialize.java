@@ -29,10 +29,6 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import soot.Local;
 import soot.SootField;
 import soot.Value;
@@ -41,6 +37,10 @@ import soot.dava.internal.AST.ASTUnaryBinaryCondition;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /*
 * The analysis stores all defs of Locals/SootField. The user can then ask whether a local or SootField
@@ -73,12 +73,10 @@ remember new InitialFlow is ONLY used for input to catchBodies
 */
 
 public class MustMayInitialize extends StructuredAnalysis {
-  HashMap<Object, List> mapping;
-  DavaFlowSet finalResult;
-
   public static final int MUST = 0;
   public static final int MAY = 1;
-
+  HashMap<Object, List> mapping;
+  DavaFlowSet finalResult;
   int MUSTMAY;
 
   public MustMayInitialize(Object analyze, int MUSTorMAY) {

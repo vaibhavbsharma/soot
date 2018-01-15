@@ -19,10 +19,6 @@
 
 package soot.jimple.spark.pag;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.Context;
@@ -44,17 +40,35 @@ import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Part of a pointer assignment graph for a single method.
  *
  * @author Ondrej Lhotak
  */
 public final class MethodPAG {
+  private static final String mainSubSignature =
+      SootMethod.getSubSignature(
+          "main",
+          Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+          VoidType.v());
+  protected final NumberedString sigCanonicalize =
+      Scene.v().getSubSigNumberer().findOrAdd("java.lang.String canonicalize(java.lang.String)");
+  private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<>();
+  private final ChunkedQueue<Node> inEdges = new ChunkedQueue<>();
+  private final ChunkedQueue<Node> outEdges = new ChunkedQueue<>();
+  private final QueueReader<Node> internalReader = internalEdges.reader();
+  private final QueueReader<Node> inReader = inEdges.reader();
+  private final QueueReader<Node> outReader = outEdges.reader();
+  protected MethodNodeFactory nodeFactory;
+  protected boolean hasBeenAdded = false;
+  protected boolean hasBeenBuilt = false;
+  SootMethod method;
   private PAG pag;
-
-  public PAG pag() {
-    return pag;
-  }
+  private Set<Context> addedContexts;
 
   protected MethodPAG(PAG pag, SootMethod m) {
     this.pag = pag;
@@ -62,9 +76,22 @@ public final class MethodPAG {
     this.nodeFactory = new MethodNodeFactory(pag, this);
   }
 
-  private Set<Context> addedContexts;
+  public static MethodPAG v(PAG pag, SootMethod m) {
+    MethodPAG ret = G.v().MethodPAG_methodToPag.get(m);
+    if (ret == null) {
+      ret = new MethodPAG(pag, m);
+      G.v().MethodPAG_methodToPag.put(m, ret);
+    }
+    return ret;
+  }
 
-  /** Adds this method to the main PAG, with all VarNodes parameterized by varNodeParameter. */
+  public PAG pag() {
+    return pag;
+  }
+
+  /**
+   * Adds this method to the main PAG, with all VarNodes parameterized by varNodeParameter.
+   */
   public void addToPAG(Context varNodeParameter) {
     if (!hasBeenBuilt) {
       throw new RuntimeException();
@@ -139,32 +166,12 @@ public final class MethodPAG {
     }
   }
 
-  private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<>();
-  private final ChunkedQueue<Node> inEdges = new ChunkedQueue<>();
-  private final ChunkedQueue<Node> outEdges = new ChunkedQueue<>();
-  private final QueueReader<Node> internalReader = internalEdges.reader();
-  private final QueueReader<Node> inReader = inEdges.reader();
-  private final QueueReader<Node> outReader = outEdges.reader();
-
-  SootMethod method;
-
   public SootMethod getMethod() {
     return method;
   }
 
-  protected MethodNodeFactory nodeFactory;
-
   public MethodNodeFactory nodeFactory() {
     return nodeFactory;
-  }
-
-  public static MethodPAG v(PAG pag, SootMethod m) {
-    MethodPAG ret = G.v().MethodPAG_methodToPag.get(m);
-    if (ret == null) {
-      ret = new MethodPAG(pag, m);
-      G.v().MethodPAG_methodToPag.put(m, ret);
-    }
-    return ret;
   }
 
   public void build() {
@@ -212,9 +219,6 @@ public final class MethodPAG {
     return n;
   }
 
-  protected boolean hasBeenAdded = false;
-  protected boolean hasBeenBuilt = false;
-
   protected void buildNormal() {
     Body b = method.retrieveActiveBody();
     for (Unit u : b.getUnits()) {
@@ -248,12 +252,6 @@ public final class MethodPAG {
     }
     pag.nativeMethodDriver.process(method, thisNode, retNode, args);
   }
-
-  private static final String mainSubSignature =
-      SootMethod.getSubSignature(
-          "main",
-          Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
-          VoidType.v());
 
   protected void addMiscEdges() {
     // Add node for parameter (String[]) in main method
@@ -318,7 +316,4 @@ public final class MethodPAG {
       } while (false);
     }
   }
-
-  protected final NumberedString sigCanonicalize =
-      Scene.v().getSubSigNumberer().findOrAdd("java.lang.String canonicalize(java.lang.String)");
 }

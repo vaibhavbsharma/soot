@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.dataRep;
 
 /**
@@ -31,10 +32,16 @@ public class RectangleNode extends SegmentNode {
   // L_prime : the length of the y-axis side
   public long L_prime;
 
-  public RectangleNode() {}
+  public RectangleNode() {
+  }
 
   public RectangleNode(RectangleNode other) {
     copyRectangle(other);
+  }
+
+  public RectangleNode(long I1, long I2, long L, long LL) {
+    super(I1, I2, L);
+    L_prime = LL;
   }
 
   public void copyRectangle(RectangleNode other) {
@@ -42,11 +49,6 @@ public class RectangleNode extends SegmentNode {
     I2 = other.I2;
     L = other.L;
     L_prime = other.L_prime;
-  }
-
-  public RectangleNode(long I1, long I2, long L, long LL) {
-    super(I1, I2, L);
-    L_prime = LL;
   }
 
   public boolean equals(RectangleNode other) {

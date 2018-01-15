@@ -22,6 +22,7 @@
  *
  * @author Feng Qian
  */
+
 package soot.jimple.toolkits.pointer.nativemethods;
 
 import soot.SootMethod;
@@ -66,7 +67,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
   /**
    * The return variable is assigned an abstract object representing all classes (UnknowClassObject)
    * from environment.
-   *
+   * <p>
    * <p>public final native java.lang.Class getClass();
    */
   public void java_lang_Object_getClass(
@@ -80,24 +81,24 @@ public class JavaLangObjectNative extends NativeMethodClass {
   /**
    * Creates and returns a copy of this object. The precise meaning of "copy" may depend on the
    * class of the object. The general intent is that, for any object x, the expression:
-   *
+   * <p>
    * <p>x.clone() != x
-   *
+   * <p>
    * <p>will be true, and that the expression:
-   *
+   * <p>
    * <p>x.clone().getClass() == x.getClass()
-   *
+   * <p>
    * <p>will be true, but these are not absolute requirements. While it is typically the case that:
-   *
+   * <p>
    * <p>x.clone().equals(x)
-   *
+   * <p>
    * <p>will be true, this is not an absolute requirement. Copying an object will typically entail
    * creating a new instance of its class, but it also may require copying of internal data
    * structures as well. No constructors are called.
-   *
+   * <p>
    * <p>NOTE: it may raise an exception, the decision of cloning made by analysis by implementing
    * the ReferneceVariable.cloneObject() method.
-   *
+   * <p>
    * <p>protected native java.lang.Object clone() throws java.lang.CloneNotSupported
    */
   public void java_lang_Object_clone(

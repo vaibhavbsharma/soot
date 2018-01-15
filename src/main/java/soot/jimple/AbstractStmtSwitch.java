@@ -104,13 +104,14 @@ public abstract class AbstractStmtSwitch implements StmtSwitch {
   }
 
   @Override
-  public void defaultCase(Object obj) {}
-
-  public void setResult(Object result) {
-    this.result = result;
+  public void defaultCase(Object obj) {
   }
 
   public Object getResult() {
     return result;
+  }
+
+  public void setResult(Object result) {
+    this.result = result;
   }
 }

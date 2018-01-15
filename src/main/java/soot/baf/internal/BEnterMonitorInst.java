@@ -30,7 +30,8 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BEnterMonitorInst extends AbstractInst implements EnterMonitorInst {
-  public BEnterMonitorInst() {}
+  public BEnterMonitorInst() {
+  }
 
   @Override
   public int getInCount() {

@@ -20,14 +20,6 @@
 
 package soot.dava;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.G;
 import soot.IntType;
@@ -150,6 +142,14 @@ import soot.toolkits.graph.TrapUnitGraph;
 import soot.util.IterableSet;
 import soot.util.Switchable;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /*
  * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method
  *             These are now invoked as a very last staged (just before generating decompiled
@@ -202,7 +202,9 @@ public class DavaBody extends Body {
 
   private List<CaughtExceptionRef> caughtrefs;
 
-  /** Construct an empty DavaBody */
+  /**
+   * Construct an empty DavaBody
+   */
   DavaBody(SootMethod m) {
     super(m);
 
@@ -220,79 +222,9 @@ public class DavaBody extends Body {
     constructorExpr = null;
   }
 
-  public Unit get_ConstructorUnit() {
-    return constructorUnit;
-  }
-
-  public List<CaughtExceptionRef> get_CaughtRefs() {
-    return caughtrefs;
-  }
-
-  public InstanceInvokeExpr get_ConstructorExpr() {
-    return constructorExpr;
-  }
-
-  public void set_ConstructorExpr(InstanceInvokeExpr expr) {
-    constructorExpr = expr;
-  }
-
-  public void set_ConstructorUnit(Unit s) {
-    constructorUnit = s;
-  }
-
-  public Map<Integer, Value> get_ParamMap() {
-    return pMap;
-  }
-
-  public void set_ParamMap(Map<Integer, Value> map) {
-    pMap = map;
-  }
-
-  public HashSet<Object> get_ThisLocals() {
-    return thisLocals;
-  }
-
-  public Local get_ControlLocal() {
-    if (controlLocal == null) {
-      controlLocal = new JimpleLocal("controlLocal", IntType.v());
-      getLocals().add(controlLocal);
-    }
-
-    return controlLocal;
-  }
-
-  public Set<Object> get_ConsumedConditions() {
-    return consumedConditions;
-  }
-
-  public void consume_Condition(AugmentedStmt as) {
-    consumedConditions.add(as);
-  }
-
-  @Override
-  public Object clone() {
-    Body b = Dava.v().newBody(getMethod());
-    b.importBodyContentsFrom(this);
-    return b;
-  }
-
-  public IterableSet<ExceptionNode> get_SynchronizedBlockFacts() {
-    return synchronizedBlockFacts;
-  }
-
-  public IterableSet<ExceptionNode> get_ExceptionFacts() {
-    return exceptionFacts;
-  }
-
-  public IterableSet<AugmentedStmt> get_MonitorFacts() {
-    return monitorFacts;
-  }
-
-  public IterableSet<String> getImportList() {
-    return importList;
-  }
-
-  /** Constructs a DavaBody from the given Body. */
+  /**
+   * Constructs a DavaBody from the given Body.
+   */
   DavaBody(Body body) {
     this(body.getMethod());
     debug("DavaBody", "creating DavaBody for" + body.getMethod().toString());
@@ -384,6 +316,78 @@ public class DavaBody extends Body {
       debug("DavaBody", "PreInit booleans is" + G.v().SootMethodAddedByDava);
     }
     Dava.v().log("end method " + body.getMethod().toString());
+  }
+
+  public Unit get_ConstructorUnit() {
+    return constructorUnit;
+  }
+
+  public void set_ConstructorUnit(Unit s) {
+    constructorUnit = s;
+  }
+
+  public List<CaughtExceptionRef> get_CaughtRefs() {
+    return caughtrefs;
+  }
+
+  public InstanceInvokeExpr get_ConstructorExpr() {
+    return constructorExpr;
+  }
+
+  public void set_ConstructorExpr(InstanceInvokeExpr expr) {
+    constructorExpr = expr;
+  }
+
+  public Map<Integer, Value> get_ParamMap() {
+    return pMap;
+  }
+
+  public void set_ParamMap(Map<Integer, Value> map) {
+    pMap = map;
+  }
+
+  public HashSet<Object> get_ThisLocals() {
+    return thisLocals;
+  }
+
+  public Local get_ControlLocal() {
+    if (controlLocal == null) {
+      controlLocal = new JimpleLocal("controlLocal", IntType.v());
+      getLocals().add(controlLocal);
+    }
+
+    return controlLocal;
+  }
+
+  public Set<Object> get_ConsumedConditions() {
+    return consumedConditions;
+  }
+
+  public void consume_Condition(AugmentedStmt as) {
+    consumedConditions.add(as);
+  }
+
+  @Override
+  public Object clone() {
+    Body b = Dava.v().newBody(getMethod());
+    b.importBodyContentsFrom(this);
+    return b;
+  }
+
+  public IterableSet<ExceptionNode> get_SynchronizedBlockFacts() {
+    return synchronizedBlockFacts;
+  }
+
+  public IterableSet<ExceptionNode> get_ExceptionFacts() {
+    return exceptionFacts;
+  }
+
+  public IterableSet<AugmentedStmt> get_MonitorFacts() {
+    return monitorFacts;
+  }
+
+  public IterableSet<String> getImportList() {
+    return importList;
   }
 
   public void applyBugFixes() {
@@ -1043,9 +1047,11 @@ public class DavaBody extends Body {
     }
   }
 
-  private void javafy_local(ValueBox vb) {}
+  private void javafy_local(ValueBox vb) {
+  }
 
-  private void javafy_constant(ValueBox vb) {}
+  private void javafy_constant(ValueBox vb) {
+  }
 
   private void javafy_binop_expr(ValueBox vb) {
     BinopExpr boe = (BinopExpr) vb.getValue();

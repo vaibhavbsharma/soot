@@ -30,7 +30,8 @@ import soot.baf.NopInst;
 import soot.util.Switch;
 
 public class BNopInst extends AbstractInst implements NopInst {
-  public BNopInst() {}
+  public BNopInst() {
+  }
 
   @Override
   public int getInCount() {

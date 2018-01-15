@@ -28,10 +28,12 @@ package soot.coffi;
 /**
  * For representing an unknown, or generic attribute.
  *
- * @see attribute_info
  * @author Clark Verbrugge
+ * @see attribute_info
  */
 class Generic_attribute extends attribute_info {
-  /** Actual attribute information in byte form. */
+  /**
+   * Actual attribute information in byte form.
+   */
   public byte info[];
 }

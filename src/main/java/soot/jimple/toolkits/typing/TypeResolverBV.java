@@ -25,16 +25,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -61,6 +51,16 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
 /**
  * This class resolves the type of local variables.
  *
@@ -68,24 +68,23 @@ import soot.util.BitVector;
  */
 @Deprecated
 public class TypeResolverBV {
-  /** Reference to the class hierarchy * */
-  private final ClassHierarchy hierarchy;
-
-  /** All type variable instances * */
-  private final List<TypeVariableBV> typeVariableList = new ArrayList<>();
-
-  private final BitVector invalidIds = new BitVector();
-
-  /** Hashtable: [TypeNode or Local] -> TypeVariableBV * */
-  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<>();
-
-  private final JimpleBody stmtBody;
-
-  final TypeNode NULL;
-  private final TypeNode OBJECT;
-
   private static final boolean DEBUG = false;
-
+  final TypeNode NULL;
+  /**
+   * Reference to the class hierarchy *
+   */
+  private final ClassHierarchy hierarchy;
+  /**
+   * All type variable instances *
+   */
+  private final List<TypeVariableBV> typeVariableList = new ArrayList<>();
+  private final BitVector invalidIds = new BitVector();
+  /**
+   * Hashtable: [TypeNode or Local] -> TypeVariableBV *
+   */
+  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<>();
+  private final JimpleBody stmtBody;
+  private final TypeNode OBJECT;
   // categories for type variables (solved = hard, unsolved = soft)
   private BitVector unsolved;
   private BitVector solved;
@@ -99,74 +98,6 @@ public class TypeResolverBV {
   private BitVector single_child_not_null;
   private BitVector single_null_child;
   private BitVector multiple_children;
-
-  public ClassHierarchy hierarchy() {
-    return hierarchy;
-  }
-
-  public TypeNode typeNode(Type type) {
-    return hierarchy.typeNode(type);
-  }
-
-  /** Get type variable for the given local. * */
-  TypeVariableBV typeVariable(Local local) {
-    TypeVariableBV result = typeVariableMap.get(local);
-
-    if (result == null) {
-      int id = typeVariableList.size();
-      typeVariableList.add(null);
-
-      result = new TypeVariableBV(id, this);
-
-      typeVariableList.set(id, result);
-      typeVariableMap.put(local, result);
-
-      if (DEBUG) {
-        G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
-      }
-    }
-
-    return result;
-  }
-
-  /** Get type variable for the given type node. * */
-  public TypeVariableBV typeVariable(TypeNode typeNode) {
-    TypeVariableBV result = typeVariableMap.get(typeNode);
-
-    if (result == null) {
-      int id = typeVariableList.size();
-      typeVariableList.add(null);
-
-      result = new TypeVariableBV(id, this, typeNode);
-
-      typeVariableList.set(id, result);
-      typeVariableMap.put(typeNode, result);
-    }
-
-    return result;
-  }
-
-  /** Get type variable for the given soot class. * */
-  public TypeVariableBV typeVariable(SootClass sootClass) {
-    return typeVariable(hierarchy.typeNode(sootClass.getType()));
-  }
-
-  /** Get type variable for the given type. * */
-  public TypeVariableBV typeVariable(Type type) {
-    return typeVariable(hierarchy.typeNode(type));
-  }
-
-  /** Get new type variable * */
-  public TypeVariableBV typeVariable() {
-    int id = typeVariableList.size();
-    typeVariableList.add(null);
-
-    TypeVariableBV result = new TypeVariableBV(id, this);
-
-    typeVariableList.set(id, result);
-
-    return result;
-  }
 
   private TypeResolverBV(JimpleBody stmtBody, Scene scene) {
     this.stmtBody = stmtBody;
@@ -220,6 +151,84 @@ public class TypeResolverBV {
       }
     }
     soot.jimple.toolkits.typing.integer.TypeResolver.resolve(stmtBody);
+  }
+
+  public ClassHierarchy hierarchy() {
+    return hierarchy;
+  }
+
+  public TypeNode typeNode(Type type) {
+    return hierarchy.typeNode(type);
+  }
+
+  /**
+   * Get type variable for the given local. *
+   */
+  TypeVariableBV typeVariable(Local local) {
+    TypeVariableBV result = typeVariableMap.get(local);
+
+    if (result == null) {
+      int id = typeVariableList.size();
+      typeVariableList.add(null);
+
+      result = new TypeVariableBV(id, this);
+
+      typeVariableList.set(id, result);
+      typeVariableMap.put(local, result);
+
+      if (DEBUG) {
+        G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Get type variable for the given type node. *
+   */
+  public TypeVariableBV typeVariable(TypeNode typeNode) {
+    TypeVariableBV result = typeVariableMap.get(typeNode);
+
+    if (result == null) {
+      int id = typeVariableList.size();
+      typeVariableList.add(null);
+
+      result = new TypeVariableBV(id, this, typeNode);
+
+      typeVariableList.set(id, result);
+      typeVariableMap.put(typeNode, result);
+    }
+
+    return result;
+  }
+
+  /**
+   * Get type variable for the given soot class. *
+   */
+  public TypeVariableBV typeVariable(SootClass sootClass) {
+    return typeVariable(hierarchy.typeNode(sootClass.getType()));
+  }
+
+  /**
+   * Get type variable for the given type. *
+   */
+  public TypeVariableBV typeVariable(Type type) {
+    return typeVariable(hierarchy.typeNode(type));
+  }
+
+  /**
+   * Get new type variable *
+   */
+  public TypeVariableBV typeVariable() {
+    int id = typeVariableList.size();
+    typeVariableList.add(null);
+
+    TypeVariableBV result = new TypeVariableBV(id, this);
+
+    typeVariableList.set(id, result);
+
+    return result;
   }
 
   private void debug_vars(String message) {

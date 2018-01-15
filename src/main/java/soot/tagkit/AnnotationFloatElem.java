@@ -27,7 +27,9 @@ package soot.tagkit;
 
 import soot.util.Switch;
 
-/** Represents the int annotation element each annotation can have several elements for Java 1.5. */
+/**
+ * Represents the int annotation element each annotation can have several elements for Java 1.5.
+ */
 public class AnnotationFloatElem extends AnnotationElem {
 
   float value;

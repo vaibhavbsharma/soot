@@ -541,13 +541,16 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {}
+  public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+  }
 
   @Override
-  public void caseExitMonitorStmt(ExitMonitorStmt stmt) {}
+  public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+  }
 
   @Override
-  public void caseGotoStmt(GotoStmt stmt) {}
+  public void caseGotoStmt(GotoStmt stmt) {
+  }
 
   @Override
   public void caseIfStmt(IfStmt stmt) {
@@ -657,7 +660,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseNopStmt(NopStmt stmt) {}
+  public void caseNopStmt(NopStmt stmt) {
+  }
 
   @Override
   public void caseReturnStmt(ReturnStmt stmt) {
@@ -673,7 +677,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {}
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+  }
 
   @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
@@ -687,7 +692,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
   }
 
   @Override
-  public void caseThrowStmt(ThrowStmt stmt) {}
+  public void caseThrowStmt(ThrowStmt stmt) {
+  }
 
   public void defaultCase(Stmt stmt) {
     throw new RuntimeException("Unhandled statement type: " + stmt.getClass());

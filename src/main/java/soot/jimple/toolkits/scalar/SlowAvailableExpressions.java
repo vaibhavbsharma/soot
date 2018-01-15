@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.EquivalentValue;
 import soot.Unit;
@@ -42,6 +37,11 @@ import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each
  * statement, the list of expressions available before and after it.
@@ -53,7 +53,9 @@ public class SlowAvailableExpressions implements AvailableExpressions {
   Map<Unit, Chain<EquivalentValue>> unitToEquivsAfter;
   Map<Unit, Chain<EquivalentValue>> unitToEquivsBefore;
 
-  /** Wrapper for SlowAvailableExpressionsAnalysis. */
+  /**
+   * Wrapper for SlowAvailableExpressionsAnalysis.
+   */
   public SlowAvailableExpressions(Body b) {
     SlowAvailableExpressionsAnalysis analysis =
         new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b));

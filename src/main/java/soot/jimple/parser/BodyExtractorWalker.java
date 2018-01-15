@@ -25,10 +25,6 @@
 
 package soot.jimple.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import soot.G;
 import soot.SootClass;
 import soot.SootMethod;
@@ -41,6 +37,10 @@ import soot.jimple.parser.node.AFullMethodBody;
 import soot.jimple.parser.node.AMethodMember;
 import soot.jimple.parser.node.PModifier;
 import soot.options.Options;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Walks a jimple AST and constructs the method bodies for all the methods of the SootClass

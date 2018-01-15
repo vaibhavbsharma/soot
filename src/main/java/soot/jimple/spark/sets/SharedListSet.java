@@ -49,6 +49,11 @@ add: O(n), and might add things to other lists too
  * parts of their data.
  */
 public class SharedListSet extends PointsToSetInternal {
+  // private final Map allNodes = AllSharedListNodes.v().allNodes;
+  // private static Map allNodes = new HashMap();
+  private PAG pag; // I think this is needed to get the size of the bit
+  private ListNode data = null;
+
   public SharedListSet(Type type, PAG pag) {
     super(type);
     this.pag = pag;
@@ -230,6 +235,25 @@ public class SharedListSet extends PointsToSetInternal {
     }
   }
 
+  // I wanted to make this a static method of ListNode, but it
+  // wasn't working for some reason
+  private ListNode makeNode(Node elem, ListNode next) {
+    Pair p = new Pair(elem, next);
+    ListNode retVal = (AllSharedListNodes.v().allNodes.get(p));
+    if (retVal == null)
+    // if it's not an existing node
+    {
+      retVal = new ListNode(elem, next);
+      if (next != null) {
+        next.incRefCount(); // next now has an extra
+      }
+      // thing pointing at it (the newly created node)
+      AllSharedListNodes.v().allNodes.put(p, retVal);
+    }
+
+    return retVal;
+  }
+
   // Holds pairs of (Node, ListNode)
   public class Pair {
     public Node first;
@@ -260,13 +284,15 @@ public class SharedListSet extends PointsToSetInternal {
           && ((second == null && o.second == null) || second == o.second);
     }
   }
+  // vector and the mask for casting
+
   // It's a bit confusing because there are nodes in the list and nodes in the PAG.
   // Node means a node in the PAG, ListNode is for nodes in the list (each of which
   // contains a Node as its data)
   public class ListNode {
+    public long refCount;
     private Node elem;
     private ListNode next = null;
-    public long refCount;
 
     public ListNode(Node elem, ListNode next) {
       this.elem = elem;
@@ -290,30 +316,4 @@ public class SharedListSet extends PointsToSetInternal {
       }
     }
   }
-
-  // I wanted to make this a static method of ListNode, but it
-  // wasn't working for some reason
-  private ListNode makeNode(Node elem, ListNode next) {
-    Pair p = new Pair(elem, next);
-    ListNode retVal = (AllSharedListNodes.v().allNodes.get(p));
-    if (retVal == null)
-    // if it's not an existing node
-    {
-      retVal = new ListNode(elem, next);
-      if (next != null) {
-        next.incRefCount(); // next now has an extra
-      }
-      // thing pointing at it (the newly created node)
-      AllSharedListNodes.v().allNodes.put(p, retVal);
-    }
-
-    return retVal;
-  }
-
-  // private final Map allNodes = AllSharedListNodes.v().allNodes;
-  // private static Map allNodes = new HashMap();
-  private PAG pag; // I think this is needed to get the size of the bit
-  // vector and the mask for casting
-
-  private ListNode data = null;
 }

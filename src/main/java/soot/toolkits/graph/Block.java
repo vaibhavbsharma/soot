@@ -25,14 +25,14 @@
 
 package soot.toolkits.graph;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
 import soot.baf.BafBody;
 import soot.util.Chain;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents BasicBlocks that partition a method body. It is implemented as view on an underlying
@@ -42,20 +42,21 @@ import soot.util.Chain;
  * predecessors Blocks, as found in this graph.
  */
 public class Block implements Iterable<Unit> {
-  private Unit mHead, mTail;
   private final Body mBody;
+  private Unit mHead, mTail;
   private List<Block> mPreds, mSuccessors;
   private int mBlockLength = 0, mIndexInMethod = 0;
+
   /**
    * Constructs a Block in the context of a BlockGraph, and enclosing Body instances.
    *
-   * @param aHead The first unit ir this Block.
-   * @param aTail The last unit in this Block.
-   * @param aBody The Block's enclosing Body instance.
+   * @param aHead          The first unit ir this Block.
+   * @param aTail          The last unit in this Block.
+   * @param aBody          The Block's enclosing Body instance.
    * @param aIndexInMethod The index of this Block in the list of Blocks that partition it's
-   *     enclosing Body instance.
-   * @param aBlockLength The number of units that makeup this block.
-   * @param aBlockGraph The Graph of Blocks in which this block lives.
+   *                       enclosing Body instance.
+   * @param aBlockLength   The number of units that makeup this block.
+   * @param aBlockGraph    The Graph of Blocks in which this block lives.
    * @see Body
    * @see Chain
    * @see BlockGraph
@@ -109,7 +110,7 @@ public class Block implements Iterable<Unit> {
    * Inserts a Unit before some other Unit in this block.
    *
    * @param toInsert A Unit to be inserted.
-   * @param point A Unit in the Block's body before which we wish to insert the Unit.
+   * @param point    A Unit in the Block's body before which we wish to insert the Unit.
    * @see Unit
    * @see Chain
    */
@@ -126,7 +127,7 @@ public class Block implements Iterable<Unit> {
    * Inserts a Unit after some other Unit in the Block.
    *
    * @param toInsert A Unit to be inserted.
-   * @param point A Unit in the Block after which we wish to insert the Unit.
+   * @param point    A Unit in the Block after which we wish to insert the Unit.
    * @see Unit
    */
   public void insertAfter(Unit toInsert, Unit point) {
@@ -187,16 +188,6 @@ public class Block implements Iterable<Unit> {
   }
 
   /**
-   * Set the index of this Block in the list of Blocks that partition its enclosing Body instance.
-   *
-   * @param aIndexInMethod The index of this Block in the list of Blocks that partition it's
-   *     enclosing Body instance.
-   */
-  public void setIndexInMethod(int aIndexInMethod) {
-    mIndexInMethod = aIndexInMethod;
-  }
-
-  /**
    * Returns the index of this Block in the list of Blocks that partition it's enclosing Body
    * instance.
    *
@@ -204,6 +195,16 @@ public class Block implements Iterable<Unit> {
    */
   public int getIndexInMethod() {
     return mIndexInMethod;
+  }
+
+  /**
+   * Set the index of this Block in the list of Blocks that partition its enclosing Body instance.
+   *
+   * @param aIndexInMethod The index of this Block in the list of Blocks that partition it's
+   *                       enclosing Body instance.
+   */
+  public void setIndexInMethod(int aIndexInMethod) {
+    mIndexInMethod = aIndexInMethod;
   }
 
   /**
@@ -225,6 +226,16 @@ public class Block implements Iterable<Unit> {
   }
 
   /**
+   * Returns the List of Block that are predecessors to this block,
+   *
+   * @return A list of predecessor blocks.
+   * @see BlockGraph
+   */
+  public List<Block> getPreds() {
+    return mPreds;
+  }
+
+  /**
    * Sets the list of Blocks that are predecessors of this block in it's enclosing BlockGraph
    * instance.
    *
@@ -237,13 +248,13 @@ public class Block implements Iterable<Unit> {
   }
 
   /**
-   * Returns the List of Block that are predecessors to this block,
+   * Returns the List of Blocks that are successors to this block,
    *
-   * @return A list of predecessor blocks.
+   * @return A list of successorblocks.
    * @see BlockGraph
    */
-  public List<Block> getPreds() {
-    return mPreds;
+  public List<Block> getSuccs() {
+    return mSuccessors;
   }
 
   /**
@@ -255,16 +266,6 @@ public class Block implements Iterable<Unit> {
    */
   public void setSuccs(List<Block> succs) {
     mSuccessors = succs;
-  }
-
-  /**
-   * Returns the List of Blocks that are successors to this block,
-   *
-   * @return A list of successorblocks.
-   * @see BlockGraph
-   */
-  public List<Block> getSuccs() {
-    return mSuccessors;
   }
 
   public String toShortString() {

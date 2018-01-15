@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.coffi;
 
 import soot.Value;
@@ -23,8 +24,8 @@ import soot.Value;
 /**
  * A constant pool entry of type CONSTANT_InvokeDynamic
  *
- * @see cp_info
  * @author Eric Bodden
+ * @see cp_info
  */
 class CONSTANT_InvokeDynamic_info extends cp_info {
 
@@ -51,6 +52,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
     cp_info nat = constant_pool[name_and_type_index];
     return nat.toString(constant_pool) + " - " + bsm.toString(constant_pool);
   }
+
   /**
    * Returns a String description of what kind of entry this is.
    *
@@ -66,8 +68,8 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
    * Compares this entry with another cp_info object (which may reside in a different constant
    * pool).
    *
-   * @param constant_pool constant pool of ClassFile for this.
-   * @param cp constant pool entry to compare against.
+   * @param constant_pool    constant pool of ClassFile for this.
+   * @param cp               constant pool entry to compare against.
    * @param cp_constant_pool constant pool of ClassFile for cp.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo

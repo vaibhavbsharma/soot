@@ -42,65 +42,26 @@ public final class Edge {
    * (eg. implicit calls by the VM)
    */
   private MethodOrMethodContext src;
-
-  public SootMethod src() {
-    if (src == null) {
-      return null;
-    } else {
-      return src.method();
-    }
-  }
-
-  public Context srcCtxt() {
-    if (src == null) {
-      return null;
-    } else {
-      return src.context();
-    }
-  }
-
-  public MethodOrMethodContext getSrc() {
-    return src;
-  }
-
   /**
    * The unit at which the call occurs; may be null for calls not occurring at a specific statement
    * (eg. calls in native code)
    */
   private Unit srcUnit;
-
-  public Unit srcUnit() {
-    return srcUnit;
-  }
-
-  public Stmt srcStmt() {
-    return (Stmt) srcUnit;
-  }
-
-  /** The target method of the call edge. */
+  /**
+   * The target method of the call edge.
+   */
   private MethodOrMethodContext tgt;
-
-  public SootMethod tgt() {
-    return tgt.method();
-  }
-
-  public Context tgtCtxt() {
-    return tgt.context();
-  }
-
-  public MethodOrMethodContext getTgt() {
-    return tgt;
-  }
-
   /**
    * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as
    * isExplicit() should be added.
    */
   private Kind kind;
-
-  public Kind kind() {
-    return kind;
-  }
+  private Edge nextByUnit = this;
+  private Edge prevByUnit = this;
+  private Edge nextBySrc = this;
+  private Edge prevBySrc = this;
+  private Edge nextByTgt = this;
+  private Edge prevByTgt = this;
 
   public Edge(MethodOrMethodContext src, Unit srcUnit, MethodOrMethodContext tgt, Kind kind) {
     this.src = src;
@@ -130,12 +91,60 @@ public final class Edge {
     }
   }
 
-  /** Returns true if the call is due to an explicit invoke statement. */
+  public SootMethod src() {
+    if (src == null) {
+      return null;
+    } else {
+      return src.method();
+    }
+  }
+
+  public Context srcCtxt() {
+    if (src == null) {
+      return null;
+    } else {
+      return src.context();
+    }
+  }
+
+  public MethodOrMethodContext getSrc() {
+    return src;
+  }
+
+  public Unit srcUnit() {
+    return srcUnit;
+  }
+
+  public Stmt srcStmt() {
+    return (Stmt) srcUnit;
+  }
+
+  public SootMethod tgt() {
+    return tgt.method();
+  }
+
+  public Context tgtCtxt() {
+    return tgt.context();
+  }
+
+  public MethodOrMethodContext getTgt() {
+    return tgt;
+  }
+
+  public Kind kind() {
+    return kind;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit invoke statement.
+   */
   public boolean isExplicit() {
     return kind.isExplicit();
   }
 
-  /** Returns true if the call is due to an explicit instance invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit instance invoke statement.
+   */
   public boolean isInstance() {
     return kind.isInstance();
   }
@@ -148,11 +157,16 @@ public final class Edge {
     return kind.isSpecial();
   }
 
-  /** Returns true if the call is to static initializer. */
+  /**
+   * Returns true if the call is to static initializer.
+   */
   public boolean isClinit() {
     return kind.isClinit();
   }
-  /** Returns true if the call is due to an explicit static invoke statement. */
+
+  /**
+   * Returns true if the call is due to an explicit static invoke statement.
+   */
   public boolean isStatic() {
     return kind.isStatic();
   }
@@ -199,13 +213,6 @@ public final class Edge {
   public String toString() {
     return kind.toString() + " edge: " + srcUnit + " in " + src + " ==> " + tgt;
   }
-
-  private Edge nextByUnit = this;
-  private Edge prevByUnit = this;
-  private Edge nextBySrc = this;
-  private Edge prevBySrc = this;
-  private Edge nextByTgt = this;
-  private Edge prevByTgt = this;
 
   void insertAfterByUnit(Edge other) {
     nextByUnit = other.nextByUnit;

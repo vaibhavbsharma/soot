@@ -32,6 +32,24 @@ import soot.util.Numberable;
  * @author Ondrej Lhotak
  */
 public class Node implements ReferenceVariable, Numberable {
+  protected Type type;
+  protected Node replacement;
+  protected PAG pag;
+  protected PointsToSetInternal p2set;
+  private int number = 0;
+
+  /**
+   * Creates a new node of pointer assignment graph pag, with type type.
+   */
+  Node(PAG pag, Type type) {
+    if (TypeManager.isUnresolved(type)) {
+      throw new RuntimeException("Unresolved type " + type);
+    }
+    this.type = type;
+    this.pag = pag;
+    replacement = this;
+  }
+
   @Override
   public final int hashCode() {
     return number;
@@ -41,17 +59,24 @@ public class Node implements ReferenceVariable, Numberable {
   public final boolean equals(Object other) {
     return this == other;
   }
-  /** Returns the declared type of this node, null for unknown. */
+
+  /**
+   * Returns the declared type of this node, null for unknown.
+   */
   public Type getType() {
     return type;
   }
-  /** Sets the declared type of this node, null for unknown. */
+
+  /**
+   * Sets the declared type of this node, null for unknown.
+   */
   public void setType(Type type) {
     if (TypeManager.isUnresolved(type)) {
       throw new RuntimeException("Unresolved type " + type);
     }
     this.type = type;
   }
+
   /**
    * If this node has been merged with another, returns the new node to be used as the
    * representative of this node; returns this if the node has not been merged.
@@ -62,7 +87,12 @@ public class Node implements ReferenceVariable, Numberable {
     }
     return replacement;
   }
-  /** Merge with the node other. */
+
+  /* End of public methods. */
+
+  /**
+   * Merge with the node other.
+   */
   public void mergeWith(Node other) {
     if (other.replacement != other) {
       throw new RuntimeException("Shouldn't happen");
@@ -87,7 +117,12 @@ public class Node implements ReferenceVariable, Numberable {
       ((VarNode) myRep).setInterProcTarget();
     }
   }
-  /** Returns the points-to set for this node. */
+
+  /* End of package methods. */
+
+  /**
+   * Returns the points-to set for this node.
+   */
   public PointsToSetInternal getP2Set() {
     if (p2set != null) {
       if (replacement != this) {
@@ -102,7 +137,17 @@ public class Node implements ReferenceVariable, Numberable {
     }
     return rep.getP2Set();
   }
-  /** Returns the points-to set for this node, makes it if necessary. */
+
+  /**
+   * Use the specified points-to set to replace current one
+   */
+  public void setP2Set(PointsToSetInternal ptsInternal) {
+    p2set = ptsInternal;
+  }
+
+  /**
+   * Returns the points-to set for this node, makes it if necessary.
+   */
   public PointsToSetInternal makeP2Set() {
     if (p2set != null) {
       if (replacement != this) {
@@ -117,34 +162,20 @@ public class Node implements ReferenceVariable, Numberable {
     }
     return rep.makeP2Set();
   }
-  /** Returns the pointer assignment graph that this node is a part of. */
+
+  /**
+   * Returns the pointer assignment graph that this node is a part of.
+   */
   public PAG getPag() {
     return pag;
   }
 
-  /** Delete current points-to set and make a new one */
+  /**
+   * Delete current points-to set and make a new one
+   */
   public void discardP2Set() {
     p2set = null;
   }
-
-  /** Use the specified points-to set to replace current one */
-  public void setP2Set(PointsToSetInternal ptsInternal) {
-    p2set = ptsInternal;
-  }
-
-  /* End of public methods. */
-
-  /** Creates a new node of pointer assignment graph pag, with type type. */
-  Node(PAG pag, Type type) {
-    if (TypeManager.isUnresolved(type)) {
-      throw new RuntimeException("Unresolved type " + type);
-    }
-    this.type = type;
-    this.pag = pag;
-    replacement = this;
-  }
-
-  /* End of package methods. */
 
   @Override
   public final int getNumber() {
@@ -155,11 +186,4 @@ public class Node implements ReferenceVariable, Numberable {
   public final void setNumber(int number) {
     this.number = number;
   }
-
-  private int number = 0;
-
-  protected Type type;
-  protected Node replacement;
-  protected PAG pag;
-  protected PointsToSetInternal p2set;
 }

@@ -50,13 +50,17 @@ public class heuristicTuple {
     return castStrings;
   }
 
+  public List<String> getFieldName() {
+    return fieldName;
+  }
+
   public void setFieldName(String fieldName) {
     this.fieldName.add(fieldName);
     setHeuristic(infoGatheringAnalysis.FIELDASSIGN);
   }
 
-  public List<String> getFieldName() {
-    return fieldName;
+  public List<String> getObjectClassName() {
+    return objectClassName;
   }
 
   public void setObjectClassName(String objectClassName) {
@@ -64,8 +68,8 @@ public class heuristicTuple {
     setHeuristic(infoGatheringAnalysis.CLASSNAME);
   }
 
-  public List<String> getObjectClassName() {
-    return objectClassName;
+  public List<String> getMethodName() {
+    return methodName;
   }
 
   public void setMethodName(String methodName) {
@@ -74,10 +78,6 @@ public class heuristicTuple {
     if (methodName.startsWith("get") || methodName.startsWith("set")) {
       setHeuristic(infoGatheringAnalysis.GETSET);
     }
-  }
-
-  public List<String> getMethodName() {
-    return methodName;
   }
 
   public void setHeuristic(int bitIndex) {

@@ -25,10 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.Local;
 import soot.NullType;
@@ -46,6 +42,10 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.RefSwitch;
 import soot.tagkit.Tag;
 import soot.util.Switch;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class JArrayRef implements ArrayRef, ConvertToBaf {
   protected ValueBox baseBox;
@@ -74,7 +74,9 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
     return false;
   }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
   @Override
   public int equivHashCode() {
     return getBase().equivHashCode() * 101 + getIndex().equivHashCode() + 17;

@@ -19,17 +19,8 @@
 
 package soot.toolkits.exceptions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import heros.solver.IDESolver;
 import soot.Body;
 import soot.FastHierarchy;
@@ -194,12 +185,20 @@ import soot.shimple.PhiExpr;
 import soot.shimple.ShimpleValueSwitch;
 import soot.toolkits.exceptions.ThrowableSet.Pair;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A {@link ThrowAnalysis} which returns the set of runtime exceptions and errors that might be
  * thrown by the bytecode instructions represented by a unit, as indicated by the Java Virtual
  * Machine specification. I.e. this analysis is based entirely on the &ldquo;opcode&rdquo; of the
  * unit, the types of its arguments, and the values of constant arguments.
- *
+ * <p>
  * <p>The <code>mightThrow</code> methods could be declared static. They are left virtual to
  * facilitate testing. For example, to verify that the expressions in a method call are actually
  * being examined, a test case can override the mightThrow(SootMethod) with an implementation which
@@ -207,8 +206,19 @@ import soot.toolkits.exceptions.ThrowableSet.Pair;
  */
 public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
+  private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
+  private static final LongConstant LONG_CONSTANT_ZERO = LongConstant.v(0);
+  public static UnitThrowAnalysis interproceduralAnalysis = null;
   protected final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
-
+  protected final boolean isInterproc;
+  protected final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet =
+      IDESolver.DEFAULT_CACHE_BUILDER.build(
+          new CacheLoader<SootMethod, ThrowableSet>() {
+            @Override
+            public ThrowableSet load(SootMethod sm) throws Exception {
+              return mightThrow(sm, new HashSet<SootMethod>());
+            }
+          });
   // Cache the response to mightThrowImplicitly():
   private final ThrowableSet implicitThrowExceptions =
       ThrowableSet.Manager.v()
@@ -226,9 +236,15 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     this(false);
   }
 
-  /** A protected constructor for use by unit tests. */
+  /**
+   * A protected constructor for use by unit tests.
+   */
   protected UnitThrowAnalysis() {
     this(false);
+  }
+
+  protected UnitThrowAnalysis(boolean isInterproc) {
+    this.isInterproc = isInterproc;
   }
 
   /**
@@ -239,14 +255,6 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
   public static UnitThrowAnalysis v() {
     return G.v().soot_toolkits_exceptions_UnitThrowAnalysis();
   }
-
-  protected final boolean isInterproc;
-
-  protected UnitThrowAnalysis(boolean isInterproc) {
-    this.isInterproc = isInterproc;
-  }
-
-  public static UnitThrowAnalysis interproceduralAnalysis = null;
 
   public static UnitThrowAnalysis interproc() {
     if (interproceduralAnalysis == null) {
@@ -307,7 +315,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    *
    * @param sm method whose exceptions are to be returned.
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m
-   *     </code> might throw.
+   * </code> might throw.
    */
   protected ThrowableSet mightThrow(SootMethod sm) {
     if (!isInterproc) {
@@ -316,22 +324,13 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return methodToThrowSet.getUnchecked(sm);
   }
 
-  protected final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet =
-      IDESolver.DEFAULT_CACHE_BUILDER.build(
-          new CacheLoader<SootMethod, ThrowableSet>() {
-            @Override
-            public ThrowableSet load(SootMethod sm) throws Exception {
-              return mightThrow(sm, new HashSet<SootMethod>());
-            }
-          });
-
   /**
    * Returns the set of types that might be thrown as a result of calling the specified method.
    *
-   * @param sm method whose exceptions are to be returned.
+   * @param sm      method whose exceptions are to be returned.
    * @param doneSet The set of methods that were already processed
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m
-   *     </code> might throw.
+   * </code> might throw.
    */
   private ThrowableSet mightThrow(SootMethod sm, Set<SootMethod> doneSet) {
     // Do not run in loops
@@ -351,8 +350,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<>();
     for (Trap t : sm.getActiveBody().getTraps()) {
       for (Iterator<Unit> unitIt =
-              units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
-          unitIt.hasNext();
+           units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit()));
+           unitIt.hasNext();
           ) {
         Unit unit = unitIt.next();
 
@@ -398,9 +397,6 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return methodSet;
   }
 
-  private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
-  private static final LongConstant LONG_CONSTANT_ZERO = LongConstant.v(0);
-
   protected class UnitSwitch implements InstSwitch, StmtSwitch {
 
     // Asynchronous errors are always possible:
@@ -421,28 +417,36 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseNopInst(NopInst i) {}
+    public void caseNopInst(NopInst i) {
+    }
 
     @Override
-    public void caseGotoInst(GotoInst i) {}
+    public void caseGotoInst(GotoInst i) {
+    }
 
     @Override
-    public void caseJSRInst(JSRInst i) {}
+    public void caseJSRInst(JSRInst i) {
+    }
 
     @Override
-    public void casePushInst(PushInst i) {}
+    public void casePushInst(PushInst i) {
+    }
 
     @Override
-    public void casePopInst(PopInst i) {}
+    public void casePopInst(PopInst i) {
+    }
 
     @Override
-    public void caseIdentityInst(IdentityInst i) {}
+    public void caseIdentityInst(IdentityInst i) {
+    }
 
     @Override
-    public void caseStoreInst(StoreInst i) {}
+    public void caseStoreInst(StoreInst i) {
+    }
 
     @Override
-    public void caseLoadInst(LoadInst i) {}
+    public void caseLoadInst(LoadInst i) {
+    }
 
     @Override
     public void caseArrayWriteInst(ArrayWriteInst i) {
@@ -460,46 +464,60 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseIfNullInst(IfNullInst i) {}
+    public void caseIfNullInst(IfNullInst i) {
+    }
 
     @Override
-    public void caseIfNonNullInst(IfNonNullInst i) {}
+    public void caseIfNonNullInst(IfNonNullInst i) {
+    }
 
     @Override
-    public void caseIfEqInst(IfEqInst i) {}
+    public void caseIfEqInst(IfEqInst i) {
+    }
 
     @Override
-    public void caseIfNeInst(IfNeInst i) {}
+    public void caseIfNeInst(IfNeInst i) {
+    }
 
     @Override
-    public void caseIfGtInst(IfGtInst i) {}
+    public void caseIfGtInst(IfGtInst i) {
+    }
 
     @Override
-    public void caseIfGeInst(IfGeInst i) {}
+    public void caseIfGeInst(IfGeInst i) {
+    }
 
     @Override
-    public void caseIfLtInst(IfLtInst i) {}
+    public void caseIfLtInst(IfLtInst i) {
+    }
 
     @Override
-    public void caseIfLeInst(IfLeInst i) {}
+    public void caseIfLeInst(IfLeInst i) {
+    }
 
     @Override
-    public void caseIfCmpEqInst(IfCmpEqInst i) {}
+    public void caseIfCmpEqInst(IfCmpEqInst i) {
+    }
 
     @Override
-    public void caseIfCmpNeInst(IfCmpNeInst i) {}
+    public void caseIfCmpNeInst(IfCmpNeInst i) {
+    }
 
     @Override
-    public void caseIfCmpGtInst(IfCmpGtInst i) {}
+    public void caseIfCmpGtInst(IfCmpGtInst i) {
+    }
 
     @Override
-    public void caseIfCmpGeInst(IfCmpGeInst i) {}
+    public void caseIfCmpGeInst(IfCmpGeInst i) {
+    }
 
     @Override
-    public void caseIfCmpLtInst(IfCmpLtInst i) {}
+    public void caseIfCmpLtInst(IfCmpLtInst i) {
+    }
 
     @Override
-    public void caseIfCmpLeInst(IfCmpLeInst i) {}
+    public void caseIfCmpLeInst(IfCmpLeInst i) {
+    }
 
     @Override
     public void caseStaticGetInst(StaticGetInst i) {
@@ -535,7 +553,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void casePrimitiveCastInst(PrimitiveCastInst i) {}
+    public void casePrimitiveCastInst(PrimitiveCastInst i) {
+    }
 
     @Override
     public void caseDynamicInvokeInst(DynamicInvokeInst i) {
@@ -580,16 +599,20 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseAddInst(AddInst i) {}
+    public void caseAddInst(AddInst i) {
+    }
 
     @Override
-    public void caseAndInst(AndInst i) {}
+    public void caseAndInst(AndInst i) {
+    }
 
     @Override
-    public void caseOrInst(OrInst i) {}
+    public void caseOrInst(OrInst i) {
+    }
 
     @Override
-    public void caseXorInst(XorInst i) {}
+    public void caseXorInst(XorInst i) {
+    }
 
     @Override
     public void caseArrayLengthInst(ArrayLengthInst i) {
@@ -597,13 +620,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseCmpInst(CmpInst i) {}
+    public void caseCmpInst(CmpInst i) {
+    }
 
     @Override
-    public void caseCmpgInst(CmpgInst i) {}
+    public void caseCmpgInst(CmpgInst i) {
+    }
 
     @Override
-    public void caseCmplInst(CmplInst i) {}
+    public void caseCmplInst(CmplInst i) {
+    }
 
     @Override
     public void caseDivInst(DivInst i) {
@@ -613,10 +639,12 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseIncInst(IncInst i) {}
+    public void caseIncInst(IncInst i) {
+    }
 
     @Override
-    public void caseMulInst(MulInst i) {}
+    public void caseMulInst(MulInst i) {
+    }
 
     @Override
     public void caseRemInst(RemInst i) {
@@ -626,16 +654,20 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseSubInst(SubInst i) {}
+    public void caseSubInst(SubInst i) {
+    }
 
     @Override
-    public void caseShlInst(ShlInst i) {}
+    public void caseShlInst(ShlInst i) {
+    }
 
     @Override
-    public void caseShrInst(ShrInst i) {}
+    public void caseShrInst(ShrInst i) {
+    }
 
     @Override
-    public void caseUshrInst(UshrInst i) {}
+    public void caseUshrInst(UshrInst i) {
+    }
 
     @Override
     public void caseNewInst(NewInst i) {
@@ -643,28 +675,36 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseNegInst(NegInst i) {}
+    public void caseNegInst(NegInst i) {
+    }
 
     @Override
-    public void caseSwapInst(SwapInst i) {}
+    public void caseSwapInst(SwapInst i) {
+    }
 
     @Override
-    public void caseDup1Inst(Dup1Inst i) {}
+    public void caseDup1Inst(Dup1Inst i) {
+    }
 
     @Override
-    public void caseDup2Inst(Dup2Inst i) {}
+    public void caseDup2Inst(Dup2Inst i) {
+    }
 
     @Override
-    public void caseDup1_x1Inst(Dup1_x1Inst i) {}
+    public void caseDup1_x1Inst(Dup1_x1Inst i) {
+    }
 
     @Override
-    public void caseDup1_x2Inst(Dup1_x2Inst i) {}
+    public void caseDup1_x2Inst(Dup1_x2Inst i) {
+    }
 
     @Override
-    public void caseDup2_x1Inst(Dup2_x1Inst i) {}
+    public void caseDup2_x1Inst(Dup2_x1Inst i) {
+    }
 
     @Override
-    public void caseDup2_x2Inst(Dup2_x2Inst i) {}
+    public void caseDup2_x2Inst(Dup2_x2Inst i) {
+    }
 
     @Override
     public void caseNewArrayInst(NewArrayInst i) {
@@ -679,10 +719,12 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseLookupSwitchInst(LookupSwitchInst i) {}
+    public void caseLookupSwitchInst(LookupSwitchInst i) {
+    }
 
     @Override
-    public void caseTableSwitchInst(TableSwitchInst i) {}
+    public void caseTableSwitchInst(TableSwitchInst i) {
+    }
 
     @Override
     public void caseEnterMonitorInst(EnterMonitorInst i) {
@@ -708,7 +750,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseBreakpointStmt(BreakpointStmt s) {}
+    public void caseBreakpointStmt(BreakpointStmt s) {
+    }
 
     @Override
     public void caseEnterMonitorStmt(EnterMonitorStmt s) {
@@ -724,10 +767,12 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseGotoStmt(GotoStmt s) {}
+    public void caseGotoStmt(GotoStmt s) {
+    }
 
     @Override
-    public void caseIdentityStmt(IdentityStmt s) {}
+    public void caseIdentityStmt(IdentityStmt s) {
+    }
     // Perhaps IdentityStmt shouldn't even return VM_ERRORS,
     // since it corresponds to no bytecode instructions whatsoever.
 
@@ -747,7 +792,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseNopStmt(NopStmt s) {}
+    public void caseNopStmt(NopStmt s) {
+    }
 
     @Override
     public void caseRetStmt(RetStmt s) {
@@ -778,7 +824,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void defaultCase(Object obj) {}
+    public void defaultCase(Object obj) {
+    }
   }
 
   protected class ValueSwitch implements GrimpValueSwitch, ShimpleValueSwitch {
@@ -793,28 +840,36 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     // Declared by ConstantSwitch interface:
 
     @Override
-    public void caseDoubleConstant(DoubleConstant c) {}
+    public void caseDoubleConstant(DoubleConstant c) {
+    }
 
     @Override
-    public void caseFloatConstant(FloatConstant c) {}
+    public void caseFloatConstant(FloatConstant c) {
+    }
 
     @Override
-    public void caseIntConstant(IntConstant c) {}
+    public void caseIntConstant(IntConstant c) {
+    }
 
     @Override
-    public void caseLongConstant(LongConstant c) {}
+    public void caseLongConstant(LongConstant c) {
+    }
 
     @Override
-    public void caseNullConstant(NullConstant c) {}
+    public void caseNullConstant(NullConstant c) {
+    }
 
     @Override
-    public void caseStringConstant(StringConstant c) {}
+    public void caseStringConstant(StringConstant c) {
+    }
 
     @Override
-    public void caseClassConstant(ClassConstant c) {}
+    public void caseClassConstant(ClassConstant c) {
+    }
 
     @Override
-    public void caseMethodHandle(MethodHandle handle) {}
+    public void caseMethodHandle(MethodHandle handle) {
+    }
 
     // Declared by ExprSwitch interface:
 
@@ -941,6 +996,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     public void caseVirtualInvokeExpr(VirtualInvokeExpr expr) {
       caseInstanceInvokeExpr(expr);
     }
+
     // INSERTED for invokedynamic UnitThrowAnalysis.java
     @Override
     public void caseDynamicInvokeExpr(DynamicInvokeExpr expr) {
@@ -1041,16 +1097,20 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void caseParameterRef(ParameterRef v) {}
+    public void caseParameterRef(ParameterRef v) {
+    }
 
     @Override
-    public void caseCaughtExceptionRef(CaughtExceptionRef v) {}
+    public void caseCaughtExceptionRef(CaughtExceptionRef v) {
+    }
 
     @Override
-    public void caseThisRef(ThisRef v) {}
+    public void caseThisRef(ThisRef v) {
+    }
 
     @Override
-    public void caseLocal(Local l) {}
+    public void caseLocal(Local l) {
+    }
 
     @Override
     public void caseNewInvokeExpr(NewInvokeExpr e) {
@@ -1067,7 +1127,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @Override
-    public void defaultCase(Object obj) {}
+    public void defaultCase(Object obj) {
+    }
 
     // The remaining cases are not declared by GrimpValueSwitch,
     // but are used to factor out code common to several cases.

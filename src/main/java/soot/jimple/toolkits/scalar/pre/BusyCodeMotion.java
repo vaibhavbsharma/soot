@@ -25,10 +25,6 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.EquivalentValue;
@@ -53,6 +49,10 @@ import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 import soot.util.UnitMap;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Performs a partial redundancy elimination (= code motion). This is done, by moving
  * <b>every</b>computation as high as possible (it is easy to show, that they are computationally
@@ -68,15 +68,18 @@ import soot.util.UnitMap;
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class BusyCodeMotion extends BodyTransformer {
-  public BusyCodeMotion(Singletons.Global g) {}
+  private static final String PREFIX = "$bcm";
+
+  public BusyCodeMotion(Singletons.Global g) {
+  }
 
   public static BusyCodeMotion v() {
     return G.v().soot_jimple_toolkits_scalar_pre_BusyCodeMotion();
   }
 
-  private static final String PREFIX = "$bcm";
-
-  /** performs the busy code motion. */
+  /**
+   * performs the busy code motion.
+   */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
     BCMOptions options = new BCMOptions(opts);

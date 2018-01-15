@@ -32,12 +32,28 @@ import soot.util.BitVector;
  * @author Ondrej Lhotak
  */
 public final class BitPointsToSet extends PointsToSetInternal {
+  private BitVector bits = null;
+  private boolean empty = true;
+  private PAG pag = null;
+
   public BitPointsToSet(Type type, PAG pag) {
     super(type);
     this.pag = pag;
     bits = new BitVector(pag.getAllocNodeNumberer().size());
   }
-  /** Returns true if this set contains no run-time objects. */
+
+  public static P2SetFactory getFactory() {
+    return new P2SetFactory() {
+      @Override
+      public PointsToSetInternal newSet(Type type, PAG pag) {
+        return new BitPointsToSet(type, pag);
+      }
+    };
+  }
+
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
   @Override
   public final boolean isEmpty() {
     return empty;
@@ -66,7 +82,9 @@ public final class BitPointsToSet extends PointsToSetInternal {
     return ret;
   }
 
-  /** Adds contents of other into this set, returns true if this set changed. */
+  /**
+   * Adds contents of other into this set, returns true if this set changed.
+   */
   @Override
   public final boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
     if (other != null && !(other instanceof BitPointsToSet)) {
@@ -77,7 +95,13 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     return nativeAddAll((BitPointsToSet) other, (BitPointsToSet) exclude);
   }
-  /** Calls v's visit method on all nodes in this set. */
+
+  /* End of public methods. */
+  /* End of package methods. */
+
+  /**
+   * Calls v's visit method on all nodes in this set.
+   */
   @Override
   public final boolean forall(P2SetVisitor v) {
     for (BitSetIterator it = bits.iterator(); it.hasNext(); ) {
@@ -85,7 +109,10 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     return v.getReturnValue();
   }
-  /** Adds n to this set, returns true if n was not already in this set. */
+
+  /**
+   * Adds n to this set, returns true if n was not already in this set.
+   */
   @Override
   public final boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
@@ -93,23 +120,14 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     return false;
   }
-  /** Returns true iff the set contains n. */
+
+  /**
+   * Returns true iff the set contains n.
+   */
   @Override
   public final boolean contains(Node n) {
     return bits.get(n.getNumber());
   }
-
-  public static P2SetFactory getFactory() {
-    return new P2SetFactory() {
-      @Override
-      public PointsToSetInternal newSet(Type type, PAG pag) {
-        return new BitPointsToSet(type, pag);
-      }
-    };
-  }
-
-  /* End of public methods. */
-  /* End of package methods. */
 
   private boolean fastAdd(Node n) {
     boolean ret = bits.set(n.getNumber());
@@ -118,8 +136,4 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     return ret;
   }
-
-  private BitVector bits = null;
-  private boolean empty = true;
-  private PAG pag = null;
 }

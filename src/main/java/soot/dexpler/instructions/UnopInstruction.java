@@ -28,7 +28,6 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
-
 import soot.Local;
 import soot.Value;
 import soot.dexpler.DexBody;
@@ -79,7 +78,9 @@ public class UnopInstruction extends TaggedInstruction {
     }
   }
 
-  /** Return the appropriate Jimple Expression according to the OpCode */
+  /**
+   * Return the appropriate Jimple Expression according to the OpCode
+   */
   private Value getExpression(Local source) {
     Opcode opcode = instruction.getOpcode();
     switch (opcode) {
@@ -105,6 +106,7 @@ public class UnopInstruction extends TaggedInstruction {
         throw new RuntimeException("Invalid Opcode: " + opcode);
     }
   }
+
   /**
    * returns bitwise negation of an integer
    *
@@ -114,6 +116,7 @@ public class UnopInstruction extends TaggedInstruction {
   private Value getNotIntExpr(Local source) {
     return Jimple.v().newXorExpr(source, IntConstant.v(-1));
   }
+
   /**
    * returns bitwise negation of a long
    *

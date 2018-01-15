@@ -25,8 +25,6 @@
 
 package soot.jimple.internal;
 
-import java.util.List;
-
 import soot.Local;
 import soot.RefType;
 import soot.Unit;
@@ -42,6 +40,8 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StmtSwitch;
 import soot.jimple.ThisRef;
 import soot.util.Switch;
+
+import java.util.List;
 
 public class JIdentityStmt extends AbstractDefinitionStmt implements IdentityStmt {
   public JIdentityStmt(Value local, Value identityValue) {

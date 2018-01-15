@@ -26,9 +26,6 @@
 
 package soot.grimp.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.SootMethodRef;
 import soot.UnitPrinter;
 import soot.Value;
@@ -37,6 +34,9 @@ import soot.grimp.Grimp;
 import soot.grimp.Precedence;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.internal.AbstractInterfaceInvokeExpr;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements Precedence {
   public GInterfaceInvokeExpr(Value base, SootMethodRef methodRef, List args) {

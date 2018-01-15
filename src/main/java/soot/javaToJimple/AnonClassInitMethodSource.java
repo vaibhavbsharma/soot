@@ -24,6 +24,14 @@ import soot.PackManager;
 public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodSource {
 
   private boolean hasOuterRef;
+  private boolean hasQualifier;
+  private boolean inStaticMethod;
+  private boolean isSubType = false;
+  private soot.Type superOuterType = null;
+  private soot.Type thisOuterType = null;
+  private polyglot.types.ClassType polyglotType;
+  private polyglot.types.ClassType anonType;
+  private soot.Type outerClassType;
 
   public void hasOuterRef(boolean b) {
     hasOuterRef = b;
@@ -33,8 +41,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
     return hasOuterRef;
   }
 
-  private boolean hasQualifier;
-
   public void hasQualifier(boolean b) {
     hasQualifier = b;
   }
@@ -42,8 +48,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
   public boolean hasQualifier() {
     return hasQualifier;
   }
-
-  private boolean inStaticMethod;
 
   public void inStaticMethod(boolean b) {
     inStaticMethod = b;
@@ -53,8 +57,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
     return inStaticMethod;
   }
 
-  private boolean isSubType = false;
-
   public void isSubType(boolean b) {
     isSubType = b;
   }
@@ -62,9 +64,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
   public boolean isSubType() {
     return isSubType;
   }
-
-  private soot.Type superOuterType = null;
-  private soot.Type thisOuterType = null;
 
   public void superOuterType(soot.Type t) {
     superOuterType = t;
@@ -82,8 +81,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
     return thisOuterType;
   }
 
-  private polyglot.types.ClassType polyglotType;
-
   public void polyglotType(polyglot.types.ClassType type) {
     polyglotType = type;
   }
@@ -91,8 +88,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
   public polyglot.types.ClassType polyglotType() {
     return polyglotType;
   }
-
-  private polyglot.types.ClassType anonType;
 
   public void anonType(polyglot.types.ClassType type) {
     anonType = type;
@@ -111,8 +106,6 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
 
     return body;
   }
-
-  private soot.Type outerClassType;
 
   public soot.Type outerClassType() {
     return outerClassType;

@@ -37,7 +37,9 @@ import java.util.List;
  * @see: FlowUniverse
  */
 public interface FlowSet<T> extends Iterable<T> {
-  /** Clones the current FlowSet. */
+  /**
+   * Clones the current FlowSet.
+   */
   FlowSet<T> clone();
 
   /**
@@ -45,10 +47,14 @@ public interface FlowSet<T> extends Iterable<T> {
    */
   FlowSet<T> emptySet();
 
-  /** Copies the current FlowSet into dest. */
+  /**
+   * Copies the current FlowSet into dest.
+   */
   void copy(FlowSet<T> dest);
 
-  /** Sets this FlowSet to the empty set (more generally, the bottom element of the lattice.) */
+  /**
+   * Sets this FlowSet to the empty set (more generally, the bottom element of the lattice.)
+   */
   void clear();
 
   /**
@@ -90,30 +96,46 @@ public interface FlowSet<T> extends Iterable<T> {
    */
   void difference(FlowSet<T> other, FlowSet<T> dest);
 
-  /** Returns true if this FlowSet is the empty set. */
+  /**
+   * Returns true if this FlowSet is the empty set.
+   */
   boolean isEmpty();
 
   /* The following methods force the FlowSet to be a powerset. */
 
-  /** Returns the size of the current FlowSet. */
+  /**
+   * Returns the size of the current FlowSet.
+   */
   int size();
 
-  /** Adds <code>obj</code> to <code>this</code>. */
+  /**
+   * Adds <code>obj</code> to <code>this</code>.
+   */
   void add(T obj);
 
-  /** puts <code>this</code> union <code>obj</code> into <code>dest</code>. */
+  /**
+   * puts <code>this</code> union <code>obj</code> into <code>dest</code>.
+   */
   void add(T obj, FlowSet<T> dest);
 
-  /** Removes <code>obj</code> from <code>this</code>. */
+  /**
+   * Removes <code>obj</code> from <code>this</code>.
+   */
   void remove(T obj);
 
-  /** Puts <code>this</code> minus <code>obj</code> into <code>dest</code>. */
+  /**
+   * Puts <code>this</code> minus <code>obj</code> into <code>dest</code>.
+   */
   void remove(T obj, FlowSet<T> dest);
 
-  /** Returns true if this FlowSet contains <code>obj</code>. */
+  /**
+   * Returns true if this FlowSet contains <code>obj</code>.
+   */
   boolean contains(T obj);
 
-  /** Returns true if the <code>other</code> FlowSet is a subset of <code>this</code> FlowSet. */
+  /**
+   * Returns true if the <code>other</code> FlowSet is a subset of <code>this</code> FlowSet.
+   */
   boolean isSubSet(FlowSet<T> other);
 
   /**
@@ -123,6 +145,8 @@ public interface FlowSet<T> extends Iterable<T> {
   @Override
   Iterator<T> iterator();
 
-  /** Returns an unbacked list of contained objects for this FlowSet. */
+  /**
+   * Returns an unbacked list of contained objects for this FlowSet.
+   */
   List<T> toList();
 }

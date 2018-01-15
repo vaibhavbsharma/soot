@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
 import heros.util.SootThreadGroup;
 import soot.G;
 import soot.Kind;
@@ -30,6 +23,13 @@ import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09 Calculates
  * May-Happen-in-Parallel (MHP) information as if in the absence of synchronization. Any
@@ -37,7 +37,7 @@ import soot.toolkits.scalar.FlowSet;
  * synchronization, then this actually generates correct MHP. This is useful if you are trying to
  * generate (replacement) synchronization. It is also useful if an approximation is acceptable,
  * because it runs much faster than a synch-aware MHP analysis.
- *
+ * <p>
  * <p>This analysis uses may-alias information to determine the types of threads launched and the
  * call graph to determine which methods they may call. This analysis uses a
  * run-once/run-one-at-a-time/run-many classification to determine if a thread may be run in
@@ -62,7 +62,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
   }
 
   protected void buildThreadList() // can only be run once if optionThreaded is true
-      {
+  {
     if (optionThreaded) {
       if (self != null) {
         return; // already running... do nothing
@@ -233,7 +233,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         containingMethodCalls.add(startStmtMethod);
         while (methodNum
             < containingMethodCalls
-                .size()) // iterate over all methods in threadMethods, even as new
+            .size()) // iterate over all methods in threadMethods, even as new
         // methods are being added to it
         {
           Iterator succMethodsIt = pecg.getSuccsOf(containingMethodCalls.get(methodNum)).iterator();
@@ -428,10 +428,10 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
             .println(
                 "[mhp] "
                     + threadList
-                        .get(i)
-                        .toString()
-                        .replaceAll("\n", "\n[mhp] ")
-                        .replaceAll(">,", ">\n[mhp]  "));
+                    .get(i)
+                    .toString()
+                    .replaceAll("\n", "\n[mhp] ")
+                    .replaceAll(">,", ">\n[mhp]  "));
         G.v().out.println("[mhp]");
       }
       threads.add(threadList.get(i));

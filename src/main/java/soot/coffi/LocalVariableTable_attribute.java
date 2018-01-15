@@ -28,33 +28,38 @@ package soot.coffi;
 /**
  * A debugging attribute, this gives the names of local variables within blocks of bytecode.
  *
- * @see attribute_info
  * @author Clark Verbrugge
+ * @see attribute_info
  */
 class LocalVariableTable_attribute extends attribute_info {
-  /** Length of the local variable table. */
+  /**
+   * Length of the local variable table.
+   */
   public int local_variable_table_length;
-  /** Actual table of local variables. */
+  /**
+   * Actual table of local variables.
+   */
   public local_variable_table_entry local_variable_table[];
 
   /**
    * Locates the first name found for a given local variable.
    *
    * @param constant_pool constant pool for the associated class.
-   * @param idx local variable index.
+   * @param idx           local variable index.
    * @return name of the local variable, or <i>null</i> if not found.
    * @see LocalVariableTable_attribute#getLocalVariableName(cp_info[], int, int)
    */
   public String getLocalVariableName(cp_info constant_pool[], int idx) {
     return getLocalVariableName(constant_pool, idx, -1);
   }
+
   /**
    * Locates the name of the given local variable for the specified code offset.
    *
    * @param constant_pool constant pool for the associated class.
-   * @param idx local variable index.
-   * @param code code offset for variable name; use -1 to return the first name found for that local
-   *     variable.
+   * @param idx           local variable index.
+   * @param code          code offset for variable name; use -1 to return the first name found for that local
+   *                      variable.
    * @return name of the local variable, or <i>null</i> if not found.
    * @see LocalVariableTable_attribute#getLocalVariableName(cp_info[], int)
    */

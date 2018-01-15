@@ -17,7 +17,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/** Maintained by: Nomair A. Naeem */
+/**
+ * Maintained by: Nomair A. Naeem
+ * CHANGE LOG: November 21st, 2005: Reasoning about correctness of implementation. November 22nd,
+ * 2005: Found bug in process_DoWhile while implementing ReachingCopies.. see method for details
+ * January 30th, 2006: Found bug in handling of breaks inside the ASTTryNode while implementing
+ * MustMayinitialize...see ASTTryNode method for details January 30th, 2006: Found bug in handling
+ * of switchNode while implementing MustMayInitialize NEEDS THOROUGH TESTING!!!
+ * <p>
+ * TODO: Refactor the class into a top level class and a forward analysis subclass Write the
+ * backwards flow analysis
+ * <p>
+ * <p>THOROUGH TESTING OF BUG FOUND ON 30th January
+ */
 
 /**
  * CHANGE LOG: November 21st, 2005: Reasoning about correctness of implementation. November 22nd,
@@ -33,13 +45,8 @@
  *
  * <p>THOROUGH TESTING OF BUG FOUND ON 30th January
  */
-package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.Local;
 import soot.Value;
@@ -68,6 +75,12 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /*
  * This class is meant to be extended to write structred analyses.
  * The analysis is invoked by invoking the process method sending it
@@ -83,6 +96,11 @@ public abstract class StructuredAnalysis<E> {
   public static boolean DEBUG_WHILE = false;
   public static boolean DEBUG_STATEMENTS = false;
   public static boolean DEBUG_TRY = false;
+  // the three types of operators
+  final int UNDEFINED = 0;
+  final int UNION = 1;
+  final int INTERSECTION = 2;
+  public int MERGETYPE; // the confluence operator
   /*
    * public static boolean DEBUG = true; public static boolean DEBUG_IF =
    * true; public static boolean DEBUG_WHILE = true; public static boolean
@@ -91,13 +109,6 @@ public abstract class StructuredAnalysis<E> {
    * break or continue list and a NOPATH object is returned
    */
   DavaFlowSet<E> NOPATH = emptyFlowSet();
-  public int MERGETYPE; // the confluence operator
-
-  // the three types of operators
-  final int UNDEFINED = 0;
-  final int UNION = 1;
-  final int INTERSECTION = 2;
-
   // storing before and after sets for each stmt or ASTNode
   HashMap<Object, DavaFlowSet<E>> beforeSets, afterSets;
 

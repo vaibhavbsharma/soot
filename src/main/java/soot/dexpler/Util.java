@@ -24,11 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -59,13 +54,18 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalCreation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class Util {
   /**
    * Return the dotted class name of a type descriptor, i.e. change Ljava/lang/Object; to
    * java.lang.Object.
    *
-   * @raises IllegalArgumentException if classname is not of the form Lpath; or [Lpath;
    * @return the dotted name.
+   * @raises IllegalArgumentException if classname is not of the form Lpath; or [Lpath;
    */
   public static String dottedClassName(String typeDescriptor) {
     if (!isByteCodeClassName(typeDescriptor)) {
@@ -78,13 +78,13 @@ public class Util {
       String c = t.substring(idx);
       if (c.length() == 1
           && (c.startsWith("I")
-              || c.startsWith("B")
-              || c.startsWith("C")
-              || c.startsWith("S")
-              || c.startsWith("J")
-              || c.startsWith("D")
-              || c.startsWith("F")
-              || c.startsWith("Z"))) {
+          || c.startsWith("B")
+          || c.startsWith("C")
+          || c.startsWith("S")
+          || c.startsWith("J")
+          || c.startsWith("D")
+          || c.startsWith("F")
+          || c.startsWith("Z"))) {
         Type ty = getType(t);
         return ty == null ? "" : getType(t).toString();
       }
@@ -199,7 +199,7 @@ public class Util {
   /**
    * Concatenate two arrays.
    *
-   * @param first first array
+   * @param first  first array
    * @param second second array.
    */
   public static <T> T[] concat(T[] first, T[] second) {
@@ -330,16 +330,16 @@ public class Util {
       char c = parameters.charAt(idx);
       curr += c;
       switch (c) {
-          // array
+        // array
         case '[':
           break;
-          // end of object
+        // end of object
         case ';':
           object = false;
           pList.add(curr);
           curr = "";
           break;
-          // start of object
+        // start of object
         case 'L':
           object = true;
           break;

@@ -20,11 +20,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -46,16 +41,21 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public abstract class DexTransformer extends BodyTransformer {
 
   /**
    * Collect definitions of l in body including the definitions of aliases of l.
-   *
+   * <p>
    * <p>In this context an alias is a local that propagates its value to l.
    *
-   * @param l the local whose definitions are to collect
+   * @param l         the local whose definitions are to collect
    * @param localDefs the LocalDefs object
-   * @param body the body that contains the local
+   * @param body      the body that contains the local
    */
   protected List<Unit> collectDefinitionsWithAliases(
       Local l, LocalDefs localDefs, LocalUses localUses, Body body) {
@@ -97,9 +97,9 @@ public abstract class DexTransformer extends BodyTransformer {
   /**
    * Convenience method that collects all definitions of l.
    *
-   * @param l the local whose definitions are to collect
+   * @param l         the local whose definitions are to collect
    * @param localDefs the LocalDefs object
-   * @param body the body that contains the local
+   * @param body      the body that contains the local
    */
   private List<Unit> collectDefinitions(Local l, LocalDefs localDefs) {
     return localDefs.getDefsOf(l);

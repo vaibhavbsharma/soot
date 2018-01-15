@@ -19,10 +19,6 @@
 
 package soot.jimple.validation;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
@@ -31,12 +27,16 @@ import soot.jimple.IdentityStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * This validator checks whether the jimple traps are correct. It does not perform the same checks
  * as {@link soot.validation.TrapsValidator}
  *
- * @see JimpleTrapValidator#validate(Body, List)
  * @author Marc Miltenberger
+ * @see JimpleTrapValidator#validate(Body, List)
  */
 public enum JimpleTrapValidator implements BodyValidator {
   INSTANCE;
@@ -45,7 +45,9 @@ public enum JimpleTrapValidator implements BodyValidator {
     return INSTANCE;
   }
 
-  /** Checks whether all Caught-Exception-References are associated to traps. */
+  /**
+   * Checks whether all Caught-Exception-References are associated to traps.
+   */
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
     Set<Unit> caughtUnits = new HashSet<>();

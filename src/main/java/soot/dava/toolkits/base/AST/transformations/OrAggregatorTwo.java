@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.G;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTIfElseNode;
@@ -34,6 +31,9 @@ import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
   Nomair A. Naeem 21-FEB-2005
@@ -81,7 +81,8 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
   }
 
   @Override
-  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {}
+  public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
+  }
 
   @Override
   public void outASTIfElseNode(ASTIfElseNode node) {

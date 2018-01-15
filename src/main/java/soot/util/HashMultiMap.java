@@ -40,14 +40,6 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   protected final Map<K, Set<V>> m;
   protected final float loadFactor;
 
-  protected Map<K, Set<V>> createMap() {
-    return createMap(0);
-  }
-
-  protected Map<K, Set<V>> createMap(int initialSize) {
-    return new HashMap<>(initialSize, loadFactor);
-  }
-
   public HashMultiMap() {
     this.loadFactor = DEFAULT_LOAD_FACTOR;
     this.m = createMap();
@@ -73,6 +65,14 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
     this.loadFactor = DEFAULT_LOAD_FACTOR;
     this.m = createMap();
     putAll(m);
+  }
+
+  protected Map<K, Set<V>> createMap() {
+    return createMap(0);
+  }
+
+  protected Map<K, Set<V>> createMap(int initialSize) {
+    return new HashMap<>(initialSize, loadFactor);
   }
 
   @Override

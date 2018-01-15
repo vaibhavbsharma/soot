@@ -19,11 +19,6 @@
 
 package soot.dava.toolkits.base.AST;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.G;
 import soot.Local;
 import soot.RefType;
@@ -40,15 +35,21 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.ThrowStmt;
 import soot.util.IterableSet;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 public class TryContentsFinder extends ASTAnalysis {
-  public TryContentsFinder(Singletons.Global g) {}
+  private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<>();
+  private IterableSet curExceptionSet = new IterableSet();
+
+  public TryContentsFinder(Singletons.Global g) {
+  }
 
   public static TryContentsFinder v() {
     return G.v().soot_dava_toolkits_base_AST_TryContentsFinder();
   }
-
-  private IterableSet curExceptionSet = new IterableSet();
-  private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<>();
 
   @Override
   public int getAnalysisDepth() {

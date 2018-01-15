@@ -25,9 +25,9 @@
 
 package soot;
 
-import java.util.ArrayDeque;
-
 import soot.util.Switch;
+
+import java.util.ArrayDeque;
 
 /**
  * A class that models Java's reference types. RefTypes are parametrized by a class name. Two
@@ -35,23 +35,16 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class RefType extends RefLikeType implements Comparable<RefType> {
+  /**
+   * the class name that parameterizes this RefType
+   */
+  private String className;
+  private volatile SootClass sootClass;
+  private AnySubType anySubType;
+
   public RefType(Singletons.Global g) {
     className = "";
   }
-
-  public static RefType v() {
-    return G.v().soot_RefType();
-  }
-
-  /** the class name that parameterizes this RefType */
-  private String className;
-
-  public String getClassName() {
-    return className;
-  }
-
-  private volatile SootClass sootClass;
-  private AnySubType anySubType;
 
   private RefType(String className) {
     if (className.startsWith("[")) {
@@ -65,6 +58,10 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
       throw new RuntimeException("Attempt to create RefType containing a ; --> " + className);
     }
     this.className = className;
+  }
+
+  public static RefType v() {
+    return G.v().soot_RefType();
   }
 
   /**
@@ -82,11 +79,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return rt;
   }
 
-  @Override
-  public int compareTo(RefType t) {
-    return this.toString().compareTo(t.toString());
-  }
-
   /**
    * Create a RefType for a class.
    *
@@ -95,6 +87,19 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
    */
   public static RefType v(SootClass c) {
     return v(c.getName());
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
+  }
+
+  @Override
+  public int compareTo(RefType t) {
+    return this.toString().compareTo(t.toString());
   }
 
   /**
@@ -110,14 +115,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return sootClass;
   }
 
-  public boolean hasSootClass() {
-    return sootClass != null;
-  }
-
-  public void setClassName(String className) {
-    this.className = className;
-  }
-
   /**
    * Set the SootClass object corresponding to this RefType.
    *
@@ -127,11 +124,15 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     this.sootClass = sootClass;
   }
 
+  public boolean hasSootClass() {
+    return sootClass != null;
+  }
+
   /**
    * 2 RefTypes are considered equal if they are parametrized by the same class name String.
    *
    * @param t an object to test for equality. @ return true if t is a RefType parametrized by the
-   *     same name as this.
+   *          same name as this.
    */
   @Override
   public boolean equals(Object t) {
@@ -162,7 +163,9 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     ((TypeSwitch) sw).caseRefType(this);
   }
 
-  /** Returns the least common superclass of this type and other. */
+  /**
+   * Returns the least common superclass of this type and other.
+   */
   @Override
   public Type merge(Type other, Scene cm) {
     if (other.equals(UnknownType.v()) || this.equals(other)) {

@@ -19,11 +19,6 @@
 
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import polyglot.ast.ClassDecl;
 import polyglot.ast.New;
 import polyglot.ast.Node;
@@ -33,8 +28,14 @@ import soot.FastHierarchy;
 import soot.SootClass;
 import soot.SootMethod;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 public class InitialResolver implements IInitialResolver {
 
+  private static final int NO_MATCH = 0;
   private polyglot.ast.Node astNode; // source node
   private polyglot.frontend.Compiler compiler;
   private BiMap anonClassMap; // maps New to SootClass (name)
@@ -47,10 +48,9 @@ public class InitialResolver implements IInitialResolver {
       finalLocalInfo; // new or lcd mapped to list of final locals avail in current meth and
   // the whether its static
   private HashMap<String, Node> sootNameToAST = null;
+  // init
   private ArrayList
       hasOuterRefInInit; // list of sootclass types that need an outer class this param in for
-  // init
-
   private HashMap<String, String> classToSourceMap;
   private HashMap<SootClass, SootClass> specialAnonMap;
   private HashMap<IdentityKey, SootMethod> privateFieldGetAccessMap;
@@ -58,8 +58,17 @@ public class InitialResolver implements IInitialResolver {
   private HashMap<IdentityKey, SootMethod> privateMethodGetAccessMap;
   private ArrayList<String> interfacesList;
   private ArrayList<Node> cCallList;
-
   private HashMap<New, ConstructorInstance> anonConstructorMap;
+  private FastHierarchy hierarchy;
+  private AbstractJBBFactory jbbFactory = new JimpleBodyBuilderFactory();
+  private HashMap<SootClass, InnerClassInfo> innerClassInfoMap;
+
+  public InitialResolver(soot.Singletons.Global g) {
+  }
+
+  public static InitialResolver v() {
+    return soot.G.v().soot_javaToJimple_InitialResolver();
+  }
 
   public void addToAnonConstructorMap(
       polyglot.ast.New anonNew, polyglot.types.ConstructorInstance ci) {
@@ -76,19 +85,17 @@ public class InitialResolver implements IInitialResolver {
     return anonConstructorMap.get(anonNew);
   }
 
-  private FastHierarchy hierarchy;
-
-  private AbstractJBBFactory jbbFactory = new JimpleBodyBuilderFactory();
+  public AbstractJBBFactory getJBBFactory() {
+    return jbbFactory;
+  }
 
   public void setJBBFactory(AbstractJBBFactory jbbFactory) {
     this.jbbFactory = jbbFactory;
   }
 
-  public AbstractJBBFactory getJBBFactory() {
-    return jbbFactory;
-  }
-
-  /** returns true if there is an AST avail for given soot class */
+  /**
+   * returns true if there is an AST avail for given soot class
+   */
   public boolean hasASTForSootName(String name) {
     if (sootNameToAST == null) {
       return false;
@@ -96,7 +103,9 @@ public class InitialResolver implements IInitialResolver {
     return sootNameToAST.containsKey(name);
   }
 
-  /** sets AST for given soot class if possible */
+  /**
+   * sets AST for given soot class if possible
+   */
   public void setASTForSootName(String name) {
     if (!hasASTForSootName(name)) {
       throw new RuntimeException(
@@ -105,13 +114,9 @@ public class InitialResolver implements IInitialResolver {
     setAst(sootNameToAST.get(name));
   }
 
-  public InitialResolver(soot.Singletons.Global g) {}
-
-  public static InitialResolver v() {
-    return soot.G.v().soot_javaToJimple_InitialResolver();
-  }
-
-  /** Invokes polyglot and gets the AST for the source given in fullPath */
+  /**
+   * Invokes polyglot and gets the AST for the source given in fullPath
+   */
   @Override
   public void formAst(String fullPath, List<String> locations, String className) {
 
@@ -127,17 +132,19 @@ public class InitialResolver implements IInitialResolver {
     resolveAST();
   }
 
-  /** if you have a special AST set it here then call resolveFormJavaFile on the soot class */
-  public void setAst(polyglot.ast.Node ast) {
-    astNode = ast;
-  }
-
   /*
    * March 2nd, 2006 Nomair
    * Is it okkay get the ast and send it to the ASTMetrics package????
    */
   public polyglot.ast.Node getAst() {
     return astNode;
+  }
+
+  /**
+   * if you have a special AST set it here then call resolveFormJavaFile on the soot class
+   */
+  public void setAst(polyglot.ast.Node ast) {
+    astNode = ast;
   }
 
   private void makeASTMap() {
@@ -157,7 +164,9 @@ public class InitialResolver implements IInitialResolver {
     }
   }
 
-  /** add name to AST to map - used mostly for inner and non public top-level classes */
+  /**
+   * add name to AST to map - used mostly for inner and non public top-level classes
+   */
   protected void addNameToAST(String name) {
     if (sootNameToAST == null) {
       sootNameToAST = new HashMap<>();
@@ -316,8 +325,6 @@ public class InitialResolver implements IInitialResolver {
       addNameToAST(realName);
     }
   }
-
-  private static final int NO_MATCH = 0;
 
   private int getLocalClassNum(String realName, String simpleName) {
     // a local inner class is named outer$NsimpleName where outer
@@ -522,8 +529,6 @@ public class InitialResolver implements IInitialResolver {
   public soot.FastHierarchy hierarchy() {
     return hierarchy;
   }
-
-  private HashMap<SootClass, InnerClassInfo> innerClassInfoMap;
 
   public HashMap<SootClass, InnerClassInfo> getInnerClassInfoMap() {
     return innerClassInfoMap;

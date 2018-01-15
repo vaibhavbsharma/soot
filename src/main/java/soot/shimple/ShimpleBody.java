@@ -19,8 +19,6 @@
 
 package soot.shimple;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.G;
 import soot.SootMethod;
@@ -33,10 +31,13 @@ import soot.shimple.internal.SPatchingChain;
 import soot.shimple.internal.ShimpleBodyBuilder;
 import soot.util.HashChain;
 
+import java.util.Map;
+
 // * <p> We decided to hide all the intelligence in
 // * internal.ShimpleBodyBuilder for clarity of API.  Eventually we will
 // * likely switch to an explicit Strategy pattern that will allow us to
 // * select different SSA behaviours and algorithms.
+
 /**
  * Implementation of the Body class for the SSA Shimple IR. This class provides methods for
  * maintaining SSA form as well as eliminating SSA form.
@@ -44,17 +45,26 @@ import soot.util.HashChain;
  * @author Navindra Umanee
  * @see soot.shimple.internal.ShimpleBodyBuilder
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static
- *     Single Assignment Form and the Control Dependence Graph</a>
+ * Single Assignment Form and the Control Dependence Graph</a>
  */
 public class ShimpleBody extends StmtBody {
-  /** Holds our options map... */
+  /**
+   * Holds our options map...
+   */
   protected ShimpleOptions options;
 
   protected ShimpleBodyBuilder sbb;
 
   protected boolean isExtendedSSA = false;
+  /**
+   * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA form or not. Could be
+   * useful for book-keeping purposes.
+   */
+  protected boolean isSSA = false;
 
-  /** Construct an empty ShimpleBody associated with m. */
+  /**
+   * Construct an empty ShimpleBody associated with m.
+   */
   ShimpleBody(SootMethod m, Map options) {
     super(m);
 
@@ -69,7 +79,7 @@ public class ShimpleBody extends StmtBody {
 
   /**
    * Constructs a ShimpleBody from the given Body and options.
-   *
+   * <p>
    * <p>Currently available option is "naive-phi-elimination", typically in the "shimple" phase (eg,
    * -p shimple naive-phi-elimination) which can be useful for understanding the effect of analyses.
    */
@@ -102,7 +112,7 @@ public class ShimpleBody extends StmtBody {
 
   /**
    * Recompute SSA form.
-   *
+   * <p>
    * <p>Note: assumes presence of Phi nodes in body that require elimination. If you *know* there
    * are no Phi nodes present, you may prefer to use rebuild(false) in order to skip some
    * transformations during the Phi elimination process.
@@ -113,10 +123,10 @@ public class ShimpleBody extends StmtBody {
 
   /**
    * Rebuild SSA form.
-   *
+   * <p>
    * <p>If there are Phi nodes already present in the body, it is imperative that we specify this so
    * that the algorithm can eliminate them before rebuilding SSA.
-   *
+   * <p>
    * <p>The eliminate Phi nodes stage is harmless, but if you *know* that no Phi nodes are present
    * and you wish to avoid the transformations involved in eliminating Phi nodes, use
    * rebuild(false).
@@ -129,12 +139,12 @@ public class ShimpleBody extends StmtBody {
 
   /**
    * Returns an equivalent unbacked JimpleBody of the current Body by eliminating the Phi nodes.
-   *
+   * <p>
    * <p>Currently available option is "naive-phi-elimination", typically specified in the "shimple"
    * phase (eg, -p shimple naive-phi-elimination) which skips the dead code elimination and register
    * allocation phase before eliminating Phi nodes. This can be useful for understanding the effect
    * of analyses.
-   *
+   * <p>
    * <p>Remember to setActiveBody() if necessary in your SootMethod.
    *
    * @see #eliminatePhiNodes()
@@ -150,7 +160,7 @@ public class ShimpleBody extends StmtBody {
 
   /**
    * Remove Phi nodes from body. SSA form is no longer a given once done.
-   *
+   * <p>
    * <p>Currently available option is "naive-phi-elimination", typically specified in the "shimple"
    * phase (eg, -p shimple naive-phi-elimination) which skips the dead code elimination and register
    * allocation phase before eliminating Phi nodes. This can be useful for understanding the effect
@@ -179,26 +189,14 @@ public class ShimpleBody extends StmtBody {
     setSSA(false);
   }
 
-  /** Returns a copy of the current ShimpleBody. */
+  /**
+   * Returns a copy of the current ShimpleBody.
+   */
   @Override
   public Object clone() {
     Body b = Shimple.v().newBody(getMethod());
     b.importBodyContentsFrom(this);
     return b;
-  }
-
-  /**
-   * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA form or not. Could be
-   * useful for book-keeping purposes.
-   */
-  protected boolean isSSA = false;
-
-  /**
-   * Sets a flag that indicates whether ShimpleBody is still in SSA form after a transformation or
-   * not. It is often up to the user to indicate if a body is no longer in SSA form.
-   */
-  public void setSSA(boolean isSSA) {
-    this.isSSA = isSSA;
   }
 
   /**
@@ -210,11 +208,21 @@ public class ShimpleBody extends StmtBody {
     return isSSA;
   }
 
+  /**
+   * Sets a flag that indicates whether ShimpleBody is still in SSA form after a transformation or
+   * not. It is often up to the user to indicate if a body is no longer in SSA form.
+   */
+  public void setSSA(boolean isSSA) {
+    this.isSSA = isSSA;
+  }
+
   public boolean isExtendedSSA() {
     return isExtendedSSA;
   }
 
-  /** Returns the Shimple options applicable to this body. */
+  /**
+   * Returns the Shimple options applicable to this body.
+   */
   public ShimpleOptions getOptions() {
     return options;
   }

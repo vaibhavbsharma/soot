@@ -1,11 +1,5 @@
 package soot.dexpler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.Singletons;
 import soot.Trap;
@@ -16,23 +10,30 @@ import soot.toolkits.exceptions.TrapTransformer;
 import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Transformer that splits traps for Dalvik whenever a statements within the trap cannot reach the
  * trap's handler.
- *
+ * <p>
  * <p>Before: trap from label1 to label2 with handler
- *
+ * <p>
  * <p>label1: stmt1 ----> handler stmt2 stmt3 ----> handler label2:
- *
+ * <p>
  * <p>After: trap from label1 to label2 with handler trap from label3 to label4 with handler
- *
+ * <p>
  * <p>label1: stmt1 ----> handler label2: stmt2 label3: stmt3 ----> handler label4:
  *
  * @author Alexandre Bartel
  */
 public class TrapMinimizer extends TrapTransformer {
 
-  public TrapMinimizer(Singletons.Global g) {}
+  public TrapMinimizer(Singletons.Global g) {
+  }
 
   public static TrapMinimizer v() {
     return soot.G.v().soot_dexpler_TrapMinimizer();

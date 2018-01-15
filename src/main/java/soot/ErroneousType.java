@@ -27,10 +27,13 @@ package soot;
 
 import soot.util.Switch;
 
-/** Soot representation used for untypable objects. Implemented as a singleton. */
+/**
+ * Soot representation used for untypable objects. Implemented as a singleton.
+ */
 @SuppressWarnings("serial")
 public class ErroneousType extends Type {
-  public ErroneousType(Singletons.Global g) {}
+  public ErroneousType(Singletons.Global g) {
+  }
 
   public static ErroneousType v() {
     return G.v().soot_ErroneousType();

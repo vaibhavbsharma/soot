@@ -25,13 +25,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -55,8 +48,16 @@ import soot.Value;
 import soot.ValueBox;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class LocalNameStandardizer extends BodyTransformer {
-  public LocalNameStandardizer(Singletons.Global g) {}
+  public LocalNameStandardizer(Singletons.Global g) {
+  }
 
   public static LocalNameStandardizer v() {
     return G.v().soot_jimple_toolkits_scalar_LocalNameStandardizer();

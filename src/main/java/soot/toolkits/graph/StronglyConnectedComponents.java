@@ -25,16 +25,16 @@
 
 package soot.toolkits.graph;
 
+import soot.G;
+import soot.options.Options;
+import soot.util.StationaryArrayList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import soot.G;
-import soot.options.Options;
-import soot.util.StationaryArrayList;
 
 /**
  * Identifies and provides an interface to query the strongly-connected components of DirectedGraph
@@ -45,15 +45,15 @@ import soot.util.StationaryArrayList;
  */
 @Deprecated
 public class StronglyConnectedComponents {
-  private HashMap<Object, Object> nodeToColor;
   private static final Object Visited = new Object();
   private static final Object Black = new Object();
   private final LinkedList<Object> finishingOrder;
-  private List<List> componentList = new ArrayList<>();
   private final HashMap<Object, List<Object>> nodeToComponent = new HashMap<>();
-  MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
   private final int[] indexStack;
   private final Object[] nodeStack;
+  MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
+  private HashMap<Object, Object> nodeToColor;
+  private List<List> componentList = new ArrayList<>();
   private int last;
 
   /**
@@ -191,7 +191,7 @@ public class StronglyConnectedComponents {
 
   /**
    * @return a list of the strongly-connnected components that make up the computed
-   *     strongly-connnect component graph.
+   * strongly-connnect component graph.
    */
   public List<List> getComponents() {
     return componentList;

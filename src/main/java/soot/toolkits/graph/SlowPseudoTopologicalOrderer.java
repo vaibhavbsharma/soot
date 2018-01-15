@@ -22,16 +22,17 @@
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
+
 package soot.toolkits.graph;
+
+import soot.G;
+import soot.Singletons;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import soot.G;
-import soot.Singletons;
 
 /**
  * Provide the pseudo topological order of a graph's nodes. It has same functionality as
@@ -43,33 +44,31 @@ import soot.Singletons;
  */
 public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
-  public SlowPseudoTopologicalOrderer(Singletons.Global g) {}
+  private static final int WHITE = 0, GRAY = 1, BLACK = 2;
+  private final HashMap<N, List<N>> succsMap = new HashMap<>();
+  private Map<N, Integer> stmtToColor;
+  private LinkedList<N> order;
+  private boolean mIsReversed = false;
+  private DirectedGraph<N> graph;
+  private List<N> reverseOrder;
 
-  public static SlowPseudoTopologicalOrderer v() {
-    return G.v().soot_toolkits_graph_SlowPseudoTopologicalOrderer();
+  public SlowPseudoTopologicalOrderer(Singletons.Global g) {
   }
 
-  public SlowPseudoTopologicalOrderer() {}
+  public SlowPseudoTopologicalOrderer() {
+  }
 
   public SlowPseudoTopologicalOrderer(boolean isReversed) {
     mIsReversed = isReversed;
   }
 
-  private Map<N, Integer> stmtToColor;
+  public static SlowPseudoTopologicalOrderer v() {
+    return G.v().soot_toolkits_graph_SlowPseudoTopologicalOrderer();
+  }
 
-  private static final int WHITE = 0, GRAY = 1, BLACK = 2;
-
-  private LinkedList<N> order;
-
-  private boolean mIsReversed = false;
-
-  private DirectedGraph<N> graph;
-
-  private List<N> reverseOrder;
-
-  private final HashMap<N, List<N>> succsMap = new HashMap<>();
-
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<N> newList(DirectedGraph<N> g, boolean reverse) {
     mIsReversed = reverse;
@@ -191,16 +190,46 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
     }
   }
 
+  /**
+   * @param g a DirectedGraph instance whose nodes we wish to order.
+   * @return a pseudo-topologically ordered list of the graph's nodes.
+   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
+   */
+  @Deprecated
+  public List<N> newList(DirectedGraph<N> g) {
+    return computeOrder(g);
+  }
+
+  // deprecated methods follow
+
+  /**
+   * Check the ordering for the orderer.
+   *
+   * @return true if we have reverse pseudo-topological ordering, false otherwise.
+   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
+   */
+  @Deprecated
+  public boolean isReverseOrder() {
+    return mIsReversed;
+  }
+
+  /**
+   * Set the ordering for the orderer.
+   *
+   * @param isReverse specify if we want reverse pseudo-topological ordering, or not.
+   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
+   */
+  @Deprecated
+  public void setReverseOrder(boolean isReversed) {
+    mIsReversed = isReversed;
+  }
+
   private class PseudoTopologicalReverseOrderer<N> {
 
-    private Map<N, Integer> stmtToColor;
-
     private static final int WHITE = 0, GRAY = 1, BLACK = 2;
-
-    private LinkedList<N> order;
-
     private final boolean mIsReversed = false;
-
+    private Map<N, Integer> stmtToColor;
+    private LinkedList<N> order;
     private DirectedGraph<N> graph;
 
     /**
@@ -292,38 +321,5 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
         }
       }
     }
-  }
-
-  // deprecated methods follow
-  /**
-   * @param g a DirectedGraph instance whose nodes we wish to order.
-   * @return a pseudo-topologically ordered list of the graph's nodes.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public List<N> newList(DirectedGraph<N> g) {
-    return computeOrder(g);
-  }
-
-  /**
-   * Set the ordering for the orderer.
-   *
-   * @param isReverse specify if we want reverse pseudo-topological ordering, or not.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public void setReverseOrder(boolean isReversed) {
-    mIsReversed = isReversed;
-  }
-
-  /**
-   * Check the ordering for the orderer.
-   *
-   * @return true if we have reverse pseudo-topological ordering, false otherwise.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public boolean isReverseOrder() {
-    return mIsReversed;
   }
 }

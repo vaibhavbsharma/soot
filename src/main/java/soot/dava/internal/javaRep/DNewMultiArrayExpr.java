@@ -19,16 +19,16 @@
 
 package soot.dava.internal.javaRep;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.jimple.internal.AbstractNewMultiArrayExpr;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
   public DNewMultiArrayExpr(ArrayType type, List sizes) {

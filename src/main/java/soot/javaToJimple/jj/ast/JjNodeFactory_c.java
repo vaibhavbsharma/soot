@@ -19,8 +19,6 @@
 
 package soot.javaToJimple.jj.ast;
 
-import java.util.List;
-
 import polyglot.ast.ArrayAccess;
 import polyglot.ast.ArrayAccessAssign;
 import polyglot.ast.ArrayInit;
@@ -43,7 +41,11 @@ import polyglot.ext.jl.ast.NodeFactory_c;
 import polyglot.types.Flags;
 import polyglot.util.Position;
 
-/** NodeFactory for jj extension. */
+import java.util.List;
+
+/**
+ * NodeFactory for jj extension.
+ */
 public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
   // TODO:  Implement factory methods for new AST nodes.
   // TODO:  Override factory methods for overriden AST nodes.

@@ -77,13 +77,21 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public class MethodNodeFactory extends AbstractShimpleValueSwitch {
+  protected final PAG pag;
+  protected final MethodPAG mpag;
+  protected SootMethod method;
+  protected ClientAccessibilityOracle accessibilityOracle =
+      Scene.v().getClientAccessibilityOracle();
+
   public MethodNodeFactory(PAG pag, MethodPAG mpag) {
     this.pag = pag;
     this.mpag = mpag;
     setCurrentMethod(mpag.getMethod());
   }
 
-  /** Sets the method for which a graph is currently being built. */
+  /**
+   * Sets the method for which a graph is currently being built.
+   */
   private void setCurrentMethod(SootMethod m) {
     method = m;
     if (!m.isStatic()) {
@@ -109,7 +117,9 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     return getNode();
   }
 
-  /** Adds the edges required for this statement to the graph. */
+  /**
+   * Adds the edges required for this statement to the graph.
+   */
   public final void handleStmt(Stmt s) {
     // We only consider reflective class creation when it is enabled
     if (s.containsInvokeExpr()) {
@@ -268,6 +278,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     ret.setInterProcTarget();
     return ret;
   }
+  /* End of public methods. */
+  /* End of package methods. */
 
   public final Node caseParm(int index) {
     VarNode ret =
@@ -302,8 +314,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   public final Node caseArray(VarNode base) {
     return pag.makeFieldRefNode(base, ArrayElement.v());
   }
-  /* End of public methods. */
-  /* End of package methods. */
 
   // OK, these ones are public, but they really shouldn't be; it's just
   // that Java requires them to be, because they override those other
@@ -476,10 +486,4 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
       throw new RuntimeException("Unhandled case of VirtualInvokeExpr");
     }
   }
-
-  protected final PAG pag;
-  protected final MethodPAG mpag;
-  protected SootMethod method;
-  protected ClientAccessibilityOracle accessibilityOracle =
-      Scene.v().getClientAccessibilityOracle();
 }

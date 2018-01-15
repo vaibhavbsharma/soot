@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.geomPA;
 
 import soot.jimple.spark.geom.dataRep.RectangleNode;
@@ -97,7 +98,9 @@ public abstract class IFigureManager {
     return q;
   }
 
-  /** We return the cached memory to garbage collector. */
+  /**
+   * We return the cached memory to garbage collector.
+   */
   public static void cleanCache() {
     segHeader = null;
     rectHeader = null;

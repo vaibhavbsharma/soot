@@ -16,9 +16,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.asm;
 
-import java.util.List;
+package soot.asm;
 
 import soot.Unit;
 import soot.UnitBox;
@@ -27,6 +26,8 @@ import soot.ValueBox;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
 import soot.util.Switch;
+
+import java.util.List;
 
 /**
  * A psuedo unit containing different units.

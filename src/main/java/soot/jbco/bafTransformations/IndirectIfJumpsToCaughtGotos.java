@@ -19,11 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.ByteType;
@@ -49,23 +44,26 @@ import soot.jbco.util.Rand;
 import soot.jbco.util.ThrowSet;
 import soot.util.Chain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Stack;
+
 /**
  * @author Michael Batchelder
- *     <p>Created on 2-May-2006
- *     <p>This transformer takes a portion of gotos/ifs and moves them into a TRY/CATCH block
+ * <p>Created on 2-May-2006
+ * <p>This transformer takes a portion of gotos/ifs and moves them into a TRY/CATCH block
  */
 public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJbcoTransform {
 
-  int count = 0;
-
   public static String dependancies[] = new String[] {"bb.jbco_iii", "bb.jbco_ful", "bb.lp"};
+  public static String name = "bb.jbco_iii";
+  int count = 0;
 
   @Override
   public String[] getDependancies() {
     return dependancies;
   }
-
-  public static String name = "bb.jbco_iii";
 
   @Override
   public String getName() {

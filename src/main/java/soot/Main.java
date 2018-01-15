@@ -25,7 +25,10 @@
 
 package soot;
 
-import static java.net.URLEncoder.encode;
+import com.google.common.base.Joiner;
+import soot.options.CGOptions;
+import soot.options.Options;
+import soot.toolkits.astmetrics.ClassData;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -37,19 +40,12 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-import com.google.common.base.Joiner;
+import static java.net.URLEncoder.encode;
 
-import soot.options.CGOptions;
-import soot.options.Options;
-import soot.toolkits.astmetrics.ClassData;
-
-/** Main class for Soot; provides Soot's command-line user interface. */
+/**
+ * Main class for Soot; provides Soot's command-line user interface.
+ */
 public class Main {
-  public Main(Singletons.Global g) {}
-
-  public static Main v() {
-    return G.v().soot_Main();
-  }
   // TODO: the following string should be updated by the source control
   // No it shouldn't. Prcs is horribly broken in this respect, and causes
   // the code to not compile all the time.
@@ -57,88 +53,19 @@ public class Main {
       Main.class.getPackage().getImplementationVersion() == null
           ? "trunk"
           : Main.class.getPackage().getImplementationVersion();
-
+  public String[] cmdLineArgs = new String[0];
   private Date start;
   private Date finish;
-
-  private void printVersion() {
-    G.v().out.println("Soot version " + versionString);
-
-    G.v().out.println("Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
-    G.v().out.println("All rights reserved.");
-    G.v().out.println("");
-    G.v()
-        .out
-        .println("Contributions are copyright (C) 1997-2010 by their respective contributors.");
-    G.v().out.println("See the file 'credits' for a list of contributors.");
-    G.v().out.println("See individual source files for details.");
-    G.v().out.println("");
-    G.v().out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
-    G.v().out.println("and you are welcome to redistribute it under certain conditions.");
-    G.v().out.println("See the accompanying file 'COPYING-LESSER.txt' for details.");
-    G.v().out.println();
-    G.v().out.println("Visit the Soot website:");
-    G.v().out.println("  http://www.sable.mcgill.ca/soot/");
-    G.v().out.println();
-    G.v().out.println("For a list of command line options, enter:");
-    G.v().out.println("  java soot.Main --help");
+  public Main(Singletons.Global g) {
   }
 
-  private void processCmdLine(String[] args) {
-
-    if (!Options.v().parse(args)) {
-      throw new OptionsParseException("Option parse error");
-    }
-
-    if (PackManager.v().onlyStandardPacks()) {
-      for (Pack pack : PackManager.v().allPacks()) {
-        Options.v().warnForeignPhase(pack.getPhaseName());
-        for (Transform tr : pack) {
-          Options.v().warnForeignPhase(tr.getPhaseName());
-        }
-      }
-    }
-    Options.v().warnNonexistentPhase();
-
-    if (Options.v().help()) {
-      G.v().out.println(Options.v().getUsage());
-      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
-    }
-
-    if (Options.v().phase_list()) {
-      G.v().out.println(Options.v().getPhaseList());
-      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
-    }
-
-    if (!Options.v().phase_help().isEmpty()) {
-      for (String phase : Options.v().phase_help()) {
-        G.v().out.println(Options.v().getPhaseHelp(phase));
-      }
-      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
-    }
-
-    if ((!Options.v().unfriendly_mode() && (args.length == 0)) || Options.v().version()) {
-      printVersion();
-      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
-    }
-
-    if (Options.v().on_the_fly()) {
-      Options.v().set_whole_program(true);
-      PhaseOptions.v().setPhaseOption("cg", "off");
-    }
-
-    postCmdLineCheck();
+  public static Main v() {
+    return G.v().soot_Main();
   }
 
-  private void postCmdLineCheck() {
-    if (Options.v().classes().isEmpty() && Options.v().process_dir().isEmpty()) {
-      throw new CompilationDeathException(
-          CompilationDeathException.COMPILATION_ABORTED, "No input classes specified!");
-    }
-  }
-
-  public String[] cmdLineArgs = new String[0];
-  /** Entry point for cmd line invocation of soot. */
+  /**
+   * Entry point for cmd line invocation of soot.
+   */
   public static void main(String[] args) {
     try {
       Main.v().run(args);
@@ -247,7 +174,85 @@ public class Main {
     return sb.append(s, start, end);
   }
 
-  /** Entry point to the soot's compilation process. */
+  private void printVersion() {
+    G.v().out.println("Soot version " + versionString);
+
+    G.v().out.println("Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
+    G.v().out.println("All rights reserved.");
+    G.v().out.println("");
+    G.v()
+        .out
+        .println("Contributions are copyright (C) 1997-2010 by their respective contributors.");
+    G.v().out.println("See the file 'credits' for a list of contributors.");
+    G.v().out.println("See individual source files for details.");
+    G.v().out.println("");
+    G.v().out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
+    G.v().out.println("and you are welcome to redistribute it under certain conditions.");
+    G.v().out.println("See the accompanying file 'COPYING-LESSER.txt' for details.");
+    G.v().out.println();
+    G.v().out.println("Visit the Soot website:");
+    G.v().out.println("  http://www.sable.mcgill.ca/soot/");
+    G.v().out.println();
+    G.v().out.println("For a list of command line options, enter:");
+    G.v().out.println("  java soot.Main --help");
+  }
+
+  private void processCmdLine(String[] args) {
+
+    if (!Options.v().parse(args)) {
+      throw new OptionsParseException("Option parse error");
+    }
+
+    if (PackManager.v().onlyStandardPacks()) {
+      for (Pack pack : PackManager.v().allPacks()) {
+        Options.v().warnForeignPhase(pack.getPhaseName());
+        for (Transform tr : pack) {
+          Options.v().warnForeignPhase(tr.getPhaseName());
+        }
+      }
+    }
+    Options.v().warnNonexistentPhase();
+
+    if (Options.v().help()) {
+      G.v().out.println(Options.v().getUsage());
+      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
+    }
+
+    if (Options.v().phase_list()) {
+      G.v().out.println(Options.v().getPhaseList());
+      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
+    }
+
+    if (!Options.v().phase_help().isEmpty()) {
+      for (String phase : Options.v().phase_help()) {
+        G.v().out.println(Options.v().getPhaseHelp(phase));
+      }
+      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
+    }
+
+    if ((!Options.v().unfriendly_mode() && (args.length == 0)) || Options.v().version()) {
+      printVersion();
+      throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
+    }
+
+    if (Options.v().on_the_fly()) {
+      Options.v().set_whole_program(true);
+      PhaseOptions.v().setPhaseOption("cg", "off");
+    }
+
+    postCmdLineCheck();
+  }
+
+  private void postCmdLineCheck() {
+    if (Options.v().classes().isEmpty() && Options.v().process_dir().isEmpty()) {
+      throw new CompilationDeathException(
+          CompilationDeathException.COMPILATION_ABORTED, "No input classes specified!");
+    }
+  }
+
+  /**
+   * Entry point to the soot's compilation process.
+   */
   public void run(String[] args) {
     cmdLineArgs = args;
 

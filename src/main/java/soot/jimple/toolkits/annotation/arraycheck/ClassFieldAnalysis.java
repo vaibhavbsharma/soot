@@ -25,16 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.G;
@@ -57,23 +47,32 @@ import soot.jimple.Stmt;
 import soot.options.Options;
 import soot.toolkits.scalar.LocalDefs;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ClassFieldAnalysis {
-  public ClassFieldAnalysis(Singletons.Global g) {}
-
-  public static ClassFieldAnalysis v() {
-    return G.v().soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis();
-  }
-
   private final boolean final_in = true;
   private final boolean private_in = true;
+  private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap =
+      new HashMap<>();
+  public ClassFieldAnalysis(Singletons.Global g) {
+  }
 
   /* A map hold class object to other information
    *
    * SootClass --> FieldInfoTable
    */
 
-  private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap =
-      new HashMap<>();
+  public static ClassFieldAnalysis v() {
+    return G.v().soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis();
+  }
 
   protected void internalTransform(SootClass c) {
     if (classToFieldInfoMap.containsKey(c)) {

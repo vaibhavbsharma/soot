@@ -2,7 +2,9 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.dava.DavaFlowAnalysisException;
 
-/** ******** START LOCAL CLASS DECLARATION ****************** */
+/**
+ * ******* START LOCAL CLASS DECLARATION ******************
+ */
 public class CPTuple {
   private String sootClass; // hold the name of the class to which the val belongs .... needed for
   // interprocedural constant Fields info
@@ -20,29 +22,6 @@ public class CPTuple {
    * true mean TOP
    */
   private Boolean TOP = new Boolean(false);
-
-  /*
-   * Dont care about className and variable but the CONSTANT VALUE HAS TO BE A NEW ONE
-   * otherwise the clone of the flowset keeps pointing to the same bloody constant value
-   */
-  @Override
-  public CPTuple clone() {
-    if (isTop()) {
-      return new CPTuple(sootClass, variable, true);
-    } else if (isValueADouble()) {
-      return new CPTuple(sootClass, variable, new Double(((Double) constant).doubleValue()));
-    } else if (isValueAFloat()) {
-      return new CPTuple(sootClass, variable, new Float(((Float) constant).floatValue()));
-    } else if (isValueALong()) {
-      return new CPTuple(sootClass, variable, new Long(((Long) constant).longValue()));
-    } else if (isValueABoolean()) {
-      return new CPTuple(sootClass, variable, new Boolean(((Boolean) constant).booleanValue()));
-    } else if (isValueAInteger()) {
-      return new CPTuple(sootClass, variable, new Integer(((Integer) constant).intValue()));
-    } else {
-      throw new RuntimeException("illegal Constant Type...report to developer" + constant);
-    }
-  }
 
   public CPTuple(String sootClass, CPVariable variable, Object constant) {
 
@@ -67,6 +46,29 @@ public class CPTuple {
 
     // notice we dont really care whether the argument top was true or false
     setTop();
+  }
+
+  /*
+   * Dont care about className and variable but the CONSTANT VALUE HAS TO BE A NEW ONE
+   * otherwise the clone of the flowset keeps pointing to the same bloody constant value
+   */
+  @Override
+  public CPTuple clone() {
+    if (isTop()) {
+      return new CPTuple(sootClass, variable, true);
+    } else if (isValueADouble()) {
+      return new CPTuple(sootClass, variable, new Double(((Double) constant).doubleValue()));
+    } else if (isValueAFloat()) {
+      return new CPTuple(sootClass, variable, new Float(((Float) constant).floatValue()));
+    } else if (isValueALong()) {
+      return new CPTuple(sootClass, variable, new Long(((Long) constant).longValue()));
+    } else if (isValueABoolean()) {
+      return new CPTuple(sootClass, variable, new Boolean(((Boolean) constant).booleanValue()));
+    } else if (isValueAInteger()) {
+      return new CPTuple(sootClass, variable, new Integer(((Integer) constant).intValue()));
+    } else {
+      throw new RuntimeException("illegal Constant Type...report to developer" + constant);
+    }
   }
 
   public boolean containsLocal() {
@@ -176,4 +178,6 @@ public class CPTuple {
   }
 }
 
-/** ******** END LOCAL CLASS DECLARATION ****************** */
+/**
+ * ******* END LOCAL CLASS DECLARATION ******************
+ */

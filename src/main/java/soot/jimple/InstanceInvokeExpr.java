@@ -29,10 +29,12 @@ import soot.Value;
 import soot.ValueBox;
 
 public interface InstanceInvokeExpr extends InvokeExpr {
-  /** @return the target (qualifier) of this method invocation expression. */
+  /**
+   * @return the target (qualifier) of this method invocation expression.
+   */
   Value getBase();
 
-  ValueBox getBaseBox();
-
   void setBase(Value base);
+
+  ValueBox getBaseBox();
 }

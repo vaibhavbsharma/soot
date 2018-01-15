@@ -30,16 +30,35 @@ import soot.util.BitVector;
  * @author Ondrej Lhotak
  */
 public final class SortedArraySet extends PointsToSetInternal {
+  private Node[] nodes = null;
+  private int size = 0;
+  private PAG pag = null;
+
   public SortedArraySet(Type type, PAG pag) {
     super(type);
     this.pag = pag;
   }
-  /** Returns true if this set contains no run-time objects. */
+
+  public static final P2SetFactory getFactory() {
+    return new P2SetFactory() {
+      @Override
+      public final PointsToSetInternal newSet(Type type, PAG pag) {
+        return new SortedArraySet(type, pag);
+      }
+    };
+  }
+
+  /**
+   * Returns true if this set contains no run-time objects.
+   */
   @Override
   public final boolean isEmpty() {
     return size == 0;
   }
-  /** Adds contents of other into this set, returns true if this set changed. */
+
+  /**
+   * Adds contents of other into this set, returns true if this set changed.
+   */
   @Override
   public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
     boolean ret = false;
@@ -94,7 +113,13 @@ public final class SortedArraySet extends PointsToSetInternal {
     }
     return super.addAll(other, exclude);
   }
-  /** Calls v's visit method on all nodes in this set. */
+
+  /* End of public methods. */
+  /* End of package methods. */
+
+  /**
+   * Calls v's visit method on all nodes in this set.
+   */
   @Override
   public final boolean forall(P2SetVisitor v) {
     for (int i = 0; i < size; i++) {
@@ -102,7 +127,10 @@ public final class SortedArraySet extends PointsToSetInternal {
     }
     return v.getReturnValue();
   }
-  /** Adds n to this set, returns true if n was not already in this set. */
+
+  /**
+   * Adds n to this set, returns true if n was not already in this set.
+   */
   @Override
   public final boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
@@ -138,7 +166,10 @@ public final class SortedArraySet extends PointsToSetInternal {
     }
     return false;
   }
-  /** Returns true iff the set contains n. */
+
+  /**
+   * Returns true iff the set contains n.
+   */
   @Override
   public final boolean contains(Node n) {
     int left = 0;
@@ -157,20 +188,4 @@ public final class SortedArraySet extends PointsToSetInternal {
     }
     return false;
   }
-
-  public static final P2SetFactory getFactory() {
-    return new P2SetFactory() {
-      @Override
-      public final PointsToSetInternal newSet(Type type, PAG pag) {
-        return new SortedArraySet(type, pag);
-      }
-    };
-  }
-
-  /* End of public methods. */
-  /* End of package methods. */
-
-  private Node[] nodes = null;
-  private int size = 0;
-  private PAG pag = null;
 }

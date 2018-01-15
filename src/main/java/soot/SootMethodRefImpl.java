@@ -19,11 +19,6 @@
 
 package soot;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
@@ -35,6 +30,11 @@ import soot.jimple.StringConstant;
 import soot.options.Options;
 import soot.util.NumberedString;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Representation of a reference to a method as it appears in a class file. Note that the method
  * directly referred to may not actually exist; the actual target of the reference is determined
@@ -42,6 +42,13 @@ import soot.util.NumberedString;
  * 5.4.3.3.
  */
 public class SootMethodRefImpl implements SootMethodRef {
+
+  private final SootClass declaringClass;
+  private final String name;
+  private final Type returnType;
+  private final boolean isStatic;
+  protected List<Type> parameterTypes;
+  private NumberedString subsig;
 
   public SootMethodRefImpl(
       SootClass declaringClass,
@@ -72,14 +79,6 @@ public class SootMethodRefImpl implements SootMethodRef {
       throw new RuntimeException("Attempt to create SootMethodRef with null returnType");
     }
   }
-
-  private final SootClass declaringClass;
-  private final String name;
-  protected List<Type> parameterTypes;
-  private final Type returnType;
-  private final boolean isStatic;
-
-  private NumberedString subsig;
 
   @Override
   public SootClass declaringClass() {
@@ -125,33 +124,6 @@ public class SootMethodRefImpl implements SootMethodRef {
   @Override
   public Type parameterType(int i) {
     return parameterTypes.get(i);
-  }
-
-  public class ClassResolutionFailedException extends ResolutionFailedException {
-    /** */
-    private static final long serialVersionUID = 5430199603403917938L;
-
-    public ClassResolutionFailedException() {
-      super(
-          "Class "
-              + declaringClass
-              + " doesn't have method "
-              + name
-              + "("
-              + (parameterTypes == null ? "" : parameterTypes)
-              + ")"
-              + " : "
-              + returnType
-              + "; failed to resolve in superclasses and interfaces");
-    }
-
-    @Override
-    public String toString() {
-      StringBuffer ret = new StringBuffer();
-      ret.append(super.toString());
-      resolve(ret);
-      return ret.toString();
-    }
   }
 
   @Override
@@ -388,5 +360,32 @@ public class SootMethodRefImpl implements SootMethodRef {
       return false;
     }
     return true;
+  }
+
+  public class ClassResolutionFailedException extends ResolutionFailedException {
+    /** */
+    private static final long serialVersionUID = 5430199603403917938L;
+
+    public ClassResolutionFailedException() {
+      super(
+          "Class "
+              + declaringClass
+              + " doesn't have method "
+              + name
+              + "("
+              + (parameterTypes == null ? "" : parameterTypes)
+              + ")"
+              + " : "
+              + returnType
+              + "; failed to resolve in superclasses and interfaces");
+    }
+
+    @Override
+    public String toString() {
+      StringBuffer ret = new StringBuffer();
+      ret.append(super.toString());
+      resolve(ret);
+      return ret.toString();
+    }
   }
 }

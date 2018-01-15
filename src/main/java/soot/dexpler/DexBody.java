@@ -24,19 +24,6 @@
 
 package soot.dexpler;
 
-import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
 import org.jf.dexlib2.analysis.ClassProvider;
@@ -50,7 +37,6 @@ import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
 import org.jf.dexlib2.util.MethodUtil;
-
 import soot.Body;
 import soot.DoubleType;
 import soot.G;
@@ -113,6 +99,19 @@ import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
+
 /**
  * A DexBody contains the code of a DexMethod and is used as a wrapper around JimpleBody in the
  * jimplification process.
@@ -121,46 +120,32 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Frank Hartmann
  */
 public class DexBody {
+  private final List<Type> parameterTypes;
+  private final DexFile dexFile;
+  private final Method method;
   private List<DexlibAbstractInstruction> instructions;
   // keeps track about the jimple locals that are associated with the dex
   // registers
   private Local[] registerLocals;
   private Local storeResultLocal;
   private Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
-
   private List<DeferableInstruction> deferredInstructions;
   private Set<RetypeableInstruction> instructionsToRetype;
   private DanglingInstruction dangling;
-
   private int numRegisters;
   private int numParameterRegisters;
-  private final List<Type> parameterTypes;
   private boolean isStatic;
-
   private JimpleBody jBody;
   private List<? extends TryBlock<? extends ExceptionHandler>> tries;
-
   private RefType declaringClassType;
-
-  private final DexFile dexFile;
-  private final Method method;
-
   // detect array/instructions overlapping obfuscation
   private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<>();
-
-  PseudoInstruction isAddressInData(int a) {
-    for (PseudoInstruction pi : pseudoInstructionData) {
-      int fb = pi.getDataFirstByte();
-      int lb = pi.getDataLastByte();
-      if (fb <= a && a <= lb) {
-        return pi;
-      }
-    }
-    return null;
-  }
+  private LocalSplitter localSplitter = null;
+  private UnreachableCodeEliminator unreachableCodeEliminator = null;
+  private CopyPropagator copyPropagator = null;
 
   /**
-   * @param code the codeitem that is contained in this body
+   * @param code   the codeitem that is contained in this body
    * @param method the method that is associated with this body
    */
   DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
@@ -229,7 +214,20 @@ public class DexBody {
     this.method = method;
   }
 
-  /** Return the types that are used in this body. */
+  PseudoInstruction isAddressInData(int a) {
+    for (PseudoInstruction pi : pseudoInstructionData) {
+      int fb = pi.getDataFirstByte();
+      int lb = pi.getDataLastByte();
+      if (fb <= a && a <= lb) {
+        return pi;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Return the types that are used in this body.
+   */
   public Set<Type> usedTypes() {
     Set<Type> types = new HashSet<>();
     for (DexlibAbstractInstruction i : instructions) {
@@ -292,14 +290,16 @@ public class DexBody {
     return jBody;
   }
 
-  /** Return the Locals that are associated with the current register state. */
+  /**
+   * Return the Locals that are associated with the current register state.
+   */
   public Local[] getRegisterLocals() {
     return registerLocals;
   }
 
   /**
    * Return the Local that are associated with the number in the current register state.
-   *
+   * <p>
    * <p>Handles if the register number actually points to a method parameter.
    *
    * @param num the register number
@@ -855,16 +855,12 @@ public class DexBody {
     return jBody;
   }
 
-  private LocalSplitter localSplitter = null;
-
   protected LocalSplitter getLocalSplitter() {
     if (this.localSplitter == null) {
       this.localSplitter = new LocalSplitter(DalvikThrowAnalysis.v());
     }
     return this.localSplitter;
   }
-
-  private UnreachableCodeEliminator unreachableCodeEliminator = null;
 
   protected UnreachableCodeEliminator getUnreachableCodeEliminator() {
     if (this.unreachableCodeEliminator == null) {
@@ -873,8 +869,6 @@ public class DexBody {
     return this.unreachableCodeEliminator;
   }
 
-  private CopyPropagator copyPropagator = null;
-
   protected CopyPropagator getCopyPopagator() {
     if (this.copyPropagator == null) {
       this.copyPropagator = new CopyPropagator(DalvikThrowAnalysis.v(), false);
@@ -882,7 +876,9 @@ public class DexBody {
     return this.copyPropagator;
   }
 
-  /** Set a dangling instruction for this body. */
+  /**
+   * Set a dangling instruction for this body.
+   */
   public void setDanglingInstruction(DanglingInstruction i) {
     dangling = i;
   }
@@ -903,7 +899,7 @@ public class DexBody {
 
   /**
    * Return the instructions that appear (lexically) before the given instruction.
-   *
+   * <p>
    * <p>The instruction immediately before the given is the first instruction and so on.
    *
    * @param instruction the instruction which successors will be returned.
@@ -922,7 +918,7 @@ public class DexBody {
 
   /**
    * Add the traps of this body.
-   *
+   * <p>
    * <p>Should only be called at the end jimplify.
    */
   private void addTraps() {

@@ -30,7 +30,8 @@ import soot.Singletons;
 import soot.Type;
 
 public class UnusuableType extends Type {
-  public UnusuableType(Singletons.Global g) {}
+  public UnusuableType(Singletons.Global g) {
+  }
 
   public static UnusuableType v() {
     return G.v().soot_coffi_UnusuableType();

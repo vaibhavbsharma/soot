@@ -33,7 +33,9 @@ import soot.toolkits.graph.DirectedGraph;
  */
 public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 
-  /** Construct the analysis from a DirectedGraph representation of a Body. */
+  /**
+   * Construct the analysis from a DirectedGraph representation of a Body.
+   */
   public ForwardFlowAnalysis(DirectedGraph<N> graph) {
     super(graph);
   }

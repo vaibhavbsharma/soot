@@ -33,7 +33,9 @@ package soot.toolkits.scalar;
  * @see: FlowUniverse
  */
 public interface BoundedFlowSet<T> extends FlowSet<T> {
-  /** Complements <code>this</code>. */
+  /**
+   * Complements <code>this</code>.
+   */
   void complement();
 
   /**
@@ -42,7 +44,9 @@ public interface BoundedFlowSet<T> extends FlowSet<T> {
    */
   void complement(FlowSet<T> dest);
 
-  /** returns the topped set. */
+  /**
+   * returns the topped set.
+   */
   FlowSet<T> topSet();
 
   /** Returns elements [low..high] of this BoundedFlowSet. (optional operation) */

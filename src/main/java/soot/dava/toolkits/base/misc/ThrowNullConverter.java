@@ -19,9 +19,6 @@
 
 package soot.dava.toolkits.base.misc;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import soot.G;
 import soot.NullType;
 import soot.RefType;
@@ -34,15 +31,19 @@ import soot.dava.DavaBody;
 import soot.dava.internal.javaRep.DNewInvokeExpr;
 import soot.jimple.ThrowStmt;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class ThrowNullConverter {
-  public ThrowNullConverter(Singletons.Global g) {}
+  private final RefType npeRef =
+      RefType.v(Scene.v().loadClassAndSupport("java.lang.NullPointerException"));
+
+  public ThrowNullConverter(Singletons.Global g) {
+  }
 
   public static ThrowNullConverter v() {
     return G.v().soot_dava_toolkits_base_misc_ThrowNullConverter();
   }
-
-  private final RefType npeRef =
-      RefType.v(Scene.v().loadClassAndSupport("java.lang.NullPointerException"));
 
   public void convert(DavaBody body) {
     Iterator it = body.getUnits().iterator();

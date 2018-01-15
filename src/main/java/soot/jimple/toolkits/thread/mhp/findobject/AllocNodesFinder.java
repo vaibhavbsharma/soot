@@ -1,9 +1,5 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import soot.PointsToAnalysis;
 import soot.RefType;
 import soot.SootMethod;
@@ -20,6 +16,10 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

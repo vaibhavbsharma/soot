@@ -1,23 +1,5 @@
 package soot;
 
-import static soot.util.backend.ASMBackendUtils.createASMAttribute;
-import static soot.util.backend.ASMBackendUtils.getDefaultValue;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -25,7 +7,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
-
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -55,6 +36,24 @@ import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.util.backend.SootASMClassWriter;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static soot.util.backend.ASMBackendUtils.createASMAttribute;
+import static soot.util.backend.ASMBackendUtils.getDefaultValue;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
+import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
+
 /**
  * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the
  * method bodies, as they are dependent on the IR.
@@ -63,6 +62,7 @@ import soot.util.backend.SootASMClassWriter;
  */
 public abstract class AbstractASMBackend {
 
+  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<>();
   // An ASM ClassVisitor that is used to emit the bytecode to
   protected ClassVisitor cv;
   // The SootClass that is to be converted into bytecode
@@ -70,14 +70,12 @@ public abstract class AbstractASMBackend {
   // The Java version to be used for generating this class
   protected int javaVersion;
 
-  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<>();
-
   /**
    * Creates a new ASM backend
    *
-   * @param sc The SootClass that is to be converted into bytecode
+   * @param sc          The SootClass that is to be converted into bytecode
    * @param javaVersion A particular Java version enforced by the user, may be 0 for automatic
-   *     detection, must not be lower than necessary for all features used
+   *                    detection, must not be lower than necessary for all features used
    */
   public AbstractASMBackend(SootClass sc, int javaVersion) {
     this.sc = sc;
@@ -125,6 +123,85 @@ public abstract class AbstractASMBackend {
         this.javaVersion = Opcodes.V1_8;
         break;
     }
+  }
+
+  /**
+   * Utility method to get the access modifiers of a Host
+   *
+   * @param modVal The bitset representation of the Host's modifiers
+   * @param host   The Host (SootClass, SootField or SootMethod) the modifiers are to be retrieved
+   *               from
+   * @return A bitset representation of the Host's modifiers in ASM's internal representation
+   */
+  protected static int getModifiers(int modVal, Host host) {
+    int modifier = 0;
+    // Retrieve visibility-modifier
+    if (Modifier.isPublic(modVal)) {
+      modifier |= Opcodes.ACC_PUBLIC;
+    } else if (Modifier.isPrivate(modVal)) {
+      modifier |= Opcodes.ACC_PRIVATE;
+    } else if (Modifier.isProtected(modVal)) {
+      modifier |= Opcodes.ACC_PROTECTED;
+    }
+    // Retrieve static-modifier
+    if (Modifier.isStatic(modVal)
+        && ((host instanceof SootField) || (host instanceof SootMethod))) {
+      modifier |= Opcodes.ACC_STATIC;
+    }
+    // Retrieve final-modifier
+    if (Modifier.isFinal(modVal)) {
+      modifier |= Opcodes.ACC_FINAL;
+    }
+    // Retrieve synchronized-modifier
+    if (Modifier.isSynchronized(modVal) && host instanceof SootMethod) {
+      modifier |= Opcodes.ACC_SYNCHRONIZED;
+    }
+    // Retrieve volatile/bridge-modifier
+    if (Modifier.isVolatile(modVal) && !(host instanceof SootClass)) {
+      modifier |= Opcodes.ACC_VOLATILE;
+    }
+    // Retrieve transient/varargs-modifier
+    if (Modifier.isTransient(modVal) && !(host instanceof SootClass)) {
+      modifier |= Opcodes.ACC_TRANSIENT;
+    }
+    // Retrieve native-modifier
+    if (Modifier.isNative(modVal) && host instanceof SootMethod) {
+      modifier |= Opcodes.ACC_NATIVE;
+    }
+    // Retrieve interface-modifier
+    if (Modifier.isInterface(modVal) && host instanceof SootClass) {
+      modifier |= Opcodes.ACC_INTERFACE;
+    } else if (host instanceof SootClass) {
+      /*
+       * For all classes except for interfaces the super-flag should be
+       * set. See JVM 8-Specification section 4.1, page 72.
+       */
+      modifier |= Opcodes.ACC_SUPER;
+    }
+    // Retrieve abstract-modifier
+    if (Modifier.isAbstract(modVal) && !(host instanceof SootField)) {
+      modifier |= Opcodes.ACC_ABSTRACT;
+    }
+    // Retrieve strictFP-modifier
+    if (Modifier.isStrictFP(modVal) && host instanceof SootMethod) {
+      modifier |= Opcodes.ACC_STRICT;
+    }
+    /*
+     * Retrieve synthetic-modifier. Class not present in source-code but
+     * generated by e.g. compiler TODO Do we need both checks?
+     */
+    if (Modifier.isSynthetic(modVal) || host.hasTag("SyntheticTag")) {
+      modifier |= Opcodes.ACC_SYNTHETIC;
+    }
+    // Retrieve annotation-modifier
+    if (Modifier.isAnnotation(modVal) && host instanceof SootClass) {
+      modifier |= Opcodes.ACC_ANNOTATION;
+    }
+    // Retrieve enum-modifier
+    if (Modifier.isEnum(modVal) && !(host instanceof SootMethod)) {
+      modifier |= Opcodes.ACC_ENUM;
+    }
+    return modifier;
   }
 
   /**
@@ -249,7 +326,9 @@ public abstract class AbstractASMBackend {
     generateByteCode();
   }
 
-  /** Emits the bytecode for the complete class */
+  /**
+   * Emits the bytecode for the complete class
+   */
   protected void generateByteCode() {
     generateClassHeader();
 
@@ -284,20 +363,8 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the methods before they are written out. This is mainly used
-   * to enforce a deterministic output between runs which we need for testing.
-   *
-   * @author Steven Arzt
+   * Emits the bytecode for all methods of the class
    */
-  private class SootMethodComparator implements Comparator<SootMethod> {
-
-    @Override
-    public int compare(SootMethod o1, SootMethod o2) {
-      return o1.getName().compareTo(o2.getName());
-    }
-  }
-
-  /** Emits the bytecode for all methods of the class */
   protected void generateMethods() {
     List<SootMethod> sortedMethods = new ArrayList<>(sc.getMethods());
     Collections.sort(sortedMethods, new SootMethodComparator());
@@ -377,7 +444,9 @@ public abstract class AbstractASMBackend {
     }
   }
 
-  /** Emits the bytecode for all fields of the class */
+  /**
+   * Emits the bytecode for all fields of the class
+   */
   protected void generateFields() {
     for (SootField f : sc.getFields()) {
       if (f.isPhantom()) {
@@ -402,20 +471,8 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the inner class references before they are written out. This
-   * is mainly used to enforce a deterministic output between runs which we need for testing.
-   *
-   * @author Steven Arzt
+   * Emits the bytecode for all references to inner classes if present
    */
-  private class SootInnerClassComparator implements Comparator<InnerClassTag> {
-
-    @Override
-    public int compare(InnerClassTag o1, InnerClassTag o2) {
-      return o1.getInnerClass() == null ? 0 : o1.getInnerClass().compareTo(o2.getInnerClass());
-    }
-  }
-
-  /** Emits the bytecode for all references to inner classes if present */
   protected void generateInnerClassReferences() {
     if (sc.hasTag("InnerClassAttribute") && !Options.v().no_output_inner_classes_attribute()) {
       InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
@@ -431,7 +488,9 @@ public abstract class AbstractASMBackend {
     }
   }
 
-  /** Emits the bytecode for all attributes of the class */
+  /**
+   * Emits the bytecode for all attributes of the class
+   */
   protected void generateAttributes() {
     for (Tag t : sc.getTags()) {
       if (t instanceof Attribute) {
@@ -444,7 +503,7 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for all attributes of a field
    *
    * @param fv The FieldVisitor to emit the bytecode to
-   * @param f The SootField the bytecode is to be emitted for
+   * @param f  The SootField the bytecode is to be emitted for
    */
   protected void generateAttributes(FieldVisitor fv, SootField f) {
     for (Tag t : f.getTags()) {
@@ -459,7 +518,7 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for all attributes of a method
    *
    * @param fv The MethodVisitor to emit the bytecode to
-   * @param f The SootMethod the bytecode is to be emitted for
+   * @param f  The SootMethod the bytecode is to be emitted for
    */
   protected void generateAttributes(MethodVisitor mv, SootMethod m) {
     for (Tag t : m.getTags()) {
@@ -474,8 +533,8 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for all annotations of a class, field or method
    *
    * @param visitor A ClassVisitor, FieldVisitor or MethodVisitor to emit the bytecode to
-   * @param host A Host (SootClass, SootField or SootMethod) the bytecode is to be emitted for, has
-   *     to match the visitor
+   * @param host    A Host (SootClass, SootField or SootMethod) the bytecode is to be emitted for, has
+   *                to match the visitor
    */
   protected void generateAnnotations(Object visitor, Host host) {
     for (Tag t : host.getTags()) {
@@ -514,10 +573,10 @@ public abstract class AbstractASMBackend {
   /**
    * Emits the bytecode for the values of an annotation
    *
-   * @param av The AnnotationVisitor to emit the bytecode to
+   * @param av       The AnnotationVisitor to emit the bytecode to
    * @param elements A collection of AnnatiotionElem that are the values of the annotation
-   * @param addName True, if the name of the annotation has to be added, false otherwise (should be
-   *     false only in recursive calls!)
+   * @param addName  True, if the name of the annotation has to be added, false otherwise (should be
+   *                 false only in recursive calls!)
    */
   protected void generateAnnotationElems(
       AnnotationVisitor av, Collection<AnnotationElem> elements, boolean addName) {
@@ -586,7 +645,9 @@ public abstract class AbstractASMBackend {
     }
   }
 
-  /** Emits the bytecode for a reference to an outer class if necessary */
+  /**
+   * Emits the bytecode for a reference to an outer class if necessary
+   */
   protected void generateOuterClassReference() {
     SootClass outerClass = sc.getOuterClass();
     String outerClassName = slashify(outerClass.getName());
@@ -606,7 +667,9 @@ public abstract class AbstractASMBackend {
     cv.visitOuterClass(outerClassName, enclosingMethod, enclosingMethodSig);
   }
 
-  /** Emits the bytecode for the class itself, including its signature */
+  /**
+   * Emits the bytecode for the class itself, including its signature
+   */
   protected void generateClassHeader() {
     /*
      * Retrieve all modifiers
@@ -644,90 +707,39 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Utility method to get the access modifiers of a Host
-   *
-   * @param modVal The bitset representation of the Host's modifiers
-   * @param host The Host (SootClass, SootField or SootMethod) the modifiers are to be retrieved
-   *     from
-   * @return A bitset representation of the Host's modifiers in ASM's internal representation
-   */
-  protected static int getModifiers(int modVal, Host host) {
-    int modifier = 0;
-    // Retrieve visibility-modifier
-    if (Modifier.isPublic(modVal)) {
-      modifier |= Opcodes.ACC_PUBLIC;
-    } else if (Modifier.isPrivate(modVal)) {
-      modifier |= Opcodes.ACC_PRIVATE;
-    } else if (Modifier.isProtected(modVal)) {
-      modifier |= Opcodes.ACC_PROTECTED;
-    }
-    // Retrieve static-modifier
-    if (Modifier.isStatic(modVal)
-        && ((host instanceof SootField) || (host instanceof SootMethod))) {
-      modifier |= Opcodes.ACC_STATIC;
-    }
-    // Retrieve final-modifier
-    if (Modifier.isFinal(modVal)) {
-      modifier |= Opcodes.ACC_FINAL;
-    }
-    // Retrieve synchronized-modifier
-    if (Modifier.isSynchronized(modVal) && host instanceof SootMethod) {
-      modifier |= Opcodes.ACC_SYNCHRONIZED;
-    }
-    // Retrieve volatile/bridge-modifier
-    if (Modifier.isVolatile(modVal) && !(host instanceof SootClass)) {
-      modifier |= Opcodes.ACC_VOLATILE;
-    }
-    // Retrieve transient/varargs-modifier
-    if (Modifier.isTransient(modVal) && !(host instanceof SootClass)) {
-      modifier |= Opcodes.ACC_TRANSIENT;
-    }
-    // Retrieve native-modifier
-    if (Modifier.isNative(modVal) && host instanceof SootMethod) {
-      modifier |= Opcodes.ACC_NATIVE;
-    }
-    // Retrieve interface-modifier
-    if (Modifier.isInterface(modVal) && host instanceof SootClass) {
-      modifier |= Opcodes.ACC_INTERFACE;
-    } else if (host instanceof SootClass) {
-      /*
-       * For all classes except for interfaces the super-flag should be
-       * set. See JVM 8-Specification section 4.1, page 72.
-       */
-      modifier |= Opcodes.ACC_SUPER;
-    }
-    // Retrieve abstract-modifier
-    if (Modifier.isAbstract(modVal) && !(host instanceof SootField)) {
-      modifier |= Opcodes.ACC_ABSTRACT;
-    }
-    // Retrieve strictFP-modifier
-    if (Modifier.isStrictFP(modVal) && host instanceof SootMethod) {
-      modifier |= Opcodes.ACC_STRICT;
-    }
-    /*
-     * Retrieve synthetic-modifier. Class not present in source-code but
-     * generated by e.g. compiler TODO Do we need both checks?
-     */
-    if (Modifier.isSynthetic(modVal) || host.hasTag("SyntheticTag")) {
-      modifier |= Opcodes.ACC_SYNTHETIC;
-    }
-    // Retrieve annotation-modifier
-    if (Modifier.isAnnotation(modVal) && host instanceof SootClass) {
-      modifier |= Opcodes.ACC_ANNOTATION;
-    }
-    // Retrieve enum-modifier
-    if (Modifier.isEnum(modVal) && !(host instanceof SootMethod)) {
-      modifier |= Opcodes.ACC_ENUM;
-    }
-    return modifier;
-  }
-
-  /**
    * Emits the bytecode for the body of a single method Has to be implemented by subclasses to suit
    * their needs
    *
-   * @param mv The MethodVisitor to emit the bytecode to
+   * @param mv     The MethodVisitor to emit the bytecode to
    * @param method The SootMethod the bytecode is to be emitted for
    */
   protected abstract void generateMethodBody(MethodVisitor mv, SootMethod method);
+
+  /**
+   * Comparatator that is used to sort the methods before they are written out. This is mainly used
+   * to enforce a deterministic output between runs which we need for testing.
+   *
+   * @author Steven Arzt
+   */
+  private class SootMethodComparator implements Comparator<SootMethod> {
+
+    @Override
+    public int compare(SootMethod o1, SootMethod o2) {
+      return o1.getName().compareTo(o2.getName());
+    }
+  }
+
+  /**
+   * Comparatator that is used to sort the inner class references before they are written out. This
+   * is mainly used to enforce a deterministic output between runs which we need for testing.
+   *
+   * @author Steven Arzt
+   */
+  private class SootInnerClassComparator implements Comparator<InnerClassTag> {
+
+    @Override
+    public int compare(InnerClassTag o1, InnerClassTag o2) {
+      return o1.getInnerClass() == null ? 0 : o1.getInnerClass().compareTo(o2.getInnerClass());
+    }
+  }
 }

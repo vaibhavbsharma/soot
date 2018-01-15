@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.ondemand.genericutil;
 
 import java.util.Arrays;
@@ -25,6 +26,11 @@ public class ImmutableStack<T> {
   private static final ImmutableStack<Object> EMPTY = new ImmutableStack<>(new Object[0]);
 
   private static final int MAX_SIZE = Integer.MAX_VALUE;
+  private final T[] entries;
+
+  private ImmutableStack(T[] entries) {
+    this.entries = entries;
+  }
 
   public static int getMaxSize() {
     return MAX_SIZE;
@@ -33,12 +39,6 @@ public class ImmutableStack<T> {
   @SuppressWarnings("unchecked")
   public static final <T> ImmutableStack<T> emptyStack() {
     return (ImmutableStack<T>) EMPTY;
-  }
-
-  private final T[] entries;
-
-  private ImmutableStack(T[] entries) {
-    this.entries = entries;
   }
 
   @Override

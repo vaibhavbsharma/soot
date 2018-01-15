@@ -26,9 +26,9 @@
 
 package soot;
 
-import java.util.List;
-
 import soot.util.Switch;
+
+import java.util.List;
 
 /**
  * Encapsulates the Value class, but uses EquivTo for equality comparisons. Also uses equivHashCode
@@ -53,19 +53,23 @@ public class EquivalentValue implements Value {
     return e.equivTo(o);
   }
 
-  /** compares the encapsulated value with <code>v</code>, using <code>equivTo</code> */
+  /**
+   * compares the encapsulated value with <code>v</code>, using <code>equivTo</code>
+   */
   public boolean equivToValue(Value v) {
     return e.equivTo(v);
   }
 
-  /** compares the encapsulated value with <code>v</code>, using <code>equals</code> */
+  /**
+   * compares the encapsulated value with <code>v</code>, using <code>equals</code>
+   */
   public boolean equalsToValue(Value v) {
     return e.equals(v);
   }
 
   /**
-   * @deprecated
    * @see #getValue()
+   * @deprecated
    */
   @Deprecated
   public Value getDeepestValue() {
@@ -88,7 +92,10 @@ public class EquivalentValue implements Value {
 
   /** ****************************** */
   /* implement the Value-interface */
-  /** ****************************** */
+
+  /**
+   * *****************************
+   */
   @Override
   public List<ValueBox> getUseBoxes() {
     return e.getUseBoxes();

@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.infoflow;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import soot.EquivalentValue;
 import soot.RefLikeType;
 import soot.jimple.InstanceFieldRef;
@@ -10,6 +7,9 @@ import soot.jimple.ParameterRef;
 import soot.jimple.Ref;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.ThisRef;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CallLocalityContext written by Richard L. Halpert 2007-03-05 Acts as a container for the locality

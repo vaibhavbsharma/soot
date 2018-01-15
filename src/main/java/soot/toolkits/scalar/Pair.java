@@ -17,6 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.toolkits.scalar;
 
 import soot.PointsToAnalysis;
@@ -30,6 +31,9 @@ import soot.SootMethod;
  * @author xiao, extend it with more functions
  */
 public class Pair<T, U> {
+  protected T o1;
+  protected U o2;
+
   public Pair() {
     o1 = null;
     o2 = null;
@@ -79,12 +83,16 @@ public class Pair<T, U> {
     return true;
   }
 
-  /** Decide if this pair represents a method parameter. */
+  /**
+   * Decide if this pair represents a method parameter.
+   */
   public boolean isParameter() {
     return o1 instanceof SootMethod && o2 instanceof Integer;
   }
 
-  /** Decide if this pair stores the THIS parameter for a method. */
+  /**
+   * Decide if this pair stores the THIS parameter for a method.
+   */
   public boolean isThisParameter() {
     return o1 instanceof SootMethod && o2.equals(PointsToAnalysis.THIS_NODE);
   }
@@ -98,12 +106,12 @@ public class Pair<T, U> {
     return o1;
   }
 
-  public U getO2() {
-    return o2;
-  }
-
   public void setO1(T no1) {
     o1 = no1;
+  }
+
+  public U getO2() {
+    return o2;
   }
 
   public void setO2(U no2) {
@@ -114,7 +122,4 @@ public class Pair<T, U> {
     o1 = no1;
     o2 = no2;
   }
-
-  protected T o1;
-  protected U o2;
 }

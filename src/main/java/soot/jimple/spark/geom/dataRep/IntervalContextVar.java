@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 package soot.jimple.spark.geom.dataRep;
 
 import soot.jimple.spark.pag.Node;
@@ -30,7 +31,8 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
   // The interval is [L, R), which stands for a set of consecutive contexts
   public long L = 0, R = 0;
 
-  public IntervalContextVar() {}
+  public IntervalContextVar() {
+  }
 
   public IntervalContextVar(long l, long r, Node v) {
     assert l < r;

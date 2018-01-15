@@ -28,9 +28,13 @@ package soot;
 import java.util.HashMap;
 import java.util.Map;
 
-/** An abstract class which acts on the whole Scene. */
+/**
+ * An abstract class which acts on the whole Scene.
+ */
 public abstract class SceneTransformer extends Transformer {
-  /** Performs the transformation on the Scene, under the given phaseName. */
+  /**
+   * Performs the transformation on the Scene, under the given phaseName.
+   */
   public final void transform(String phaseName, Map<String, String> options) {
     if (!PhaseOptions.getBoolean(options, "enabled")) {
       return;
