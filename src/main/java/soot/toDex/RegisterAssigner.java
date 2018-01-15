@@ -1,13 +1,6 @@
 package soot.toDex;
 
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 import org.jf.dexlib2.Opcode;
-
 import soot.jimple.Stmt;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.Insn;
@@ -15,6 +8,12 @@ import soot.toDex.instructions.Insn11n;
 import soot.toDex.instructions.Insn21s;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.TwoRegInsn;
+
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Assigns final register numbers in instructions so that they fit into their format and obey the
@@ -25,76 +24,6 @@ import soot.toDex.instructions.TwoRegInsn;
  * IMPLEMENTATION NOTE: The algorithm is heavily inspired by com.android.dx.dex.code.OutputFinisher.
  */
 class RegisterAssigner {
-
-  private class InstructionIterator implements Iterator<Insn> {
-
-    private final ListIterator<Insn> insnsIterator;
-    private final Map<Insn, Stmt> insnStmtMap;
-    private final Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap;
-
-    public InstructionIterator(
-        List<Insn> insns,
-        Map<Insn, Stmt> insnStmtMap,
-        Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap) {
-      this.insnStmtMap = insnStmtMap;
-      this.insnsIterator = insns.listIterator();
-      this.insnRegisterMap = insnRegisterMap;
-    }
-
-    @Override
-    public boolean hasNext() {
-      return insnsIterator.hasNext();
-    }
-
-    @Override
-    public Insn next() {
-      return insnsIterator.next();
-    }
-
-    public Insn previous() {
-      return insnsIterator.previous();
-    }
-
-    @Override
-    public void remove() {
-      this.insnsIterator.remove();
-    }
-
-    public void add(Insn element, Insn forOriginal, Register newRegister) {
-      LocalRegisterAssignmentInformation originalRegisterLocal =
-          this.insnRegisterMap.get(forOriginal);
-      if (originalRegisterLocal != null) {
-        if (newRegister != null) {
-          this.insnRegisterMap.put(
-              element,
-              LocalRegisterAssignmentInformation.v(
-                  newRegister, this.insnRegisterMap.get(forOriginal).getLocal()));
-        } else {
-          this.insnRegisterMap.put(element, originalRegisterLocal);
-        }
-      }
-
-      if (this.insnStmtMap.containsKey(forOriginal)) {
-        this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
-      }
-      this.insnsIterator.add(element);
-    }
-
-    public void set(Insn element, Insn forOriginal) {
-      LocalRegisterAssignmentInformation originalRegisterLocal =
-          this.insnRegisterMap.get(forOriginal);
-      if (originalRegisterLocal != null) {
-        this.insnRegisterMap.put(element, originalRegisterLocal);
-        this.insnRegisterMap.remove(forOriginal);
-      }
-
-      if (this.insnStmtMap.containsKey(forOriginal)) {
-        this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
-        this.insnStmtMap.remove(forOriginal);
-      }
-      this.insnsIterator.set(element);
-    }
-  }
 
   private RegisterAllocator regAlloc;
 
@@ -378,5 +307,75 @@ class RegisterAssigner {
     }
     // no fitting insn found
     return null;
+  }
+
+  private class InstructionIterator implements Iterator<Insn> {
+
+    private final ListIterator<Insn> insnsIterator;
+    private final Map<Insn, Stmt> insnStmtMap;
+    private final Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap;
+
+    public InstructionIterator(
+        List<Insn> insns,
+        Map<Insn, Stmt> insnStmtMap,
+        Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap) {
+      this.insnStmtMap = insnStmtMap;
+      this.insnsIterator = insns.listIterator();
+      this.insnRegisterMap = insnRegisterMap;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return insnsIterator.hasNext();
+    }
+
+    @Override
+    public Insn next() {
+      return insnsIterator.next();
+    }
+
+    public Insn previous() {
+      return insnsIterator.previous();
+    }
+
+    @Override
+    public void remove() {
+      this.insnsIterator.remove();
+    }
+
+    public void add(Insn element, Insn forOriginal, Register newRegister) {
+      LocalRegisterAssignmentInformation originalRegisterLocal =
+          this.insnRegisterMap.get(forOriginal);
+      if (originalRegisterLocal != null) {
+        if (newRegister != null) {
+          this.insnRegisterMap.put(
+              element,
+              LocalRegisterAssignmentInformation.v(
+                  newRegister, this.insnRegisterMap.get(forOriginal).getLocal()));
+        } else {
+          this.insnRegisterMap.put(element, originalRegisterLocal);
+        }
+      }
+
+      if (this.insnStmtMap.containsKey(forOriginal)) {
+        this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
+      }
+      this.insnsIterator.add(element);
+    }
+
+    public void set(Insn element, Insn forOriginal) {
+      LocalRegisterAssignmentInformation originalRegisterLocal =
+          this.insnRegisterMap.get(forOriginal);
+      if (originalRegisterLocal != null) {
+        this.insnRegisterMap.put(element, originalRegisterLocal);
+        this.insnRegisterMap.remove(forOriginal);
+      }
+
+      if (this.insnStmtMap.containsKey(forOriginal)) {
+        this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
+        this.insnStmtMap.remove(forOriginal);
+      }
+      this.insnsIterator.set(element);
+    }
   }
 }

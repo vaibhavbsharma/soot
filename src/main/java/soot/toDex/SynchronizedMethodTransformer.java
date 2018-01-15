@@ -25,9 +25,6 @@
 
 package soot.toDex;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -39,6 +36,9 @@ import soot.jimple.Jimple;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * The Dalvik VM requires synchronized methods to explicitly enter a monitor and leave it in a
  * finally block again after execution. See
@@ -47,7 +47,8 @@ import soot.toolkits.graph.UnitGraph;
  * @author Steven Arzt
  */
 public class SynchronizedMethodTransformer extends BodyTransformer {
-  public SynchronizedMethodTransformer(Singletons.Global g) {}
+  public SynchronizedMethodTransformer(Singletons.Global g) {
+  }
 
   public static SynchronizedMethodTransformer v() {
     return G.v().soot_toDex_SynchronizedMethodTransformer();

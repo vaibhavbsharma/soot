@@ -2,7 +2,9 @@ package soot.toDex;
 
 import soot.Local;
 
-/** Contains information about which register maps to which local */
+/**
+ * Contains information about which register maps to which local
+ */
 public class LocalRegisterAssignmentInformation {
 
   private Local local;

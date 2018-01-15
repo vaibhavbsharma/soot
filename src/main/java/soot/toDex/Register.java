@@ -5,7 +5,9 @@ import soot.FloatType;
 import soot.IntType;
 import soot.Type;
 
-/** A register for the Dalvik VM. It has a number and a type. */
+/**
+ * A register for the Dalvik VM. It has a number and a type.
+ */
 public class Register implements Cloneable {
 
   public static final int MAX_REG_NUM_UNCONSTRAINED = 65535;
@@ -15,6 +17,13 @@ public class Register implements Cloneable {
   public static final int MAX_REG_NUM_BYTE = 15;
 
   public static final Register EMPTY_REGISTER = new Register(IntType.v(), 0);
+  private final Type type;
+  private int number;
+
+  public Register(Type type, int number) {
+    this.type = type;
+    this.number = number;
+  }
 
   private static boolean fitsInto(int regNumber, int maxNumber, boolean isWide) {
     if (isWide) {
@@ -34,15 +43,6 @@ public class Register implements Cloneable {
 
   public static boolean fitsByte(int regNumber, boolean isWide) {
     return fitsInto(regNumber, MAX_REG_NUM_BYTE, isWide);
-  }
-
-  private final Type type;
-
-  private int number;
-
-  public Register(Type type, int number) {
-    this.type = type;
-    this.number = number;
   }
 
   public boolean isEmptyReg() {

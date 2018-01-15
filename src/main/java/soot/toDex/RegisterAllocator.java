@@ -1,13 +1,5 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import soot.Local;
 import soot.SootMethod;
 import soot.Type;
@@ -20,6 +12,14 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An allocator for registers. It keeps track of locals to re-use their registers.<br>
@@ -34,11 +34,6 @@ public class RegisterAllocator {
   private Map<Local, Integer> localToLastRegNum;
 
   private int paramRegCount;
-
-  public RegisterAllocator() {
-    localToLastRegNum = new HashMap<>();
-  }
-
   //
   // Keep the same register for immediate constants.
   // Tested on application uk.co.nickfines.RealCalc.apk, sha256:
@@ -89,12 +84,13 @@ public class RegisterAllocator {
   private AtomicInteger longI = new AtomicInteger(0);
   private AtomicInteger doubleI = new AtomicInteger(0);
   private AtomicInteger stringI = new AtomicInteger(0);
-
   private Set<Register> lockedRegisters = new HashSet<>();
-
   private int lastReg;
-
   private Register currentLocalRegister;
+
+  public RegisterAllocator() {
+    localToLastRegNum = new HashMap<>();
+  }
 
   private Register asConstant(Constant c, ConstantVisitor constantV) {
     Register constantRegister = null;

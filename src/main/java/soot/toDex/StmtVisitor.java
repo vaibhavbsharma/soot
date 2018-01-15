@@ -1,18 +1,9 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -79,6 +70,14 @@ import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
 import soot.util.Switchable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A visitor that builds a list of instructions from the Jimple statements it visits.<br>
@@ -148,6 +147,29 @@ class StmtVisitor implements StmtSwitch {
     exprV = new ExprVisitor(this, constantV, regAlloc);
     insns = new ArrayList<>();
     payloads = new ArrayList<>();
+  }
+
+  protected static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
+    // get the opcode type, depending on the source reg (we assume that the
+    // destination has the same type)
+    String opcType;
+    if (sourceReg.isObject()) {
+      opcType = "MOVE_OBJECT";
+    } else if (sourceReg.isWide()) {
+      opcType = "MOVE_WIDE";
+    } else {
+      opcType = "MOVE";
+    }
+    // get the optional opcode suffix, depending on the sizes of the regs
+    if (!destinationReg.fitsShort()) {
+      Opcode opc = Opcode.valueOf(opcType + "_16");
+      return new Insn32x(opc, destinationReg, sourceReg);
+    } else if (!destinationReg.fitsByte() || !sourceReg.fitsByte()) {
+      Opcode opc = Opcode.valueOf(opcType + "_FROM16");
+      return new Insn22x(opc, destinationReg, sourceReg);
+    }
+    Opcode opc = Opcode.valueOf(opcType);
+    return new Insn12x(opc, destinationReg, sourceReg);
   }
 
   protected void setLastReturnTypeDescriptor(String typeDescriptor) {
@@ -490,29 +512,6 @@ class StmtVisitor implements StmtSwitch {
     } else {
       throw new RuntimeException("unsupported type of ConcreteRef: " + destRef.getClass());
     }
-  }
-
-  protected static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
-    // get the opcode type, depending on the source reg (we assume that the
-    // destination has the same type)
-    String opcType;
-    if (sourceReg.isObject()) {
-      opcType = "MOVE_OBJECT";
-    } else if (sourceReg.isWide()) {
-      opcType = "MOVE_WIDE";
-    } else {
-      opcType = "MOVE";
-    }
-    // get the optional opcode suffix, depending on the sizes of the regs
-    if (!destinationReg.fitsShort()) {
-      Opcode opc = Opcode.valueOf(opcType + "_16");
-      return new Insn32x(opc, destinationReg, sourceReg);
-    } else if (!destinationReg.fitsByte() || !sourceReg.fitsByte()) {
-      Opcode opc = Opcode.valueOf(opcType + "_FROM16");
-      return new Insn22x(opc, destinationReg, sourceReg);
-    }
-    Opcode opc = Opcode.valueOf(opcType);
-    return new Insn12x(opc, destinationReg, sourceReg);
   }
 
   private Insn buildStaticFieldPutInsn(StaticFieldRef destRef, Value source) {

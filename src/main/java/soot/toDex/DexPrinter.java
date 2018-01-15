@@ -1,29 +1,5 @@
 package soot.toDex;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.Opcodes;
@@ -74,7 +50,6 @@ import org.jf.dexlib2.immutable.value.ImmutableShortEncodedValue;
 import org.jf.dexlib2.immutable.value.ImmutableStringEncodedValue;
 import org.jf.dexlib2.immutable.value.ImmutableTypeEncodedValue;
 import org.jf.dexlib2.writer.builder.BuilderEncodedValues;
-
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -143,6 +118,30 @@ import soot.toDex.instructions.Insn10t;
 import soot.toDex.instructions.Insn30t;
 import soot.toDex.instructions.InsnWithOffset;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
 /**
  * Main entry point for the "dex" output format.<br>
  * <br>
@@ -155,8 +154,8 @@ import soot.toDex.instructions.InsnWithOffset;
  * If there is no original APK, the printer just emits a classes.dex.
  *
  * @see <a href=
- *     "http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jarsigner.html">jarsigner
- *     documentation</a>
+ * "http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jarsigner.html">jarsigner
+ * documentation</a>
  * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign documentation</a>
  */
 public class DexPrinter {
@@ -358,168 +357,152 @@ public class DexPrinter {
    */
   private EncodedValue buildEncodedValueForAnnotation(AnnotationElem elem) {
     switch (elem.getKind()) {
-      case 'Z':
-        {
-          if (elem instanceof AnnotationIntElem) {
-            AnnotationIntElem e = (AnnotationIntElem) elem;
-            if (e.getValue() == 0) {
-              return ImmutableBooleanEncodedValue.FALSE_VALUE;
-            } else if (e.getValue() == 1) {
-              return ImmutableBooleanEncodedValue.TRUE_VALUE;
-            } else {
-              throw new RuntimeException("error: boolean value from int with value != 0 or 1.");
-            }
-          } else if (elem instanceof AnnotationBooleanElem) {
-            AnnotationBooleanElem e = (AnnotationBooleanElem) elem;
-            if (e.getValue()) {
-              return ImmutableBooleanEncodedValue.TRUE_VALUE;
-            } else {
-              return ImmutableBooleanEncodedValue.FALSE_VALUE;
-            }
+      case 'Z': {
+        if (elem instanceof AnnotationIntElem) {
+          AnnotationIntElem e = (AnnotationIntElem) elem;
+          if (e.getValue() == 0) {
+            return ImmutableBooleanEncodedValue.FALSE_VALUE;
+          } else if (e.getValue() == 1) {
+            return ImmutableBooleanEncodedValue.TRUE_VALUE;
           } else {
-            throw new RuntimeException("Annotation type incompatible with target type boolean");
+            throw new RuntimeException("error: boolean value from int with value != 0 or 1.");
+          }
+        } else if (elem instanceof AnnotationBooleanElem) {
+          AnnotationBooleanElem e = (AnnotationBooleanElem) elem;
+          if (e.getValue()) {
+            return ImmutableBooleanEncodedValue.TRUE_VALUE;
+          } else {
+            return ImmutableBooleanEncodedValue.FALSE_VALUE;
+          }
+        } else {
+          throw new RuntimeException("Annotation type incompatible with target type boolean");
+        }
+      }
+      case 'S': {
+        AnnotationIntElem e = (AnnotationIntElem) elem;
+        return new ImmutableShortEncodedValue((short) e.getValue());
+      }
+      case 'B': {
+        AnnotationIntElem e = (AnnotationIntElem) elem;
+        return new ImmutableByteEncodedValue((byte) e.getValue());
+      }
+      case 'C': {
+        AnnotationIntElem e = (AnnotationIntElem) elem;
+        return new ImmutableCharEncodedValue((char) e.getValue());
+      }
+      case 'I': {
+        AnnotationIntElem e = (AnnotationIntElem) elem;
+        return new ImmutableIntEncodedValue(e.getValue());
+      }
+      case 'J': {
+        AnnotationLongElem e = (AnnotationLongElem) elem;
+        return new ImmutableLongEncodedValue(e.getValue());
+      }
+      case 'F': {
+        AnnotationFloatElem e = (AnnotationFloatElem) elem;
+        return new ImmutableFloatEncodedValue(e.getValue());
+      }
+      case 'D': {
+        AnnotationDoubleElem e = (AnnotationDoubleElem) elem;
+        return new ImmutableDoubleEncodedValue(e.getValue());
+      }
+      case 's': {
+        AnnotationStringElem e = (AnnotationStringElem) elem;
+        return new ImmutableStringEncodedValue(e.getValue());
+      }
+      case 'e': {
+        AnnotationEnumElem e = (AnnotationEnumElem) elem;
+
+        String classT = SootToDexUtils.getDexClassName(e.getTypeName());
+        String fieldT = classT;
+        return new ImmutableEnumEncodedValue(
+            new ImmutableFieldReference(classT, e.getConstantName(), fieldT));
+      }
+      case 'c': {
+        AnnotationClassElem e = (AnnotationClassElem) elem;
+        return new ImmutableTypeEncodedValue(e.getDesc());
+      }
+      case '[': {
+        AnnotationArrayElem e = (AnnotationArrayElem) elem;
+        List<EncodedValue> values = new ArrayList<>();
+        for (int i = 0; i < e.getNumValues(); i++) {
+          EncodedValue val = buildEncodedValueForAnnotation(e.getValueAt(i));
+          values.add(val);
+        }
+        return new ImmutableArrayEncodedValue(values);
+      }
+      case '@': {
+        AnnotationAnnotationElem e = (AnnotationAnnotationElem) elem;
+
+        Set<String> alreadyWritten = new HashSet<>();
+        List<AnnotationElement> elements = null;
+        if (!e.getValue().getElems().isEmpty()) {
+          elements = new ArrayList<>();
+          for (AnnotationElem ae : e.getValue().getElems()) {
+            if (!alreadyWritten.add(ae.getName())) {
+              throw new RuntimeException("Duplicate annotation attribute: " + ae.getName());
+            }
+
+            AnnotationElement element =
+                new ImmutableAnnotationElement(ae.getName(), buildEncodedValueForAnnotation(ae));
+            elements.add(element);
           }
         }
-      case 'S':
-        {
-          AnnotationIntElem e = (AnnotationIntElem) elem;
-          return new ImmutableShortEncodedValue((short) e.getValue());
-        }
-      case 'B':
-        {
-          AnnotationIntElem e = (AnnotationIntElem) elem;
-          return new ImmutableByteEncodedValue((byte) e.getValue());
-        }
-      case 'C':
-        {
-          AnnotationIntElem e = (AnnotationIntElem) elem;
-          return new ImmutableCharEncodedValue((char) e.getValue());
-        }
-      case 'I':
-        {
-          AnnotationIntElem e = (AnnotationIntElem) elem;
-          return new ImmutableIntEncodedValue(e.getValue());
-        }
-      case 'J':
-        {
-          AnnotationLongElem e = (AnnotationLongElem) elem;
-          return new ImmutableLongEncodedValue(e.getValue());
-        }
-      case 'F':
-        {
-          AnnotationFloatElem e = (AnnotationFloatElem) elem;
-          return new ImmutableFloatEncodedValue(e.getValue());
-        }
-      case 'D':
-        {
-          AnnotationDoubleElem e = (AnnotationDoubleElem) elem;
-          return new ImmutableDoubleEncodedValue(e.getValue());
-        }
-      case 's':
-        {
-          AnnotationStringElem e = (AnnotationStringElem) elem;
-          return new ImmutableStringEncodedValue(e.getValue());
-        }
-      case 'e':
-        {
-          AnnotationEnumElem e = (AnnotationEnumElem) elem;
 
-          String classT = SootToDexUtils.getDexClassName(e.getTypeName());
-          String fieldT = classT;
-          return new ImmutableEnumEncodedValue(
-              new ImmutableFieldReference(classT, e.getConstantName(), fieldT));
-        }
-      case 'c':
-        {
-          AnnotationClassElem e = (AnnotationClassElem) elem;
-          return new ImmutableTypeEncodedValue(e.getDesc());
-        }
-      case '[':
-        {
-          AnnotationArrayElem e = (AnnotationArrayElem) elem;
-          List<EncodedValue> values = new ArrayList<>();
-          for (int i = 0; i < e.getNumValues(); i++) {
-            EncodedValue val = buildEncodedValueForAnnotation(e.getValueAt(i));
-            values.add(val);
-          }
-          return new ImmutableArrayEncodedValue(values);
-        }
-      case '@':
-        {
-          AnnotationAnnotationElem e = (AnnotationAnnotationElem) elem;
+        return new ImmutableAnnotationEncodedValue(
+            SootToDexUtils.getDexClassName(e.getValue().getType()), elements);
+      }
+      case 'f': { // field (Dalvik specific?)
+        AnnotationStringElem e = (AnnotationStringElem) elem;
 
-          Set<String> alreadyWritten = new HashSet<>();
-          List<AnnotationElement> elements = null;
-          if (!e.getValue().getElems().isEmpty()) {
-            elements = new ArrayList<>();
-            for (AnnotationElem ae : e.getValue().getElems()) {
-              if (!alreadyWritten.add(ae.getName())) {
-                throw new RuntimeException("Duplicate annotation attribute: " + ae.getName());
-              }
+        String fSig = e.getValue();
+        String[] sp = fSig.split(" ");
+        String classString = SootToDexUtils.getDexClassName(sp[0].split(":")[0]);
+        if (classString.isEmpty()) {
+          throw new RuntimeException("Empty class name in annotation");
+        }
 
-              AnnotationElement element =
-                  new ImmutableAnnotationElement(ae.getName(), buildEncodedValueForAnnotation(ae));
-              elements.add(element);
+        String typeString = sp[1];
+        if (typeString.isEmpty()) {
+          throw new RuntimeException("Empty type string in annotation");
+        }
+
+        String fieldName = sp[2];
+
+        return new ImmutableFieldEncodedValue(
+            new ImmutableFieldReference(classString, fieldName, typeString));
+      }
+      case 'M': { // method (Dalvik specific?)
+        AnnotationStringElem e = (AnnotationStringElem) elem;
+
+        String[] sp = e.getValue().split(" ");
+        String classString = SootToDexUtils.getDexClassName(sp[0].split(":")[0]);
+        if (classString.isEmpty()) {
+          throw new RuntimeException("Empty class name in annotation");
+        }
+
+        String returnType = sp[1];
+        String[] sp2 = sp[2].split("\\(");
+        String methodNameString = sp2[0];
+
+        String parameters = sp2[1].replaceAll("\\)", "");
+        List<String> paramTypeList = null;
+        if (!parameters.isEmpty()) {
+          paramTypeList = new ArrayList<>();
+          if (parameters.length() > 0) {
+            for (String p : parameters.split(",")) {
+              paramTypeList.add(p);
             }
           }
-
-          return new ImmutableAnnotationEncodedValue(
-              SootToDexUtils.getDexClassName(e.getValue().getType()), elements);
         }
-      case 'f':
-        { // field (Dalvik specific?)
-          AnnotationStringElem e = (AnnotationStringElem) elem;
 
-          String fSig = e.getValue();
-          String[] sp = fSig.split(" ");
-          String classString = SootToDexUtils.getDexClassName(sp[0].split(":")[0]);
-          if (classString.isEmpty()) {
-            throw new RuntimeException("Empty class name in annotation");
-          }
-
-          String typeString = sp[1];
-          if (typeString.isEmpty()) {
-            throw new RuntimeException("Empty type string in annotation");
-          }
-
-          String fieldName = sp[2];
-
-          return new ImmutableFieldEncodedValue(
-              new ImmutableFieldReference(classString, fieldName, typeString));
-        }
-      case 'M':
-        { // method (Dalvik specific?)
-          AnnotationStringElem e = (AnnotationStringElem) elem;
-
-          String[] sp = e.getValue().split(" ");
-          String classString = SootToDexUtils.getDexClassName(sp[0].split(":")[0]);
-          if (classString.isEmpty()) {
-            throw new RuntimeException("Empty class name in annotation");
-          }
-
-          String returnType = sp[1];
-          String[] sp2 = sp[2].split("\\(");
-          String methodNameString = sp2[0];
-
-          String parameters = sp2[1].replaceAll("\\)", "");
-          List<String> paramTypeList = null;
-          if (!parameters.isEmpty()) {
-            paramTypeList = new ArrayList<>();
-            if (parameters.length() > 0) {
-              for (String p : parameters.split(",")) {
-                paramTypeList.add(p);
-              }
-            }
-          }
-
-          return new ImmutableMethodEncodedValue(
-              new ImmutableMethodReference(
-                  classString, methodNameString, paramTypeList, returnType));
-        }
-      case 'N':
-        { // null (Dalvik specific?)
-          return ImmutableNullEncodedValue.INSTANCE;
-        }
+        return new ImmutableMethodEncodedValue(
+            new ImmutableMethodReference(
+                classString, methodNameString, paramTypeList, returnType));
+      }
+      case 'N': { // null (Dalvik specific?)
+        return ImmutableNullEncodedValue.INSTANCE;
+      }
       default:
         throw new RuntimeException("Unknown Elem Attr Kind: " + elem.getKind());
     }
@@ -1304,9 +1287,9 @@ public class DexPrinter {
   /**
    * Fixes long jumps that exceed the maximum distance for the respective jump type
    *
-   * @param instructions The list of generated dalvik instructions
+   * @param instructions  The list of generated dalvik instructions
    * @param labelAssigner The label assigner that maps statements to labels
-   * @param stmtV The statement visitor used to produce the dalvik instructions
+   * @param stmtV         The statement visitor used to produce the dalvik instructions
    */
   private void fixLongJumps(
       List<BuilderInstruction> instructions, LabelAssigner labelAssigner, StmtVisitor stmtV) {
@@ -1375,10 +1358,10 @@ public class DexPrinter {
   /**
    * Creates an intermediate jump instruction between the original jump instruction and its target
    *
-   * @param targetInsPos The jump target index
-   * @param jumpInsPos The position of the jump instruction
-   * @param stmtV The statement visitor used for constructing the instructions
-   * @param instructions The list of Dalvik instructions
+   * @param targetInsPos  The jump target index
+   * @param jumpInsPos    The position of the jump instruction
+   * @param stmtV         The statement visitor used for constructing the instructions
+   * @param instructions  The list of Dalvik instructions
    * @param labelAssigner The label assigner to be used for creating new labels
    */
   private void insertIntermediateJump(

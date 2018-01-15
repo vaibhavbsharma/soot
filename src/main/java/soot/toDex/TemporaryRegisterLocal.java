@@ -1,14 +1,14 @@
 package soot.toDex;
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Local;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.JimpleValueSwitch;
 import soot.util.Switch;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TemporaryRegisterLocal implements Local {
   private static final long serialVersionUID = 1L;
@@ -31,6 +31,11 @@ public class TemporaryRegisterLocal implements Local {
   @Override
   public Type getType() {
     return type;
+  }
+
+  @Override
+  public void setType(Type t) {
+    this.type = t;
   }
 
   @Override
@@ -57,12 +62,12 @@ public class TemporaryRegisterLocal implements Local {
   }
 
   @Override
-  public void setNumber(int number) {
+  public int getNumber() {
     throw new RuntimeException("Not implemented.");
   }
 
   @Override
-  public int getNumber() {
+  public void setNumber(int number) {
     throw new RuntimeException("Not implemented.");
   }
 
@@ -74,10 +79,5 @@ public class TemporaryRegisterLocal implements Local {
   @Override
   public void setName(String name) {
     throw new RuntimeException("Not implemented.");
-  }
-
-  @Override
-  public void setType(Type t) {
-    this.type = t;
   }
 }

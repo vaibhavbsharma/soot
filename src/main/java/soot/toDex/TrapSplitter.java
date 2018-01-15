@@ -1,13 +1,13 @@
 package soot.toDex;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
 import soot.jimple.Jimple;
+
+import java.util.Map;
 
 /**
  * Transformer that splits nested traps for Dalvik which does not support hierarchies of traps. If
@@ -18,22 +18,11 @@ import soot.jimple.Jimple;
  */
 public class TrapSplitter extends BodyTransformer {
 
-  public TrapSplitter(Singletons.Global g) {}
+  public TrapSplitter(Singletons.Global g) {
+  }
 
   public static TrapSplitter v() {
     return soot.G.v().soot_toDex_TrapSplitter();
-  }
-
-  private class TrapOverlap {
-    private Trap t1;
-    private Trap t2;
-    private Unit t2Start;
-
-    public TrapOverlap(Trap t1, Trap t2, Unit t2Start) {
-      this.t1 = t1;
-      this.t2 = t2;
-      this.t2Start = t2Start;
-    }
   }
 
   @Override
@@ -153,8 +142,8 @@ public class TrapSplitter extends BodyTransformer {
   /**
    * Adds a new trap to the given body only if the given trap is not empty
    *
-   * @param b The body to which to add the trap
-   * @param newTrap The trap to add
+   * @param b        The body to which to add the trap
+   * @param newTrap  The trap to add
    * @param position The position after which to insert the trap
    */
   private void safeAddTrap(Body b, Trap newTrap, Trap position) {
@@ -167,6 +156,7 @@ public class TrapSplitter extends BodyTransformer {
       }
     }
   }
+
   /**
    * Gets two arbitrary overlapping traps in the given method body
    *
@@ -178,8 +168,8 @@ public class TrapSplitter extends BodyTransformer {
       // Look whether one of our trapped statements is the begin
       // statement of another trap
       for (Unit splitUnit = t1.getBeginUnit();
-          splitUnit != t1.getEndUnit();
-          splitUnit = b.getUnits().getSuccOf(splitUnit)) {
+           splitUnit != t1.getEndUnit();
+           splitUnit = b.getUnits().getSuccOf(splitUnit)) {
         for (Trap t2 : b.getTraps()) {
           if (t1 != t2
               && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException())
@@ -190,5 +180,17 @@ public class TrapSplitter extends BodyTransformer {
       }
     }
     return null;
+  }
+
+  private class TrapOverlap {
+    private Trap t1;
+    private Trap t2;
+    private Unit t2Start;
+
+    public TrapOverlap(Trap t1, Trap t2, Unit t2Start) {
+      this.t1 = t1;
+      this.t2 = t2;
+      this.t2Start = t2Start;
+    }
   }
 }

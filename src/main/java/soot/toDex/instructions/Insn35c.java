@@ -1,14 +1,13 @@
 package soot.toDex.instructions;
 
-import java.util.BitSet;
-
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction35c;
 import org.jf.dexlib2.iface.reference.Reference;
-
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
+
+import java.util.BitSet;
 
 /**
  * The "35c" instruction format: It needs three 16-bit code units, has five registers and is used
@@ -23,9 +22,8 @@ import soot.toDex.Register;
  */
 public class Insn35c extends AbstractInsn implements FiveRegInsn {
 
-  private int regCount;
-
   private final Reference referencedItem;
+  private int regCount;
 
   public Insn35c(
       Opcode opc,
@@ -44,6 +42,18 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
     regs.add(regG);
     regs.add(regA);
     this.referencedItem = referencedItem;
+  }
+
+  private static boolean isImplicitWide(Register firstReg, Register secondReg) {
+    return firstReg.isWide() && secondReg.isEmptyReg();
+  }
+
+  private static int getPossiblyWideNumber(Register reg, Register previousReg) {
+    if (isImplicitWide(previousReg, reg)) {
+      // we cannot use reg.getNumber(), since the empty reg's number is always 0
+      return previousReg.getNumber() + 1;
+    }
+    return reg.getNumber();
   }
 
   @Override
@@ -69,18 +79,6 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
   @Override
   public Register getRegA() {
     return regs.get(REG_A_IDX);
-  }
-
-  private static boolean isImplicitWide(Register firstReg, Register secondReg) {
-    return firstReg.isWide() && secondReg.isEmptyReg();
-  }
-
-  private static int getPossiblyWideNumber(Register reg, Register previousReg) {
-    if (isImplicitWide(previousReg, reg)) {
-      // we cannot use reg.getNumber(), since the empty reg's number is always 0
-      return previousReg.getNumber() + 1;
-    }
-    return reg.getNumber();
   }
 
   private int[] getRealRegNumbers() {

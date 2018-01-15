@@ -5,7 +5,6 @@ import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
-
 import soot.jimple.AbstractConstantSwitch;
 import soot.jimple.ClassConstant;
 import soot.jimple.DoubleConstant;

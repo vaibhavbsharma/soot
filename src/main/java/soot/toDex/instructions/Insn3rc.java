@@ -1,16 +1,15 @@
 package soot.toDex.instructions;
 
-import java.util.BitSet;
-import java.util.List;
-
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction3rc;
 import org.jf.dexlib2.iface.reference.Reference;
-
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
+
+import java.util.BitSet;
+import java.util.List;
 
 /**
  * The "3rc" instruction format: It needs three 16-bit code units, has a whole range of registers
@@ -19,7 +18,7 @@ import soot.toDex.SootToDexUtils;
  * <br>
  * It is used by the "filled-new-array/range" opcode and the various ranged "invoke-" opcodes.
  */
-public class Insn3rc extends AbstractInsn {
+public class Insn3rc extends soot.toDex.instructions.AbstractInsn {
 
   private short regCount;
 
@@ -30,6 +29,12 @@ public class Insn3rc extends AbstractInsn {
     this.regs = regs;
     this.regCount = regCount;
     this.referencedItem = referencedItem;
+  }
+
+  private static BitSet getAllIncompatible(int regCount) {
+    BitSet incompatRegs = new BitSet(regCount);
+    incompatRegs.flip(0, regCount);
+    return incompatRegs;
   }
 
   @Override
@@ -58,12 +63,6 @@ public class Insn3rc extends AbstractInsn {
       }
     }
     return new BitSet(regCount);
-  }
-
-  private static BitSet getAllIncompatible(int regCount) {
-    BitSet incompatRegs = new BitSet(regCount);
-    incompatRegs.flip(0, regCount);
-    return incompatRegs;
   }
 
   private boolean hasHoleInRange() {

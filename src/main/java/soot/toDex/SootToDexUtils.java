@@ -1,13 +1,6 @@
 package soot.toDex;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jf.dexlib2.Opcode;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -28,7 +21,15 @@ import soot.VoidType;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 
-/** Utility class for the conversion from soot to dex. */
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Utility class for the conversion from soot to dex.
+ */
 public class SootToDexUtils {
 
   private static final Map<Class<? extends Type>, String> sootToDexTypeDescriptor;
@@ -202,7 +203,7 @@ public class SootToDexUtils {
   /**
    * Split the signature string using the same algorithm as in method 'Annotation
    * makeSignature(CstString signature)' in dx (dx/src/com/android/dx/dex/file/AnnotationUtils.java)
-   *
+   * <p>
    * <p>Rules are: "" - scan to ';' or '<'. Consume ';' but not '<'. - scan to 'L' without consuming
    * it. ""
    *
@@ -229,7 +230,8 @@ public class SootToDexUtils {
           j++;
         }
       } else {
-        for (j = i + 1; j < len && sig.charAt(j) != 'L'; j++) {}
+        for (j = i + 1; j < len && sig.charAt(j) != 'L'; j++) {
+        }
       }
       split.add(sig.substring(i, j));
       i = j;
